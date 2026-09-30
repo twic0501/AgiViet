@@ -85,6 +85,14 @@ route('POST', '/api/results/:id/confirm', ctx => tx(() => {
   return { chot: false, vu_viec: tc, khong_tranh_chap_kg: raKg(khongTC), ma: 'E07', phi };
 }));
 
+// Kết quả đang chờ bên mình xác nhận (màn "Kết quả đợt" của người bán)
+route('GET', '/api/results/pending', ctx => ({
+  items: all(`select r.*, d.seq, d.order_id, o.code don, o.buyer_org, o.seller_org, e.name ben_nhap
+    from inspection_result_versions r join deliveries d on d.id = r.delivery_id join orders o on o.id = d.order_id join organizations e on e.id = r.entered_by_org
+    where r.status = 'cho_xac_nhan' and r.entered_by_org <> ? and (o.buyer_org = ? or o.seller_org = ?) order by r.created_at desc`, ctx.org.id, ctx.org.id, ctx.org.id)
+    .map(r => ({ ...r, do: all('select metric, value, unit, source_label from measurements where delivery_id = ? order by created_at', r.delivery_id) })),
+}));
+
 /* ---------- Bất đồng: các bước theo phương án, hết mốc cuối → chuyển cơ chế tiếp theo ---------- */
 function cacBuoc(don) {
   const pa = one('select * from dispute_plans where order_id = ? order by rowid desc limit 1', don.id) || { confirm_hours: 24, lab_name: 'đơn vị kiểm định do hai bên chọn', mediation_days: null, next_mechanism: 'Cơ chế theo thỏa thuận' };

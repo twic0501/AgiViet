@@ -59,7 +59,7 @@ route('POST', '/api/auth/verify', ctx => tx(() => {
 }), { moi: true });
 
 route('POST', '/api/auth/logout', ctx => { ctx.datCookie = 'av_phien=; Path=/; Max-Age=0'; return {}; }, { moi: true });
-route('GET', '/api/me', ctx => hoSoToi(ctx.user.id, ctx.org.id));
+route('GET', '/api/me', ctx => (ctx.user ? { dang_nhap: true, ...hoSoToi(ctx.user.id, ctx.org.id) } : { dang_nhap: false }), { moi: true });
 
 route('PUT', '/api/org/profile', ctx => tx(() => {
   canQuyen(ctx, 'administer', 'create');

@@ -224,7 +224,13 @@ route('POST', '/api/quotes', ctx => tx(() => {
   const lo = one('select * from lots where id = ? and seller_org = ?', b.lot_id, ctx.org.id);
   if (!lo) throw loi('E01', 'Chỉ người bán của lô được gửi báo giá.');
   let buyer;
-  if (b.price_inquiry_id) { const pi = one('select * from price_inquiries where id = ? and lot_id = ?', b.price_inquiry_id, lo.id); if (!pi) throw khongThay('Hỏi giá'); buyer = pi.buyer_org; run("update price_inquiries set status = 'da_bao_gia' where id = ?", pi.id); }
+  if (b.price_inquiry_id) {
+    const pi = one('select * from price_inquiries where id = ? and lot_id = ?', b.price_inquiry_id, lo.id); if (!pi) throw khongThay('Hỏi giá');
+    buyer = pi.buyer_org; run("update price_inquiries set status = 'da_bao_gia' where id = ?", pi.id);
+    // Trả lời hỏi giá = đồng ý liên hệ: chấp nhận lời mời đi kèm (lượt tạm giữ của bên mua thành đã dùng)
+    const cr = one("select id from connection_requests where inquiry_id = ? and status = 'cho'", pi.id);
+    if (cr) dongLoiMoi(cr.id, 'chap_nhan', ctx);
+  }
   else if (b.request_line_id) { const rl = one('select r.buyer_org from request_lines l join purchase_requests r on r.id = l.request_id where l.id = ?', b.request_line_id); if (!rl) throw khongThay('Dòng nhu cầu'); buyer = rl.buyer_org; }
   else throw loi('E05', 'Báo giá phải trả lời một hỏi giá hoặc một dòng nhu cầu.');
   if (!coQuanHe(buyer, ctx.org.id) && !b.price_inquiry_id) throw loi('E01', 'Cần kết nối được chấp nhận trước khi gửi báo giá.');

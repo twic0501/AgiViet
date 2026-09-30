@@ -1,0 +1,44 @@
+// Thử giao diện Nhà sản xuất nối API bằng Playwright (chạy khi server đang chạy với dữ liệu mẫu).
+// node test/giao-dien-ban.mjs [base]   — cần playwright (mượn từ ~/rnd idea/node_modules)
+import os from 'node:os';
+import { createRequire } from 'node:module';
+const require = createRequire(os.homedir() + '/rnd idea/package.json');
+const { chromium } = require('playwright');
+const base = process.argv[2] || 'http://127.0.0.1:8790';
+const loi = [];
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+p.on('pageerror', e => loi.push('JS: ' + e.message));
+p.on('console', m => { if (m.type() === 'error' && !m.text().includes('favicon')) loi.push('console: ' + m.text()); });
+const cho = ms => p.waitForTimeout(ms);
+const toast = async () => (await p.locator('.toast').textContent()).trim();
+
+await p.goto(base + '/ban/hang.html#hang'); await cho(600);
+console.log('1. Chưa đăng nhập → chuyển tới', p.url().replace(base, ''));
+await p.fill('#sdt', '0912345123');
+await p.click('#dang-nhap .bottom-actions a.btn'); await cho(400);
+console.log('2. Gửi mã →', await toast());
+for (const [i, c] of [...'123456'].entries()) await p.locator('#otp .otp input').nth(i).fill(c);
+await cho(1200);
+console.log('3. Sau OTP →', p.url().replace(base, ''));
+console.log('4. Hàng:', await p.locator('#hang .chao strong').textContent(), '|', await p.locator('#hang .hero strong').textContent(), '| số lô', await p.locator('#hang article.card.lo').count());
+console.log('   Lô:', (await p.locator('#hang article.card.lo .meta').allTextContents()).join(' || '));
+await p.goto(base + '/ban/khach.html#khach'); await cho(800);
+await p.click('[data-chon="khach-tab"] [data-khi="cho"]'); await cho(200);
+console.log('5. Chờ kết nối:', (await p.locator('[data-thuoc="khach-tab"][data-khi="cho"] strong').allTextContents()).join(' || '));
+await p.click('[data-ket-noi]'); await cho(800);
+console.log('6. Chỉ báo bên mua:', (await p.locator('#ket-noi .stack.small').innerText()).replace(/\n/g, ' / '));
+await p.goto(base + '/ban/lich.html#lich'); await cho(800);
+console.log('7. Đơn:', (await p.locator('#lich a.card.row strong').allTextContents()).join(' || '));
+await p.click('[data-kq]'); await cho(800);
+console.log('8. Kết quả:', await p.locator('#ket-qua h1').textContent(), '|', (await p.locator('#ket-qua .so-can strong').allTextContents()).join(', '));
+await p.locator('#xac-nhan .dong-xn').nth(0).locator('.dung').click();
+await p.locator('#xac-nhan .dong-xn').nth(1).locator('.dung').click();
+await p.click('#ket-qua .bottom-actions a.btn:not(.can-ho-tro-btn)'); await cho(900);
+console.log('9. Gửi câu trả lời →', await toast(), '→', p.url().replace(base, ''));
+await p.goto(base + '/ban/toi.html#tai-khoan-nhan'); await cho(800);
+console.log('10. Tài khoản nhận:', (await p.locator('#tai-khoan-nhan section.card.row').innerText()).replace(/\n/g, ' '));
+await p.goto(base + '/ban/toi.html#thong-bao'); await cho(800);
+console.log('11. Thông báo:', (await p.locator('#thong-bao nav.menu').first().innerText()).split('\n').slice(0, 4).join(' / '));
+console.log('Lỗi trang:', loi.length ? loi : 'không');
+await b.close();

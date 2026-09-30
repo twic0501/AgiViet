@@ -51,7 +51,7 @@ route('GET', '/api/money', ctx => {
   const ds = all(`select o.*, d.code don from obligations o left join orders d on d.id = o.order_id where (o.payer_org = ? or o.beneficiary_org = ?) order by o.created_at desc`, org, org).map(moTaNghiaVu);
   return {
     phai_tra: ds.filter(o => o.payer_org === org), phai_nhan: ds.filter(o => o.beneficiary_org === org),
-    hoa_don_phi: all('select *, (amount_vnd + tax_vnd) tong_vnd from fee_invoices where payer_org = ? order by issued_at desc', org),
+    hoa_don_phi: all('select f.*, (f.amount_vnd + f.tax_vnd) tong_vnd, o.code don from fee_invoices f left join orders o on o.id = f.order_id where f.payer_org = ? order by f.issued_at desc', org),
     ghi_chu: 'App không giữ tiền hàng. Hóa đơn phí tách khỏi tiền hàng và cọc.',
   };
 });
