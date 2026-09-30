@@ -17,10 +17,19 @@ def dai(p):
     return float(subprocess.check_output(['ffprobe', '-v', 'quiet', '-show_entries', 'format=duration', '-of', 'csv=p=0', str(p)]).decode())
 
 async def doc(i, cau):
+    for lan in range(4):                      # dịch vụ đôi khi trả rỗng: thử lại
+        try:
+            return await doc1(i, cau)
+        except edge_tts.exceptions.NoAudioReceived:
+            print(f'câu {i}: chưa nhận được âm thanh, thử lại', file=sys.stderr)
+            await asyncio.sleep(2 + lan * 3)
+    raise SystemExit(f'Không đọc được câu {i}: {cau["t"]}')
+
+async def doc1(i, cau):
     g = kb['giong'][cau['g']]
     tep = RA / f'cau-{i:02d}.mp3'
     tu = []
-    c = edge_tts.Communicate(cau['t'], g['voice'], rate=g['rate'], pitch=g['pitch'], boundary='WordBoundary')
+    c = edge_tts.Communicate(cau['t'], g['voice'], rate=cau.get('toc', g['rate']), pitch=g['pitch'], boundary='WordBoundary')
     with open(tep, 'wb') as f:
         async for m in c.stream():
             if m['type'] == 'audio':
@@ -44,7 +53,7 @@ async def chinh():
             t += cau.get('tre', 0.6 if t == 0 else nghi)
             cau['bd'] = round(t, 3)
             t += cau['dai']
-        canh['can'] = max(canh['toi_thieu'], t + 1.0)
+        canh['can'] = max(canh['toi_thieu'], t + 0.8)
     du = kb['tong_giay'] - sum(c['can'] for c in kb['canh'])
     for c in kb['canh']: print(f"{c['id']:<14} cần {c['can']:6.2f}s (tối thiểu {c['toi_thieu']}, lời {sum(x['dai'] for x in c['cau']):5.1f}s)")
     if du < 0:
@@ -52,9 +61,19 @@ async def chinh():
         sys.exit(1)
     them = du / len(kb['canh'])
     t0 = 0.0
+    nua_phach = 60 / 92 / 2          # nhạc nền 92 nhịp/phút (video/nhac.py)
     for canh in kb['canh']:
         canh['bat_dau'] = round(t0, 3)
         canh['dai'] = round(canh['can'] + them, 3)
+        # Canh đầu câu vào nửa phách (chỉ lùi, không chồng câu trước, không tràn cảnh)
+        het = 0.0
+        for cau in canh['cau']:
+            tuyet = t0 + max(cau['bd'], het + 0.2)
+            canh_phach = -(-tuyet // nua_phach) * nua_phach
+            bd = canh_phach - t0
+            if bd + cau['dai'] < canh['dai'] - 0.3:
+                cau['bd'] = round(bd, 3)
+            het = cau['bd'] + cau['dai']
         t0 += canh['dai']
         print(f"{canh['id']:<14} {canh['bat_dau']:7.2f}s  dài {canh['dai']:6.2f}s  (lời {sum(c['dai'] for c in canh['cau']):5.1f}s)")
     (RA / 'lich.json').write_text(json.dumps(kb, ensure_ascii=False, indent=1))

@@ -5,80 +5,119 @@
 <title>AgiViet · sân khấu quay video</title>
 <link rel="stylesheet" href="/ban/css/fonts.css">
 <style>
-  :root { --reu: #235c45; --reu-dam: #122e23; --nang: #f5b83d; --kem: #fbecc8; --f: 'Be Vietnam Pro', system-ui, sans-serif; }
+  :root { --nen: #06120d; --reu: #235c45; --la: #3fb58a; --nang: #f5b83d; --kem: #fbecc8; --chu: #eef5f0; --mo: #9fb6a8; --f: 'Be Vietnam Pro', system-ui, sans-serif; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0b1f17; font-family: var(--f); color: #fff; }
-  #san { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(1200px 800px at 70% 30%, #1d4a38 0%, #0f271d 55%, #0a1c14 100%); }
-  #san::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px); background-size: 28px 28px; opacity: .6; }
-  /* khung thiết bị */
-  .tb { position: absolute; transition: transform 1s cubic-bezier(.2,.7,.2,1), opacity .8s ease, left 1s cubic-bezier(.2,.7,.2,1), top 1s cubic-bezier(.2,.7,.2,1); transform-origin: top left; opacity: 0; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: clip; background: var(--nen); font-family: var(--f); color: var(--chu); -webkit-font-smoothing: antialiased; }
+  #san { position: absolute; inset: 0; overflow: clip; background: linear-gradient(160deg, #0b2219 0%, #06120d 55%, #040c08 100%); perspective: 2200px; }
+  .quang { position: absolute; border-radius: 50%; opacity: .55; will-change: transform; }
+  .q1 { width: 900px; height: 900px; left: -200px; top: -300px; background: radial-gradient(circle, rgba(63,181,138,.42) 0%, rgba(63,181,138,.16) 38%, transparent 70%); animation: troi1 26s ease-in-out infinite alternate; }
+  .q2 { width: 800px; height: 800px; right: -250px; bottom: -300px; background: radial-gradient(circle, rgba(245,184,61,.26) 0%, rgba(245,184,61,.1) 38%, transparent 70%); animation: troi2 30s ease-in-out infinite alternate; }
+  .q3 { width: 600px; height: 600px; left: 45%; top: 30%; background: radial-gradient(circle, rgba(35,92,69,.5) 0%, rgba(35,92,69,.18) 40%, transparent 72%); animation: troi1 34s ease-in-out infinite alternate-reverse; }
+  @keyframes troi1 { to { transform: translate(260px, 180px) scale(1.15); } }
+  @keyframes troi2 { to { transform: translate(-240px, -160px) scale(1.1); } }
+  #luoi { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 96px 96px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 80%); }
+  #mang { position: absolute; inset: 0; }
+  #toi-vien { position: absolute; inset: 0; background: radial-gradient(ellipse 85% 75% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%); pointer-events: none; z-index: 40; }
+  .tb { position: absolute; transform-origin: top left; opacity: 0; transition: transform 1.1s cubic-bezier(.2,.75,.15,1), opacity .9s ease, left 1.1s cubic-bezier(.2,.75,.15,1), top 1.1s cubic-bezier(.2,.75,.15,1); }
   .tb.hien { opacity: 1; }
-  #tb-dt { width: 430px; height: 884px; border-radius: 56px; background: #0a0f0d; padding: 20px; box-shadow: 0 40px 80px rgba(0,0,0,.55), inset 0 0 0 2px #2c3a33; }
-  #tb-dt iframe { width: 390px; height: 844px; border: 0; border-radius: 38px; background: #fff; display: block; }
-  #tb-lap { width: 1500px; }
-  #tb-lap .man { background: #0a0f0d; padding: 22px 22px 30px; border-radius: 26px 26px 10px 10px; box-shadow: 0 40px 80px rgba(0,0,0,.55), inset 0 0 0 2px #2c3a33; }
-  #tb-lap iframe { width: 1440px; height: 900px; border: 0; border-radius: 8px; background: #fff; display: block; }
-  #tb-lap .de { height: 22px; margin: 0 -70px; background: linear-gradient(#c9cfcb, #8e9792); border-radius: 0 0 24px 24px; }
-  .nhan-tb { position: absolute; top: -58px; left: 0; display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 26px; white-space: nowrap; }
-  .nhan-tb img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 3px solid var(--nang); }
-  .nhan-tb small { font-weight: 500; font-size: 20px; color: #b8cdbf; }
-  /* con trỏ giả */
-  #tro { position: absolute; left: 0; top: 0; width: 34px; height: 34px; z-index: 50; pointer-events: none; transition: transform .6s cubic-bezier(.3,.7,.2,1), opacity .3s; opacity: 0; }
-  #tro svg { width: 34px; height: 34px; filter: drop-shadow(0 3px 6px rgba(0,0,0,.45)); }
-  .gon { position: absolute; z-index: 49; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; border: 4px solid var(--nang); pointer-events: none; animation: gon .6s ease-out forwards; }
-  @keyframes gon { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.3); opacity: 0; } }
-  /* chữ động */
+  #tb-dt { width: 422px; height: 876px; border-radius: 60px; padding: 16px; background: linear-gradient(145deg, #2d3b34, #0c120f 40%, #1b2520); box-shadow: 0 50px 100px rgba(0,0,0,.6), 0 0 0 1.5px rgba(255,255,255,.08), inset 0 0 0 1px rgba(255,255,255,.06); }
+  #tb-dt iframe { width: 390px; height: 844px; border: 0; border-radius: 44px; background: #fff; display: block; }
+  #tb-dt::after, #tb-lap .man::after { content: ""; position: absolute; inset: 16px; border-radius: 44px; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.07) 0%, transparent 28%, transparent 70%, rgba(255,255,255,.03) 100%); }
+  #tb-lap { width: 1484px; }
+  #tb-lap .man { position: relative; padding: 16px 22px 22px; border-radius: 22px 22px 6px 6px; background: linear-gradient(160deg, #26332d, #0b110e 35%); box-shadow: 0 50px 100px rgba(0,0,0,.6), 0 0 0 1.5px rgba(255,255,255,.08); }
+  #tb-lap .man::after { inset: 16px 22px 22px; border-radius: 8px; }
+  #tb-lap .cam { position: absolute; top: 6px; left: 50%; width: 6px; height: 6px; border-radius: 50%; background: #2f3d36; }
+  #tb-lap iframe { width: 1440px; height: 900px; border: 0; border-radius: 6px; background: #fff; display: block; }
+  #tb-lap .de { height: 20px; margin: 0 -80px; border-radius: 0 0 26px 26px; background: linear-gradient(#cfd6d2, #8b958f 70%, #6c756f); box-shadow: 0 30px 60px rgba(0,0,0,.5); position: relative; }
+  #tb-lap .de::before { content: ""; position: absolute; left: 50%; top: 0; width: 220px; height: 8px; margin-left: -110px; border-radius: 0 0 10px 10px; background: #9aa39e; }
+  .nhan-tb { position: absolute; top: -64px; left: 4px; display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 26px; white-space: nowrap; }
+  .av { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 22px; color: #06120d; }
+  .av.n { background: linear-gradient(135deg, #ffd27a, #f5b83d); } .av.t { background: linear-gradient(135deg, #8fe3c2, #3fb58a); }
+  .nhan-tb small { font-weight: 500; font-size: 20px; color: var(--mo); }
+  #tro { position: absolute; left: 0; top: 0; width: 36px; height: 36px; z-index: 50; pointer-events: none; transition: transform .6s cubic-bezier(.3,.7,.2,1), opacity .3s; opacity: 0; }
+  #tro svg { width: 36px; height: 36px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
+  .gon { position: absolute; z-index: 49; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(245,184,61,.25); border: 2px solid var(--nang); pointer-events: none; animation: gon .65s ease-out forwards; }
+  @keyframes gon { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
   #chu { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
-  .lop { position: absolute; transition: opacity .8s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
-  .vao { opacity: 0; transform: translateY(40px); }
-  .ra { opacity: 0 !important; transform: translateY(-30px) !important; }
-  .to { font-size: 76px; font-weight: 700; line-height: 1.12; letter-spacing: -.02em; }
-  .to em { font-style: normal; color: var(--nang); }
-  .vua { font-size: 40px; font-weight: 600; line-height: 1.35; color: #dbe8df; }
-  .nho { font-size: 28px; color: #b8cdbf; }
-  .anh-nen { position: absolute; inset: 0; z-index: 1; }
-  .anh-nen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease; filter: brightness(.55) saturate(1.05); }
-  .anh-nen img.on { opacity: 1; animation: ken 9s ease-out forwards; }
-  @keyframes ken { from { transform: scale(1.12); } to { transform: scale(1); } }
-  .the-nv { position: absolute; width: 640px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 28px; padding: 30px; display: flex; gap: 26px; align-items: center; backdrop-filter: blur(6px); }
-  .the-nv img { width: 150px; height: 150px; border-radius: 22px; object-fit: cover; }
-  .the-nv b { display: block; font-size: 40px; }
-  .the-nv span { font-size: 26px; color: #c7dacd; line-height: 1.4; }
-  .kho { position: relative; white-space: nowrap; display: inline-flex; align-items: center; gap: 22px; font-size: 34px; font-weight: 600; background: rgba(0,0,0,.28); border-left: 6px solid #e0724a; border-radius: 16px; padding: 20px 30px; }
-  .kho i { font-style: normal; width: 52px; height: 52px; border-radius: 14px; background: #e0724a; display: grid; place-items: center; font-size: 30px; }
-  .logo { display: flex; align-items: center; gap: 22px; }
-  .logo img { width: 110px; height: 110px; background: #fff; border-radius: 28px; padding: 12px; }
-  .logo b { font-size: 96px; } .logo b span { color: var(--nang); }
-  .chip-buoc { position: absolute; z-index: 30; left: 50%; top: 26px; translate: -50% 0; white-space: nowrap; display: flex; align-items: center; gap: 16px; font-size: 30px; font-weight: 700; background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.2); padding: 14px 24px; border-radius: 18px; transition: opacity .5s, transform .5s; }
-  .chip-buoc .so { background: var(--nang); color: var(--reu-dam); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; }
-  .dong-tien { font-size: 40px; font-weight: 600; display: grid; grid-template-columns: 90px 1fr; gap: 10px 20px; align-items: center; }
-  .dong-tien .k { width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; font-size: 38px; font-weight: 700; }
-  .thanh-tien { height: 30px; border-radius: 16px; background: rgba(255,255,255,.12); overflow: hidden; margin-top: 8px; }
-  .thanh-tien i { display: block; height: 100%; width: 0; border-radius: 16px; transition: width 1.6s cubic-bezier(.2,.7,.2,1); }
-  .nguyen-tac { display: grid; gap: 26px; }
-  .nguyen-tac div { display: flex; gap: 22px; align-items: center; font-size: 38px; font-weight: 600; }
-  .nguyen-tac i { font-style: normal; width: 66px; height: 66px; flex-shrink: 0; border-radius: 18px; background: rgba(245,184,61,.18); color: var(--nang); display: grid; place-items: center; font-size: 34px; font-weight: 700; }
-  .goi { display: flex; gap: 26px; }
-  .goi div { width: 400px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); border-radius: 26px; padding: 30px; }
-  .goi div.noi { border: 3px solid var(--nang); }
-  .goi b { display: block; font-size: 30px; color: #c7dacd; font-weight: 600; }
-  .goi strong { display: block; font-size: 54px; margin: 8px 0; }
-  .goi span { font-size: 24px; color: #c7dacd; }
-  /* phụ đề */
-  #phu-de { position: absolute; left: 50%; bottom: 44px; transform: translateX(-50%); z-index: 60; max-width: 1500px; text-align: center; font-size: 36px; font-weight: 600; line-height: 1.35; padding: 12px 30px; border-radius: 16px; background: rgba(8, 20, 14, .72); color: #fff; opacity: 0; transition: opacity .25s; }
+  .lop { position: absolute; transition: opacity .7s ease, transform .8s cubic-bezier(.2,.75,.15,1), filter .7s; }
+  .lop.vao { opacity: 0; transform: translateY(30px); filter: blur(8px); }
+  .lop.ra { opacity: 0 !important; transform: translateY(-24px) !important; filter: blur(8px); }
+  .tu { display: inline-block; opacity: 0; transform: translateY(26px); filter: blur(12px); transition: opacity .55s ease, transform .7s cubic-bezier(.2,.75,.15,1), filter .6s ease; }
+  .tu.len { opacity: 1; transform: none; filter: none; }
+  .mat { font-size: 22px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--nang); display: flex; align-items: center; gap: 16px; }
+  .mat::before { content: ""; width: 44px; height: 2px; background: var(--nang); }
+  .h1 { font-size: 84px; font-weight: 700; line-height: 1.08; letter-spacing: -.025em; }
+  .h2 { font-size: 60px; font-weight: 700; line-height: 1.12; letter-spacing: -.02em; }
+  .h3 { font-size: 44px; font-weight: 700; line-height: 1.2; letter-spacing: -.015em; }
+  .vang { color: var(--nang); } .xanh { color: var(--la); }
+  .phu { font-size: 30px; color: var(--mo); line-height: 1.45; font-weight: 500; }
+  .kinh { background: linear-gradient(160deg, rgba(255,255,255,.075), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.12); border-radius: 28px; box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
+  .nv { width: 620px; padding: 34px; display: flex; gap: 26px; align-items: center; }
+  .nv .av { width: 108px; height: 108px; font-size: 48px; flex-shrink: 0; }
+  .nv b { display: block; font-size: 40px; } .nv span { font-size: 25px; color: var(--mo); line-height: 1.45; }
+  .noi-ket { position: absolute; left: 790px; top: 262px; width: 340px; height: 3px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.35) 0 14px, transparent 14px 26px); }
+  .noi-ket span { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 8px 18px; border-radius: 99px; font-size: 20px; font-weight: 700; color: var(--nang); background: #0b1f16; border: 1px solid rgba(245,184,61,.5); white-space: nowrap; }
+  .kho { width: 520px; padding: 30px 30px 32px; }
+  .kho .ic { width: 64px; height: 64px; border-radius: 18px; display: grid; place-items: center; background: rgba(224,114,74,.14); color: #f08d62; margin-bottom: 20px; }
+  .kho .ic svg { width: 34px; height: 34px; }
+  .kho b { display: block; font-size: 31px; line-height: 1.25; } .kho span { display: block; margin-top: 8px; font-size: 22px; color: var(--mo); }
+  .logo { display: flex; align-items: center; gap: 26px; }
+  .logo img { width: 116px; height: 116px; background: #fff; border-radius: 30px; padding: 13px; box-shadow: 0 0 80px rgba(245,184,61,.25), 0 20px 50px rgba(0,0,0,.4); }
+  .logo b { font-size: 104px; letter-spacing: -.02em; } .logo b span { color: var(--nang); }
+  .the-tb { padding: 10px 20px; border-radius: 99px; font-size: 22px; font-weight: 600; color: var(--mo); white-space: nowrap; }
+  #chip { position: absolute; z-index: 30; left: 50%; top: 30px; translate: -50% 0; display: flex; align-items: center; gap: 14px; padding: 12px 26px 12px 12px; border-radius: 99px; font-size: 26px; font-weight: 700; white-space: nowrap; transition: opacity .5s, transform .5s; }
+  #chip .so { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--nang); color: #06120d; font-size: 22px; }
+  .bieu { width: 1080px; padding: 40px 44px; }
+  .dong-bieu { display: grid; grid-template-columns: 70px 1fr 250px; gap: 24px; align-items: center; margin-top: 30px; }
+  .dong-bieu:first-child { margin-top: 0; }
+  .dong-bieu .av { width: 64px; height: 64px; font-size: 28px; }
+  .dong-bieu .ten { font-size: 27px; font-weight: 600; } .dong-bieu .ten small { display: block; font-size: 21px; color: var(--mo); font-weight: 500; margin-top: 4px; }
+  .thanh { height: 16px; border-radius: 10px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 14px; }
+  .thanh i { display: block; height: 100%; width: 0; border-radius: 10px; transition: width 1.6s cubic-bezier(.2,.75,.15,1); }
+  .so-to { font-size: 52px; font-weight: 700; text-align: right; letter-spacing: -.02em; }
+  .so-to small { display: block; font-size: 20px; color: var(--mo); font-weight: 600; letter-spacing: 0; }
+  .huy-hieu { display: inline-flex; align-items: center; gap: 10px; margin-top: 30px; padding: 12px 22px; border-radius: 99px; background: rgba(245,184,61,.14); border: 1px solid rgba(245,184,61,.45); color: var(--nang); font-size: 26px; font-weight: 700; }
+  .nt { display: grid; gap: 22px; width: 1060px; }
+  .nt > div { display: flex; gap: 24px; align-items: center; padding: 22px 28px; opacity: 0; transform: translateX(-40px); transition: all .7s cubic-bezier(.2,.75,.15,1); }
+  .nt > div.len { opacity: 1; transform: none; }
+  .nt .ic { width: 60px; height: 60px; flex-shrink: 0; border-radius: 16px; display: grid; place-items: center; background: rgba(63,181,138,.14); color: var(--la); }
+  .nt .ic svg { width: 32px; height: 32px; }
+  .nt b { font-size: 31px; } .nt span { display: block; font-size: 22px; color: var(--mo); margin-top: 4px; font-weight: 500; }
+  .goi { display: flex; gap: 28px; }
+  .goi > div { width: 440px; padding: 38px 36px; }
+  .goi > div.noi { border: 1.5px solid rgba(245,184,61,.6); box-shadow: 0 0 60px rgba(245,184,61,.12), 0 30px 60px rgba(0,0,0,.35); }
+  .goi .loai { font-size: 22px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--mo); }
+  .goi strong { display: block; font-size: 64px; margin: 14px 0 10px; letter-spacing: -.02em; }
+  .goi strong small { font-size: 24px; color: var(--mo); font-weight: 600; }
+  .goi span { font-size: 23px; color: var(--mo); line-height: 1.45; }
+  .url { display: inline-flex; align-items: center; gap: 14px; padding: 16px 32px; border-radius: 99px; font-size: 32px; font-weight: 600; color: var(--mo); }
+  .url b { color: #fff; }
+  #phu-de { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); z-index: 60; max-width: 1480px; text-align: center; font-size: 34px; font-weight: 600; line-height: 1.4; padding: 12px 30px; border-radius: 14px; background: rgba(4, 12, 8, .72); color: #fff; opacity: 0; transition: opacity .25s; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
   #phu-de.on { opacity: 1; }
-  #phu-de.nv { color: var(--kem); font-style: italic; }
+  #phu-de.nvn { color: var(--kem); font-style: italic; }
   #man-den { position: absolute; inset: 0; background: #000; z-index: 90; opacity: 1; transition: opacity 1.2s ease; pointer-events: none; }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="ic-gia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+  <symbol id="ic-can" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 21h14M6 7h12M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></symbol>
+  <symbol id="ic-tien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+  <symbol id="ic-khoa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-khien" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="ic-nhan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="ic-chuyen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h14l-3-3M20 17H6l3 3"/></symbol>
+</svg>
 <div id="san">
-  <div class="anh-nen" id="anh-nen"></div>
-  <div class="tb" id="tb-lap"><div class="nhan-tb" id="nhan-lap"></div><div class="man"><iframe id="if-lap" title="App Thu mua"></iframe></div><div class="de"></div></div>
+  <div class="quang q1"></div><div class="quang q2"></div><div class="quang q3"></div>
+  <div id="luoi"></div>
+  <canvas id="mang" width="1920" height="1080"></canvas>
+  <div class="tb" id="tb-lap"><div class="nhan-tb" id="nhan-lap"></div><div class="man"><span class="cam"></span><iframe id="if-lap" title="App Thu mua"></iframe></div><div class="de"></div></div>
   <div class="tb" id="tb-dt"><div class="nhan-tb" id="nhan-dt"></div><iframe id="if-dt" title="App Nhà sản xuất"></iframe></div>
   <div id="chu"></div>
-  <div class="chip-buoc" id="chip" style="opacity:0"></div>
-  <div id="tro"><svg viewBox="0 0 24 24"><path d="M4 2l16 9-7 1.6L9.6 20z" fill="#fff" stroke="#122e23" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  <div class="kinh" id="chip" style="opacity:0"></div>
+  <div id="tro"><svg viewBox="0 0 24 24"><path d="M4 2l16 9-7 1.6L9.6 20z" fill="#fff" stroke="#06120d" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+  <div id="toi-vien"></div>
   <div id="phu-de"></div>
   <div id="man-den"></div>
 </div>
@@ -90,20 +129,55 @@
   const IF = { dt: $('#if-dt'), lap: $('#if-lap') };
   const TB = { dt: $('#tb-dt'), lap: $('#tb-lap') };
   const lech = [];
+  // App trong iframe cuộn tới nút / đặt con trỏ vào ô nhập thì trình duyệt cuộn cả sân khấu: giữ yên khung hình
+  (function giuYen() { const se = document.scrollingElement, sn = document.getElementById('san'); if (se.scrollTop || se.scrollLeft) se.scrollTo(0, 0); if (sn.scrollTop || sn.scrollLeft) { sn.scrollTop = 0; sn.scrollLeft = 0; } requestAnimationFrame(giuYen); })();
   let T0 = 0, canhBd = 0;
   const bayGio = () => (performance.now() - T0) / 1000;
   const den = async giay => { const con = canhBd + giay - bayGio(); if (con > 0) await ngu(con * 1000); };
 
-  /* ---------- thiết bị: vị trí, tỉ lệ ---------- */
-  function datTb(k, { x, y, s = 1, hien = true }) { const t = TB[k]; t.style.left = x + 'px'; t.style.top = y + 'px'; t.style.transform = `scale(${s})`; t.classList.toggle('hien', hien); }
-  function nhan(k, anh, ten, phu) { $('#nhan-' + k).innerHTML = anh ? `<img src="${anh}" alt="">${ten}<small>${phu}</small>` : ''; }
+  /* ---------- mạng lưới người bán (vàng) – bên mua (xanh) ---------- */
+  const mang = (() => {
+    const cv = $('#mang'), g = cv.getContext('2d');
+    let seed = 11; const r = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const nut = [];
+    for (let i = 0; i < 54; i++) { const ban = i % 2 === 0; nut.push({ ban, x: ban ? 120 + r() * 820 : 980 + r() * 820, y: 90 + r() * 900, p: r() * 6.28, sp: .2 + r() * .4 }); }
+    const canh = [];
+    nut.forEach((a, i) => { if (!a.ban) return; const ds = nut.map((b, j) => ({ j, d: b.ban ? 1e9 : Math.hypot(a.x - b.x, a.y - b.y) })).sort((u, v) => u.d - v.d); canh.push({ a: i, b: ds[0].j, t: r() }); if (r() > .5) canh.push({ a: i, b: ds[1].j, t: r() }); });
+    canh.sort((u, v) => u.t - v.t);
+    const st = { tien: 0, do: 0, hoi: 0 }, dich = { tien: 0, do: 0, hoi: 0 };
+    let tg = performance.now();
+    function ve(now) {
+      const dt = Math.min(.05, (now - tg) / 1000); tg = now;
+      for (const k in st) st[k] += (dich[k] - st[k]) * Math.min(1, dt * 1.6);
+      g.clearRect(0, 0, 1920, 1080);
+      if (st.do > .01) {
+        const cx = 960, cy = 480, t = now / 1000;
+        const P = nut.map(n => { const dx = Math.sin(t * n.sp + n.p) * 14, dy = Math.cos(t * n.sp * .8 + n.p) * 12; const g0 = Math.atan2(n.y - 540, n.x - 960) + t * .04, vx = cx + Math.cos(g0) * (700 + dx * 3), vy = cy + 30 + Math.sin(g0) * (400 + dy * 3); return { x: (n.x + dx) * (1 - st.hoi) + vx * st.hoi, y: (n.y + dy) * (1 - st.hoi) + vy * st.hoi }; });
+        const so = canh.length * st.tien;
+        canh.forEach((c, k) => {
+          const p = Math.max(0, Math.min(1, so - k)); if (!p) return;
+          const A = P[c.a], B = P[c.b], x = A.x + (B.x - A.x) * p, y = A.y + (B.y - A.y) * p;
+          const gr = g.createLinearGradient(A.x, A.y, B.x, B.y); const mo = .45 * st.do * (1 - st.hoi * .9); gr.addColorStop(0, `rgba(245,184,61,${mo})`); gr.addColorStop(1, `rgba(63,181,138,${mo})`);
+          g.strokeStyle = gr; g.lineWidth = 1.6; g.beginPath(); g.moveTo(A.x, A.y); g.lineTo(x, y); g.stroke();
+          if (p >= 1) { const q = (t * .35 + c.t) % 1; g.fillStyle = `rgba(255,236,190,${.8 * st.do * (1 - st.hoi * .9)})`; g.beginPath(); g.arc(A.x + (B.x - A.x) * q, A.y + (B.y - A.y) * q, 2.4, 0, 6.3); g.fill(); }
+        });
+        nut.forEach((n, i) => { const { x, y } = P[i]; g.fillStyle = n.ban ? `rgba(245,184,61,${.9 * st.do})` : `rgba(63,181,138,${.9 * st.do})`; g.beginPath(); g.arc(x, y, n.ban ? 5 : 6, 0, 6.3); g.fill(); g.globalAlpha = .18; g.beginPath(); g.arc(x, y, 15, 0, 6.3); g.fill(); g.globalAlpha = 1; });
+      }
+      requestAnimationFrame(ve);
+    }
+    requestAnimationFrame(ve);
+    return o => Object.assign(dich, o);
+  })();
+
+  /* ---------- thiết bị ---------- */
+  function datTb(k, { x, y, s = 1, hien = true, nghieng = 0 }) { const t = TB[k]; t.style.left = x + 'px'; t.style.top = y + 'px'; t.style.transform = `scale(${s}) rotateY(${nghieng}deg)`; t.classList.toggle('hien', hien); }
+  function nhan(k, chuCai, ten, phu) { $('#nhan-' + k).innerHTML = chuCai ? `<span class="av ${chuCai === 'N' ? 'n' : 't'}">${chuCai}</span>${ten}<small>${phu}</small>` : ''; }
+  const W = k => IF[k].contentWindow, D = k => IF[k].contentDocument;
   async function mo(k, url, cho = 900) {
     await new Promise(r => { IF[k].onload = r; IF[k].src = url; });
-    const d = IF[k].contentDocument;
-    d.head.insertAdjacentHTML('beforeend', '<style>html{scroll-behavior:smooth}.dai-mo-phong,#av-dang-xuat{display:none!important}</style>');
+    D(k).head.insertAdjacentHTML('beforeend', '<style>html{scroll-behavior:smooth}.dai-mo-phong,#av-dang-xuat{display:none!important}</style>');
     await ngu(cho);
   }
-  const W = k => IF[k].contentWindow, D = k => IF[k].contentDocument;
   async function tim(k, sel, ms = 5000) {
     const t = performance.now();
     while (performance.now() - t < ms) {
@@ -114,40 +188,35 @@
     lech.push('không thấy ' + k + ' ' + sel + ' @' + bayGio().toFixed(1));
     return null;
   }
-  function viTri(k, el) {
-    const fr = IF[k].getBoundingClientRect(), s = fr.width / IF[k].offsetWidth, r = el.getBoundingClientRect();
-    return { x: fr.left + (r.left + r.width / 2) * s, y: fr.top + (r.top + r.height / 2) * s };
-  }
+  function viTri(k, el) { const fr = IF[k].getBoundingClientRect(), s = fr.width / IF[k].offsetWidth, r = el.getBoundingClientRect(); return { x: fr.left + (r.left + r.width / 2) * s, y: fr.top + (r.top + r.height / 2) * s }; }
   const tro = $('#tro');
-  async function diTro(k, el) {
-    el.scrollIntoView({ block: 'center', behavior: 'smooth' }); await ngu(350);
-    const p = viTri(k, el); tro.style.opacity = 1; tro.style.transform = `translate(${p.x - 6}px, ${p.y - 4}px)`; await ngu(620);
-    return viTri(k, el);
-  }
+  async function diTro(k, el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); await ngu(350); const p = viTri(k, el); tro.style.opacity = 1; tro.style.transform = `translate(${p.x - 6}px, ${p.y - 4}px)`; await ngu(620); return viTri(k, el); }
   function gon(p) { const g = document.createElement('div'); g.className = 'gon'; g.style.left = p.x + 'px'; g.style.top = p.y + 'px'; $('#san').appendChild(g); setTimeout(() => g.remove(), 700); }
   async function bam(k, sel, sau = 500) { const el = await tim(k, sel); if (!el) return; const p = await diTro(k, el); gon(p); el.click(); await ngu(sau); }
-  async function go(k, sel, chu, sau = 250) {
-    const el = await tim(k, sel); if (!el) return; const p = await diTro(k, el); gon(p); el.focus(); el.value = '';
-    for (const c of chu) { el.value += c; el.dispatchEvent(new (W(k).Event)('input', { bubbles: true })); await ngu(45); }
-    await ngu(sau);
-  }
+  async function go(k, sel, chu, sau = 250) { const el = await tim(k, sel); if (!el) return; const p = await diTro(k, el); gon(p); el.focus(); el.value = ''; for (const c of chu) { el.value += c; el.dispatchEvent(new (W(k).Event)('input', { bubbles: true })); await ngu(45); } await ngu(sau); }
   async function chon(k, sel, gt, sau = 400) { const el = await tim(k, sel); if (!el) return; const p = await diTro(k, el); gon(p); el.value = gt; el.dispatchEvent(new (W(k).Event)('change', { bubbles: true })); await ngu(sau); }
   const anTro = () => { tro.style.opacity = 0; };
 
   /* ---------- chữ động ---------- */
   const chu = $('#chu');
   function lop(html, st) { const e = document.createElement('div'); e.className = 'lop vao'; e.innerHTML = html; Object.assign(e.style, st); chu.appendChild(e); requestAnimationFrame(() => requestAnimationFrame(() => e.classList.remove('vao'))); return e; }
+  // Chữ hiện từng từ; *từ* được tô vàng; \n xuống dòng
+  function chuDong(text, lopCss, st, nhip = 70) {
+    const e = document.createElement('div'); e.className = 'lop'; Object.assign(e.style, st);
+    let i = 0;
+    e.innerHTML = `<div class="${lopCss}">${text.split('\n').map(dong => dong.split(' ').map(w => { const vang = w.includes('*'); return `<span class="tu${vang ? ' vang' : ''}" style="transition-delay:${(i++) * nhip}ms">${w.replace(/\*/g, '')}</span>`; }).join(' ')).join('<br>')}</div>`;
+    chu.appendChild(e); requestAnimationFrame(() => requestAnimationFrame(() => e.querySelectorAll('.tu').forEach(t => t.classList.add('len'))));
+    return e;
+  }
   async function xoaChu(ms = 700) { [...chu.children].forEach(e => e.classList.add('ra')); await ngu(ms); chu.innerHTML = ''; }
   function chip(so, t) { const c = $('#chip'); if (!t) { c.style.opacity = 0; return; } c.innerHTML = `<span class="so">${so}</span>${t}`; c.style.opacity = 1; }
-  const anhNen = $('#anh-nen');
-  function nen(ds) { anhNen.innerHTML = ds.map(a => `<img src="${a}" alt="">`).join(''); }
-  function nenSo(i) { [...anhNen.children].forEach((e, k) => e.classList.toggle('on', k === i)); }
+  const ic = id => `<svg><use href="#${id}"/></svg>`;
 
   /* ---------- phụ đề theo mốc từng từ ---------- */
   const doan = [];
   for (const c of L.canh) for (const cau of c.cau) {
     let cum = [], dau = null;
-    const day = (cuoi) => { if (cum.length) doan.push({ bd: dau, kt: cuoi, t: cum.join(' '), nv: cau.g !== 'dan' }); cum = []; dau = null; };
+    const day = cuoi => { if (cum.length) doan.push({ bd: dau, kt: cuoi, t: cum.join(' '), nv: cau.g !== 'dan' }); cum = []; dau = null; };
     const chuGoc = cau.t.split(/\s+/);
     cau.tu.forEach((w, i) => {
       const tAbs = c.bat_dau + cau.bd + w.bd, chuI = chuGoc.length === cau.tu.length ? chuGoc[i] : w.chu;
@@ -158,222 +227,242 @@
     });
     day(c.bat_dau + cau.bd + cau.dai + .2);
   }
-  // nối liền: mỗi đoạn hiện tới lúc đoạn kế bắt đầu (nếu sát nhau)
   doan.forEach((d, i) => { const k = doan[i + 1]; if (k && k.bd - d.kt < .5) d.kt = k.bd - .02; });
   const pd = $('#phu-de');
   function vePhuDe() {
     const t = bayGio(), d = doan.find(x => t >= x.bd && t < x.kt);
-    if (d) { if (pd.textContent !== (d.nv ? '“' + d.t + '”' : d.t)) pd.textContent = d.nv ? '“' + d.t + '”' : d.t; pd.classList.add('on'); pd.classList.toggle('nv', d.nv); } else pd.classList.remove('on');
+    if (d) { const s = d.nv ? '“' + d.t + '”' : d.t; if (pd.textContent !== s) pd.textContent = s; pd.classList.add('on'); pd.classList.toggle('nvn', d.nv); } else pd.classList.remove('on');
     if (t < L.tong_giay + 1) requestAnimationFrame(vePhuDe);
   }
 
-  /* ---------- chuẩn bị dữ liệu mẫu ---------- */
+  /* ---------- chuẩn bị ---------- */
   localStorage.clear(); sessionStorage.clear();
   localStorage.setItem('av.quay-video', '1');
-  const A = '/ban/assets/anh/mh/';
-  nen([A + 'mango.jpg', A + 'dragon-fruit.jpg', A + 'shrimp.jpg', A + 'jackfruit.jpg']);
-  datTb('dt', { x: 1440, y: 110, s: 1, hien: false }); datTb('lap', { x: 100, y: 160, s: .6, hien: false });
+  datTb('dt', { x: 1520, y: 240, s: .98, hien: false, nghieng: -22 }); datTb('lap', { x: 700, y: 420, s: .66, hien: false, nghieng: 16 });
   await Promise.all([mo('dt', '/ban/bat-dau.html#chao-mung', 300), mo('lap', '/mua/dang-nhap.html', 300)]);
-  await Promise.all([...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; })));
+  await document.fonts.ready;
 
-  /* ---------- các cảnh ---------- */
+  let canhHt = null;
+  const denCau = (i, bu = 0) => den(canhHt.cau[i].bd + bu);
+  const hetCau = (i, bu = 0) => den(canhHt.cau[i].bd + canhHt.cau[i].dai + bu);
   const CANH = {
     async mo() {
       $('#man-den').style.opacity = 0;
-      nenSo(0);
-      lop(`<div class="nho" style="letter-spacing:.2em;text-transform:uppercase;color:var(--nang)">Đồng bằng sông Cửu Long</div>`, { left: '140px', top: '380px' });
-      await den(1.2);
-      lop(`<div class="to">Mỗi mùa thu hoạch,<br>nông sản đổi chủ<br>bằng <em>một lời hứa miệng</em>.</div>`, { left: '140px', top: '440px' });
-      await den(4.6); nenSo(1); await den(7.8); nenSo(2);
-      await den(9.2); await xoaChu();
-      lop(`<div class="logo"><img src="/ban/assets/mark.svg" alt=""><b>Agi<span>Viet</span></b></div>`, { left: '600px', top: '380px' });
-      await den(10.2);
-      lop(`<div class="vua" style="font-size:52px;color:#fff">Tìm đúng mối, <span style="color:var(--nang)">chốt đúng giá</span>.</div>`, { left: '610px', top: '560px' });
+      mang({ do: 1, tien: .15 });
+      await denCau(0, -.4);
+      lop(`<div class="mat">Đồng bằng sông Cửu Long · mùa thu hoạch</div>`, { left: '150px', top: '350px' });
+      chuDong('Hàng triệu tấn nông sản\nđổi chủ *mỗi* *mùa.*', 'h1', { left: '150px', top: '410px' });
+      mang({ tien: .45 });
+      await denCau(1, -.2);
+      await xoaChu(500);
+      chuDong('Nhiều khi, chỉ bằng\n*một* *cuộc* *gọi* và\n*một* *lời* *hứa* *miệng.*', 'h1', { left: '150px', top: '330px' });
+      mang({ tien: 1 });
+      await hetCau(1, -.3); await xoaChu(500);
+      mang({ hoi: .92, do: .7 });
+      await ngu(700);
+      lop(`<div class="logo"><img src="/ban/assets/mark.svg" alt=""><b>Agi<span>Viet</span></b></div>`, { left: '0', right: '0', top: '360px', display: 'flex', justifyContent: 'center' });
+      await ngu(500);
+      chuDong('Tìm đúng mối, *chốt* *đúng* *giá.*', 'h3', { left: '0', right: '0', top: '560px', textAlign: 'center' });
     },
     async 'van-de'() {
-      await xoaChu(); nenSo(3);
-      [...anhNen.children].forEach(i => i.style.filter = 'brightness(.25) blur(4px)');
-      lop(`<div class="the-nv"><img src="${A}mango.jpg" alt=""><div><b>Chị Năm</b><span>Tự trồng · Mỹ Xương, Cao Lãnh<br>10 tấn xoài · hái tuần sau</span></div></div>`, { left: '120px', top: '150px' });
-      await den(3.6);
-      lop(`<div class="the-nv"><img src="${A}jackfruit.jpg" alt=""><div><b>Anh Trí</b><span>Nhà máy sấy Đồng Xanh<br>Cần 20 tấn xoài, 8 tấn mít</span></div></div>`, { left: '1160px', top: '150px' });
-      await den(6.8);
-      lop(`<div style="width:360px;border-top:6px dashed rgba(255,255,255,.35);position:relative"><span style="position:absolute;left:150px;top:-44px;font-size:56px;font-weight:700;color:var(--nang)">?</span></div>`, { left: '780px', top: '270px' });
-      await den(9.6);
-      lop(`<div class="kho"><i>₫</i>Giá cao chưa chắc được nhiều tiền</div>`, { left: '120px', top: '520px' });
-      await den(13.2);
-      lop(`<div class="kho"><i>⚖</i>Cân xong: 5.020 kg hay 5.040 kg?</div>`, { left: '120px', top: '650px' });
-      await den(16.4);
-      lop(`<div class="kho"><i>✉</i>“Đã chuyển khoản”… mà tiền chưa về</div>`, { left: '120px', top: '780px' });
+      await xoaChu(); mang({ hoi: 0, tien: 0, do: .35 });
+      lop(`<div class="mat">Hai người cần nhau</div>`, { left: '150px', top: '90px' });
+      await denCau(0, -.3);
+      lop(`<div class="kinh nv"><span class="av n">N</span><div><b>Chị Năm</b><span>Tự trồng · Mỹ Xương, Cao Lãnh<br>10 tấn xoài, tuần sau hái</span></div></div>`, { left: '150px', top: '160px' });
+      await denCau(1, -.2);
+      lop(`<div class="kinh nv"><span class="av t">T</span><div><b>Anh Trí</b><span>Nhà máy sấy Đồng Xanh<br>Cần gấp 20 tấn xoài</span></div></div>`, { left: '1150px', top: '160px' });
+      await denCau(2);
+      lop(`<div class="noi-ket"><span>chưa gặp được nhau</span></div>`, { left: '0', top: '0' });
+      await denCau(3, -.1);
+      lop(`<div class="kinh kho"><div class="ic">${ic('ic-gia')}</div><b>Giá cao chưa chắc về tay nhiều</b><span>Tiền xe, bốc xếp, trả chậm</span></div>`, { left: '150px', top: '520px' });
+      await denCau(4, -.1);
+      lop(`<div class="kinh kho"><div class="ic">${ic('ic-can')}</div><b>Cân xong, mỗi bên một con số</b><span>5.020 kg hay 5.040 kg?</span></div>`, { left: '700px', top: '520px' });
+      await denCau(5, -.1);
+      lop(`<div class="kinh kho"><div class="ic">${ic('ic-tien')}</div><b>Báo đã chuyển khoản</b><span>…mà tiền chưa về tài khoản</span></div>`, { left: '1250px', top: '520px' });
     },
     async 'gioi-thieu'() {
-      await xoaChu(); anhNen.style.transition = 'opacity 1s'; anhNen.style.opacity = 0;
-      lop(`<div class="logo" style="transform:scale(.7);transform-origin:left"><img src="/ban/assets/mark.svg" alt=""><b>Agi<span>Viet</span></b></div>`, { left: '120px', top: '120px' });
-      lop(`<div class="to" style="font-size:64px">Hai ứng dụng.<br><em>Một mã đơn.</em></div>`, { left: '120px', top: '330px' });
-      await den(2.2);
-      nhan('lap', '/mua/assets/anh/mango.jpg', 'App Thu mua', '· cho vựa, nhà máy');
-      datTb('lap', { x: 660, y: 330, s: .74 });
-      await den(3.4);
-      nhan('dt', A + 'mango.jpg', 'App Nhà sản xuất', '· cho bà con');
-      datTb('dt', { x: 1440, y: 150, s: .98 });
-      await den(6.4);
-      lop(`<div class="vua" style="font-size:34px">Chạy ngay trên điện thoại, máy tính.<br>Không cần cài đặt.</div>`, { left: '120px', top: '600px' });
+      await xoaChu(); mang({ do: .18 });
+      lop(`<div class="logo" style="transform:scale(.6);transform-origin:left"><img src="/ban/assets/mark.svg" alt=""><b>Agi<span>Viet</span></b></div>`, { left: '150px', top: '150px' });
+      await denCau(1, -.3);
+      chuDong('Hai ứng dụng.\n*Một* *mã* *đơn.*', 'h2', { left: '150px', top: '330px' });
+      datTb('lap', { x: 640, y: 300, s: .72, nghieng: 0 });
+      await ngu(700);
+      datTb('dt', { x: 1470, y: 140, s: .98, nghieng: 0 });
+      await ngu(800);
+      lop(`<div class="kinh the-tb">App Thu mua · máy tính</div>`, { left: '660px', top: '232px' });
+      lop(`<div class="kinh the-tb">App Nhà sản xuất · điện thoại</div>`, { left: '1480px', top: '72px' });
+      await denCau(2);
+      lop(`<div class="phu" style="font-size:34px">Cho vựa, nhà máy<br>và bà con nông dân.</div>`, { left: '150px', top: '560px' });
     },
     async 'tri-dang-ky'() {
-      await xoaChu();
-      datTb('dt', { x: 2000, y: 150, s: .98, hien: false });
-      nhan('lap', '/mua/assets/anh/mango.jpg', 'Anh Trí', '· Nhà máy sấy Đồng Xanh');
+      await xoaChu(); mang({ do: 0 });
+      datTb('dt', { x: 2100, y: 140, s: .98, hien: false });
+      nhan('lap', 'T', 'Anh Trí', '· Nhà máy sấy Đồng Xanh');
       datTb('lap', { x: 270, y: 150, s: .92 });
       chip(1, 'Bên mua đăng ký tổ chức');
-      await den(1.4);
+      await ngu(900);
       await go('lap', '#to-chuc', 'Nhà máy sấy Đồng Xanh');
       await go('lap', '#nguoi', 'Anh Trí');
       await go('lap', '#sdt', '0909 000 456');
-      await bam('lap', '[data-tiep]', 400);
-      await bam('lap', '[data-dien-otp]', 250);
-      await bam('lap', '[data-tiep]', 400);
-      await bam('lap', '[data-goi="bus"]', 250);
+      await bam('lap', '[data-tiep]', 300);
+      await bam('lap', '[data-dien-otp]', 200);
+      await bam('lap', '[data-tiep]', 300);
+      await bam('lap', '[data-goi="bus"]', 200);
       await new Promise(async r => { IF.lap.onload = r; await bam('lap', '[data-tiep]', 0); });
-      D('lap').head.insertAdjacentHTML('beforeend', '<style>.dai-mo-phong,#av-dang-xuat{display:none!important}</style>');
-      await den(9.6);
       chip(2, 'Vào app, có hướng dẫn chỉ tay');
-      await bam('lap', '.tour-the [data-tour="bo"]', 300);
+      await denCau(2, -1.6);
+      await bam('lap', '.tour-the [data-tour="bo"]', 200);
       chip(3, 'Đăng nhu cầu mua');
-      await bam('lap', '.chinh a[href$="#tao-nhu-cau"], a[href$="#tao-nhu-cau"]', 900);
-      await chon('lap', '#mh', 'Mít Thái', 300);
-      await go('lap', '#luong', '3', 300);
-      await den(15.5);
-      await bam('lap', '#tao-nhu-cau [data-luot="tin"]', 1200);
+      await bam('lap', '.chinh a[href$="#tao-nhu-cau"], a[href$="#tao-nhu-cau"]', 700);
+      await chon('lap', '#mh', 'Mít Thái', 200);
+      await go('lap', '#luong', '3', 200);
+      await denCau(3, 1.2);
+      await bam('lap', '#tao-nhu-cau [data-luot="tin"]', 900);
       const dong = await tim('lap', '#nhu-cau tbody tr.av-nc'); if (dong) { await diTro('lap', dong); dong.style.outline = '3px solid #f5b83d'; }
     },
     async 'nam-dang-hang'() {
       anTro(); chip(0, '');
-      datTb('lap', { x: -1600, y: 110, s: 1, hien: false });
-      nhan('dt', A + 'mango.jpg', 'Chị Năm', '· Mỹ Xương, Cao Lãnh');
-      datTb('dt', { x: 745, y: 130, s: 1 });
-      lop(`<div class="vua" style="font-size:44px;color:#fff">Không rành<br>điện thoại?</div>`, { left: '150px', top: '360px' });
-      await den(1.2);
-      await bam('dt', '#chao-mung .bottom-actions a.link-btn', 500);
-      await bam('dt', '#dang-nhap .bottom-actions a.btn', 500);
+      datTb('lap', { x: -1700, y: 150, s: .92, hien: false });
+      nhan('dt', 'N', 'Chị Năm', '· Mỹ Xương, Cao Lãnh');
+      datTb('dt', { x: 1090, y: 130, s: 1 });
+      lop(`<div class="mat">Người bán</div>`, { left: '150px', top: '330px' });
+      chuDong('Không rành\n*điện* *thoại?*', 'h2', { left: '150px', top: '390px' });
+      await ngu(700);
+      await bam('dt', '#chao-mung .bottom-actions a.link-btn', 400);
+      await bam('dt', '#dang-nhap .bottom-actions a.btn', 400);
       await new Promise(async r => { IF.dt.onload = r; await bam('dt', '[data-demo-otp]', 0); });
-      D('dt').head.insertAdjacentHTML('beforeend', '<style>.dai-mo-phong{display:none!important}</style>');
-      await ngu(900);
+      await ngu(800);
+      await denCau(1, -.2);
       await xoaChu(300);
-      lop(`<div class="vua" style="font-size:44px;color:#fff">App chỉ<br><span style="color:var(--nang)">đúng nút cần bấm</span>.</div>`, { left: '150px', top: '360px' });
-      await bam('dt', '.tour-the [data-tour-mo="dang"]', 1300);
-      await bam('dt', 'nav.nav a.dang', 1300);
-      await den(8.2);
-      await bam('dt', 'a.nut-noi', 400);
+      lop(`<div class="mat">Hướng dẫn chỉ tay</div>`, { left: '150px', top: '330px' });
+      chuDong('App chỉ\n*đúng* *nút* *cần* *bấm.*', 'h2', { left: '150px', top: '390px' });
+      await bam('dt', '.tour-the [data-tour-mo="dang"]', 900);
+      await denCau(2, -.1);
+      await bam('dt', 'nav.nav a.dang', 900);
+      await hetCau(2, -.3);
+      await bam('dt', 'a.nut-noi', 200);
       await xoaChu(300);
-      lop(`<div class="vua" style="font-size:46px;color:var(--kem);font-style:italic">“Mười tấn xoài,<br>tuần sau hái.”</div>`, { left: '150px', top: '380px' });
-      await den(11.4);
-      await bam('dt', '#nghe .bottom-actions a[href$="#kiem-tra"]', 900);
-      await bam('dt', '.tour-the [data-tour="bo"]', 300);
+      lop(`<div class="mat">Đăng bằng giọng nói</div>`, { left: '150px', top: '330px' });
+      chuDong('“Mười tấn xoài,\n*tuần* *sau* *hái* *nha.”*', 'h2', { left: '150px', top: '390px', fontStyle: 'italic' });
+      await hetCau(3, .15);
+      await bam('dt', '#nghe .bottom-actions a[href$="#kiem-tra"]', 500);
+      await bam('dt', '.tour-the [data-tour="bo"]', 200);
       await xoaChu(300);
-      lop(`<div class="vua" style="font-size:42px;color:#fff">Chưa cân?<br>Ghi là <span style="color:var(--nang)">ước tính</span>.</div>`, { left: '150px', top: '360px' });
-      const kt = await tim('dt', '#kiem-tra .card'); if (kt) await diTro('dt', kt); await ngu(900);
-      await bam('dt', '#kiem-tra [data-chon="gia"] [data-khi="tu"]', 300);
-      await go('dt', '#gia-moi-ky', '6500', 500);
-      await bam('dt', '#kiem-tra .bottom-actions a', 900);
-      await bam('dt', '#xem-lai a.btn[href$="#xong"]', 1200);
-      await den(20.5);
+      lop(`<div class="mat">Chưa cân vẫn đăng</div>`, { left: '150px', top: '330px' });
+      chuDong('Ghi rõ là\n*ước* *tính.*', 'h2', { left: '150px', top: '390px' });
+      await bam('dt', '#kiem-tra [data-chon="gia"] [data-khi="tu"]', 200);
+      await go('dt', '#gia-moi-ky', '6500', 300);
+      await bam('dt', '#kiem-tra .bottom-actions a', 400);
+      await bam('dt', '#xem-lai a.btn[href$="#xong"]', 300);
+      await denCau(5, -.2);
       await xoaChu(300);
-      lop(`<div class="vua" style="font-size:42px;color:#fff">Nút <span style="color:var(--nang)">Nghe</span><br>ở mọi màn.</div>`, { left: '150px', top: '360px' });
-      await bam('dt', '#hang .nghe, .screen.active .nghe, button.nghe', 200);
+      lop(`<div class="mat">Đọc thành tiếng</div>`, { left: '150px', top: '330px' });
+      chuDong('Nút *Nghe*\nở mọi màn.', 'h2', { left: '150px', top: '390px' });
+      await denCau(5, 1.6);
+      await bam('dt', '.screen.active .nghe, button.nghe', 200);
       try { W('dt').speechSynthesis?.cancel(); } catch { /* bỏ qua */ }
     },
     async 'ket-noi'() {
       await xoaChu(); anTro();
-      datTb('lap', { x: 60, y: 200, s: .86 }); nhan('lap', '/mua/assets/anh/mango.jpg', 'Anh Trí', '· tìm nguồn');
-      datTb('dt', { x: 1420, y: 150, s: .98 }); nhan('dt', A + 'mango.jpg', 'Chị Năm', '· nhận lời mời');
-      const p1 = mo('lap', '/mua/nguon-hang.html?goi=bus#nguon-hang', 600), p2 = mo('dt', '/ban/khach.html#khach', 400);
-      await Promise.all([p1, p2]);
+      datTb('lap', { x: 60, y: 200, s: .86 }); nhan('lap', 'T', 'Anh Trí', '· tìm nguồn');
+      datTb('dt', { x: 1420, y: 150, s: .98 }); nhan('dt', 'N', 'Chị Năm', '· nhận lời mời');
+      await Promise.all([mo('lap', '/mua/nguon-hang.html?goi=bus#nguon-hang', 400), mo('dt', '/ban/khach.html#khach', 300)]);
       chip(4, 'Lọc nguồn, gửi lời mời');
-      await chon('lap', '#l-lich', '', 400);
-      await bam('lap', '[data-chon="xep-nguon"] [data-khi="gia"]', 700);
+      await chon('lap', '#l-lich', '', 300);
+      await bam('lap', '[data-chon="xep-nguon"] [data-khi="gia"]', 500);
+      await denCau(1, -.2);
       const lo = await tim('lap', '#nguon-hang > .luoi.l2 > article.av-lo'); if (lo) { await diTro('lap', lo); lo.style.outline = '3px solid #f5b83d'; }
-      await den(7.2);
-      await bam('lap', '#nguon-hang > .luoi.l2 > article.av-lo [data-kn-lo]', 1200);
-      await den(10.2);
-      await bam('dt', '[data-chon="khach-tab"] [data-khi="cho"]', 900);
-      const kn = await tim('dt', '.av-ket-noi'); if (kn) await diTro('dt', kn); await ngu(1000);
-      await den(13.8);
-      await bam('dt', '[data-kn-dong-y]', 900);
+      await hetCau(1, -.6);
+      await bam('lap', '#nguon-hang > .luoi.l2 > article.av-lo [data-kn-lo]', 500);
+      await denCau(2, -1.3);
+      await bam('dt', '[data-chon="khach-tab"] [data-khi="cho"]', 400);
+      await denCau(2, .6);
+      await bam('dt', '[data-kn-dong-y]', 700);
       const luot = await tim('lap', '.the-luot'); if (luot) await diTro('lap', luot);
     },
     async 'chot-don'() {
       anTro();
-      chip(5, 'Chốt đơn, cân, trả tiền: một mã đơn');
-      await mo('dt', '/ban/lich.html#lich', 300);
-      await bam('lap', '[data-tao-don]', 500);
-      await bam('lap', '[data-gui-don]', 900);
-      const ma = await tim('dt', '.av-don'); if (ma) await diTro('dt', ma);
-      await den(3.4);
-      await bam('dt', '[data-don-xn]', 600);
-      await mo('lap', '/mua/don-hang.html?goi=bus#don-hang', 400);
-      await go('lap', '[data-kq-nhan]', '9.800', 150);
-      await go('lap', '[data-kq-tu-choi]', '200', 150);
-      await bam('lap', '[data-gui-kq]', 900);
-      await den(11.2);
-      const nhanTk = await tim('dt', '.av-don'); if (nhanTk) await diTro('dt', nhanTk); await ngu(600);
-      await bam('dt', '[data-kq-dung]', 1200);
-      await den(15.2);
-      await mo('lap', '/mua/cong-no.html?goi=bus#ghi-thanh-toan', 400);
-      await bam('lap', '#ghi-thanh-toan .btn.chi-bus', 1200);
-      await den(19.2);
-      await bam('dt', '[data-tien-chua]', 1500);
-      await mo('lap', '/mua/don-hang.html?goi=bus#don-hang', 400);
-      await bam('lap', 'button[data-mo-don]', 800);
-      await bam('lap', '[data-gui-unc]', 1200);
-      await den(26.2);
-      const hs = await tim('dt', '.av-ho-so'); if (hs) await diTro('dt', hs); await ngu(800);
-      await bam('dt', '.av-ho-so [data-tien-du]', 1000);
+      chip(5, 'Chốt đơn, cân, trả tiền · một mã đơn');
+      await mo('dt', '/ban/lich.html#lich', 200);
+      await bam('lap', '[data-tao-don]', 300);
+      await bam('lap', '[data-gui-don]', 500);
+      await hetCau(0, -.3);
+      await bam('dt', '[data-don-xn]', 300);
+      await mo('lap', '/mua/don-hang.html?goi=bus#don-hang', 300);
+      await go('lap', '[data-kq-nhan]', '9.800', 100);
+      await go('lap', '[data-kq-tu-choi]', '200', 100);
+      await bam('lap', '[data-gui-kq]', 400);
+      const the = await tim('dt', '.av-don'); if (the) await diTro('dt', the);
+      await hetCau(1, -1.1);
+      await bam('dt', '[data-kq-dung]', 300);
+      await mo('lap', '/mua/cong-no.html?goi=bus#ghi-thanh-toan', 300);
+      await denCau(2, .6);
+      await bam('lap', '#ghi-thanh-toan .btn.chi-bus', 300);
+      await hetCau(2, -.5);
+      await bam('dt', '[data-tien-chua]', 300);
+      await mo('lap', '/mua/don-hang.html?goi=bus#don-hang', 300);
+      await bam('lap', 'button[data-mo-don]', 400);
+      await bam('lap', '[data-gui-unc]', 400);
+      const hs = await tim('dt', '.av-ho-so'); if (hs) await diTro('dt', hs);
+      await denCau(4, .9);
+      await bam('dt', '.av-ho-so [data-tien-du]', 300);
+      await denCau(5, -.2);
       chip(0, '');
-      lop(`<div class="vua" style="font-size:40px;color:#fff;background:rgba(0,0,0,.6);padding:16px 30px;border-radius:18px;white-space:nowrap">Không ai phải tin <span style="color:var(--nang)">lời kể một phía</span>.</div>`, { left: '520px', top: '40px' });
+      lop(`<div class="kinh" style="padding:16px 34px;border-radius:99px;font-size:36px;font-weight:700;white-space:nowrap">Không ai phải tin <span class="vang">lời kể một phía</span>.</div>`, { left: '0', right: '0', top: '26px', display: 'flex', justifyContent: 'center' });
     },
     async 've-tay'() {
-      await xoaChu(); anTro(); chip(0, '');
-      datTb('lap', { x: -1600, y: 200, s: .86, hien: false });
-      await mo('dt', '/ban/giao-dich.html#so-sanh', 300);
-      datTb('dt', { x: 1330, y: 130, s: 1 }); nhan('dt', A + 'mango.jpg', 'Chị Năm', '· so tiền về tay');
-      lop(`<div class="to" style="font-size:60px">Giá cao hơn<br>chưa chắc <em>được nhiều hơn</em>.</div>`, { left: '140px', top: '150px' });
-      await den(2.4);
-      lop(`<div class="dong-tien"><span class="k" style="background:#5a4a8a">A</span><div>7.000 đ/kg · tự chở, trả sau 7 ngày<div class="thanh-tien"><i id="tA" style="background:#9b8fcf"></i></div><div class="nho" style="margin-top:6px">Về tay khoảng <b style="color:#fff">65 triệu</b></div></div></div>`, { left: '140px', top: '440px', width: '1050px' });
-      await den(4.6);
-      lop(`<div class="dong-tien"><span class="k" style="background:#b86b1f">B</span><div>6.700 đ/kg · xe tới vườn, trả khi cân<div class="thanh-tien"><i id="tB" style="background:var(--nang)"></i></div><div class="nho" style="margin-top:6px">Về tay khoảng <b style="color:var(--nang)">67 triệu · nhiều hơn 2 triệu</b></div></div></div>`, { left: '140px', top: '660px', width: '1050px' });
-      await ngu(300); $('#tA').style.width = '94%'; $('#tB').style.width = '100%';
+      await xoaChu(); anTro(); chip(0, ''); mang({ do: .15, tien: .6 });
+      datTb('lap', { x: -1700, y: 200, s: .86, hien: false });
+      await mo('dt', '/ban/giao-dich.html#so-sanh', 200);
+      datTb('dt', { x: 1440, y: 140, s: .98 }); nhan('dt', 'N', 'Chị Năm', '· so tiền về tay');
+      lop(`<div class="mat">So tiền về tay</div>`, { left: '150px', top: '150px' });
+      chuDong('Giá cao hơn chưa chắc\n*được* *nhiều* *hơn.*', 'h2', { left: '150px', top: '205px' });
+      await denCau(0, 1.4);
+      lop(`<div class="kinh bieu">
+        <div class="dong-bieu"><span class="av" style="background:#8f84c9">A</span><div class="ten">Nhà máy · 7.000 đ/kg<small>Tự chở, trả sau 7 ngày</small><div class="thanh"><i id="tA" style="background:#8f84c9"></i></div></div><div class="so-to" id="sA">0<small>triệu về tay</small></div></div>
+        <div class="dong-bieu" id="dB" style="opacity:.25;transition:opacity .6s"><span class="av n">B</span><div class="ten">Vựa trái cây · 6.700 đ/kg<small>Xe tới vườn, trả khi cân</small><div class="thanh"><i id="tB" style="background:var(--nang)"></i></div></div><div class="so-to vang" id="sB">0<small>triệu về tay</small></div></div>
+        <div id="hh" style="opacity:0;transition:opacity .6s"><span class="huy-hieu">+ 2 triệu dù giá thấp hơn</span></div></div>`, { left: '150px', top: '440px' });
+      const dem = (el, toi) => { const t0 = performance.now(); const b = t => { const p = Math.min(1, (t - t0) / 1400); el.firstChild.nodeValue = Math.round(toi * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(b); }; requestAnimationFrame(b); };
+      await ngu(300); $('#tA').style.width = '94%'; dem($('#sA'), 65);
+      await denCau(1);
+      $('#dB').style.opacity = 1; $('#tB').style.width = '100%'; dem($('#sB'), 67);
+      await denCau(2, -.2); $('#hh').style.opacity = 1;
       const b = await tim('dt', '#so-sanh .bottom-actions, #so-sanh .card'); if (b) await diTro('dt', b);
     },
     async 'minh-bach'() {
       await xoaChu(); anTro();
-      await mo('dt', '/ban/toi.html#tai-khoan-nhan', 300);
-      nhan('dt', A + 'mango.jpg', 'Chị Năm', '· tài khoản nhận tiền');
-      lop(`<div class="to" style="font-size:58px">Minh bạch trước,<br><em>tự động sau.</em></div>`, { left: '140px', top: '140px' });
-      const ds = [['₫', 'Không giữ tiền: chuyển thẳng cho người bán'], ['✓', 'Không tự trừ tiền, không tự kết luận ai sai'], ['⏱', 'Đổi tài khoản nhận tiền: chờ 24 giờ, xác minh'], ['◉', 'Mỗi con số ghi rõ: tự khai hay đã xác nhận']];
-      const khung = lop(`<div class="nguyen-tac" id="nt"></div>`, { left: '140px', top: '400px', width: '1100px' });
-      for (let i = 0; i < ds.length; i++) { await den(1.2 + i * 2.2); khung.querySelector('#nt').insertAdjacentHTML('beforeend', `<div style="opacity:0;transform:translateX(-30px);transition:all .6s"><i>${ds[i][0]}</i>${ds[i][1]}</div>`); const d = khung.querySelector('#nt').lastElementChild; requestAnimationFrame(() => requestAnimationFrame(() => { d.style.opacity = 1; d.style.transform = 'none'; })); }
+      await mo('dt', '/ban/toi.html#tai-khoan-nhan', 200);
+      nhan('dt', 'N', 'Chị Năm', '· tài khoản nhận tiền');
+      lop(`<div class="mat">Vì sao tin được</div>`, { left: '150px', top: '130px' });
+      chuDong('Minh bạch trước,\n*tự* *động* *sau.*', 'h2', { left: '150px', top: '185px' });
+      const ds = [['ic-chuyen', 'Không giữ tiền', 'Tiền chuyển thẳng cho người bán', [0, .2]], ['ic-khien', 'Không tự trừ tiền, không tự phán xử', 'Phần tranh chấp tách riêng, phần còn lại vẫn trả', [0, 2.6]], ['ic-khoa', 'Chống đổi tài khoản nhận tiền', 'Chờ 24 giờ, báo người thân, so tên chủ tài khoản', [1, 0]], ['ic-nhan', 'Mỗi con số có nguồn', 'Ghi rõ tự khai hay bên kia đã xác nhận', [1, 3.2]]];
+      const khung = lop(`<div class="nt">${ds.map(d => `<div class="kinh"><span class="ic">${ic(d[0])}</span><div><b>${d[1]}</b><span>${d[2]}</span></div></div>`).join('')}</div>`, { left: '150px', top: '400px' });
+      const hang = [...khung.querySelectorAll('.nt > div')];
+      for (let i = 0; i < ds.length; i++) { await denCau(ds[i][3][0], ds[i][3][1]); hang[i].classList.add('len'); }
       const tk = await tim('dt', '#tai-khoan-nhan .card'); if (tk) await diTro('dt', tk);
     },
     async ket() {
       await xoaChu(); anTro(); nhan('dt', '', '', '');
-      datTb('dt', { x: 2000, y: 130, s: 1, hien: false });
-      lop(`<div class="goi"><div><b>Người bán</b><strong>0 đ</strong><span>Dùng miễn phí</span></div><div><b>Bên mua</b><strong>0 đ</strong><span>Gói Miễn phí</span></div><div class="noi"><b>Business</b><strong>1,5 triệu</strong><span>/tháng · nhà máy, doanh nghiệp</span></div></div>`, { left: '200px', top: '330px' });
-      await den(5.4); await xoaChu();
-      anhNen.style.opacity = 1; nenSo(0); [...anhNen.children].forEach(i => i.style.filter = 'brightness(.35)');
+      datTb('dt', { x: 2100, y: 140, s: .98, hien: false });
+      lop(`<div class="mat">Bảng giá</div>`, { left: '0', right: '0', top: '230px', display: 'flex', justifyContent: 'center' });
+      lop(`<div class="goi"><div class="kinh"><div class="loai">Người bán</div><strong>0 đ</strong><span>Đăng hàng, nhận khách,<br>xác nhận tiền</span></div><div class="kinh"><div class="loai">Bên mua</div><strong>0 đ</strong><span>Bắt đầu miễn phí,<br>5 kết nối mỗi tháng</span></div><div class="kinh noi"><div class="loai" style="color:var(--nang)">Business</div><strong>1,5 tr<small> /tháng</small></strong><span>Nhà máy, doanh nghiệp,<br>nhiều tài khoản</span></div></div>`, { left: '0', right: '0', top: '320px', display: 'flex', justifyContent: 'center' });
+      await denCau(1, -.9); await xoaChu(600);
+      mang({ do: .9, tien: 1, hoi: .9 });
+      await denCau(1, -.15);
       lop(`<div class="logo" style="justify-content:center"><img src="/ban/assets/mark.svg" alt=""><b>Agi<span>Viet</span></b></div>`, { left: '0', right: '0', top: '300px', display: 'flex', justifyContent: 'center' });
-      await den(7.0);
-      lop(`<div class="to" style="font-size:66px;text-align:center">Tìm đúng mối, <em>chốt đúng giá</em>.</div>`, { left: '0', right: '0', top: '500px', textAlign: 'center' });
-      await den(8.6);
-      lop(`<div class="vua" style="text-align:center;font-size:36px">Dùng thử miễn phí: <b style="color:#fff">agiviet-23a94.web.app</b></div>`, { left: '0', right: '0', top: '640px', textAlign: 'center' });
-      await den(L.canh.at(-1).dai - 1.4); $('#man-den').style.opacity = 1;
+      await denCau(2, -.15);
+      chuDong('Tìm đúng mối, *chốt* *đúng* *giá.*', 'h2', { left: '0', right: '0', top: '500px', textAlign: 'center' }, 90);
+      await denCau(2, .9);
+      lop(`<div class="kinh url">Dùng thử miễn phí <b>agiviet-23a94.web.app</b></div>`, { left: '0', right: '0', top: '650px', display: 'flex', justifyContent: 'center' });
+      await den(L.canh.at(-1).dai - 1.0); $('#man-den').style.opacity = 1;
     },
   };
 
-  /* ---------- chạy theo lịch ---------- */
   window.batDau = async () => {
     T0 = performance.now();
     requestAnimationFrame(vePhuDe);
     for (const c of L.canh) {
-      canhBd = c.bat_dau;
+      canhBd = c.bat_dau; canhHt = c;
       const tre = bayGio() - c.bat_dau; if (tre > .3) lech.push(`cảnh ${c.id} bắt đầu trễ ${tre.toFixed(2)}s`);
       try { await CANH[c.id](); } catch (e) { lech.push(c.id + ': ' + e.message); }
       await den(c.dai);

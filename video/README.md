@@ -1,6 +1,7 @@
 # Video giới thiệu AgiViet (3:15)
 
-Video dựng từ chính app đang chạy: một trang sân khấu 1920×1080 đặt app Nhà sản xuất (khung điện thoại) và
+Video dựng từ chính app đang chạy: một trang sân khấu 1920×1080 (nền tối xanh, mạng lưới người bán – bên mua động,
+chữ hiện từng từ, thẻ kính, icon nét) đặt app Nhà sản xuất (khung điện thoại) và
 app Thu mua (khung laptop), tự bấm, tự gõ theo kịch bản, xen cảnh chữ động; lời dẫn tiếng Việt, phụ đề chạy theo
 từng từ, nhạc nền tự soạn.
 
@@ -29,3 +30,5 @@ node video/quay.mjs $RA                          # ~3,5 phút, ra $RA/hinh.mp4
 Lúc quay, sân khấu đặt `localStorage av.quay-video = 1` để app ẩn dải “Mô phỏng” và tiền tố trong thông báo.
 `edge-tts` gửi lời dẫn lên dịch vụ đọc của Microsoft để tạo giọng (cần mạng).
 Sửa lời dẫn thì chạy lại từ `giong.py`; sửa cách bấm trong app thì chạy lại từ `quay.mjs`.
+
+Lời dẫn viết theo văn nói (câu ngắn, nghỉ có chủ ý, tốc độ riêng từng câu, đầu câu canh vào nửa phách nhạc); hình đồng bộ theo câu (`denCau`, `hetCau` trong `san-khau.html`), sửa lời thì hình tự khớp. Tránh hiệu ứng nặng (filter blur lớn, backdrop-filter, shadowBlur trên canvas): làm tụt khung hình khi quay.

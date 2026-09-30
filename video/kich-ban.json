@@ -1,53 +1,273 @@
 {
-  "tong_giay": 195,
-  "giong": {
-    "dan": { "voice": "vi-VN-HoaiMyNeural", "rate": "+0%", "pitch": "+0Hz" },
-    "nam": { "voice": "vi-VN-HoaiMyNeural", "rate": "-8%", "pitch": "-6Hz" },
-    "tri": { "voice": "vi-VN-NamMinhNeural", "rate": "+0%", "pitch": "+0Hz" }
+ "tong_giay": 195,
+ "ghi_chu": "Văn nói: câu ngắn, có chỗ lấy hơi. 'tre' = nghỉ trước câu (giây); 'toc' = tốc độ riêng câu; đầu câu được canh vào nửa phách nhạc.",
+ "giong": {
+  "dan": {
+   "voice": "vi-VN-HoaiMyNeural",
+   "rate": "+0%",
+   "pitch": "+0Hz"
   },
-  "canh": [
-    { "id": "mo", "toi_thieu": 13, "cau": [
-      { "g": "dan", "tre": 2.2, "t": "Mỗi mùa thu hoạch, hàng triệu tấn nông sản đổi chủ chỉ bằng vài cuộc điện thoại và một lời hứa miệng." }
-    ] },
-    { "id": "van-de", "toi_thieu": 22, "cau": [
-      { "g": "dan", "t": "Chị Năm ở Cao Lãnh có mười tấn xoài sắp hái." },
-      { "g": "dan", "t": "Anh Trí ở nhà máy sấy đang cần hai mươi tấn." },
-      { "g": "dan", "t": "Họ cần nhau, nhưng chưa tìm thấy nhau." },
-      { "g": "dan", "t": "Mà có tìm thấy, giá cao chưa chắc đã được nhiều tiền. Lúc cân, mỗi bên giữ một con số. Còn tin nhắn đã chuyển khoản, không phải lúc nào tiền cũng về." }
-    ] },
-    { "id": "gioi-thieu", "toi_thieu": 9, "cau": [
-      { "g": "dan", "t": "AgiViet ra đời để chị Năm và anh Trí tìm đúng mối, chốt đúng giá. Hai ứng dụng, một dữ liệu giao dịch chung." }
-    ] },
-    { "id": "tri-dang-ky", "toi_thieu": 22, "cau": [
-      { "g": "dan", "t": "Anh Trí đăng ký tổ chức chưa tới một phút. Mã xác minh, chọn gói, vào app." },
-      { "g": "tri", "t": "Tháng này nhà máy cần thêm mít Thái, ba tấn." },
-      { "g": "dan", "t": "Anh đăng nhu cầu. Người bán đúng mặt hàng thấy ngay, và báo giá riêng cho anh." }
-    ] },
-    { "id": "nam-dang-hang", "toi_thieu": 29, "cau": [
-      { "g": "dan", "t": "Chị Năm không cần rành điện thoại. Vào app, AgiViet làm sáng đúng nút cần bấm." },
-      { "g": "dan", "t": "Chị chỉ việc bấm và nói." },
-      { "g": "nam", "t": "Mười tấn xoài, tuần sau hái." },
-      { "g": "dan", "t": "App ghi thành tin đăng. Chưa cân vẫn đăng được, ghi rõ là ước tính. Màn nào cũng có nút Nghe để app đọc cho chị." }
-    ] },
-    { "id": "ket-noi", "toi_thieu": 20, "cau": [
-      { "g": "dan", "t": "Ở nhà máy, anh Trí lọc nguồn theo lượng còn bán được và ngày hái, xếp giá thấp lên đầu, rồi gửi lời mời." },
-      { "g": "dan", "t": "Lời mời tới đúng chị Năm. Chị đồng ý thì lượt kết nối mới được tính." }
-    ] },
-    { "id": "chot-don", "toi_thieu": 32, "cau": [
-      { "g": "dan", "t": "Hai bên chốt đơn trên cùng một mã." },
-      { "g": "dan", "t": "Anh Trí nhập kết quả cân. Con số mang nhãn tự khai, cho tới khi chị Năm bấm Đúng." },
-      { "g": "dan", "t": "Anh ghi đã trả tiền. Chị chưa thấy tiền về? Chỉ một nút, hồ sơ đối soát mở ra cho cả hai bên, kèm ủy nhiệm chi." },
-      { "g": "dan", "t": "Thấy tiền, chị xác nhận, đơn đóng. Không ai phải tin lời kể một phía." }
-    ] },
-    { "id": "ve-tay", "toi_thieu": 15, "cau": [
-      { "g": "dan", "t": "Trước khi chọn khách, chị Năm so tiền về tay. Khách trả giá thấp hơn, nhưng cho xe tới tận vườn và trả ngay khi cân, nên chị lại được nhiều hơn hai triệu." }
-    ] },
-    { "id": "minh-bach", "toi_thieu": 13, "cau": [
-      { "g": "dan", "t": "AgiViet không giữ tiền, không tự trừ tiền, không tự kết luận ai sai. Đổi tài khoản nhận tiền phải chờ và xác minh, để kẻ gian không chen vào giữa." }
-    ] },
-    { "id": "ket", "toi_thieu": 12, "cau": [
-      { "g": "dan", "t": "Người bán dùng miễn phí. Bên mua bắt đầu từ gói miễn phí, nâng cấp khi cần." },
-      { "g": "dan", "t": "AgiViet. Tìm đúng mối, chốt đúng giá." }
-    ] }
-  ]
+  "nam": {
+   "voice": "vi-VN-HoaiMyNeural",
+   "rate": "-12%",
+   "pitch": "-8Hz"
+  },
+  "tri": {
+   "voice": "vi-VN-NamMinhNeural",
+   "rate": "-2%",
+   "pitch": "+0Hz"
+  }
+ },
+ "canh": [
+  {
+   "id": "mo",
+   "toi_thieu": 13,
+   "cau": [
+    {
+     "g": "dan",
+     "tre": 1.6,
+     "toc": "-8%",
+     "t": "Mỗi mùa thu hoạch, hàng triệu tấn nông sản đổi chủ."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "t": "Nhiều khi, chỉ bằng một cuộc điện thoại, và một lời hứa miệng."
+    }
+   ]
+  },
+  {
+   "id": "van-de",
+   "toi_thieu": 22,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Ở Cao Lãnh, chị Năm có mười tấn xoài, tuần sau là hái."
+    },
+    {
+     "g": "dan",
+     "tre": 0.35,
+     "t": "Còn anh Trí, bên nhà máy sấy, đang cần gấp hai chục tấn."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "toc": "-8%",
+     "t": "Hai người cần nhau, mà chưa gặp được nhau."
+    },
+    {
+     "g": "dan",
+     "tre": 0.7,
+     "t": "Giá cao, chưa chắc về tay nhiều."
+    },
+    {
+     "g": "dan",
+     "tre": 0.3,
+     "t": "Lúc cân, mỗi bên một con số."
+    },
+    {
+     "g": "dan",
+     "tre": 0.3,
+     "t": "Còn báo đã chuyển khoản, mà tiền chưa về."
+    }
+   ]
+  },
+  {
+   "id": "gioi-thieu",
+   "toi_thieu": 9,
+   "cau": [
+    {
+     "g": "dan",
+     "tre": 0.4,
+     "t": "Vì vậy mà có AgiViet."
+    },
+    {
+     "g": "dan",
+     "tre": 0.45,
+     "t": "Hai ứng dụng, dùng chung một mã đơn."
+    },
+    {
+     "g": "dan",
+     "tre": 0.35,
+     "toc": "-8%",
+     "t": "Để tìm đúng mối, và chốt đúng giá."
+    }
+   ]
+  },
+  {
+   "id": "tri-dang-ky",
+   "toi_thieu": 21,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Anh Trí đăng ký cho nhà máy. Chưa tới một phút."
+    },
+    {
+     "g": "dan",
+     "tre": 0.35,
+     "t": "Nhập mã, chọn gói, vậy là vào app."
+    },
+    {
+     "g": "tri",
+     "tre": 1.4,
+     "t": "Tháng này nhà máy cần thêm ba tấn mít Thái."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "t": "Anh đăng nhu cầu lên. Người bán đúng mặt hàng thấy ngay, và báo giá riêng cho anh."
+    }
+   ]
+  },
+  {
+   "id": "nam-dang-hang",
+   "toi_thieu": 27,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Còn chị Năm, không rành điện thoại cũng không sao."
+    },
+    {
+     "g": "dan",
+     "tre": 0.45,
+     "t": "App làm sáng đúng cái nút cần bấm."
+    },
+    {
+     "g": "dan",
+     "tre": 0.35,
+     "toc": "-8%",
+     "t": "Chị chỉ việc bấm, rồi nói."
+    },
+    {
+     "g": "nam",
+     "tre": 0.7,
+     "t": "Mười tấn xoài, tuần sau hái nha."
+    },
+    {
+     "g": "dan",
+     "tre": 0.7,
+     "t": "App tự ghi thành tin đăng. Chưa cân, thì ghi là ước tính."
+    },
+    {
+     "g": "dan",
+     "tre": 0.6,
+     "t": "Chữ nhiều quá? Bấm nút Nghe, app đọc cho chị nghe."
+    }
+   ]
+  },
+  {
+   "id": "ket-noi",
+   "toi_thieu": 18,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Bên nhà máy, anh Trí lọc nguồn theo lượng còn bán được, theo ngày hái, rồi xếp giá thấp lên đầu."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "t": "Thấy lô xoài của chị Năm, anh gửi lời mời."
+    },
+    {
+     "g": "dan",
+     "tre": 0.6,
+     "t": "Chị bấm đồng ý. Vậy là hai bên nối được với nhau."
+    }
+   ]
+  },
+  {
+   "id": "chot-don",
+   "toi_thieu": 32,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Chốt đơn. Cả hai bên cùng nhìn một mã."
+    },
+    {
+     "g": "dan",
+     "tre": 0.6,
+     "t": "Anh Trí nhập số cân. Số đó ghi là tự khai, cho tới khi chị Năm bấm Đúng."
+    },
+    {
+     "g": "dan",
+     "tre": 0.6,
+     "t": "Anh báo đã trả tiền. Chị mở ngân hàng, chưa thấy?"
+    },
+    {
+     "g": "dan",
+     "tre": 0.4,
+     "t": "Một nút thôi, hồ sơ đối soát mở ra cho cả hai bên."
+    },
+    {
+     "g": "dan",
+     "tre": 0.6,
+     "t": "Tiền về rồi, chị xác nhận. Xong đơn."
+    },
+    {
+     "g": "dan",
+     "tre": 0.6,
+     "toc": "-8%",
+     "t": "Không ai phải tin lời kể một phía."
+    }
+   ]
+  },
+  {
+   "id": "ve-tay",
+   "toi_thieu": 15,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Còn nữa. Trước khi chọn khách, chị Năm so tiền về tay."
+    },
+    {
+     "g": "dan",
+     "tre": 0.45,
+     "t": "Khách này trả giá thấp hơn, nhưng cho xe vào tận vườn, cân xong là trả ngay."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "toc": "-6%",
+     "t": "Tính ra, chị được thêm hai triệu."
+    }
+   ]
+  },
+  {
+   "id": "minh-bach",
+   "toi_thieu": 13,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "AgiViet không giữ tiền của ai. Không tự trừ tiền. Không tự phán ai đúng, ai sai."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "t": "Đổi tài khoản nhận tiền, phải chờ và xác minh, để kẻ gian khỏi chen vào giữa."
+    }
+   ]
+  },
+  {
+   "id": "ket",
+   "toi_thieu": 12,
+   "cau": [
+    {
+     "g": "dan",
+     "t": "Người bán dùng miễn phí. Bên mua bắt đầu miễn phí, cần thêm thì nâng cấp."
+    },
+    {
+     "g": "dan",
+     "tre": 0.9,
+     "toc": "-6%",
+     "t": "AgiViet."
+    },
+    {
+     "g": "dan",
+     "tre": 0.4,
+     "toc": "-10%",
+     "t": "Tìm đúng mối, chốt đúng giá."
+    }
+   ]
+  }
+ ]
 }
