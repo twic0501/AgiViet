@@ -121,6 +121,57 @@
   .so-lieu .the { padding: 20px; }
   .lo-trinh li { margin-bottom: 8px; }
 
+  /* ===== Hiệu ứng ===== */
+  .tien-do { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--nang); z-index: 20; }
+  .thanh.cuon { box-shadow: 0 4px 18px rgba(20, 40, 30, .08); }
+  [data-hien] { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.2, .7, .2, 1); transition-delay: var(--tre, 0s); }
+  [data-hien].da-hien { opacity: 1; transform: none; }
+  .hero h1 .chu { display: inline-block; opacity: 0; transform: translateY(18px); animation: len .7s cubic-bezier(.2, .7, .2, 1) forwards; animation-delay: calc(var(--i) * 90ms + .1s); }
+  .hero .mo, .hero .nuts, .hero .ghi, .hero .anh-sp { opacity: 0; animation: len .7s ease forwards; }
+  .hero .mo { animation-delay: .55s; } .hero .nuts { animation-delay: .7s; } .hero .ghi { animation-delay: .8s; } .hero .anh-sp { animation-delay: .9s; }
+  @keyframes len { to { opacity: 1; transform: none; } }
+  .may .dt { animation: troi 6s ease-in-out infinite; }
+  .may .dt:nth-child(2) { animation-delay: -3s; }
+  @keyframes troi { 0%, 100% { translate: 0 0; } 50% { translate: 0 -12px; } }
+  .doi-man { position: relative; }
+  .doi-man img { transition: opacity .8s ease; }
+  .doi-man img:not(:first-child) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .doi-man img:not(.on) { opacity: 0; }
+  .anh-sp img { transition: transform .3s ease; }
+  .anh-sp img:hover { transform: translateY(-4px) scale(1.06); }
+  .the, .buoc, .app { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+  .the:hover, .app:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(20, 40, 30, .08); }
+  .nut { position: relative; overflow: hidden; transition: transform .15s ease, box-shadow .2s ease; }
+  .nut:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0, 0, 0, .15); }
+  .nut::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); transform: translateX(-120%); }
+  .nut:hover::after { transform: translateX(120%); transition: transform .7s ease; }
+  .vong .buoc.dang { border-color: var(--reu); box-shadow: 0 0 0 3px var(--reu-nhat), 0 10px 24px rgba(20, 40, 30, .1); transform: translateY(-3px); }
+  .vong .buoc.qua::before { background: var(--nang); color: var(--reu-dam); }
+  .ma-don code { transition: background .3s; }
+  .ma-don.nhay code { background: var(--nang); }
+  /* ô tính */
+  .tinh { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .tinh-chung { grid-column: 1 / -1; }
+  .tinh label { display: flex; justify-content: space-between; font-weight: 600; font-size: 15px; margin-top: 12px; }
+  .tinh label:first-of-type { margin-top: 4px; }
+  .tinh output { font-weight: 700; color: var(--reu); }
+  .tinh input[type=range] { width: 100%; accent-color: var(--reu); height: 28px; }
+  .tinh-dau { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+  .chu-k { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #fff; background: #5a4a8a; }
+  .tinh-khach[data-k="B"] .chu-k { background: #b86b1f; }
+  .ve-tay { margin-top: 16px; padding: 14px; border-radius: 12px; background: var(--reu-nhat); display: grid; gap: 6px; }
+  .ve-tay span { font-size: 14px; color: var(--muc-2); }
+  .ve-tay b { font-size: 30px; color: var(--reu-dam); line-height: 1.1; }
+  .thanh-ve { height: 10px; border-radius: 6px; background: #fff; overflow: hidden; }
+  .thanh-ve i { display: block; height: 100%; width: 0; background: var(--reu); border-radius: 6px; transition: width .35s ease; }
+  .tinh-khach.hon { border-color: var(--reu); box-shadow: 0 0 0 3px var(--reu-nhat); }
+  .ket-tinh { margin-top: 16px; font-weight: 600; font-size: 18px; min-height: 28px; }
+  @media (max-width: 700px) { .tinh { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    [data-hien], .hero h1 .chu, .hero .mo, .hero .nuts, .hero .ghi, .hero .anh-sp { opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important; }
+    .may .dt { animation: none; } .doi-man img, .thanh-ve i, .the, .nut, .nut::after { transition: none; }
+  }
+
   footer { padding: 40px 0 56px; color: var(--muc-2); font-size: 14px; border-top: 1px solid var(--vien); }
   footer .khung { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 
@@ -147,7 +198,7 @@
     <nav class="menu" aria-label="Mục lục">
       <a href="#van-de">Vấn đề</a><a href="#hai-app">Hai app</a><a href="#giao-dich">Một giao dịch</a><a href="#nguyen-tac">Nguyên tắc</a><a href="#mo-hinh">Mô hình</a><a href="#cham-thu">Chấm thử</a>
     </nav>
-    <a class="nut sang" href="#cham-thu">Dùng thử ngay</a>
+    <a class="nut sang" href="#cham-thu">Dùng thử</a>
   </div>
 </header>
 
@@ -158,17 +209,17 @@
       <h1>Tìm đúng mối,<br><em>chốt đúng giá</em>.</h1>
       <p class="mo">AgiViet kết nối nông dân, hợp tác xã với vựa, nhà máy. Người bán đăng hàng bằng giọng nói; hai bên chốt đơn, cân và đối soát trên <b>cùng một mã đơn</b>, không ai phải tin lời kể một phía.</p>
       <div class="nuts">
-        <a class="nut sang" href="/ban/bat-dau.html">Mở app Nhà sản xuất</a>
-        <a class="nut phu" href="/mua/tong-quan.html?goi=bus">Mở app Thu mua</a>
+        <a class="nut sang" href="/ban/bat-dau.html#chao-mung">Dùng thử: người bán</a>
+        <a class="nut phu" href="/mua/dang-nhap.html">Dùng thử: bên mua</a>
       </div>
-      <p class="ghi">Bản thử có số liệu mẫu, chạy ngay trên trình duyệt, không cần cài đặt hay đăng ký.</p>
+      <p class="ghi">Bản thử có số liệu mẫu, chạy ngay trên trình duyệt. Đăng ký demo mất 1 phút, mã xác minh luôn là 123456; vào app xong sẽ có hướng dẫn chỉ tay.</p>
       <div class="anh-sp" aria-hidden="true">
         <img src="/ban/assets/anh/mh/mango.jpg" alt=""><img src="/ban/assets/anh/mh/dragon-fruit.jpg" alt=""><img src="/ban/assets/anh/mh/shrimp.jpg" alt=""><img src="/ban/assets/anh/mh/jackfruit.jpg" alt=""><img src="/ban/assets/anh/mh/basa.jpg" alt="">
       </div>
     </div>
     <div class="may">
-      <div class="dt"><img src="anh/ban-hang.jpg" alt="Màn Hàng của app Nhà sản xuất: các lô đang bán, nút Chụp để đăng và Nói để đăng"></div>
-      <div class="dt"><img src="anh/ban-so-sanh.jpg" alt="Màn So sánh 2 khách: tiền về tay sau khi trừ chi phí xe, bốc xếp"></div>
+      <div class="dt doi-man"><img class="on" src="anh/ban-hang.jpg" alt="Màn Hàng của app Nhà sản xuất: các lô đang bán, nút Chụp để đăng và Nói để đăng"><img src="anh/ban-dang.jpg" alt="Màn Đăng hàng: chụp ảnh hoặc bấm để nói"><img src="anh/ban-tien.jpg" alt="Màn Tiền hàng: xác nhận đã nhận đủ hoặc chưa thấy tiền"></div>
+      <div class="dt doi-man"><img class="on" src="anh/ban-so-sanh.jpg" alt="Màn So sánh 2 khách: tiền về tay sau khi trừ chi phí xe, bốc xếp"><img src="anh/ban-tour.jpg" alt="Hướng dẫn chỉ tay: chỉ sáng đúng nút cần bấm"></div>
     </div>
   </div>
 </div>
@@ -259,6 +310,46 @@
   </div>
 </section>
 
+<section id="tinh-thu" style="padding-top:0">
+  <div class="khung">
+    <div class="dau-muc">
+      <span class="nhan">Tự tính thử</span>
+      <h2>Giá cao hơn chưa chắc được nhiều tiền hơn</h2>
+      <p>Đây là phép tính app làm cho người bán ở màn “So sánh 2 khách”. Kéo thử các con số.</p>
+    </div>
+    <div class="tinh">
+      <div class="tinh-chung the">
+        <label>Lượng bán <output id="t-luong">10 tấn</output></label>
+        <input type="range" id="i-luong" min="1" max="30" step="0.5" value="10" aria-label="Lượng bán, tấn">
+      </div>
+      <div class="the tinh-khach" data-k="A">
+        <div class="tinh-dau"><span class="chu-k">A</span><strong>Nhà máy</strong></div>
+        <label>Giá mua <output id="t-gia-A"></output></label>
+        <input type="range" id="i-gia-A" min="4000" max="12000" step="100" value="7000" aria-label="Giá khách A, đồng một ký">
+        <label>Tiền xe bạn tự trả <output id="t-xe-A"></output></label>
+        <input type="range" id="i-xe-A" min="0" max="10000000" step="250000" value="5000000" aria-label="Tiền xe khách A">
+        <label>Bốc xếp, khoản trừ khác <output id="t-bx-A"></output></label>
+        <input type="range" id="i-bx-A" min="0" max="5000000" step="100000" value="0" aria-label="Bốc xếp khách A">
+        <label>Trả tiền sau <output id="t-ngay-A"></output></label>
+        <input type="range" id="i-ngay-A" min="0" max="30" step="1" value="7" aria-label="Số ngày trả tiền khách A">
+        <div class="ve-tay"><span>Tiền về tay khoảng</span><b id="t-ve-A">0</b><div class="thanh-ve"><i id="thanh-A"></i></div></div>
+      </div><div class="the tinh-khach" data-k="B">
+        <div class="tinh-dau"><span class="chu-k">B</span><strong>Vựa trái cây</strong></div>
+        <label>Giá mua <output id="t-gia-B"></output></label>
+        <input type="range" id="i-gia-B" min="4000" max="12000" step="100" value="6700" aria-label="Giá khách B, đồng một ký">
+        <label>Tiền xe bạn tự trả <output id="t-xe-B"></output></label>
+        <input type="range" id="i-xe-B" min="0" max="10000000" step="250000" value="0" aria-label="Tiền xe khách B">
+        <label>Bốc xếp, khoản trừ khác <output id="t-bx-B"></output></label>
+        <input type="range" id="i-bx-B" min="0" max="5000000" step="100000" value="0" aria-label="Bốc xếp khách B">
+        <label>Trả tiền sau <output id="t-ngay-B"></output></label>
+        <input type="range" id="i-ngay-B" min="0" max="30" step="1" value="0" aria-label="Số ngày trả tiền khách B">
+        <div class="ve-tay"><span>Tiền về tay khoảng</span><b id="t-ve-B">0</b><div class="thanh-ve"><i id="thanh-B"></i></div></div>
+      </div>
+    </div>
+    <p class="ket-tinh" id="ket-tinh" aria-live="polite"></p>
+  </div>
+</section>
+
 <section id="nguyen-tac" class="nguyen-tac">
   <div class="khung">
     <div class="dau-muc">
@@ -306,17 +397,17 @@
         <span class="nhan" style="color:var(--nang)">Dành cho ban giám khảo</span>
         <h2>Chấm thử trong 3 phút</h2>
         <ol>
-          <li>Mở <b>app Thu mua</b>, vào Nhu cầu mua → <b>Đăng nhu cầu</b>.</li>
-          <li>Mở <b>app Nhà sản xuất</b> ở tab khác, vào <b>Khách hỏi → Cần mua</b>: nhu cầu vừa đăng đã hiện.</li>
+          <li>Bấm <b>Dùng thử: bên mua</b>, đăng ký tổ chức của bạn (mã <b>123456</b>). Vào app, chọn hướng dẫn <b>Đăng nhu cầu mua</b> và làm theo nút đang sáng.</li>
+          <li>Bấm <b>Dùng thử: người bán</b> ở tab khác, đăng ký bằng số mẫu. Vào <b>Khách hỏi → Cần mua</b>: nhu cầu vừa đăng đã hiện, ghi đúng tên tổ chức bạn vừa đăng ký.</li>
           <li>Ở app Nhà sản xuất bấm <b>+ Đăng</b> và đăng một lô; quay lại app Thu mua, vào <b>Nguồn hàng</b>, chọn Có hàng: <b>Mọi thời gian</b>, thấy lô mới và bấm Kết nối.</li>
           <li>Đi tiếp theo thẻ “việc cần làm” ở mỗi bên: đồng ý, tạo đơn, cân, trả tiền. Hai tab tự cập nhật.</li>
-          <li>Muốn được dẫn từng nút: trong app Nhà sản xuất vào <b>Tôi → Hướng dẫn từng bước</b>.</li>
+          <li>Xem lại hướng dẫn bất cứ lúc nào: app Nhà sản xuất ở <b>Tôi → Hướng dẫn từng bước</b>, app Thu mua ở nút <b>ⓘ</b> trên thanh trên.</li>
         </ol>
       </div>
       <div class="nuts">
-        <a class="nut sang" href="/ban/hang.html#hang" target="_blank" rel="noopener">App Nhà sản xuất (điện thoại)</a>
-        <a class="nut phu" href="/mua/tong-quan.html?goi=bus" target="_blank" rel="noopener">App Thu mua · gói Business</a>
-        <a class="nut phu" href="/mua/tong-quan.html?goi=free" target="_blank" rel="noopener">App Thu mua · gói Miễn phí</a>
+        <a class="nut sang" href="/mua/dang-nhap.html" target="_blank" rel="noopener">1 · Đăng ký bên mua</a>
+        <a class="nut sang" href="/ban/bat-dau.html#chao-mung" target="_blank" rel="noopener">2 · Đăng ký người bán</a>
+        <p class="ghi" style="margin:4px 0 0">Vào thẳng, bỏ qua đăng ký: <a href="/ban/hang.html#hang" target="_blank" rel="noopener" style="color:#fff">app Nhà sản xuất</a> · <a href="/mua/tong-quan.html?goi=bus" target="_blank" rel="noopener" style="color:#fff">app Thu mua (Business)</a> · <a href="/mua/tong-quan.html?goi=free" target="_blank" rel="noopener" style="color:#fff">(Miễn phí)</a></p>
         <p class="ghi">Mở hai app trong cùng một trình duyệt để chúng dùng chung dữ liệu mẫu. Nút <b>Làm lại</b> ở đầu mỗi màn đưa mọi thứ về ban đầu. Trên máy tính, app Nhà sản xuất nên xem ở chế độ điện thoại (F12 → biểu tượng điện thoại).</p>
         <div class="dt" style="max-width:220px;border-width:6px;border-radius:22px"><img src="anh/ban-tour.jpg" alt="Hướng dẫn chỉ tay: màn tối, chỉ sáng nút Bấm để nói"></div>
       </div>
@@ -331,10 +422,10 @@
       <h2>Đã có gì, còn gì</h2>
     </div>
     <div class="so-lieu">
-      <div class="the"><div class="so-lon">2 app</div><p class="nho">Giao diện hoàn chỉnh cho người bán (điện thoại) và bên mua (máy tính), chạy như ứng dụng web.</p></div>
-      <div class="the"><div class="so-lon">21</div><p class="nho">Ca kiểm thử nghiệp vụ tự động cho máy chủ thật (Node.js, SQLite), đều đạt.</p></div>
-      <div class="the"><div class="so-lon">45 bước</div><p class="nho">Kiểm thử tự động một giao dịch trọn vòng giữa hai vai trên chính trang này.</p></div>
-      <div class="the"><div class="so-lon">6 tour</div><p class="nho">Hướng dẫn chỉ tay được chạy thử tự động từ đầu tới cuối.</p></div>
+      <div class="the"><div class="so-lon" data-den="2" data-sau=" app">2 app</div><p class="nho">Giao diện hoàn chỉnh cho người bán (điện thoại) và bên mua (máy tính), chạy như ứng dụng web.</p></div>
+      <div class="the"><div class="so-lon" data-den="21">21</div><p class="nho">Ca kiểm thử nghiệp vụ tự động cho máy chủ thật (Node.js, SQLite), đều đạt.</p></div>
+      <div class="the"><div class="so-lon" data-den="45" data-sau=" bước">45 bước</div><p class="nho">Kiểm thử tự động một giao dịch trọn vòng giữa hai vai trên chính trang này.</p></div>
+      <div class="the"><div class="so-lon" data-den="6" data-sau=" tour">6 tour</div><p class="nho">Hướng dẫn chỉ tay được chạy thử tự động từ đầu tới cuối.</p></div>
     </div>
     <div class="luoi l2" style="margin-top:22px">
       <div class="the">
@@ -360,5 +451,54 @@
     <span>Tên người, doanh nghiệp và số liệu trong app là dữ liệu mẫu. Ảnh nông sản: <a href="/ban/nguon-anh.html">nguồn ảnh</a>.</span>
   </div>
 </footer>
+<div class="tien-do" aria-hidden="true"></div>
+<script>
+(() => {
+  const giam = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  // Tiêu đề hero hiện từng chữ
+  const h1 = document.querySelector('.hero h1');
+  if (h1 && !giam) { let i = 0; const tach = n => { for (const c of [...n.childNodes]) { if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(w => { if (!w.trim()) return f.append(w); const s = document.createElement('span'); s.className = 'chu'; s.style.setProperty('--i', i++); s.textContent = w; f.append(s); }); c.replaceWith(f); } else if (c.nodeType === 1 && c.tagName !== 'BR') tach(c); } }; tach(h1); }
+  // Hiện dần khi cuộn tới
+  const nhom = ['.dau-muc', '.luoi > .the', '.app', '.vong .buoc', '.ma-don', '.nt', '.bang-cuon', '.cham', '.so-lieu .the', '.tinh > *'];
+  $$(nhom.join(',')).forEach(e => { e.setAttribute('data-hien', ''); const anh = [...e.parentElement.children].indexOf(e); e.style.setProperty('--tre', Math.min(anh, 6) * 70 + 'ms'); });
+  const dem = e => { const den = +e.dataset.den, sau = e.dataset.sau || ''; if (giam) return; const t0 = performance.now(); const b = t => { const p = Math.min(1, (t - t0) / 1100); e.textContent = Math.round(den * (1 - Math.pow(1 - p, 3))) + sau; if (p < 1) requestAnimationFrame(b); }; requestAnimationFrame(b); };
+  const io = new IntersectionObserver(ds => ds.forEach(d => { if (!d.isIntersecting) return; d.target.classList.add('da-hien'); $$('[data-den]', d.target).forEach(dem); io.unobserve(d.target); }), { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+  $$('[data-hien]').forEach(e => io.observe(e));
+  // Thanh tiến độ đọc, bóng thanh trên
+  const td = document.querySelector('.tien-do'), thanh = document.querySelector('.thanh');
+  addEventListener('scroll', () => { const h = document.documentElement; td.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%'; thanh.classList.toggle('cuon', h.scrollTop > 8); }, { passive: true });
+  // Điện thoại hero tự đổi màn
+  if (!giam) $$('.doi-man').forEach((d, k) => { const a = $$('img', d); let i = 0; setInterval(() => { a[i].classList.remove('on'); i = (i + 1) % a.length; a[i].classList.add('on'); }, 3600 + k * 700); });
+  // Tám bước giao dịch sáng lần lượt (dừng khi rê chuột)
+  const buoc = $$('.vong .buoc'), ma = document.querySelector('.ma-don');
+  if (buoc.length && !giam) { let i = -1, dung = false; const vong = document.querySelector('.vong'); vong.addEventListener('mouseenter', () => dung = true); vong.addEventListener('mouseleave', () => dung = false);
+    setInterval(() => { if (dung) return; i = (i + 1) % (buoc.length + 2); buoc.forEach((b, k) => { b.classList.toggle('dang', k === i); b.classList.toggle('qua', k < i); }); ma?.classList.toggle('nhay', i >= buoc.length); }, 1100); }
+  // Ô tính tiền về tay
+  const vnd = v => Math.round(v).toLocaleString('vi-VN');
+  const trieu = v => (v / 1e6).toLocaleString('vi-VN', { maximumFractionDigits: 1 }) + ' triệu';
+  const g = id => +document.getElementById(id).value;
+  function tinh() {
+    const tan = g('i-luong'); document.getElementById('t-luong').textContent = tan.toLocaleString('vi-VN') + ' tấn';
+    const kq = {};
+    for (const k of ['A', 'B']) {
+      const gia = g('i-gia-' + k), xe = g('i-xe-' + k), bx = g('i-bx-' + k), ngay = g('i-ngay-' + k);
+      document.getElementById('t-gia-' + k).textContent = vnd(gia) + ' đ/kg';
+      document.getElementById('t-xe-' + k).textContent = xe ? '− ' + trieu(xe) : '0 đ';
+      document.getElementById('t-bx-' + k).textContent = bx ? '− ' + trieu(bx) : '0 đ';
+      document.getElementById('t-ngay-' + k).textContent = ngay ? ngay + ' ngày' : 'khi cân xong';
+      kq[k] = { ve: tan * 1000 * gia - xe - bx, ngay };
+      document.getElementById('t-ve-' + k).textContent = trieu(kq[k].ve);
+    }
+    const max = Math.max(kq.A.ve, kq.B.ve, 1);
+    for (const k of ['A', 'B']) { document.getElementById('thanh-' + k).style.width = Math.max(0, kq[k].ve / max * 100) + '%'; document.querySelector('.tinh-khach[data-k="' + k + '"]').classList.toggle('hon', kq[k].ve > kq[k === 'A' ? 'B' : 'A'].ve); }
+    const lech = kq.A.ve - kq.B.ve, hon = lech >= 0 ? 'A' : 'B', kem = hon === 'A' ? 'B' : 'A';
+    const giaHon = g('i-gia-' + hon) < g('i-gia-' + kem);
+    document.getElementById('ket-tinh').textContent = Math.abs(lech) < 1 ? 'Hai khách cho số tiền về tay như nhau; xem thêm ai trả sớm hơn.'
+      : `Khách ${hon} cho bạn nhiều hơn khoảng ${trieu(Math.abs(lech))}${giaHon ? ' dù trả giá thấp hơn' : ''}${kq[hon].ngay < kq[kem].ngay ? ', lại trả tiền sớm hơn' : kq[hon].ngay > kq[kem].ngay ? ', nhưng trả tiền chậm hơn ' + (kq[hon].ngay - kq[kem].ngay) + ' ngày' : ''}.`;
+  }
+  $$('.tinh input').forEach(i => i.addEventListener('input', tinh)); tinh();
+})();
+</script>
 </body>
 </html>
