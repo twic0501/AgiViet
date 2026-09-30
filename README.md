@@ -75,7 +75,7 @@ node test/hosting.mjs https://agiviet-23a94.web.app   # kiểm tra site thật
 | `src/modules/tien.js` | Nghĩa vụ, hướng dẫn chuyển tiền, báo đã trả/xác nhận (BR-22), phí thành công lũy kế, hóa đơn phí (BR-45), gói |
 | `src/modules/ho-tro.js` | Ticket, thông báo, nhật ký công việc + báo cáo pilot (mục 31), việc nền |
 | `scripts/du-lieu-mau.js` | Dữ liệu mẫu qua API |
-| `test/` | `nghiep-vu.test.js` (node:test); `giao-dien-ban.mjs`, `giao-dien-mua.mjs` (Playwright, cần server đang chạy) |
+| `test/` | `nghiep-vu.test.js` (node:test); `giao-dien-ban.mjs`, `giao-dien-mua.mjs` (Playwright, cần server đang chạy); `bao-cao-hai-vai.mjs`, `vong-hai-vai.mjs`, `hosting.mjs` (bản hosting tĩnh, mặc định http://127.0.0.1:8768) |
 
 Giao diện nối API qua `js/he-thong.js` trong mỗi app; chỉ bật khi mở dưới `/ban/` hoặc `/mua/`,
 mở file HTML trực tiếp vẫn là bản mẫu tĩnh như cũ.
