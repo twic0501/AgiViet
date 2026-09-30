@@ -16,6 +16,7 @@ await p.goto(base + '/mua/tong-quan.html#tong-quan'); await cho(700);
 console.log('1. Hộp đăng nhập hiện:', await p.locator('#dn-gui').isVisible());
 await p.click('#dn-gui'); await cho(300);
 await p.fill('#dn-ma', '123456'); await p.click('#dn-vao'); await cho(1500);
+if (await p.locator('#hd-lop').isVisible()) { console.log('   Hướng dẫn lần đầu hiện → bỏ qua'); await p.click('.hd-bo'); await cho(200); }
 console.log('2. Sau đăng nhập:', await p.locator('.sidebar .to-chuc strong').first().innerText(), '|', await p.locator('.topbar .nguoi-dung strong').innerText());
 console.log('3. Hạn mức:', (await p.locator('.the-luot').innerText()).replace(/\n/g, ' / '));
 console.log('4. KPI:', (await p.locator('.luoi.l4 .kpi .so').allTextContents()).join(', '));
