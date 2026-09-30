@@ -107,7 +107,7 @@
   tr:last-child td { border-bottom: none; }
   .bang-cuon { overflow-x: auto; }
 
-  /* chấm thử */
+  /* khối bắt đầu */
   .cham { background: var(--reu); color: #eef4ec; border-radius: 22px; padding: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
   .cham h2 { color: #fff; }
   .cham ol { margin: 18px 0 0; padding-left: 22px; display: grid; gap: 10px; color: #d8e5d9; }
@@ -172,6 +172,31 @@
     .may .dt { animation: none; } .doi-man img, .thanh-ve i, .the, .nut, .nut::after { transition: none; }
   }
 
+  .gia-goi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: stretch; }
+  .goi { display: flex; flex-direction: column; gap: 10px; }
+  .goi .gia { font-size: 30px; font-weight: 700; color: var(--reu-dam); line-height: 1.1; }
+  .goi .gia small { font-size: 15px; font-weight: 600; color: var(--muc-2); }
+  .goi ul { margin: 4px 0 8px; padding-left: 20px; color: var(--muc-2); font-size: 15px; display: grid; gap: 4px; flex: 1; }
+  .goi .the-nho { align-self: flex-start; }
+  .goi.noi-bat { border: 2px solid var(--reu); box-shadow: 0 16px 36px rgba(20, 40, 30, .1); }
+  .goi.noi-bat .the-nho { background: var(--nang); color: var(--reu-dam); }
+  .hai-loi { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+  .loi-vao { position: relative; display: grid; gap: 2px; padding: 18px 44px 18px 18px; border-radius: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); text-decoration: none; color: #fff; transition: background .2s, transform .2s; }
+  .loi-vao:hover { background: rgba(255,255,255,.16); transform: translateY(-2px); }
+  .loi-vao strong { font-size: 20px; }
+  .nho-trang { font-size: 14px; color: #b9ccbf; }
+  .loi-vao .mui { position: absolute; right: 18px; top: 50%; translate: 0 -50%; font-size: 22px; color: var(--nang); transition: translate .2s; }
+  .loi-vao:hover .mui { translate: 5px -50%; }
+  .hoi-dap { display: grid; gap: 10px; max-width: 860px; }
+  .hoi-dap details { background: var(--trang); border: 1px solid var(--vien); border-radius: 14px; padding: 4px 20px; }
+  .hoi-dap summary { cursor: pointer; font-weight: 700; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  .hoi-dap summary::-webkit-details-marker { display: none; }
+  .hoi-dap summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--reu); transition: transform .2s; }
+  .hoi-dap details[open] summary::after { transform: rotate(45deg); }
+  .hoi-dap p { color: var(--muc-2); padding-bottom: 16px; }
+  @media (max-width: 900px) { .gia-goi { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .hai-loi { grid-template-columns: 1fr; } }
+
   footer { padding: 40px 0 56px; color: var(--muc-2); font-size: 14px; border-top: 1px solid var(--vien); }
   footer .khung { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 
@@ -196,9 +221,9 @@
   <div class="khung">
     <a class="logo" href="#"><img src="/ban/assets/mark.svg" alt=""><span><b>Agi</b><span>Viet</span></span></a>
     <nav class="menu" aria-label="Mục lục">
-      <a href="#van-de">Vấn đề</a><a href="#hai-app">Hai app</a><a href="#giao-dich">Một giao dịch</a><a href="#nguyen-tac">Nguyên tắc</a><a href="#mo-hinh">Mô hình</a><a href="#cham-thu">Chấm thử</a>
+      <a href="#hai-app">Sản phẩm</a><a href="#giao-dich">Cách hoạt động</a><a href="#nguyen-tac">Minh bạch</a><a href="#bang-gia">Bảng giá</a><a href="#hoi-dap">Hỏi đáp</a>
     </nav>
-    <a class="nut sang" href="#cham-thu">Dùng thử</a>
+    <a class="nut sang" href="#bat-dau">Dùng miễn phí</a>
   </div>
 </header>
 
@@ -212,7 +237,7 @@
         <a class="nut sang" href="/ban/bat-dau.html#chao-mung">Dùng thử: người bán</a>
         <a class="nut phu" href="/mua/dang-nhap.html">Dùng thử: bên mua</a>
       </div>
-      <p class="ghi">Bản thử có số liệu mẫu, chạy ngay trên trình duyệt. Đăng ký demo mất 1 phút, mã xác minh luôn là 123456; vào app xong sẽ có hướng dẫn chỉ tay.</p>
+      <p class="ghi">Người bán dùng miễn phí. Không cần cài đặt, đăng ký bằng số điện thoại trong 1 phút.</p>
       <div class="anh-sp" aria-hidden="true">
         <img src="/ban/assets/anh/mh/mango.jpg" alt=""><img src="/ban/assets/anh/mh/dragon-fruit.jpg" alt=""><img src="/ban/assets/anh/mh/shrimp.jpg" alt=""><img src="/ban/assets/anh/mh/jackfruit.jpg" alt=""><img src="/ban/assets/anh/mh/basa.jpg" alt="">
       </div>
@@ -353,7 +378,7 @@
 <section id="nguyen-tac" class="nguyen-tac">
   <div class="khung">
     <div class="dau-muc">
-      <span class="nhan">Nguyên tắc thiết kế</span>
+      <span class="nhan">Vì sao tin được</span>
       <h2>Minh bạch trước, tự động sau</h2>
     </div>
     <div class="luoi l2" style="gap:28px 40px">
@@ -367,79 +392,72 @@
   </div>
 </section>
 
-<section id="mo-hinh">
+<section id="bang-gia">
   <div class="khung">
     <div class="dau-muc">
-      <span class="nhan">Mô hình doanh thu</span>
+      <span class="nhan">Bảng giá</span>
       <h2>Người bán dùng miễn phí. Bên mua trả khi cần thêm công cụ</h2>
-      <p>Mức giá dưới đây là giá thử nghiệm trong bản demo, sẽ điều chỉnh sau thí điểm.</p>
+      <p>Không phí ẩn, không trừ vào tiền hàng. Đổi gói hay ngừng dùng bất cứ lúc nào.</p>
     </div>
-    <div class="bang-cuon">
-      <table>
-        <thead><tr><th>Đối tượng</th><th>Gói</th><th>Bao gồm</th><th>Phí</th></tr></thead>
-        <tbody>
-          <tr><td><b>Người bán</b><br><span class="nho">Nông dân, HTX</span></td><td>Miễn phí</td><td>Đăng tin, nhận khách, trả lời, xử lý đơn, xác nhận tiền</td><td>0 đ</td></tr>
-          <tr><td><b>Bên mua nhỏ</b><br><span class="nho">Vựa, mua vài lô/tháng</span></td><td>Miễn phí</td><td>5 kết nối và 5 tin mua mỗi tháng, đơn và công nợ cơ bản</td><td>0 đ</td></tr>
-          <tr><td><b>Bên mua doanh nghiệp</b><br><span class="nho">Nhà máy, công ty</span></td><td>Business</td><td>50 kết nối, 30 tin mua, 3 tài khoản, phân quyền, kế hoạch mua, mối quen</td><td>1.500.000 đ/tháng</td></tr>
-          <tr><td><b>Giao dịch có hỗ trợ</b><br><span class="nho">Hai bên cùng tự chọn</span></td><td>Theo đơn</td><td>Người trực lúc giao, điều phối khi bất đồng, hồ sơ đối soát</td><td>0,8% hàng được nhận (trần 3 triệu)<br>Business: 0,3% (trần 1,5 triệu)</td></tr>
-          <tr><td><b>Dịch vụ đối tác</b></td><td>Theo yêu cầu</td><td>Kiểm nghiệm, xe lạnh, kho lạnh; báo giá từng lần, chỉ đặt khi đồng ý</td><td>Theo báo giá</td></tr>
-        </tbody>
-      </table>
+    <div class="gia-goi">
+      <article class="the goi">
+        <span class="the-nho">Người bán</span>
+        <h3>Nhà sản xuất</h3>
+        <div class="gia">0 đ<small> mãi mãi</small></div>
+        <ul><li>Đăng hàng bằng giọng nói, ảnh chụp</li><li>Nhận khách, so tiền về tay</li><li>Đơn, cân, xác nhận tiền</li><li>Người giúp nhập liệu</li></ul>
+        <a class="nut sang" href="/ban/bat-dau.html#chao-mung">Đăng ký người bán</a>
+      </article>
+      <article class="the goi">
+        <span class="the-nho">Bên mua</span>
+        <h3>Miễn phí</h3>
+        <div class="gia">0 đ</div>
+        <ul><li>5 kết nối, 5 tin mua mỗi tháng</li><li>Lọc nguồn theo lượng, ngày hái</li><li>Đơn, lịch nhận, công nợ cơ bản</li><li>1 tài khoản</li></ul>
+        <a class="nut phu" href="/mua/dang-nhap.html">Tạo tài khoản</a>
+      </article>
+      <article class="the goi noi-bat">
+        <span class="the-nho">Phổ biến với nhà máy</span>
+        <h3>Business</h3>
+        <div class="gia">1.500.000 đ<small>/tháng</small></div>
+        <ul><li>50 kết nối, 30 tin mua mỗi tháng</li><li>3 tài khoản, phân quyền ký, duyệt chi</li><li>Kế hoạch mua theo tuần, mối quen</li><li>Phí giao dịch có hỗ trợ chỉ 0,3%</li></ul>
+        <a class="nut sang" href="/mua/dang-nhap.html">Dùng thử Business</a>
+      </article>
     </div>
-    <p class="nho" style="margin-top:14px">Tự giao dịch luôn miễn phí và vẫn có đơn trên app, ghi cân, phản đối khoản trừ. Phí dịch vụ không bao giờ trừ vào tiền hàng của người bán.</p>
+    <p class="nho" style="margin-top:16px"><b>Giao dịch có hỗ trợ</b> (hai bên cùng tự chọn): người trực lúc giao, điều phối khi bất đồng, hồ sơ đối soát · 0,8% giá trị hàng được nhận, tối đa 3 triệu/đơn (Business 0,3%, tối đa 1,5 triệu). <b>Kiểm nghiệm, xe lạnh, kho lạnh</b>: báo giá từng lần, chỉ đặt khi bạn đồng ý.</p>
   </div>
 </section>
 
-<section id="cham-thu" style="padding-top:0">
+<section id="bat-dau" style="padding-top:0">
   <div class="khung">
     <div class="cham">
       <div>
-        <span class="nhan" style="color:var(--nang)">Dành cho ban giám khảo</span>
-        <h2>Chấm thử trong 3 phút</h2>
-        <ol>
-          <li>Bấm <b>Dùng thử: bên mua</b>, đăng ký tổ chức của bạn (mã <b>123456</b>). Vào app, chọn hướng dẫn <b>Đăng nhu cầu mua</b> và làm theo nút đang sáng.</li>
-          <li>Bấm <b>Dùng thử: người bán</b> ở tab khác, đăng ký bằng số mẫu. Vào <b>Khách hỏi → Cần mua</b>: nhu cầu vừa đăng đã hiện, ghi đúng tên tổ chức bạn vừa đăng ký.</li>
-          <li>Ở app Nhà sản xuất bấm <b>+ Đăng</b> và đăng một lô; quay lại app Thu mua, vào <b>Nguồn hàng</b>, chọn Có hàng: <b>Mọi thời gian</b>, thấy lô mới và bấm Kết nối.</li>
-          <li>Đi tiếp theo thẻ “việc cần làm” ở mỗi bên: đồng ý, tạo đơn, cân, trả tiền. Hai tab tự cập nhật.</li>
-          <li>Xem lại hướng dẫn bất cứ lúc nào: app Nhà sản xuất ở <b>Tôi → Hướng dẫn từng bước</b>, app Thu mua ở nút <b>ⓘ</b> trên thanh trên.</li>
-        </ol>
+        <span class="nhan" style="color:var(--nang)">Bắt đầu trong 1 phút</span>
+        <h2>Dùng ngay trên điện thoại hoặc máy tính</h2>
+        <p style="margin-top:12px;color:#d8e5d9">Không cần cài đặt. Đăng ký bằng số điện thoại, vào app là có hướng dẫn chỉ đúng nút cần bấm, như có người ngồi cạnh chỉ cho.</p>
+        <div class="hai-loi">
+          <a class="loi-vao" href="/ban/bat-dau.html#chao-mung"><span class="nho-trang">Tôi có hàng để bán</span><strong>App Nhà sản xuất</strong><span class="nho-trang">Nông dân, chủ ao, hợp tác xã</span><span class="mui">→</span></a>
+          <a class="loi-vao" href="/mua/dang-nhap.html"><span class="nho-trang">Tôi cần mua hàng</span><strong>App Thu mua</strong><span class="nho-trang">Vựa, nhà máy, doanh nghiệp</span><span class="mui">→</span></a>
+        </div>
       </div>
-      <div class="nuts">
-        <a class="nut sang" href="/mua/dang-nhap.html" target="_blank" rel="noopener">1 · Đăng ký bên mua</a>
-        <a class="nut sang" href="/ban/bat-dau.html#chao-mung" target="_blank" rel="noopener">2 · Đăng ký người bán</a>
-        <p class="ghi" style="margin:4px 0 0">Vào thẳng, bỏ qua đăng ký: <a href="/ban/hang.html#hang" target="_blank" rel="noopener" style="color:#fff">app Nhà sản xuất</a> · <a href="/mua/tong-quan.html?goi=bus" target="_blank" rel="noopener" style="color:#fff">app Thu mua (Business)</a> · <a href="/mua/tong-quan.html?goi=free" target="_blank" rel="noopener" style="color:#fff">(Miễn phí)</a></p>
-        <p class="ghi">Mở hai app trong cùng một trình duyệt để chúng dùng chung dữ liệu mẫu. Nút <b>Làm lại</b> ở đầu mỗi màn đưa mọi thứ về ban đầu. Trên máy tính, app Nhà sản xuất nên xem ở chế độ điện thoại (F12 → biểu tượng điện thoại).</p>
-        <div class="dt" style="max-width:220px;border-width:6px;border-radius:22px"><img src="anh/ban-tour.jpg" alt="Hướng dẫn chỉ tay: màn tối, chỉ sáng nút Bấm để nói"></div>
+      <div class="nuts" style="justify-items:center">
+        <div class="dt" style="max-width:240px;border-width:6px;border-radius:22px"><img src="anh/ban-tour.jpg" alt="Hướng dẫn chỉ tay: màn tối, chỉ sáng nút Bấm để nói"></div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="ky-thuat" style="padding-top:0">
+<section id="hoi-dap" style="padding-top:0">
   <div class="khung">
     <div class="dau-muc">
-      <span class="nhan">Trạng thái sản phẩm</span>
-      <h2>Đã có gì, còn gì</h2>
+      <span class="nhan">Câu hỏi thường gặp</span>
+      <h2>Bà con và doanh nghiệp hay hỏi</h2>
     </div>
-    <div class="so-lieu">
-      <div class="the"><div class="so-lon" data-den="2" data-sau=" app">2 app</div><p class="nho">Giao diện hoàn chỉnh cho người bán (điện thoại) và bên mua (máy tính), chạy như ứng dụng web.</p></div>
-      <div class="the"><div class="so-lon" data-den="21">21</div><p class="nho">Ca kiểm thử nghiệp vụ tự động cho máy chủ thật (Node.js, SQLite), đều đạt.</p></div>
-      <div class="the"><div class="so-lon" data-den="45" data-sau=" bước">45 bước</div><p class="nho">Kiểm thử tự động một giao dịch trọn vòng giữa hai vai trên chính trang này.</p></div>
-      <div class="the"><div class="so-lon" data-den="6" data-sau=" tour">6 tour</div><p class="nho">Hướng dẫn chỉ tay được chạy thử tự động từ đầu tới cuối.</p></div>
-    </div>
-    <div class="luoi l2" style="margin-top:22px">
-      <div class="the">
-        <h3>Bản đang chạy ở đây</h3>
-        <p>Bản mô phỏng: hai app dùng chung dữ liệu mẫu trong trình duyệt, không gửi dữ liệu đi đâu. Máy chủ thật (Node.js, SQLite, đăng nhập bằng mã OTP) đã chạy được ở môi trường thử, chưa đưa lên cloud.</p>
-      </div>
-      <div class="the lo-trinh">
-        <h3>Bước tiếp theo</h3>
-        <ul style="margin:8px 0 0;padding-left:20px;color:var(--muc-2)">
-          <li>Đưa máy chủ lên cloud để hai người trên hai máy thật dùng chung.</li>
-          <li>Thí điểm với một hợp tác xã và một nhà máy, đo tỷ lệ đơn được hai bên xác nhận.</li>
-          <li>Kết nối đối tác: ký số, kiểm nghiệm, vận chuyển lạnh; tổng đài hỗ trợ.</li>
-        </ul>
-      </div>
+    <div class="hoi-dap">
+      <details open><summary>Người bán có mất tiền khi dùng app không?</summary><p>Không. Người bán dùng miễn phí. Nếu hai bên chọn giao dịch có hỗ trợ, phí ghi rõ ai trả trước khi ký, mặc định bên mua trả và không trừ vào tiền hàng.</p></details>
+      <details><summary>Tiền có đi qua AgiViet không?</summary><p>Không. Tiền chuyển thẳng từ bên mua sang tài khoản của người bán. App ghi lại khoản đã báo trả, người bán bấm xác nhận đã nhận, có chênh lệch thì hai bên đối soát trên cùng một hồ sơ.</p></details>
+      <details><summary>Tôi lớn tuổi, không rành điện thoại thì dùng được không?</summary><p>Được. Nút to, ít chữ, màn nào cũng có nút Nghe để app đọc cho bạn. Đăng hàng bằng cách nói, và app có hướng dẫn chỉ đúng nút cần bấm. Con cháu có thể nhập giúp nhưng không ký thay.</p></details>
+      <details><summary>Chưa cân hàng thì có đăng được không?</summary><p>Được. App ghi là “ước tính”. Khi chốt đơn, bạn chọn hứa một khoảng, ví dụ 9 đến 10 tấn, rồi chốt lượng cuối trước ngày giao.</p></details>
+      <details><summary>Cân lệch hoặc bị trừ tiền vô lý thì sao?</summary><p>Số cân bên mua nhập mang nhãn “tự khai” cho tới khi bạn bấm Đúng. Bấm Không đúng thì phần đó tách ra đối soát, phần còn lại vẫn được trả đúng hạn. App không tự trừ tiền, không tự kết luận ai sai.</p></details>
+      <details><summary>Làm sao tránh bị lừa đổi tài khoản nhận tiền?</summary><p>Đổi tài khoản phải xác thực thêm, báo cho người thân dự phòng, chờ ít nhất 24 giờ và so tên chủ tài khoản. Bên mua thấy cảnh báo trong 30 ngày. Nhân viên AgiViet không bao giờ hỏi mã xác minh của bạn.</p></details>
     </div>
   </div>
 </section>
@@ -447,8 +465,8 @@
 
 <footer>
   <div class="khung">
-    <span><b style="color:var(--reu)">AgiViet</b> · kết nối nông sản, thủy sản · bản thử nghiệm 2026</span>
-    <span>Tên người, doanh nghiệp và số liệu trong app là dữ liệu mẫu. Ảnh nông sản: <a href="/ban/nguon-anh.html">nguồn ảnh</a>.</span>
+    <span><b style="color:var(--reu)">AgiViet</b> · Tìm đúng mối, chốt đúng giá · © 2026</span>
+    <span><a href="/ban/bat-dau.html#chao-mung">App Nhà sản xuất</a> · <a href="/mua/dang-nhap.html">App Thu mua</a> · <a href="#hoi-dap">Hỏi đáp</a> · <a href="/ban/nguon-anh.html">Nguồn ảnh</a></span>
   </div>
 </footer>
 <div class="tien-do" aria-hidden="true"></div>
@@ -460,7 +478,7 @@
   const h1 = document.querySelector('.hero h1');
   if (h1 && !giam) { let i = 0; const tach = n => { for (const c of [...n.childNodes]) { if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(w => { if (!w.trim()) return f.append(w); const s = document.createElement('span'); s.className = 'chu'; s.style.setProperty('--i', i++); s.textContent = w; f.append(s); }); c.replaceWith(f); } else if (c.nodeType === 1 && c.tagName !== 'BR') tach(c); } }; tach(h1); }
   // Hiện dần khi cuộn tới
-  const nhom = ['.dau-muc', '.luoi > .the', '.app', '.vong .buoc', '.ma-don', '.nt', '.bang-cuon', '.cham', '.so-lieu .the', '.tinh > *'];
+  const nhom = ['.dau-muc', '.luoi > .the', '.app', '.vong .buoc', '.ma-don', '.nt', '.bang-cuon', '.cham', '.so-lieu .the', '.tinh > *', '.gia-goi .goi', '.hoi-dap details', '.loi-vao'];
   $$(nhom.join(',')).forEach(e => { e.setAttribute('data-hien', ''); const anh = [...e.parentElement.children].indexOf(e); e.style.setProperty('--tre', Math.min(anh, 6) * 70 + 'ms'); });
   const dem = e => { const den = +e.dataset.den, sau = e.dataset.sau || ''; if (giam) return; const t0 = performance.now(); const b = t => { const p = Math.min(1, (t - t0) / 1100); e.textContent = Math.round(den * (1 - Math.pow(1 - p, 3))) + sau; if (p < 1) requestAnimationFrame(b); }; requestAnimationFrame(b); };
   const io = new IntersectionObserver(ds => ds.forEach(d => { if (!d.isIntersecting) return; d.target.classList.add('da-hien'); $$('[data-den]', d.target).forEach(dem); io.unobserve(d.target); }), { threshold: .15, rootMargin: '0px 0px -40px 0px' });
