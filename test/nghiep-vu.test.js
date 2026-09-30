@@ -263,6 +263,17 @@ test('T40: nâng Business giữa tháng tính theo ngày, hạn mức không c�
   assert.equal(q.goi, 'business'); assert.equal(q.ket_noi.tran, 50);
 });
 
+test('Bên bán chỉ gồm chủ hàng hoặc HTX: thương lái, bán giùm bị từ chối kèm hướng dẫn', async () => {
+  for (const vt of ['mua_gom', 'ban_thay']) {
+    const p = new Phien(base, '07' + String(1e8 + ++so).slice(1));
+    await p.lam('POST', '/api/auth/otp', { phone: p.phone });
+    const r = await p.goi('POST', '/api/auth/verify', { phone: p.phone, code: '123456', app: 'ban', name: 'Thử ' + vt, seller_type: vt });
+    loiMa(r, 'E05'); assert.match(r.loi, /app Thu mua/);
+  }
+  const htx = await moi('ban', 'HTX thử', { seller_type: 'htx', kind: 'htx' });
+  assert.equal(htx.org.seller_type, 'htx');
+});
+
 test('Mặt hàng tự nhập được dùng để đăng lô, nhãn chờ duyệt', async () => {
   const ban = await moi('ban', 'Bán tự nhập');
   const p = (await ban.lam('POST', '/api/products/custom', { name: 'Cá bống tượng', branch: 'farmed' })).item;

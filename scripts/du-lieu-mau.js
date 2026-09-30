@@ -16,7 +16,7 @@ export const NGUOI_DUNG = {
   benB: ['0903000222', 'Bên mua B'], benC: ['0903000333', 'Bên mua C'], benD: ['0903000444', 'Bên mua D'], benF: ['0903000666', 'Bên mua F'], utHien: ['0903000777', 'Vựa Út Hiền'],
   tri: ['0909000456', 'Anh Trí'], quang: ['0909000111', 'Anh Quang'],
   phuc: ['0918000771', 'Anh Phúc'], utMai: ['0918000772', 'Chị Út Mai'], htxMX: ['0918000773', 'HTX Xoài Mỹ Xương'], haiThu: ['0918000774', 'Cô Hai Thu'],
-  tuBen: ['0918000775', 'Anh Tư Bền'], thanhLoi: ['0918000776', 'Vựa Thành Lợi'], tanPhuoc: ['0918000778', 'HTX Chuối Tân Phước'], bayHoa: ['0918000779', 'Vườn Bảy Hòa'], sauLanh: ['0918000780', 'Chú Sáu Lành'],
+  tuBen: ['0918000775', 'Anh Tư Bền'], thanhLoi: ['0918000776', 'Vườn Thành Lợi'], tanPhuoc: ['0918000778', 'HTX Chuối Tân Phước'], bayHoa: ['0918000779', 'Vườn Bảy Hòa'], sauLanh: ['0918000780', 'Chú Sáu Lành'],
   vanHanh: ['0900000000', 'Vận hành AgiViet'],
 };
 
@@ -55,7 +55,7 @@ export async function taoDuLieuMau(base) {
   for (const [k, ten, nl] of [['benB', 'Bên mua B · vựa trái cây', 'Kho 20 tấn, xe lạnh 5 tấn'], ['benC', 'Bên mua C · chuỗi cửa hàng', null], ['benD', 'Bên mua D · nhà máy sấy trái cây', 'Kho lạnh 30 tấn, dây chuyền sấy 5 tấn/ngày'], ['benF', 'Bên mua F · công ty xuất khẩu', null], ['utHien', 'Vựa Út Hiền', null]]) { await dk(k, { app: 'mua', org_name: ten }); P[k].__nang_luc = nl; }
   await dk('tri', { app: 'mua', org_name: 'Nhà máy sấy Đồng Xanh', province: 'Đồng Tháp' }); P.tri.__nang_luc = 'Kho lạnh 40 tấn, cân điện tử 60 tấn';
   await P.tri.lam('POST', '/api/org/members', { phone: NGUOI_DUNG.quang[0], name: 'Anh Quang · Giám đốc', roles: 'guest_signer,sign' });
-  const banHang = [['phuc', 'Vựa Phúc Thịnh', 'mua_gom', 'Tiền Giang'], ['utMai', 'Chị Út Mai', 'tu_trong', 'Vĩnh Long'], ['htxMX', 'HTX Xoài Mỹ Xương', 'htx', 'Đồng Tháp'], ['haiThu', 'Cô Hai Thu', 'tu_trong', 'Cái Bè, Đồng Tháp'], ['tuBen', 'Anh Tư Bền', 'tu_trong', 'Cao Lãnh, Đồng Tháp'], ['thanhLoi', 'Vựa Thành Lợi', 'mua_gom', 'Tiền Giang'], ['tanPhuoc', 'HTX Chuối Tân Phước', 'htx', 'Tiền Giang'], ['bayHoa', 'Vườn Bảy Hòa', 'tu_trong', 'Bến Tre'], ['sauLanh', 'Chú Sáu Lành', 'tu_trong', 'Vĩnh Long']];
+  const banHang = [['phuc', 'Trang trại Phúc Thịnh', 'tu_trong', 'Tiền Giang'], ['utMai', 'Chị Út Mai', 'tu_trong', 'Vĩnh Long'], ['htxMX', 'HTX Xoài Mỹ Xương', 'htx', 'Đồng Tháp'], ['haiThu', 'Cô Hai Thu', 'tu_trong', 'Cái Bè, Đồng Tháp'], ['tuBen', 'Anh Tư Bền', 'tu_trong', 'Cao Lãnh, Đồng Tháp'], ['thanhLoi', 'Vườn Thành Lợi', 'tu_trong', 'Tiền Giang'], ['tanPhuoc', 'HTX Chuối Tân Phước', 'htx', 'Tiền Giang'], ['bayHoa', 'Vườn Bảy Hòa', 'tu_trong', 'Bến Tre'], ['sauLanh', 'Chú Sáu Lành', 'tu_trong', 'Vĩnh Long']];
   for (const [k, ten, st, tinh] of banHang) { await dk(k, { app: 'ban', org_name: ten, seller_type: st, province: tinh, kind: st === 'htx' ? 'htx' : 'ho' }); await taiKhoan(P[k], 'Vietcombank', '00712' + P[k].phone.slice(-6), NGUOI_DUNG[k][1] === ten ? ten : NGUOI_DUNG[k][1]); }
   // Người vận hành AgiViet
   const vh = insert('users', { id: newId('u_'), phone: NGUOI_DUNG.vanHanh[0], name: NGUOI_DUNG.vanHanh[1], created_at: nowIso() });
@@ -110,7 +110,7 @@ export async function taoDuLieuMau(base) {
   /* ===== Phía Nhà máy sấy Đồng Xanh ===== */
   luc(-40);
   await ketNoi(P.tri, P.phuc);
-  const loPhuc = await lo(P.phuc, { product_id: 'mango', qty_kg: 12000, qty_basis: 'da_can', grade: 'Loại 1', note: 'Xoài cát Chu, hàng mua đứt' });
+  const loPhuc = await lo(P.phuc, { product_id: 'mango', qty_kg: 12000, qty_basis: 'da_can', grade: 'Loại 1', note: 'Xoài cát Chu, trang trại tự trồng' });
   luc(-8);
   const hd0245 = await taoDon({ mua: P.tri, ban: P.phuc, loHang: loPhuc, kgMin: 12000, gia: 6900, tu: ngay(1), den: ngay(9), dot: [ngay(3), ngay(8)], coc: 15_000_000, hoTro: true });
   doiMa(hd0245.id, 'HĐ-0245');

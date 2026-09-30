@@ -6,6 +6,12 @@ import { THOI_HAN } from '../lib/rules.js';
 import { canQuyen, goiCua } from '../lib/chung.js';
 
 const DEMO = process.env.AGIVIET_DEMO !== '0';
+// Bên bán chỉ là chủ hàng tự trồng/tự nuôi hoặc HTX. Thương lái, vựa, nhà máy là bên mua; không có "bán giùm".
+const VAI_TRO_BAN = ['tu_trong', 'htx'];
+function kiemVaiTroBan(v) {
+  if (v === undefined || v === null || VAI_TRO_BAN.includes(v)) return;
+  throw loi('E05', 'Bên bán chỉ gồm chủ hàng tự trồng, tự nuôi hoặc hợp tác xã. Thương lái, vựa, nhà máy dùng app Thu mua; con cháu cầm máy giúp thì thêm làm người giúp nhập liệu.', 'seller_type');
+}
 const chuanHoaSdt = s => String(s || '').replace(/\D/g, '').replace(/^84/, '0');
 const boDau = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/\s+/g, ' ').trim();
 
@@ -46,6 +52,7 @@ route('POST', '/api/auth/verify', ctx => tx(() => {
     // Đăng ký: tạo người dùng + tổ chức theo vai trò chọn ở màn đầu
     const b = ctx.body;
     if (!b.name || !b.app) throw loi('E05', 'Người mới cần tên và vai trò (ban hoặc mua).', 'name');
+    if (b.app === 'ban') kiemVaiTroBan(b.seller_type);
     user = insert('users', { id: newId('u_'), phone, name: String(b.name).slice(0, 80), created_at: nowIso() });
     const org = insert('organizations', { id: newId('o_'), kind: b.kind || (b.app === 'mua' ? 'doanh_nghiep' : 'ca_nhan'), name: b.org_name || b.name, province: b.province || null, commune: b.commune || null, can_sell: b.app === 'ban' ? 1 : 0, can_buy: b.app === 'mua' ? 1 : 0, seller_type: b.app === 'ban' ? (b.seller_type || 'tu_trong') : null, phone_verified_at: nowIso(), created_at: nowIso() });
     insert('memberships', { id: newId('m_'), user_id: user.id, org_id: org.id, roles: 'administer,create,approve,sign,receive,reconcile,manage_payout', status: 'active' });
@@ -64,6 +71,7 @@ route('GET', '/api/me', ctx => (ctx.user ? { dang_nhap: true, ...hoSoToi(ctx.use
 route('PUT', '/api/org/profile', ctx => tx(() => {
   canQuyen(ctx, 'administer', 'create');
   const b = ctx.body;
+  if (ctx.org.can_sell) kiemVaiTroBan(b.seller_type);
   const cho = ['name', 'province', 'commune', 'seller_type', 'kind'].filter(k => b[k] !== undefined);
   for (const k of cho) run(`update organizations set ${k} = ? where id = ?`, b[k], ctx.org.id);
   audit(ctx, 'organizations', ctx.org.id, 'sua_ho_so', Object.fromEntries(cho.map(k => [k, b[k]])));

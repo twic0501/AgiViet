@@ -32,7 +32,7 @@ CREATE TABLE organizations (
   commune TEXT,
   can_sell INTEGER NOT NULL DEFAULT 0,
   can_buy INTEGER NOT NULL DEFAULT 0,
-  seller_type TEXT CHECK (seller_type IN ('tu_trong','mua_gom','ban_thay','htx')),
+  seller_type TEXT CHECK (seller_type IN ('tu_trong','htx')),   -- bên bán: chủ hàng hoặc HTX; thương lái là bên mua
   phone_verified_at TEXT,
   org_checked_at TEXT,                   -- "Đã đối chiếu hồ sơ tổ chức" (BR-07)
   capability_note TEXT,                  -- năng lực nhận hàng đã đối chiếu (BR-43)
