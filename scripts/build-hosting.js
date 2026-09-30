@@ -1,5 +1,5 @@
 // Đóng gói giao diện cho Firebase Hosting (bản tĩnh, chưa có backend):
-//   hosting-build/ban/ ← ~/fe-nongdan, hosting-build/mua/ ← ~/fe-thumua, hosting-build/index.html (chọn app)
+//   hosting-build/ban/ ← ~/fe-nongdan, hosting-build/mua/ ← ~/fe-thumua, hosting-build/ ← site/ (trang giới thiệu; không có thì trang chọn app)
 // Bỏ file .md (ghi chú nội bộ) và file ẩn; chèn <meta name="agiviet-api" content="off"> để app không gọi API.
 // Chạy: node scripts/build-hosting.js   (FE_BAN, FE_MUA để đổi thư mục nguồn; API=on để bỏ cờ tắt API)
 import fs from 'node:fs';
@@ -62,7 +62,7 @@ fs.writeFileSync(path.join(dich, 'index.html'), `<!doctype html>
 <body>
 <main>
   <div class="dau"><img src="/ban/assets/mark.svg" alt=""><strong>Agi<span>Viet</span></strong></div>
-  <h1>Hàng bạn có. Người đang cần.</h1>
+  <h1>Tìm đúng mối, chốt đúng giá.</h1>
   <p>Chọn app phù hợp với bạn.</p>
   <div class="luoi">
     <a class="the ban" href="/ban/"><strong>Nhà sản xuất</strong><span>Nông dân, chủ ao, hợp tác xã: đăng hàng bằng hình và giọng nói, xem tiền về tay.</span><em>Mở app bán →</em></a>
@@ -85,4 +85,7 @@ self.addEventListener('activate', e => e.waitUntil((async () => {
 fs.writeFileSync(path.join(dich, 'registerSW.js'), `// Bản cũ gọi file này; giờ chỉ gỡ service worker còn sót.
 if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
 `);
-console.log(`Đã đóng gói ${soFile} file vào ${path.relative(goc, dich)}/ (API ${tatApi ? 'tắt' : 'bật'}).`);
+// Trang giới thiệu sản phẩm (site/) thay cho trang chọn app ở gốc, nếu có
+const site = path.join(goc, 'site');
+if (fs.existsSync(path.join(site, 'index.html'))) chep(site, dich);
+console.log(`Đã đóng gói ${soFile} file vào ${path.relative(goc, dich)}/ (API ${tatApi ? 'tắt' : 'bật'}${fs.existsSync(site) ? ', có trang giới thiệu' : ''}).`);
