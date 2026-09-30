@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "hosting-build",
+    "ignore": ["firebase.json", "**/.*"],
+    "cleanUrls": false,
+    "trailingSlash": true,
+    "redirects": [
+      { "source": "/san-xuat/**", "destination": "/ban/", "type": 302 },
+      { "source": "/thu-mua/**", "destination": "/mua/", "type": 302 }
+    ],
+    "headers": [
+      { "source": "**/*.@(html|js|css)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "**/*.@(jpg|png|svg|woff2)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] }
+    ]
+  }
+}

@@ -8,6 +8,8 @@
   "scripts": {
     "start": "node src/server.js",
     "du-lieu-mau": "node scripts/du-lieu-mau.js",
-    "test": "node --test --test-concurrency=1 test/*.test.js"
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "build:hosting": "node scripts/build-hosting.js",
+    "deploy": "node scripts/build-hosting.js && \"$HOME/rnd idea/node_modules/.bin/firebase\" deploy --only hosting --project agiviet-23a94"
   }
 }

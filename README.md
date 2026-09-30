@@ -37,6 +37,22 @@ Số mới cũng đăng ký được ngay trên giao diện (bên bán: đi qua 
 
 Biến môi trường: `PORT`, `AGIVIET_DB`, `FE_BAN`, `FE_MUA` (thư mục giao diện), `AGIVIET_DEMO=0` để tắt chế độ demo (OTP ngẫu nhiên).
 
+## Deploy (Firebase Hosting, bản tĩnh)
+
+Site **https://agiviet-23a94.web.app** (project `agiviet-23a94`) đã thay bản `rnd idea` từ 30/09/2026:
+`/` trang chọn app, `/ban/` Nhà sản xuất, `/mua/` Thu mua; `/san-xuat/`, `/thu-mua/` cũ chuyển hướng sang app mới.
+
+```bash
+npm run deploy          # đóng gói ~/fe-nongdan + ~/fe-thumua vào hosting-build/ rồi deploy CHỈ hosting
+node test/hosting.mjs https://agiviet-23a94.web.app   # kiểm tra site thật
+```
+
+- Bản hosting **chưa có backend**: HTML được chèn `<meta name="agiviet-api" content="off">` nên hai app chạy số liệu mẫu tĩnh.
+- Firestore rules/indexes của `rnd idea` **không bị đụng tới**.
+- `sw.js` là service worker tự hủy để gỡ PWA cũ của `rnd idea` khỏi máy người dùng cũ.
+- Quay lại bản cũ: Firebase Console → Hosting → lịch sử phát hành → Rollback.
+- Muốn đưa backend lên: cần bật gói Blaze và chọn nơi lưu dữ liệu (Cloud Run + Firestore hoặc Cloud SQL), vì SQLite không bền trên Cloud Run.
+
 ## Dữ liệu mẫu có gì
 
 - **Phía chị Năm:** 3 lô (xoài 10 tấn ước tính; thanh long 3,2 tấn đã cân; tôm mùa vụ lâu chưa xác nhận → ngừng nhận đề nghị),

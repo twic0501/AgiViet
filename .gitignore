@@ -5,3 +5,6 @@ data/
 *.db-shm
 .env
 .claude/
+firebase-debug.log
+hosting-build/
+.firebase/
