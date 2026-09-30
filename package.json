@@ -1,0 +1,13 @@
+{
+  "name": "agiviet-he-thong",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hệ thống AgiViet theo Đặc tả kiến trúc v4: API + CSDL quan hệ + phục vụ hai giao diện",
+  "type": "module",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "start": "node src/server.js",
+    "du-lieu-mau": "node scripts/du-lieu-mau.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js"
+  }
+}

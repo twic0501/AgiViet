@@ -1,0 +1,862 @@
+{
+ "sectors": [
+  {
+   "id": "agri",
+   "name": {
+    "vi": "Nông sản",
+    "en": "Agriculture"
+   }
+  },
+  {
+   "id": "aqua",
+   "name": {
+    "vi": "Thủy sản",
+    "en": "Fisheries & aquaculture"
+   }
+  }
+ ],
+ "branches": [
+  {
+   "id": "crop",
+   "sector": "agri",
+   "name": {
+    "vi": "Trồng trọt",
+    "en": "Crops"
+   },
+   "hint": {
+    "vi": "Lúa gạo, trái cây, rau củ, cà phê, tiêu…",
+    "en": "Rice, fruit, vegetables, coffee, pepper…"
+   }
+  },
+  {
+   "id": "husbandry",
+   "sector": "agri",
+   "name": {
+    "vi": "Chăn nuôi",
+    "en": "Livestock"
+   },
+   "hint": {
+    "vi": "Heo, bò, gà vịt, trứng, sữa, mật ong",
+    "en": "Pigs, cattle, poultry, eggs, milk, honey"
+   }
+  },
+  {
+   "id": "farmed",
+   "sector": "aqua",
+   "name": {
+    "vi": "Nuôi trồng",
+    "en": "Aquaculture"
+   },
+   "hint": {
+    "vi": "Cá tra, tôm, cua, nghêu, hàu, rong",
+    "en": "Pangasius, shrimp, crab, clams, oysters"
+   }
+  },
+  {
+   "id": "capture",
+   "sector": "aqua",
+   "name": {
+    "vi": "Đánh bắt",
+    "en": "Wild catch"
+   },
+   "hint": {
+    "vi": "Cá ngừ, cá thu, cá cơm, mực, ghẹ",
+    "en": "Tuna, mackerel, anchovy, squid, crab"
+   }
+  }
+ ],
+ "groups": [
+  {
+   "id": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Lúa gạo, ngũ cốc",
+    "en": "Rice & grains"
+   }
+  },
+  {
+   "id": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Trái cây",
+    "en": "Fruit"
+   }
+  },
+  {
+   "id": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Rau, củ, nấm",
+    "en": "Vegetables & mushrooms"
+   }
+  },
+  {
+   "id": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Cây công nghiệp, gia vị, dược liệu",
+    "en": "Industrial crops, spices & herbs"
+   }
+  },
+  {
+   "id": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Gia súc, sữa, ong",
+    "en": "Livestock, milk & bees"
+   }
+  },
+  {
+   "id": "poultry",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Gia cầm, trứng",
+    "en": "Poultry & eggs"
+   }
+  },
+  {
+   "id": "fish",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cá nuôi",
+    "en": "Farmed fish"
+   }
+  },
+  {
+   "id": "crustacean",
+   "branch": "farmed",
+   "name": {
+    "vi": "Tôm, cua nuôi",
+    "en": "Farmed shrimp & crab"
+   }
+  },
+  {
+   "id": "mollusc",
+   "branch": "farmed",
+   "name": {
+    "vi": "Nghêu, sò, hàu, rong",
+    "en": "Clams, oysters & seaweed"
+   }
+  },
+  {
+   "id": "sea-fish",
+   "branch": "capture",
+   "name": {
+    "vi": "Cá biển",
+    "en": "Sea fish"
+   }
+  },
+  {
+   "id": "seafood",
+   "branch": "capture",
+   "name": {
+    "vi": "Mực, ghẹ, hải sản khác",
+    "en": "Squid, crab & other seafood"
+   }
+  }
+ ],
+ "products": [
+  {
+   "id": "mango",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Xoài cát Hòa Lộc",
+    "en": "Hoa Loc mango"
+   }
+  },
+  {
+   "id": "durian",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Sầu riêng Ri6",
+    "en": "Ri6 durian"
+   }
+  },
+  {
+   "id": "rice",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Gạo ST25",
+    "en": "ST25 rice"
+   }
+  },
+  {
+   "id": "coffee",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Cà phê Robusta nhân",
+    "en": "Robusta green coffee"
+   }
+  },
+  {
+   "id": "vegetables",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Rau ăn lá VietGAP",
+    "en": "VietGAP leafy greens"
+   }
+  },
+  {
+   "id": "shrimp",
+   "group": "crustacean",
+   "branch": "farmed",
+   "name": {
+    "vi": "Tôm thẻ chân trắng",
+    "en": "Whiteleg shrimp"
+   }
+  },
+  {
+   "id": "pangasius",
+   "group": "fish",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cá tra nguyên liệu",
+    "en": "Pangasius (raw)"
+   }
+  },
+  {
+   "id": "paddy",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Lúa tươi (lúa ướt)",
+    "en": "Fresh paddy"
+   }
+  },
+  {
+   "id": "rice-fragrant",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Gạo thơm (Jasmine, Nàng Hoa)",
+    "en": "Fragrant rice (Jasmine)"
+   }
+  },
+  {
+   "id": "sticky-rice",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Nếp",
+    "en": "Glutinous rice"
+   }
+  },
+  {
+   "id": "corn",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Bắp (ngô) hạt",
+    "en": "Maize"
+   }
+  },
+  {
+   "id": "cassava",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Khoai mì (sắn) củ",
+    "en": "Cassava roots"
+   }
+  },
+  {
+   "id": "sweet-potato",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Khoai lang",
+    "en": "Sweet potato"
+   }
+  },
+  {
+   "id": "soybean",
+   "group": "grain",
+   "branch": "crop",
+   "name": {
+    "vi": "Đậu nành, đậu xanh",
+    "en": "Soybeans & mung beans"
+   }
+  },
+  {
+   "id": "dragon-fruit",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Thanh long",
+    "en": "Dragon fruit"
+   }
+  },
+  {
+   "id": "pomelo",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Bưởi da xanh, bưởi Năm Roi",
+    "en": "Pomelo"
+   }
+  },
+  {
+   "id": "longan",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Nhãn",
+    "en": "Longan"
+   }
+  },
+  {
+   "id": "lychee",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Vải thiều",
+    "en": "Lychee"
+   }
+  },
+  {
+   "id": "rambutan",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Chôm chôm",
+    "en": "Rambutan"
+   }
+  },
+  {
+   "id": "jackfruit",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Mít Thái",
+    "en": "Thai jackfruit"
+   }
+  },
+  {
+   "id": "banana",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Chuối (già hương, cau)",
+    "en": "Banana"
+   }
+  },
+  {
+   "id": "pineapple",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Khóm (dứa)",
+    "en": "Pineapple"
+   }
+  },
+  {
+   "id": "orange",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Cam sành, quýt",
+    "en": "King orange & mandarin"
+   }
+  },
+  {
+   "id": "passion-fruit",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Chanh dây",
+    "en": "Passion fruit"
+   }
+  },
+  {
+   "id": "avocado",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Bơ (034, Booth)",
+    "en": "Avocado"
+   }
+  },
+  {
+   "id": "mangosteen",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Măng cụt",
+    "en": "Mangosteen"
+   }
+  },
+  {
+   "id": "watermelon",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Dưa hấu",
+    "en": "Watermelon"
+   }
+  },
+  {
+   "id": "coconut",
+   "group": "fruit",
+   "branch": "crop",
+   "name": {
+    "vi": "Dừa trái (dừa xiêm, dừa khô)",
+    "en": "Coconut"
+   }
+  },
+  {
+   "id": "cabbage",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Bắp cải, cải thảo",
+    "en": "Cabbage"
+   }
+  },
+  {
+   "id": "tomato",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Cà chua",
+    "en": "Tomato"
+   }
+  },
+  {
+   "id": "chili",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Ớt",
+    "en": "Chili"
+   }
+  },
+  {
+   "id": "onion",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Hành tím, tỏi",
+    "en": "Shallot & garlic"
+   }
+  },
+  {
+   "id": "potato",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Khoai tây",
+    "en": "Potato"
+   }
+  },
+  {
+   "id": "carrot",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Cà rốt, củ cải",
+    "en": "Carrot & radish"
+   }
+  },
+  {
+   "id": "cucumber",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Dưa leo, bí, bầu",
+    "en": "Cucumber & gourds"
+   }
+  },
+  {
+   "id": "mushroom",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Nấm rơm, nấm bào ngư",
+    "en": "Mushrooms"
+   }
+  },
+  {
+   "id": "herbs",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Rau thơm, rau gia vị",
+    "en": "Fresh herbs"
+   }
+  },
+  {
+   "id": "arabica",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Cà phê Arabica nhân",
+    "en": "Arabica green coffee"
+   }
+  },
+  {
+   "id": "coffee-cherry",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Cà phê tươi (quả)",
+    "en": "Coffee cherries"
+   }
+  },
+  {
+   "id": "pepper",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Hồ tiêu",
+    "en": "Black pepper"
+   }
+  },
+  {
+   "id": "cashew",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Hạt điều thô",
+    "en": "Raw cashew nuts"
+   }
+  },
+  {
+   "id": "rubber-latex",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Mủ cao su",
+    "en": "Rubber latex"
+   }
+  },
+  {
+   "id": "tea",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Chè (trà) búp tươi",
+    "en": "Fresh tea leaves"
+   }
+  },
+  {
+   "id": "sugarcane",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Mía cây",
+    "en": "Sugarcane"
+   }
+  },
+  {
+   "id": "cocoa",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Ca cao hạt",
+    "en": "Cocoa beans"
+   }
+  },
+  {
+   "id": "dried-coconut",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Cơm dừa, dừa khô",
+    "en": "Copra & dried coconut"
+   }
+  },
+  {
+   "id": "pig",
+   "group": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Heo hơi",
+    "en": "Live pigs"
+   }
+  },
+  {
+   "id": "cattle",
+   "group": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Bò thịt (bò hơi)",
+    "en": "Beef cattle (live)"
+   }
+  },
+  {
+   "id": "buffalo",
+   "group": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Trâu thịt",
+    "en": "Water buffalo"
+   }
+  },
+  {
+   "id": "goat",
+   "group": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Dê, cừu",
+    "en": "Goats & sheep"
+   }
+  },
+  {
+   "id": "milk",
+   "group": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Sữa bò tươi",
+    "en": "Raw cow milk"
+   }
+  },
+  {
+   "id": "chicken",
+   "group": "poultry",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Gà thịt (gà ta, gà công nghiệp)",
+    "en": "Broiler & free-range chicken"
+   }
+  },
+  {
+   "id": "quail",
+   "group": "poultry",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Chim cút, bồ câu",
+    "en": "Quail & pigeons"
+   }
+  },
+  {
+   "id": "duck",
+   "group": "poultry",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Vịt thịt",
+    "en": "Ducks"
+   }
+  },
+  {
+   "id": "eggs",
+   "group": "poultry",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Trứng gà, trứng vịt",
+    "en": "Chicken & duck eggs"
+   }
+  },
+  {
+   "id": "cinnamon",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Quế vỏ",
+    "en": "Cinnamon bark"
+   }
+  },
+  {
+   "id": "star-anise",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Hồi khô",
+    "en": "Star anise"
+   }
+  },
+  {
+   "id": "honey",
+   "group": "livestock",
+   "branch": "husbandry",
+   "name": {
+    "vi": "Mật ong",
+    "en": "Honey"
+   }
+  },
+  {
+   "id": "bamboo-shoot",
+   "group": "veg",
+   "branch": "crop",
+   "name": {
+    "vi": "Măng tươi, măng khô",
+    "en": "Bamboo shoots"
+   }
+  },
+  {
+   "id": "medicinal",
+   "group": "industrial",
+   "branch": "crop",
+   "name": {
+    "vi": "Dược liệu (sâm, đinh lăng…)",
+    "en": "Medicinal herbs"
+   }
+  },
+  {
+   "id": "basa",
+   "group": "fish",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cá basa",
+    "en": "Basa catfish"
+   }
+  },
+  {
+   "id": "tilapia",
+   "group": "fish",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cá rô phi, cá điêu hồng",
+    "en": "Tilapia & red tilapia"
+   }
+  },
+  {
+   "id": "snakehead",
+   "group": "fish",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cá lóc",
+    "en": "Snakehead fish"
+   }
+  },
+  {
+   "id": "tuna",
+   "group": "sea-fish",
+   "branch": "capture",
+   "name": {
+    "vi": "Cá ngừ đại dương",
+    "en": "Ocean tuna"
+   }
+  },
+  {
+   "id": "mackerel",
+   "group": "sea-fish",
+   "branch": "capture",
+   "name": {
+    "vi": "Cá thu, cá nục",
+    "en": "Mackerel & scad"
+   }
+  },
+  {
+   "id": "sea-bass",
+   "group": "fish",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cá chẽm, cá bớp (lồng bè)",
+    "en": "Sea bass & cobia"
+   }
+  },
+  {
+   "id": "tiger-shrimp",
+   "group": "crustacean",
+   "branch": "farmed",
+   "name": {
+    "vi": "Tôm sú",
+    "en": "Black tiger shrimp"
+   }
+  },
+  {
+   "id": "river-prawn",
+   "group": "crustacean",
+   "branch": "farmed",
+   "name": {
+    "vi": "Tôm càng xanh",
+    "en": "Giant river prawn"
+   }
+  },
+  {
+   "id": "lobster",
+   "group": "crustacean",
+   "branch": "farmed",
+   "name": {
+    "vi": "Tôm hùm",
+    "en": "Spiny lobster"
+   }
+  },
+  {
+   "id": "mud-crab",
+   "group": "crustacean",
+   "branch": "farmed",
+   "name": {
+    "vi": "Cua biển (cua Cà Mau)",
+    "en": "Mud crab"
+   }
+  },
+  {
+   "id": "clam",
+   "group": "mollusc",
+   "branch": "farmed",
+   "name": {
+    "vi": "Nghêu, sò huyết",
+    "en": "Clams & blood cockles"
+   }
+  },
+  {
+   "id": "oyster",
+   "group": "mollusc",
+   "branch": "farmed",
+   "name": {
+    "vi": "Hàu",
+    "en": "Oysters"
+   }
+  },
+  {
+   "id": "squid",
+   "group": "seafood",
+   "branch": "capture",
+   "name": {
+    "vi": "Mực ống, mực lá",
+    "en": "Squid"
+   }
+  },
+  {
+   "id": "seaweed",
+   "group": "mollusc",
+   "branch": "farmed",
+   "name": {
+    "vi": "Rong biển, rong nho",
+    "en": "Seaweed & sea grapes"
+   }
+  },
+  {
+   "id": "anchovy",
+   "group": "sea-fish",
+   "branch": "capture",
+   "name": {
+    "vi": "Cá cơm",
+    "en": "Anchovy"
+   }
+  },
+  {
+   "id": "hairtail",
+   "group": "sea-fish",
+   "branch": "capture",
+   "name": {
+    "vi": "Cá hố, cá đổng",
+    "en": "Hairtail & threadfin bream"
+   }
+  },
+  {
+   "id": "blue-crab",
+   "group": "seafood",
+   "branch": "capture",
+   "name": {
+    "vi": "Ghẹ xanh",
+    "en": "Blue swimming crab"
+   }
+  },
+  {
+   "id": "octopus",
+   "group": "seafood",
+   "branch": "capture",
+   "name": {
+    "vi": "Bạch tuộc",
+    "en": "Octopus"
+   }
+  }
+ ]
+}
