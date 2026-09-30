@@ -1,21 +1,16 @@
 {
  "tong_giay": 195,
- "ghi_chu": "Văn nói: câu ngắn, có chỗ lấy hơi. 'tre' = nghỉ trước câu (giây); 'toc' = tốc độ riêng câu; đầu câu được canh vào nửa phách nhạc.",
+ "ghi_chu": "Văn phong video giới thiệu sản phẩm: câu gọn, chắc, không khẩu ngữ, không số liệu tự đặt. Giọng VieNeu-TTS v3 Turbo (chạy trên máy). 'tre' = nghỉ trước câu (giây). Số câu mỗi cảnh khớp các mốc đồng bộ trong san-khau.html.",
  "giong": {
   "dan": {
-   "voice": "vi-VN-HoaiMyNeural",
-   "rate": "+0%",
-   "pitch": "+0Hz"
+   "voice": "Ngọc Huyền",
+   "nhip": 0.95
   },
   "nam": {
-   "voice": "vi-VN-HoaiMyNeural",
-   "rate": "-12%",
-   "pitch": "-8Hz"
+   "voice": "Kim Thanh"
   },
   "tri": {
-   "voice": "vi-VN-NamMinhNeural",
-   "rate": "-2%",
-   "pitch": "+0Hz"
+   "voice": "Thái Sơn"
   }
  },
  "canh": [
@@ -26,13 +21,12 @@
     {
      "g": "dan",
      "tre": 1.6,
-     "toc": "-8%",
-     "t": "Mỗi mùa thu hoạch, hàng triệu tấn nông sản đổi chủ."
+     "t": "Mỗi mùa vụ, hàng triệu tấn nông sản được mua bán trên khắp đồng bằng."
     },
     {
      "g": "dan",
      "tre": 0.5,
-     "t": "Nhiều khi, chỉ bằng một cuộc điện thoại, và một lời hứa miệng."
+     "t": "Phần lớn trong số đó, vẫn được chốt bằng một cuộc điện thoại, và một lời hứa."
     }
    ]
   },
@@ -42,33 +36,32 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Ở Cao Lãnh, chị Năm có mười tấn xoài, tuần sau là hái."
+     "t": "Người trồng có hàng, nhưng khó tìm đúng người mua."
     },
     {
      "g": "dan",
-     "tre": 0.35,
-     "t": "Còn anh Trí, bên nhà máy sấy, đang cần gấp hai chục tấn."
+     "tre": 0.3,
+     "t": "Nhà máy cần nguồn, nhưng khó tìm đúng người bán."
     },
     {
      "g": "dan",
      "tre": 0.5,
-     "toc": "-8%",
-     "t": "Hai người cần nhau, mà chưa gặp được nhau."
+     "t": "Hai bên cần nhau, nhưng thiếu một nơi để gặp nhau."
     },
     {
      "g": "dan",
      "tre": 0.7,
-     "t": "Giá cao, chưa chắc về tay nhiều."
+     "t": "Giá chào cao chưa chắc mang lại nhiều tiền hơn."
     },
     {
      "g": "dan",
      "tre": 0.3,
-     "t": "Lúc cân, mỗi bên một con số."
+     "t": "Kết quả cân, mỗi bên giữ một con số."
     },
     {
      "g": "dan",
      "tre": 0.3,
-     "t": "Còn báo đã chuyển khoản, mà tiền chưa về."
+     "t": "Và khoản thanh toán, không phải lúc nào cũng rõ ràng."
     }
    ]
   },
@@ -79,18 +72,17 @@
     {
      "g": "dan",
      "tre": 0.4,
-     "t": "Vì vậy mà có AgiViet."
+     "t": "AgiViet ra đời để giải quyết điều đó."
     },
     {
      "g": "dan",
      "tre": 0.45,
-     "t": "Hai ứng dụng, dùng chung một mã đơn."
+     "t": "Hai ứng dụng, một dữ liệu giao dịch chung."
     },
     {
      "g": "dan",
      "tre": 0.35,
-     "toc": "-8%",
-     "t": "Để tìm đúng mối, và chốt đúng giá."
+     "t": "Giúp người bán và người mua tìm đúng mối, và chốt đúng giá."
     }
    ]
   },
@@ -100,22 +92,22 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Anh Trí đăng ký cho nhà máy. Chưa tới một phút."
+     "t": "Với doanh nghiệp thu mua, đăng ký chỉ mất chưa đầy một phút."
     },
     {
      "g": "dan",
      "tre": 0.35,
-     "t": "Nhập mã, chọn gói, vậy là vào app."
+     "t": "Xác minh số điện thoại, chọn gói dịch vụ, và bắt đầu."
     },
     {
      "g": "tri",
-     "tre": 1.4,
-     "t": "Tháng này nhà máy cần thêm ba tấn mít Thái."
+     "tre": 1.2,
+     "t": "Tháng này, nhà máy cần thêm ba tấn mít Thái."
     },
     {
      "g": "dan",
      "tre": 0.5,
-     "t": "Anh đăng nhu cầu lên. Người bán đúng mặt hàng thấy ngay, và báo giá riêng cho anh."
+     "t": "Nhu cầu được đăng ngay. Người bán đúng mặt hàng nhận được thông tin, và gửi báo giá riêng."
     }
    ]
   },
@@ -125,33 +117,32 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Còn chị Năm, không rành điện thoại cũng không sao."
+     "t": "Với người sản xuất, AgiViet được thiết kế để ai cũng dùng được."
     },
     {
      "g": "dan",
      "tre": 0.45,
-     "t": "App làm sáng đúng cái nút cần bấm."
+     "t": "Hướng dẫn trực quan chỉ đúng thao tác cần thực hiện."
     },
     {
      "g": "dan",
      "tre": 0.35,
-     "toc": "-8%",
-     "t": "Chị chỉ việc bấm, rồi nói."
+     "t": "Đăng hàng bằng giọng nói, không cần gõ chữ."
     },
     {
      "g": "nam",
-     "tre": 0.7,
-     "t": "Mười tấn xoài, tuần sau hái nha."
-    },
-    {
-     "g": "dan",
-     "tre": 0.7,
-     "t": "App tự ghi thành tin đăng. Chưa cân, thì ghi là ước tính."
+     "tre": 0.6,
+     "t": "Mười tấn xoài, tuần sau thu hoạch."
     },
     {
      "g": "dan",
      "tre": 0.6,
-     "t": "Chữ nhiều quá? Bấm nút Nghe, app đọc cho chị nghe."
+     "t": "Hệ thống tự tạo tin đăng. Hàng chưa cân được ghi rõ là số lượng ước tính."
+    },
+    {
+     "g": "dan",
+     "tre": 0.5,
+     "t": "Ở mọi màn hình, nút Nghe đọc nội dung thành tiếng."
     }
    ]
   },
@@ -161,17 +152,17 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Bên nhà máy, anh Trí lọc nguồn theo lượng còn bán được, theo ngày hái, rồi xếp giá thấp lên đầu."
+     "t": "Phía nhà máy, bộ lọc tìm nguồn theo sản lượng còn bán được, thời gian thu hoạch, và mức giá."
     },
     {
      "g": "dan",
      "tre": 0.5,
-     "t": "Thấy lô xoài của chị Năm, anh gửi lời mời."
+     "t": "Lô hàng phù hợp xuất hiện. Lời mời kết nối được gửi đi."
     },
     {
      "g": "dan",
-     "tre": 0.6,
-     "t": "Chị bấm đồng ý. Vậy là hai bên nối được với nhau."
+     "tre": 0.5,
+     "t": "Người bán chấp nhận, và hai bên chính thức kết nối."
     }
    ]
   },
@@ -181,33 +172,32 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Chốt đơn. Cả hai bên cùng nhìn một mã."
+     "t": "Đơn hàng được chốt trên một mã duy nhất."
     },
     {
      "g": "dan",
-     "tre": 0.6,
-     "t": "Anh Trí nhập số cân. Số đó ghi là tự khai, cho tới khi chị Năm bấm Đúng."
+     "tre": 0.5,
+     "t": "Kết quả cân do bên mua nhập, được đánh dấu tự khai, cho đến khi người bán xác nhận."
     },
     {
      "g": "dan",
-     "tre": 0.6,
-     "t": "Anh báo đã trả tiền. Chị mở ngân hàng, chưa thấy?"
+     "tre": 0.5,
+     "t": "Bên mua ghi nhận thanh toán. Nếu người bán chưa nhận được tiền,"
     },
     {
      "g": "dan",
-     "tre": 0.4,
-     "t": "Một nút thôi, hồ sơ đối soát mở ra cho cả hai bên."
+     "tre": 0.25,
+     "t": "hồ sơ đối soát được mở cho cả hai bên, kèm đầy đủ chứng từ."
     },
     {
      "g": "dan",
-     "tre": 0.6,
-     "t": "Tiền về rồi, chị xác nhận. Xong đơn."
+     "tre": 0.5,
+     "t": "Khi tiền về, người bán xác nhận, và đơn hàng hoàn tất."
     },
     {
      "g": "dan",
-     "tre": 0.6,
-     "toc": "-8%",
-     "t": "Không ai phải tin lời kể một phía."
+     "tre": 0.5,
+     "t": "Mọi con số đều có nguồn. Không bên nào phải tin lời kể một phía."
     }
    ]
   },
@@ -217,18 +207,17 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Còn nữa. Trước khi chọn khách, chị Năm so tiền về tay."
+     "t": "Trước khi chọn khách hàng, người bán so sánh số tiền thực nhận."
     },
     {
      "g": "dan",
-     "tre": 0.45,
-     "t": "Khách này trả giá thấp hơn, nhưng cho xe vào tận vườn, cân xong là trả ngay."
+     "tre": 0.4,
+     "t": "Một mức giá thấp hơn, nhưng đã gồm vận chuyển và thanh toán ngay,"
     },
     {
      "g": "dan",
-     "tre": 0.5,
-     "toc": "-6%",
-     "t": "Tính ra, chị được thêm hai triệu."
+     "tre": 0.2,
+     "t": "có thể mang lại nhiều hơn hai triệu đồng."
     }
    ]
   },
@@ -238,12 +227,12 @@
    "cau": [
     {
      "g": "dan",
-     "t": "AgiViet không giữ tiền của ai. Không tự trừ tiền. Không tự phán ai đúng, ai sai."
+     "t": "AgiViet không giữ tiền, không tự khấu trừ, và không phân xử thay các bên."
     },
     {
      "g": "dan",
      "tre": 0.5,
-     "t": "Đổi tài khoản nhận tiền, phải chờ và xác minh, để kẻ gian khỏi chen vào giữa."
+     "t": "Mọi thay đổi tài khoản nhận tiền đều qua thời gian chờ và xác minh, để bảo vệ người bán khỏi gian lận."
     }
    ]
   },
@@ -253,21 +242,20 @@
    "cau": [
     {
      "g": "dan",
-     "t": "Người bán dùng miễn phí. Bên mua bắt đầu miễn phí, cần thêm thì nâng cấp."
+     "t": "Người bán dùng miễn phí. Doanh nghiệp bắt đầu với gói miễn phí, và nâng cấp khi cần mở rộng."
     },
     {
      "g": "dan",
-     "tre": 0.9,
-     "toc": "-6%",
+     "tre": 0.8,
      "t": "AgiViet."
     },
     {
      "g": "dan",
      "tre": 0.4,
-     "toc": "-10%",
-     "t": "Tìm đúng mối, chốt đúng giá."
+     "t": "Tìm đúng mối. Chốt đúng giá."
     }
-   ]
+   ],
+   "duoi": 3.2
   }
  ]
 }

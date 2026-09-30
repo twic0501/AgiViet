@@ -8,7 +8,7 @@ từng từ, nhạc nền tự soạn.
 | Tệp | Việc |
 |---|---|
 | `kich-ban.json` | Lời dẫn 10 cảnh, giọng đọc, thời lượng tối thiểu mỗi cảnh, tổng 195 giây |
-| `giong.py` | Đọc lời dẫn bằng edge-tts (HoaiMy, NamMinh), lấy mốc từng từ, lập `lich.json` đúng 195 giây |
+| `giong.py` | Đọc lời dẫn bằng VieNeu-TTS v3 Turbo chạy trên máy (dẫn: Ngọc Huyền; chị Năm: Kim Thanh; anh Trí: Thái Sơn), ước lượng mốc chữ từ khoảng lặng, lập `lich.json` đúng 195 giây (`GIU=1`: dùng lại tệp giọng, chỉ lập lại lịch) |
 | `san-khau.html` | Trang sân khấu: thiết bị, con trỏ, chữ động, phụ đề, kịch bản bấm của 10 cảnh |
 | `quay.mjs` | Quay sân khấu bằng screencast của Chromium, ghép khung theo mốc thời gian thành `hinh.mp4` 30 hình/giây |
 | `nhac.py` | Nhạc nền tự soạn (Rê trưởng, 92 nhịp/phút), bám theo cảnh |
@@ -17,7 +17,7 @@ từng từ, nhạc nền tự soạn.
 ## Dựng lại
 
 ```bash
-python3 -m venv /tmp/tts && /tmp/tts/bin/pip install edge-tts numpy
+python3 -m venv /tmp/tts && /tmp/tts/bin/pip install vieneu numpy
 RA=/tmp/agiviet-video
 /tmp/tts/bin/python video/giong.py $RA          # lời dẫn + lịch
 node scripts/build-hosting.js
@@ -28,7 +28,7 @@ node video/quay.mjs $RA                          # ~3,5 phút, ra $RA/hinh.mp4
 ```
 
 Lúc quay, sân khấu đặt `localStorage av.quay-video = 1` để app ẩn dải “Mô phỏng” và tiền tố trong thông báo.
-`edge-tts` gửi lời dẫn lên dịch vụ đọc của Microsoft để tạo giọng (cần mạng).
+VieNeu-TTS chạy hoàn toàn trên máy (lần đầu tải mô hình từ HuggingFace về ~/.cache/vieneu-local).
 Sửa lời dẫn thì chạy lại từ `giong.py`; sửa cách bấm trong app thì chạy lại từ `quay.mjs`.
 
 Lời dẫn viết theo văn nói (câu ngắn, nghỉ có chủ ý, tốc độ riêng từng câu, đầu câu canh vào nửa phách nhạc); hình đồng bộ theo câu (`denCau`, `hetCau` trong `san-khau.html`), sửa lời thì hình tự khớp. Tránh hiệu ứng nặng (filter blur lớn, backdrop-filter, shadowBlur trên canvas): làm tụt khung hình khi quay.

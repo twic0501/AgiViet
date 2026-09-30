@@ -251,11 +251,11 @@
       mang({ do: 1, tien: .15 });
       await denCau(0, -.4);
       lop(`<div class="mat">Đồng bằng sông Cửu Long · mùa thu hoạch</div>`, { left: '150px', top: '350px' });
-      chuDong('Hàng triệu tấn nông sản\nđổi chủ *mỗi* *mùa.*', 'h1', { left: '150px', top: '410px' });
+      chuDong('Hàng triệu tấn nông sản\nđược mua bán *mỗi* *mùa* *vụ.*', 'h1', { left: '150px', top: '410px' });
       mang({ tien: .45 });
       await denCau(1, -.2);
       await xoaChu(500);
-      chuDong('Nhiều khi, chỉ bằng\n*một* *cuộc* *gọi* và\n*một* *lời* *hứa* *miệng.*', 'h1', { left: '150px', top: '330px' });
+      chuDong('Phần lớn vẫn được chốt\nbằng *một* *cuộc* *gọi*\nvà *một* *lời* *hứa.*', 'h1', { left: '150px', top: '330px' });
       mang({ tien: 1 });
       await hetCau(1, -.3); await xoaChu(500);
       mang({ hoi: .92, do: .7 });
@@ -266,19 +266,19 @@
     },
     async 'van-de'() {
       await xoaChu(); mang({ hoi: 0, tien: 0, do: .35 });
-      lop(`<div class="mat">Hai người cần nhau</div>`, { left: '150px', top: '90px' });
+      lop(`<div class="mat">Thị trường hôm nay</div>`, { left: '150px', top: '90px' });
       await denCau(0, -.3);
       lop(`<div class="kinh nv"><span class="av n">N</span><div><b>Chị Năm</b><span>Tự trồng · Mỹ Xương, Cao Lãnh<br>10 tấn xoài, tuần sau hái</span></div></div>`, { left: '150px', top: '160px' });
       await denCau(1, -.2);
       lop(`<div class="kinh nv"><span class="av t">T</span><div><b>Anh Trí</b><span>Nhà máy sấy Đồng Xanh<br>Cần gấp 20 tấn xoài</span></div></div>`, { left: '1150px', top: '160px' });
       await denCau(2);
-      lop(`<div class="noi-ket"><span>chưa gặp được nhau</span></div>`, { left: '0', top: '0' });
+      lop(`<div class="noi-ket"><span>thiếu nơi kết nối</span></div>`, { left: '0', top: '0' });
       await denCau(3, -.1);
-      lop(`<div class="kinh kho"><div class="ic">${ic('ic-gia')}</div><b>Giá cao chưa chắc về tay nhiều</b><span>Tiền xe, bốc xếp, trả chậm</span></div>`, { left: '150px', top: '520px' });
+      lop(`<div class="kinh kho"><div class="ic">${ic('ic-gia')}</div><b>Giá cao chưa chắc thực nhận cao</b><span>Chi phí vận chuyển, bốc xếp, trả chậm</span></div>`, { left: '150px', top: '520px' });
       await denCau(4, -.1);
-      lop(`<div class="kinh kho"><div class="ic">${ic('ic-can')}</div><b>Cân xong, mỗi bên một con số</b><span>5.020 kg hay 5.040 kg?</span></div>`, { left: '700px', top: '520px' });
+      lop(`<div class="kinh kho"><div class="ic">${ic('ic-can')}</div><b>Kết quả cân, mỗi bên một số liệu</b><span>5.020 kg hay 5.040 kg?</span></div>`, { left: '700px', top: '520px' });
       await denCau(5, -.1);
-      lop(`<div class="kinh kho"><div class="ic">${ic('ic-tien')}</div><b>Báo đã chuyển khoản</b><span>…mà tiền chưa về tài khoản</span></div>`, { left: '1250px', top: '520px' });
+      lop(`<div class="kinh kho"><div class="ic">${ic('ic-tien')}</div><b>Thanh toán thiếu minh bạch</b><span>Báo đã chuyển, nhưng tiền chưa về</span></div>`, { left: '1250px', top: '520px' });
     },
     async 'gioi-thieu'() {
       await xoaChu(); mang({ do: .18 });
@@ -292,7 +292,7 @@
       lop(`<div class="kinh the-tb">App Thu mua · máy tính</div>`, { left: '660px', top: '232px' });
       lop(`<div class="kinh the-tb">App Nhà sản xuất · điện thoại</div>`, { left: '1480px', top: '72px' });
       await denCau(2);
-      lop(`<div class="phu" style="font-size:34px">Cho vựa, nhà máy<br>và bà con nông dân.</div>`, { left: '150px', top: '560px' });
+      lop(`<div class="phu" style="font-size:34px">Cho doanh nghiệp thu mua<br>và người sản xuất.</div>`, { left: '150px', top: '560px' });
     },
     async 'tri-dang-ky'() {
       await xoaChu(); mang({ do: 0 });
@@ -325,8 +325,8 @@
       datTb('lap', { x: -1700, y: 150, s: .92, hien: false });
       nhan('dt', 'N', 'Chị Năm', '· Mỹ Xương, Cao Lãnh');
       datTb('dt', { x: 1090, y: 130, s: 1 });
-      lop(`<div class="mat">Người bán</div>`, { left: '150px', top: '330px' });
-      chuDong('Không rành\n*điện* *thoại?*', 'h2', { left: '150px', top: '390px' });
+      lop(`<div class="mat">Người sản xuất</div>`, { left: '150px', top: '330px' });
+      chuDong('Thiết kế để\n*ai* *cũng* *dùng* *được.*', 'h2', { left: '150px', top: '390px' });
       await ngu(700);
       await bam('dt', '#chao-mung .bottom-actions a.link-btn', 400);
       await bam('dt', '#dang-nhap .bottom-actions a.btn', 400);
@@ -334,8 +334,8 @@
       await ngu(800);
       await denCau(1, -.2);
       await xoaChu(300);
-      lop(`<div class="mat">Hướng dẫn chỉ tay</div>`, { left: '150px', top: '330px' });
-      chuDong('App chỉ\n*đúng* *nút* *cần* *bấm.*', 'h2', { left: '150px', top: '390px' });
+      lop(`<div class="mat">Hướng dẫn trực quan</div>`, { left: '150px', top: '330px' });
+      chuDong('Chỉ đúng\n*thao* *tác* *cần* *làm.*', 'h2', { left: '150px', top: '390px' });
       await bam('dt', '.tour-the [data-tour-mo="dang"]', 900);
       await denCau(2, -.1);
       await bam('dt', 'nav.nav a.dang', 900);
@@ -343,13 +343,13 @@
       await bam('dt', 'a.nut-noi', 200);
       await xoaChu(300);
       lop(`<div class="mat">Đăng bằng giọng nói</div>`, { left: '150px', top: '330px' });
-      chuDong('“Mười tấn xoài,\n*tuần* *sau* *hái* *nha.”*', 'h2', { left: '150px', top: '390px', fontStyle: 'italic' });
+      chuDong('“Mười tấn xoài,\n*tuần* *sau* *thu* *hoạch.”*', 'h2', { left: '150px', top: '390px', fontStyle: 'italic' });
       await hetCau(3, .15);
       await bam('dt', '#nghe .bottom-actions a[href$="#kiem-tra"]', 500);
       await bam('dt', '.tour-the [data-tour="bo"]', 200);
       await xoaChu(300);
-      lop(`<div class="mat">Chưa cân vẫn đăng</div>`, { left: '150px', top: '330px' });
-      chuDong('Ghi rõ là\n*ước* *tính.*', 'h2', { left: '150px', top: '390px' });
+      lop(`<div class="mat">Tự động tạo tin đăng</div>`, { left: '150px', top: '330px' });
+      chuDong('Chưa cân? Ghi rõ\n*số* *lượng* *ước* *tính.*', 'h2', { left: '150px', top: '390px' });
       await bam('dt', '#kiem-tra [data-chon="gia"] [data-khi="tu"]', 200);
       await go('dt', '#gia-moi-ky', '6500', 300);
       await bam('dt', '#kiem-tra .bottom-actions a', 400);
@@ -357,7 +357,7 @@
       await denCau(5, -.2);
       await xoaChu(300);
       lop(`<div class="mat">Đọc thành tiếng</div>`, { left: '150px', top: '330px' });
-      chuDong('Nút *Nghe*\nở mọi màn.', 'h2', { left: '150px', top: '390px' });
+      chuDong('Nút *Nghe*\nở mọi màn hình.', 'h2', { left: '150px', top: '390px' });
       await denCau(5, 1.6);
       await bam('dt', '.screen.active .nghe, button.nghe', 200);
       try { W('dt').speechSynthesis?.cancel(); } catch { /* bỏ qua */ }
@@ -408,15 +408,15 @@
       await bam('dt', '.av-ho-so [data-tien-du]', 300);
       await denCau(5, -.2);
       chip(0, '');
-      lop(`<div class="kinh" style="padding:16px 34px;border-radius:99px;font-size:36px;font-weight:700;white-space:nowrap">Không ai phải tin <span class="vang">lời kể một phía</span>.</div>`, { left: '0', right: '0', top: '26px', display: 'flex', justifyContent: 'center' });
+      lop(`<div class="kinh" style="padding:16px 34px;border-radius:99px;font-size:36px;font-weight:700;white-space:nowrap">Mọi con số đều <span class="vang">có nguồn</span>.</div>`, { left: '0', right: '0', top: '26px', display: 'flex', justifyContent: 'center' });
     },
     async 've-tay'() {
       await xoaChu(); anTro(); chip(0, ''); mang({ do: .15, tien: .6 });
       datTb('lap', { x: -1700, y: 200, s: .86, hien: false });
       await mo('dt', '/ban/giao-dich.html#so-sanh', 200);
       datTb('dt', { x: 1440, y: 140, s: .98 }); nhan('dt', 'N', 'Chị Năm', '· so tiền về tay');
-      lop(`<div class="mat">So tiền về tay</div>`, { left: '150px', top: '150px' });
-      chuDong('Giá cao hơn chưa chắc\n*được* *nhiều* *hơn.*', 'h2', { left: '150px', top: '205px' });
+      lop(`<div class="mat">So sánh số tiền thực nhận</div>`, { left: '150px', top: '150px' });
+      chuDong('Giá cao hơn chưa chắc\n*thực* *nhận* *nhiều* *hơn.*', 'h2', { left: '150px', top: '205px' });
       await denCau(0, 1.4);
       lop(`<div class="kinh bieu">
         <div class="dong-bieu"><span class="av" style="background:#8f84c9">A</span><div class="ten">Nhà máy · 7.000 đ/kg<small>Tự chở, trả sau 7 ngày</small><div class="thanh"><i id="tA" style="background:#8f84c9"></i></div></div><div class="so-to" id="sA">0<small>triệu về tay</small></div></div>
@@ -452,7 +452,7 @@
       lop(`<div class="logo" style="justify-content:center"><img src="/ban/assets/mark.svg" alt=""><b>Agi<span>Viet</span></b></div>`, { left: '0', right: '0', top: '300px', display: 'flex', justifyContent: 'center' });
       await denCau(2, -.15);
       chuDong('Tìm đúng mối, *chốt* *đúng* *giá.*', 'h2', { left: '0', right: '0', top: '500px', textAlign: 'center' }, 90);
-      await denCau(2, .9);
+      await ngu(900);
       lop(`<div class="kinh url">Dùng thử miễn phí <b>agiviet-23a94.web.app</b></div>`, { left: '0', right: '0', top: '650px', display: 'flex', justifyContent: 'center' });
       await den(L.canh.at(-1).dai - 1.0); $('#man-den').style.opacity = 1;
     },
