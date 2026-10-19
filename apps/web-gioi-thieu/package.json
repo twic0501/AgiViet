@@ -1,21 +1,18 @@
 {
   "name": "@agiviet/web-gioi-thieu",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Trang web giới thiệu AgiViet. Dự án riêng: không dùng chung dữ liệu hay kho với app mô phỏng; chỉ liên kết sang app.",
+  "description": "Trang web giới thiệu AgiViet (trang đã duyệt, giữ nguyên nội dung). Dự án riêng: không dùng chung code hay dữ liệu với các app; chỉ liên kết sang app bán và app mua.",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.json && vite build",
-    "kieu": "tsc -p tsconfig.json",
+    "build": "vite build",
+    "dong-goi": "vite build --mode mot-tep --outDir dist-mot-tep --emptyOutDir",
     "test": "vitest run",
-    "xem": "vite preview",
-    "dong-goi": "vite build --mode mot-tep --outDir dist-mot-tep --emptyOutDir"
+    "xem": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
     "vite": "^8.3.4",
-    "vite-plugin-singlefile": "^2.3.4",
     "vitest": "^4.0.0"
   }
 }

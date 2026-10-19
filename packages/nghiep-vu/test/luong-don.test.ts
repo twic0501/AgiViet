@@ -101,7 +101,7 @@ describe('Các lỗi đã gặp ở bản mô phỏng cũ', () => {
 describe('Sai vai, sai chủ', () => {
   const p = new Phien(); const lo = p.loSanSang();
   it('người bán không tạo đơn, không kết nối; bên mua không đăng lô', () => {
-    expect(p.lam(NAM, { loai: 'tao_don', loId: lo, kg: 100, gia: 1 }).loi).toBeDefined();
+    expect(p.lam(NAM, { loai: 'tao_don', loId: lo, kg: 100, gia: 1, ngayGiao: p.ngay(3) }).loi).toBeDefined();
     expect(p.lam(NAM, { loai: 'gui_loi_moi', loId: lo }).loi).toBeDefined();
     expect(p.lam(DONG_XANH, { loai: 'dang_lo', matHang: 'x', ten: 'X', kg: 1, coSo: 'da_can', gia: 1 }).loi).toBeDefined();
   });

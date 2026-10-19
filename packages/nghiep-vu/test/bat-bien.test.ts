@@ -10,14 +10,17 @@ const THAM: { [B in TenBuoc]?: ThamSoBuoc[B] } = {
 
 /** Sổ có một đơn dựng sẵn ở trạng thái bất kỳ, đủ số liệu để mọi bước hợp lệ chạy được. */
 function soCoDon(tt: TrangThaiDon, buoc: TenBuoc): SoGiaoDich {
+  const so = new Phien().so;
   const don: Don = {
-    ma: 'HĐ-0999', loId: 'LO-1', tenLo: 'Chanh dây', ban: { id: NAM.id, ten: NAM.ten }, mua: { id: DONG_XANH.id, ten: DONG_XANH.ten },
-    kg: 1000, gia: 25000, trangThai: tt, phienBan: 1, taoLuc: BAT_DAU, lichSu: [{ noiDung: 'dựng', luc: BAT_DAU, vai: 'mua' }],
+    ma: 'HĐ-0999', loId: 'LO-1', tenLo: 'Chanh dây', matHang: 'passion-fruit', ban: { id: NAM.id, ten: NAM.ten }, mua: { id: DONG_XANH.id, ten: DONG_XANH.ten },
+    kg: 1000, gia: 25000, ngayGiao: '2026-10-12', trangThai: tt, phienBan: 1, taoLuc: BAT_DAU, lichSu: [{ noiDung: 'dựng', luc: BAT_DAU, vai: 'mua' }],
     coc: { so: 2_500_000, phi: 250_000, loaiPhi: 'gioi_thieu', han: BAT_DAU + 3600_000 }, daCoc: { so: 2_500_000, phi: 250_000, luc: BAT_DAU },
     ketQuaCan: { nhan: 1000, tuChoi: 0, luc: BAT_DAU, nguon: 'tu_khai' }, phaiTra: 25_000_000, conPhaiTra: 9_000_000, daTra: 16_000_000,
     tra: { so: buoc === 'nhanMotPhan' ? 4_000_000 : 9_000_000, luc: BAT_DAU }, huy: { ben: 'mua', lyDo: 'x', truoc: 'cho_giao' },
   };
-  return { phienBan: 1, lo: [{ id: 'LO-1', ban: don.ban, matHang: 'x', ten: 'Chanh dây', kg: 4000, coSo: 'uoc_tinh', gia: 25000, hua: 1000, giao: 0, dangLuc: BAT_DAU }], ketNoi: [], don: [don], dem: { lo: 1, ketNoi: 0, don: 999 } };
+  so.lo.push({ id: 'LO-1', ban: don.ban, matHang: 'passion-fruit', ten: 'Chanh dây', kg: 4000, coSo: 'uoc_tinh', gia: 25000, hua: 1000, giao: 0, thuocTinh: {}, choCheBien: false, anh: [], moTa: '', dangLuc: BAT_DAU, conHangLuc: BAT_DAU });
+  so.don.push(don);
+  return so;
 }
 
 describe('Ma trận bước × trạng thái × vai', () => {
@@ -30,10 +33,10 @@ describe('Ma trận bước × trạng thái × vai', () => {
       const so = soCoDon(tt, buoc);
       const gio = BAT_DAU + (buoc === 'quaHanCoc' ? 49 * 3600_000 : 0);
       const kq = apDung(so, { loai: 'buoc_don', ma: 'HĐ-0999', buoc, thamSo: THAM[buoc] ?? [] } as never, nguoi, gio);
-      const nenDuoc = LUAT[buoc].tu.includes(tt) && aiLam(LUAT[buoc] as never, so.don[0]!).includes(nguoi.vai);
+      const nenDuoc = LUAT[buoc].tu.includes(tt) && aiLam(LUAT[buoc] as never, so.don.at(-1)!).includes(nguoi.vai);
       if (nenDuoc !== kq.ok) sai.push(`${buoc} @ ${tt} / ${nguoi.vai}: ${kq.ok ? 'chạy được' : kq.loi}`);
-      if (so.don[0]!.phienBan !== 1) sai.push(`${buoc} @ ${tt}: sửa vào sổ cũ`);
-      if (kq.ok && kq.giaTri.so.don[0]!.phienBan !== 2) sai.push(`${buoc} @ ${tt}: phiên bản không tăng`);
+      if (so.don.at(-1)!.phienBan !== 1) sai.push(`${buoc} @ ${tt}: sửa vào sổ cũ`);
+      if (kq.ok && kq.giaTri.so.don.at(-1)!.phienBan !== 2) sai.push(`${buoc} @ ${tt}: phiên bản không tăng`);
     }
     expect(sai).toEqual([]);
   });
@@ -49,6 +52,7 @@ describe('5.000 bước ngẫu nhiên', () => {
     const loi: string[] = [];
     const VIEC: ((ma: string) => unknown)[] = [
       () => (conMo().length < 6 ? p.taoDon(lo, 500 * (1 + ngau(10)), 20000 + 1000 * ngau(10)) : null),
+      () => p.lam(NAM, { loai: 'con_hang', loId: lo }),
       ma => p.buoc(NAM, ma, 'xacNhanDon'), ma => p.buoc(NAM, ma, 'tuChoiDon', 'x'), ma => p.buoc(DONG_XANH, ma, 'rutDon'),
       ma => p.buoc(DONG_XANH, ma, 'datCoc'),
       ma => p.buoc([NAM, DONG_XANH][ngau(2)]!, ma, p.don(ma)?.trangThai === 'cho_coc' ? 'huyTruocCoc' : 'yeuCauHuy', 'x'),

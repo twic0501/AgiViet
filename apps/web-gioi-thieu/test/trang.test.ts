@@ -1,30 +1,22 @@
-// Trang giới thiệu: đủ 12 khu theo thứ tự, liên kết sang app lấy từ cấu hình, nội dung được thoát ký tự HTML.
+// Trang giới thiệu: giữ nguyên trang đã duyệt; chỉ kiểm đường dẫn và tài nguyên tự đứng được.
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { chu, trang } from '../src/khu/index.ts';
-import { choChu, laCho } from '../src/noi-dung/kieu.ts';
-import { TRANG_CHU } from '../src/noi-dung/trang-chu.ts';
 
-const html = trang(TRANG_CHU, { duongDanApp: 'https://app.vi-du.vn' });
+const goc = new URL('..', import.meta.url).pathname;
+const html = readFileSync(goc + 'index.html', 'utf8');
 
 describe('Trang giới thiệu', () => {
-  it('có đủ các khu theo đúng thứ tự', () => {
-    const thuTu = ['dau', 'van-de', 'cach-hoat-dong', 'nha-vuon', 'doanh-nghiep', 'an-toan', 'mat-hang', 'bang-gia', 'hoi-dap', 'bat-dau'];
-    const viTri = thuTu.map(id => html.indexOf(`id="${id}"`));
-    expect(viTri.every(v => v > 0)).toBe(true);
-    expect([...viTri].sort((a, b) => a - b)).toEqual(viTri);
-    expect(html).toContain('<header class="dau-trang">');
-    expect(html).toContain('<footer class="chan-trang">');
+  it('không còn đường dẫn tuyệt đối sang app cũ', () => {
+    expect(html.match(/(?:href|src)="\/(?:ban|mua)\//g)).toBeNull();
   });
-  it('mọi nút vào app dùng đường dẫn cấu hình, không trỏ vào chính trang', () => {
-    const lienKetApp = html.match(/href="https:\/\/app\.vi-du\.vn[^"]*"/g) ?? [];
-    expect(lienKetApp.length).toBe(5);
+  it('nút dùng thử trỏ tới hai app qua chỗ giữ đường dẫn', () => {
+    expect(html.split('%APP_BAN%').length - 1).toBe(4);
+    expect(html.split('%APP_MUA%').length - 1).toBe(5);
   });
-  it('khẩu hiệu đã chốt là chữ thật; chữ chưa chốt hiện ô chờ', () => {
-    expect(laCho(TRANG_CHU.hero.khauHieu)).toBe(false);
-    expect(html).toContain('<h1>Tìm đúng mối, chốt đúng giá</h1>');
-    expect(chu(choChu('mô tả'))).toContain('class="cho-chu"');
-  });
-  it('thoát ký tự HTML trong nội dung', () => {
-    expect(chu('<script>')).toBe('<span>&lt;script&gt;</span>');
+  it('mọi ảnh, logo, font, trang nguồn ảnh có trong public/', () => {
+    const tep = [...html.matchAll(/(?:href|src)="((?:anh|assets|css)\/[^"]+)"/g)].map(m => m[1]!);
+    const font = [...readFileSync(goc + 'public/css/fonts.css', 'utf8').matchAll(/url\(\.\.\/([^)]+)\)/g)].map(m => m[1]!);
+    const thieu = [...tep.map(t => 'public/' + t), ...font.map(f => 'public/' + f), 'public/nguon-anh.html'].filter(t => !existsSync(goc + t));
+    expect(thieu).toEqual([]);
   });
 });
