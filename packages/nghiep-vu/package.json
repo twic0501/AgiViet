@@ -1,0 +1,19 @@
+{
+  "name": "@agiviet/nghiep-vu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tầng nghiệp vụ AgiViet: luật đơn hàng, cọc, phí, liên lạc, kết nối, lô hàng. Hàm thuần, không giao diện, không lưu trữ.",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "kieu": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0"
+  }
+}

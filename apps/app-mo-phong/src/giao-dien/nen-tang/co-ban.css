@@ -1,0 +1,17 @@
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font: 400 var(--co-chu)/1.55 var(--font); color: var(--chu); background: var(--nen); -webkit-font-smoothing: antialiased; }
+#goc { min-height: 100%; }
+h1, h2, h3 { margin: 0; line-height: 1.2; text-wrap: balance; }
+h1 { font-size: var(--co-tieu-de); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: var(--co-chu-lon); font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--mau-mat-ong); outline-offset: 2px; }
+.so { font-variant-numeric: tabular-nums; }
+.phu { color: var(--chu-phu); }
+.nho { font-size: var(--co-chu-nho); }
+.chong { display: flex; flex-direction: column; gap: var(--k3); }
+.hang { display: flex; align-items: center; gap: var(--k2); flex-wrap: wrap; }
+.an-man { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

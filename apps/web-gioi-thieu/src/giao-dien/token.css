@@ -1,0 +1,22 @@
+/* Bộ mã thiết kế của trang giới thiệu. Cùng bảng màu thương hiệu với app nhưng là bản riêng: hai dự án không phụ thuộc nhau. */
+:root {
+  --mau-reu: #235c45;
+  --mau-reu-dam: #1d4d39;
+  --mau-reu-nhat: #dcebd6;
+  --mau-vang-dat: #c18b4b;
+  --mau-song: #315c60;
+  --mau-mat-ong: #f5b83d;
+  --mau-mat-ong-nhat: #fdf0cf;
+  --nen: #f7f8f2;
+  --nen-phu: #eef1e8;
+  --be-mat: #ffffff;
+  --chu: #233c31;
+  --chu-phu: #4a5d52;
+  --vien: #dfe5d8;
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --rong: 1120px;
+  --bo-goc: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --nen: #121a16; --nen-phu: #18231d; --be-mat: #1c2822; --chu: #e6ece5; --chu-phu: #a9b8ad; --vien: #2c3a33; --mau-reu: #5fae87; --mau-reu-nhat: #1f3a2d; --mau-mat-ong-nhat: #3a3220; color-scheme: dark; }
+}

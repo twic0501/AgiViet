@@ -1,0 +1,21 @@
+{
+  "name": "agiviet",
+  "private": true,
+  "type": "module",
+  "description": "AgiViet: sổ làm ăn của nhà vườn và bàn làm việc thu mua, có chợ nông sản ở giữa. Kho gồm tầng nghiệp vụ dùng chung, app mô phỏng hai vai và trang web giới thiệu.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "kiem-tra": "npm run kieu --workspaces --if-present && npm run test --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "app": "npm run dev -w @agiviet/app-mo-phong",
+    "web": "npm run dev -w @agiviet/web-gioi-thieu",
+    "tai-lieu": "node scripts/tao-tai-lieu.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

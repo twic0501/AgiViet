@@ -1,0 +1,28 @@
+{
+  "name": "@agiviet/app-mo-phong",
+  "version": "0.1.0",
+  "private": true,
+  "description": "App mô phỏng AgiViet hai vai: Nhà sản xuất (điện thoại) và Thu mua (máy tính). Dữ liệu mô phỏng lưu trong trình duyệt, tách biệt với trang giới thiệu.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "kieu": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "xem": "vite preview"
+  },
+  "dependencies": {
+    "@agiviet/nghiep-vu": "*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.4",
+    "vitest": "^4.0.0"
+  }
+}

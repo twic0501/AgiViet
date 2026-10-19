@@ -1,0 +1,24 @@
+name: Kiểm tra
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Kiểm kiểu và chạy test
+        run: npm run kiem-tra
+      - name: Build hai app
+        run: npm run build
+      - name: Tài liệu sinh từ code phải khớp code
+        run: |
+          npm run tai-lieu
+          git diff --exit-code docs/ || (echo "Tài liệu lệch code: chạy npm run tai-lieu rồi commit." && exit 1)
