@@ -1,0 +1,60 @@
+/* Bộ mã thiết kế AgiViet. Mọi màu, chữ, khoảng cách đều lấy từ đây; thành phần không dùng mã màu trực tiếp.
+   Bảng màu nhận diện: Rêu đồng (chính), Vàng đất (nhấn), Sông trầm (phía bên mua), Mật ong (cần làm), Gạch nung (vấn đề). */
+:root {
+  --mau-reu: #235c45;
+  --mau-reu-dam: #1d4d39;
+  --mau-reu-nhat: #dcebd6;
+  --mau-vang-dat: #c18b4b;
+  --mau-song: #315c60;
+  --mau-song-nhat: #e3eded;
+  --mau-mat-ong: #f5b83d;
+  --mau-mat-ong-nhat: #fdf0cf;
+  --mau-gach: #b4452a;
+  --mau-gach-nhat: #fbe6dc;
+
+  --nen: #f7f8f2;
+  --be-mat: #ffffff;
+  --chu: #233c31;
+  --chu-phu: #4a5d52;
+  --vien: #dfe5d8;
+  --vien-dam: #c9d2c2;
+
+  --nhom-lam: var(--mau-mat-ong);
+  --nhom-lam-nen: var(--mau-mat-ong-nhat);
+  --nhom-cho: var(--mau-song);
+  --nhom-cho-nen: var(--mau-song-nhat);
+  --nhom-xong: var(--mau-reu);
+  --nhom-xong-nen: var(--mau-reu-nhat);
+  --nhom-loi: var(--mau-gach);
+  --nhom-loi-nen: var(--mau-gach-nhat);
+  --nhom-het: var(--chu-phu);
+
+  --mau-chinh: var(--mau-reu);
+  --mau-chinh-dam: var(--mau-reu-dam);
+  --mau-chinh-nhat: var(--mau-reu-nhat);
+
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --co-chu-nho: 14px;
+  --co-chu: 16px;
+  --co-chu-lon: 18px;
+  --co-tieu-de: 22px;
+  --co-tieu-de-lon: 28px;
+
+  --k1: 4px; --k2: 8px; --k3: 12px; --k4: 16px; --k5: 24px; --k6: 32px;
+  --bo-goc: 12px;
+  --bo-goc-nho: 8px;
+  --vung-bam: 48px;
+  --bong: 0 1px 2px rgba(35, 60, 49, 0.06), 0 2px 8px rgba(35, 60, 49, 0.05);
+  --bong-noi: 0 8px 28px rgba(35, 60, 49, 0.16);
+
+  --nhanh: 120ms;
+  --vua: 300ms;
+  --cham: 600ms;
+  --duong-cong: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Cỡ chữ người dùng chọn trong Cài đặt */
+:root[data-co-chu='lon'] { --co-chu-nho: 15px; --co-chu: 18px; --co-chu-lon: 20px; --co-tieu-de: 24px; }
+:root[data-co-chu='rat_lon'] { --co-chu-nho: 17px; --co-chu: 20px; --co-chu-lon: 22px; --co-tieu-de: 27px; }
+/* App Thu mua dùng Sông trầm làm màu chính */
+:root[data-vai='mua'] { --mau-chinh: var(--mau-song); --mau-chinh-dam: #24474a; --mau-chinh-nhat: var(--mau-song-nhat); }
+@media (prefers-reduced-motion: reduce) { :root { --nhanh: 0ms; --vua: 0ms; --cham: 0ms; } }

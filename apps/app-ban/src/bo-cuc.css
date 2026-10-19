@@ -1,0 +1,52 @@
+/* Bố cục điện thoại của app bán: rộng tối đa 480 px, thanh trên, thanh dưới 5 mục, nút "+" giữa. */
+.bc { max-width: 480px; min-height: 100vh; margin: 0 auto; background: var(--nen); display: flex; flex-direction: column; box-shadow: 0 0 0 1px var(--vien); }
+.bc-mo-phong { display: flex; align-items: center; gap: var(--k2); padding: 6px var(--k4); padding-top: calc(6px + env(safe-area-inset-top, 0px)); background: var(--chu); color: #fff; font-size: 13px; }
+.bc-mo-phong a { color: var(--mau-mat-ong); font-weight: 700; text-decoration: none; }
+.bc-mo-phong .grow { opacity: 0.85; }
+.bc-dau { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: var(--k1); min-height: 56px; padding: 0 var(--k2) 0 var(--k3); background: var(--nen); border-bottom: 1px solid var(--vien); }
+.bc-dau h1 { flex: 1; min-width: 0; font-size: var(--co-chu-lon); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bc-nut-tron { position: relative; display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; color: var(--chu); text-decoration: none; cursor: pointer; }
+.bc-nut-tron:hover { background: var(--mau-chinh-nhat); }
+.bc-nut-tron .dem { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--mau-gach); color: #fff; font-size: 11px; font-weight: 800; display: grid; place-items: center; }
+.bc-than { flex: 1; padding: var(--k4); padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+.bc-than.khong-thanh { padding-bottom: var(--k6); }
+.bc-duoi { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(480px, 100%); z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--be-mat); border-top: 1px solid var(--vien); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.bc-duoi a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 62px; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--chu-phu); }
+.bc-duoi a.dang { color: var(--mau-chinh); }
+.bc-duoi a.giua { visibility: hidden; }
+.bc-them { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); z-index: 21; width: 60px; height: 60px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--mau-mat-ong); color: var(--chu); box-shadow: var(--bong-noi); text-decoration: none; }
+.bc-them:hover { filter: brightness(0.97); }
+
+.khung-man { display: flex; flex-direction: column; gap: var(--k4); }
+.man-duoi { position: sticky; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 5; display: flex; flex-direction: column; gap: var(--k2); padding: var(--k3) 0; background: linear-gradient(to bottom, transparent, var(--nen) 24%); }
+.khong-thanh .man-duoi { bottom: 0; }
+
+.anh-mh { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; flex: none; background: var(--mau-chinh-nhat); }
+.anh-mh.lon { width: 100%; height: 200px; border-radius: var(--bo-goc); }
+img.anh-mh[src$='.svg'] { object-fit: contain; padding: 12px; }
+.thanh-luong { display: flex; height: 8px; border-radius: 4px; background: var(--mau-chinh-nhat); overflow: hidden; }
+.thanh-luong i { display: block; height: 100%; }
+.thanh-luong .giao { background: var(--mau-chinh); }
+.thanh-luong .hua { background: var(--mau-mat-ong); }
+.luoi-mh { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--k2); }
+.luoi-mh button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: var(--k2); border-radius: var(--bo-goc); border: 1.5px solid var(--vien); background: var(--be-mat); cursor: pointer; font-size: 13px; font-weight: 600; text-align: center; }
+.luoi-mh button img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
+.luoi-mh button[aria-pressed='true'] { border-color: var(--mau-chinh); background: var(--mau-chinh-nhat); }
+.bong-tin { max-width: 85%; padding: var(--k2) var(--k3); border-radius: 14px; background: var(--be-mat); border: 1px solid var(--vien); }
+.bong-tin.minh { align-self: flex-end; background: var(--mau-chinh-nhat); border-color: transparent; }
+.so-lon { font-size: 30px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dong-thoi-gian { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--k3); }
+.dong-thoi-gian li { display: grid; grid-template-columns: 14px 1fr; gap: var(--k3); }
+.dong-thoi-gian li::before { content: ''; width: 12px; height: 12px; margin-top: 5px; border-radius: 50%; background: var(--vien-dam); }
+.dong-thoi-gian li.qua::before { background: var(--mau-chinh); }
+.dong-thoi-gian li.dang::before { background: var(--mau-mat-ong); box-shadow: 0 0 0 4px var(--mau-mat-ong-nhat); }
+.mic { width: 132px; height: 132px; border-radius: 50%; border: 0; background: var(--mau-chinh); color: #fff; display: grid; place-items: center; align-self: center; cursor: pointer; box-shadow: var(--bong-noi); }
+.mic[aria-pressed='true'] { background: var(--mau-gach); animation: nhip 1.2s ease-in-out infinite; }
+@keyframes nhip { 50% { box-shadow: 0 0 0 14px rgba(180, 69, 42, 0.18); } }
+@media (prefers-reduced-motion: reduce) { .mic[aria-pressed='true'] { animation: none; } }
+.van-ban { white-space: pre-wrap; font-size: var(--co-chu-nho); line-height: 1.6; max-height: 50vh; overflow: auto; background: var(--be-mat); border: 1px solid var(--vien); border-radius: var(--bo-goc); padding: var(--k3); }
+.otp { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--k2); }
+.otp input { min-height: 56px; text-align: center; font-size: 24px; font-weight: 800; border: 1.5px solid var(--vien-dam); border-radius: var(--bo-goc-nho); background: var(--be-mat); }
+.an-mung { text-align: center; align-items: center; padding: var(--k5) var(--k4); background: var(--mau-chinh-nhat); border-radius: 16px; animation: tp-hien var(--cham) var(--duong-cong); }

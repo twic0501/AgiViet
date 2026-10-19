@@ -1,0 +1,23 @@
+{
+  "name": "@agiviet/may-chu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Máy chủ mô phỏng dùng chung app bán và app mua: kho có kiểm phiên bản, đồng hồ tua được, dịch vụ chạy lệnh, hệ thống tự động (ngân hàng, hạn cọc, đối tác), truy vấn theo vai, kịch bản dữ liệu mẫu, ca kiểm thử.",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "kieu": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@agiviet/nghiep-vu": "*",
+    "@agiviet/danh-muc": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0"
+  }
+}

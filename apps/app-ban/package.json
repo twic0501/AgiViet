@@ -1,0 +1,34 @@
+{
+  "name": "@agiviet/app-ban",
+  "version": "0.1.0",
+  "private": true,
+  "description": "App Nhà sản xuất (người bán) AgiViet: điện thoại, 80 màn + công cụ mô phỏng. Gọi máy chủ mô phỏng chung; phiên và bản nháp lưu riêng trong app.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "dong-goi": "vite build --mode mot-tep --outDir dist-mot-tep --emptyOutDir",
+    "kieu": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "xem": "vite preview"
+  },
+  "dependencies": {
+    "@agiviet/danh-muc": "*",
+    "@agiviet/giao-dien": "*",
+    "@agiviet/may-chu": "*",
+    "@agiviet/nghiep-vu": "*",
+    "qrcode-generator": "^1.5.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.4",
+    "vite-plugin-singlefile": "^2.3.4",
+    "vitest": "^4.0.0"
+  }
+}

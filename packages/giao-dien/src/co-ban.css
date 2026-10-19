@@ -1,0 +1,26 @@
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font: 400 var(--co-chu)/1.55 var(--font); color: var(--chu); background: var(--nen); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; line-height: 1.25; text-wrap: balance; }
+h1 { font-size: var(--co-tieu-de); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: var(--co-chu-lon); font-weight: 700; }
+h3 { font-size: var(--co-chu); font-weight: 700; }
+p { margin: 0; }
+a { color: var(--mau-chinh); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--mau-mat-ong); outline-offset: 2px; }
+img { max-width: 100%; }
+.so { font-variant-numeric: tabular-nums; }
+.phu { color: var(--chu-phu); }
+.nho { font-size: var(--co-chu-nho); }
+.dam { font-weight: 700; }
+.chong { display: flex; flex-direction: column; gap: var(--k3); }
+.chong.hep { gap: var(--k1); }
+.chong.rong { gap: var(--k5); }
+.hang { display: flex; align-items: center; gap: var(--k2); flex-wrap: wrap; }
+.hang.giua { justify-content: space-between; }
+.hang.ngang { flex-wrap: nowrap; }
+.grow { flex: 1; min-width: 0; }
+.luoi-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--k3); }
+.luoi-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--k3); }
+.an-man { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
