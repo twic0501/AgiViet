@@ -1,5 +1,5 @@
 // Gốc app: định tuyến /, /danh-muc, /ban/:man, /mua/:man. Màn đã làm hiện giao diện thật; chưa làm hiện khung bố cục.
-import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router';
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useParams } from 'react-router';
 import { BoCucBan, BoCucMua } from '../giao-dien/bo-cuc/index.tsx';
 import { CungCapUngDung, useNguoi } from '../giao-dien/ngu-canh.tsx';
 import { KhungBoCuc, TrangTrong } from '../giao-dien/thanh-phan/index.tsx';
@@ -27,10 +27,13 @@ function ManCuaVai({ vai }: { vai: VaiApp }) {
   );
 }
 
+// Mở thẳng từ tệp (bản một tệp HTML) thì đường dẫn thường không dùng được: chuyển sang dạng #/ban/hom-nay
+const BoDinhTuyen = location.protocol === 'file:' ? HashRouter : BrowserRouter;
+
 export function UngDung() {
   return (
     <CungCapUngDung>
-      <BrowserRouter>
+      <BoDinhTuyen>
         <Routes>
           <Route path="/" element={<ManChonVai />} />
           <Route path="/danh-muc" element={<ManDanhMuc />} />
@@ -38,7 +41,7 @@ export function UngDung() {
           <Route path="/mua/:man" element={<ManCuaVai vai="mua" />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
+      </BoDinhTuyen>
     </CungCapUngDung>
   );
 }
