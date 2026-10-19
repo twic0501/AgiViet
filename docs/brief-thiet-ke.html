@@ -3,408 +3,329 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
 <style>
-/* Bố cục: một cột đọc 760px, mục lục dính bên trái trên màn rộng; màu lấy đúng bảng màu của app (rêu đồng, vàng đất, sương đồng) */
+/* Bố cục: một cột tài liệu 860px, mục lục dính bên trái trên màn rộng; màu theo bảng màu của app */
 :root {
   --nen: #f7f8f2; --mat: #ffffff; --chu: #233c31; --chu-2: #4a5d52; --vien: #dfe5d8;
-  --reu: #235c45; --reu-nhat: #dcebd6; --vang: #c18b4b; --nang: #f0deae; --mat-ong: #f5b83d; --cho: #fdf0cf;
-  --song: #315c60; --song-nhat: #dbe8e8; --gach: #b4452a; --gach-nhat: #fbe6dc;
+  --reu: #235c45; --reu-nhat: #dcebd6; --vang: #c18b4b; --cho: #fdf0cf; --song: #315c60; --song-nhat: #dbe8e8; --gach: #b4452a; --gach-nhat: #fbe6dc;
   --f: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --nen: #121a16; --mat: #1a2520; --chu: #e6ece5; --chu-2: #a9b8ad; --vien: #2c3a33;
-  --reu: #5fae87; --reu-nhat: #1f3a2d; --vang: #d9a464; --nang: #4a3d22; --mat-ong: #f5b83d; --cho: #3a3220;
-  --song: #7fb3b7; --song-nhat: #1d3133; --gach: #e7806a; --gach-nhat: #3d2119; color-scheme: dark } }
+  --reu: #5fae87; --reu-nhat: #1f3a2d; --vang: #d9a464; --cho: #3a3220; --song: #7fb3b7; --song-nhat: #1d3133; --gach: #e7806a; --gach-nhat: #3d2119; color-scheme: dark } }
 :root[data-theme="dark"] {
   --nen: #121a16; --mat: #1a2520; --chu: #e6ece5; --chu-2: #a9b8ad; --vien: #2c3a33;
-  --reu: #5fae87; --reu-nhat: #1f3a2d; --vang: #d9a464; --nang: #4a3d22; --mat-ong: #f5b83d; --cho: #3a3220;
-  --song: #7fb3b7; --song-nhat: #1d3133; --gach: #e7806a; --gach-nhat: #3d2119; color-scheme: dark }
+  --reu: #5fae87; --reu-nhat: #1f3a2d; --vang: #d9a464; --cho: #3a3220; --song: #7fb3b7; --song-nhat: #1d3133; --gach: #e7806a; --gach-nhat: #3d2119; color-scheme: dark }
 * { box-sizing: border-box }
-body { background: var(--nen); color: var(--chu); font: 400 16px/1.65 var(--f); }
-.khung { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; }
-nav.muc-luc { position: sticky; top: calc(24px + env(safe-area-inset-top, 0px)); align-self: start; font-size: 14px; display: grid; gap: 2px; }
-nav.muc-luc a { color: var(--chu-2); text-decoration: none; padding: 4px 10px; border-radius: 6px; }
+body { background: var(--nen); color: var(--chu); font: 400 15.5px/1.6 var(--f); }
+.khung { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; }
+nav.muc-luc { position: sticky; top: calc(24px + env(safe-area-inset-top, 0px)); align-self: start; font-size: 14px; display: grid; gap: 2px; max-height: calc(100vh - 48px); overflow-y: auto; }
+nav.muc-luc a { color: var(--chu-2); text-decoration: none; padding: 3px 10px; border-radius: 6px; }
+nav.muc-luc a.phu { padding-left: 22px; font-size: 13px; }
 nav.muc-luc a:hover, nav.muc-luc a:focus-visible { color: var(--chu); background: var(--reu-nhat); outline: none; }
-nav.muc-luc .nhan { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--vang); font-weight: 700; padding: 0 10px 8px; }
-main { min-width: 0; max-width: 780px; }
-header.dau { padding-bottom: 28px; border-bottom: 1px solid var(--vien); margin-bottom: 8px; }
+main { min-width: 0; max-width: 880px; }
 .mat-nho { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--vang); font-weight: 700; }
-h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.12; font-weight: 800; letter-spacing: -.02em; margin: 10px 0 14px; text-wrap: balance; }
-h2 { font-size: 26px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0 0 6px; text-wrap: balance; }
-h3 { font-size: 18px; font-weight: 700; margin: 26px 0 8px; }
-section { padding-top: 48px; scroll-margin-top: 16px; }
-.dan { color: var(--chu-2); margin: 0 0 18px; max-width: 64ch; }
-p { margin: 0 0 12px; max-width: 68ch; }
-ul, ol { margin: 0 0 14px; padding-left: 22px; } li { margin: 3px 0; }
-strong { font-weight: 700; }
-code { font: 500 13.5px/1.4 ui-monospace, 'SF Mono', Menlo, monospace; background: var(--reu-nhat); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
-.bang { overflow-x: auto; margin: 10px 0 18px; border: 1px solid var(--vien); border-radius: 10px; background: var(--mat); }
-table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
-th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--vien); vertical-align: top; }
-th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--chu-2); font-weight: 700; background: var(--nen); }
+h1 { font-size: clamp(28px, 4.6vw, 40px); line-height: 1.15; font-weight: 800; letter-spacing: -.02em; margin: 10px 0 12px; text-wrap: balance; }
+h2 { font-size: 25px; line-height: 1.2; font-weight: 800; margin: 0 0 6px; text-wrap: balance; }
+h3 { font-size: 17px; font-weight: 700; margin: 26px 0 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+h3 small { font-weight: 500; color: var(--chu-2); font-size: 13.5px; }
+section { padding-top: 44px; scroll-margin-top: 16px; }
+.dan { color: var(--chu-2); margin: 0 0 14px; max-width: 70ch; }
+p { margin: 0 0 10px; max-width: 72ch; }
+code { font: 500 12.5px/1.4 ui-monospace, 'SF Mono', Menlo, monospace; color: var(--chu-2); }
+.tong { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 18px 0 8px; }
+.tong div { background: var(--mat); border: 1px solid var(--vien); border-radius: 10px; padding: 12px 14px; }
+.tong b { display: block; font-size: 28px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tong span { font-size: 13px; color: var(--chu-2); }
+.bang { overflow-x: auto; margin: 8px 0 6px; border: 1px solid var(--vien); border-radius: 10px; background: var(--mat); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--vien); vertical-align: top; }
+th { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--chu-2); font-weight: 700; background: var(--nen); }
 tr:last-child td { border-bottom: 0; }
-.chot { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 18px 0 6px; }
-.chot div { background: var(--mat); border: 1px solid var(--vien); border-radius: 10px; padding: 14px 16px; font-size: 14.5px; line-height: 1.5; }
-.chot b { display: block; font-size: 15.5px; margin-bottom: 4px; }
-.nhom { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 3px 10px 3px 8px; border-radius: 999px; white-space: nowrap; }
-.nhom::before { content: ""; width: 9px; height: 9px; flex: none; }
-.n-lam { background: var(--cho); color: var(--chu); } .n-lam::before { background: var(--mat-ong); border-radius: 2px; transform: rotate(45deg); }
-.n-cho { background: var(--song-nhat); color: var(--chu); } .n-cho::before { border: 2px solid var(--song); border-radius: 50%; width: 7px; height: 7px; }
-.n-xong { background: var(--reu-nhat); color: var(--chu); } .n-xong::before { background: var(--reu); border-radius: 50%; }
-.n-loi { background: var(--gach-nhat); color: var(--chu); } .n-loi::before { background: var(--gach); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-.n-het { background: var(--nen); color: var(--chu-2); border: 1px solid var(--vien); } .n-het::before { background: var(--chu-2); height: 2px; }
-.mau { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 12px 0 18px; }
-.mau div { border: 1px solid var(--vien); border-radius: 10px; overflow: hidden; background: var(--mat); font-size: 13px; }
-.mau i { display: block; height: 54px; }
-.mau span { display: block; padding: 8px 10px; line-height: 1.35; }
-.mau code { background: none; padding: 0; color: var(--chu-2); }
-.kim-hang { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 14px 0 18px; }
-.kim-hang figure { margin: 0; background: var(--mat); border: 1px solid var(--vien); border-radius: 12px; padding: 12px 8px 10px; text-align: center; font-size: 13px; line-height: 1.35; }
-.kim-hang svg { width: 84px; height: 84px; display: block; margin: 0 auto 6px; }
-.kim-hang b { display: block; font-size: 13.5px; }
-.kim-hang small { color: var(--chu-2); }
-.ghi { border-left: 3px solid var(--vang); padding: 10px 14px; background: var(--mat); border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 15px; }
-.ghi.do { border-color: var(--gach); }
-.hai-cot { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0 16px; }
-.hai-cot > div { background: var(--mat); border: 1px solid var(--vien); border-radius: 10px; padding: 14px 16px; min-width: 0; font-size: 14.5px; }
-.hai-cot h4 { margin: 0 0 6px; font-size: 14px; letter-spacing: .05em; text-transform: uppercase; }
-.lam h4 { color: var(--reu); } .tranh h4 { color: var(--gach); }
-.hai-cot ul { margin: 0; padding-left: 18px; }
-.so { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.p0 { color: var(--gach); font-weight: 800; } .p1 { color: var(--vang); font-weight: 800; } .p2 { color: var(--chu-2); font-weight: 800; }
-@media (max-width: 860px) { .khung { grid-template-columns: minmax(0, 1fr); gap: 0; } nav.muc-luc { display: none; } .hai-cot { grid-template-columns: 1fr; } .kim-hang { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: no-preference) {
-  .dong .kim { transform-origin: 60px 78px; animation: var(--a) ease-in-out infinite; }
-  @keyframes chao { 0%,100% { transform: rotate(-38deg) } 50% { transform: rotate(38deg) } }
-  @keyframes nghe { 0%,100% { transform: rotate(-6deg) } 50% { transform: rotate(6deg) } }
-  @keyframes nghi { 0% { transform: rotate(-60deg) } 100% { transform: rotate(60deg) } }
-}
+td.so { color: var(--chu-2); font-variant-numeric: tabular-nums; width: 34px; }
+td.ten { width: 30%; min-width: 150px; } td.ten b { display: block; font-weight: 600; }
+td.tt { width: 64px; }
+.nhan { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.t-co { background: var(--nen); color: var(--chu-2); border: 1px solid var(--vien); }
+.t-sua { background: var(--cho); color: var(--chu); }
+.t-moi { background: var(--reu-nhat); color: var(--chu); }
+.luong { background: var(--mat); border: 1px solid var(--vien); border-radius: 10px; padding: 14px 16px; margin: 10px 0; }
+.luong h4 { margin: 0 0 2px; font-size: 16px; }
+.luong .ai { font-size: 13px; color: var(--chu-2); margin-bottom: 10px; }
+.luong ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; }
+.luong li { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; }
+.luong li + li::before { content: "→"; color: var(--chu-2); margin-right: 2px; }
+.buoc { border-radius: 6px; padding: 2px 8px; border: 1px solid var(--vien); background: var(--nen); }
+.buoc.ban { border-color: var(--reu); } .buoc.mua { border-color: var(--song); background: var(--song-nhat); } .buoc.vh { border-color: var(--gach); background: var(--gach-nhat); }
+.buoc.moi { font-weight: 700; }
+.luong .nhanh { margin-top: 8px; font-size: 13.5px; color: var(--chu-2); }
+.chu-giai { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--chu-2); margin: 6px 0 10px; align-items: center; }
+.ghi { border-left: 3px solid var(--vang); padding: 10px 14px; background: var(--mat); border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14.5px; }
+@media (max-width: 860px) { .khung { grid-template-columns: minmax(0, 1fr); gap: 0; } nav.muc-luc { display: none; } .tong { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
 
 <div class="khung">
-<nav class="muc-luc" aria-label="Mục lục">
-  <div class="nhan">Mục lục</div>
-  <a href="#da-chot">1. Những gì đã chốt</a>
-  <a href="#tieu-chi">2. Năm tiêu chí</a>
-  <a href="#nhan-dien">3. Nhận diện trạng thái</a>
-  <a href="#trang-thai">4. Bảng trạng thái</a>
-  <a href="#linh-vat">5. Linh vật</a>
-  <a href="#chuyen-dong">6. Chuyển động</a>
-  <a href="#gan-bo">7. Gắn bó</a>
-  <a href="#mau-chu">8. Màu và chữ</a>
-  <a href="#danh-sach">9. Danh sách asset</a>
-  <a href="#icon">10. Icon mới</a>
-  <a href="#am-thanh">11. Âm thanh, rung</a>
-  <a href="#ban-giao">12. Quy cách bàn giao</a>
-</nav>
-
+<nav class="muc-luc" aria-label="Mục lục" id="muc-luc"></nav>
 <main>
-<header class="dau">
-  <div class="mat-nho">AgiViet · bản nháp 1 · 19/10/2026</div>
-  <h1>Brief thiết kế asset, linh vật và chuyển động</h1>
-  <p class="dan">Tài liệu để vẽ lại giao diện hai app (Nhà sản xuất, Thu mua) theo hướng mới. Năm tiêu chí: <strong>dễ dùng, thân thiện, giữ chân người dùng, trưởng thành, chuyên nghiệp</strong>, và nhận ra trạng thái ngay. Mục 4 (bảng trạng thái) là bản nháp, sẽ chốt sau khi sửa luồng trong bản mô phỏng; các mục còn lại vẽ được ngay.</p>
-</header>
-
-<section id="da-chot">
-  <h2>1. Những gì đã chốt về sản phẩm</h2>
-  <p class="dan">Asset phải kể đúng câu chuyện này. Tóm từ các buổi trao đổi về luồng, cách thu tiền và định hướng.</p>
-  <div class="chot">
-    <div><b>Sổ làm ăn có chợ ở giữa</b>Nhà vườn dùng như sổ tay làm vườn (thu chi, nhật ký canh tác). Doanh nghiệp dùng như bàn làm việc thu mua. Chợ "Tìm đúng mối, chốt đúng giá" vẫn là điểm nhấn.</div>
-    <div><b>Hiện danh tính, ẩn liên lạc</b>Lúc tìm hàng thấy tên, vùng, điểm uy tín. Số điện thoại, Zalo, địa chỉ chính xác chỉ mở khi đơn đã chốt và bên mua đã đặt cọc.</div>
-    <div><b>Phí giới thiệu ở đơn đầu</b>Thu lúc đặt cọc. Đơn lặp lại với mối quen trên app chỉ tính phí thấp.</div>
-    <div><b>Thanh toán đảm bảo</b>Tiền đi qua ngân hàng đối tác. Cân xong, hai bên xác nhận thì tiền tự về người bán. Về sau có thêm ứng tiền trước.</div>
-    <div><b>Quản lý cả hai phía</b>Nhà vườn: thu chi, nhật ký, nhắc cách ly thuốc. Bên mua: nhập kho, chấm điểm nhà cung cấp, bảng kê 01/TNDN, truy xuất nguồn gốc.</div>
-    <div><b>AI gợi ý, người xác nhận</b>Nói là ghi, ghép nguồn, đọc phiếu cân, phát hiện lách liên lạc. Con số liên quan tới tiền luôn cần người bấm "Đúng".</div>
-  </div>
-</section>
-
-<section id="tieu-chi">
-  <h2>2. Năm tiêu chí thành quy tắc vẽ</h2>
-  <p class="dan">Người dùng chính là nhà vườn 40–65 tuổi ở Đồng bằng sông Cửu Long, mắt kém dần, ít gõ chữ, dùng điện thoại tầm trung ngoài nắng. Phía bên mua là nhân viên thu mua của doanh nghiệp, dùng máy tính cả ngày.</p>
-  <div class="bang"><table>
-    <thead><tr><th>Tiêu chí</th><th>Nghĩa là</th><th>Quy tắc vẽ</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Dễ dùng</strong></td><td>Nhìn là biết bấm đâu, không phải đọc</td><td>Vùng bấm tối thiểu 48 px. Mỗi màn chỉ một nút chính. Icon luôn đi kèm chữ. Không để trạng thái chỉ báo bằng màu.</td></tr>
-      <tr><td><strong>Thân thiện</strong></td><td>Như người quen chỉ việc, không như máy ra lệnh</td><td>Góc bo vừa phải (8–12 px), màu đất ấm, linh vật xuất hiện lúc cần giúp. Báo lỗi nói cách sửa, không đổ lỗi.</td></tr>
-      <tr><td><strong>Giữ chân người dùng</strong></td><td>Quay lại vì có lợi thật, không vì bị dụ</td><td>Ăn mừng những cột mốc có thật (tiền về, hồ sơ vườn đủ). Không dùng chuỗi ngày, tim, điểm ảo.</td></tr>
-      <tr><td><strong>Trưởng thành</strong></td><td>Người lớn tuổi không thấy bị coi như trẻ con</td><td>Không dùng font tròn, đầu to, mắt long lanh, má hồng, màu kẹo, nảy quá đà. Linh vật vắng mặt ở màn tiền và tranh chấp.</td></tr>
-      <tr><td><strong>Chuyên nghiệp, nhận ra ngay</strong></td><td>Doanh nghiệp tin để làm ăn; thấy là biết đơn đang ở đâu</td><td>Một hệ màu cho trạng thái dùng thống nhất cả hai app. Số dùng chữ số đều nhau. Icon cùng nét, cùng lưới.</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section id="nhan-dien">
-  <h2>3. Nhận diện trạng thái: bốn nhóm hành động</h2>
-  <p class="dan">Lý do chính khiến luồng khó hiểu: trạng thái hiện chỉ là một dòng chữ. Từ nay mọi đơn, lô, kết nối đều thuộc một trong bốn nhóm (thêm một nhóm "đã kết thúc"). Nhóm trả lời câu hỏi người dùng thật sự quan tâm: <em>tới lượt ai?</em></p>
-  <div class="bang"><table>
-    <thead><tr><th>Nhóm</th><th>Nghĩa</th><th>Màu</th><th>Hình dấu</th></tr></thead>
-    <tbody>
-      <tr><td><span class="nhom n-lam">Bạn cần làm</span></td><td>Đang chờ chính người đang xem</td><td>Mật ong</td><td>Hình thoi đặc</td></tr>
-      <tr><td><span class="nhom n-cho">Chờ bên kia</span></td><td>Đã làm phần mình, chờ đối tác hoặc ngân hàng</td><td>Sông trầm</td><td>Vòng tròn rỗng</td></tr>
-      <tr><td><span class="nhom n-xong">Đã xong</span></td><td>Bước hoàn tất, không còn gì phải làm</td><td>Rêu đồng</td><td>Chấm tròn đặc</td></tr>
-      <tr><td><span class="nhom n-loi">Có vấn đề</span></td><td>Lệch cân, chưa thấy tiền, quá hạn sắp tới</td><td>Gạch nung</td><td>Tam giác</td></tr>
-      <tr><td><span class="nhom n-het">Đã kết thúc</span></td><td>Hủy, từ chối, hết hạn</td><td>Xám lá</td><td>Gạch ngang</td></tr>
-    </tbody>
-  </table></div>
-  <p><strong>Quy tắc bốn tín hiệu:</strong> mỗi trạng thái hiện đồng thời bằng <strong>màu + hình dấu + chữ + vị trí</strong>. Thẻ trạng thái luôn nằm ở đầu thẻ đơn hoặc lô. Người mù màu và người xem ngoài nắng vẫn đọc được nhờ hình dấu và chữ.</p>
-  <p><strong>Thanh chặng đường</strong> (giống chặng đường học của Duolingo, nhưng phẳng và ngang): <em>Kết nối → Đơn → Cọc → Giao và cân → Chốt → Tiền về</em>. Mỗi nút có ba kiểu (đã qua, đang ở, chưa tới). Nút đang ở mang màu của nhóm hiện tại.</p>
-</section>
-
-<section id="trang-thai">
-  <h2>4. Bảng trạng thái (bản nháp)</h2>
-  <p class="dan">Tên ở cột "Mã" là tên input trong file Rive. Đặt đúng tên này thì code tự bật hình. Bảng sẽ chốt sau khi viết lại luật chuyển trạng thái; nếu có đổi, mình báo lại đúng mã đổi.</p>
-  <h3>Kết nối</h3>
-  <div class="bang"><table>
-    <thead><tr><th>Mã</th><th>Chữ hiện cho người bán</th><th>Nhóm (người bán / bên mua)</th></tr></thead>
-    <tbody>
-      <tr><td><code>kn_cho</code></td><td>Có người hỏi mua, chờ bạn trả lời</td><td><span class="nhom n-lam">Bạn cần làm</span> / <span class="nhom n-cho">Chờ bên kia</span></td></tr>
-      <tr><td><code>kn_dong_y</code></td><td>Đã đồng ý, bên mua được nhắn tin và gửi đơn</td><td><span class="nhom n-xong">Đã xong</span></td></tr>
-      <tr><td><code>kn_tu_choi</code></td><td>Đã từ chối</td><td><span class="nhom n-het">Đã kết thúc</span></td></tr>
-      <tr><td><code>kn_het_han</code></td><td>Hết hạn 7 ngày, lượt được trả lại</td><td><span class="nhom n-het">Đã kết thúc</span></td></tr>
-    </tbody>
-  </table></div>
-  <h3>Đơn</h3>
-  <div class="bang"><table>
-    <thead><tr><th>Mã</th><th>Chữ hiện cho người bán</th><th>Nhóm (người bán / bên mua)</th><th>Chặng</th></tr></thead>
-    <tbody>
-      <tr><td><code>don_cho_ban</code></td><td>Đơn mới, chờ bạn xác nhận</td><td><span class="nhom n-lam">Bạn cần làm</span> / <span class="nhom n-cho">Chờ bên kia</span></td><td>Đơn</td></tr>
-      <tr><td><code>don_cho_coc</code></td><td>Bạn đã xác nhận, chờ bên mua đặt cọc</td><td><span class="nhom n-cho">Chờ bên kia</span> / <span class="nhom n-lam">Bạn cần làm</span></td><td>Cọc</td></tr>
-      <tr><td><code>don_da_coc</code></td><td>Đã cọc. Đã mở số điện thoại hai bên</td><td><span class="nhom n-xong">Đã xong</span></td><td>Cọc</td></tr>
-      <tr><td><code>cho_giao</code></td><td>Chờ ngày giao, cân</td><td><span class="nhom n-lam">Bạn cần làm</span> (cả hai)</td><td>Giao và cân</td></tr>
-      <tr><td><code>giao_mot_phan</code></td><td>Đã giao một phần, còn lại giao đợt sau</td><td><span class="nhom n-lam">Bạn cần làm</span></td><td>Giao và cân</td></tr>
-      <tr><td><code>cho_xn_can</code></td><td>Bên mua đã nhập số cân, chờ bạn xem lại</td><td><span class="nhom n-lam">Bạn cần làm</span> / <span class="nhom n-cho">Chờ bên kia</span></td><td>Chốt</td></tr>
-      <tr><td><code>da_chot</code></td><td>Đã chốt số cân, chờ bên mua chuyển tiền</td><td><span class="nhom n-cho">Chờ bên kia</span> / <span class="nhom n-lam">Bạn cần làm</span></td><td>Chốt</td></tr>
-      <tr><td><code>tien_dang_giu</code></td><td>Tiền đã vào tài khoản đảm bảo, đang chuyển cho bạn</td><td><span class="nhom n-cho">Chờ bên kia</span> (ngân hàng)</td><td>Tiền về</td></tr>
-      <tr><td><code>da_nhan_tien</code></td><td>Đã nhận đủ tiền. Đơn đóng</td><td><span class="nhom n-xong">Đã xong</span></td><td>Tiền về</td></tr>
-      <tr><td><code>doi_soat</code></td><td>Đang đối soát (lệch cân hoặc chưa thấy tiền)</td><td><span class="nhom n-loi">Có vấn đề</span></td><td>giữ chặng cũ</td></tr>
-      <tr><td><code>ban_tu_choi</code></td><td>Bạn đã từ chối đơn</td><td><span class="nhom n-het">Đã kết thúc</span></td><td>—</td></tr>
-      <tr><td><code>da_huy</code></td><td>Đơn đã hủy (ghi rõ ai hủy, cọc xử lý thế nào)</td><td><span class="nhom n-het">Đã kết thúc</span></td><td>—</td></tr>
-      <tr><td><code>qua_han</code></td><td>Quá hạn, chưa ai làm bước tiếp</td><td><span class="nhom n-loi">Có vấn đề</span></td><td>giữ chặng cũ</td></tr>
-    </tbody>
-  </table></div>
-  <h3>Lô hàng</h3>
-  <div class="bang"><table>
-    <thead><tr><th>Mã</th><th>Chữ hiện</th><th>Hình gợi ý</th></tr></thead>
-    <tbody>
-      <tr><td><code>lo_dang_ban</code></td><td>Đang bán · còn 3.200 kg</td><td>Thanh lượng còn lại đầy</td></tr>
-      <tr><td><code>lo_con_it</code></td><td>Còn ít · còn 400 kg</td><td>Thanh lượng tụt dưới 20%</td></tr>
-      <tr><td><code>lo_sap_co</code></td><td>Sắp có hàng · dự kiến hái 12/11</td><td>Lịch, chồi lá</td></tr>
-      <tr><td><code>lo_da_chot_het</code></td><td>Đã chốt hết · đang giao dịch</td><td>Con dấu "đủ"</td></tr>
-      <tr><td><code>lo_sap_an</code></td><td>Tin tự ẩn sau 2 ngày · bấm Vẫn còn hàng</td><td>Đồng hồ cát</td></tr>
-      <tr><td><code>lo_da_an</code></td><td>Đã ẩn</td><td>Thẻ mờ</td></tr>
-    </tbody>
-  </table></div>
-  <h3>Quản lý (mới)</h3>
-  <div class="bang"><table>
-    <thead><tr><th>Mã</th><th>Khi nào</th></tr></thead>
-    <tbody>
-      <tr><td><code>ghi_xong</code></td><td>Vừa nói hoặc ghi xong một dòng nhật ký, thu chi</td></tr>
-      <tr><td><code>cach_ly</code></td><td>Còn trong thời gian cách ly thuốc: cảnh báo trước khi đăng bán</td></tr>
-      <tr><td><code>ho_so_vuon</code></td><td>Mức đầy đủ của hồ sơ vườn, số 0–100 (input dạng số)</td></tr>
-      <tr><td><code>ai_dang_nghe</code> / <code>ai_dang_nghi</code></td><td>AI đang nghe giọng nói / đang xử lý</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section id="linh-vat">
-  <h2>5. Linh vật</h2>
-  <p class="dan">Lần trước bỏ linh vật vì bị chê "con nít". Lần này linh vật được dùng có giới hạn: là người dẫn đường, không phải nhân vật hoạt hình. So ba hướng:</p>
-  <div class="bang"><table>
-    <thead><tr><th>Hướng</th><th>Ưu</th><th>Nhược</th><th>Kết luận</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Kim, chiếc cân đồng hồ</strong></td><td>Gắn với khoảnh khắc quan trọng nhất (cân, chốt đúng giá), gợi sự công bằng. Không app nào có. Kim cân thể hiện cảm xúc được mà không cần mặt người. Dùng làm biểu tượng đang tải luôn</td><td>Ít "ấm" hơn con vật, phải dựa vào chuyển động để có hồn</td><td><strong>Đề xuất</strong></td></tr>
-      <tr><td>Con trâu</td><td>Chăm chỉ, đáng tin, rất Việt</td><td>Phổ biến (nhiều thương hiệu nông nghiệp đã dùng), dễ bị vẽ thành hoạt hình mũm mĩm</td><td>Phương án dự phòng</td></tr>
-      <tr><td>Con cò</td><td>Hình ảnh đồng bằng, thanh thoát</td><td><strong>"Cò" trong tiếng lóng là môi giới chộp giật ("cò đất", "cò xe")</strong>. App là bên trung gian nên rất dễ bị chê "app cò". Cũng dễ bị so với cú Duolingo</td><td>Không dùng</td></tr>
-    </tbody>
-  </table></div>
-
-  <h3>Kim: cách vẽ</h3>
-  <ul>
-    <li><strong>Hình khối:</strong> thân cân đồng hồ bo góc, màu rêu; mâm cân vàng đất phía trên; mặt số sáng màu có vạch chia. Kim cân là "tay" và "nét mặt".</li>
-    <li><strong>Mắt:</strong> hai nét nhỏ trên mặt số, không có đồng tử to, không má hồng, không miệng. Cảm xúc chủ yếu nằm ở góc kim và nhịp chuyển động.</li>
-    <li><strong>Tỷ lệ:</strong> thân thấp, vững, không đầu to thân nhỏ. Nét viền dày bằng nét icon (2 px ở 24 px, 5 px ở 120 px).</li>
-    <li><strong>Giọng:</strong> Kim là "người" đọc khi bấm Nghe (giọng Thục Đoan đã thu). Khi đang đọc, kim rung nhẹ theo giọng.</li>
-    <li><strong>Tên:</strong> "Kim" vừa là kim cân, vừa là tên người Việt phổ biến, ngắn, dễ gọi, không phân biệt nam nữ.</li>
-  </ul>
-
-  <h3>Tám tư thế cần vẽ</h3>
-  <p class="dan">Hình phác bên dưới chỉ để chỉ vị trí kim và mắt, không phải bản vẽ cuối. Ba hình đầu có chuyển động mẫu.</p>
-  <div class="kim-hang" id="kim-hang"></div>
-
-  <h3>Kim xuất hiện ở đâu</h3>
-  <div class="hai-cot">
-    <div class="lam"><h4>Có</h4><ul>
-      <li>Chào mừng, đăng ký, chọn vai trò</li>
-      <li>Hướng dẫn chỉ tay, thẻ hướng dẫn</li>
-      <li>Màn trống (chưa có lô, chưa có khách)</li>
-      <li>Ăn mừng cột mốc thật</li>
-      <li>Lúc AI đang nghe hoặc đang nghĩ</li>
-      <li>Lỗi có hướng sửa (mất mạng, ảnh mờ)</li>
-    </ul></div>
-    <div class="tranh"><h4>Không</h4><ul>
-      <li>Màn ký thỏa thuận, nhập số tiền, số cân</li>
-      <li>Tranh chấp, đối soát (chỉ dùng icon nghiêm túc)</li>
-      <li>Danh sách, bảng của bên mua (app Thu mua chỉ dùng Kim ở hướng dẫn và màn trống)</li>
-      <li>Không xuất hiện quá một lần trên một màn</li>
-    </ul></div>
-  </div>
-</section>
-
-<section id="chuyen-dong">
-  <h2>6. Chuyển động</h2>
-  <p class="dan">Học cách Duolingo phản hồi ngay và ăn mừng đúng lúc, không học độ nảy. Chuyển động phải trả lời một trong ba câu: <em>tôi vừa bấm được chưa, việc đi tới đâu rồi, có gì vừa thay đổi.</em></p>
-  <div class="bang"><table>
-    <thead><tr><th>Loại</th><th>Thời lượng</th><th>Đường cong</th><th>Ví dụ</th></tr></thead>
-    <tbody>
-      <tr><td>Phản hồi bấm</td><td class="so">80–150 ms</td><td><code>ease-out</code></td><td>Nút lún 2 px, đổi màu</td></tr>
-      <tr><td>Đổi trạng thái</td><td class="so">250–400 ms</td><td><code>cubic-bezier(.2,.8,.2,1)</code></td><td>Thẻ trạng thái đổi màu, dấu tích vẽ ra</td></tr>
-      <tr><td>Đi tới chặng mới</td><td class="so">500–700 ms</td><td>cùng trên</td><td>Thanh chặng đường chạy tới nút kế</td></tr>
-      <tr><td>Lỗi, bị chặn</td><td class="so">300 ms</td><td>lắc 3 nhịp, biên độ 4 px</td><td>Ô nhập lắc, kèm chữ lý do</td></tr>
-      <tr><td>Ăn mừng</td><td class="so">≤ 1.500 ms</td><td>vượt đà tối đa 8%</td><td>Tiền về: đồng tiền rơi vào thẻ, số tiền đếm lên</td></tr>
-      <tr><td>Kim chờ, đang tải</td><td class="so">vòng 1.200 ms</td><td><code>ease-in-out</code></td><td>Kim quét qua lại</td></tr>
-    </tbody>
-  </table></div>
-  <ul>
-    <li><strong>Không quá đà:</strong> độ vượt đà tối đa 8%, không lò xo nảy nhiều nhịp, không xoay vòng, không pháo giấy phủ màn.</li>
-    <li><strong>Bấm để bỏ qua:</strong> mọi ăn mừng bỏ qua được bằng một chạm. Lần thứ hai trở đi chạy bản ngắn (≤ 600 ms).</li>
-    <li><strong>Giảm chuyển động:</strong> máy bật "giảm chuyển động" hoặc máy yếu thì hiện thẳng khung cuối. Mỗi file Rive phải có khung tĩnh cuối.</li>
-    <li><strong>Không chặn thao tác:</strong> chuyển động chạy song song, người dùng bấm tiếp được ngay.</li>
-  </ul>
-</section>
-
-<section id="gan-bo">
-  <h2>7. Gắn bó mà không trẻ con</h2>
-  <p class="dan">Không dùng chuỗi ngày, tim, điểm kinh nghiệm hay bảng xếp hạng. Mỗi thứ dưới đây là một lợi ích thật, được trình bày có cảm xúc.</p>
-  <div class="bang"><table>
-    <thead><tr><th>Cơ chế</th><th>Lợi ích thật</th><th>Asset cần</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Hồ sơ vườn</strong> (vòng tròn 0–100%)</td><td>Nhật ký đủ thì bên mua tin hơn, xuất khẩu được, bán được giá</td><td>Vòng tiến độ có 4 mốc, huy hiệu "Vườn có nhật ký đủ"</td></tr>
-      <tr><td><strong>Mùa vụ</strong> (dòng thời gian một vụ)</td><td>Thấy vụ này đã chi gì, sắp hái khi nào, lời lỗ ra sao</td><td>Thanh mùa vụ: ra hoa → đậu trái → thu hoạch → bán</td></tr>
-      <tr><td><strong>Tiền về</strong></td><td>Khoảnh khắc đáng nhớ nhất của cả app</td><td>Ăn mừng riêng, làm kỹ nhất</td></tr>
-      <tr><td><strong>Uy tín</strong></td><td>Giao đủ, trả đúng hạn thì được giới thiệu nhiều hơn</td><td>Huy hiệu bậc uy tín (3 bậc), hiệu ứng lên bậc</td></tr>
-      <tr><td><strong>Tổng kết tuần</strong></td><td>"Tuần này: bán 2,4 tấn, thu 43,2 triệu, chi 6,1 triệu"</td><td>Thẻ tổng kết có minh họa nhỏ</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section id="mau-chu">
-  <h2>8. Màu và chữ</h2>
-  <h3>Giữ bảng màu hiện tại</h3>
-  <div class="mau">
-    <div><i style="background:#235c45"></i><span>Rêu đồng <code>#235c45</code><br>nút chính, Đã xong</span></div>
-    <div><i style="background:#c18b4b"></i><span>Vàng đất <code>#c18b4b</code><br>điểm nhấn</span></div>
-    <div><i style="background:#f5b83d"></i><span>Mật ong <code>#f5b83d</code><br>Bạn cần làm</span></div>
-    <div><i style="background:#315c60"></i><span>Sông trầm <code>#315c60</code><br>Chờ bên kia, phía bên mua</span></div>
-    <div><i style="background:#b4452a"></i><span>Gạch nung <code>#b4452a</code><br>Có vấn đề</span></div>
-    <div><i style="background:#233c31"></i><span>Mực lá <code>#233c31</code><br>chữ, nét icon</span></div>
-    <div><i style="background:#f0deae"></i><span>Nắng hạt <code>#f0deae</code><br>nút phụ, nền câu hỏi</span></div>
-    <div><i style="background:#f7f8f2"></i><span>Sương đồng <code>#f7f8f2</code><br>nền</span></div>
-  </div>
-  <ul>
-    <li><strong>Mật ong chỉ dùng làm nền hoặc khối,</strong> không dùng làm màu chữ trên nền sáng vì không đủ tương phản.</li>
-    <li><strong>App Thu mua</strong> giữ cùng bảng màu, chỉ đổi màu chủ đạo sang Sông trầm để hai vai phân biệt được mà vẫn cùng một thương hiệu.</li>
-    <li>Minh họa dùng tối đa 4 màu trong bảng này cộng một màu da trung tính. Không dùng màu kẹo, không dùng chuyển sắc.</li>
-  </ul>
-  <h3>Chữ: bỏ Baloo 2</h3>
-  <p>App hiện vẫn dùng <strong>Baloo 2</strong> (font tròn) cho tiêu đề và số ở khoảng 40 chỗ. Đây là một nguồn chính của cảm giác "con nít". Đề xuất dùng một họ chữ <strong>Be Vietnam Pro</strong> cho tất cả:</p>
-  <ul>
-    <li>Tiêu đề: 700–800, chữ hơi khít (−1%).</li>
-    <li>Số tiền, số cân: 700, bật chữ số đều nhau (tabular) để các cột thẳng hàng.</li>
-    <li>Thân chữ: 400–500, tối thiểu 16 px trong app bán (người lớn tuổi), 14 px trong app mua.</li>
-  </ul>
-  <p>Mình sẽ đổi font trong code. Bạn chỉ cần dùng Be Vietnam Pro trong bản vẽ.</p>
-</section>
-
-<section id="danh-sach">
-  <h2>9. Danh sách asset</h2>
-  <p class="dan"><span class="p0">P0</span> vẽ trước, gánh việc nhận diện luồng. <span class="p1">P1</span> làm cho app có hồn. <span class="p2">P2</span> làm sau khi có tính năng tương ứng.</p>
-  <div class="bang"><table>
-    <thead><tr><th></th><th>Asset</th><th>Định dạng, kích thước</th><th>Số lượng</th></tr></thead>
-    <tbody>
-      <tr><td class="p0">P0</td><td>Bộ thẻ trạng thái đơn, kết nối, lô (mục 4), có đoạn chuyển giữa các trạng thái</td><td>1 file Rive, icon 48 px + minh họa 160 px</td><td class="so">~23 trạng thái</td></tr>
-      <tr><td class="p0">P0</td><td>Thanh chặng đường giao dịch 6 chặng</td><td>Rive, ngang 343 × 56 px (điện thoại), 640 × 64 px (máy tính)</td><td class="so">1</td></tr>
-      <tr><td class="p0">P0</td><td>Phản hồi tức thì: dấu tích, lắc lỗi, kim đang tải, nút đang gửi</td><td>Rive, 24–48 px</td><td class="so">4</td></tr>
-      <tr><td class="p0">P0</td><td>Kim: bản vẽ chuẩn + 8 tư thế</td><td>SVG tĩnh + Rive có input <code>tu_the</code> (số 0–7) và <code>dang_doc</code> (bật/tắt)</td><td class="so">8</td></tr>
-      <tr><td class="p0">P0</td><td>Khóa liên lạc → mở liên lạc khi đặt cọc</td><td>Rive 120 px</td><td class="so">1</td></tr>
-      <tr><td class="p1">P1</td><td>Ăn mừng: lô đầu tiên, có người hỏi mua, đơn được xác nhận, chốt cân, <strong>tiền về</strong></td><td>Rive, toàn chiều ngang thẻ, ≤ 1,5 s</td><td class="so">5</td></tr>
-      <tr><td class="p1">P1</td><td>Màn trống: chưa có lô, chưa có đơn, chưa có khách, mất mạng, chưa có nhật ký</td><td>SVG 240 px (có Kim)</td><td class="so">5</td></tr>
-      <tr><td class="p1">P1</td><td>Hướng dẫn chỉ tay: bàn tay chạm, vòng sáng, mũi tên cuộn</td><td>Rive 64 px</td><td class="so">3</td></tr>
-      <tr><td class="p1">P1</td><td>Thanh lượng còn lại của lô, vòng hồ sơ vườn</td><td>Rive, input số 0–100</td><td class="so">2</td></tr>
-      <tr><td class="p1">P1</td><td>Minh họa onboarding: sổ làm vườn, chợ, tiền về an toàn</td><td>SVG 320 px</td><td class="so">3</td></tr>
-      <tr><td class="p2">P2</td><td>Thanh mùa vụ, thẻ tổng kết tuần, huy hiệu 3 bậc uy tín</td><td>SVG + Rive</td><td class="so">5</td></tr>
-      <tr><td class="p2">P2</td><td>AI đang nghe, đang nghĩ (sóng âm quanh Kim)</td><td>Rive 96 px</td><td class="so">2</td></tr>
-      <tr><td class="p2">P2</td><td>Minh họa mặt hàng: vẽ lại 9 icon <code>sp-*</code> cùng nét mới, thêm cà phê, tiêu, lúa, cá tra</td><td>SVG 48 px</td><td class="so">~13</td></tr>
-    </tbody>
-  </table></div>
-  <div class="ghi"><strong>Vì sao dùng Rive:</strong> mỗi file là một máy trạng thái có input. Code chỉ cần đặt input bằng mã trạng thái là hình tự chuyển, nên khớp đúng bảng ở mục 4. File nhẹ hơn Lottie nhiều, chạy được trên web. Lottie chỉ dùng cho cảnh chạy một lần nếu bạn quen After Effects hơn.</div>
-</section>
-
-<section id="icon">
-  <h2>10. Icon mới cần vẽ</h2>
-  <p class="dan">Theo đúng kiểu icon hai tông đang có: lưới 24 px (bản lớn 48 px), nét 2 px ở 24 px, đầu nét tròn, nền khối màu Rêu hoặc Lá non, nét Mực lá.</p>
-  <div class="bang"><table>
-    <thead><tr><th>Nhóm</th><th>Icon</th></tr></thead>
-    <tbody>
-      <tr><td>Tiền, an toàn</td><td>ví đảm bảo, đặt cọc, khóa liên lạc, mở liên lạc, ứng tiền, phí giới thiệu</td></tr>
-      <tr><td>Quản lý vườn</td><td>nhật ký, thu, chi, phun thuốc, bón phân, thời gian cách ly, mùa vụ, thời tiết</td></tr>
-      <tr><td>Quản lý bên mua</td><td>nhập kho, chấm điểm nhà cung cấp, bảng kê, truy xuất (mã QR), xuất Excel</td></tr>
-      <tr><td>Uy tín</td><td>huy hiệu đã xác minh, 3 bậc uy tín, giao đủ, trả đúng hạn</td></tr>
-      <tr><td>AI</td><td>nói để ghi, đọc ảnh chứng từ, gợi ý (tránh hình tia lấp lánh sáo mòn; dùng hình kim cân + sóng âm)</td></tr>
-      <tr><td>Trạng thái</td><td>5 hình dấu của mục 3 ở cỡ 12 px và 16 px</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section id="am-thanh">
-  <h2>11. Âm thanh và rung</h2>
-  <ul>
-    <li><strong>Ba âm, mỗi âm dưới 1 giây:</strong> xong (một nốt gỗ ấm), lỗi (hai nốt trầm, không chói), tiền về (tiếng đồng xu nhẹ + một hợp âm). Không nhạc nền.</li>
-    <li><strong>Mặc định:</strong> bật trong app bán, tắt trong app mua. Có nút tắt trong Cài đặt.</li>
-    <li><strong>Rung:</strong> 15 ms khi bấm nút chính, 2 nhịp khi lỗi, 3 nhịp khi tiền về.</li>
-    <li><strong>Định dạng:</strong> mp3 hoặc ogg, mono, ≤ 30 KB mỗi âm, chuẩn −16 LUFS cho khớp giọng đọc.</li>
-  </ul>
-</section>
-
-<section id="ban-giao">
-  <h2>12. Quy cách bàn giao</h2>
-  <ul>
-    <li><strong>Tên file:</strong> không dấu, gạch ngang: <code>trang-thai-don.riv</code>, <code>kim-tu-the.riv</code>, <code>ic-vi-dam-bao.svg</code>.</li>
-    <li><strong>Tên input trong Rive:</strong> đúng cột "Mã" ở mục 4, không dấu, gạch dưới.</li>
-    <li><strong>Dung lượng:</strong> mỗi file Rive ≤ 150 KB, cả bộ ≤ 1,5 MB (người dùng ở quê mạng yếu). SVG đã tối ưu, không nhúng ảnh.</li>
-    <li><strong>Màu:</strong> chỉ dùng mã màu ở mục 8. Mình xuất thêm bảng màu tối nếu cần.</li>
-    <li><strong>Khung tĩnh cuối</strong> cho mọi animation (dùng khi giảm chuyển động).</li>
-    <li><strong>Gửi theo đợt:</strong> P0 trước. Có file nào mình gắn vào bản mô phỏng ngay để thử trên điện thoại thật.</li>
-  </ul>
-  <div class="ghi"><strong>Trong lúc bạn vẽ, phía code làm song song:</strong> viết lại luật chuyển trạng thái và sửa các lỗi luồng (bán lố, xác nhận trùng, trả thiếu vẫn đóng đơn); thêm bước cọc mở liên lạc, thanh toán đảm bảo mô phỏng; thẻ "Bước tiếp theo" và thanh chặng đường dùng hình giữ chỗ; bỏ Baloo 2. Xong phần này mình chốt lại bảng ở mục 4.</div>
-</section>
+  <header>
+    <div class="mat-nho">AgiViet · danh mục màn hình · 19/10/2026</div>
+    <h1>Các trang, màn hình và luồng của AgiViet</h1>
+    <p class="dan">Toàn bộ màn cần thiết kế cho hai app và phần vận hành, theo định hướng đã chốt: sổ làm ăn có chợ ở giữa, ẩn liên lạc tới khi đặt cọc, thanh toán đảm bảo, quản lý cho cả hai phía. Mỗi màn ghi rõ <span class="nhan t-co">Có</span> giữ như hiện tại, <span class="nhan t-sua">Sửa</span> đã có nhưng phải đổi, <span class="nhan t-moi">Mới</span> chưa có.</p>
+    <div class="tong" id="tong"></div>
+    <p class="dan" style="font-size:14px">Không tính các lớp phủ dùng chung trên nhiều màn: hướng dẫn chỉ tay, thẻ hướng dẫn, nút Nghe, thông báo nhanh, hộp xác nhận, hiệu ứng ăn mừng.</p>
+  </header>
+  <div id="noi-dung"></div>
+  <section id="luong">
+    <h2>Luồng hoạt động</h2>
+    <p class="dan">Mỗi luồng là chuỗi màn người dùng đi qua. Màn in đậm là màn mới.</p>
+    <div class="chu-giai"><span class="buoc ban">App bán</span><span class="buoc mua">App mua</span><span class="buoc vh">Vận hành</span><span>Tên trong ô là tên màn ở bảng phía trên</span></div>
+    <div id="ds-luong"></div>
+  </section>
 </main>
 </div>
 
 <script>
-// Phác 8 tư thế của Kim: góc kim (độ, 0 = thẳng đứng) và kiểu mắt
-const TU_THE = [
-  ['Chào', 'onboarding, hướng dẫn', -30, 'cham', 'chao 1.6s'],
-  ['Đang đọc', 'khi bấm Nghe', 0, 'cham', 'nghe .5s'],
-  ['Đang nghĩ', 'tải, AI xử lý', 0, 'nham', 'nghi 1.2s alternate'],
-  ['Vui', 'xong việc, ăn mừng', 52, 'cuoi', ''],
-  ['Nhắc', 'cần làm, sắp hết hạn', 20, 'cham', ''],
-  ['Lo', 'lỗi có hướng sửa', -52, 'lo', ''],
-  ['Trống', 'màn chưa có gì', -88, 'nham', ''],
-  ['Tiền về', 'chỉ dùng cho tiền về', 88, 'cuoi', ''],
+// [mã, tên màn, giao diện gồm những gì, Có|Sửa|Mới]
+const APPS = [
+{ id: 'ban', ten: 'App Nhà sản xuất', khung: 'Điện thoại 390 px · thanh dưới 5 mục: Hôm nay · Vườn · Bán · Đơn · Tiền; nút giữa "+" để Ghi hoặc Đăng; Tôi ở góc trên',
+  nhom: [
+  ['Bắt đầu', 'Đăng ký, đăng nhập lần đầu', [
+    ['chao-mung', 'Chào mừng', 'Logo, khẩu hiệu, nút Bắt đầu, Tôi đã có tài khoản', 'Có'],
+    ['dang-nhap', 'Số điện thoại', 'Ô số điện thoại, nút Gửi mã, Trợ giúp', 'Có'],
+    ['otp', 'Nhập mã', '6 ô mã, Gửi lại, Gọi đọc mã cho tôi', 'Có'],
+    ['vai-tro', 'Bạn bán thế nào?', 'Chọn: hộ nhà vườn, nuôi trồng thủy sản, hợp tác xã, tổ hợp tác', 'Có'],
+    ['mat-hang', 'Mặt hàng', 'Lưới ảnh mặt hàng, chọn nhiều', 'Có'],
+    ['ho-so', 'Hồ sơ', 'Tên, xã/huyện, lấy vị trí đang đứng', 'Có'],
+    ['khai-bao-vuon', 'Khai báo vườn', 'Từng vườn/ao: diện tích, loại cây/con, số gốc, năm trồng, vụ hiện tại. Bỏ qua được', 'Mới'],
+    ['xac-minh', 'Xác minh', 'Chụp căn cước, trạng thái chờ duyệt, Để sau', 'Có'],
+    ['tro-giup-truy-cap', 'Trợ giúp đăng nhập', 'Đổi số, mất máy, gọi tổng đài', 'Có'],
+  ]],
+  ['Hôm nay', 'Trang chủ mới: việc cần làm trước, tin tức sau', [
+    ['hom-nay', 'Hôm nay', 'Thẻ "Bước tiếp theo" của từng đơn (tới lượt ai, còn bao lâu), nhắc cách ly thuốc, thời tiết 3 ngày, số liệu tuần, lối tắt Ghi / Đăng', 'Mới'],
+    ['tong-ket-tuan', 'Tổng kết tuần', 'Đã bán, đã thu, đã chi, lời tạm tính, so tuần trước', 'Mới'],
+    ['thong-bao', 'Thông báo', 'Danh sách thông báo chia theo 4 nhóm trạng thái (chuyển từ Tôi sang)', 'Sửa'],
+  ]],
+  ['Vườn', 'Sổ làm vườn: phần quản lý cho nhà vườn', [
+    ['vuon', 'Vườn của tôi', 'Danh sách vườn/ao, vụ đang chạy, vòng hồ sơ vườn %, nút Ghi', 'Mới'],
+    ['mua-vu', 'Mùa vụ', 'Dòng thời gian một vụ (ra hoa → đậu trái → thu hoạch → bán), sản lượng ước, ngày hái dự kiến, nút Đăng bán từ vụ này', 'Mới'],
+    ['nhat-ky', 'Nhật ký canh tác', 'Dòng theo ngày: phun thuốc, bón phân, tưới, thu hoạch; lọc theo vườn; ảnh đính kèm', 'Mới'],
+    ['thu-chi', 'Thu chi', 'Sổ thu chi theo vụ, tổng thu, tổng chi, lời lỗ; tiền bán qua app tự vào', 'Mới'],
+    ['ghi', 'Nói để ghi', 'Nút mic lớn, chữ hiện dần khi nói, có thể gõ hoặc chụp hóa đơn', 'Mới'],
+    ['xac-nhan-ghi', 'Kiểm tra dòng vừa ghi', 'AI tách thành trường (ngày, việc, thuốc/phân, lượng, tiền), sửa từng trường, Lưu', 'Mới'],
+    ['cach-ly', 'Thời gian cách ly', 'Thuốc đã phun, ngày được hái sớm nhất, cảnh báo nếu lô đang bán còn trong thời gian cách ly', 'Mới'],
+    ['ho-so-vuon', 'Hồ sơ nguồn gốc', 'Tóm tắt nhật ký để bên mua xem, mã QR truy xuất, mức đầy đủ, chọn phần cho xem', 'Mới'],
+  ]],
+  ['Bán · Hàng', 'Lô đang bán', [
+    ['hang', 'Hàng đang bán', 'Thẻ lô có nhãn trạng thái 4 nhóm, thanh lượng còn lại, số khách đang hỏi, Vẫn còn hàng', 'Sửa'],
+    ['chi-tiet-lo', 'Chi tiết lô', 'Ảnh, lượng còn bán / đã hứa / đã giao, đơn liên quan kèm trạng thái, hồ sơ nguồn gốc, Sửa tin, Bán bớt', 'Sửa'],
+    ['cap-nhat-luong', 'Còn lại bao nhiêu?', 'Báo lượng mới, cảnh báo nếu thấp hơn lượng đã hứa', 'Có'],
+    ['sap-co-hang', 'Sắp có hàng', 'Đăng tin trước mùa: ngày hái, lượng ước', 'Có'],
+    ['chung-tu', 'Chứng từ', 'Giấy kiểm nghiệm, chứng nhận VietGAP, ảnh', 'Có'],
+    ['lo-gop', 'Lô gộp nhiều hộ', 'Danh sách hộ, phần của từng hộ, nhắc gửi giấy, Thêm hộ', 'Có'],
+  ]],
+  ['Bán · Đăng hàng', 'Đăng một lô mới (bằng ảnh, giọng nói hoặc từ mùa vụ)', [
+    ['dang', 'Đăng hàng', 'Chụp / Nói / Tự gõ; thêm lựa chọn "Từ mùa vụ đang có"', 'Sửa'],
+    ['chon-mat-hang', 'Chọn mặt hàng', 'Lưới mặt hàng', 'Có'],
+    ['chup', 'Chụp ảnh hàng', 'Khung chụp, gợi ý góc chụp, ảnh đã chụp', 'Có'],
+    ['nghe', 'Đang nghe', 'Sóng âm, chữ hiện dần, Nói lại, Nói xong', 'Có'],
+    ['kiem-tra', 'Kiểm tra', 'Các trường AI điền sẵn để sửa; chặn nếu còn thời gian cách ly thuốc', 'Sửa'],
+    ['xem-lai', 'Xem lại', 'Tin hoàn chỉnh như bên mua thấy (đã ẩn liên lạc), Nghe lại tin, Đăng bán', 'Sửa'],
+    ['xong', 'Đã đăng', 'Xác nhận, số bên mua phù hợp đang tìm hàng này', 'Có'],
+  ]],
+  ['Bán · Khách', 'Bên mua hỏi, nhắn, báo giá, hẹn xem', [
+    ['khach', 'Khách hỏi mua', 'Danh sách bên mua: tên tổ chức, vùng, huy hiệu đã xác minh, điểm uy tín; không còn hiện số điện thoại', 'Sửa'],
+    ['nhu-cau', 'Cần mua', 'Tin cần mua của bên mua phù hợp với hàng của mình, Chào hàng', 'Có'],
+    ['ket-noi', 'Khách muốn nói chuyện', 'Thông tin và uy tín bên mua, Đồng ý / Không / Báo cáo', 'Sửa'],
+    ['ho-so-ben-mua', 'Hồ sơ bên mua', 'Tên tổ chức, vùng, năm hoạt động, tỷ lệ trả đúng hạn, số đơn đã làm, nhận xét', 'Mới'],
+    ['chat', 'Nhắn tin', 'Tin nhắn, gọi qua app (che số); số điện thoại, Zalo, link bị che kèm lời nhắc', 'Sửa'],
+    ['bao-gia', 'Báo giá', 'Giá theo loại, lượng, ngày giao; Đồng ý / Gửi giá khác', 'Có'],
+    ['hen-xem', 'Hẹn xem vườn', 'Ngày giờ, địa chỉ đến cấp ấp (chưa có số nhà), gọi qua app', 'Sửa'],
+    ['bao-cao', 'Báo cáo', 'Lý do, ảnh, Gửi', 'Có'],
+  ]],
+  ['Đơn', 'Từ lúc nhận đơn đến khi giao, cân xong', [
+    ['lich', 'Đơn và lịch giao', 'Đơn chia theo 4 nhóm (Bạn cần làm, Chờ bên kia, Có vấn đề, Đã xong) + lịch giao theo ngày', 'Sửa'],
+    ['chi-tiet-don', 'Chi tiết đơn', 'Thanh chặng đường 6 bước, thẻ bước tiếp theo, lượng, giá, cọc, lịch sử đơn, các nút xin đổi/hủy/báo sai', 'Sửa'],
+    ['xac-nhan-don', 'Đơn mới', 'Lượng, giá, bên mua; kiểm tra lượng còn bán; Xác nhận / Từ chối (chọn lý do)', 'Mới'],
+    ['so-sanh', 'So sánh khách', 'Hai hoặc ba bên mua cạnh nhau: giá, phí, điều kiện, uy tín', 'Có'],
+    ['phuong-thuc', 'Chọn cách giao dịch', 'Thanh toán đảm bảo (mặc định) hoặc tự giao dịch; ghi rõ phí giới thiệu, ai trả', 'Sửa'],
+    ['chon-luong', 'Hứa bán bao nhiêu?', 'Lượng hứa, cảnh báo nếu lô còn là ước tính', 'Có'],
+    ['ky', 'Thỏa thuận', 'Tóm tắt điều kiện, Nghe, Hỏi hỗ trợ, Chưa đồng ý', 'Có'],
+    ['quyen', 'Quyền và trách nhiệm', 'Các ý chính bằng câu ngắn', 'Có'],
+    ['ban-day-du', 'Bản đầy đủ', 'Toàn văn, Nghe cả bản, công tắc đã nghe hết, người làm chứng', 'Có'],
+    ['ky-otp', 'Xác nhận ký', 'Mã OTP, Gọi đọc mã', 'Có'],
+    ['ky-xong', 'Hoàn tất ký', 'Xác nhận, bước tiếp: chờ bên mua đặt cọc', 'Sửa'],
+    ['ky-giay', 'Ký giấy', 'Tải bản in, chụp từng trang đã ký', 'Có'],
+    ['so-ban', 'Các bản', 'Lịch sử các bản thỏa thuận, đề nghị sửa', 'Có'],
+    ['coc', 'Tiền cọc', 'Cọc đã vào tài khoản đảm bảo (do ngân hàng xác nhận), không còn tự bấm "đã nhận"', 'Sửa'],
+    ['mo-lien-lac', 'Đã mở liên lạc', 'Tên người liên hệ, số điện thoại, địa chỉ giao hàng của hai bên; Gọi, Lưu danh bạ', 'Mới'],
+    ['ket-qua', 'Kết quả cân', 'Số bên mua nhập, ảnh phiếu cân, Đúng / Không đúng, chụp số trên cân', 'Sửa'],
+    ['giao-mot-phan', 'Giao đợt sau', 'Phần đã giao, phần còn lại, đề nghị giao bù hoặc bớt', 'Có'],
+    ['doi-lich', 'Xin đổi lịch', 'Ngày mới, lý do, ảnh', 'Có'],
+    ['yeu-cau-thay-doi', 'Xin thay đổi', 'Đổi lượng, giá, ngày; tạo bản thỏa thuận mới', 'Có'],
+    ['huy-don', 'Xin hủy đơn', 'Lý do, bằng chứng, cọc sẽ xử lý thế nào theo thỏa thuận', 'Sửa'],
+    ['tranh-chap', 'Đối soát', 'Phần đang lệch, chứng từ hai bên, người phụ trách, đề nghị', 'Có'],
+  ]],
+  ['Tiền', 'Tiền về và lịch sử', [
+    ['tien', 'Tiền hàng', 'Tiền đang giữ ở tài khoản đảm bảo, tiền đã về, tiền chờ; từng khoản gắn với đơn', 'Sửa'],
+    ['tien-ve', 'Tiền đã về', 'Số tiền, đơn, tài khoản nhận, thời gian; màn ăn mừng', 'Mới'],
+    ['quyet-toan', 'Quyết toán', 'Bảng tính: lượng × giá − phí, Nghe bảng tính', 'Có'],
+    ['lich-su-tien', 'Lịch sử tiền', 'Mọi khoản theo tháng, lọc theo đơn', 'Có'],
+    ['ung-tien', 'Nhận tiền trước', 'Đơn đủ điều kiện, số được ứng, phí, ngân hàng đối tác, đồng ý', 'Mới'],
+  ]],
+  ['Tôi', 'Tài khoản, cài đặt, hỗ trợ', [
+    ['toi', 'Tôi', 'Hồ sơ, uy tín, các mục cài đặt, Đăng xuất', 'Có'],
+    ['uy-tin', 'Uy tín của tôi', 'Bậc uy tín, giao đủ, đúng hẹn, nhận xét từ bên mua, cách lên bậc', 'Mới'],
+    ['dich-vu', 'Kiểm nghiệm, xe, kho', 'Dịch vụ đối tác', 'Có'],
+    ['dat-dich-vu', 'Đặt dịch vụ', 'Chọn ngày, báo giá, đặt', 'Có'],
+    ['cai-dat', 'Cài đặt', 'Cỡ chữ, tốc độ đọc, âm thanh, rung, ngôn ngữ', 'Có'],
+    ['ho-tro', 'Trung tâm hỗ trợ', 'Câu hỏi thường gặp, hướng dẫn từng bước, tạo yêu cầu', 'Có'],
+    ['can-ho-tro', 'Cần hỗ trợ', 'Mô tả, ảnh, Gửi', 'Có'],
+    ['trang-thai', 'Lỗi mẫu', 'Màn mẫu cho các trạng thái lỗi (mất mạng, ảnh mờ…)', 'Có'],
+    ['nguoi-giup', 'Người giúp', 'Con cháu được dùng chung tài khoản, quyền từng người', 'Có'],
+    ['tai-khoan-nhan', 'Tài khoản nhận tiền', 'Tài khoản ngân hàng, đổi tài khoản (có xác minh)', 'Có'],
+    ['bao-mat', 'Bảo mật', 'Thiết bị đang đăng nhập, báo mất máy', 'Có'],
+    ['rieng-tu', 'Quyền riêng tư', 'Cho bên mua xem gì trước khi đặt cọc, xem gì sau', 'Sửa'],
+    ['phan-cua-toi', 'Phần hàng của tôi', 'Dành cho hộ trong lô gộp: phần đã giao, tiền đã chia', 'Có'],
+  ]],
+]},
+{ id: 'mua', ten: 'App Thu mua', khung: 'Máy tính trước (1280 px), dùng được trên điện thoại · thanh bên trái: Tổng quan · Nguồn hàng · Nhu cầu · Báo giá · Tin nhắn · Đơn · Tiền · Kho · Nhà cung cấp · Kế hoạch · Thuế và báo cáo · Dịch vụ · Tổ chức',
+  nhom: [
+  ['Vào app', 'Đăng ký doanh nghiệp', [
+    ['dang-nhap', 'Đăng nhập', 'Số điện thoại hoặc email', 'Có'],
+    ['otp', 'Mã xác minh', '6 ô mã', 'Có'],
+    ['thong-tin-to-chuc', 'Thông tin tổ chức', 'Tên, mã số thuế, địa chỉ, loại hình; thêm giấy phép để xác minh', 'Sửa'],
+    ['chon-goi', 'Chọn gói', 'Miễn phí / Business theo mô hình phí mới', 'Sửa'],
+  ]],
+  ['Tổng quan', '', [
+    ['tong-quan', 'Tổng quan', 'Việc cần làm chia 4 nhóm, đơn sắp nhận, tiền sắp trả, nguồn gợi ý, thiếu hàng', 'Sửa'],
+  ]],
+  ['Nguồn hàng', 'Tìm và đánh giá người bán', [
+    ['nguon-hang', 'Nguồn hàng', 'Lưới lô: ảnh, lượng còn bán, vùng, ngày hái, uy tín người bán; bộ lọc; không hiện liên lạc', 'Sửa'],
+    ['goi-y', 'Gợi ý khớp nhu cầu', 'AI xếp hạng lô hợp với từng nhu cầu, lý do khớp', 'Mới'],
+    ['chi-tiet-lo', 'Chi tiết lô', 'Ảnh, lượng, chất lượng, hồ sơ nguồn gốc, Kết nối, Hỏi giá, Hẹn xem, Đặt kiểm định', 'Sửa'],
+    ['ho-so-ban', 'Hồ sơ người bán', 'Tên, vùng, uy tín, nhật ký tóm tắt; số điện thoại chỉ hiện sau khi đặt cọc', 'Sửa'],
+  ]],
+  ['Nhu cầu', 'Tin cần mua', [
+    ['nhu-cau', 'Nhu cầu mua', 'Danh sách tin cần mua, số báo giá đã nhận', 'Có'],
+    ['tao-nhu-cau', 'Tạo nhu cầu', 'Mặt hàng, loại, lượng, khoảng ngày, giá trần; AI điền giúp', 'Có'],
+    ['chi-tiet-nhu-cau', 'Chi tiết nhu cầu', 'Báo giá nhận được, lô gợi ý', 'Có'],
+  ]],
+  ['Báo giá', '', [
+    ['bao-gia', 'Báo giá', 'Báo giá theo nhu cầu', 'Có'],
+    ['so-bao-gia', 'So báo giá', 'Bảng so: giá, tổng chi phí nhận hàng, uy tín, ngày giao', 'Có'],
+    ['gui-bao-gia', 'Gửi báo giá', 'Giá theo loại, lượng, điều kiện', 'Có'],
+  ]],
+  ['Tin nhắn', '', [
+    ['tin-nhan', 'Tin nhắn', 'Hội thoại, gọi và video qua app (che số), liên lạc bị che kèm lời nhắc', 'Sửa'],
+    ['hen-xem-vuon', 'Hẹn xem vườn', 'Đề nghị ngày giờ, địa chỉ cấp ấp, trạng thái hẹn', 'Mới'],
+  ]],
+  ['Đơn', 'Từ thỏa thuận đến nghiệm thu', [
+    ['don-hang', 'Đơn và lịch nhận', 'Đơn chia 4 nhóm, lịch tháng', 'Sửa'],
+    ['chi-tiet-don', 'Chi tiết đơn', 'Thanh chặng đường, bước tiếp theo, các đợt giao, phiếu cân, lịch sử', 'Sửa'],
+    ['thoa-thuan', 'Lập thỏa thuận', 'Lượng, giá theo loại, lịch giao, cọc, điều khoản mất mùa', 'Có'],
+    ['dat-coc', 'Đặt cọc', 'Phí giới thiệu (đơn đầu) hoặc phí mối quen, số cọc, chuyển vào tài khoản đảm bảo, mã chuyển khoản', 'Mới'],
+    ['mo-lien-lac', 'Đã mở liên lạc', 'Người liên hệ, số điện thoại, địa chỉ vườn của người bán', 'Mới'],
+    ['nghiem-thu', 'Nhập kết quả cân', 'Lượng nhận, lượng không nhận theo loại, lý do', 'Sửa'],
+    ['doc-phieu-can', 'Đọc phiếu cân', 'Chụp phiếu, AI điền số, so với đơn, báo lệch', 'Mới'],
+    ['doi-soat', 'Đối soát', 'Phần đang lệch, chứng từ, đề xuất, trả phần không tranh chấp', 'Có'],
+    ['lich-nhan', 'Lịch nhận và trả tiền', 'Theo tháng, xuất Excel', 'Có'],
+    ['huy-don', 'Hủy đơn', 'Lý do, cọc xử lý theo thỏa thuận, chờ bên kia đồng ý', 'Mới'],
+  ]],
+  ['Tiền', '', [
+    ['vi-dam-bao', 'Tài khoản đảm bảo', 'Số dư, tiền đang giữ theo đơn, tiền đã chuyển cho người bán, nạp thêm', 'Mới'],
+    ['cong-no', 'Công nợ', 'Theo người bán, theo đơn, xuất Excel', 'Có'],
+    ['ghi-thanh-toan', 'Chuyển tiền đơn', 'Chuyển khoản phải trả vào tài khoản đảm bảo; duyệt chi nhiều cấp', 'Sửa'],
+  ]],
+  ['Kho', 'Mới: theo dõi hàng sau khi nhận', [
+    ['nhap-kho', 'Nhập kho', 'Từ đơn đã nghiệm thu, chia theo loại, vị trí kho', 'Mới'],
+    ['ton-kho', 'Tồn kho', 'Lượng theo mặt hàng, loại, ngày nhập, hạn dùng', 'Mới'],
+    ['truy-xuat', 'Truy xuất lô', 'Lô kho → đơn → người bán → nhật ký vườn, mã QR', 'Mới'],
+  ]],
+  ['Nhà cung cấp', 'Mối quen và đánh giá', [
+    ['moi-quen', 'Mối quen', 'Danh sách mối, đơn gần nhất, điểm, phí mối quen thấp', 'Sửa'],
+    ['nhap-excel', 'Nhập từ Excel', 'Tải tệp, khớp cột, xem trước', 'Có'],
+    ['cham-diem', 'Chấm điểm nhà cung cấp', 'Giao đủ, đúng loại, đúng hẹn theo từng người bán', 'Mới'],
+    ['ghi-don-ngoai', 'Ghi đơn ngoài app', 'Ghi lại đơn mua trực tiếp để công nợ, kho, bảng kê đủ', 'Mới'],
+  ]],
+  ['Kế hoạch', '', [
+    ['ke-hoach', 'Kế hoạch mua', 'Nhu cầu theo tháng, đã có nguồn, dự báo thiếu hàng', 'Sửa'],
+  ]],
+  ['Thuế và báo cáo', 'Mới', [
+    ['bang-ke', 'Bảng kê mua hàng nông sản', 'Bảng kê mẫu 01/TNDN tự lập từ đơn, xuất PDF/Excel', 'Mới'],
+    ['bao-cao', 'Báo cáo', 'Khối lượng, chi phí, giá bình quân theo mặt hàng, vùng, tháng', 'Mới'],
+  ]],
+  ['Dịch vụ', '', [
+    ['dich-vu', 'Kiểm định, xe, kho', 'Yêu cầu đang có, đối tác', 'Có'],
+    ['yeu-cau-dich-vu', 'Yêu cầu dịch vụ', 'Báo giá đối tác, đặt lịch', 'Có'],
+  ]],
+  ['Tổ chức', 'Thành viên, gói, uy tín', [
+    ['thanh-vien', 'Thành viên và phân quyền', 'Người dùng, vai trò, quyền duyệt chi', 'Có'],
+    ['goi-cua-toi', 'Gói và thanh toán', 'Gói hiện tại, hóa đơn', 'Có'],
+    ['so-sanh-goi', 'So sánh gói', 'Quyền từng gói theo mô hình phí mới, bỏ câu "Miễn phí rẻ hơn"', 'Sửa'],
+    ['nang-cap', 'Nâng cấp', 'Kỳ thanh toán, xuất hóa đơn', 'Có'],
+    ['nang-cap-xong', 'Đã nâng cấp', 'Xác nhận, mời thành viên', 'Có'],
+    ['ho-so-to-chuc', 'Hồ sơ tổ chức', 'Thông tin doanh nghiệp, giấy tờ xác minh', 'Có'],
+    ['uy-tin', 'Uy tín của tổ chức', 'Tỷ lệ trả đúng hạn, số đơn, nhận xét của người bán', 'Mới'],
+  ]],
+]},
+{ id: 'vh', ten: 'Trang vận hành', khung: 'Web nội bộ cho đội AgiViet, máy tính · chưa có, làm mới toàn bộ',
+  nhom: [
+  ['Vận hành', 'Duyệt, kiểm duyệt, xử lý tranh chấp, theo dõi tiền', [
+    ['tong-quan-vh', 'Tổng quan vận hành', 'Đơn kẹt, đơn quá hạn, tranh chấp mở, hàng chờ duyệt, tiền đang giữ', 'Mới'],
+    ['duyet-xac-minh', 'Hàng chờ xác minh', 'Danh sách người bán, bên mua chờ duyệt', 'Mới'],
+    ['chi-tiet-xac-minh', 'Duyệt hồ sơ', 'Ảnh giấy tờ, so khớp, Duyệt / Từ chối / Hỏi thêm', 'Mới'],
+    ['kiem-duyet-tin', 'Kiểm duyệt tin', 'Tin bị gắn cờ: ảnh lấy trên mạng, giá bất thường, tài khoản ảo', 'Mới'],
+    ['canh-bao-lach', 'Lách liên lạc', 'Tin nhắn AI nghi trao số điện thoại, mức độ, nhắc nhở', 'Mới'],
+    ['tranh-chap', 'Tranh chấp', 'Danh sách theo hạn xử lý', 'Mới'],
+    ['chi-tiet-tranh-chap', 'Xử lý tranh chấp', 'AI tóm tắt hồ sơ, chứng từ hai bên, lịch sử đơn, quyết định', 'Mới'],
+    ['tien-dam-bao', 'Tiền đảm bảo', 'Tiền đang giữ, lệnh chuyển cho người bán, đối chiếu với ngân hàng', 'Mới'],
+    ['nguoi-dung', 'Người dùng', 'Tra cứu tài khoản, lịch sử, khóa, mở khóa', 'Mới'],
+    ['yeu-cau-ho-tro', 'Yêu cầu hỗ trợ', 'Hàng chờ, giao người xử lý, trả lời', 'Mới'],
+    ['cau-hinh-phi', 'Cấu hình phí', 'Phí giới thiệu, phí mối quen, trần phí, gói', 'Mới'],
+  ]],
+]},
+{ id: 'web', ten: 'Trang giới thiệu', khung: 'agiviet-23a94.web.app',
+  nhom: [
+  ['Web', '', [
+    ['index', 'Trang giới thiệu', 'Viết lại theo định hướng mới: sổ làm ăn, thanh toán đảm bảo, bảng phí mới', 'Sửa'],
+  ]],
+]},
 ];
-const mat = k => ({
-  cham: '<circle cx="50" cy="60" r="3"/><circle cx="70" cy="60" r="3"/>',
-  cuoi: '<path d="M46 62q4-6 8 0M66 62q4-6 8 0" fill="none"/>',
-  nham: '<path d="M46 60h8M66 60h8" fill="none"/>',
-  lo: '<path d="M46 58l8 3M74 58l-8 3" fill="none"/>',
-}[k]);
-const kim = (goc, m, a) => `<svg viewBox="0 0 120 120" role="img" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="34" y="14" width="52" height="9" rx="4.5" fill="var(--vang)"/><rect x="56" y="22" width="8" height="10" fill="var(--chu)"/>
-  <rect x="18" y="30" width="84" height="78" rx="18" fill="var(--reu)"/>
-  <circle cx="60" cy="70" r="30" fill="var(--nen)" stroke="var(--chu)" stroke-width="3"/>
-  <path d="M38 78a24 24 0 0 1 44 0" fill="none" stroke="var(--vien)" stroke-width="5"/>
-  <g stroke="var(--chu)" stroke-width="3" fill="var(--chu)">${mat(m)}</g>
-  <g class="kim" style="${a ? `--a:${a.split(' ')[0]} ${a.split(' ').slice(1).join(' ')}` : ''}" transform="rotate(${goc} 60 78)"><path d="M60 78V52" stroke="var(--gach)" stroke-width="3.5"/></g>
-  <circle cx="60" cy="78" r="4" fill="var(--chu)"/></svg>`;
-document.getElementById('kim-hang').innerHTML = TU_THE.map(([ten, khi, goc, m, a]) =>
-  `<figure class="${a ? 'dong' : ''}">${kim(goc, m, a)}<b>${ten}</b><small>${khi}</small></figure>`).join('');
+
+// Luồng: [app, mã màn, ghi chú]
+const LUONG = [
+ ['Người bán đăng ký', 'Lần đầu dùng app', [['ban','chao-mung'],['ban','dang-nhap'],['ban','otp'],['ban','vai-tro'],['ban','mat-hang'],['ban','ho-so'],['ban','khai-bao-vuon'],['ban','xac-minh'],['ban','hom-nay']], 'Duyệt xác minh: trang vận hành, Hàng chờ xác minh → Duyệt hồ sơ.'],
+ ['Ghi nhật ký, thu chi bằng giọng nói', 'Người bán, hằng ngày', [['ban','hom-nay'],['ban','ghi'],['ban','xac-nhan-ghi'],['ban','nhat-ky']], 'Nếu là phun thuốc → tự tạo Thời gian cách ly. Nếu là khoản tiền → vào Thu chi.'],
+ ['Đăng bán một lô', 'Người bán', [['ban','dang'],['ban','chon-mat-hang'],['ban','chup'],['ban','nghe'],['ban','kiem-tra'],['ban','xem-lai'],['ban','xong'],['ban','hang']], 'Lối khác: Mùa vụ → Đăng bán từ vụ này → Kiểm tra. Còn thời gian cách ly thì Kiểm tra chặn lại.'],
+ ['Bên mua đăng ký', 'Lần đầu dùng app', [['mua','dang-nhap'],['mua','otp'],['mua','thong-tin-to-chuc'],['mua','chon-goi'],['mua','tong-quan']], ''],
+ ['Tìm nguồn và kết nối', 'Bên mua → người bán', [['mua','nguon-hang'],['mua','chi-tiet-lo'],['mua','ho-so-ban'],['ban','ket-noi'],['ban','ho-so-ben-mua']], 'Lối khác: Nhu cầu → Gợi ý khớp nhu cầu. Người bán từ chối thì lượt kết nối được trả lại.'],
+ ['Thương lượng', 'Hai bên, chưa thấy số điện thoại', [['mua','tin-nhan'],['ban','chat'],['ban','bao-gia'],['mua','so-bao-gia'],['mua','hen-xem-vuon'],['ban','hen-xem']], 'Trao số trong tin nhắn bị che; trang vận hành nhận cảnh báo ở Lách liên lạc.'],
+ ['Lập đơn, ký, đặt cọc', 'Luồng cốt lõi mới', [['mua','thoa-thuan'],['ban','xac-nhan-don'],['ban','phuong-thuc'],['ban','chon-luong'],['ban','ky'],['ban','ban-day-du'],['ban','ky-otp'],['ban','ky-xong'],['mua','dat-coc'],['ban','coc'],['ban','mo-lien-lac'],['mua','mo-lien-lac']], 'Người bán từ chối ở Đơn mới → đơn kết thúc. Bên mua chưa cọc quá hạn → đơn quá hạn.'],
+ ['Giao, cân, chốt số', 'Hai bên', [['ban','lich'],['ban','chi-tiet-don'],['mua','nghiem-thu'],['mua','doc-phieu-can'],['ban','ket-qua']], 'Đúng → đã chốt. Không đúng → Đối soát (hai bên) → Xử lý tranh chấp (vận hành). Nhánh: Giao đợt sau, Xin đổi lịch, Xin thay đổi, Xin hủy đơn.'],
+ ['Trả tiền và tiền về', 'Bên mua → ngân hàng → người bán', [['mua','ghi-thanh-toan'],['mua','vi-dam-bao'],['vh','tien-dam-bao'],['ban','tien'],['ban','tien-ve'],['ban','quyet-toan']], 'Chưa thấy tiền → Đối soát. Muốn có tiền sớm: Nhận tiền trước (khi đơn đủ điều kiện).'],
+ ['Sau khi nhận hàng', 'Bên mua', [['mua','nhap-kho'],['mua','ton-kho'],['mua','truy-xuat'],['mua','bang-ke'],['mua','cham-diem']], 'Uy tín hai bên tự cập nhật khi đơn đóng (Uy tín của tôi, Uy tín của tổ chức).'],
+ ['Mua lại mối quen', 'Bên mua', [['mua','moi-quen'],['mua','thoa-thuan'],['ban','xac-nhan-don'],['mua','dat-coc']], 'Đặt cọc tính phí mối quen thấp, liên lạc đã mở từ đơn trước. Mua ngoài app: Ghi đơn ngoài app.'],
+ ['Lô gộp hợp tác xã', 'Hợp tác xã và các hộ', [['ban','lo-gop'],['ban','chi-tiet-don'],['ban','tien'],['ban','phan-cua-toi']], 'Tiền về tài khoản hợp tác xã, chia theo phần từng hộ; hộ xác nhận ở Phần hàng của tôi.'],
+];
+
+const ten = {}; APPS.forEach(a => a.nhom.forEach(([, , ds]) => ds.forEach(m => { ten[a.id + ':' + m[0]] = m; })));
+const lop = { 'Có': 't-co', 'Sửa': 't-sua', 'Mới': 't-moi' };
+const dem = ds => ({ tong: ds.length, Có: ds.filter(m => m[3] === 'Có').length, Sửa: ds.filter(m => m[3] === 'Sửa').length, Mới: ds.filter(m => m[3] === 'Mới').length });
+const tatCa = APPS.flatMap(a => a.nhom.flatMap(n => n[2])); const D = dem(tatCa);
+document.getElementById('tong').innerHTML = [[D.tong, 'màn tất cả'], [D['Có'], 'giữ như hiện tại'], [D['Sửa'], 'đã có, phải sửa'], [D['Mới'], 'màn mới']].map(([s, t]) => `<div><b>${s}</b><span>${t}</span></div>`).join('');
+let ml = '';
+document.getElementById('noi-dung').innerHTML = APPS.map(a => {
+  const da = dem(a.nhom.flatMap(n => n[2])); ml += `<a href="#${a.id}">${a.ten} · ${da.tong}</a>`;
+  let so = 0;
+  return `<section id="${a.id}"><h2>${a.ten}</h2><p class="dan">${a.khung}<br><strong>${da.tong} màn</strong>: ${da['Có']} giữ, ${da['Sửa']} sửa, ${da['Mới']} mới.</p>` +
+    a.nhom.map(([tn, ghi, ds], i) => {
+      const dn = dem(ds); ml += `<a class="phu" href="#${a.id}-${i}">${tn} · ${dn.tong}</a>`;
+      return `<h3 id="${a.id}-${i}">${tn} <small>${dn.tong} màn${dn['Mới'] ? ' · ' + dn['Mới'] + ' mới' : ''}${ghi ? ' · ' + ghi : ''}</small></h3><div class="bang"><table><thead><tr><th>#</th><th>Màn</th><th>Giao diện gồm</th><th>Tình trạng</th></tr></thead><tbody>` +
+        ds.map(([ma, t, gd, tt]) => `<tr><td class="so">${++so}</td><td class="ten"><b>${t}</b><code>${ma}</code></td><td>${gd}</td><td class="tt"><span class="nhan ${lop[tt]}">${tt}</span></td></tr>`).join('') + '</tbody></table></div>';
+    }).join('') + '</section>';
+}).join('');
+ml += '<a href="#luong">Luồng hoạt động · ' + LUONG.length + '</a>';
+document.getElementById('muc-luc').innerHTML = ml;
+document.getElementById('ds-luong').innerHTML = LUONG.map(([t, ai, bs, nh], i) => `<div class="luong"><h4>${i + 1}. ${t}</h4><div class="ai">${ai} · ${bs.length} màn</div><ol>` +
+  bs.map(([a, ma]) => { const m = ten[a + ':' + ma]; return `<li><span class="buoc ${a}${m && m[3] === 'Mới' ? ' moi' : ''}">${m ? m[1] : ma}</span></li>`; }).join('') +
+  `</ol>${nh ? `<div class="nhanh">${nh}</div>` : ''}</div>`).join('');
 </script>
