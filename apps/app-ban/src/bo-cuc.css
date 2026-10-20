@@ -47,6 +47,6 @@ img.anh-mh[src$='.svg'] { object-fit: contain; padding: 12px; }
 @keyframes nhip { 50% { box-shadow: 0 0 0 14px rgba(180, 69, 42, 0.18); } }
 @media (prefers-reduced-motion: reduce) { .mic[aria-pressed='true'] { animation: none; } }
 .van-ban { white-space: pre-wrap; font-size: var(--co-chu-nho); line-height: 1.6; max-height: 50vh; overflow: auto; background: var(--be-mat); border: 1px solid var(--vien); border-radius: var(--bo-goc); padding: var(--k3); }
-.otp { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--k2); }
-.otp input { min-height: 56px; text-align: center; font-size: 24px; font-weight: 800; border: 1.5px solid var(--vien-dam); border-radius: var(--bo-goc-nho); background: var(--be-mat); }
+.otp { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--k2); }
+.otp input { min-width: 0; width: 100%; min-height: 56px; text-align: center; font-size: 24px; font-weight: 800; border: 1.5px solid var(--vien-dam); border-radius: var(--bo-goc-nho); background: var(--be-mat); }
 .an-mung { text-align: center; align-items: center; padding: var(--k5) var(--k4); background: var(--mau-chinh-nhat); border-radius: 16px; animation: tp-hien var(--cham) var(--duong-cong); }

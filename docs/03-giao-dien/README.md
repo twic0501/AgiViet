@@ -2,7 +2,7 @@
 
 | Tài liệu | Nội dung |
 |---|---|
-| [danh-muc-man.md](danh-muc-man.md) | 129 màn hai vai theo trang, giai đoạn, khu vực bố cục (sinh từ code) |
+| [danh-muc-man.md](danh-muc-man.md) | 82 màn app bán theo mục điều hướng, khu vực bố cục (sinh từ code) |
 | [bo-cuc-app.md](bo-cuc-app.md) | Bố cục và điều hướng hai app, nguyên tắc từng loại màn |
 | [nhan-dien-trang-thai.md](nhan-dien-trang-thai.md) | Năm nhóm "tới lượt ai", thanh chặng, quy tắc bốn tín hiệu |
 | [chuyen-dong.md](chuyen-dong.md) | Thời lượng, đường cong, giảm chuyển động |
@@ -20,4 +20,4 @@
 
 ## Bộ mã thiết kế
 
-Màu, chữ, khoảng cách, chuyển động nằm trong `apps/app-mo-phong/src/giao-dien/nen-tang/token.css` (app) và `apps/web-gioi-thieu/src/giao-dien/token.css` (trang giới thiệu). Thành phần không dùng mã màu trực tiếp.
+Màu, chữ, khoảng cách, chuyển động nằm trong `packages/giao-dien/src/token.css` (hai app) và `apps/web-gioi-thieu/src/giao-dien/token.css` (trang giới thiệu). Thành phần không dùng mã màu trực tiếp.

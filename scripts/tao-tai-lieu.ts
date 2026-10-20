@@ -2,7 +2,8 @@
 // Chạy: npm run tai-lieu (Node ≥ 22.18 chạy thẳng TypeScript). Không sửa tay các tệp sinh ra.
 import { writeFileSync } from 'node:fs';
 import { CHANG, CHANG_CUA, CHINH_SACH_MAC_DINH, LUAT, NHAN_TRANG_THAI, TEN_BUOC, TRANG_THAI, KET_THUC } from '../packages/nghiep-vu/src/index.ts';
-import { DANH_MUC_MAN } from '../apps/app-mo-phong/src/phan-he/danh-muc-man.ts';
+import { DANH_MUC_MAN } from '../apps/app-ban/src/danh-muc-man.ts';
+import { CA_KIEM_THU_BAN } from '../packages/may-chu/src/ca-kiem-thu.ts';
 
 const goc = new URL('../docs/', import.meta.url);
 const DAU = '<!-- Tệp sinh tự động bằng `npm run tai-lieu`. Đừng sửa tay. -->\n\n';
@@ -52,23 +53,27 @@ ${TEN_BUOC.flatMap(b => { const L = LUAT[b]; return L.tu.map(t => `  ${t} --> ${
 writeFileSync(new URL('01-nghiep-vu/bang-luat-don.md', goc), luat);
 
 /* ---- Danh mục màn ---- */
-const dem = (f: (m: (typeof DANH_MUC_MAN)[number]) => boolean) => DANH_MUC_MAN.filter(f).length;
-let man = `${DAU}# Danh mục màn app mô phỏng
+const TEN_TRANG: Record<string, string> = { 'bat-dau': 'Bắt đầu', 'hom-nay': 'Hôm nay', vuon: 'Vườn', ban: 'Bán hàng', don: 'Đơn', tien: 'Tiền', toi: 'Tôi', 'cong-cu': 'Công cụ mô phỏng' };
+let man = `${DAU}# Danh mục màn app Nhà sản xuất (app bán)
 
-Nguồn: \`apps/app-mo-phong/src/phan-he/danh-muc-man.ts\`. Màn chưa có giao diện thật hiện khung bố cục theo cột "Khu vực" khi mở trong app (\`/ban/<mã>\`, \`/mua/<mã>\`), và xem cả danh mục ở \`/danh-muc\`.
+Nguồn: \`apps/app-ban/src/danh-muc-man.ts\`. Mỗi màn mở ở \`/<mã>\` trong app; bài thử \`apps/app-ban/test/danh-muc-man.test.ts\` bảo đảm màn nào trong danh mục cũng có giao diện.
 
-| | Tổng | Giai đoạn 1 | Giai đoạn 2 | Giai đoạn 3 |
-|---|---|---|---|---|
-${(['ban', 'mua'] as const).map(v => `| ${v === 'ban' ? 'Nhà sản xuất' : 'Thu mua'} | ${dem(m => m.vai === v)} | ${dem(m => m.vai === v && m.giaiDoan === 1)} | ${dem(m => m.vai === v && m.giaiDoan === 2)} | ${dem(m => m.vai === v && m.giaiDoan === 3)} |`).join('\n')}
-
-Giai đoạn 1: luồng mua bán cốt lõi · 2: quản lý (vườn, kho, thuế) · 3: mở rộng (đối tác, gói, uy tín, hợp tác xã). "So với bản cũ": Có = giữ ý, Sửa = đổi theo luồng mới, Mới = chưa từng có.
+Tổng ${DANH_MUC_MAN.length} màn: ${DANH_MUC_MAN.filter(m => m.trang !== 'cong-cu').length} màn của app thật và ${DANH_MUC_MAN.filter(m => m.trang === 'cong-cu').length} màn công cụ mô phỏng (Phòng thử, Giả lập bên mua). "So với bản cũ": Có = giữ ý, Sửa = đổi theo luồng mới, Mới = chưa từng có.
 `;
-for (const v of ['ban', 'mua'] as const) {
-  man += `\n## ${v === 'ban' ? 'App Nhà sản xuất' : 'App Thu mua'}\n`;
-  for (const nhom of [...new Set(DANH_MUC_MAN.filter(m => m.vai === v).map(m => m.nhom))]) {
-    man += `\n### ${nhom}\n\n| Mã | Màn | GĐ | So với bản cũ | Khu vực (từ trên xuống) |\n|---|---|---|---|---|\n`;
-    man += DANH_MUC_MAN.filter(m => m.vai === v && m.nhom === nhom).map(m => `| \`${m.id}\` | ${m.ten} | ${m.giaiDoan} | ${m.tinhTrangCu} | ${m.khuVuc.join(' · ')} |`).join('\n') + '\n';
-  }
+for (const trang of [...new Set(DANH_MUC_MAN.map(m => m.trang))]) {
+  man += `\n## ${TEN_TRANG[trang] ?? trang}\n\n| Mã | Màn | Nhóm | So với bản cũ | Khu vực (từ trên xuống) |\n|---|---|---|---|---|\n`;
+  man += DANH_MUC_MAN.filter(m => m.trang === trang).map(m => `| \`${m.id}\` | ${m.ten} | ${m.nhom} | ${m.tinhTrangCu} | ${m.khuVuc.join(' · ')} |`).join('\n') + '\n';
 }
 writeFileSync(new URL('03-giao-dien/danh-muc-man.md', goc), man);
-console.log(`Đã sinh bảng luật (${TEN_BUOC.length} bước, ${TRANG_THAI.length} trạng thái) và danh mục (${DANH_MUC_MAN.length} màn).`);
+
+/* ---- Ca kiểm thử app bán ---- */
+let ca = `${DAU}# Ca kiểm thử app bán (giai đoạn 1)
+
+Nguồn: \`packages/may-chu/src/ca-kiem-thu.ts\`. Mỗi ca dựng tình huống trên máy chủ mô phỏng trong bộ nhớ, làm các bước như người dùng (người bán mẫu chị Năm và 3 bên mua mẫu), rồi kiểm từng điểm. Chạy được ở hai nơi: \`npm test\` (Vitest) và màn **Phòng thử** trong app bán (\`/phong-thu\`), nơi bấm "Xem trên app" để nạp kết quả của ca và mở đúng màn.
+
+| Mã | Nhóm | Ca | Kỳ vọng |
+|---|---|---|---|
+${CA_KIEM_THU_BAN.map(c => `| ${c.ma} | ${c.nhom} | ${c.ten} | ${c.kyVong} |`).join('\n')}
+`;
+writeFileSync(new URL('05-ca-kiem-thu-ban.md', goc), ca);
+console.log(`Đã sinh bảng luật (${TEN_BUOC.length} bước, ${TRANG_THAI.length} trạng thái), danh mục (${DANH_MUC_MAN.length} màn) và ${CA_KIEM_THU_BAN.length} ca kiểm thử.`);

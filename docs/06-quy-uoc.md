@@ -8,10 +8,11 @@
 
 ## Tầng
 
-- Giao diện không gọi thẳng kho hay `apDung`; mọi thay đổi đi qua `DichVuGiaoDich.thucHien`.
-- Thành phần trong `giao-dien/thanh-phan` chỉ nhận props.
+- Giao diện không gọi thẳng kho hay `apDung`; mọi thay đổi đi qua `DichVu.thucHien` (trong app: `useLenh`).
+- Thành phần trong `packages/giao-dien/src/thanh-phan.tsx` chỉ nhận props.
 - Tầng nghiệp vụ không dùng `Date.now()`, `localStorage`, DOM.
-- Trang giới thiệu không nhập gì từ `packages/` hay `apps/app-mo-phong`.
+- Trang giới thiệu không nhập gì từ `packages/` hay các app.
+- App bán và app mua không nhập lẫn nhau; phần dùng chung đưa vào `packages/`.
 
 ## Nhánh và commit
 

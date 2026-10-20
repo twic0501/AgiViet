@@ -10,9 +10,14 @@ import { MAN_VUON } from './man/vuon.tsx';
 import { MAN_HANG } from './man/hang.tsx';
 import { MAN_DANG } from './man/dang.tsx';
 import { MAN_KHACH } from './man/khach.tsx';
+import { MAN_DON } from './man/don.tsx';
+import { MAN_KY } from './man/ky.tsx';
+import { MAN_TIEN } from './man/tien.tsx';
+import { MAN_TOI } from './man/toi.tsx';
+import { MAN_CONG_CU } from './man/cong-cu.tsx';
 import { PHIEN, useNguoi } from './phien.ts';
 
-export const MAN: Record<string, ComponentType> = { ...MAN_BAT_DAU, ...MAN_HOM_NAY, ...MAN_VUON, ...MAN_HANG, ...MAN_DANG, ...MAN_KHACH };
+export const MAN: Record<string, ComponentType> = { ...MAN_BAT_DAU, ...MAN_HOM_NAY, ...MAN_VUON, ...MAN_HANG, ...MAN_DANG, ...MAN_KHACH, ...MAN_DON, ...MAN_KY, ...MAN_TIEN, ...MAN_TOI, ...MAN_CONG_CU };
 const KHONG_CAN_DANG_NHAP = new Set(['bat-dau', 'cong-cu']);
 
 function KhungChuaLam({ id }: { id: string }) {

@@ -22,7 +22,7 @@ Mỗi quyết định ghi: bối cảnh, quyết định, hệ quả. Đổi quy
 
 ## QĐ-04 · Danh mục màn là dữ liệu (19/10/2026)
 
-- **Bối cảnh:** cần quản lý 129 màn theo giai đoạn và thiết kế độc lập từng màn.
+- **Bối cảnh:** cần quản lý nhiều màn (app bán 82, app mua 49) theo giai đoạn và thiết kế độc lập từng màn.
 - **Quyết định:** mọi màn khai báo trong `danh-muc-man.ts` (mã, vai, trang, giai đoạn, khu vực bố cục). Màn chưa làm tự hiện khung bố cục; tài liệu danh mục sinh từ tệp này.
 - **Hệ quả:** thêm màn = thêm một dòng; test bảo đảm điều hướng không trỏ tới màn không có.
 

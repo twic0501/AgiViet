@@ -1,63 +1,67 @@
 # Kiến trúc
 
-## Ba dự án, một kho
+## Một kho, gói dùng chung và các app
 
 ```
 AgiViet/
-├── packages/nghiep-vu/     @agiviet/nghiep-vu      tầng nghiệp vụ, dùng chung
-├── apps/app-mo-phong/      @agiviet/app-mo-phong   app mô phỏng hai vai (React)
-├── apps/web-gioi-thieu/    @agiviet/web-gioi-thieu trang giới thiệu (TypeScript thuần)
-├── scripts/                sinh tài liệu từ code
-└── docs/                   tài liệu
+├── packages/
+│   ├── nghiep-vu/        @agiviet/nghiep-vu     luật nghiệp vụ, hàm thuần
+│   ├── may-chu/          @agiviet/may-chu       máy chủ mô phỏng: kho, đồng hồ, dịch vụ, hệ thống, truy vấn, kịch bản, giả lập, ca kiểm thử
+│   ├── danh-muc/         @agiviet/danh-muc      320 mặt hàng, mẫu chia loại, ảnh, icon nhóm (sinh từ docs/01-nghiep-vu/mat-hang.csv)
+│   └── giao-dien/        @agiviet/giao-dien     mã thiết kế, thành phần, icon, nối giao diện với máy chủ mô phỏng
+├── apps/
+│   ├── app-ban/          @agiviet/app-ban       app Nhà sản xuất (React, điện thoại)
+│   ├── app-mua/          (giai đoạn 2)          app Thu mua (React, máy tính)
+│   └── web-gioi-thieu/   @agiviet/web-gioi-thieu trang giới thiệu (HTML tĩnh)
+├── scripts/              sinh tài liệu, sinh danh mục mặt hàng, đóng gói HTML một tệp
+└── docs/
 ```
 
-- **Web giới thiệu** không phụ thuộc gói nào khác trong kho; chỉ liên kết sang app bằng `VITE_DUONG_DAN_APP`. Hai app chạy ở hai cổng (5173, 5174) và khi triển khai ở hai tên miền, nên không thể đọc dữ liệu của nhau.
-- **App mô phỏng** phụ thuộc `@agiviet/nghiep-vu`. Máy chủ thật sau này cũng dùng chính gói này, nên luật chạy giống hệt ở trình duyệt và máy chủ.
+- **Web giới thiệu** không phụ thuộc gói nào; chỉ liên kết sang app bằng `VITE_APP_BAN`, `VITE_APP_MUA`.
+- **App bán và app mua** không nhập lẫn nhau. Mỗi app giữ phiên đăng nhập và bản nháp riêng (khóa có tiền tố `agiviet.app-ban.` / `agiviet.app-mua.`); dữ liệu giao dịch nằm ở máy chủ mô phỏng chung, nên mở hai app ở hai tab thì thấy cùng một giao dịch.
+- Máy chủ thật sau này cũng chạy `@agiviet/nghiep-vu`, nên luật giống hệt ở trình duyệt và máy chủ.
 
-## Bốn tầng của app mô phỏng
+## Các tầng
 
 ```
-giao-dien  ──▶  dich-vu  ──▶  du-lieu
-    │              │
-    └──────────────┴──────▶  @agiviet/nghiep-vu
+app (màn)  ──▶  giao-dien (useLenh, useSo)  ──▶  may-chu: DichVu  ──▶  KhoGiaoDich
+                                                     │
+                                                     └──▶  nghiep-vu: apDung(sổ, lệnh, người, giờ)
 ```
 
-| Tầng | Thư mục | Được làm | Không được làm |
+| Tầng | Ở đâu | Được làm | Không được làm |
 |---|---|---|---|
-| **Nghiệp vụ** | `packages/nghiep-vu/src` | Kiểu dữ liệu, bảng luật, tính phí, cọc, nhóm hiển thị. Hàm thuần: cùng đầu vào cho cùng đầu ra | Đọc giờ hệ thống, đọc/ghi lưu trữ, biết giao diện |
-| **Dữ liệu** | `src/du-lieu` | Lưu và đọc sổ giao dịch, hồ sơ người dùng; kiểm phiên bản khi ghi | Biết luật nghiệp vụ |
-| **Dịch vụ** | `src/dich-vu` | Nhận lệnh, đọc kho, gọi `apDung`, ghi kho; truy vấn theo vai; mô phỏng ngân hàng, đồng hồ; quyết định đưa liên lạc ra hay không | Vẽ giao diện |
-| **Giao diện** | `src/giao-dien`, `src/phan-he`, `src/ung-dung` | Vẽ màn, nhận thao tác, gọi dịch vụ, hiện lời báo | Gọi thẳng kho hoặc `apDung`, tự quyết luật |
+| **Nghiệp vụ** | `packages/nghiep-vu` | Kiểu dữ liệu, bảng luật đơn, lệnh (`lenh/*`), phí, cọc, che liên lạc, uy tín, tổng hợp. Hàm thuần | Đọc giờ hệ thống, lưu trữ, DOM |
+| **Dữ liệu** | `may-chu/src/kho.ts` | Lưu, đọc sổ giao dịch; kiểm phiên bản khi ghi; báo thay đổi (cả tab khác) | Biết luật |
+| **Dịch vụ** | `may-chu/src/dich-vu.ts`, `truy-van.ts`, `he-thong.ts` | Nhận lệnh, gọi `apDung`, ghi kho (thử lại khi lệch phiên bản); truy vấn theo người xem (che liên lạc); nhịp hệ thống: hạn cọc, ngân hàng, đối tác | Vẽ giao diện |
+| **Giao diện chung** | `packages/giao-dien` | Mã thiết kế, thành phần chỉ nhận props, `CungCapMayChu`, `useSo`, `useBayGio`, `useLenh` | Tự quyết luật |
+| **App** | `apps/app-ban/src` | `danh-muc-man.ts` (danh mục), `ung-dung.tsx` (định tuyến), `bo-cuc.tsx`, `man/*.tsx` (màn theo mục), `phien.ts` (phiên, bản nháp) | Gọi thẳng kho hoặc `apDung` |
 
-Trong giao diện:
-
-- `giao-dien/nen-tang`: bộ mã thiết kế (màu, chữ, khoảng cách, chuyển động).
-- `giao-dien/thanh-phan`: thành phần dùng chung (nút, thẻ, nhãn nhóm, thanh chặng, màn trống, khung bố cục). Chỉ nhận props, không gọi dịch vụ.
-- `giao-dien/bo-cuc`: khung hai vai (điện thoại, máy tính).
-- `phan-he/<vai>`: màn của từng vai; `phan-he/chung`: màn dùng chung (đơn); `phan-he/danh-muc-man.ts`: danh mục màn.
+Công cụ mô phỏng nằm ngoài luồng thật: `may-chu/src/kich-ban.ts` (dữ liệu mẫu dựng bằng lệnh thật), `gia-lap.ts` (việc bên mua mẫu làm tiếp được), `ca-kiem-thu.ts` (ca kiểm thử dùng chung cho Vitest và màn Phòng thử).
 
 ## Một lệnh đi qua các tầng
 
-Ví dụ người bán bấm "Xác nhận đơn":
+Người bán bấm "Ký và xác nhận đơn":
 
-1. **Giao diện** (`phan-he/chung/don.tsx`) gọi `dv.thucHien(nguoi, { loai: 'buoc_don', ma, buoc: 'xacNhanDon', thamSo: [] })`.
-2. **Dịch vụ** (`dich-vu/giao-dich.ts`) đọc kho → `{ so, phienBan }`, gọi `apDung(so, lenh, nguoi, bayGio)`.
-3. **Nghiệp vụ** kiểm: đơn có không, đúng chủ không, vai được làm không, đúng trạng thái không, lô còn đủ lượng không. Trả sổ mới (sổ cũ không đổi) hoặc lỗi.
-4. **Dịch vụ** ghi sổ mới với `phienBan` đã đọc. Nếu tab khác vừa ghi (phiên bản lệch), đọc lại và áp dụng lại một lần; nghiệp vụ tự chặn nếu bước không còn hợp lệ.
-5. **Dữ liệu** báo thay đổi → giao diện vẽ lại (`useSyncExternalStore`), kể cả ở tab khác (sự kiện `storage`).
+1. **Màn** (`app-ban/src/man/ky.tsx`) gọi `lam({ loai: 'buoc_don', ma, buoc: 'xacNhanDon', thamSo: [] })` (`useLenh` của gói giao diện).
+2. **Dịch vụ** đọc kho → `{ so, phienBan }`, gọi `apDung(so, lenh, nguoi, dongHo.bayGio())`.
+3. **Nghiệp vụ** kiểm: tài khoản đăng ký đúng vai, không bị khóa; đơn đúng chủ; vai được làm; đúng trạng thái; không có đề nghị đang chờ; lô còn đủ lượng. Trả sổ mới hoặc lỗi viết cho người dùng.
+4. **Dịch vụ** ghi sổ mới với `phienBan` đã đọc. Tab khác vừa ghi thì đọc lại và áp dụng lại (tối đa 3 lần); nghiệp vụ tự chặn nếu bước không còn hợp lệ.
+5. **Kho** báo thay đổi → mọi màn đang mở (cả app mua ở tab khác) vẽ lại. Lỗi thì `useLenh` hiện đúng lời báo của nghiệp vụ.
 
-## Dữ liệu mô phỏng
+## Dữ liệu mô phỏng (trình duyệt)
 
-| Khóa localStorage | Nội dung |
-|---|---|
-| `agiviet.mo-phong.so.v1` | `{ so: SoGiaoDich, phienBan }` |
-| `agiviet.mo-phong.ho-so.v1` | Danh sách hồ sơ (tên, vùng, xác minh, liên lạc) |
-| `agiviet.mo-phong.phien.v1` (sessionStorage) | Người đang dùng mỗi vai trong tab này |
+| Khóa | Nơi | Nội dung |
+|---|---|---|
+| `agiviet.may-chu-gia.so.v2` | localStorage | `{ so: SoGiaoDich, phienBan }`, dùng chung hai app |
+| `agiviet.may-chu-gia.dong-ho.v1` | localStorage | Khoảng đã tua đồng hồ, dùng chung hai app |
+| `agiviet.app-ban.phien.v1` | sessionStorage | Người đang dùng app bán ở tab này |
+| `agiviet.app-ban.nhap.*` | sessionStorage | Bản nháp màn nhiều bước (đăng ký, đăng lô, ký) |
 
-Đổi cấu trúc dữ liệu thì tăng hậu tố `.v1` → `.v2`; dữ liệu cũ tự bỏ.
+Đổi cấu trúc dữ liệu thì tăng hậu tố phiên bản; dữ liệu cũ tự bỏ.
 
-## Thay mô phỏng bằng máy chủ
+## Thay mô phỏng bằng máy chủ (giai đoạn 4)
 
-Viết thêm một bản cài đặt `KhoGiaoDich` gọi API (ví dụ `du-lieu/kho-may-chu.ts`), đổi một dòng trong `giao-dien/ngu-canh.tsx`. Máy chủ chạy `apDung` của cùng gói nghiệp vụ, nên trình duyệt chỉ còn gửi lệnh. Tầng giao diện và dịch vụ không đổi.
+Viết một bản cài đặt `KhoGiaoDich` gọi API, đổi chỗ tạo kho trong `CungCapMayChu`. Máy chủ chạy `apDung` của cùng gói nghiệp vụ; app và màn không đổi.
 
 Quyết định kỹ thuật và lý do: [quyet-dinh.md](quyet-dinh.md).

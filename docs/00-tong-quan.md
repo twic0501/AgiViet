@@ -40,9 +40,9 @@ Người bán dùng miễn phí. Mức phí chính thức do trang vận hành c
 
 Hàng **thô, bán theo lô cho doanh nghiệp**: trái cây, lúa gạo, hạt, củ, cây công nghiệp (cà phê, tiêu, điều, cao su), rau củ, nấm, thủy sản nuôi, hải sản đánh bắt. Không bán: gia súc, gia cầm sống và thịt (kiểm dịch, dịch bệnh), động vật hoang dã, hàng đã chế biến bán lẻ, gỗ và lâm sản. Chi tiết: [01-nghiep-vu/mat-hang.md](01-nghiep-vu/mat-hang.md).
 
-## Hai sản phẩm trong kho này
+## Các sản phẩm trong kho này
 
-- **App mô phỏng** (`apps/app-mo-phong`): chạy được luồng giao dịch thật trên trình duyệt, dữ liệu nằm trong trình duyệt. Dùng để thiết kế, thử với người dùng, trình bày.
+- **App Nhà sản xuất** (`apps/app-ban`) và **app Thu mua** (`apps/app-mua`, giai đoạn 2): hai app riêng, chạy luồng giao dịch thật trên máy chủ mô phỏng chung (`packages/may-chu`) nằm trong trình duyệt. Dùng để thiết kế, thử với người dùng, trình bày; giai đoạn 4 thay máy chủ mô phỏng bằng máy chủ thật.
 - **Trang giới thiệu** (`apps/web-gioi-thieu`): trang thương mại giới thiệu sản phẩm, dẫn người xem sang app. Không đọc dữ liệu của app.
 
-Hai sản phẩm dùng chung nhận diện thương hiệu nhưng không dùng chung mã nguồn giao diện hay dữ liệu.
+Các sản phẩm dùng chung nhận diện thương hiệu nhưng không dùng chung mã nguồn giao diện hay dữ liệu.

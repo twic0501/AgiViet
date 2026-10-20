@@ -11,7 +11,7 @@
     "kiem-tra": "npm run kieu --workspaces --if-present && npm run test --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
-    "app": "npm run dev -w @agiviet/app-mo-phong",
+    "app": "npm run dev -w @agiviet/app-ban",
     "web": "npm run dev -w @agiviet/web-gioi-thieu",
     "tai-lieu": "node scripts/tao-tai-lieu.ts",
     "dong-goi-html": "node scripts/dong-goi-html.ts"

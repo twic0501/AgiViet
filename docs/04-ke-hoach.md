@@ -1,45 +1,49 @@
 # Kế hoạch giai đoạn
 
-Mỗi giai đoạn có tiêu chí xong rõ ràng. Không mở giai đoạn sau khi giai đoạn trước chưa đạt tiêu chí, trừ việc thiết kế (vẽ trước được).
+Mỗi giai đoạn làm trọn một sản phẩm, có tiêu chí xong rõ ràng. Hai app (bán, mua) dùng chung tầng nghiệp vụ và máy chủ mô phỏng nhưng là hai dự án riêng, phiên đăng nhập và bản nháp riêng.
 
-## Giai đoạn 0 · Nền móng (đang ở đây)
+## Giai đoạn 0 · Nền móng (xong)
 
 | Việc | Trạng thái |
 |---|---|
-| Kho mã chung, ba dự án tách rời, kiểm kiểu nghiêm | Xong |
-| Tầng nghiệp vụ: bảng luật 20 bước, 13 trạng thái, cọc, phí, liên lạc, kết nối, lô | Xong, 27 test |
-| App mô phỏng: 4 tầng, kho trình duyệt có kiểm phiên bản, danh mục 129 màn, hai bố cục, khung bố cục cho màn chưa làm | Xong, 8 test |
-| App mô phỏng: màn nối dữ liệu đầu tiên (Hôm nay, Hàng, Đơn, Chi tiết đơn; Tổng quan, Nguồn hàng, Đơn, Chi tiết đơn) | Xong |
-| Trang giới thiệu: 12 khu, tầng nội dung riêng, ô chờ chữ | Xong, 4 test |
-| Tài liệu, tài liệu sinh từ code, kiểm tra tự động trên GitHub | Xong |
+| Kho mã chung, dự án tách rời, kiểm kiểu nghiêm, kiểm tra tự động trên GitHub | Xong |
+| Tầng nghiệp vụ v2: bảng luật 20 bước, 13 trạng thái; kết nối, trao đổi, báo giá, hẹn xem, đề nghị đổi đơn; vườn, mùa vụ, nhật ký, cách ly, thu chi; dịch vụ, ứng tiền, hỗ trợ, báo cáo, uy tín | Xong, 58 test (ma trận 780 trường hợp, 5.000 bước ngẫu nhiên) |
+| Máy chủ mô phỏng dùng chung hai app: kho có kiểm phiên bản, đồng hồ tua được, ngân hàng và đối tác giả lập | Xong |
+| Danh mục 320 mặt hàng, ảnh, icon nhóm; bộ giao diện dùng chung | Xong |
+| Trang giới thiệu: giữ bản cũ, nút vào app bán và app mua | Xong |
 
-**Tiêu chí xong:** `npm run kiem-tra` sạch; mở được cả 129 màn không lỗi; tài liệu khớp code.
+## Giai đoạn 1 · App bán, mô phỏng trọn vẹn (xong)
 
-## Giai đoạn 1 · Luồng mua bán cốt lõi (87 màn)
+Mục tiêu: mọi chức năng của app Nhà sản xuất chạy được trên máy chủ mô phỏng, có dữ liệu mẫu để xem mọi trạng thái và ca kiểm thử để thao tác lại.
 
-Mục tiêu: một người bán và một bên mua chạy hết một giao dịch trên app mô phỏng, từ đăng lô tới tiền về, không cần dữ liệu mẫu.
+| Việc | Trạng thái |
+|---|---|
+| 80 màn theo danh mục: Bắt đầu (9), Hôm nay (3), Vườn (8), Bán hàng (21), Đơn và ký (21), Tiền (5), Tôi (13) | Xong; bài thử bảo đảm màn nào cũng có giao diện |
+| Ký thỏa thuận khi xác nhận đơn: chọn cách giao dịch → lượng hứa → tóm tắt, nghe đọc, bản đầy đủ → mã OTP hoặc ký giấy | Xong |
+| Kịch bản mẫu: 20 ngày làm ăn, đơn ở đủ 13 trạng thái | Xong |
+| Giả lập bên mua: ba bên mua mẫu làm tiếp được mọi bước của họ bằng lệnh thật; tua đồng hồ | Xong |
+| Phòng thử: 38 ca (tài khoản, lô, khách, đơn, tiền, vườn, khác), xem điểm kiểm, mở kết quả trên app | Xong, 38/38 đạt |
+| Đóng gói một tệp HTML mở thẳng | Xong (`AgiViet_app_ban.html`) |
 
-- Bên bán: đăng ký, hồ sơ, xác minh (mô phỏng); đăng lô (chụp, nói, gõ); hàng đang bán, sửa lượng; lời mời kết nối; nhắn tin có che liên lạc; hẹn xem vườn; đơn: xác nhận, từ chối, ký, cọc, mở liên lạc, cân, hủy, đối soát; tiền.
-- Bên mua: đăng ký tổ chức, chọn gói; nguồn hàng có bộ lọc; nhu cầu; tin nhắn; đơn: tạo, đặt cọc, nghiệm thu, đối soát, hủy; tài khoản đảm bảo, công nợ.
-- Mẫu chia loại cho trái cây và tôm; công tắc "Hàng cho chế biến".
-- Thiết kế: bộ asset trạng thái, thanh chặng, phản hồi tức thì (Rive), thay khung bố cục bằng màn thật.
-- Nội dung trang giới thiệu: viết chữ cho các ô chờ; ảnh chụp từ app.
+**Tiêu chí xong (đã đạt):** `npm run kiem-tra` sạch; mở cả 82 màn không lỗi JS, không tràn ngang ở 390 px; chạy tay một đơn từ xác nhận, ký, cọc, cân, chốt tới tiền về; 38/38 ca đạt cả trong Vitest và trong Phòng thử.
 
-**Tiêu chí xong:** bài thử hai vai trên trình duyệt chạy hết luồng đảm bảo và luồng trả trực tiếp; mọi lời báo lỗi của nghiệp vụ hiện đúng chỗ; kiểm thử với 5 người dùng thật mỗi vai.
+**Còn phải làm ngoài code:** thay ảnh, icon, chuyển động bằng bộ asset mới; thử với 5 nhà vườn thật.
 
-## Giai đoạn 2 · Quản lý (20 màn)
+## Giai đoạn 2 · App Thu mua (`apps/app-mua`, 49 màn)
 
-- Bên bán: vườn, mùa vụ, nhật ký canh tác, thu chi, nói để ghi (AI tách trường, người xác nhận), thời gian cách ly thuốc (chặn đăng bán), hồ sơ nguồn gốc.
-- Bên mua: nhập kho, tồn kho, truy xuất lô, chấm điểm nhà cung cấp, ghi đơn ngoài app, bảng kê 01/TNDN, báo cáo, mối quen, kế hoạch mua.
-- Mẫu chia loại cho các nhóm còn lại.
+- Máy tính trước, điện thoại dùng được. Cổng 5175, nhận diện `data-vai="mua"`.
+- Vào app: đăng nhập, thông tin tổ chức, chọn gói (Miễn phí / Business); thành viên và quyền.
+- Mua hàng: nguồn hàng có bộ lọc theo mẫu chia loại, lời mời kết nối (hạn mức theo gói), tin cần mua, nhắn tin, báo giá, hẹn xem.
+- Giao dịch: tạo đơn (từ báo giá), đặt cọc, nhập kết quả cân, trả tiền (đảm bảo hoặc trực tiếp), đối soát, hủy, đánh giá.
+- Quản lý: kho (nhập, xuất, truy xuất về nhật ký vườn), đơn ngoài app, nhà cung cấp, mối quen, kế hoạch mua, công nợ, bảng kê 01/TNDN.
+- Giả lập người bán và Phòng thử phía mua, giống giai đoạn 1.
 
-**Tiêu chí xong:** từ một dòng nhật ký phun thuốc, app chặn đăng bán lô còn trong thời gian cách ly; từ một đơn đã nhận, bên mua truy ngược tới nhật ký vườn và xuất bảng kê.
+**Tiêu chí xong:** hai app mở ở hai tab chạy hết một giao dịch trên cùng máy chủ mô phỏng; ca kiểm thử phía mua đạt hết.
 
-## Giai đoạn 3 · Mở rộng (22 màn) và vận hành
+## Giai đoạn 3 · App vận hành (`apps/van-hanh`, 11 màn)
 
-- Uy tín hai chiều, gói Business, dịch vụ đối tác (kiểm định, xe, kho), ứng tiền trước, lô gộp hợp tác xã, người giúp.
-- Trang vận hành (dự án mới `apps/van-hanh`): duyệt xác minh, kiểm duyệt tin, cảnh báo lách liên lạc, xử lý tranh chấp, theo dõi tiền đảm bảo, cấu hình phí.
+Duyệt xác minh, kiểm duyệt tin và báo cáo, xem nguyên văn tin bị che khi có báo cáo, kết luận tranh chấp, theo dõi tiền đảm bảo và ứng tiền, cấu hình phí và hạn mức, trả lời hỗ trợ.
 
 ## Giai đoạn 4 · Hệ thống thật
 
-Máy chủ dùng `@agiviet/nghiep-vu`; kho `KhoGiaoDich` gọi API; ngân hàng đối tác cho tài khoản đảm bảo; luật sư rà mô hình giữ tiền và công khai thông tin người bán; thử nghiệm ở một huyện với hai mặt hàng.
+Máy chủ (`apps/may-chu`) chạy `@agiviet/nghiep-vu`; bộ nối `KhoGiaoDich` gọi API thay kho trình duyệt (các app không đổi); ngân hàng đối tác cho tài khoản đảm bảo; luật sư rà mô hình giữ tiền; thử ở một huyện với hai mặt hàng.

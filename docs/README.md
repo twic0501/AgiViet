@@ -17,6 +17,7 @@ Tài liệu chia theo câu hỏi người đọc cần trả lời. Mỗi tài l
 Một số tài liệu sinh ra từ code để không lệch nhau:
 
 - Bảng trạng thái và bảng luật đơn: [01-nghiep-vu/bang-luat-don.md](01-nghiep-vu/bang-luat-don.md), sinh từ `packages/nghiep-vu` bằng `npm run tai-lieu`.
-- Danh mục màn: [03-giao-dien/danh-muc-man.md](03-giao-dien/danh-muc-man.md), sinh từ `apps/app-mo-phong/src/phan-he/danh-muc-man.ts` cùng lệnh.
+- Danh mục màn app bán: [03-giao-dien/danh-muc-man.md](03-giao-dien/danh-muc-man.md), sinh từ `apps/app-ban/src/danh-muc-man.ts` cùng lệnh.
+- Ca kiểm thử app bán: [05-ca-kiem-thu-ban.md](05-ca-kiem-thu-ban.md), sinh từ `packages/may-chu/src/ca-kiem-thu.ts` cùng lệnh.
 
-Đừng sửa tay hai tệp trên; sửa code rồi chạy lại lệnh.
+Đừng sửa tay ba tệp trên; sửa code rồi chạy lại lệnh.
