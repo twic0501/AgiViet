@@ -1,0 +1,576 @@
+{
+ "catalog/vegetables": {
+  "title": "Picking Lettuce in Artas, West Bank, Palestine.jpg",
+  "author": "Artas Folklore Center",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Picking_Lettuce_in_Artas,_West_Bank,_Palestine.jpg"
+ },
+ "catalog/coffee": {
+  "title": "Green Coffee Beans (4075921494).jpg",
+  "author": "Michael Allen Smith@INeedCoffee from Seattle, USA",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Green_Coffee_Beans_(4075921494).jpg"
+ },
+ "catalog/rice": {
+  "title": "WhiteRice.jpg",
+  "author": "Sanjay Acharya",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:WhiteRice.jpg"
+ },
+ "catalog/shrimp": {
+  "title": "Litopenaeus vannamei55.JPG",
+  "author": "Xufanc",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Litopenaeus_vannamei55.JPG"
+ },
+ "catalog/mango": {
+  "title": "Mango fruit Nam Dok Mai.jpg",
+  "author": "Ivar Leidus",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mango_fruit_Nam_Dok_Mai.jpg"
+ },
+ "catalog/durian": {
+  "title": "Durian fruit singapore.jpg",
+  "author": "G.Mannaerts",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Durian_fruit_singapore.jpg"
+ },
+ "catalog/paddy": {
+  "title": "Farmer harvesting rice, Kampung Rawa 2014-06-20.jpg",
+  "author": "Crisco 1492",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Farmer_harvesting_rice,_Kampung_Rawa_2014-06-20.jpg"
+ },
+ "catalog/rice-fragrant": {
+  "title": "JasmineRice.jpg",
+  "author": "Không rõ",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:JasmineRice.jpg"
+ },
+ "catalog/sticky-rice": {
+  "title": "2014 uncooked Thai glutinous rice.jpg",
+  "author": "Takeaway",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2014_uncooked_Thai_glutinous_rice.jpg"
+ },
+ "catalog/pangasius": {
+  "title": "Pla sawai89.jpg",
+  "author": "Xufanc",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pla_sawai89.jpg"
+ },
+ "catalog/sweet-potato": {
+  "title": "Sweet potato sprouting slips.jpg",
+  "author": "Geo Lightspeed7",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sweet_potato_sprouting_slips.jpg"
+ },
+ "catalog/soybean": {
+  "title": "Mung beans (Vigna radiata).jpg",
+  "author": "Ivar Leidus",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mung_beans_(Vigna_radiata).jpg"
+ },
+ "catalog/cassava": {
+  "title": "Cassava tubers.jpg",
+  "author": "MEvalyn",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cassava_tubers.jpg"
+ },
+ "catalog/dragon-fruit": {
+  "title": "Webysther 20150409032418 - Pitaya.jpg",
+  "author": "Webysther Nunes",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Webysther_20150409032418_-_Pitaya.jpg"
+ },
+ "catalog/pomelo": {
+  "title": "Pomelo fruit.jpg",
+  "author": "Ivar Leidus",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pomelo_fruit.jpg"
+ },
+ "catalog/corn": {
+  "title": "Pregermination maize 2014 05 15 10 38 33 7932.jpg",
+  "author": "Alandmanson",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pregermination_maize_2014_05_15_10_38_33_7932.jpg"
+ },
+ "catalog/longan": {
+  "title": "Dimocarpus longan (2).jpg",
+  "author": "Dinkun Chen",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Dimocarpus_longan_(2).jpg"
+ },
+ "catalog/rambutan": {
+  "title": "Rambutão.jpg",
+  "author": "ArionStar",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Rambut%C3%A3o.jpg"
+ },
+ "catalog/lychee": {
+  "title": "Lychee fruit.jpg",
+  "author": "ChildofMidnight",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Lychee_fruit.jpg"
+ },
+ "catalog/banana": {
+  "title": "Cavendish banana from Maracaibo.jpg",
+  "author": "Wilfredor",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cavendish_banana_from_Maracaibo.jpg"
+ },
+ "catalog/orange": {
+  "title": "Mandarin Oranges (Citrus Reticulata).jpg",
+  "author": "Joe Ravi",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mandarin_Oranges_(Citrus_Reticulata).jpg"
+ },
+ "catalog/avocado": {
+  "title": "Avocado Hass - single and halved.jpg",
+  "author": "Ivar Leidus",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Avocado_Hass_-_single_and_halved.jpg"
+ },
+ "catalog/jackfruit": {
+  "title": "Jackfruit tree with fruit.jpg",
+  "author": "Suyash Dwivedi",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Jackfruit_tree_with_fruit.jpg"
+ },
+ "catalog/passion-fruit": {
+  "title": "Passion fruits - whole and halved.jpg",
+  "author": "Ivar Leidus",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Passion_fruits_-_whole_and_halved.jpg"
+ },
+ "catalog/pineapple": {
+  "title": "AnanasComosusOnPlant.jpg",
+  "author": "Markus Leupold-Löwenthal",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:AnanasComosusOnPlant.jpg"
+ },
+ "catalog/mangosteen": {
+  "title": "Mangosteens - whole and opened.jpg",
+  "author": "Ivar Leidus",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mangosteens_-_whole_and_opened.jpg"
+ },
+ "catalog/watermelon": {
+  "title": "Watermelons at the farm.jpg",
+  "author": "Deborah Tjituka",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Watermelons_at_the_farm.jpg"
+ },
+ "catalog/cabbage": {
+  "title": "An harvested Cabbage.jpg",
+  "author": "Ssemmanda will",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:An_harvested_Cabbage.jpg"
+ },
+ "catalog/tomato": {
+  "title": "Tomatoes in basket 2026 G3.jpg",
+  "author": "George Chernilevsky",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Tomatoes_in_basket_2026_G3.jpg"
+ },
+ "catalog/chili": {
+  "title": "Red chili peppers drying on a footbridge.jpg",
+  "author": "Basile Morin",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Red_chili_peppers_drying_on_a_footbridge.jpg"
+ },
+ "catalog/onion": {
+  "title": "Shallots-Whole.jpg",
+  "author": "Evan-Amos",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Shallots-Whole.jpg"
+ },
+ "catalog/coconut": {
+  "title": "Coconut Plucker plucking coconuts on a tree in Mumbai..JPG",
+  "author": "Rudolph.A.furtado",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Coconut_Plucker_plucking_coconuts_on_a_tree_in_Mumbai..JPG"
+ },
+ "catalog/potato": {
+  "title": "Potatoes-Kipfler-HeatAffectedHarvest-9288-2040gram (4121218392).jpg",
+  "author": "graibeard from Australia",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Potatoes-Kipfler-HeatAffectedHarvest-9288-2040gram_(4121218392).jpg"
+ },
+ "catalog/carrot": {
+  "title": "Harvested Carrots.jpg",
+  "author": "Shark2025",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Harvested_Carrots.jpg"
+ },
+ "catalog/arabica": {
+  "title": "Coffea arabica 004.JPG",
+  "author": "H. Zell",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Coffea_arabica_004.JPG"
+ },
+ "catalog/herbs": {
+  "title": "Coriander bunches - Wellington, New Zealand.jpg",
+  "author": "Daderot",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Coriander_bunches_-_Wellington,_New_Zealand.jpg"
+ },
+ "catalog/mushroom": {
+  "title": "20210719 Pleurotus ostreatus 098-127.jpg",
+  "author": "Zinnmann",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:20210719_Pleurotus_ostreatus_098-127.jpg"
+ },
+ "catalog/pepper": {
+  "title": "Black Peppercorns (4422070187).jpg",
+  "author": "Ryan Snyder",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Black_Peppercorns_(4422070187).jpg"
+ },
+ "catalog/coffee-cherry": {
+  "title": "Coffee-cherries-green-coffee-tarrazu-costa-rica.jpg",
+  "author": "Tarrazu at en.wikipedia",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Coffee-cherries-green-coffee-tarrazu-costa-rica.jpg"
+ },
+ "catalog/rubber-latex": {
+  "title": "Koh Chang, Thailand, Rubber tapping, Latex.jpg",
+  "author": "Vyacheslav Argenberg",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Koh_Chang,_Thailand,_Rubber_tapping,_Latex.jpg"
+ },
+ "catalog/cashew": {
+  "title": "Raw cashew nuts product of Buton.JPG",
+  "author": "Sakurai Midori",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Raw_cashew_nuts_product_of_Buton.JPG"
+ },
+ "catalog/tea": {
+  "title": "Tea leaves from Malakkappara.jpg",
+  "author": "Athulvis",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Tea_leaves_from_Malakkappara.jpg"
+ },
+ "catalog/cocoa": {
+  "title": "Cocoa beans.jpg",
+  "author": "Mikkel Houmøller",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cocoa_beans.jpg"
+ },
+ "catalog/sugarcane": {
+  "title": "Harvesting sugarcane 4.jpg",
+  "author": "Danjuma Anthony",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Harvesting_sugarcane_4.jpg"
+ },
+ "catalog/dried-coconut": {
+  "title": "Coprah HivaOa 20061112.jpg",
+  "author": "Sémhur ·✉·✍·",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Coprah_HivaOa_20061112.jpg"
+ },
+ "catalog/cattle": {
+  "title": "Herd of cattle - geograph.org.uk - 7289315.jpg",
+  "author": "N Chadwick",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Herd_of_cattle_-_geograph.org.uk_-_7289315.jpg"
+ },
+ "catalog/goat": {
+  "title": "Herd of goats at government farm in Namibia.jpg",
+  "author": "Deutsche Gesellschaft für Internationale Zusammenarbeit (GIZ) - Bush Control and Biomass Utilisation Project",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Herd_of_goats_at_government_farm_in_Namibia.jpg"
+ },
+ "catalog/buffalo": {
+  "title": "Man with a water buffalo, Bắc Hà, Vietnam - 20131027-01.jpg",
+  "author": "Truth'soutthere.",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Man_with_a_water_buffalo,_B%E1%BA%AFc_H%C3%A0,_Vietnam_-_20131027-01.jpg"
+ },
+ "catalog/pig": {
+  "title": "Pig farm Vampula 9.jpg",
+  "author": "kallerna",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pig_farm_Vampula_9.jpg"
+ },
+ "catalog/duck": {
+  "title": "Duck herding in harvested rice field, Vietnam.jpg",
+  "author": "VinhNguyen.1257",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Duck_herding_in_harvested_rice_field,_Vietnam.jpg"
+ },
+ "catalog/milk": {
+  "title": "Milking a Dairy Cow (170a2501-d58d-1b9c-9064-62e0c269226b).jpg",
+  "author": "NPS staff",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Milking_a_Dairy_Cow_(170a2501-d58d-1b9c-9064-62e0c269226b).jpg"
+ },
+ "catalog/chicken": {
+  "title": "Farm Chickens and Roosters.jpg",
+  "author": "ANJJE-wiki",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Farm_Chickens_and_Roosters.jpg"
+ },
+ "catalog/eggs": {
+  "title": "Chicken eggs in tray.jpg",
+  "author": "Maksym Kozlenko",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Chicken_eggs_in_tray.jpg"
+ },
+ "catalog/quail": {
+  "title": "Wachteleier im Karton-20231205-RM-151854.jpg",
+  "author": "Ermell",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wachteleier_im_Karton-20231205-RM-151854.jpg"
+ },
+ "catalog/star-anise": {
+  "title": "Dried Star Anise Fruit Seeds.jpg",
+  "author": "Sanjay Acharya",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Dried_Star_Anise_Fruit_Seeds.jpg"
+ },
+ "catalog/honey": {
+  "title": "Western honey bee on a honeycomb.jpg",
+  "author": "Matthew T Rader",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Western_honey_bee_on_a_honeycomb.jpg"
+ },
+ "catalog/cinnamon": {
+  "title": "Cassia sticks.jpg",
+  "author": "NanaYawBotar",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cassia_sticks.jpg"
+ },
+ "catalog/medicinal": {
+  "title": "American Ginseng 3.jpg",
+  "author": "John Carl Jacobs",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:American_Ginseng_3.jpg"
+ },
+ "catalog/bamboo-shoot": {
+  "title": "Juksun.jpg",
+  "author": "Jordi Sanchez",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Juksun.jpg"
+ },
+ "catalog/tilapia": {
+  "title": "Tilapia Fish.jpg",
+  "author": "Nana Pearls",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Tilapia_Fish.jpg"
+ },
+ "catalog/basa": {
+  "title": "Pangasius pangasius (India).jpg",
+  "author": "Staticd",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pangasius_pangasius_(India).jpg"
+ },
+ "catalog/cucumber": {
+  "title": "Cucumbers harvesting.jpg",
+  "author": "Shark2025",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Cucumbers_harvesting.jpg"
+ },
+ "catalog/snakehead": {
+  "title": "Channa striata 342778351.jpg",
+  "author": "renjus box",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Channa_striata_342778351.jpg"
+ },
+ "catalog/tuna": {
+  "title": "Tsukiji Fish market and Tuna edit.jpg",
+  "author": "Không rõ",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/File:Tsukiji_Fish_market_and_Tuna_edit.jpg"
+ },
+ "catalog/mackerel": {
+  "title": "H-mart - fish department - Mackerel - 1.JPG",
+  "author": "Jarek Tuszyński",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:H-mart_-_fish_department_-_Mackerel_-_1.JPG"
+ },
+ "catalog/river-prawn": {
+  "title": "Washington DC Zoo - Macrobrachium rosenbergii 1.jpg",
+  "author": "Jarek Tuszyński",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Washington_DC_Zoo_-_Macrobrachium_rosenbergii_1.jpg"
+ },
+ "catalog/sea-bass": {
+  "title": "Lates calcarifer, 2014-09-19a.jpg",
+  "author": "Mitch Ames",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Lates_calcarifer,_2014-09-19a.jpg"
+ },
+ "catalog/tiger-shrimp": {
+  "title": "Penaeus monodon.jpg",
+  "author": "self",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Penaeus_monodon.jpg"
+ },
+ "catalog/mud-crab": {
+  "title": "Scylla serrata by OpenCage.jpg",
+  "author": "Không rõ",
+  "license": "CC BY-SA 2.5",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Scylla_serrata_by_OpenCage.jpg"
+ },
+ "catalog/lobster": {
+  "title": "Panulirus ornatus 366791578.jpg",
+  "author": "AnnLazaro",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Panulirus_ornatus_366791578.jpg"
+ },
+ "catalog/clam": {
+  "title": "Live topneck clam.jpg",
+  "author": "ChildofMidnight",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Live_topneck_clam.jpg"
+ },
+ "catalog/oyster": {
+  "title": "Oysters for sale at Mercat de la Boqueria.jpg",
+  "author": "Kritzolina",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Oysters_for_sale_at_Mercat_de_la_Boqueria.jpg"
+ },
+ "catalog/squid": {
+  "title": "Skewered Squid (Tinuhog nga Pusit) at Sugbo Mercado.jpg",
+  "author": "IndayLiburan",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Skewered_Squid_(Tinuhog_nga_Pusit)_at_Sugbo_Mercado.jpg"
+ },
+ "catalog/seaweed": {
+  "title": "Caulerpa lentillifera 1.jpg",
+  "author": "djpmapleferryman",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Caulerpa_lentillifera_1.jpg"
+ },
+ "catalog/hairtail": {
+  "title": "Trichiurus lepturus at Cox's Bazar beach.jpg",
+  "author": "Rht bd",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Trichiurus_lepturus_at_Cox%27s_Bazar_beach.jpg"
+ },
+ "catalog/anchovy": {
+  "title": "Ice fresh anchovy.jpg",
+  "author": "Fumikas Sagisavas",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Ice_fresh_anchovy.jpg"
+ },
+ "catalog/blue-crab": {
+  "title": "Portunus pelagicus male.jpg",
+  "author": "self",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Portunus_pelagicus_male.jpg"
+ },
+ "catalog/octopus": {
+  "title": "Seafood Market in Japan (Unsplash).jpg",
+  "author": "Alex Knight agkdesign",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Seafood_Market_in_Japan_(Unsplash).jpg"
+ },
+ "branches/crop": {
+  "title": "Rice terraces in Ha Giang, Vietnam - 2012 - 121 (10062070653).jpg",
+  "author": "minhphuc_99kdd",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "source": "https://commons.wikimedia.org/wiki/File:Rice_terraces_in_Ha_Giang,_Vietnam_-_2012_-_121_(10062070653).jpg"
+ },
+ "branches/husbandry": {
+  "title": "Piglets Can Tho.jpg",
+  "author": "Dragfyre",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Piglets_Can_Tho.jpg"
+ },
+ "branches/farmed": {
+  "title": "Shrimp pond with aerator 2.jpg",
+  "author": "Herman Gunawan, Bangka, Indonesia.",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Shrimp_pond_with_aerator_2.jpg"
+ },
+ "branches/capture": {
+  "title": "Da-Nang Vietnam Fisher-boats-01.jpg",
+  "author": "CEphoto, Uwe Aranas",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Da-Nang_Vietnam_Fisher-boats-01.jpg"
+ }
+}

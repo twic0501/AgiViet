@@ -1,6 +1,18 @@
 # AgiViet · Hệ thống (API + CSDL)
 
-Hệ thống thật phía sau hai giao diện `~/fe-nongdan` (Nhà sản xuất) và `~/fe-thumua` (Thu mua),
+> **Nhánh `trien-khai`: bản đang chạy** ở https://agiviet-23a94.web.app (Firebase Hosting, bản tĩnh).
+> Bản đang thử nghiệm (kho mới chia tầng, app bán 80 màn, máy chủ mô phỏng) nằm ở nhánh **`thu-nghiem`** của cùng kho.
+>
+> | Thư mục | Lên site ở |
+> |---|---|
+> | `fe-nongdan/` | `/ban/` app Nhà sản xuất |
+> | `fe-thumua/` | `/mua/` app Thu mua |
+> | `site/` | `/` trang giới thiệu |
+> | `src/`, `db/` | API + CSDL (chưa lên site; site đang tắt API) |
+>
+> Triển khai lại: `npm run deploy` (đóng gói `hosting-build/` từ ba thư mục trên rồi đẩy lên Firebase).
+
+Hệ thống thật phía sau hai giao diện `fe-nongdan/` (Nhà sản xuất) và `fe-thumua/` (Thu mua),
 làm theo **Đặc tả kiến trúc v4** và **Quy trình vận hành v3** (`~/Downloads/AgriMatch_*_v3.md`, `_v4.md`).
 
 - Node ≥ 22.5, **không cần cài thư viện** (dùng `node:http`, `node:sqlite`, `node:test`).

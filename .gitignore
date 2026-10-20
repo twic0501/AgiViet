@@ -8,3 +8,4 @@ data/
 firebase-debug.log
 hosting-build/
 .firebase/
+.playwright-mcp/

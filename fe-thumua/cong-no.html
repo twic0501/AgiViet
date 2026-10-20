@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#315c60">
+<title>Công nợ · AgiViet Thu mua</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<main>
+<!-- ============ CÔNG NỢ ============ -->
+<section class="man" id="cong-no" data-menu="cong-no" data-title="Công nợ">
+  <div class="dau-trang">
+    <div class="tieu-de"><h1>Công nợ</h1><p class="mo-ta">App không giữ tiền. “Đã trả” là khoản bạn ghi và người bán đã xác nhận nhận.</p></div>
+    <div class="hanh-dong">
+      <button class="btn phu chi-bus" type="button" data-toast="Đã xuất cong-no-thang-10.xlsx"><svg class="i"><use href="#i-excel"/></svg>Xuất Excel</button>
+      <button class="btn phu chi-free" type="button" data-luot="excel"><svg class="i"><use href="#i-khoa"/></svg>Xuất Excel</button>
+      <a class="btn" href="#ghi-thanh-toan"><svg class="i"><use href="#i-cong"/></svg>Ghi thanh toán</a>
+    </div>
+  </div>
+
+  <div class="luoi l4">
+    <div class="card kpi"><span class="nhan">Đến hạn hôm nay</span><span class="so">41,2 tr</span><span class="phu">Anh Phúc · đợt 2 dự kiến</span></div>
+    <div class="card kpi"><span class="nhan">7 ngày tới</span><span class="so">43,1 tr</span><span class="phu">Chị Út Mai · 12/10</span></div>
+    <div class="card kpi"><span class="nhan">Quá hạn</span><span class="so xanh">0</span></div>
+    <div class="card kpi"><span class="nhan do">Đang tranh chấp</span><span class="so do">1,9 tr</span><span class="phu">Để riêng, chưa trả, chưa trừ</span></div>
+  </div>
+
+  <!-- Business: theo người bán -->
+  <section class="card chi-bus">
+    <div class="card-dau"><h2>Theo người bán</h2><span class="bus-tag">Business</span></div>
+    <div class="card-than sat bang-cuon"><table class="bang">
+      <thead><tr><th>Người bán</th><th>Đơn</th><th class="phai">Đã trả</th><th class="phai">Còn phải trả</th><th>Đến hạn</th><th class="phai">Tranh chấp</th><th>Khớp với người bán</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Anh Phúc</strong></td><td>HĐ-0245</td><td class="so-o">41.607.000</td><td class="so-o">41.193.000</td><td><span class="tag cho">Hôm nay</span></td><td class="so-o muted">0</td><td><span class="tag ok"><svg class="i i14"><use href="#i-check"/></svg>2/2 khoản</span></td></tr>
+        <tr><td><strong>Chị Út Mai</strong></td><td>HĐ-0243</td><td class="so-o">5.000.000</td><td class="so-o">43.125.000</td><td>12/10</td><td class="so-o do">1.875.000</td><td><span class="tag ok"><svg class="i i14"><use href="#i-check"/></svg>1/1 khoản</span></td></tr>
+        <tr><td><strong>HTX Chuối Tân Phước</strong></td><td>HĐ-0212 · định kỳ</td><td class="so-o">96.000.000</td><td class="so-o">0</td><td>CN 11/10</td><td class="so-o muted">0</td><td><span class="tag cho"><span class="sh sh-vuong"></span>1 khoản chưa xác nhận</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="card-chan nho nhat"><svg class="i i16"><use href="#i-thong-tin"/></svg>“Chưa xác nhận” là bạn đã ghi trả nhưng người bán chưa bấm đã nhận: app ghi “Chờ đối chiếu” và nhắc theo hạn trong đơn, không tự coi là nợ quá hạn.</div>
+  </section>
+
+  <section class="card">
+    <div class="card-dau"><h2>Hóa đơn phí dịch vụ</h2><span class="tag vien">Tách khỏi tiền hàng</span></div>
+    <div class="card-than sat bang-cuon"><table class="bang">
+      <thead><tr><th>Hóa đơn</th><th>Đơn</th><th>Phát hành</th><th class="phai">Số tiền</th><th>Hạn trả</th><th>Trạng thái</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PDV-1031</strong><div class="rat-nho nhat">phí thành công đợt 1</div></td><td>HĐ-0245</td><td>4/10</td><td class="so-o"><span class="chi-free">332.856</span><span class="chi-bus">124.821</span></td><td>11/10</td><td><span class="tag cho">Chưa trả</span></td></tr>
+        <tr><td><strong>PDV-1024</strong><div class="rat-nho nhat">phí thành công đợt 1</div></td><td>HĐ-0243</td><td>9/10</td><td class="so-o"><span class="chi-free">385.000</span><span class="chi-bus">144.375</span></td><td>16/10</td><td><span class="tag vien">Chỉ tính 3.850 kg đã xác nhận</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="card-chan nho nhat"><svg class="i i16"><use href="#i-thong-tin"/></svg>Phát hành sau mỗi đợt được chốt; phần đang tranh chấp chưa tính. Quá hạn 15 ngày chỉ tạm dừng bật hỗ trợ cho đơn mới (E16); đơn đang chạy, khiếu nại, tải hồ sơ vẫn dùng được. Không tự tính lãi phạt.</div>
+  </section>
+
+  <!-- Miễn phí: lịch sử cơ bản -->
+  <section class="card chi-free">
+    <div class="card-dau"><h2>Các khoản của đơn đang có</h2></div>
+    <div class="card-than sat bang-cuon"><table class="bang">
+      <thead><tr><th>Ngày</th><th>Đơn</th><th>Khoản</th><th class="phai">Số tiền</th><th>Trạng thái</th></tr></thead>
+      <tbody>
+        <tr><td>Hôm nay</td><td>HĐ-0245 · anh Phúc</td><td>Đợt 2 dự kiến</td><td class="so-o">41.193.000</td><td><span class="tag cho">Chưa trả</span></td></tr>
+        <tr><td>12/10</td><td>HĐ-0243 · chị Út Mai</td><td>Đợt 1, phần không tranh chấp</td><td class="so-o">43.125.000</td><td><span class="tag cho">Chưa trả</span></td></tr>
+        <tr><td>3/10</td><td>HĐ-0245 · anh Phúc</td><td>Đợt 1</td><td class="so-o">26.607.000</td><td><span class="tag ok">Người bán đã nhận</span></td></tr>
+        <tr><td>2/10</td><td>HĐ-0243 · chị Út Mai</td><td>Cọc</td><td class="so-o">5.000.000</td><td><span class="tag ok">Người bán đã nhận</span></td></tr>
+        <tr><td>1/10</td><td>HĐ-0245 · anh Phúc</td><td>Cọc</td><td class="so-o">15.000.000</td><td><span class="tag ok">Người bán đã nhận</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+  <div class="khoa-tinh-nang chi-free">
+    <div class="xem-mo card card-than" aria-hidden="true"><table class="bang"><tbody><tr><td>Anh Phúc</td><td>41.607.000</td><td>41.193.000</td><td>Hôm nay</td></tr><tr><td>Chị Út Mai</td><td>5.000.000</td><td>43.125.000</td><td>12/10</td></tr><tr><td>HTX Tân Phước</td><td>96.000.000</td><td>0</td><td>12/10</td></tr></tbody></table></div>
+    <div class="lop"><div class="hop">
+      <span class="ic"><svg class="i i24"><use href="#i-cong-no"/></svg></span>
+      <h2 class="muc">Công nợ theo người bán, theo hạn, xuất Excel</h2>
+      <p class="nho muted">Gom mọi đơn của một người bán, xem ai đã xác nhận nhận tiền, kế toán ghi và duyệt chi riêng. Các khoản ở trên vẫn xem và ghi được miễn phí.</p>
+      <button class="btn bus" type="button" data-luot="excel"><svg class="i"><use href="#i-vuong-mien"/></svg>Xem trong Business</button>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ GHI THANH TOÁN ============ -->
+<section class="man" id="ghi-thanh-toan" data-menu="cong-no" data-title="Ghi thanh toán">
+  <div class="dau-trang">
+    <div class="tieu-de"><div class="vet"><a href="#cong-no">Công nợ</a> › Ghi thanh toán</div><h1>Ghi thanh toán</h1><p class="mo-ta">Ghi lại khoản bạn đã chuyển. Người bán xác nhận đã nhận thì khoản mới thành “đã trả”.</p></div>
+  </div>
+  <div class="luoi l-2-1">
+    <section class="card">
+      <div class="card-than luoi l2">
+        <div class="truong"><label for="tt-don">Đơn</label><select class="o" id="tt-don"><option>HĐ-0243 · chị Út Mai</option><option>HĐ-0245 · anh Phúc</option></select></div>
+        <div class="truong"><label for="tt-khoan">Khoản</label><select class="o" id="tt-khoan"><option>Đợt 1 · phần không tranh chấp</option><option>Cọc</option><option>Đợt 2</option></select></div>
+        <div class="truong"><label for="tt-tien">Số tiền</label><div class="o-ghep"><input id="tt-tien" data-so value="43.125.000"><span>đ</span></div><span class="goi-y">3.850 kg × 12.500 = 48.125.000 − cọc 5.000.000</span></div>
+        <div class="truong"><label for="tt-cach">Hình thức</label><select class="o" id="tt-cach"><option>Chuyển khoản</option><option>Tiền mặt</option></select></div>
+        <div class="truong"><label for="tt-ngay">Ngày chuyển</label><input class="o" id="tt-ngay" type="date" value="2026-10-12"></div>
+        <div class="truong"><label for="tt-tk">Tài khoản nhận</label><input class="o" id="tt-tk" value="•••• 4421 · Nguyễn Thị Mai" readonly><span class="goi-y">Tài khoản đang hiệu lực trong app. Người bán đổi tài khoản phải qua xác thực, thời gian chờ và đối chiếu tên.</span></div>
+        <div class="bao canh nho" style="grid-column:1/-1"><svg class="i"><use href="#i-canh-bao"/></svg><span><strong>Tài khoản nhận tiền đổi ngày 2/10.</strong> Vừa đổi trong 30 ngày: gọi hỏi lại chị Mai qua số đã biết trước khi chuyển. Chỉ chuyển theo tài khoản đang hiện ở đây; app không chặn được tiền chuyển theo hướng dẫn ngoài app.</span></div>
+        <div class="truong" style="grid-column:1/-1"><span class="nhan">Chứng từ</span><button class="tha-tep" type="button" data-toast="Chọn ảnh hoặc PDF ủy nhiệm chi"><svg class="i i28 song"><use href="#i-tai-len"/></svg><strong>Kéo thả ủy nhiệm chi hoặc ảnh chuyển khoản</strong><span class="nho muted">Ảnh chứng từ chưa phải bằng chứng tiền đã tới người bán.</span></button></div>
+      </div>
+      <div class="card-chan">
+        <button class="btn chi-free" type="button" data-toast="Đã ghi. Chờ chị Út Mai xác nhận đã nhận 43.125.000 đ.">Ghi và báo người bán</button>
+        <button class="btn chi-bus" type="button" data-toast="Đã gửi anh Quang duyệt chi 43.125.000 đ.">Gửi duyệt chi</button>
+        <a class="btn nhe" href="#cong-no">Hủy</a>
+      </div>
+    </section>
+    <aside class="cot g16">
+      <section class="card"><div class="card-dau"><h2>Sau khi ghi</h2></div><div class="card-than">
+        <ol class="moc">
+          <li class="chi-bus"><span class="c">1</span><div class="nd"><strong>Anh Quang duyệt chi</strong><span>Người có quyền phê duyệt</span></div></li>
+          <li><span class="c chi-free">1</span><span class="c chi-bus">2</span><div class="nd"><strong>Người bán thấy khoản bạn ghi</strong><span>Kèm chứng từ</span></div></li>
+          <li><span class="c chi-free">2</span><span class="c chi-bus">3</span><div class="nd"><strong>Người bán bấm “đã nhận”</strong><span>Khoản thành “đã trả”</span></div></li>
+        </ol>
+      </div></section>
+      <div class="bao thong-tin nho chi-bus"><svg class="i"><use href="#i-moi-quen"/></svg><span>Ghi bởi chị Lan · quyền kế toán. Người mua hàng không ghi được thanh toán.</span></div>
+    </aside>
+  </div>
+</section>
+</main>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script src="js/huong-dan.js"></script>
+</body>
+</html>

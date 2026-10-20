@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#315c60">
+<title>Tin nhắn · AgiViet Thu mua</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<main>
+<section class="man" id="tin-nhan" data-menu="tin" data-title="Tin nhắn">
+  <div class="dau-trang">
+    <div class="tieu-de"><h1>Tin nhắn</h1><p class="mo-ta">Tin nhắn và cuộc gọi chỉ hai bên thấy. Nói qua điện thoại không làm đổi thỏa thuận.</p></div>
+    <div class="hanh-dong"><span class="chi-bus" data-thanh-do="bus:2" style="min-width:220px"></span></div>
+  </div>
+  <section class="card hai-khung" style="overflow:hidden">
+    <nav class="ds-hoi-thoai" aria-label="Các cuộc trò chuyện">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--vien)"><div class="seg" data-chon="loc-tn"><button type="button" aria-pressed="true" data-khi="all">Tất cả</button><button type="button" aria-pressed="false" data-khi="chua">Chưa đọc · 3</button></div></div>
+      <a href="#tin-nhan" aria-current="true"><span class="av-tron" style="background:#6d5a2e">H</span><span class="grow"><strong class="nho" style="display:block">Cô Hai Thu</strong><span class="rat-nho muted">Báo giá xoài 7.100 · 6 tấn</span></span><span class="rat-nho nhat">9:12</span></a>
+      <a href="#tin-nhan"><span class="av-tron" style="background:var(--song)">P</span><span class="grow"><strong class="nho" style="display:block">Anh Phúc · trang trại</strong><span class="rat-nho muted">Xe tới trang trại rồi anh</span></span><span class="rat-nho nhat">8:40</span></a>
+      <a href="#tin-nhan"><span class="av-tron" style="background:#c2386a">M</span><span class="grow"><strong class="nho" style="display:block">Chị Út Mai</strong><span class="rat-nho do">Không đồng ý trừ 150 kg</span></span><span class="rat-nho nhat">hôm qua</span></a>
+      <a href="#tin-nhan"><span class="av-tron" style="background:var(--reu)">X</span><span class="grow"><strong class="nho" style="display:block">HTX Xoài Mỹ Xương</strong><span class="rat-nho muted">Đang bổ sung giấy anh Sáu</span></span><span class="rat-nho nhat">7/10</span></a>
+      <a href="#tin-nhan"><span class="av-tron" style="background:#5a4a8a">L</span><span class="grow"><strong class="nho" style="display:block">Vườn Thành Lợi</strong><span class="rat-nho muted">Người bán liên hệ · không tính lượt</span></span><span class="rat-nho nhat">6/10</span></a>
+    </nav>
+    <div class="khung-chat">
+      <div class="card-dau">
+        <span class="av-tron" style="background:#6d5a2e">H</span>
+        <div class="grow"><h2 style="font-size:15px">Cô Hai Thu</h2><span class="rat-nho muted">Tự trồng · Cái Bè · kết nối 2/10 · tính 1 lượt, nói tiếp không tính lại</span></div>
+        <button class="btn phu nho" type="button" data-toast="Đang gọi thoại Cô Hai Thu qua app…"><svg class="i i16"><use href="#i-goi"/></svg>Gọi</button>
+        <button class="btn phu nho" type="button" data-luot="video" data-ok="Đang gọi video Cô Hai Thu… còn 75 phút tháng này"><svg class="i i16"><use href="#i-video"/></svg>Video</button>
+        <button class="nut-tron" type="button" aria-label="Thêm: báo cáo, chặn" data-toast="Báo cáo lạm dụng hoặc chặn liên hệ"><svg class="i"><use href="#i-dau-cham"/></svg></button>
+      </div>
+      <div class="cac-tin" aria-live="polite">
+        <span class="ngay">Hôm qua</span>
+        <div class="tin">Chào anh, cô còn 6 tấn xoài cát Chu loại 1, cân rồi. Anh lấy không?<span class="gio">16:20</span></div>
+        <div class="tin minh">Cô cho con xin độ ngọt khoảng bao nhiêu, và cô chở tới nhà máy được không?<span class="gio">16:32 · đã xem</span></div>
+        <div class="the-ht">
+          <strong>Báo giá từ Cô Hai Thu · N-014</strong>
+          <span><strong>7.100 đ/kg</strong> · 6 tấn đã cân · giao nhà máy · trả khi cân · giữ đến 11/10</span>
+          <div class="hang"><a class="btn nho" href="#so-bao-gia">So với báo giá khác</a><a class="btn nho phu" href="#thoa-thuan">Làm thỏa thuận</a></div>
+        </div>
+        <span class="ngay">Hôm nay</span>
+        <div class="the-ht song">
+          <strong class="hang" style="gap:6px"><svg class="i i16"><use href="#i-goi"/></svg>Cuộc gọi 4 phút · 8:55</strong>
+          <span>Có đổi <strong>giá, lượng hay lịch</strong> không? Nội dung gọi không tự sửa báo giá hay thỏa thuận.</span>
+          <div class="hang boc"><button class="btn nho phu" type="button" data-toast="Đã ghi: cuộc gọi không đổi điều kiện">Không đổi</button><button class="btn nho" type="button" data-toast="Nhập hoặc đọc lại điều đã đổi. App tạo nháp để Cô Hai xem và xác nhận.">Có đổi, ghi lại để tạo nháp</button></div>
+          <span class="rat-nho nhat">Không ghi âm, không tự tóm tắt cuộc gọi.</span>
+        </div>
+        <div class="tin">Anh qua lấy hay cô chở lên cũng được, mai cô rảnh.<span class="gio">9:12</span></div>
+      </div>
+      <div class="go-tin">
+        <button class="nut-tron" type="button" aria-label="Gửi ảnh, tệp" data-toast="Chọn ảnh hoặc tệp để gửi"><svg class="i"><use href="#i-cong"/></svg></button>
+        <label class="sr-only" for="o-tin">Nhập tin nhắn</label>
+        <input class="o grow" id="o-tin" placeholder="Nhập tin nhắn…">
+        <a class="btn phu" href="#gui-bao-gia">Gửi báo giá</a>
+        <button class="btn" type="button" data-toast="Đã gửi" aria-label="Gửi"><svg class="i"><use href="#i-gui"/></svg></button>
+      </div>
+    </div>
+  </section>
+</section>
+</main>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script src="js/huong-dan.js"></script>
+</body>
+</html>

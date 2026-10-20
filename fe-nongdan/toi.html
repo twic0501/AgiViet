@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#235c45">
+<title>Tôi · AgiViet</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+
+<!-- ============ C02 · TÔI ============ -->
+<section class="screen" id="toi" data-title="Tôi"
+  data-read="Trang của bạn: Nguyễn Thị Năm, chủ vườn, tự trồng. Đã xác minh số điện thoại. Bên bán dùng app miễn phí. Các mục: hồ sơ, vai trò và người đại diện, người giúp nhập liệu, tài khoản nhận tiền, chứng từ, lô gộp, phần hàng của hộ, kiểm nghiệm xe kho, thông báo, trung tâm hỗ trợ, bảo mật, quyền riêng tư, cài đặt.">
+  <header class="top">
+    <a class="icon-btn" href="#hang" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Tôi</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card row" style="padding:18px">
+    <span class="anh-dai-dien" style="width:72px;height:72px;font-size:32px">N</span>
+    <span class="grow stack" style="gap:4px">
+      <strong class="num" style="font-size:22px">Nguyễn Thị Năm</strong>
+      <span class="small muted">Cá nhân · chủ hàng, tự trồng · Mỹ Xương</span>
+      <span class="chip ok nho" style="align-self:flex-start"><svg class="i i14" style="stroke-width:3"><use href="#i-check"/></svg>Đã xác minh số điện thoại</span>
+    </span>
+  </section>
+  <p class="card small row" style="border:none;background:var(--la-nhat);gap:10px"><svg class="i i22 xanh"><use href="#i-check"/></svg><span>Bên bán dùng app <strong>miễn phí</strong>: đăng tin, nhận khách, trả lời, xử lý đơn.</span></p>
+  <nav class="menu" aria-label="Hồ sơ và quyền">
+    <a href="#ho-so"><span class="ic-menu bg-la"><svg class="i"><use href="#i-nguoi"/></svg></span><span class="grow">Hồ sơ</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#vai-tro"><span class="ic-menu bg-cho"><img src="assets/ic-ky.svg" alt=""></span><span class="grow">Vai trò và người đại diện</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#nguoi-giup"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-nguoi-nhom"/></svg></span><span class="grow">Người giúp nhập liệu</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#tai-khoan-nhan"><span class="ic-menu bg-nen"><img src="assets/ic-tien.svg" alt=""></span><span class="grow">Tài khoản nhận tiền</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+  </nav>
+  <nav class="menu" aria-label="Hàng và dịch vụ">
+    <a href="#chung-tu"><span class="ic-menu bg-nen"><img src="assets/ic-kiem.svg" alt=""></span><span class="grow">Chứng từ</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#lo-gop"><span class="ic-menu bg-tl"><svg class="i"><use href="#i-nguoi-nhom"/></svg></span><span class="grow">Lô gộp nhiều hộ (HTX)</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#phan-cua-toi"><span class="ic-menu bg-xoai"><img src="assets/ic-hang.svg" alt=""></span><span class="grow">Phần hàng của tôi (hộ thành viên)</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#dich-vu"><span class="ic-menu bg-xoai"><img src="assets/ic-lich.svg" alt=""></span><span class="grow">Kiểm nghiệm, xe, kho</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+  </nav>
+  <nav class="menu" aria-label="Hỗ trợ và bảo mật">
+    <a href="#thong-bao"><span class="ic-menu bg-la"><svg class="i"><use href="#i-chuong"/></svg></span><span class="grow">Thông báo</span><span class="badge-so" style="position:static">3</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#ho-tro"><span class="ic-menu bg-la"><img src="assets/ic-goi.svg" alt=""></span><span class="grow">Trung tâm hỗ trợ</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#bao-mat"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-khoa"/></svg></span><span class="grow">Bảo mật</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#rieng-tu"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-khien"/></svg></span><span class="grow">Quyền riêng tư</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#cai-dat"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-cai"/></svg></span><span class="grow">Cài đặt, chữ to, giọng đọc</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <a href="#trang-thai"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-mat-mang"/></svg></span><span class="grow">Xem lỗi và trạng thái mẫu</span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+  </nav>
+  <button class="link-btn do" type="button" style="align-self:center" data-toast="Đã đăng xuất (mô phỏng)">Đăng xuất</button>
+</section>
+
+<!-- ============ THÔNG BÁO ============ -->
+<section class="screen" id="thong-bao" data-title="Thông báo"
+  data-read="Thông báo mới. Bên mua A gửi báo giá 7 nghìn một ký. Kết quả cân đợt 1 đang chờ bạn xác nhận. Bên mua B báo đã chuyển 22 triệu 294 nghìn. Trước đó: Bên mua B đã ký thỏa thuận; tin tôm thẻ quá hạn xác nhận còn hàng; mai giao đợt 1 lúc 6 giờ sáng.">
+  <header class="top">
+    <a class="icon-btn" href="#hang" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Thông báo</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <h2 class="h2">Mới</h2>
+  <nav class="menu" aria-label="Thông báo mới">
+    <a href="#khach"><span class="ic-menu bg-cho"><img src="assets/ic-khach.svg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:16px">Bên mua A gửi báo giá 7.000 đ/kg</strong><span class="xs muted">10 phút trước</span></span><span class="cham-moi"></span></a>
+    <a href="#ket-qua"><span class="ic-menu bg-cho"><img src="assets/ic-kiem.svg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:16px">Kết quả cân đợt 1 chờ bạn xác nhận</strong><span class="xs muted">1 giờ trước</span></span><span class="cham-moi"></span></a>
+    <a href="#tien"><span class="ic-menu bg-la"><img src="assets/ic-tien.svg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:16px">Bên mua B báo đã chuyển 22.294.000 đ</strong><span class="xs muted">1 giờ trước · bạn kiểm tra tài khoản</span></span><span class="cham-moi"></span></a>
+  </nav>
+  <h2 class="h2">Trước đó</h2>
+  <nav class="menu" aria-label="Thông báo cũ">
+    <a href="#ky"><span class="ic-menu bg-nen"><img src="assets/ic-ky.svg" alt=""></span><span class="grow stack" style="gap:0"><span style="font-size:16px">Bên mua B đã ký HĐ-0231 bản 2</span><span class="xs muted">29/9</span></span></a>
+    <a href="#hang"><span class="ic-menu bg-nen"><img src="assets/ic-canh-bao.svg" alt=""></span><span class="grow stack" style="gap:0"><span style="font-size:16px">Tin tôm thẻ quá hạn xác nhận, tạm ngừng nhận đề nghị</span><span class="xs muted">29/9</span></span></a>
+    <a href="#lich"><span class="ic-menu bg-nen"><img src="assets/ic-lich.svg" alt=""></span><span class="grow stack" style="gap:0"><span style="font-size:16px">Mai giao đợt 1 lúc 6 giờ sáng</span><span class="xs muted">7/10</span></span></a>
+  </nav>
+</section>
+
+<!-- ============ DỊCH VỤ ĐỐI TÁC ============ -->
+<section class="screen" id="dich-vu" data-title="Kiểm nghiệm, xe, kho"
+  data-read="Kiểm nghiệm, xe, kho. Các dịch vụ này do đối tác làm. App gửi yêu cầu và báo giá từng lần. Chỉ đặt khi bạn đồng ý giá. Bạn đang có một yêu cầu kiểm nghiệm lô xoài, đã có báo giá.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Kiểm nghiệm, xe, kho</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <p class="card small" style="border:none">Dịch vụ do <strong>đối tác</strong> làm. App gửi yêu cầu và báo giá từng lần. Chỉ đặt khi bạn đồng ý giá.</p>
+  <h2 class="h2">Yêu cầu của bạn</h2>
+  <a class="card row vien-dam" href="#dat-dich-vu" style="text-decoration:none;color:inherit">
+    <span class="thumb nho bg-cho"><img src="assets/ic-kiem.svg" alt=""></span>
+    <span class="grow stack" style="gap:2px"><strong>Kiểm nghiệm lô xoài</strong><span class="chip cho nho" style="align-self:flex-start">Đã có báo giá</span></span>
+    <svg class="i muted"><use href="#i-tiep"/></svg>
+  </a>
+  <h2 class="h2">Tạo yêu cầu mới</h2>
+  <nav class="menu" aria-label="Dịch vụ">
+    <a href="#dat-dich-vu"><span class="ic-menu bg-cho"><img src="assets/ic-kiem.svg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:16px">Kiểm nghiệm mẫu</strong><span class="xs muted">Độ ngọt, dư lượng thuốc…</span></span><svg class="i chevron"><use href="#i-tiep"/></svg></a>
+    <button type="button" data-toast="Nhập nơi lấy, nơi giao, lượng hàng để nhận báo giá xe"><span class="ic-menu bg-la"><img src="assets/ic-lich.svg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:16px">Thuê xe chở hàng</strong><span class="xs muted">Báo giá theo chuyến</span></span><svg class="i chevron"><use href="#i-tiep"/></svg></button>
+    <button type="button" data-toast="Nhập mặt hàng, lượng, số ngày gửi để nhận báo giá kho"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-kho"/></svg></span><span class="grow stack" style="gap:0"><strong style="font-size:16px">Kho lạnh</strong><span class="xs muted">Giữ hàng chờ giao</span></span><svg class="i chevron"><use href="#i-tiep"/></svg></button>
+  </nav>
+</section>
+
+<!-- ============ ĐẶT DỊCH VỤ KIỂM NGHIỆM ============ -->
+<section class="screen" id="dat-dich-vu" data-title="Kiểm nghiệm mẫu"
+  data-read="Kiểm nghiệm lô xoài. Kiểm độ ngọt và dư lượng thuốc bảo vệ thực vật, lấy mẫu tại vườn ngày 6 tháng 10. Đối tác báo giá 1 triệu 400 nghìn đồng, gồm phí kiểm 1 triệu 200 và phí đi lại 200 nghìn, có kết quả sau 3 ngày. Chọn ai trả tiền. Kết quả chỉ đúng cho mẫu và lô tại ngày lấy mẫu.">
+  <header class="top">
+    <a class="icon-btn" href="#dich-vu" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Kiểm nghiệm mẫu</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="2" data-labels="Yêu cầu|Báo giá|Đặt lịch|Kết quả" aria-label="Các bước"></ol>
+  <section class="card stack">
+    <span class="label">Bạn yêu cầu</span>
+    <div class="row"><img src="assets/anh/mh/mango.jpg" alt="" style="width:40px;height:40px"><strong class="grow">Lô xoài cát Chu · 10 tấn</strong></div>
+    <div class="hang-lua"><span class="chip bg-nen">Độ ngọt</span><span class="chip bg-nen">Dư lượng thuốc</span></div>
+    <span class="row small" style="gap:8px"><svg class="i i20"><use href="#i-lich"/></svg>Lấy mẫu tại vườn · 6/10</span>
+  </section>
+  <section class="card stack vien-dam">
+    <span class="label">Báo giá · Đối tác kiểm nghiệm (mẫu)</span>
+    <div class="row between small"><span>Phí kiểm</span><strong>1.200.000</strong></div>
+    <div class="row between small"><span>Đi lại lấy mẫu</span><strong>200.000</strong></div>
+    <div class="chia"></div>
+    <div class="row between"><span class="b">Tổng</span><strong class="num" style="font-size:24px">1.400.000 đ</strong></div>
+    <span class="row small" style="gap:8px"><svg class="i i20"><use href="#i-dong-ho"/></svg>Có kết quả sau 3 ngày · báo giá giữ đến 5/10</span>
+  </section>
+  <div class="stack s8">
+    <span class="small b">Ai trả?</span>
+    <div class="grid3" data-chon="ai-tra">
+      <button class="lua" type="button" aria-pressed="false" data-khi="toi" style="justify-content:center">Tôi</button>
+      <button class="lua" type="button" aria-pressed="true" data-khi="b" style="justify-content:center">Bên mua B</button>
+      <button class="lua" type="button" aria-pressed="false" data-khi="chia" style="justify-content:center">Chia đôi</button>
+    </div>
+    <span class="xs muted">Chọn bên mua trả thì bên mua phải đồng ý trước khi đặt.</span>
+  </div>
+  <p class="card small" style="border:none">Mẫu được niêm phong, ghi số niêm phong và người lấy. Kết quả <strong>chỉ đúng cho mẫu</strong> và lô tại ngày lấy, không bảo đảm mọi trái lúc giao.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#dich-vu" data-toast="Đã gửi đặt lịch lấy mẫu. Chờ đối tác xác nhận."><svg class="i"><use href="#i-check"/></svg>Đặt lịch lấy mẫu</a>
+    <a class="link-btn" href="#dich-vu" style="align-self:center">Không đặt</a>
+  </div>
+</section>
+
+<!-- ============ CÀI ĐẶT ============ -->
+<section class="screen" id="cai-dat" data-title="Cài đặt"
+  data-read="Cài đặt. Bật chữ to để chữ trong app to hơn. Kéo thanh tốc độ đọc để app đọc chậm hay nhanh. Bật hoặc tắt chuông khi có khách, và giờ không làm phiền.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Cài đặt</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card" style="padding:4px 16px">
+    <button class="cong-tac" type="button" data-cai="chu-to" aria-pressed="false" style="border-bottom:1px solid #eef1ea"><svg class="i i28"><use href="#i-chu-to"/></svg><span class="grow stack" style="gap:0"><strong>Chữ to</strong><span class="small muted">Chữ trong app to hơn</span></span><span class="ray"></span></button>
+    <div class="stack s8" style="padding:14px 0;border-bottom:1px solid #eef1ea">
+      <div class="row"><img src="assets/ic-loa.svg" alt="" style="width:28px;height:28px"><label for="toc-do" class="grow b">Tốc độ đọc</label><span class="chip nho bg-nen" data-toc-do-nhan>Vừa</span></div>
+      <input type="range" id="toc-do" min="0.7" max="1.3" step="0.05" data-cai="toc-do">
+      <div class="row between xs muted"><span>Chậm</span><span>Nhanh</span></div>
+    </div>
+  </section>
+  <section class="card" style="padding:4px 16px">
+    <button class="cong-tac" type="button" data-bat aria-pressed="true" style="border-bottom:1px solid #eef1ea"><svg class="i i28"><use href="#i-chuong"/></svg><span class="grow stack" style="gap:0"><strong>Chuông khi có khách hỏi</strong></span><span class="ray"></span></button>
+    <button class="cong-tac" type="button" data-bat aria-pressed="true" style="border-bottom:1px solid #eef1ea"><svg class="i i28"><use href="#i-dong-ho"/></svg><span class="grow stack" style="gap:0"><strong>Không làm phiền ban đêm</strong><span class="small muted">21 giờ đến 5 giờ sáng</span></span><span class="ray"></span></button>
+    <button class="cong-tac" type="button" data-bat aria-pressed="false"><svg class="i i28"><use href="#i-dien-thoai"/></svg><span class="grow stack" style="gap:0"><strong>Cho khách đã nối thấy số điện thoại</strong><span class="small muted">Tắt thì chỉ gọi được trong app</span></span><span class="ray"></span></button>
+  </section>
+</section>
+
+<!-- ============ TRUNG TÂM HỖ TRỢ ============ -->
+<section class="screen" id="ho-tro" data-title="Trung tâm hỗ trợ"
+  data-read="Trung tâm hỗ trợ. Bạn có 1 vụ việc đang xử lý: HT 0412, đối soát 200 ký xoài, người phụ trách chị Hạnh, cập nhật tiếp trước 16 giờ. Muốn báo việc mới, bấm Tạo yêu cầu. Gửi lỗi, hỏi dữ liệu hay báo lạm dụng đều miễn phí. Nhân viên app không bao giờ hỏi mã OTP của bạn.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Trung tâm hỗ trợ</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="the-tien" style="gap:10px">
+    <span class="row b" style="font-size:15px;color:#d5e2d6;gap:8px"><span class="sh sh-tron" style="background:#9be38f"></span>Đang trong ca trực · đến 19 giờ</span>
+    <strong style="font-size:18px">Số trực, email chính thức</strong>
+    <span class="small" style="color:var(--la-nhat)">Công bố khi chạy thí điểm.</span>
+    <a class="btn nang" href="#can-ho-tro" data-ma=""><img src="assets/ic-goi.svg" alt="">Tạo yêu cầu hỗ trợ</a>
+  </section>
+  <h2 class="h2">Vụ việc của bạn</h2>
+  <a class="card stack" href="#tranh-chap" style="text-decoration:none;color:inherit">
+    <div class="row between"><strong>HT-0412 · Đối soát 200 kg</strong><span class="chip cho nho">Đang xử lý</span></div>
+    <span class="small">HĐ-0231 · người phụ trách <strong>chị Hạnh</strong></span>
+    <span class="small muted">Cập nhật tiếp trước 16 giờ hôm nay</span>
+  </a>
+  <div class="card row" style="opacity:.8">
+    <span class="grow stack" style="gap:2px"><strong>HT-0377 · Hỏi cách đăng thanh long</strong><span class="small muted">Đã đóng 30/9 · mở lại được nếu có thông tin mới</span></span>
+    <span class="chip ok nho">Xong</span>
+  </div>
+  <section class="card stack">
+    <h2 class="h2">Mức khẩn</h2>
+    <div class="row small" style="gap:10px"><span class="chip canh nho" style="min-width:36px;justify-content:center">Rất gấp</span><span>Nghi mất tài khoản, bị đổi tài khoản nhận tiền · app tự khóa ngay khi bạn bấm “Không phải tôi”, kể cả ngoài ca</span></div>
+    <div class="row small" style="gap:10px"><span class="chip canh nho" style="min-width:36px;justify-content:center">Gấp</span><span>Xe, hàng tươi đang chờ (đơn có hỗ trợ) · trả lời trong 15 phút khi đang trong ca</span></div>
+    <div class="row small" style="gap:10px"><span class="chip cho nho" style="min-width:36px;justify-content:center">Thường</span><span>Chưa thấy tiền, lỗi ký · trong 4 giờ làm việc</span></div>
+    <div class="row small" style="gap:10px"><span class="chip nho bg-nen" style="min-width:36px;justify-content:center">Hỏi đáp</span><span>Hỏi cách dùng · trong 1 ngày làm việc</span></div>
+    <span class="xs muted">Đây là mục tiêu thử nghiệm, chưa phải cam kết. Ngoài ca, app ghi giờ ca tiếp theo, không báo “đang có người xử lý”.</span>
+  </section>
+  <h2 class="h2">Hỏi thường gặp</h2>
+  <details class="hoi-dap"><summary>Bán trên app có mất tiền không?</summary><p>Người bán dùng app miễn phí. Nếu hai bên chọn “Giao dịch có hỗ trợ”, phí ghi rõ ai trả trước khi ký. Mặc định bên mua trả, không trừ vào tiền hàng của bạn.</p></details>
+  <details class="hoi-dap"><summary>Chưa cân thì đăng được không?</summary><p>Được. App ghi là “ước tính”. Khi ký, bạn chọn hứa một khoảng hoặc một số cố định.</p></details>
+  <details class="hoi-dap"><summary>Khách trừ tiền mà tôi không đồng ý?</summary><p>Bấm “Không đúng” ở dòng đó. Khoản đó được tách riêng, phần còn lại vẫn được trả.</p></details>
+  <details class="hoi-dap"><summary>Con cháu cầm máy giúp có được không?</summary><p>Được giúp nhập liệu, nhưng không được ký thay. Thêm người đó trong mục “Người giúp nhập liệu”.</p></details>
+  <details class="hoi-dap"><summary>Có người gọi xin mã 6 số?</summary><p>Đó là lừa đảo. Nhân viên app không bao giờ xin mã của bạn.</p></details>
+</section>
+
+<!-- ============ LỖI VÀ TRẠNG THÁI MẪU ============ -->
+<section class="screen" id="trang-thai" data-title="Lỗi và trạng thái mẫu"
+  data-read="Các lỗi và trạng thái mẫu. Mỗi lỗi nói bằng câu dễ hiểu, chỉ cách sửa và có nút Cần hỗ trợ.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Lỗi mẫu</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+
+  <h2 class="h2">Mất mạng</h2>
+  <section class="card stack" style="padding:0;overflow:hidden">
+    <div class="mat-mang hien" style="position:static"><svg class="i i20"><use href="#i-mat-mang"/></svg><span>Mất mạng. Việc bạn làm được giữ làm nháp.</span></div>
+    <div class="stack" style="padding:14px">
+      <div class="bong ban" style="max-width:100%"><div class="thoai"><span class="phat" style="background:var(--muc-2)"><svg class="i i20"><use href="#i-phat"/></svg></span><span class="song-nho"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="xs b">0:08</span></div><span class="nhap" style="align-self:flex-end"><svg class="i i14"><use href="#i-dong-ho"/></svg>Chờ gửi</span></div>
+      <span class="xs muted">Mất mạng thì không bao giờ báo “đã đăng”, “đã ký” hay “đã nhận tiền”.</span>
+    </div>
+  </section>
+
+  <h2 class="h2">Lỗi thường gặp</h2>
+  <div class="loi-o"><span class="ma">E01</span><div><strong>Chưa rõ ai được bán lô này</strong><span>Bổ sung giấy ủy quyền, hoặc chọn đúng người bán. Chưa thể ký có hỗ trợ.</span></div><a href="#vai-tro">Bổ sung</a></div>
+  <div class="loi-o"><span class="ma">E02</span><div><strong>Mã OTP chưa tới</strong><span>Xem lại số điện thoại, chờ 45 giây rồi gửi lại, hoặc chọn gọi đọc mã.</span></div><a href="#tro-giup-truy-cap">Trợ giúp</a></div>
+  <div class="loi-o"><span class="ma">E03</span><div><strong>Còn ít hơn lượng đã hứa</strong><span>Thỏa thuận cũ vẫn giữ. Gửi đề nghị giao bù hoặc bớt cho bên mua.</span></div><a href="#giao-mot-phan">Đề nghị</a></div>
+  <div class="loi-o"><span class="ma">E05</span><div><strong>Điều kiện chưa khớp hoặc còn thiếu</strong><span>Mở dòng được đánh dấu: phạm vi hỗ trợ, cách xử lý bất đồng, người trả phí. Chưa ký, chưa tính phí.</span></div><a href="#ky">Mở</a></div>
+  <div class="loi-o"><span class="ma">E06</span><div><strong>Chưa rõ đã ký được chưa</strong><span>Đừng bấm ký lại. App đang kiểm tra, xem trong Hồ sơ.</span></div><a href="#chi-tiet-don">Hồ sơ</a></div>
+  <div class="loi-o"><span class="ma">E07</span><div><strong>Số cân hai bên khác nhau</strong><span>Bấm “Không đúng” ở dòng đó. App giữ cả hai số, chưa trừ tiền.</span></div><a href="#ket-qua">Xem</a></div>
+  <div class="loi-o"><span class="ma">E08</span><div><strong>Tiền chưa rõ, hoặc bấm nhầm</strong><span>Bấm “Chưa thấy tiền” hoặc “Báo sai xác nhận”. App không tự đảo tiền.</span></div><a href="#tien">Tiền</a></div>
+  <div class="loi-o"><span class="ma">E11</span><div><strong>Hết lượt tự nhận giọng nói hôm nay (10/10)</strong><span>Bạn vẫn gõ tay hoặc chọn hình để đăng được.</span></div><a href="#chon-mat-hang">Gõ tay</a></div>
+  <div class="loi-o"><span class="ma">E12</span><div><strong>Đối tác xe hủy chuyến</strong><span>Chọn xe khác hoặc hủy. App báo giá mới trước khi đặt.</span></div><a href="#dich-vu">Chọn</a></div>
+  <div class="loi-o"><span class="ma">E15</span><div><strong>Tài khoản nhận tiền mới đang chờ xác minh</strong><span>Chưa dùng được. Còn chờ đủ 24 giờ và xác nhận của người thân dự phòng.</span></div><a href="#tai-khoan-nhan">Xem</a></div>
+  <div class="loi-o"><span class="ma">E16</span><div><strong>Phí dịch vụ phần bạn chịu đã quá hạn</strong><span>Tạm chưa bật được hỗ trợ cho đơn mới. Đơn đang chạy, nhận tiền, tải hồ sơ vẫn dùng bình thường.</span></div><a href="#quyet-toan">Xem</a></div>
+  <a class="btn can-ho-tro-btn" href="#can-ho-tro" data-ma="Lỗi trên app"><svg class="i"><use href="#i-tro-giup"/></svg>Cần hỗ trợ</a>
+
+  <h2 class="h2">Tin bị giữ lại để xem</h2>
+  <div class="canh-bao-lo" style="background:var(--cho)"><img src="assets/ic-canh-bao.svg" alt="" style="width:32px;height:32px"><span style="color:var(--muc)">Tin “Xoài 10 tấn” trùng với tin bạn đăng hôm qua. Sửa tin, hoặc xin xem lại.</span><a class="btn nho" href="#kiem-tra">Sửa</a></div>
+
+  <h2 class="h2">Chưa có hàng</h2>
+  <section class="card trong">
+    <img src="assets/linh-vat-chao.svg" alt="">
+    <strong>Chưa có hàng nào</strong>
+    <span class="small muted">Bấm Đăng để bán lô đầu tiên.</span>
+    <a class="btn nho" href="#dang"><svg class="i"><use href="#i-cong"/></svg>Đăng hàng</a>
+  </section>
+
+  <h2 class="h2">Đang tải</h2>
+  <section class="card stack" aria-label="Đang tải" aria-busy="true">
+    <div class="row"><span class="xuong" style="width:92px;height:92px;border-radius:20px"></span><span class="grow stack s8"><span class="xuong" style="height:20px;width:70%"></span><span class="xuong" style="height:28px;width:50%"></span><span class="xuong" style="height:16px;width:60%"></span></span></div>
+  </section>
+</section>
+
+
+<!-- ============ CẦN HỖ TRỢ (tạo yêu cầu) ============ -->
+<section class="screen" id="can-ho-tro" data-title="Cần hỗ trợ"
+  data-read="Cần hỗ trợ. App đã điền sẵn mã đơn hoặc lô liên quan, bạn không phải kể lại từ đầu. Chọn loại việc, bấm giữ nút vàng để nói, thêm ảnh nếu có, rồi gửi. Bạn sẽ thấy mã yêu cầu, người phụ trách và giờ cập nhật tiếp.">
+  <header class="top">
+    <a class="icon-btn" href="#ho-tro" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Cần hỗ trợ</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card row" style="background:var(--la-nhat);border:none">
+    <svg class="i i28 xanh"><use href="#i-giay"/></svg>
+    <span class="grow stack" style="gap:0"><span class="xs b muted">Liên quan tới</span><strong id="ma-lien-quan">Chưa chọn đơn hoặc lô</strong></span>
+  </section>
+  <span class="small b">Việc gì?</span>
+  <div class="luoi-mh" data-chon="loai-ht">
+    <button type="button" class="bg-tom" aria-pressed="false" data-khi="hang"><img src="assets/ic-canh-bao.svg" alt="">Hàng, xe đang chờ</button>
+    <button type="button" class="bg-cho" aria-pressed="true" data-khi="tien"><img src="assets/ic-tien.svg" alt="">Tiền</button>
+    <button type="button" class="bg-la" aria-pressed="false" data-khi="ky"><img src="assets/ic-ky.svg" alt="">Ký, giấy tờ</button>
+    <button type="button" class="bg-xoai" aria-pressed="false" data-khi="can"><img src="assets/ic-can.svg" alt="">Cân, kiểm hàng</button>
+    <button type="button" class="bg-nen" aria-pressed="false" data-khi="tk"><svg class="i" style="width:48px;height:48px;stroke-width:2"><use href="#i-khoa"/></svg>Tài khoản</button>
+    <button type="button" class="giu-cho" aria-pressed="false" data-khi="khac"><svg class="i" style="width:40px;height:40px"><use href="#i-dau-cham"/></svg>Khác</button>
+  </div>
+  <button class="nut-giu" type="button" data-giu-noi=""><img src="assets/ic-mic.svg" alt=""><span>Bấm giữ để kể</span></button>
+  <button class="btn phu" type="button" data-toast="Đang mở máy ảnh…"><img src="assets/ic-camera.svg" alt="" style="width:28px;height:28px">Thêm ảnh</button>
+  <p class="xs muted">Nhân viên chỉ xem phần cần để xử lý. Nhân viên không hỏi mã OTP, không ký hộ, không sửa số cân của bạn.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#ho-tro" data-toast="Đã gửi. Mã HT-0419 · chờ phân công · cập nhật tiếp trong 4 giờ làm việc"><svg class="i"><use href="#i-gui"/></svg>Gửi yêu cầu</a>
+  </div>
+</section>
+
+<!-- ============ NGƯỜI GIÚP NHẬP LIỆU ============ -->
+<section class="screen" id="nguoi-giup" data-title="Người giúp nhập liệu"
+  data-read="Người giúp nhập liệu. Con cháu hoặc nhân viên có thể giúp bạn đăng tin, trả lời khách, chụp ảnh. Người giúp không được ký thay, không được đổi tài khoản nhận tiền, không được xác nhận đã nhận tiền. Việc đó phải chính bạn làm.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Người giúp</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="card row">
+    <span class="avatar a" style="width:48px;height:48px;font-size:20px;background:#5a4a8a">T</span>
+    <span class="grow stack" style="gap:2px"><strong>Thảo · con gái</strong><span class="small muted">09•• ••• 804 · giúp từ 1/10</span></span>
+    <button class="btn nho phu" type="button" data-toast="Đã gỡ quyền giúp của Thảo">Gỡ</button>
+  </div>
+  <section class="card stack">
+    <span class="b">Người giúp được làm</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Đăng tin, chụp ảnh, sửa tin</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Nhắn tin, gửi báo giá bạn đã đồng ý</span>
+    <span class="b" style="margin-top:4px">Không được làm</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Ký thỏa thuận thay bạn</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Xác nhận đã nhận tiền</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Đổi tài khoản nhận tiền</span>
+  </section>
+  <p class="card small" style="border:none">Mỗi việc người giúp làm đều ghi tên người đó. Khách thấy là “Thảo nhập giúp chị Năm”.</p>
+  <button class="btn" type="button" data-toast="Nhập số điện thoại người giúp. App gửi mã cho người đó."><svg class="i"><use href="#i-cong"/></svg>Thêm người giúp</button>
+</section>
+
+<!-- ============ TÀI KHOẢN NHẬN TIỀN ============ -->
+<section class="screen" id="tai-khoan-nhan" data-title="Tài khoản nhận tiền"
+  data-read="Tài khoản nhận tiền của bạn đuôi 4421, đang dùng. Có một yêu cầu thêm tài khoản mới đuôi 7788, đang chờ xác minh, chưa dùng được. Thêm hay đổi tài khoản lúc nào cũng phải qua bốn bước: xác thực thêm một lớp, báo cho bạn và người thân dự phòng, chờ ít nhất 24 giờ, và so tên chủ tài khoản với tên hồ sơ. Nếu không phải bạn yêu cầu, bấm Không phải tôi, app khóa ngay, không cần chờ nhân viên. Bên mua sẽ thấy cảnh báo tài khoản vừa đổi trong 30 ngày.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Tài khoản nhận tiền</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card row">
+    <span class="thumb nho bg-la"><img src="assets/ic-tien.svg" alt=""></span>
+    <span class="grow stack" style="gap:2px"><strong>•••• 4421 · Nguyễn Thị Năm</strong><span class="small muted">Đang dùng · tên khớp hồ sơ · dùng cho HĐ-0231</span></span>
+    <span class="chip nho bg-la">Đang dùng</span>
+  </section>
+  <section class="card stack" style="border:2px solid var(--mat-ong)">
+    <div class="row between"><span class="b">Yêu cầu thêm •••• 7788</span><span class="chip nho bg-cho">Chờ xác minh</span></div>
+    <span class="small muted">Tạo lúc 09:12 hôm nay từ điện thoại này. Chưa hiện trên hướng dẫn chuyển tiền cho bên mua.</span>
+    <ol class="moc-list">
+      <li class="xong"><span class="cham">✓</span><div class="nd"><strong>Xác thực thêm một lớp</strong><span class="small muted">Mã OTP và gọi lại người thân dự phòng</span></div></li>
+      <li class="xong"><span class="cham">✓</span><div class="nd"><strong>Đã báo cho bạn và người thân</strong><span class="small muted">Tin nhắn tới số cũ và số của chị Thảo</span></div></li>
+      <li><span class="cham">3</span><div class="nd"><strong>Chờ ít nhất 24 giờ</strong><span class="small muted">Còn 20 giờ. Vừa lấy lại tài khoản hoặc đổi SIM thì chờ 72 giờ.</span></div></li>
+      <li><span class="cham">4</span><div class="nd"><strong>So tên chủ tài khoản</strong><span class="small muted">Tên ngân hàng báo khác tên hồ sơ thì nhân viên gọi xác minh</span></div></li>
+    </ol>
+    <a class="btn" href="#can-ho-tro" data-ma="Tài khoản nhận tiền · không phải tôi yêu cầu" style="background:var(--gach)"><svg class="i"><use href="#i-khoa"/></svg>Không phải tôi, khóa ngay</a>
+    <span class="xs muted">Bấm là khóa liền, kể cả ban đêm, không cần chờ nhân viên.</span>
+  </section>
+  <section class="card stack">
+    <div class="row between"><span class="b">Người thân dự phòng</span><button class="link-btn small" type="button" data-toast="Mở sửa người thân dự phòng">Sửa</button></div>
+    <span class="small">Chị Thảo · •••• 5567 · <span class="muted">đã xác nhận</span></span>
+    <span class="xs muted">Nhận tin khi có thay đổi nhạy cảm, dùng khi bạn mất SIM. Không có người thân thì có thể nhờ HTX hoặc xác minh trực tiếp.</span>
+  </section>
+  <section class="card stack small" style="border:none">
+    <span>Hướng dẫn chuyển tiền đã gửi cho bên mua <strong>không tự đổi</strong> sang tài khoản mới. Bên mua sẽ thấy <strong>“Tài khoản nhận tiền đổi ngày …”</strong> trong 30 ngày.</span>
+  </section>
+  <div class="canh-bao-lo"><img src="assets/ic-canh-bao.svg" alt="" style="width:32px;height:32px"><span>Ai nhắn bảo đổi tài khoản gấp là dấu hiệu lừa đảo. App không chặn được tiền chuyển theo hướng dẫn ngoài app: chỉ đưa số tài khoản đang hiện ở đây.</span></div>
+  <div class="bottom-actions">
+    <button class="btn phu" type="button" data-toast="Đã tạo yêu cầu. Tài khoản mới chờ xác minh, chưa dùng ngay (E15).">Thêm hoặc đổi tài khoản</button>
+  </div>
+</section>
+
+<!-- ============ BẢO MẬT ============ -->
+<section class="screen" id="bao-mat" data-title="Bảo mật"
+  data-read="Bảo mật. Máy đang đăng nhập: điện thoại của bạn và điện thoại của Thảo. Nếu mất điện thoại hoặc nghi ai dùng tài khoản, bấm Báo mất quyền truy cập: app tự khóa ngay việc ký và đổi tài khoản nhận tiền, kể cả ngoài giờ trực. Bạn vẫn được hỗ trợ và xem hồ sơ.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Bảo mật</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <h2 class="h2">Máy đang đăng nhập</h2>
+  <div class="menu">
+    <div class="row" style="padding:12px 16px;border-bottom:1px solid #eef1ea"><span class="ic-menu bg-la"><svg class="i"><use href="#i-dien-thoai"/></svg></span><span class="grow stack" style="gap:0"><strong>Điện thoại này</strong><span class="xs muted">Đang dùng</span></span></div>
+    <div class="row" style="padding:12px 16px"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-dien-thoai"/></svg></span><span class="grow stack" style="gap:0"><strong>Máy của Thảo (người giúp)</strong><span class="xs muted">Hôm qua 20:14</span></span><button class="btn nho phu" type="button" data-toast="Đã đăng xuất máy của Thảo">Đăng xuất</button></div>
+  </div>
+  <a class="btn" href="#can-ho-tro" data-ma="Tài khoản · mất quyền truy cập" style="background:var(--gach)"><svg class="i"><use href="#i-khoa"/></svg>Báo mất quyền truy cập</a>
+  <p class="card small" style="border:none">App <strong>tự khóa ngay</strong> việc ký và đổi tài khoản nhận tiền, kể cả ngoài giờ trực, không cần chờ nhân viên. Bạn <strong>vẫn</strong> được hỗ trợ, xem hồ sơ và nhận khoản tiền hợp lệ. Lấy lại tài khoản xong, mọi thay đổi tài khoản nhận tiền phải chờ 72 giờ.</p>
+</section>
+
+<!-- ============ QUYỀN RIÊNG TƯ ============ -->
+<section class="screen" id="rieng-tu" data-title="Quyền riêng tư"
+  data-read="Quyền riêng tư. Khách chỉ thấy tin hàng và khu vực của bạn. Số điện thoại, địa chỉ chính xác, căn cước và tài khoản ngân hàng không hiện trên tin. Bạn có thể xin xem, sửa, xóa hoặc hạn chế dữ liệu của mình. Hồ sơ hợp đồng và tiền phải giữ theo quy định thì app sẽ giải thích phần nào còn giữ và vì sao.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Quyền riêng tư</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card stack">
+    <span class="b">Ai thấy gì</span>
+    <div class="row between small"><span>Tin hàng, khu vực</span><span class="chip nho bg-nen">Khách đúng mặt hàng</span></div>
+    <div class="row between small"><span>Số điện thoại</span><span class="chip nho bg-nen">Khi bạn cho phép</span></div>
+    <div class="row between small"><span>Căn cước, tài khoản</span><span class="chip nho bg-nen">Người được quyền xử lý</span></div>
+    <div class="row between small"><span>Ảnh, giọng nói gửi AI</span><span class="chip nho bg-nen">Chỉ để tạo nháp</span></div>
+  </section>
+  <nav class="menu" aria-label="Yêu cầu về dữ liệu">
+    <button type="button" data-toast="Đã gửi yêu cầu xem dữ liệu của bạn"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-mat"/></svg></span><span class="grow">Xem dữ liệu của tôi</span><svg class="i chevron"><use href="#i-tiep"/></svg></button>
+    <button type="button" data-toast="Chọn mục cần sửa"><span class="ic-menu bg-nen"><svg class="i"><use href="#i-but"/></svg></span><span class="grow">Sửa dữ liệu sai</span><svg class="i chevron"><use href="#i-tiep"/></svg></button>
+    <button type="button" data-toast="Đã gửi yêu cầu. App sẽ báo phần nào xóa được, phần nào phải giữ và vì sao."><span class="ic-menu bg-nen"><svg class="i"><use href="#i-x"/></svg></span><span class="grow">Xóa hoặc hạn chế dữ liệu</span><svg class="i chevron"><use href="#i-tiep"/></svg></button>
+  </nav>
+  <p class="xs muted">Hồ sơ hợp đồng, tiền, kế toán phải giữ theo quy định; app nói rõ phần nào còn giữ và căn cứ.</p>
+</section>
+
+<!-- ============ C04 · PHẦN HÀNG CỦA TÔI (hộ thành viên) ============ -->
+<section class="screen" id="phan-cua-toi" data-title="Phần hàng của tôi"
+  data-read="Phần hàng của hộ bà Tư trong lô gộp của HTX Xoài Mỹ Xương. Bà góp 4 tấn ước tính. Sau cân, phần của bà được nhận 3 nghìn 900 ký, giá 6 nghìn 800 một ký, không có khoản trừ. Tiền dự kiến 26 triệu 520 nghìn. HTX báo đã trả bà ngày 15 tháng 10. Bà xem tài khoản rồi bấm đã nhận hoặc chưa nhận. Thấy sai thì bấm Báo sai.">
+  <header class="top">
+    <a class="icon-btn" href="#toi" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Phần hàng của tôi</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card row">
+    <span class="avatar a" style="width:48px;height:48px;font-size:20px">T</span>
+    <span class="grow stack" style="gap:2px"><strong>Hộ bà Tư</strong><span class="small muted">Trong lô HTX Xoài Mỹ Xương · HĐ-0239</span></span>
+  </section>
+  <section class="card stack">
+    <div class="row between"><span class="b">Bạn góp</span><span class="num" style="font-size:22px">4 tấn <span class="qty uoc" style="font-family:var(--f-chu);vertical-align:middle"><img src="assets/ic-uoc.svg" alt="">Ước tính</span></span></div>
+    <div class="row between"><span class="b">Được nhận sau cân</span><strong class="num xanh" style="font-size:22px">3.900 kg</strong></div>
+    <div class="row between"><span class="b">Giá áp dụng</span><strong>6.800 đ/kg</strong></div>
+    <div class="row between"><span class="b">Khoản trừ</span><strong>0</strong></div>
+    <div class="chia"></div>
+    <div class="row between"><span class="b">Tiền của bạn</span><strong class="num" style="font-size:24px">26.520.000 đ</strong></div>
+  </section>
+  <section class="card">
+    <ol class="moc-list">
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>Dự kiến</strong><span class="small muted">4 tấn × giá thỏa thuận</span></div></li>
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>Chốt theo kết quả cân</strong><span class="small muted">14/10 · 3.900 kg</span></div></li>
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>HTX báo đã trả bạn</strong><span class="small muted">15/10 · chưa phải là bạn đã nhận</span></div></li>
+      <li class="cur"><span class="cham">4</span><div class="nd"><strong>Bạn xác nhận</strong><span class="small muted">Xem tài khoản trước khi bấm</span></div></li>
+    </ol>
+  </section>
+  <div class="grid2" style="gap:8px">
+    <button class="btn" type="button" data-toast="Đã ghi: hộ bà Tư xác nhận nhận 26.520.000 đ từ HTX">Đã nhận</button>
+    <button class="btn canh" type="button" data-toast="Đã báo HTX: bạn chưa nhận tiền">Chưa nhận</button>
+  </div>
+  <a class="btn phu" href="#can-ho-tro" data-ma="HĐ-0239 · phần hộ bà Tư"><svg class="i"><use href="#i-co"/></svg>Báo sai phần của tôi</a>
+  <p class="xs muted">Số tiền ở đây là <strong>phân bổ để bạn xem</strong>; app không chuyển tiền cho từng hộ, HTX trả bạn trực tiếp. Bạn chỉ thấy phần của hộ mình, không thấy giá hay tài khoản của hộ khác. Chưa có điện thoại thì nhận bản giấy qua HTX.</p>
+</section>
+</div>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script src="js/huong-dan.js"></script>
+
+</body>
+</html>

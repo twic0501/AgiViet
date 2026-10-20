@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#235c45">
+<title>Khách hỏi mua · AgiViet</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+
+<!-- ============ KHÁCH HỎI MUA ============ -->
+<section class="screen" id="khach" data-nav="khach" data-title="Khách hỏi mua"
+  data-read="Khách hỏi mua. Có 3 mục: Tin nhắn của khách, Người đang cần mua, và Khách chờ kết nối. Bên mua A trả 7 nghìn một ký, bạn tự chở, tiền về tay khoảng 65 triệu. Bên mua B trả 6 nghìn 7 trăm, bên mua cho xe tới vườn, tiền về tay khoảng 67 triệu. Bên mua C hỏi thanh long.">
+  <header class="top">
+    <img class="tab-ic" src="assets/ic-khach.svg" alt="">
+    <h1>Khách hỏi mua</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+
+  <div class="phan-doan" data-chon="khach-tab" role="group" aria-label="Chọn mục">
+    <button type="button" aria-pressed="true" data-khi="tin">Tin nhắn</button>
+    <button type="button" aria-pressed="false" data-khi="can">Cần mua</button>
+    <button type="button" aria-pressed="false" data-khi="cho">Chờ nối <span class="badge">1</span></button>
+  </div>
+
+  <!-- Tin nhắn -->
+  <div class="stack" data-thuoc="khach-tab" data-khi="tin" style="gap:14px">
+    <a class="meo" href="#so-sanh">
+      <img src="assets/ic-tien.svg" alt="">
+      <span class="grow" style="font-size:15px;font-weight:600">Đừng chỉ nhìn giá. Xem tiền <strong>về tay bạn</strong>.</span>
+      <span class="nut">So sánh 2 khách</span>
+    </a>
+
+    <article class="card vien-dam stack">
+      <a class="row" href="#chat" style="text-decoration:none;color:inherit">
+        <span class="avatar a">A<span class="xm"><svg class="i i12" style="color:#fff;stroke-width:4"><use href="#i-check"/></svg></span></span>
+        <span class="grow stack" style="gap:0"><strong style="font-size:17px">Bên mua A</strong><span class="small muted">Nhà máy chế biến · hỏi xoài</span></span>
+        <span class="row xs muted" style="gap:6px"><span class="cham-moi"></span>10 phút</span>
+      </a>
+      <div class="dieu-kien">
+        <strong class="gia">7.000 <small>đ/kg</small></strong>
+        <span><svg class="i i22"><use href="#i-xe"/></svg>Bạn tự chở tới nhà máy</span>
+        <span><svg class="i i22"><use href="#i-dong-ho"/></svg>Trả tiền sau 7 ngày</span>
+      </div>
+      <div class="row between" style="align-items:flex-end"><span class="small muted b">Tiền về tay khoảng</span><strong class="ve-tay">65 triệu</strong></div>
+      <div class="grid3">
+        <button class="pill-btn" type="button" data-toast="Đang gọi Bên mua A qua app…"><img src="assets/ic-goi.svg" alt="">Gọi</button>
+        <a class="pill-btn" href="#chat" style="text-decoration:none;color:inherit"><img src="assets/ic-khach.svg" alt="">Nhắn</a>
+        <button class="pill-btn" type="button" data-noi="Bên mua A, nhà máy chế biến. Giá 7 nghìn đồng một ký. Bạn tự chở tới nhà máy. Trả tiền sau 7 ngày. Tiền về tay khoảng 65 triệu."><img src="assets/ic-loa.svg" alt="">Nghe</button>
+      </div>
+    </article>
+
+    <article class="card vien-dam stack">
+      <a class="row" href="#chat" style="text-decoration:none;color:inherit">
+        <span class="avatar b">B<span class="xm"><svg class="i i12" style="color:#fff;stroke-width:4"><use href="#i-check"/></svg></span></span>
+        <span class="grow stack" style="gap:0"><strong style="font-size:17px">Bên mua B</strong><span class="small muted">Vựa trái cây · hỏi xoài</span></span>
+        <span class="row xs muted" style="gap:6px"><span class="cham-moi"></span>25 phút</span>
+      </a>
+      <div class="dieu-kien">
+        <strong class="gia">6.700 <small>đ/kg</small></strong>
+        <span><svg class="i i22"><use href="#i-xe"/></svg>Bên mua cho xe tới tận vườn</span>
+        <span><svg class="i i22"><use href="#i-check"/></svg>Trả tiền khi cân xong</span>
+      </div>
+      <div class="row between" style="align-items:flex-end"><span class="small muted b">Tiền về tay khoảng</span><strong class="ve-tay">67 triệu</strong></div>
+      <div class="grid3">
+        <button class="pill-btn" type="button" data-toast="Đang gọi Bên mua B qua app…"><img src="assets/ic-goi.svg" alt="">Gọi</button>
+        <a class="pill-btn" href="#chat" style="text-decoration:none;color:inherit"><img src="assets/ic-khach.svg" alt="">Nhắn</a>
+        <button class="pill-btn" type="button" data-noi="Bên mua B, vựa trái cây. Giá 6 nghìn 7 trăm đồng một ký. Bên mua cho xe tới tận vườn. Trả tiền khi cân xong. Tiền về tay khoảng 67 triệu."><img src="assets/ic-loa.svg" alt="">Nghe</button>
+      </div>
+    </article>
+
+    <article class="card stack">
+      <a class="row" href="#chat" style="text-decoration:none;color:inherit">
+        <span class="avatar c">C</span>
+        <span class="grow stack" style="gap:0"><strong style="font-size:17px">Bên mua C</strong><span class="small muted">Cửa hàng trái cây · hỏi thanh long</span></span>
+        <span class="xs muted">Hôm qua</span>
+      </a>
+      <p class="tin-nhan">“Còn hàng không? Cần 2 tấn loại 1, giao thứ Bảy.”</p>
+      <a class="btn nang nho" href="#chat" style="min-height:56px;font-size:16px"><img src="assets/ic-mic.svg" alt="">Trả lời bằng giọng nói</a>
+    </article>
+    <p class="row small muted" style="gap:8px"><svg class="i i20"><use href="#i-khoa"/></svg>Mỗi khách chỉ thấy giá của mình.</p>
+  </div>
+
+  <!-- Đang cần mua -->
+  <div class="stack" data-thuoc="khach-tab" data-khi="can" style="gap:14px">
+    <p class="small muted">Người đang cần mua đúng mặt hàng bạn bán. Bạn có thể chủ động chào hàng.</p>
+    <a class="card stack" href="#nhu-cau" style="text-decoration:none;color:inherit">
+      <div class="row"><span class="thumb nho bg-xoai"><img src="assets/anh/mh/mango.jpg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:17px">Cần 20 tấn xoài cát Chu</strong><span class="small muted">Bên mua D · nhà máy sấy</span></span></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap">
+        <span class="chip nho bg-nen"><svg class="i i14"><use href="#i-lich"/></svg>10 – 20/10</span>
+        <span class="chip nho bg-nen"><svg class="i i14"><use href="#i-ghim"/></svg>cách 35 km</span>
+        <span class="chip nho bg-nen">Loại 1</span>
+      </div>
+      <span class="small"><strong>Vì sao hợp:</strong> cùng mặt hàng, cùng thời gian hái.</span>
+    </a>
+    <a class="card stack" href="#nhu-cau" style="text-decoration:none;color:inherit">
+      <div class="row"><span class="thumb nho bg-tl"><img src="assets/anh/mh/dragon-fruit.jpg" alt=""></span><span class="grow stack" style="gap:0"><strong style="font-size:17px">Cần 5 tấn thanh long mỗi tuần</strong><span class="small muted">Bên mua E · chuỗi cửa hàng</span></span></div>
+      <div class="row" style="gap:8px;flex-wrap:wrap">
+        <span class="chip nho bg-nen"><svg class="i i14"><use href="#i-lich"/></svg>Hằng tuần</span>
+        <span class="chip nho bg-nen"><svg class="i i14"><use href="#i-ghim"/></svg>cách 120 km</span>
+      </div>
+      <span class="small"><strong>Chưa biết:</strong> loại, cách trả tiền.</span>
+    </a>
+  </div>
+
+  <!-- Chờ kết nối -->
+  <div class="stack" data-thuoc="khach-tab" data-khi="cho" style="gap:14px">
+    <a class="card stack vien-dam" href="#ket-noi" style="text-decoration:none;color:inherit">
+      <div class="row">
+        <span class="avatar a" style="background:#5a4a8a">D</span>
+        <span class="grow stack" style="gap:0"><strong style="font-size:17px">Bên mua D muốn nói chuyện</strong><span class="small muted">Về lô xoài cát Chu · 2 giờ trước</span></span>
+        <svg class="i muted"><use href="#i-tiep"/></svg>
+      </div>
+    </a>
+    <a class="card stack" href="#bao-gia" style="text-decoration:none;color:inherit">
+      <div class="row">
+        <span class="avatar a" style="background:#2f6f8f">F</span>
+        <span class="grow stack" style="gap:0"><strong style="font-size:17px">Bên mua F hỏi giá riêng</strong><span class="small muted">Lô thanh long ruột đỏ · 3 tấn, giao 15/10 · 1 giờ trước</span></span>
+        <svg class="i muted"><use href="#i-tiep"/></svg>
+      </div>
+      <span class="xs muted">Hỏi giá riêng chỉ bạn thấy, không phải tin công khai. Trả lời bằng báo giá.</span>
+    </a>
+    <p class="small muted">Nhận khách, trả lời hỏi giá không tốn gì của bạn.</p>
+  </div>
+</section>
+
+<!-- ============ NHU CẦU MUA ============ -->
+<section class="screen" id="nhu-cau" data-title="Bên mua D cần mua"
+  data-read="Bên mua D, nhà máy sấy, cần 20 tấn xoài cát Chu loại 1, giao từ ngày 10 đến 20 tháng 10, tại nhà máy cách bạn 35 km. Chưa biết: yêu cầu độ ngọt, cách cân, cách trả tiền. Bấm Chào hàng để gửi giá của bạn. Chỉ Bên mua D thấy giá bạn chào.">
+  <header class="top">
+    <a class="icon-btn" href="#khach" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Cần mua</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card stack">
+    <div class="row"><span class="thumb bg-xoai" style="width:72px;height:72px"><img src="assets/anh/mh/mango.jpg" alt="" style="width:54px;height:54px"></span><span class="grow stack" style="gap:2px"><strong class="num" style="font-size:24px;line-height:1.1">20 tấn xoài cát Chu</strong><span class="small muted">Loại 1</span></span></div>
+    <div class="grid2" style="gap:8px">
+      <div class="o-thong-tin"><svg class="i"><use href="#i-lich"/></svg><strong style="font-size:19px">10 – 20/10</strong><span class="xs muted">Cần hàng</span></div>
+      <div class="o-thong-tin"><svg class="i"><use href="#i-ghim"/></svg><strong style="font-size:19px">35 km</strong><span class="xs muted">Giao tại nhà máy</span></div>
+    </div>
+  </section>
+  <section class="card stack" style="border:2px dashed #d9a441">
+    <h2 class="h2">Chưa biết</h2>
+    <ul class="small" style="margin:0;padding-left:20px;line-height:1.7"><li>Yêu cầu độ ngọt</li><li>Cân ở đâu, cân của ai</li><li>Trả tiền khi nào</li></ul>
+    <span class="xs muted">Hỏi rõ trước khi chốt. Chưa biết không có nghĩa là dễ tính.</span>
+  </section>
+  <section class="card row">
+    <span class="avatar a" style="background:#5a4a8a">D</span>
+    <span class="grow stack" style="gap:2px"><strong>Bên mua D · nhà máy sấy</strong><span class="small muted">Đã xác minh doanh nghiệp 12/9 · 8 lần mua xong trên app</span></span>
+  </section>
+  <p class="row small muted" style="gap:8px"><svg class="i i20"><use href="#i-khoa"/></svg>Chỉ Bên mua D thấy giá bạn chào.</p>
+  <p class="row small muted" style="gap:8px"><svg class="i i20"><use href="#i-thong-tin"/></svg>Hôm nay còn 4/5 lời chào tới người mua mới. Trả lời khách cũ không giới hạn.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#bao-gia"><img src="assets/ic-tien.svg" alt="" style="background:#fff;border-radius:10px;padding:2px">Chào hàng lô xoài 10 tấn</a>
+    <a class="link-btn" href="#khach" style="align-self:center">Bỏ qua</a>
+  </div>
+</section>
+
+<!-- ============ YÊU CẦU KẾT NỐI ============ -->
+<section class="screen" id="ket-noi" data-title="Yêu cầu kết nối"
+  data-read="Bên mua D muốn nói chuyện với bạn về lô xoài. Nếu đồng ý, hai bên nhắn tin và gọi trong app. Số điện thoại của bạn vẫn ẩn cho tới khi bạn bật. Nhận khách không tốn gì của bạn. Từ chối thì bên mua không bị báo lý do.">
+  <header class="top">
+    <a class="icon-btn" href="#khach" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Khách muốn nói chuyện</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card stack" style="align-items:center;text-align:center;padding:24px 16px">
+    <span class="avatar a" style="width:88px;height:88px;font-size:40px;background:#5a4a8a">D</span>
+    <strong class="num" style="font-size:24px">Bên mua D</strong>
+    <span class="small muted">Nhà máy sấy trái cây · cách 35 km</span>
+    <div class="row" style="gap:8px;flex-wrap:wrap;justify-content:center">
+      <span class="chip ok nho"><svg class="i i14" style="stroke-width:3"><use href="#i-check"/></svg>Doanh nghiệp đã xác minh</span>
+    </div>
+    <div class="stack small" style="align-self:stretch;text-align:left;gap:6px;padding:12px;border-radius:14px;background:var(--suong)">
+      <strong>Bên mua D trả tiền thế nào (có nguồn)</strong>
+      <span>8 đơn đã quyết toán qua app</span>
+      <span>Trả đúng hạn <strong>7/8 đợt</strong>, theo xác nhận của người bán</span>
+      <span>Thường trả sau khi cân <strong>2 ngày</strong></span>
+      <span>Năng lực nhận hàng: đã đối chiếu 12/9</span>
+      <span class="xs muted">Chỉ tính việc người bán đã xác nhận, không tính lời kể một phía. Đây không phải bảo đảm sẽ trả tiền.</span>
+    </div>
+    <p class="tin-nhan" style="text-align:left;border-radius:18px">“Chào chị, bên em cần xoài cát Chu loại 1 cho đợt sấy giữa tháng 10.”</p>
+  </section>
+  <section class="card stack" style="border:none">
+    <strong>Nếu đồng ý:</strong>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Hai bên nhắn tin, gọi trong app</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-khoa"/></svg>Số điện thoại của bạn vẫn ẩn</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Không tốn gì của bạn</span>
+  </section>
+  <div class="bottom-actions">
+    <a class="btn" href="#chat"><svg class="i"><use href="#i-check"/></svg>Đồng ý nói chuyện</a>
+    <a class="btn phu" href="#khach" data-toast="Đã từ chối. Bên mua không bị báo lý do.">Không, cảm ơn</a>
+    <a class="link-btn do" href="#bao-cao" style="align-self:center"><svg class="i i20"><use href="#i-co"/></svg>Báo cáo hoặc chặn</a>
+  </div>
+</section>
+
+<!-- ============ CHAT ============ -->
+<section class="screen" id="chat" data-title="Chat với Bên mua B"
+  data-read="Trò chuyện với Bên mua B. Bên mua B gửi báo giá 6 nghìn 7 trăm một ký, xe tới vườn, trả khi cân. Hôm nay hai bên đã gọi điện 3 phút. Lưu ý: nói chuyện qua điện thoại không làm đổi thỏa thuận. Bên mua B xin hẹn xem vườn thứ Bảy. Muốn trả lời, bấm và giữ nút vàng rồi nói.">
+  <header class="chat-dau">
+    <a class="icon-btn" href="#khach" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <span class="avatar b nho">B</span>
+    <span class="ten"><strong>Bên mua B</strong><span class="xs muted">Vựa trái cây · đã xác minh</span></span>
+    <button class="icon-btn" type="button" aria-label="Gọi thoại" data-toast="Đang gọi Bên mua B qua app…"><img src="assets/ic-goi.svg" alt="" style="width:28px;height:28px"></button>
+    <button class="icon-btn" type="button" aria-label="Gọi video để quay hàng" data-toast="Gọi video Bên mua B để quay hàng. Tháng này còn 52/60 phút."><svg class="i"><use href="#i-video"/></svg></button>
+    <button class="icon-btn nghe" type="button" aria-label="Nghe đọc trò chuyện" style="padding:0;justify-content:center;width:48px"><img src="assets/ic-loa.svg" alt=""></button>
+  </header>
+
+  <div class="danh-sach-chat" id="chat-list" aria-live="polite">
+    <span class="ngay-chat">Hôm qua</span>
+    <div class="bong">“Chào chị Năm, xoài còn không chị? Bên em cần 10 tấn loại 1.”<span class="gio">9:02</span></div>
+    <div class="bong ban"><div class="thoai"><button class="phat" type="button" aria-label="Nghe tin thoại" data-noi="Còn em ơi, khoảng 10 tấn, tuần sau hái."><svg class="i i20"><use href="#i-phat"/></svg></button><span class="song-nho" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="xs b">0:12</span></div><span class="gio">9:05 · đã xem</span></div>
+    <div class="the-he-thong">
+      <span class="row b" style="gap:8px"><img src="assets/ic-tien.svg" alt="" style="width:28px;height:28px">Báo giá từ Bên mua B</span>
+      <span><strong class="num" style="font-size:22px">6.700 đ/kg</strong> · xe tới vườn · trả khi cân</span>
+      <span class="xs muted">Hết hạn 2/10 · chỉ bạn thấy giá này</span>
+      <div class="grid2" style="gap:8px"><a class="pill-btn" href="#bao-gia" style="text-decoration:none;color:inherit">Trả lời</a><a class="pill-btn" href="#so-sanh" style="text-decoration:none;color:inherit">So với khách khác</a></div>
+    </div>
+    <span class="ngay-chat">Hôm nay</span>
+    <div class="the-he-thong xanh">
+      <span class="row b" style="gap:8px"><img src="assets/ic-goi.svg" alt="" style="width:26px;height:26px">Cuộc gọi 3 phút · 8:40</span>
+      <span class="small">Vừa rồi có đổi <strong>giá, lượng hay ngày</strong> không? Nói qua điện thoại không làm đổi thỏa thuận.</span>
+      <div class="grid2" style="gap:8px"><button class="pill-btn" type="button" data-toast="Đã ghi: cuộc gọi không đổi điều kiện">Không đổi</button><a class="pill-btn" href="#so-ban" style="text-decoration:none;color:inherit;border-color:var(--reu)">Có đổi, tạo bản mới</a></div>
+      <span class="xs muted">App không ghi âm, không tự tóm tắt cuộc gọi.</span>
+    </div>
+    <div class="bong">“Chị cho em qua xem vườn thứ Bảy được không?”<span class="gio">8:45</span></div>
+    <div class="the-he-thong">
+      <span class="row b" style="gap:8px"><svg class="i"><use href="#i-lich"/></svg>Xin hẹn xem hàng</span>
+      <span>Thứ Bảy 3/10 · 8 giờ sáng · tại vườn</span>
+      <div class="grid2" style="gap:8px"><a class="pill-btn" href="#hen-xem" style="text-decoration:none;color:inherit;border-color:var(--reu)">Xem và trả lời</a><a class="pill-btn" href="#hen-xem" style="text-decoration:none;color:inherit">Đổi giờ</a></div>
+    </div>
+  </div>
+
+  <div class="go-chat">
+    <button class="nut-giu" type="button" data-giu-noi="#chat-list"><img src="assets/ic-mic.svg" alt=""><span>Bấm giữ để nói</span></button>
+    <div class="row" style="gap:8px">
+      <button class="icon-btn" type="button" aria-label="Gửi ảnh" data-toast="Đang mở máy ảnh…"><svg class="i"><use href="#i-anh"/></svg></button>
+      <div class="o-nhap grow" style="min-height:48px;padding:0 4px 0 14px"><label class="sr-only" for="go-chu">Nhập tin nhắn</label><input id="go-chu" placeholder="Hoặc gõ chữ…" style="font-size:16px"><button class="icon-btn" type="button" aria-label="Gửi" data-toast="Đã gửi" style="width:40px;height:40px;border:none;background:var(--reu);color:#fff"><svg class="i i20"><use href="#i-gui"/></svg></button></div>
+      <a class="icon-btn" href="#bao-cao" aria-label="Báo cáo hoặc chặn"><svg class="i"><use href="#i-dau-cham"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BÁO GIÁ ============ -->
+<section class="screen" id="bao-gia" data-title="Báo giá"
+  data-read="Báo giá. Bên mua B đề nghị 6 nghìn 7 trăm một ký, xe tới vườn, trả khi cân. Bạn có thể đồng ý giá này, hoặc trả giá: nhập giá bạn muốn, chọn nơi giao, lúc trả tiền và hạn của báo giá. Báo giá không giữ hàng, chỉ khi hai bên ký thì hàng mới được giữ.">
+  <header class="top">
+    <a class="icon-btn" href="#chat" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Báo giá</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card stack" style="background:var(--suong)">
+    <span class="label">Bên mua B đề nghị</span>
+    <strong class="num" style="font-size:26px">6.700 đ/kg</strong>
+    <span class="small">Xe tới vườn · trả khi cân xong · hết hạn 2/10</span>
+    <a class="btn nho" href="#phuong-thuc"><svg class="i"><use href="#i-check"/></svg>Đồng ý giá này</a>
+  </section>
+  <h2 class="h2 lon">Hoặc trả giá</h2>
+  <div class="row card" style="padding:10px 12px;border-radius:18px"><span class="thumb nho bg-xoai"><img src="assets/anh/mh/mango.jpg" alt=""></span><span class="grow stack" style="gap:0"><strong>Xoài cát Chu</strong><span class="small muted">10 tấn ước tính</span></span></div>
+  <div class="stack s8">
+    <label for="gia-tra" class="small b">Giá bạn muốn</label>
+    <div class="o-nhap"><input id="gia-tra" class="lon" inputmode="numeric" data-so value="6.900"><span class="tien-to">đ/kg</span><button class="nut-mic" type="button" aria-label="Nói giá" data-toast="Đang nghe giá…"><img src="assets/ic-mic.svg" alt=""></button></div>
+  </div>
+  <div class="stack s8">
+    <span class="small b">Giao ở đâu?</span>
+    <div class="grid2" data-chon="giao-o">
+      <button class="lua" type="button" aria-pressed="true" data-khi="vuon" style="justify-content:center">Tại vườn</button>
+      <button class="lua" type="button" aria-pressed="false" data-khi="cho" style="justify-content:center">Tôi chở tới</button>
+    </div>
+  </div>
+  <div class="stack s8">
+    <span class="small b">Trả tiền khi nào?</span>
+    <div class="grid2" data-chon="tra-khi">
+      <button class="lua" type="button" aria-pressed="true" data-khi="can" style="justify-content:center">Khi cân xong</button>
+      <button class="lua" type="button" aria-pressed="false" data-khi="sau" style="justify-content:center">Sau vài ngày</button>
+    </div>
+  </div>
+  <div class="stack s8">
+    <span class="small b">Báo giá này giữ trong</span>
+    <div class="grid3" data-chon="han">
+      <button class="lua" type="button" aria-pressed="false" data-khi="1" style="justify-content:center">1 ngày</button>
+      <button class="lua" type="button" aria-pressed="true" data-khi="3" style="justify-content:center">3 ngày</button>
+      <button class="lua" type="button" aria-pressed="false" data-khi="7" style="justify-content:center">7 ngày</button>
+    </div>
+  </div>
+  <section class="card row between" style="background:var(--la-nhat);border:none">
+    <span class="small b">Về tay khoảng<br><span class="xs muted" style="font-weight:500">10 tấn × giá, chưa trừ chi phí khác</span></span>
+    <strong class="ve-tay" id="ve-tay-bao-gia">69 triệu</strong>
+  </section>
+  <details class="card stack" style="border:none">
+    <summary class="small b">Nơi khác đang trả bạn bao nhiêu? (không bắt buộc)</summary>
+    <div class="o-nhap" style="margin-top:8px"><label class="sr-only" for="gia-noi-khac">Giá nơi khác</label><input id="gia-noi-khac" inputmode="numeric" placeholder="Ví dụ: 6.300 đ/kg, trả sau 7 ngày" style="font-size:17px"></div>
+    <div class="phan-doan" data-chon="co-giay" role="group" aria-label="Có giấy không" style="margin-top:8px"><button type="button" aria-pressed="true" data-khi="ke">Chỉ là lời hỏi</button><button type="button" aria-pressed="false" data-khi="giay">Có giấy, tin nhắn</button></div>
+    <span class="xs muted">Không hiện cho bên mua, không cần nói tên nơi đó. Chỉ để AgiViet xem bạn có được lợi hơn không.</span>
+  </details>
+  <p class="row xs muted top-align" style="gap:8px"><svg class="i i20"><use href="#i-thong-tin"/></svg>Báo giá không giữ hàng. Muốn giữ hàng cho khách thì hai bên phải cùng đồng ý lượng và hạn giữ.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#chat" data-toast="Đã gửi báo giá cho Bên mua B"><svg class="i"><use href="#i-gui"/></svg>Gửi báo giá</a>
+  </div>
+</section>
+
+<!-- ============ HẸN XEM HÀNG ============ -->
+<section class="screen" id="hen-xem" data-title="Hẹn xem hàng"
+  data-read="Bên mua B xin tới xem vườn thứ Bảy ngày 3 tháng 10, 8 giờ sáng, 2 người. Bạn đồng ý, hoặc chọn ngày giờ khác. Không cần đặt cọc để khách xem hàng. Xem hàng thấy đạt chưa phải là nhận hàng: lúc giao vẫn cân và kiểm theo thỏa thuận.">
+  <header class="top">
+    <a class="icon-btn" href="#chat" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Hẹn xem hàng</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card stack">
+    <div class="row"><span class="avatar b">B</span><span class="grow stack" style="gap:0"><strong style="font-size:17px">Bên mua B xin tới xem vườn</strong><span class="small muted">2 người</span></span></div>
+    <ol class="moc-list">
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>Bên mua đề nghị</strong><span class="small muted">Thứ Bảy 3/10 · 8 giờ sáng</span></div></li>
+      <li class="cur"><span class="cham">2</span><div class="nd"><strong>Bạn đồng ý hoặc đổi giờ</strong></div></li>
+      <li><span class="cham">3</span><div class="nd"><strong>Gặp nhau tại vườn</strong></div></li>
+    </ol>
+  </section>
+  <div class="stack s8">
+    <span class="small b">Ngày</span>
+    <div class="grid3" data-chon="ngay-xem">
+      <button class="lua" type="button" aria-pressed="false" data-khi="2" style="justify-content:center;flex-direction:column;gap:0;padding:6px">T6<strong>2/10</strong></button>
+      <button class="lua" type="button" aria-pressed="true" data-khi="3" style="justify-content:center;flex-direction:column;gap:0;padding:6px">T7<strong>3/10</strong></button>
+      <button class="lua" type="button" aria-pressed="false" data-khi="4" style="justify-content:center;flex-direction:column;gap:0;padding:6px">CN<strong>4/10</strong></button>
+    </div>
+  </div>
+  <div class="stack s8">
+    <span class="small b">Buổi</span>
+    <div class="grid2" data-chon="buoi-xem">
+      <button class="lua" type="button" aria-pressed="true" data-khi="s" style="justify-content:center">Sáng · 8 giờ</button>
+      <button class="lua" type="button" aria-pressed="false" data-khi="c" style="justify-content:center">Chiều · 2 giờ</button>
+    </div>
+  </div>
+  <button class="cong-tac" type="button" data-bat aria-pressed="true"><svg class="i i28 xanh"><use href="#i-ghim"/></svg><span class="grow stack" style="gap:0"><strong>Gửi vị trí vườn cho khách</strong><span class="small muted">Vườn nhà bạn · Mỹ Xương</span></span><span class="ray"></span></button>
+  <section class="card stack s8" style="border:none;background:var(--la-nhat)">
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg><span><strong>Không cần cọc</strong> để khách xem hàng.</span></span>
+    <span class="row small top-align" style="gap:8px"><svg class="i i20 xanh"><use href="#i-dong-ho"/></svg><span>Tối trước giờ hẹn, app nhắc bạn xác nhận hàng vẫn như tin.</span></span>
+    <span class="row small top-align" style="gap:8px"><svg class="i i20 xanh"><use href="#i-giay"/></svg><span>Xem xong, khách ghi: đạt sơ bộ, cần bổ sung, hoặc không tiếp tục, kèm lý do.</span></span>
+    <span class="row small top-align" style="gap:8px"><svg class="i i20 xanh"><use href="#i-thong-tin"/></svg><span>Xem thấy đạt <strong>chưa phải là nhận hàng</strong>. Lúc giao vẫn cân và kiểm theo thỏa thuận.</span></span>
+  </section>
+  <div class="bottom-actions">
+    <a class="btn" href="#chat" data-toast="Đã đồng ý lịch xem hàng. App sẽ nhắc hai bên trước 1 ngày."><svg class="i"><use href="#i-check"/></svg>Đồng ý lịch này</a>
+  </div>
+</section>
+
+<!-- ============ BÁO CÁO / CHẶN ============ -->
+<section class="screen" id="bao-cao" data-title="Báo cáo"
+  data-read="Báo cáo. Chọn chuyện gì đã xảy ra: đòi tiền trước, nghi lừa đảo; đổi giá sau khi đã chốt; nói lời xúc phạm; nhắn quá nhiều. Bấm giữ nút vàng để kể thêm. Có thể chặn người này. Nhân viên sẽ xem trong 24 giờ. App không tự kết luận ai gian lận.">
+  <header class="top">
+    <a class="icon-btn" href="#chat" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Báo cáo</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <span class="small b">Chuyện gì xảy ra?</span>
+  <div class="stack" data-chon="ly-do-bc" style="gap:8px">
+    <button class="the-chon" type="button" aria-pressed="true" data-khi="lua" style="min-height:68px"><span class="hinh bg-tom" style="width:48px;height:48px"><img src="assets/ic-canh-bao.svg" alt=""></span><span class="grow"><strong>Đòi tiền trước, nghi lừa đảo</strong></span><span class="radio"></span></button>
+    <button class="the-chon" type="button" aria-pressed="false" data-khi="gia" style="min-height:68px"><span class="hinh bg-cho" style="width:48px;height:48px"><img src="assets/ic-tien.svg" alt=""></span><span class="grow"><strong>Đổi giá sau khi đã chốt</strong></span><span class="radio"></span></button>
+    <button class="the-chon" type="button" aria-pressed="false" data-khi="xuc" style="min-height:68px"><span class="hinh bg-tl" style="width:48px;height:48px"><svg class="i i28"><use href="#i-chan"/></svg></span><span class="grow"><strong>Nói lời xúc phạm</strong></span><span class="radio"></span></button>
+    <button class="the-chon" type="button" aria-pressed="false" data-khi="spam" style="min-height:68px"><span class="hinh bg-la" style="width:48px;height:48px"><img src="assets/ic-khach.svg" alt=""></span><span class="grow"><strong>Nhắn quá nhiều, làm phiền</strong></span><span class="radio"></span></button>
+  </div>
+  <button class="nut-giu" type="button" data-giu-noi=""><img src="assets/ic-mic.svg" alt=""><span>Bấm giữ để kể thêm</span></button>
+  <p class="xs muted">Tin nhắn trong app với người này được gửi kèm để nhân viên xem.</p>
+  <button class="cong-tac" type="button" data-bat aria-pressed="true"><svg class="i i28 do"><use href="#i-chan"/></svg><span class="grow stack" style="gap:0"><strong>Chặn người này</strong><span class="small muted">Họ không nhắn, không gọi cho bạn được nữa</span></span><span class="ray"></span></button>
+  <p class="card small" style="border:none">Nhân viên xem trong <strong>24 giờ</strong> và báo lại bạn. App không tự kết luận ai gian lận. Đơn và tiền đang có vẫn giữ nguyên.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#khach" style="background:var(--gach)" data-toast="Đã gửi báo cáo. Nhân viên sẽ liên hệ bạn."><svg class="i"><use href="#i-co"/></svg>Gửi báo cáo</a>
+  </div>
+</section>
+
+</div>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script>
+(() => {
+  const o = document.getElementById('gia-tra');
+  const ra = document.getElementById('ve-tay-bao-gia');
+  if (!o || !ra) return;
+  const tinh = () => {
+    const gia = Number(o.value.replace(/\D/g, '')) || 0;
+    const trieu = gia * 10000 / 1e6;
+    ra.textContent = gia ? `${trieu.toLocaleString('vi-VN', { maximumFractionDigits: 1 })} triệu` : '—';
+  };
+  o.addEventListener('input', tinh);
+  tinh();
+})();
+</script>
+</body>
+</html>

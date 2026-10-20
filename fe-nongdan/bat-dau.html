@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#235c45">
+<title>Bắt đầu · AgiViet</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+
+<!-- ============ CHÀO MỪNG ============ -->
+<section class="screen xanh-dam" id="chao-mung" data-title="Chào mừng"
+  data-read="Chào bạn. Đây là AgiViet, app giúp bà con bán nông sản và thủy sản. Bạn không cần đọc nhiều chữ. Màn nào cũng có nút Nghe ở góc trên bên phải, bấm vào là app đọc cho bạn nghe. Bấm Bắt đầu.">
+  <div class="row" style="align-self:stretch;justify-content:space-between">
+    <span class="row" style="gap:10px"><span class="logo" style="width:44px;height:44px;border-radius:14px;background:#f7f8f2;display:grid;place-items:center"><img src="assets/mark.svg" alt="" style="width:32px;height:32px"></span><strong class="num" style="font-size:24px">Agi<span style="color:var(--nang)">Viet</span></strong></span>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </div>
+  <div class="anh-chao" aria-hidden="true"><img src="assets/anh/mh/mango.jpg" alt=""><img src="assets/anh/mh/shrimp.jpg" alt=""><img src="assets/anh/mh/dragon-fruit.jpg" alt=""></div>
+  <h1 class="da-dang" style="font-size:34px;text-align:center;line-height:1.15">Bán nông sản<br>dễ hơn</h1>
+  <p style="text-align:center;font-size:17px;color:var(--la-nhat)">Nhìn hình, bấm nút, nói bằng giọng.<br>Không cần gõ nhiều chữ.</p>
+  <div class="card row" style="align-self:stretch;border:none;color:var(--muc)">
+    <img src="assets/ic-loa.svg" alt="" style="width:44px;height:44px">
+    <span style="font-size:16px">Thấy nút <strong>Nghe</strong> là bấm, app sẽ đọc cho bạn.</span>
+  </div>
+  <div class="bottom-actions" style="align-self:stretch">
+    <a class="btn nang" href="#dang-nhap">Bắt đầu<svg class="i"><use href="#i-tiep"/></svg></a>
+    <a class="link-btn" href="#dang-nhap" style="color:#fff;align-self:center">Tôi đã có tài khoản</a>
+  </div>
+</section>
+
+<!-- ============ SỐ ĐIỆN THOẠI ============ -->
+<section class="screen" id="dang-nhap"
+  data-read="Nhập số điện thoại của bạn. App sẽ gửi một mã gồm 6 số để kiểm tra đúng là máy của bạn. Nếu không đọc được tin nhắn, chọn Gọi đọc mã, app sẽ gọi điện và đọc mã cho bạn nghe.">
+  <header class="top">
+    <a class="icon-btn" href="#chao-mung" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Số điện thoại</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="1" data-labels="Số ĐT|Vai trò|Mặt hàng|Hồ sơ|Xác minh" aria-label="Các bước"></ol>
+  <div class="loi-mam"><img src="assets/linh-vat-chao.svg" alt=""><p>Bạn hay nghe máy bằng số nào? Nhập số đó nhé.</p></div>
+  <div class="stack s8">
+    <label for="sdt" class="small b">Số điện thoại</label>
+    <div class="o-nhap">
+      <span class="tien-to">+84</span>
+      <input id="sdt" class="lon" inputmode="tel" autocomplete="tel" value="0912 345 123">
+      <button class="nut-mic" type="button" aria-label="Nói số điện thoại" data-toast="Bạn đọc từng số, ví dụ: không, chín, một, hai…"><img src="assets/ic-mic.svg" alt=""></button>
+    </div>
+  </div>
+  <div class="stack s8">
+    <span class="small b">Nhận mã bằng cách nào?</span>
+    <div class="grid2" data-chon="cach-ma">
+      <button class="the-chon" type="button" aria-pressed="true" data-khi="tin" style="flex-direction:column;justify-content:center;text-align:center;min-height:128px"><svg class="i" style="width:44px;height:44px;stroke-width:2"><use href="#i-dien-thoai"/></svg><strong>Tin nhắn</strong></button>
+      <button class="the-chon" type="button" aria-pressed="false" data-khi="goi" style="flex-direction:column;justify-content:center;text-align:center;min-height:128px"><img src="assets/ic-goi.svg" alt="" style="width:44px;height:44px"><strong>Gọi đọc mã</strong></button>
+    </div>
+  </div>
+  <p class="row small muted" style="gap:8px"><svg class="i i20"><use href="#i-khoa"/></svg>Khách chỉ thấy số của bạn khi bạn đồng ý.</p>
+  <a class="link-btn" href="#tro-giup-truy-cap" style="align-self:flex-start;padding:0">Không đăng nhập được? Trợ giúp</a>
+  <div class="bottom-actions">
+    <a class="btn" href="#otp">Gửi mã<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ MÃ OTP ============ -->
+<section class="screen" id="otp" data-title="Nhập mã"
+  data-read="Nhập mã 6 số vừa gửi tới số 0912 345 123. Lưu ý: ai hỏi xin mã này là lừa đảo, kể cả người xưng là nhân viên AgiViet. Không đọc mã cho ai.">
+  <header class="top">
+    <a class="icon-btn" href="#dang-nhap" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Nhập mã</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="1" data-labels="Số ĐT|Vai trò|Mặt hàng|Hồ sơ|Xác minh" aria-label="Các bước"></ol>
+  <p style="font-size:17px">Mã 6 số đã gửi tới <strong>0912 345 123</strong>.</p>
+  <div class="otp" data-xong="#vai-tro" role="group" aria-label="Mã 6 số">
+    <input inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Số thứ 1">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 2">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 3">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 4">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 5">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 6">
+  </div>
+  <button class="link-btn" type="button" data-dem-nguoc="45" data-nhan="Gửi lại mã" style="align-self:center">Gửi lại mã</button>
+  <a class="link-btn" href="#tro-giup-truy-cap" style="align-self:center">Không nhận được mã? Trợ giúp</a>
+  <button class="btn phu" type="button" data-toast="App đang gọi 0912 345 123 để đọc mã…"><img src="assets/ic-goi.svg" alt="" style="width:28px;height:28px">Gọi đọc mã cho tôi</button>
+  <div class="canh-bao-lo">
+    <img src="assets/ic-canh-bao.svg" alt="" style="width:36px;height:36px">
+    <span>Ai hỏi xin mã này là <strong>lừa đảo</strong>, kể cả người xưng là nhân viên app.</span>
+  </div>
+  <div class="bottom-actions">
+    <a class="btn" href="#vai-tro">Tiếp tục<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ VAI TRÒ ============ -->
+<section class="screen" id="vai-tro" data-title="Vai trò"
+  data-read="Bạn bán hàng thế nào? Chọn một: tôi tự trồng, tự nuôi; hoặc hợp tác xã, tổ hợp tác. Con cháu cầm máy giúp thì vẫn chọn tự trồng, tự nuôi. Thương lái, vựa, nhà máy là bên mua, dùng app Thu mua. Sau này đổi được.">
+  <header class="top">
+    <a class="icon-btn" href="#otp" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Bạn bán thế nào?</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="2" data-labels="Số ĐT|Vai trò|Mặt hàng|Hồ sơ|Xác minh" aria-label="Các bước"></ol>
+  <div class="stack" data-chon="vai-tro" style="gap:10px">
+    <button class="the-chon" type="button" aria-pressed="true" data-khi="tu">
+      <span class="hinh bg-la"><img src="assets/ic-hang.svg" alt=""></span>
+      <span class="grow"><strong>Tôi tự trồng, tự nuôi</strong><span class="small muted">Hộ gia đình, trang trại, chủ ao, chủ tàu</span></span>
+      <span class="radio"></span>
+    </button>
+    <button class="the-chon" type="button" aria-pressed="false" data-khi="htx">
+      <span class="hinh bg-tl"><svg class="i" style="width:36px;height:36px;stroke-width:2"><use href="#i-nguoi-nhom"/></svg></span>
+      <span class="grow"><strong>Hợp tác xã, tổ hợp tác</strong><span class="small muted">Bán hàng do các xã viên làm ra</span></span>
+      <span class="radio"></span>
+    </button>
+  </div>
+  <p class="card small" data-thuoc="vai-tro" data-khi="tu" style="border:none">Bạn là chủ hàng. Tiền bán hàng trả thẳng cho bạn.</p>
+  <p class="card small" data-thuoc="vai-tro" data-khi="htx" style="border:none" hidden>Mỗi lô cần giấy của <strong>từng hộ</strong> góp hàng. Danh sách xã viên hay con dấu HTX chưa đủ.</p>
+  <section class="card stack small" style="gap:8px">
+    <span><strong>Con cháu cầm máy giúp?</strong> Vẫn chọn “Tự trồng, tự nuôi”, rồi thêm người giúp trong mục Tôi. Người giúp nhập được, không ký và không nhận tiền thay.</span>
+    <span><strong>Bạn là thương lái, vựa, nhà máy?</strong> Bạn là bên mua. <a href="../mua/">Dùng app Thu mua</a>.</span>
+  </section>
+  <p class="xs muted">Sau này đổi được trong mục Tôi.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#mat-hang">Tiếp tục<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ MẶT HÀNG ============ -->
+<section class="screen" id="mat-hang" data-title="Mặt hàng"
+  data-read="Bạn có hàng gì để bán? Bấm vào ô Trồng trọt, Chăn nuôi, Nuôi trồng hoặc Đánh bắt, rồi bấm vào hình mặt hàng. Chọn được nhiều mặt hàng. Hoặc gõ tên vào ô tìm, hay bấm micro để nói. Không chắc thì bấm Bỏ qua, sau này thêm được.">
+  <header class="top">
+    <a class="icon-btn" href="#vai-tro" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Mặt hàng</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="3" data-labels="Số ĐT|Vai trò|Mặt hàng|Hồ sơ|Xác minh" aria-label="Các bước"></ol>
+  <div class="stack s8">
+    <span class="cau-so">CÂU HỎI</span>
+    <h2 class="num" style="font-size:32px;line-height:1.1;max-width:none">Bạn có hàng gì để bán?</h2>
+  </div>
+  <details class="card" style="border:none;padding:0;background:none">
+    <summary class="vi-sao"><svg class="i"><use href="#i-hoi"/></svg>Vì sao hỏi câu này?</summary>
+    <p class="small" style="padding:10px 4px 0">Để app đưa đúng người đang cần mua loại hàng của bạn tới trước, và điền sẵn khi bạn đăng hàng. Không ai thấy danh sách này nếu bạn chưa đăng tin.</p>
+  </details>
+  <div data-chon-hang="ho-so" data-che-do="nhieu" data-mac-dinh="mango,dragon-fruit,shrimp"></div>
+  <p class="xs muted">✓ Chọn được nhiều mặt hàng. Hình chỉ để chọn cho nhanh, <a href="nguon-anh.html">nguồn ảnh</a>.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#ho-so">Tiếp tục<svg class="i"><use href="#i-tiep"/></svg></a>
+    <a class="link-btn" href="#ho-so" style="align-self:center">Bỏ qua, để sau</a>
+  </div>
+</section>
+
+<!-- ============ HỒ SƠ ============ -->
+<section class="screen" id="ho-so" data-title="Hồ sơ"
+  data-read="Hồ sơ. Chỉ khai một lần, lần sau app điền sẵn. Nói hoặc nhập tên của bạn, chọn nơi có hàng, kiểm tra các mặt hàng bạn đã chọn.">
+  <header class="top">
+    <a class="icon-btn" href="#mat-hang" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Hồ sơ</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="4" data-labels="Số ĐT|Vai trò|Mặt hàng|Hồ sơ|Xác minh" aria-label="Các bước"></ol>
+  <div class="stack s8">
+    <label for="ten" class="small b">Tên bạn hoặc tên cơ sở</label>
+    <div class="o-nhap"><input id="ten" autocomplete="name" value="Nguyễn Thị Năm"><button class="nut-mic" type="button" aria-label="Nói tên" data-toast="Đang nghe tên của bạn…"><img src="assets/ic-mic.svg" alt=""></button></div>
+  </div>
+  <div class="stack s8">
+    <span class="small b">Nơi có hàng</span>
+    <button class="btn phu nho" type="button" data-toast="Đã lấy vị trí: xã Mỹ Xương, Đồng Tháp" style="align-self:flex-start"><svg class="i"><use href="#i-ghim"/></svg>Lấy vị trí đang đứng</button>
+    <div class="grid2">
+      <div class="o-nhap" style="padding-right:10px"><label class="sr-only" for="tinh">Tỉnh</label><select id="tinh"><option>Đồng Tháp</option><option>Vĩnh Long</option><option>Cần Thơ</option><option>An Giang</option></select></div>
+      <div class="o-nhap" style="padding-right:10px"><label class="sr-only" for="xa">Xã</label><select id="xa"><option>Mỹ Xương</option><option>Mỹ Thọ</option><option>Cao Lãnh</option></select></div>
+    </div>
+  </div>
+  <div class="stack s8">
+    <div class="row" style="justify-content:space-between"><span class="small b">Mặt hàng bạn bán</span><a class="small b" href="#mat-hang">Sửa</a></div>
+    <div class="hang-tom-tat" data-hang-tom-tat="ho-so"></div>
+  </div>
+  <div class="stack s8">
+    <label for="dai-dien" class="small b">Người thay mặt ký (nếu có)</label>
+    <div class="o-nhap"><input id="dai-dien" placeholder="Không có thì bỏ trống" style="font-size:17px"></div>
+  </div>
+  <p class="xs muted">Chỉ khai một lần. Lần sau app điền sẵn.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#xac-minh">Tiếp tục<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ XÁC MINH ============ -->
+<section class="screen" id="xac-minh" data-title="Xác minh"
+  data-read="Xác minh là kiểm tra bạn là ai, không phải kiểm tra chất lượng hàng. Số điện thoại đã xác minh. Căn cước chỉ cần khi bạn ký thỏa thuận có hỗ trợ, làm sau cũng được.">
+  <header class="top">
+    <a class="icon-btn" href="#ho-so" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Xác minh</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <ol class="steps" data-step="5" data-labels="Số ĐT|Vai trò|Mặt hàng|Hồ sơ|Xác minh" aria-label="Các bước"></ol>
+  <div class="loi-mam"><img src="assets/linh-vat-chao.svg" alt=""><p>Xác minh là để khách biết bạn là ai. Không phải kiểm hàng.</p></div>
+  <div class="menu">
+    <div class="row" style="padding:12px 16px;border-bottom:1px solid #eef1ea">
+      <span class="ic-menu" style="background:var(--la-non)"><svg class="i xanh" style="stroke-width:3"><use href="#i-check"/></svg></span>
+      <span class="grow stack" style="gap:0"><strong>Số điện thoại</strong><span class="small muted">Đã xác minh hôm nay</span></span>
+    </div>
+    <div class="row" style="padding:12px 16px;border-bottom:1px solid #eef1ea">
+      <span class="ic-menu bg-cho"><svg class="i"><use href="#i-scan"/></svg></span>
+      <span class="grow stack" style="gap:0"><strong>Căn cước</strong><span class="small muted">Chỉ cần khi ký thỏa thuận có hỗ trợ</span></span>
+      <button class="btn nho nang" type="button" data-toast="Đang mở máy ảnh để chụp căn cước…">Chụp</button>
+    </div>
+    <div class="row" style="padding:12px 16px">
+      <span class="ic-menu bg-nen"><img src="assets/ic-ky.svg" alt=""></span>
+      <span class="grow stack" style="gap:0"><strong>Giấy ủy quyền</strong><span class="small muted">Chỉ cần với hợp tác xã: giấy của từng hộ cho mỗi lô</span></span>
+    </div>
+  </div>
+  <p class="row small muted top-align" style="gap:8px"><svg class="i i20"><use href="#i-khoa"/></svg>Ảnh căn cước chỉ dùng để xác minh, không hiện cho khách.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#hang">Vào app<svg class="i"><use href="#i-tiep"/></svg></a>
+    <a class="link-btn" href="#hang" style="align-self:center">Để sau</a>
+  </div>
+</section>
+
+
+<!-- ============ TRỢ GIÚP TRUY CẬP ============ -->
+<section class="screen" id="tro-giup-truy-cap" data-title="Trợ giúp đăng nhập"
+  data-read="Trợ giúp đăng nhập. Không nhận được mã: kiểm tra số điện thoại, chờ 45 giây rồi gửi lại, hoặc chọn gọi đọc mã. Mất điện thoại hoặc đổi số: gọi số trực hoặc gửi email chính thức, nhân viên sẽ xác minh lại. Nhân viên không bao giờ hỏi mã của bạn.">
+  <header class="top">
+    <a class="icon-btn" href="#dang-nhap" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Trợ giúp đăng nhập</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <details class="hoi-dap" open><summary>Không nhận được mã</summary><p>Xem lại số điện thoại. Chờ 45 giây rồi bấm Gửi lại mã, hoặc chọn Gọi đọc mã.</p></details>
+  <details class="hoi-dap"><summary>Mất điện thoại, đổi số</summary><p>Gọi số trực hoặc gửi email bên dưới. Nhân viên xác minh lại chính bạn rồi mới đổi. Không đổi chủ tài khoản chỉ qua tin nhắn.</p></details>
+  <details class="hoi-dap"><summary>Nghi có người vào tài khoản</summary><p>Báo ngay. App tạm khóa ký và đổi tài khoản nhận tiền, bạn vẫn xem được hồ sơ.</p></details>
+  <section class="card stack">
+    <span class="b">Kênh hỗ trợ</span>
+    <span class="small">Tổng đài và email hỗ trợ công bố khi chạy thí điểm</span>
+    <span class="xs muted">Mất mạng vẫn xem được thông tin này.</span>
+  </section>
+  <div class="canh-bao-lo"><img src="assets/ic-canh-bao.svg" alt="" style="width:32px;height:32px"><span>Nhân viên <strong>không bao giờ</strong> hỏi mã 6 số của bạn.</span></div>
+</section>
+</div>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script src="js/danh-muc.js"></script>
+<script src="js/chon-hang.js"></script>
+
+</body>
+</html>

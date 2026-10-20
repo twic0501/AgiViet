@@ -1,5 +1,5 @@
 // Đóng gói giao diện cho Firebase Hosting (bản tĩnh, chưa có backend):
-//   hosting-build/ban/ ← ~/fe-nongdan, hosting-build/mua/ ← ~/fe-thumua, hosting-build/ ← site/ (trang giới thiệu; không có thì trang chọn app)
+//   hosting-build/ban/ ← fe-nongdan/, hosting-build/mua/ ← fe-thumua/ (trong kho), hosting-build/ ← site/ (trang giới thiệu; không có thì trang chọn app)
 // Bỏ file .md (ghi chú nội bộ) và file ẩn; chèn <meta name="agiviet-api" content="off"> để app không gọi API.
 // Chạy: node scripts/build-hosting.js   (FE_BAN, FE_MUA để đổi thư mục nguồn; API=on để bỏ cờ tắt API)
 import fs from 'node:fs';
@@ -9,7 +9,9 @@ import { fileURLToPath } from 'node:url';
 
 const goc = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dich = path.join(goc, 'hosting-build');
-const NGUON = [['ban', process.env.FE_BAN || path.join(os.homedir(), 'fe-nongdan')], ['mua', process.env.FE_MUA || path.join(os.homedir(), 'fe-thumua')]];
+// Mặc định lấy giao diện trong kho (fe-nongdan/, fe-thumua/); không có thì lấy thư mục cũ ở thư mục nhà
+const nguonMacDinh = ten => (fs.existsSync(path.join(goc, ten, 'index.html')) ? path.join(goc, ten) : path.join(os.homedir(), ten));
+const NGUON = [['ban', process.env.FE_BAN || nguonMacDinh('fe-nongdan')], ['mua', process.env.FE_MUA || nguonMacDinh('fe-thumua')]];
 const tatApi = process.env.API !== 'on';
 
 fs.rmSync(dich, { recursive: true, force: true });

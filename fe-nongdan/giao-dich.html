@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#235c45">
+<title>Thỏa thuận · AgiViet</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+
+<!-- ============ 08 · SO TIỀN THỰC NHẬN ============ -->
+<section class="screen" id="so-sanh"
+  data-read="So hai khách mua xoài cát Chu loại 1, 10 tấn ước tính. Bên A trả 7 nghìn một ký, tiền hàng 70 triệu, bạn tự trả xe chở 5 triệu, phí bốc xếp ở nhà máy chưa rõ, về tay khoảng 65 triệu, trả sau 7 ngày. Bên B trả 6 nghìn 7 trăm, tiền hàng 67 triệu, không mất tiền xe, về tay khoảng 67 triệu, trả khi cân xong. Bên B về tay nhiều hơn khoảng 2 triệu.">
+  <header class="top">
+    <a class="icon-btn" href="#khach" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>So sánh 2 khách</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+
+  <div class="card row" style="padding:10px 12px;border-radius:18px;gap:10px">
+    <img src="assets/anh/mh/mango.jpg" alt="" style="width:40px;height:40px">
+    <span style="font-size:15px"><strong>Xoài cát Chu loại 1</strong><br>10 tấn ước tính · cùng tuần hái</span>
+  </div>
+
+  <div class="grid2">
+    <section class="card cot-so">
+      <div class="row" style="gap:8px"><span class="avatar a nho">A</span><strong style="font-size:15px">Nhà máy</strong></div>
+      <div class="stack" style="gap:0"><span class="xs muted">Giá</span><strong class="num" style="font-size:22px;line-height:1.1">7.000 đ/kg</strong></div>
+      <div class="stack" style="gap:0"><span class="xs muted">Tiền hàng</span><strong style="font-size:17px">70 triệu</strong></div>
+      <div class="o-tien tru"><span>Bạn tự trả xe chở</span><strong>− 5 triệu</strong></div>
+      <div class="o-tien chua-ro"><span>Phí bốc xếp ở nhà máy</span><strong>Chưa rõ</strong></div>
+      <div class="chia"></div>
+      <div class="stack" style="gap:0"><span class="xs muted b">Về tay khoảng</span><strong class="ve-tay">65 triệu</strong></div>
+      <span class="row small b" style="gap:6px"><svg class="i i20"><use href="#i-dong-ho"/></svg>Sau 7 ngày</span>
+    </section>
+    <section class="card cot-so">
+      <div class="row" style="gap:8px"><span class="avatar b nho">B</span><strong style="font-size:15px">Vựa trái cây</strong></div>
+      <div class="stack" style="gap:0"><span class="xs muted">Giá</span><strong class="num" style="font-size:22px;line-height:1.1">6.700 đ/kg</strong></div>
+      <div class="stack" style="gap:0"><span class="xs muted">Tiền hàng</span><strong style="font-size:17px">67 triệu</strong></div>
+      <div class="o-tien khong"><span>Bên mua cho xe tới vườn</span><strong>0 đồng</strong></div>
+      <div class="o-tien khong"><span>Bốc xếp</span><strong>Khách lo</strong></div>
+      <div class="chia"></div>
+      <div class="stack" style="gap:0"><span class="xs muted b">Về tay khoảng</span><strong class="ve-tay">67 triệu</strong></div>
+      <span class="row small b" style="gap:6px"><svg class="i i20"><use href="#i-check"/></svg>Khi cân xong</span>
+    </section>
+  </div>
+
+  <section class="card stack">
+    <h2 class="h2">So tiền về tay</h2>
+    <div class="stack s8" style="gap:6px">
+      <span class="small b">A · Nhà máy</span>
+      <div class="thanh"><span class="dac" style="width:74%;border-radius:8px 0 0 8px"></span><span class="hoi">?</span><strong style="margin-left:4px">65</strong></div>
+    </div>
+    <div class="stack s8" style="gap:6px">
+      <span class="small b">B · Vựa trái cây</span>
+      <div class="thanh"><span class="dac" style="width:76.5%"></span><strong style="margin-left:4px">67</strong></div>
+    </div>
+    <p class="bg-nen" style="padding:12px;border-radius:16px;font-weight:600">B về tay nhiều hơn khoảng <strong>2 triệu</strong> và trả ngay khi cân.</p>
+    <p class="xs muted">Số dự kiến theo 10 tấn ước tính, đơn vị triệu đồng. Cân thật xong số sẽ khác. Chỉ so khi cùng loại hàng và cùng lịch.</p>
+  </section>
+
+  <div class="bottom-actions">
+    <button class="btn phu" type="button" data-toast="Đã gửi câu hỏi cho Bên mua A"><img src="assets/ic-khach.svg" alt="" style="width:28px;height:28px">Hỏi A phí bốc xếp</button>
+    <a class="btn" href="#phuong-thuc"><img src="assets/ic-ky.svg" alt="" style="background:#fff;border-radius:10px;padding:2px">Chọn B, làm thỏa thuận</a>
+  </div>
+</section>
+
+<!-- ============ CHỌN CÁCH GIAO DỊCH ============ -->
+<section class="screen" id="phuong-thuc" data-title="Chọn cách giao dịch"
+  data-read="Chọn cách giao dịch với Bên mua B. Hai bên cùng chọn; một bên không đồng ý thì chưa kích hoạt hỗ trợ, vẫn tự giao dịch được. Tự giao dịch không mất phí, vẫn có đơn trên app, ghi cân và phản đối khoản trừ. Giao dịch có hỗ trợ: giá theo gói của bên mua, ở đây 0 phẩy 8 phần trăm, đơn này khoảng 536 nghìn đồng. Mặc định bên mua trả; bạn có thể chia đôi hoặc tự trả hết, và phải tự bấm đồng ý phần của mình. Muốn bật hỗ trợ phải đủ phạm vi và phương án khi không thống nhất.">
+  <header class="top">
+    <a class="icon-btn" href="#so-sanh" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Chọn cách giao dịch</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="loi-mam"><img src="assets/linh-vat-chao.svg" alt=""><p>Hai bên cùng chọn. Không đồng ý hỗ trợ thì vẫn tự giao dịch được.</p></div>
+  <div class="stack" data-chon="cach" style="gap:10px">
+    <button class="the-chon" type="button" aria-pressed="false" data-khi="tu">
+      <span class="hinh bg-nen"><svg class="i" style="width:34px;height:34px;stroke-width:2"><use href="#i-nguoi-nhom"/></svg></span>
+      <span class="grow"><strong>Tự giao dịch</strong><span class="small muted">Đơn, xác nhận, ghi cân, phản đối khoản trừ</span><span class="chip ok nho" style="margin-top:4px">Không phí</span></span>
+      <span class="radio"></span>
+    </button>
+    <button class="the-chon" type="button" aria-pressed="true" data-khi="ho-tro">
+      <span class="hinh bg-la"><svg class="i xanh" style="width:36px;height:36px;stroke-width:2"><use href="#i-khien"/></svg></span>
+      <span class="grow"><strong>Giao dịch có hỗ trợ</strong><span class="small muted">Thêm người trực, điều phối, ký qua đối tác</span></span>
+      <span class="radio"></span>
+    </button>
+  </div>
+
+  <section class="card stack" data-thuoc="cach" data-khi="ho-tro">
+    <div class="row between"><span class="b">Giá theo gói bên mua</span><span class="b">Miễn phí · 0,8%</span></div>
+    <div class="stack s8">
+      <span class="b">Ai trả phí?</span>
+      <div class="stack" data-chon="ai-tra" style="gap:8px">
+        <button class="lua" type="button" aria-pressed="true" data-khi="mua" style="justify-content:center">Bên mua B trả</button>
+        <div class="grid2" style="gap:8px">
+          <button class="lua" type="button" aria-pressed="false" data-khi="chia" style="justify-content:center">Chia đôi</button>
+          <button class="lua" type="button" aria-pressed="false" data-khi="toi" style="justify-content:center">Tôi trả hết</button>
+        </div>
+      </div>
+    </div>
+    <div class="row between" style="align-items:flex-end"><span class="b">Phần bạn trả, tối đa<br><span class="xs muted" style="font-weight:500">đã gồm thuế, chưa gồm ký qua đối tác</span></span>
+      <strong class="num" style="font-size:26px" data-thuoc="ai-tra" data-khi="mua">0 đ</strong>
+      <strong class="num" style="font-size:26px" data-thuoc="ai-tra" data-khi="chia" hidden>268.000 đ</strong>
+      <strong class="num" style="font-size:26px" data-thuoc="ai-tra" data-khi="toi" hidden>536.000 đ</strong></div>
+    <span class="small" data-thuoc="ai-tra" data-khi="mua">Không trừ vào tiền hàng của bạn.</span>
+    <span class="small" data-thuoc="ai-tra" data-khi="chia" hidden>Tổng phí vẫn là 536.000 đ. Bạn phải tự bấm đồng ý phần của mình.</span>
+    <span class="small" data-thuoc="ai-tra" data-khi="toi" hidden>Bạn đề nghị trả hết để có hỗ trợ. Bên mua vẫn có quyền không tham gia; không ai bắt được bên kia chọn hỗ trợ.</span>
+    <details>
+      <summary class="small b">Xem chi tiết phí</summary>
+      <div class="stack small" style="gap:6px;margin-top:8px">
+        <div class="row between"><span>Phí kích hoạt</span><span><em class="chua-chot">chưa chốt</em> · trừ vào phí thành công</span></div>
+        <div class="row between"><span>Ký qua đối tác (nếu chọn)</span><span><em class="chua-chot">chưa chốt</em> · trả khi ký xong</span></div>
+        <div class="row between"><span>Phí thành công 0,8% hàng được nhận</span><span>≈ 536.000 đ, tối đa 3 triệu</span></div>
+        <span class="xs muted">Không tính cọc, cước, phần bị trả hay đang tranh chấp. Hủy trước khi giao: không có phí thành công; phí kích hoạt do bên đề nghị trả, hoàn lại nếu AgiViet không bố trí được người.</span>
+      </div>
+    </details>
+    <div class="chia"></div>
+    <span class="b">Phạm vi hỗ trợ (phải đủ mới bật)</span>
+    <div class="stack small" style="gap:4px">
+      <div class="row between"><span class="muted">Hai bên</span><span>Chị Năm · Bên mua B</span></div>
+      <div class="row between"><span class="muted">Mặt hàng</span><span>Xoài cát Chu</span></div>
+      <div class="row between"><span class="muted">Lượng tối đa</span><span>10 tấn</span></div>
+      <div class="row between"><span class="muted">Ngày giao</span><span>8 – 13/10 (tối đa 90 ngày)</span></div>
+      <div class="row between"><span class="muted">Việc AgiViet làm</span><span>Hồ sơ, người trực, đối soát</span></div>
+      <div class="row between"><span class="muted">Phục vụ tới</span><span>12/11</span></div>
+      <div class="row between"><span class="muted">Chấp nhận giá này trước</span><span>30/9</span></div>
+    </div>
+    <span class="xs muted">Muốn thêm lượng hoặc kéo dài ngày thì báo giá thêm trước, không tính lại phần đã làm.</span>
+    <div class="chia"></div>
+    <span class="b">Khi hai bên không thống nhất (mẫu)</span>
+    <ol class="stack small" style="gap:4px;padding-left:20px;margin:0">
+      <li>Hai bên đối chiếu · thời hạn <em class="chua-chot">chưa chốt</em></li>
+      <li>Đo lại ở đơn vị kiểm định · <em class="chua-chot">chưa chọn</em></li>
+      <li>Người điều phối hòa giải · thời hạn <em class="chua-chot">chưa chốt</em></li>
+      <li>Vẫn chưa xong: chuyển trọng tài hoặc tòa theo thỏa thuận</li>
+    </ol>
+    <div class="grid2" style="gap:8px"><button class="pill-btn" type="button" data-toast="Đã chấp nhận phương án mẫu">Chấp nhận mẫu</button><button class="pill-btn" type="button" data-toast="Mở sửa phương án">Sửa</button></div>
+    <div class="chia"></div>
+    <span class="b">Có thêm gì so với tự giao dịch</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Người trực từ 60 phút trước giờ giao</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Người điều phối khi bất đồng</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Ký qua đối tác, kết quả có đối tác xác nhận</span>
+    <span class="b" style="margin-top:4px">Không có</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Không bảo hiểm, không bảo đảm giá</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Không giữ tiền hàng. Tiền chuyển trực tiếp</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Không bảo vệ sự cố xảy ra trước khi chọn</span>
+    <span class="xs muted">Kiểm nghiệm, xe, kho báo giá riêng, không nằm trong phí này.</span>
+  </section>
+  <section class="card stack" data-thuoc="cach" data-khi="tu" style="border:none">
+    <span class="b">Không phí, vẫn có:</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Đơn hàng trên app, hai bên bấm xác nhận</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Ghi cân, đo, ảnh; phản đối khoản trừ</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 xanh"><use href="#i-check"/></svg>Xem tiền về tay, lưu hồ sơ</span>
+    <span class="row small" style="gap:8px"><svg class="i i20 do"><use href="#i-x"/></svg>Không có người trực, người điều phối, ký qua đối tác</span>
+    <span class="xs muted">Số bạn tự ghi mang nhãn “Tự khai” cho tới khi bên kia xác nhận.</span>
+  </section>
+
+  <section class="grid2" style="gap:8px">
+    <div class="trang-thai-ky" style="background:var(--la-non);color:var(--la-dam)"><span class="xs b">Bên mua B chọn</span><strong><svg class="i i20" style="stroke-width:3"><use href="#i-check"/></svg>Có hỗ trợ</strong></div>
+    <div class="trang-thai-ky bg-cho"><span class="xs b">Bạn</span><strong><svg class="i i20"><use href="#i-cat"/></svg>Chưa chọn</strong></div>
+  </section>
+  <div class="bottom-actions">
+    <a class="btn" href="#chon-luong">Đồng ý, sang bước lượng hàng<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ KÝ · BƯỚC 1: ĐIỀU KIỆN ============ -->
+<section class="screen" id="ky" data-title="Thỏa thuận: điều kiện"
+  data-read="Thỏa thuận HĐ 0231, bản 2, bạn bán cho Bên mua B. Khác bản 1: giao 2 đợt thay vì 1 đợt. Hàng: xoài cát Chu loại 1, khoảng 9 đến 10 tấn, chốt lượng cuối trước ngày 7 tháng 10. Giá 6 nghìn 7 trăm đồng một ký, cố định. Cân tại vườn, bạn đứng xem và được ghi số của mình. Độ ngọt từ 13 phẩy 8 trở lên thì đủ giá; từ 13 đến 13 phẩy 8 giảm 300 đồng một ký; dưới 13 bên mua được trả hàng. Giao 2 đợt, ngày 8 và 13 tháng 10. Cọc 10 triệu, còn lại trả khi cân từng đợt. Bên mua B đã ký. Bạn chưa ký.">
+  <header class="top">
+    <a class="icon-btn" href="#chon-luong" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Thỏa thuận</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="stack s8" style="gap:6px">
+    <div class="tien-do" aria-hidden="true"><span class="cur"></span><span></span><span></span><span></span><span></span></div>
+    <span class="small b">Bước 1 / 5 · Điều kiện mua bán</span>
+  </div>
+  <section class="card row">
+    <span class="thumb bg-cho" style="width:60px;height:60px;border-radius:18px"><img src="assets/ic-ky.svg" alt="" style="width:42px;height:42px"></span>
+    <span class="grow stack" style="gap:4px">
+      <strong class="num" style="font-size:22px">HĐ-0231 · Bản 2</strong>
+      <span class="small muted">Bạn bán cho Bên mua B · Vựa trái cây</span>
+      <span class="chip nho bg-la" style="align-self:flex-start"><svg class="i i14"><use href="#i-khoa"/></svg>Đã khóa để ký</span>
+    </span>
+  </section>
+  <a class="thay-doi" href="#so-ban" style="text-decoration:none;color:inherit"><svg class="i i28" style="flex-shrink:0"><use href="#i-doi"/></svg><span class="grow"><strong>Khác bản 1:</strong> giao 2 đợt thay vì 1 đợt.</span><svg class="i"><use href="#i-tiep"/></svg></a>
+  <section class="card dieu-khoan">
+    <div class="dk"><img src="assets/anh/mh/mango.jpg" alt=""><div><span class="label">Hàng</span><strong>Xoài cát Chu loại 1 · khoảng 9 – 10 tấn</strong><span class="small muted">Chốt lượng cuối trước 7/10</span></div></div>
+    <div class="dk"><img src="assets/ic-tien.svg" alt=""><div><span class="label">Giá</span><strong class="num" style="font-size:22px;line-height:1.1">6.700 đ/kg · cố định</strong></div></div>
+    <div class="dk"><img src="assets/ic-can.svg" alt=""><div><span class="label">Cân</span><strong>Tại vườn, cân của bên mua. Bạn đứng xem, được ghi số của mình</strong></div></div>
+    <div class="dk"><img src="assets/ic-kiem.svg" alt=""><div style="gap:6px"><span class="label">Kiểm độ ngọt · 10 trái mỗi đợt</span>
+      <div class="nguong">
+        <span><i class="sh sh-tron"></i>Từ 13,8 °Bx: <strong>đủ giá</strong></span>
+        <span><i class="sh sh-vuong"></i>13,0 – 13,8: <strong>giảm 300 đ/kg</strong></span>
+        <span><i class="sh sh-tg"></i>Dưới 13,0: <strong>bên mua được trả hàng</strong></span>
+      </div></div></div>
+    <div class="dk"><img src="assets/ic-lich.svg" alt=""><div><span class="label">Giao</span><strong>2 đợt · 8/10 và 13/10 · 6 giờ sáng</strong></div></div>
+    <div class="dk"><img src="assets/ic-tien.svg" alt=""><div><span class="label">Tiền</span><strong>Cọc 10 triệu. Còn lại trả khi cân từng đợt, chuyển trực tiếp.</strong></div></div>
+    <div class="dk"><img src="assets/ic-canh-bao.svg" alt=""><div><span class="label">Khi bất đồng</span><strong>Chỉ trừ theo bảng trên. Hàng bị trả: bạn xử lý sau khi chụp ảnh, niêm phong mẫu lưu.</strong></div></div>
+  </section>
+  <section class="grid2" style="gap:8px">
+    <div class="trang-thai-ky" style="background:var(--la-non);color:var(--la-dam)"><span class="xs b">Bên mua B</span><strong><svg class="i i20" style="stroke-width:3"><use href="#i-check"/></svg>Đã ký 29/9</strong></div>
+    <div class="trang-thai-ky bg-cho"><span class="xs b">Bạn</span><strong><svg class="i i20"><use href="#i-cat"/></svg>Chưa ký</strong></div>
+  </section>
+  <div class="bottom-actions">
+    <button class="btn phu" type="button" data-doc-man><img src="assets/ic-loa.svg" alt="" style="width:28px;height:28px">Nghe các điều kiện</button>
+    <a class="btn" href="#quyen">Tiếp: quyền và trách nhiệm<svg class="i"><use href="#i-tiep"/></svg></a>
+    <div class="grid2" style="gap:8px">
+      <a class="btn can-ho-tro-btn" href="#can-ho-tro" data-ma="HĐ-0231 bản 2 · điều kiện"><svg class="i"><use href="#i-tro-giup"/></svg>Hỏi hỗ trợ</a>
+      <a class="btn canh" href="#chat" style="min-height:56px">Chưa đồng ý</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KÝ · BƯỚC 2: QUYỀN VÀ TRÁCH NHIỆM ============ -->
+<section class="screen" id="quyen" data-title="Quyền và trách nhiệm"
+  data-read="Quyền và trách nhiệm. Bạn phải giao đúng loại, đúng lượng, đúng ngày, và báo sớm nếu thiếu hàng. Bạn được nhận đủ tiền theo kết quả hai bên xác nhận, được đứng xem cân, được không đồng ý khoản trừ không có căn cứ. Bên mua B phải tới lấy đúng hẹn, cân tại vườn, trả tiền khi cân xong, chỉ trừ tiền theo bảng đã ký. App ghi lại, nhắc lịch, hỗ trợ đối soát; không giữ tiền, không bảo đảm giá, không phân xử. Khi bất đồng: hai bên nói chuyện trong 24 giờ, sau đó đo lại, rồi hòa giải.">
+  <header class="top">
+    <a class="icon-btn" href="#ky" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Quyền và trách nhiệm</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="stack s8" style="gap:6px">
+    <div class="tien-do" aria-hidden="true"><span class="xong"></span><span class="cur"></span><span></span><span></span><span></span></div>
+    <span class="small b">Bước 2 / 5 · Ai làm gì</span>
+  </div>
+  <section class="card stack" style="border:2px solid var(--reu)">
+    <div class="row" style="gap:10px"><span class="anh-dai-dien" style="width:40px;height:40px;font-size:17px">N</span><h2 class="h2">Bạn</h2></div>
+    <span class="label">Phải</span>
+    <ul class="small" style="margin:0;padding-left:20px;line-height:1.7"><li>Giao đúng loại, đúng lượng, đúng ngày</li><li>Báo sớm nếu thiếu hàng hoặc trễ</li><li>Để bên mua cân, kiểm theo cách đã ghi</li></ul>
+    <span class="label">Được</span>
+    <ul class="small" style="margin:0;padding-left:20px;line-height:1.7"><li>Nhận đủ tiền theo kết quả <strong>hai bên</strong> xác nhận</li><li>Đứng xem cân, chụp ảnh lúc cân</li><li>Không đồng ý khoản trừ không có căn cứ</li></ul>
+  </section>
+  <section class="card stack">
+    <div class="row" style="gap:10px"><span class="avatar b nho">B</span><h2 class="h2">Bên mua B</h2></div>
+    <ul class="small" style="margin:0;padding-left:20px;line-height:1.7"><li>Tới lấy đúng hẹn, cân tại vườn</li><li>Trả tiền khi cân xong từng đợt</li><li>Chỉ trừ tiền theo bảng độ ngọt đã ký</li></ul>
+  </section>
+  <section class="card stack" style="background:var(--suong)">
+    <div class="row" style="gap:10px"><img src="assets/mark.svg" alt="" style="width:36px;height:36px"><h2 class="h2">App AgiViet</h2></div>
+    <ul class="small" style="margin:0;padding-left:20px;line-height:1.7"><li>Ghi lại, nhắc lịch, hỗ trợ đối soát</li><li><strong>Không</strong> giữ tiền, không bảo đảm giá, không phân xử</li></ul>
+  </section>
+  <section class="card stack">
+    <h2 class="h2">Nếu bất đồng</h2>
+    <ol class="moc-list">
+      <li><span class="cham">1</span><div class="nd"><strong>Hai bên nói chuyện</strong><span class="small muted">Trong 24 giờ</span></div></li>
+      <li><span class="cham">2</span><div class="nd"><strong>Đo lại</strong><span class="small muted">Theo cách và phí đã ghi</span></div></li>
+      <li><span class="cham">3</span><div class="nd"><strong>Hòa giải hoặc cơ quan có thẩm quyền</strong></div></li>
+    </ol>
+  </section>
+  <div class="bottom-actions">
+    <a class="btn" href="#ban-day-du">Tiếp: bản đầy đủ<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+
+<!-- ============ KÝ · BƯỚC 3: BẢN ĐẦY ĐỦ ============ -->
+<section class="screen" id="ban-day-du" data-title="Bản đầy đủ"
+  data-read="Bản đầy đủ của thỏa thuận HĐ 0231 bản 2. Bấm Nghe đọc cả bản để app đọc hết. Ai đang cầm máy? Nếu chính bạn là người bán thì bật nút Tôi đã nghe hết và hiểu, rồi bấm Ký. Nếu bạn đang giúp người khác, bạn không được ký thay: hãy đưa máy cho người bán, gọi hỗ trợ, hoặc ký giấy.">
+  <header class="top">
+    <a class="icon-btn" href="#quyen" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Bản đầy đủ</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="stack s8" style="gap:6px">
+    <div class="tien-do" aria-hidden="true"><span class="xong"></span><span class="xong"></span><span class="cur"></span><span></span><span></span></div>
+    <span class="small b">Bước 3 / 5 · HĐ-0231 bản 2 · 8 điều, 2 phụ lục</span>
+  </div>
+  <button class="btn phu" type="button" data-noi="Điều 1, các bên: bên bán Nguyễn Thị Năm, bên mua là Bên mua B. Điều 2, hàng hóa: xoài cát Chu loại 1, khoảng 9 đến 10 tấn, lượng cuối chốt trước ngày 7 tháng 10. Điều 3, giá 6 nghìn 7 trăm đồng một ký, cố định; trả khi cân từng đợt, chuyển trực tiếp. Điều 4, giao 2 đợt tại vườn, cân bằng cân của bên mua, bên bán chứng kiến và được ghi số của mình. Điều 5, kiểm độ ngọt theo phụ lục 1. Điều 6, cọc 10 triệu, trừ vào tiền hàng. Điều 7, khi bất đồng, phần không tranh chấp vẫn trả bình thường; hàng bị trả do bên bán xử lý sau khi chụp ảnh và niêm phong mẫu lưu. Điều 8, hủy, chậm, thiên tai: báo sớm, hai bên bàn lại."><img src="assets/ic-loa.svg" alt="" style="width:28px;height:28px">Nghe đọc cả bản · 4 phút</button>
+  <div class="van-ban" tabindex="0" aria-label="Nội dung thỏa thuận">
+    <p class="xs muted">Mẫu minh họa, chưa được luật sư rà soát. Không dùng để ký thật.</p>
+    <h3>Điều 1. Các bên</h3><p>Bên bán: Nguyễn Thị Năm, chủ vườn, xã Mỹ Xương, Đồng Tháp. Bên mua: Bên mua B (vựa trái cây), người đại diện ký: ông Trần Văn Tài (tên mẫu).</p>
+    <h3>Điều 2. Hàng hóa</h3><p>Xoài cát Chu loại 1, khoảng 9.000 – 10.000 kg. Bên bán chốt lượng cuối trước 7/10/2026.</p>
+    <h3>Điều 3. Giá và thanh toán</h3><p>Giá cố định 6.700 đ/kg. Bên mua trả theo lượng được nhận của từng đợt, ngay khi cân xong, chuyển thẳng vào tài khoản bên bán.</p>
+    <h3>Điều 4. Giao nhận và cân</h3><p>Giao 2 đợt ngày 8/10 và 13/10/2026 tại vườn. Cân của bên mua; bên bán chứng kiến, được ghi và chụp số của mình. Ghi cả bì, bì, tịnh.</p>
+    <h3>Điều 5. Chất lượng và cách kiểm</h3><p>Kiểm độ ngọt 10 trái mỗi đợt theo Phụ lục 1.</p>
+    <h3>Điều 6. Tiền cọc</h3><p>Bên mua đặt cọc 10.000.000 đ, khấu trừ vào tiền hàng khi quyết toán.</p>
+    <h3>Điều 7. Khi có bất đồng</h3><p>Phần không tranh chấp trả theo Điều 3. Hàng bị trả để tại vườn; bên bán được xử lý sau khi chụp ảnh có giờ và niêm phong mẫu lưu.</p>
+    <h3>Điều 8. Hủy, chậm, thiên tai</h3><p>Bên gặp sự cố báo sớm kèm bằng chứng. Hai bên bàn lịch mới; không tự phạt, không tự miễn trách nhiệm.</p>
+    <h3>Phụ lục 1. Bảng độ ngọt</h3><p>Từ 13,8 °Bx: đủ giá. Từ 13,0 đến dưới 13,8: giảm 300 đ/kg. Dưới 13,0: bên mua được từ chối phần đó.</p>
+    <h3>Phụ lục 2. Lịch giao</h3><p>Đợt 1: 8/10, 6 giờ. Đợt 2: 13/10, 6 giờ, phần còn lại.</p>
+  </div>
+  <button class="pill-btn" type="button" data-toast="Đang tải bản PDF HĐ-0231 bản 2…" style="height:52px"><svg class="i i22"><use href="#i-tai"/></svg>Tải bản PDF</button>
+
+  <section class="card stack">
+    <span class="b">Ai đang cầm máy?</span>
+    <div class="stack" data-chon="ai-ky" style="gap:8px">
+      <button class="the-chon" type="button" aria-pressed="true" data-khi="chu" style="min-height:68px"><span class="anh-dai-dien" style="width:44px;height:44px;font-size:18px">N</span><span class="grow"><strong>Chính tôi, Nguyễn Thị Năm</strong></span><span class="radio"></span></button>
+      <button class="the-chon" type="button" aria-pressed="false" data-khi="giup" style="min-height:68px"><span class="hinh bg-nen" style="width:44px;height:44px"><svg class="i i28"><use href="#i-nguoi-nhom"/></svg></span><span class="grow"><strong>Tôi đang giúp người khác</strong><span class="small muted">Con cháu, nhân viên</span></span><span class="radio"></span></button>
+    </div>
+    <div class="canh-bao-lo" data-thuoc="ai-ky" data-khi="giup"><img src="assets/ic-canh-bao.svg" alt="" style="width:32px;height:32px"><span>Người giúp <strong>không được ký thay</strong>. Hãy đưa máy cho người bán, gọi hỗ trợ, hoặc ký giấy.</span></div>
+  </section>
+  <button class="cong-tac" type="button" data-bat aria-pressed="false" id="da-doc"><svg class="i i28 xanh"><use href="#i-check"/></svg><span class="grow stack" style="gap:0"><strong>Tôi đã nghe hết và hiểu</strong></span><span class="ray"></span></button>
+  <div class="bottom-actions">
+    <a class="btn" href="#ky-otp" id="nut-ky"><svg class="i"><use href="#i-but"/></svg>Ký HĐ-0231 bản 2</a>
+    <div class="grid2" style="gap:8px">
+      <a class="btn can-ho-tro-btn" href="#can-ho-tro" data-ma="HĐ-0231 bản 2 · ký"><svg class="i"><use href="#i-tro-giup"/></svg>Hỏi hỗ trợ</a>
+      <a class="btn phu" href="#ky-giay" style="min-height:56px">Ký giấy</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KÝ · BƯỚC 4: MÃ XÁC NHẬN ============ -->
+<section class="screen" id="ky-otp" data-title="Xác nhận ký"
+  data-read="Bạn đang ký thỏa thuận HĐ 0231 bản 2: bán 10 tấn xoài cát Chu cho Bên mua B, 6 nghìn 7 trăm đồng một ký. Nhập mã 6 số vừa gửi tới số điện thoại của bạn. Không đọc mã này cho ai.">
+  <header class="top">
+    <a class="icon-btn" href="#ban-day-du" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Xác nhận ký</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="stack s8" style="gap:6px">
+    <div class="tien-do" aria-hidden="true"><span class="xong"></span><span class="xong"></span><span class="xong"></span><span class="cur"></span><span></span></div>
+    <span class="small b">Bước 4 / 5 · Nhập mã</span>
+  </div>
+  <section class="card row">
+    <img src="assets/ic-ky.svg" alt="" style="width:48px;height:48px">
+    <span class="grow stack" style="gap:2px"><strong>Bạn đang ký HĐ-0231 · bản 2</strong><span class="small muted">Bán 10 tấn xoài cát Chu cho Bên mua B, 6.700 đ/kg</span></span>
+  </section>
+  <p style="font-size:17px">Nhập mã 6 số vừa gửi tới <strong>0912 345 123</strong>.</p>
+  <div class="otp" data-xong="#ky-xong" role="group" aria-label="Mã 6 số">
+    <input inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Số thứ 1">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 2">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 3">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 4">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 5">
+    <input inputmode="numeric" maxlength="1" aria-label="Số thứ 6">
+  </div>
+  <button class="link-btn" type="button" data-dem-nguoc="45" data-nhan="Gửi lại mã" style="align-self:center">Gửi lại mã</button>
+  <button class="btn phu" type="button" data-toast="App đang gọi để đọc mã…"><img src="assets/ic-goi.svg" alt="" style="width:28px;height:28px">Gọi đọc mã cho tôi</button>
+  <section class="card stack small" style="border:none;gap:6px">
+    <span class="b">Đơn này ghi nhận bằng cách nào?</span>
+    <span><strong>Xác nhận trên app</strong> (miễn phí): mã OTP và nhật ký thao tác. Hồ sơ ghi rõ “không phải chữ ký số”.</span>
+    <span class="muted"><strong>Ký qua đối tác</strong>: chỉ có khi hai bên chọn giao dịch có hỗ trợ; phí báo trước khi ký.</span>
+  </section>
+  <div class="bottom-actions">
+    <a class="btn" href="#ky-xong"><svg class="i"><use href="#i-check"/></svg>Xác nhận ký</a>
+  </div>
+</section>
+
+<!-- ============ KÝ · BƯỚC 5: XONG ============ -->
+<section class="screen" id="ky-xong" data-title="Hoàn tất ký"
+  data-read="Hoàn tất ký. Bên mua B và bạn đều đã ký đúng thỏa thuận HĐ 0231 bản 2. Hồ sơ đã lưu trong chi tiết giao dịch. Việc tiếp theo: kiểm tra tiền cọc 10 triệu, và chuẩn bị giao đợt 1 ngày 8 tháng 10.">
+  <header class="top">
+    <a class="icon-btn" href="#hang" aria-label="Về trang Hàng"><svg class="i"><use href="#i-x"/></svg></a>
+    <h1>Hoàn tất ký</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="stack s8" style="gap:6px">
+    <div class="tien-do" aria-hidden="true"><span class="xong"></span><span class="xong"></span><span class="xong"></span><span class="xong"></span><span class="xong"></span></div>
+    <span class="small b">Bước 5 / 5 · Hai bên đã ký cùng một bản</span>
+  </div>
+  <img class="mam-mung" src="assets/linh-vat-mung.svg" alt="" style="width:150px;height:150px;align-self:center">
+  <section class="card stack">
+    <div class="row between"><span class="row" style="gap:8px"><span class="avatar b nho">B</span><strong>Bên mua B</strong></span><span class="chip ok nho"><svg class="i i14" style="stroke-width:3"><use href="#i-check"/></svg>29/9 · 14:20</span></div>
+    <div class="row between"><span class="row" style="gap:8px"><span class="anh-dai-dien" style="width:36px;height:36px;font-size:16px">N</span><strong>Bạn</strong></span><span class="chip ok nho"><svg class="i i14" style="stroke-width:3"><use href="#i-check"/></svg>Hôm nay · 10:05</span></div>
+    <span class="xs muted">Ký bằng mã trong app, lưu lại bản bạn đã nghe và đã thấy. Đây không phải chữ ký số.</span>
+  </section>
+  <section class="card stack">
+    <div class="row between"><span class="small muted">Mã kiểm tra</span><strong class="num" style="font-size:20px;letter-spacing:1px">7F3A-91C2</strong></div>
+    <a class="pill-btn" href="#chi-tiet-don" style="height:52px;text-decoration:none;color:inherit"><svg class="i i22"><use href="#i-giay"/></svg>Mở hồ sơ giao dịch</a>
+    <span class="xs muted">Chỉ bạn và Bên mua B xem được hồ sơ này.</span>
+  </section>
+  <section class="card stack">
+    <h2 class="h2">Việc tiếp theo</h2>
+    <a class="row" href="#coc" style="text-decoration:none;color:inherit"><img src="assets/ic-tien.svg" alt="" style="width:36px;height:36px"><span class="grow b">Kiểm tra tiền cọc 10 triệu</span><svg class="i muted"><use href="#i-tiep"/></svg></a>
+    <a class="row" href="#lich" style="text-decoration:none;color:inherit"><img src="assets/ic-lich.svg" alt="" style="width:36px;height:36px"><span class="grow b">Chuẩn bị giao đợt 1 · 8/10</span><svg class="i muted"><use href="#i-tiep"/></svg></a>
+  </section>
+</section>
+
+<!-- ============ KÝ GIẤY ============ -->
+<section class="screen" id="ky-giay" data-title="Ký giấy"
+  data-read="Ký giấy. Bước 1: tải bản chờ ký. Bước 2: in ra, hai bên ký, đóng dấu nếu có. Bước 3: chụp bản đã ký gửi lên app. Bước 4: chọn ai giữ bản gốc. App ghi đây là bản chụp, không gọi là chữ ký số.">
+  <header class="top">
+    <a class="icon-btn" href="#ban-day-du" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Ký giấy</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card">
+    <ol class="moc-list">
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>Tải bản chờ ký</strong><button class="pill-btn" type="button" data-toast="Đang tải bản chờ ký HĐ-0231 bản 2…" style="margin-top:6px;align-self:flex-start;padding:0 14px"><svg class="i i20"><use href="#i-tai"/></svg>Tải lại</button></div></li>
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>In ra, hai bên ký</strong><span class="small muted">Đóng dấu nếu là HTX, doanh nghiệp</span></div></li>
+      <li class="cur"><span class="cham">3</span><div class="nd"><strong>Chụp bản đã ký</strong><button class="btn nang nho" type="button" data-toast="Đang mở máy ảnh để chụp từng trang…" style="margin-top:6px;align-self:flex-start"><img src="assets/ic-camera.svg" alt="" style="width:26px;height:26px">Chụp từng trang</button></div></li>
+      <li><span class="cham">4</span><div class="nd"><strong>Ai giữ bản gốc?</strong>
+        <div class="hang-lua" data-chon="ban-goc" style="margin-top:6px">
+          <button class="lua" type="button" aria-pressed="false" data-khi="toi">Tôi giữ</button>
+          <button class="lua" type="button" aria-pressed="false" data-khi="b">Bên mua giữ</button>
+          <button class="lua" type="button" aria-pressed="true" data-khi="moi">Mỗi bên 1 bản</button>
+        </div></div></li>
+    </ol>
+  </section>
+  <p class="card small" style="border:none">App lưu bản chụp kèm ngày và người gửi. App ghi là <strong>“bản chụp giấy”</strong>, không gọi là chữ ký số. App không tạo con dấu thay ai.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#ky-xong" data-toast="Đã gửi bản chụp. Chờ Bên mua B xác nhận nhận bản gốc."><svg class="i"><use href="#i-gui"/></svg>Gửi bản đã ký</a>
+  </div>
+</section>
+
+<!-- ============ SO CÁC BẢN ============ -->
+<section class="screen" id="so-ban" data-title="Các bản thỏa thuận"
+  data-read="Các bản thỏa thuận. Bản 1 và bản 2 chỉ khác một điều: giao hàng. Bản 1 giao 1 đợt ngày 8 tháng 10. Bản 2 giao 2 đợt ngày 8 và 13 tháng 10. Mỗi lần sửa là một bản mới và phải ký lại. Chữ ký cũ không dùng lại.">
+  <header class="top">
+    <a class="icon-btn" href="#ky" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Các bản</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="card" style="padding:6px 8px">
+    <table class="so-ban">
+      <thead><tr><th scope="col">Điều</th><th scope="col">Bản 1</th><th scope="col">Bản 2</th></tr></thead>
+      <tbody>
+        <tr><td class="b">Giá</td><td>6.700 đ/kg</td><td>6.700 đ/kg</td></tr>
+        <tr><td class="b">Lượng</td><td>10 tấn</td><td>10 tấn</td></tr>
+        <tr class="doi"><td class="b">Giao</td><td class="cu">1 đợt · 8/10</td><td class="b">2 đợt · 8/10 và 13/10</td></tr>
+        <tr><td class="b">Cọc</td><td>10 triệu</td><td>10 triệu</td></tr>
+        <tr><td class="b">Độ ngọt</td><td>giảm 300 đ</td><td>giảm 300 đ</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card stack">
+    <h2 class="h2">Đã xảy ra</h2>
+    <ol class="moc-list">
+      <li class="xong"><span class="cham">1</span><div class="nd"><strong>Bản 1</strong><span class="small muted">29/9 9:30 · Bên mua B tạo</span></div></li>
+      <li class="xong"><span class="cham"><img src="assets/ic-khach.svg" alt="" style="width:20px;height:20px"></span><div class="nd"><strong>Bạn đề nghị giao 2 đợt</strong><span class="small muted">29/9 11:00 · qua tin nhắn</span></div></li>
+      <li class="xong"><span class="cham">2</span><div class="nd"><strong>Bản 2 · Bên mua B đã ký</strong><span class="small muted">29/9 14:20</span></div></li>
+      <li><span class="cham"><svg class="i i18"><use href="#i-x"/></svg></span><div class="nd"><strong>Bản 1 hết hiệu lực</strong><span class="small muted">Không ai ký được bản 1 nữa</span></div></li>
+    </ol>
+  </section>
+  <p class="row small muted top-align" style="gap:8px"><svg class="i i20"><use href="#i-thong-tin"/></svg>Mỗi lần sửa là một bản mới, hai bên phải ký lại. Chữ ký cũ không dùng lại cho bản mới.</p>
+  <button class="btn phu" type="button" data-toast="Bạn nói điều muốn sửa. App tạo bản 3 để hai bên xem."><svg class="i"><use href="#i-but"/></svg>Đề nghị sửa (tạo bản 3)</button>
+</section>
+
+<!-- ============ TIỀN CỌC ============ -->
+<section class="screen" id="coc" data-title="Tiền cọc"
+  data-read="Tiền cọc 10 triệu đồng. Bên mua B báo đã chuyển lúc 9 giờ 12 ngày 2 tháng 10, mã tham chiếu FT 2610 và 4 số cuối. Ảnh biên lai chưa chắc tiền đã về: bạn xem tài khoản ngân hàng hoặc tin nhắn ngân hàng. Có 3 nút: đã nhận đủ, nhận một phần, chưa thấy tiền. Không ai được bắt bạn bấm trước khi thấy tiền.">
+  <header class="top">
+    <a class="icon-btn" href="#ky-xong" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Tiền cọc</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <section class="the-tien">
+    <span class="b" style="font-size:15px;color:#d5e2d6">HĐ-0231 · chuyển trực tiếp</span>
+    <strong class="so">10.000.000 đ</strong>
+    <div class="row" style="gap:10px"><span class="grow" style="font-size:15px;color:var(--la-nhat)">“Mười triệu đồng”</span><button class="icon-btn nen-trang" type="button" aria-label="Nghe số tiền" data-noi="Mười triệu đồng"><img src="assets/ic-loa.svg" alt="" style="width:30px;height:30px"></button></div>
+  </section>
+  <section class="card">
+    <ol class="moc-list">
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>Ghi trong thỏa thuận</strong><span class="small muted">HĐ-0231 bản 2 · Điều 6</span></div></li>
+      <li class="xong"><span class="cham"><svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg></span><div class="nd"><strong>Bên mua báo đã chuyển</strong><span class="small muted">2/10 · 9:12 · mã FT2610•••• · có ảnh biên lai</span></div></li>
+      <li class="cur" id="moc-xac-nhan"><span class="cham">3</span><div class="nd"><strong>Bạn xem tài khoản và trả lời</strong><span class="small muted" data-trang-thai>Chờ bạn</span></div></li>
+    </ol>
+  </section>
+  <div class="canh-bao-lo" style="background:var(--cho)"><img src="assets/ic-canh-bao.svg" alt="" style="width:32px;height:32px"><span style="color:var(--muc)">Ảnh biên lai <strong>chưa chắc tiền đã về</strong>. Không ai được bắt bạn bấm trước khi thấy tiền.</span></div>
+  <div class="bottom-actions" id="nut-coc">
+    <button class="btn" type="button" data-xac-nhan-coc><svg class="i"><use href="#i-check"/></svg>Đã nhận đủ 10 triệu</button>
+    <details class="hoi-dap" style="border:2px solid var(--vien)">
+      <summary>Chỉ nhận một phần</summary>
+      <div class="stack" style="padding:0 16px 16px">
+        <label class="small b" for="nhan-mot-phan">Số tiền bạn thấy về</label>
+        <div class="o-nhap"><input id="nhan-mot-phan" class="lon" inputmode="numeric" data-so value="5.000.000"><span class="tien-to">đ</span></div>
+        <button class="btn nho" type="button" data-toast="Đã ghi: bạn nhận 5.000.000 đ, còn thiếu 5.000.000 đ. Đã mở đối soát với Bên mua B.">Ghi đã nhận một phần</button>
+      </div>
+    </details>
+    <button class="btn canh" type="button" data-toast="Đã báo Bên mua B và người hỗ trợ. Hai bên kiểm tra lại, chưa ai bị kết luận sai.">Chưa thấy tiền</button>
+    <a class="btn can-ho-tro-btn" href="#can-ho-tro" data-ma="HĐ-0231 · tiền cọc"><svg class="i"><use href="#i-tro-giup"/></svg>Cần hỗ trợ</a>
+    <p class="xs muted" style="text-align:center">Cọc không phải phí. Cọc được trừ vào tiền hàng khi quyết toán.</p>
+  </div>
+</section>
+
+
+<!-- ============ CHỌN LƯỢNG HỨA BÁN ============ -->
+<section class="screen" id="chon-luong" data-title="Hứa bán bao nhiêu"
+  data-read="Lô xoài của bạn đang là số ước tính, chưa cân. Trước khi ký, bạn chọn cách hứa: hứa một khoảng, ví dụ từ 9 đến 10 tấn, và ngày chốt lượng cuối; hoặc hứa một con số cố định. Hứa cố định mà hái không đủ thì phải xử lý theo thỏa thuận. App không tự thêm dung sai. Muốn giữ hàng cho khách đến lúc ký thì hai bên cùng bấm đồng ý giữ và hạn giữ. Một đơn giao trong tối đa 90 ngày.">
+  <header class="top">
+    <a class="icon-btn" href="#phuong-thuc" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
+    <h1>Hứa bán bao nhiêu?</h1>
+    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
+  </header>
+  <div class="canh-bao-lo" style="background:var(--cho)"><img src="assets/ic-uoc.svg" alt="" style="width:40px;height:40px"><span style="color:var(--muc)">Lô của bạn là <strong>10 tấn ước tính</strong>, chưa cân. Hứa quá chắc mà hái không đủ là bạn thiếu hàng.</span></div>
+  <div class="stack" data-chon="kieu-luong" style="gap:10px">
+    <button class="the-chon" type="button" aria-pressed="true" data-khi="khoang">
+      <span class="hinh bg-la"><img src="assets/ic-uoc.svg" alt=""></span>
+      <span class="grow"><strong>Hứa một khoảng</strong><span class="small muted">Chốt lượng cuối trước ngày giao</span></span>
+      <span class="radio"></span>
+    </button>
+    <button class="the-chon" type="button" aria-pressed="false" data-khi="co-dinh">
+      <span class="hinh bg-cho"><img src="assets/ic-can.svg" alt=""></span>
+      <span class="grow"><strong>Hứa con số cố định</strong><span class="small muted">Hợp khi đã cân hoặc rất chắc</span></span>
+      <span class="radio"></span>
+    </button>
+  </div>
+  <div class="stack" data-thuoc="kieu-luong" data-khi="khoang">
+    <div class="row" style="gap:8px">
+      <div class="o-nhap grow" style="padding-right:14px"><label class="sr-only" for="luong-tu">Từ</label><span class="tien-to">từ</span><input id="luong-tu" inputmode="decimal" value="9" class="lon"></div>
+      <div class="o-nhap grow" style="padding-right:14px"><label class="sr-only" for="luong-den">Đến</label><span class="tien-to">đến</span><input id="luong-den" inputmode="decimal" value="10" class="lon"></div>
+    </div>
+    <div class="stack s8"><label class="small b" for="ngay-chot">Ngày chốt lượng cuối</label><div class="o-nhap" style="padding-right:14px"><input id="ngay-chot" type="date" value="2026-10-07" style="font-size:18px"></div></div>
+  </div>
+  <div class="stack" data-thuoc="kieu-luong" data-khi="co-dinh">
+    <div class="o-nhap" style="padding-right:14px"><label class="sr-only" for="luong-cd">Số tấn</label><input id="luong-cd" inputmode="decimal" value="10" class="lon"><span class="tien-to">tấn</span></div>
+    <div class="canh-bao-lo"><img src="assets/ic-canh-bao.svg" alt="" style="width:32px;height:32px"><span>Hứa <strong>10 tấn cố định</strong> dựa trên số ước tính. Mưa làm hụt thì bạn phải xin giao bù hoặc bớt, bên mua đồng ý mới được.</span></div>
+  </div>
+  <section class="card stack">
+    <span class="b">Giữ hàng cho Bên mua B đến khi ký?</span>
+    <div class="phan-doan" data-chon="giu-cho" role="group" aria-label="Giữ hàng"><button type="button" aria-pressed="true" data-khi="co">Giữ 10 tấn đến 18:00 ngày 6/10</button><button type="button" aria-pressed="false" data-khi="khong">Không giữ</button></div>
+    <span class="small" data-thuoc="giu-cho" data-khi="co">Cần <strong>cả hai bên</strong> bấm đồng ý mới giữ. Quá giờ mà chưa ký đủ thì hết giữ; app kiểm lại lượng còn trước khi ký xong.</span>
+    <span class="small" data-thuoc="giu-cho" data-khi="khong">Chưa giữ: người khác vẫn có thể hỏi mua phần hàng này.</span>
+  </section>
+  <p class="xs muted">Một đơn giao trong tối đa <strong>90 ngày</strong>. Muốn bán lâu hơn thì lập nhiều đơn dưới một thỏa thuận chung. Bán thêm cho cùng khách là <strong>đơn mới</strong>, không cộng vào đơn này.</p>
+  <p class="xs muted">App không tự thêm “được lệch 5%”. Nếu muốn có dung sai, hai bên ghi rõ trong thỏa thuận.</p>
+  <div class="bottom-actions">
+    <a class="btn" href="#ky">Tiếp: xem điều kiện<svg class="i"><use href="#i-tiep"/></svg></a>
+  </div>
+</section>
+</div>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script>
+(() => {
+  // Phải bật "đã nghe hết" mới ký được
+  const daDoc = document.getElementById('da-doc');
+  const nutKy = document.getElementById('nut-ky');
+  const laNguoiGiup = () => document.querySelector('[data-chon="ai-ky"] [aria-pressed="true"]')?.dataset.khi === 'giup';
+  const capNhat = () => {
+    const ok = daDoc.getAttribute('aria-pressed') === 'true' && !laNguoiGiup();
+    nutKy.setAttribute('aria-disabled', String(!ok));
+    nutKy.style.opacity = ok ? '1' : '.5';
+  };
+  daDoc.addEventListener('click', () => setTimeout(capNhat));
+  document.querySelector('[data-chon="ai-ky"]').addEventListener('click', () => setTimeout(capNhat));
+  nutKy.addEventListener('click', e => {
+    if (nutKy.getAttribute('aria-disabled') === 'true') {
+      e.preventDefault();
+      amToast(laNguoiGiup() ? 'Người giúp không được ký thay. Đưa máy cho người bán, gọi hỗ trợ, hoặc ký giấy.' : 'Bật nút “Tôi đã nghe hết và hiểu” trước khi ký');
+    }
+  });
+  capNhat();
+
+  // Người bán xác nhận đã nhận cọc
+  document.querySelector('[data-xac-nhan-coc]').addEventListener('click', e => {
+    const moc = document.getElementById('moc-xac-nhan');
+    moc.className = 'xong';
+    moc.querySelector('.cham').innerHTML = '<svg class="i i18" style="stroke-width:3"><use href="#i-check"/></svg>';
+    moc.querySelector('[data-trang-thai]').textContent = 'Bạn đã xác nhận nhận đủ · vừa xong';
+    const nut = e.currentTarget;
+    nut.outerHTML = '<button class="btn phu" type="button" data-toast="Nhập lý do bấm nhầm. App giữ lần xác nhận cũ, báo Bên mua B và mở đối soát; không tự đảo tiền.">Bấm nhầm? Báo sai xác nhận</button>';
+    amToast('Đã ghi: bạn xác nhận nhận đủ tiền cọc 10 triệu');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#315c60">
+<title>Tổ chức · AgiViet Thu mua</title>
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<main>
+<!-- ============ THÀNH VIÊN ============ -->
+<section class="man" id="thanh-vien" data-menu="thanh-vien" data-title="Thành viên">
+  <div class="dau-trang">
+    <div class="tieu-de"><h1>Thành viên và phân quyền</h1><p class="mo-ta">Quyền ký, duyệt chi, kế toán tách riêng. Người ký có thể được mời ký từng thỏa thuận mà không chiếm tài khoản.</p></div>
+    <div class="hanh-dong">
+      <button class="btn" type="button" data-luot="thanh-vien" data-ok="Business có 3 tài khoản, bạn đã dùng 3/3. Cần thêm, liên hệ tư vấn gói."><svg class="i"><use href="#i-nguoi-them"/></svg>Thêm thành viên</button>
+    </div>
+  </div>
+  <div class="het-luot chi-free" style="background:var(--nen);border-color:var(--vien)">
+    <span class="ic" style="color:var(--bus)"><svg class="i i24"><use href="#i-thanh-vien"/></svg></span>
+    <div class="grow"><strong>Gói Miễn phí có 1 người quản lý</strong><p class="nho muted">Anh Trí làm mọi việc: mua hàng, ghi tiền. Business có 3 tài khoản riêng, mỗi người một quyền.</p></div>
+    <a class="btn bus nho" href="goi.html#so-sanh-goi">Xem Business</a>
+  </div>
+  <div class="chi-bus" data-thanh-do="bus:3" style="max-width:320px"></div>
+
+  <section class="card bang-cuon">
+    <table class="bang">
+      <thead><tr><th>Người</th><th>Vai trò</th><th>Tài khoản</th><th>Đăng nhập gần nhất</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><div class="hang"><span class="av-tron" style="width:34px;height:34px;background:var(--nang);color:var(--muc)">T</span><div><strong>Anh Trí</strong><div class="rat-nho nhat">tri@dongxanh.vn</div></div></div></td><td><span class="tag song">Quản lý chính</span></td><td>1 tài khoản</td><td>Đang dùng</td><td></td></tr>
+        <tr class="chi-bus"><td><div class="hang"><span class="av-tron" style="width:34px;height:34px;background:var(--song)">H</span><div><strong>Anh Hòa</strong><div class="rat-nho nhat">hoa@dongxanh.vn</div></div></div></td><td><span class="tag">Mua hàng</span></td><td>1 tài khoản</td><td>2 giờ trước</td><td class="phai"><button class="btn nho phu" type="button" data-toast="Sửa quyền anh Hòa">Sửa</button></td></tr>
+        <tr class="chi-bus"><td><div class="hang"><span class="av-tron" style="width:34px;height:34px;background:#8a5f2c">L</span><div><strong>Chị Lan</strong><div class="rat-nho nhat">lan@dongxanh.vn</div></div></div></td><td><span class="tag">Kế toán</span></td><td>1 tài khoản</td><td>Hôm qua</td><td class="phai"><button class="btn nho phu" type="button" data-toast="Sửa quyền chị Lan">Sửa</button></td></tr>
+        <tr><td><div class="hang"><span class="av-tron" style="width:34px;height:34px;background:var(--bus);color:var(--nang)">Q</span><div><strong>Anh Quang</strong><div class="rat-nho nhat">Giám đốc · người đại diện</div></div></div></td><td><span class="tag ok">Người ký</span></td><td class="nho">Mời qua link từng lần · <strong>không chiếm tài khoản</strong></td><td>Ký HĐ-0245 30/9</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card chi-bus">
+    <div class="card-dau"><h2>Quyền theo vai trò</h2></div>
+    <div class="card-than sat bang-cuon"><table class="bang bang-so">
+      <thead><tr><th>Việc</th><th>Quản lý chính</th><th>Mua hàng</th><th>Kế toán</th><th>Người ký</th></tr></thead>
+      <tbody>
+        <tr><td>Tạo nhu cầu, tìm nguồn, nhắn</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Gửi báo giá, soạn thỏa thuận</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Ký thỏa thuận</td><td>—</td><td>—</td><td>—</td><td>✓</td></tr>
+        <tr><td>Nhập kết quả cân, đo</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Ghi thanh toán</td><td>—</td><td>—</td><td>✓</td><td>—</td></tr>
+        <tr><td>Duyệt chi</td><td>✓</td><td>—</td><td>—</td><td>✓</td></tr>
+        <tr><td>Quản lý gói, thành viên</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</section>
+
+<!-- ============ GÓI CỦA TÔI ============ -->
+<section class="man" id="goi-cua-toi" data-menu="goi" data-title="Gói và thanh toán">
+  <div class="dau-trang">
+    <div class="tieu-de"><h1>Gói và thanh toán</h1><p class="mo-ta">Chu kỳ tính lượt và kỳ thanh toán Business đều theo tháng dương lịch: 1/10 – 31/10/2026 (giờ Việt Nam). Lượt chưa dùng không cộng dồn.</p></div>
+    <div class="hanh-dong"><a class="btn phu" href="goi.html#so-sanh-goi">So sánh gói</a></div>
+  </div>
+
+  <div class="luoi l-2-1 chi-free">
+    <section class="card"><div class="card-dau"><h2>Gói hiện tại: Miễn phí</h2></div><div class="card-than cot g16">
+      <div data-thanh-do="free:0"></div><div data-thanh-do="free:1"></div><div data-thanh-do="free:2"></div>
+      <div class="bao thong-tin nho"><svg class="i"><use href="#i-thong-tin"/></svg><div>Hết lượt <strong>không</strong> chặn: đơn đang có, thỏa thuận, khiếu nại, tiền đang xử lý, tải hồ sơ đã có, nhắn với người đã kết nối.</div></div>
+    </div></section>
+    <section class="bang-bus cot g16">
+      <span class="bus-tag" style="align-self:flex-start">Business</span>
+      <h2 style="font-size:20px">1.500.000 đ/tháng <span class="nho" style="font-weight:500">(giá thử nghiệm)</span></h2>
+      <div class="cot" style="gap:8px">
+        <span class="uu-dai"><svg class="i i16"><use href="#i-check"/></svg>50 kết nối, 30 tin mua mỗi tháng</span>
+        <span class="uu-dai"><svg class="i i16"><use href="#i-check"/></svg>Kế hoạch mua gồm cả đơn tự giao dịch, mối quen</span>
+        <span class="uu-dai"><svg class="i i16"><use href="#i-check"/></svg>3 tài khoản, phân quyền, duyệt chi</span>
+        <span class="uu-dai"><svg class="i i16"><use href="#i-check"/></svg>Khi tự chọn dịch vụ hỗ trợ: 0,3%, trần 1,5 triệu</span>
+      </div>
+      <a class="btn" href="goi.html#nang-cap" style="background:var(--nang);color:var(--muc)">Dùng thử Business</a>
+    </section>
+  </div>
+
+  <div class="chi-bus cot g16">
+    <div class="luoi l-2-1">
+      <section class="card"><div class="card-dau"><h2>Thử Business</h2><span class="tag ok">Đang dùng</span></div><div class="card-than cot g16">
+        <div class="luoi l2"><div data-thanh-do="bus:0"></div><div data-thanh-do="bus:1"></div><div data-thanh-do="bus:2"></div><div data-thanh-do="bus:3"></div></div>
+        <div class="luoi l3" style="gap:10px">
+          <div class="cot g4"><span class="nho muted">Giá</span><strong>1.500.000 đ/tháng</strong><span class="rat-nho nhat">chưa gồm thuế GTGT · tháng đầu tính theo số ngày còn lại</span></div>
+          <div class="cot g4"><span class="nho muted">Kỳ này</span><strong>9/10 – 31/10</strong></div>
+          <div class="cot g4"><span class="nho muted">Gia hạn</span><strong>1/11 · chuyển khoản</strong></div>
+        </div>
+        <button class="cong-tac" type="button" data-bat aria-pressed="true"><span class="grow"><strong>Tự gia hạn</strong><span class="nho muted" style="display:block">Nhắc trước 7 ngày. Tắt thì hết kỳ tự về Miễn phí.</span></span><span class="ray"></span></button>
+      </div></section>
+      <section class="card"><div class="card-dau"><h2>Về Miễn phí thì sao?</h2></div><div class="card-than cot nho">
+        <span class="hang tren" style="gap:8px"><svg class="i i16 xanh"><use href="#i-check"/></svg>Không xóa tin, hồ sơ, mối quen (chỉ xem, không thêm)</span>
+        <span class="hang tren" style="gap:8px"><svg class="i i16 xanh"><use href="#i-check"/></svg>Đơn đã chốt dịch vụ giữ 0,3% trong phạm vi đã chốt; thêm lượng hay kéo dài thì báo giá theo gói mới</span>
+        <span class="hang tren" style="gap:8px"><svg class="i i16"><use href="#i-thong-tin"/></svg>Hết Business là về hạn mức Miễn phí ngay: lượt còn = 5 trừ số đã dùng trong tháng (tối thiểu 0). Lời mời đang chờ vẫn giữ tới khi có trả lời</span>
+        <span class="hang tren" style="gap:8px"><svg class="i i16"><use href="#i-thong-tin"/></svg>Tài khoản thứ 2, 3 chuyển sang chỉ xem</span>
+        <button class="btn phu" type="button" data-toast="Đã tắt gia hạn. Business dùng đến 31/10, sau đó về Miễn phí.">Hủy gia hạn</button>
+      </div></section>
+    </div>
+    <section class="card"><div class="card-dau"><h2>Hóa đơn</h2></div><div class="card-than sat bang-cuon"><table class="bang">
+      <thead><tr><th>Số</th><th>Kỳ</th><th>Nội dung</th><th class="phai">Số tiền</th><th>Trạng thái</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>HD-10-0131</td><td>10/2026</td><td>Business · 9/10 – 31/10 (23/31 ngày)</td><td class="so-o">1.112.903 + thuế</td><td><span class="tag ok">Đã thanh toán</span></td><td class="phai"><button class="btn nho phu" type="button" data-toast="Đang tải hóa đơn điện tử HD-10-0131">Tải</button></td></tr>
+        <tr><td>PH-10-0088</td><td>10/2026</td><td>Phí dịch vụ hỗ trợ · HĐ-0245 · đợt 1</td><td class="so-o">124.821 + thuế</td><td><span class="tag cho">Hạn 11/10</span></td><td></td></tr>
+      </tbody>
+    </table></div>
+    <div class="card-chan nho nhat">Phí dịch vụ tách riêng khỏi tiền hàng và cọc, phát hành theo từng đợt được chốt, hạn trả 7 ngày. Đơn hủy trước khi nhận hàng không thu phí thành công; phí kích hoạt và mốc đã làm tính theo điều kiện dịch vụ.</div></section>
+  </div>
+</section>
+
+<!-- ============ HỒ SƠ TỔ CHỨC ============ -->
+<section class="man" id="ho-so-to-chuc" data-menu="to-chuc" data-title="Hồ sơ tổ chức">
+  <div class="dau-trang">
+    <div class="tieu-de"><h1>Hồ sơ tổ chức</h1><p class="mo-ta">Người bán thấy tên, loại hình, trạng thái xác minh. Mã số thuế, tài khoản ngân hàng chỉ hiện trong thỏa thuận.</p></div>
+    <div class="hanh-dong"><button class="btn phu" type="button" data-toast="Chỉ quản lý chính sửa được hồ sơ"><svg class="i"><use href="#i-but"/></svg>Sửa</button></div>
+  </div>
+  <div class="luoi l2">
+    <section class="card"><div class="card-dau"><h2>Thông tin</h2></div><div class="card-than sat"><table class="bang"><tbody>
+      <tr><td class="muted" style="width:40%">Tên</td><td><strong>Nhà máy sấy Đồng Xanh</strong> <span class="tag vien">mẫu</span></td></tr>
+      <tr><td class="muted">Loại hình</td><td>Doanh nghiệp chế biến</td></tr>
+      <tr><td class="muted">Mã số thuế</td><td>1402xxxxxx (mẫu)</td></tr>
+      <tr><td class="muted">Nhận hàng tại</td><td>Nhà máy · Cái Bè, Đồng Tháp</td></tr>
+      <tr><td class="muted">Mặt hàng mua</td><td>Xoài, mít, chuối</td></tr>
+      <tr><td class="muted">Tìm nguồn trong</td><td>100 km</td></tr>
+    </tbody></table></div></section>
+    <section class="card"><div class="card-dau"><h2>Xác minh và quyền ký</h2></div><div class="card-than cot">
+      <div class="hang giua nho"><span>Doanh nghiệp</span><span class="tag ok"><svg class="i i14"><use href="#i-check"/></svg>Đã xác minh 12/9</span></div>
+      <div class="hang giua nho"><span>Người đại diện theo pháp luật</span><strong>Anh Quang · Giám đốc</strong></div>
+      <div class="hang giua nho"><span>Ủy quyền ký cho người khác</span><span class="tag vien">Chưa có</span></div>
+      <div class="hang giua nho"><span>Tài khoản chi</span><strong>•••• 8830</strong></div>
+      <p class="rat-nho nhat">Xác minh tài khoản khác với quyền ký. Người không có quyền ký thì chỉ soạn, không ký được.</p>
+    </div></section>
+    <section class="card"><div class="card-dau"><h2>Người bán thấy gì về bạn</h2><span class="tag vien">Chỉ báo có nguồn</span></div><div class="card-than cot">
+      <table class="bang nho"><tbody>
+        <tr><td class="muted">Đơn đã quyết toán qua app</td><td><strong>14</strong></td></tr>
+        <tr><td class="muted">Trả đúng hạn (người bán xác nhận)</td><td><strong>19/21 đợt</strong> · 2 trễ</td></tr>
+        <tr><td class="muted">Thường trả sau khi cân</td><td><strong>1 ngày</strong></td></tr>
+        <tr><td class="muted">Năng lực nhận hàng</td><td>Đã đối chiếu 12/9 · kho lạnh 40 tấn</td></tr>
+      </tbody></table>
+      <p class="rat-nho nhat">Chỉ tính việc người bán đã xác nhận; lời kể một phía chưa được xem xét thì không tính. Dưới 3 đơn thì người bán thấy “Chưa đủ dữ liệu”. Đây không phải bảng xếp hạng công khai hay bảo đảm thanh toán.</p>
+      <div class="hang" style="gap:8px"><button class="btn nho phu" type="button" data-toast="Đang tải dữ liệu tạo nên chỉ báo">Xem dữ liệu gốc</button><button class="btn nho phu" type="button" data-toast="Đã gửi yêu cầu sửa. Người phụ trách dữ liệu trả lời trong 1 ngày làm việc.">Yêu cầu sửa</button></div>
+    </div></section>
+  </div>
+</section>
+</main>
+<script src="js/app.js"></script>
+<script src="js/he-thong.js"></script>
+<script src="js/kho-mau.js"></script>
+<script src="js/mo-phong.js"></script>
+<script src="js/tour.js"></script>
+<script src="js/huong-dan.js"></script>
+</body>
+</html>
