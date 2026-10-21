@@ -1,0 +1,19 @@
+{
+  "name": "@agiviet/danh-muc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Danh mục mặt hàng AgiViet: 11 nhóm, mặt hàng nên bán và bán có điều kiện, mẫu chia loại; ảnh thật và icon nhóm.",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./anh/*": "./anh/*",
+    "./icon/*": "./icon/*"
+  },
+  "scripts": {
+    "kieu": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
+}

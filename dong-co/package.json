@@ -1,0 +1,20 @@
+{
+  "name": "agiviet-dong-co",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Động cơ nghiệp vụ cho bản HTML: luật (nghiep-vu), máy chủ mô phỏng (may-chu), danh mục mặt hàng. Đóng gói thành fe-nongdan/js/dong-co.js và fe-thumua/js/dong-co.js (window.AVN).",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "kieu": "tsc -p tsconfig.json && npm run kieu --workspaces --if-present",
+    "test": "vitest run && npm run test --workspaces --if-present",
+    "build": "vite build && node scripts/chep-vao-app.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vite": "^8.3.4",
+    "vitest": "^4.0.0"
+  }
+}
