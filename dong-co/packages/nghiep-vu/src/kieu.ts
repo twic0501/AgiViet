@@ -45,12 +45,18 @@ export interface NguoiDung {
   nguoiGiup: { ten: string; sdt: string; quyen: 'xem' | 'thao_tac' }[];
   caiDat: { coChu: 'vua' | 'lon' | 'rat_lon'; tocDoDoc: number; amThanh: boolean };
   biKhoa?: { lyDo: string; luc: number };
+  /** Bên mua nhận hàng loại 2, 3, hàng dạt: được báo khi có lô kém loại đúng mặt hàng (trống mặt hàng = mọi mặt hàng). */
+  nhanHangKemLoai?: { matHang: string[]; kgToiThieu: number; vung: string };
+  /** Đối tác bao tiêu (AgiViet ký thỏa thuận khung): cam kết giá sàn thu mua hàng loại 3, hàng dạt theo mặt hàng. */
+  baoTieu?: { giaSan: Record<string, number>; diemGom: string; tu: number };
   taoLuc: number;
 }
 
 /* ---------------- Lô, nhu cầu, kết nối ---------------- */
 
 export type CoSoLuong = 'uoc_tinh' | 'da_can';
+/** Loại hàng: loại 1 (đẹp, xuất khẩu, siêu thị), loại 2, loại 3, hàng dạt (nhỏ, trầy, chín ép: cho chế biến). */
+export type LoaiHang = 'loai_1' | 'loai_2' | 'loai_3' | 'dat';
 
 /** Lô hàng người bán đăng. hua = tổng lượng đã hứa cho các đơn người bán đã xác nhận; giao = đã giao và chốt cân. */
 export interface Lo {
@@ -79,6 +85,13 @@ export interface Lo {
   an?: boolean;
   /** Lô gộp nhiều hộ (hợp tác xã): phần của từng hộ. */
   thanhPhan?: { ho: string; kg: number }[];
+  /** Loại hàng; trống = suy từ choCheBien (lô đăng trước khi có trường này). */
+  loai?: LoaiHang;
+  /** Đang bán gấp: lên đầu danh sách, báo bên mua nhận hàng kém loại, hết hạn thì thôi. */
+  banGap?: { tu: number; den: number };
+  /** Tách từ lô khác (chia theo loại), hoặc thành từ phần hàng bị trả lại của một đơn. */
+  tachTu?: string;
+  traVeTuDon?: string;
 }
 
 export interface NhuCau {
@@ -173,6 +186,23 @@ export interface Coc {
   han: number;
 }
 
+/** Hợp đồng cọc của đơn: hai bên chọn khi lập đơn, chỉ có hiệu lực và được app bảo vệ khi cọc đi qua tài khoản đảm bảo. */
+export interface HopDong {
+  /** Tiêu chuẩn nghiệm thu: loại hàng và tỷ lệ không đạt được trả lại không cần ảnh. */
+  tieuChuan: { loai: LoaiHang; loiChoPhep: number };
+  /** Giá cho phần hạ cấp (đạt loại dưới): bên mua nhận với giá này thay vì trả lại. null = không nhận hạ cấp. */
+  giaHaCap: number | null;
+  /** Nơi giao, quyết định lúc chuyển rủi ro: tại vườn (bên mua kiểm trước khi bốc) hoặc tại kho bên mua (người bán chịu tới lúc cân). */
+  noiGiao: 'tai_vuon' | 'tai_kho';
+  /** Giá tham khảo lúc lập đơn (trung vị đơn đã chốt 30 ngày), null khi chưa đủ dữ liệu. */
+  giaThamKhao: number | null;
+  /** Giá dùng để tính cọc và phí: max(giá đơn, tỷ lệ × giá tham khảo). */
+  giaTinhCoc: number;
+  /** Giá đơn dưới ngưỡng bất thường; người bán phải xác nhận thêm khi ký, đơn được đánh dấu cho vận hành. */
+  giaBatThuong?: boolean;
+  banDongYGiaBatThuong?: number;
+}
+
 export interface DongLichSu {
   noiDung: string;
   luc: number;
@@ -199,7 +229,14 @@ export interface Don {
   lichSu: DongLichSu[];
   coc?: Coc;
   daCoc?: { so: number; phi: number; luc: number };
-  ketQuaCan?: { nhan: number; tuChoi: number; luc: number; nguon: 'tu_khai' | 'ben_kia_xac_nhan'; phanDoi?: boolean; phieu?: string };
+  /** Hợp đồng cọc (đơn lập trước khi có hợp đồng thì trống). */
+  hopDong?: HopDong;
+  /** Kết quả cân 3 phần: đạt (giá đơn), hạ cấp (giá hạ cấp), trả lại (không tính tiền); trả lại vượt tỷ lệ cho phép phải có ảnh. */
+  ketQuaCan?: { nhan: number; tuChoi: number; haCap?: number; anh?: string[]; luc: number; nguon: 'tu_khai' | 'ben_kia_xac_nhan'; phanDoi?: boolean; phieu?: string };
+  /** Phần bị trả lại đã thành lô bán gấp này. */
+  traVeLoId?: string;
+  /** Quá ngày giao chưa cân mà không có đề nghị đổi lịch hoặc giảm lượng. */
+  giaoTre?: number;
   phaiTra?: number;
   conPhaiTra?: number;
   daTra?: number;
@@ -332,7 +369,7 @@ export interface YeuCauDichVu {
   id: string;
   nguoi: Ben;
   vai: VaiNguoiDung;
-  loai: 'kiem_dinh' | 'van_chuyen' | 'kho_lanh';
+  loai: 'kiem_dinh' | 'van_chuyen' | 'kho_lanh' | 'so_che';
   donMa?: string;
   loId?: string;
   ngay: string;

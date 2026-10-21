@@ -1,20 +1,52 @@
 // Lệnh về đơn: tạo đơn, các bước theo bảng luật, đề nghị đổi lịch / giảm lượng / đổi giá, đánh giá.
-import { tien, tinhCoc, tinhPhi, vnd } from '../chinh-sach.ts';
+import { chinhSachCua, tien, tinhCoc, tinhPhi, vnd } from '../chinh-sach.ts';
 import { LUAT, aiLam, type TenBuoc, type ThamSoBuoc } from '../don/luat.ts';
 import { NHAN_TRANG_THAI } from '../don/trang-thai.ts';
-import type { DeNghi, Don, NguoiLam, SoGiaoDich, Vai } from '../kieu.ts';
-import { conBan, traLuong } from '../lo.ts';
+import { danhGiaGia } from '../gia.ts';
+import type { DeNghi, Don, HopDong, Lo, NguoiLam, SoGiaoDich, Vai } from '../kieu.ts';
+import { conBan, loaiCua, loaiDuoi, NHAN_LOAI, traLuong } from '../lo.ts';
 import { ben, capMa, chuRong, homNay, loi, ngayHopLe, soDuong, type BangXuLy, type KetQuaLenh } from './chung.ts';
 
 export type LenhBuocDon = { [B in TenBuoc]: { loai: 'buoc_don'; ma: string; buoc: B; thamSo: ThamSoBuoc[B] } }[TenBuoc];
 
 export type LenhDon =
-  | { loai: 'tao_don'; loId: string; kg: number; gia: number; ngayGiao: string; baoGiaId?: string }
+  | { loai: 'tao_don'; loId: string; kg: number; gia: number; ngayGiao: string; baoGiaId?: string } & DieuKhoan
+  | { loai: 'tra_hang_ve_lo'; ma: string; gia?: number | null }
   | LenhBuocDon
   | { loai: 'de_nghi_don'; ma: string; deNghi: DeNghi['loai']; giaTri: string; lyDo: string }
   | { loai: 'tra_loi_de_nghi'; deNghiId: string; dongY: boolean }
   | { loai: 'danh_gia'; ma: string; diem: 1 | 2 | 3 | 4 | 5; nhanXet?: string }
   | { loai: 'kiem_han' };
+
+/** Điều khoản hợp đồng cọc bên mua chọn khi lập đơn (bỏ trống thì theo mặc định). */
+export interface DieuKhoan {
+  loiChoPhep?: number;
+  giaHaCap?: number | null;
+  noiGiao?: HopDong['noiGiao'];
+}
+
+/** Lập hợp đồng cọc: tiêu chuẩn theo loại của lô, giá tham khảo cùng loại, giá tính cọc theo giá sàn. */
+function lapHopDong(so: SoGiaoDich, lo: Lo, gia: number, dk: DieuKhoan, bayGio: number): HopDong | string {
+  const cs = chinhSachCua(so), loai = loaiCua(lo);
+  const loiChoPhep = dk.loiChoPhep ?? cs.loiChoPhepMacDinh;
+  if (!(loiChoPhep >= 0 && loiChoPhep <= 0.5)) return 'Tỷ lệ không đạt cho phép từ 0 đến 50%.';
+  if (dk.giaHaCap != null && !(dk.giaHaCap > 0 && dk.giaHaCap < gia)) return 'Giá hạ cấp phải lớn hơn 0 và thấp hơn giá đơn.';
+  const g = danhGiaGia(so, lo.matHang, gia, bayGio, loai);
+  return {
+    tieuChuan: { loai, loiChoPhep }, giaHaCap: dk.giaHaCap ?? null, noiGiao: dk.noiGiao ?? 'tai_vuon',
+    giaThamKhao: g.thamKhao.gia, giaTinhCoc: g.giaTinhCoc, ...(g.muc === 'bat_thuong' ? { giaBatThuong: true } : {}),
+  };
+}
+
+/** Tính lại giá tính cọc khi đổi giá (giữ giá tham khảo lúc lập đơn). */
+function tinhLaiHopDong(don: Don, so: SoGiaoDich, bayGio: number) {
+  const hd = don.hopDong;
+  if (!hd) return;
+  const cs = chinhSachCua(so);
+  hd.giaTinhCoc = hd.giaThamKhao ? Math.max(don.gia, Math.round((hd.giaThamKhao * cs.tyLeGiaTinhCoc) / 100) * 100) : don.gia;
+  const batThuong = !!hd.giaThamKhao && don.gia < hd.giaThamKhao * cs.nguongGiaBatThuong;
+  if (batThuong) { hd.giaBatThuong = true; if (don.coc) hd.banDongYGiaBatThuong = bayGio; } else { delete hd.giaBatThuong; delete hd.banDongYGiaBatThuong; }
+}
 
 /** Ghi một dòng lịch sử vào đơn (mỗi thay đổi tăng phiên bản đơn). */
 export function ghiDon(don: Don, noiDung: string, vai: Vai, luc: number) {
@@ -28,7 +60,7 @@ const laChu = (don: Don, nguoi: NguoiLam) => (nguoi.vai === 'ban' && don.ban.id 
 /** Tính lại cọc và phí theo giá trị mới (chỉ khi chưa cọc). */
 function tinhLaiCoc(don: Don, so: SoGiaoDich) {
   if (!don.coc || don.daCoc) return;
-  const giaTri = tien(don.kg, don.gia);
+  const giaTri = tien(don.kg, don.hopDong?.giaTinhCoc ?? don.gia);
   don.coc.so = tinhCoc(giaTri, so.chinhSach);
   don.coc.phi = tinhPhi(giaTri, don.coc.loaiPhi === 'moi_quen', so.chinhSach);
 }
@@ -43,7 +75,7 @@ export function buocDon(l: LenhBuocDon, so: SoGiaoDich, nguoi: NguoiLam, bayGio:
   if (!luat.tu.includes(don.trangThai)) return loi(`Đơn ${don.ma} đang ở bước "${NHAN_TRANG_THAI[don.trangThai]}", không ${luat.ten} được.`);
   if (so.deNghi.some(d => d.donMa === don.ma && d.trangThai === 'cho') && ['nhapKetQua', 'datCoc', 'xacNhanDon'].includes(l.buoc)) return loi('Đơn đang có đề nghị thay đổi chờ trả lời. Trả lời đề nghị trước.');
   const lo = so.lo.find(x => x.id === don.loId);
-  const kq = (luat.lam as (nc: unknown, ...t: unknown[]) => ReturnType<typeof luat.lam>)({ don, lo, so, nguoi, bayGio, cs: so.chinhSach }, ...l.thamSo);
+  const kq = (luat.lam as (nc: unknown, ...t: unknown[]) => ReturnType<typeof luat.lam>)({ don, lo, so, nguoi, bayGio, cs: chinhSachCua(so) }, ...l.thamSo);
   if (typeof kq === 'object' && 'loi' in kq) return kq;
   const den = typeof kq === 'string' ? luat.den : kq.den;
   if (!den) return loi('Bảng luật thiếu trạng thái đích.');
@@ -75,10 +107,12 @@ export const XU_LY_DON: BangXuLy<LenhDon> = {
     if (!soDuong(kg) || kg > conBan(lo)) return loi(`Lượng phải lớn hơn 0 và không quá ${vnd(conBan(lo))} kg còn bán được của lô.`);
     if (!soDuong(gia)) return loi('Nhập giá đã thỏa thuận (lớn hơn 0).');
     if (!ngayHopLe(ngayGiao) || ngayGiao < homNay(bayGio)) return loi('Chọn ngày giao từ hôm nay trở đi.');
+    const hopDong = lapHopDong(so, lo, gia, l, bayGio);
+    if (typeof hopDong === 'string') return loi(hopDong);
     const don: Don = {
       ma: capMa(so, 'HĐ', 4), loId: lo.id, tenLo: lo.ten, matHang: lo.matHang, ban: lo.ban, mua: ben(nguoi), kg, gia, ngayGiao, ketNoiId: kn.id,
       ...(l.baoGiaId ? { baoGiaId: l.baoGiaId } : {}),
-      trangThai: 'cho_ban_xac_nhan', phienBan: 1, taoLuc: bayGio,
+      trangThai: 'cho_ban_xac_nhan', phienBan: 1, taoLuc: bayGio, hopDong,
       lichSu: [{ noiDung: `Bên mua tạo đơn${l.baoGiaId ? ` theo báo giá ${l.baoGiaId}` : ''}: ${vnd(kg)} kg × ${vnd(gia)} đ, giao ${ngayGiao.split('-').reverse().join('/')}`, luc: bayGio, vai: 'mua' }],
     };
     so.don.unshift(don);
@@ -102,6 +136,7 @@ export const XU_LY_DON: BangXuLy<LenhDon> = {
       if (!['cho_ban_xac_nhan', 'cho_coc'].includes(don.trangThai)) return loi('Chỉ đổi giá được trước khi đặt cọc.');
       const gia = Number(l.giaTri);
       if (!soDuong(gia) || gia === don.gia) return loi('Giá mới phải lớn hơn 0 và khác giá cũ.');
+      if (don.hopDong?.giaHaCap && gia <= don.hopDong.giaHaCap) return loi(`Giá mới phải cao hơn giá hạ cấp ${vnd(don.hopDong.giaHaCap)} đ/kg của hợp đồng.`);
     }
     const id = capMa(so, 'DN');
     so.deNghi.push({ id, donMa: don.ma, tu: nguoi.vai as 'ban' | 'mua', loai: l.deNghi, giaTri: l.giaTri, lyDo: l.lyDo.trim(), trangThai: 'cho', luc: bayGio });
@@ -124,7 +159,7 @@ export const XU_LY_DON: BangXuLy<LenhDon> = {
         traLuong(so.lo.find(x => x.id === don.loId), don.kg - moi);
         don.kg = moi;
         tinhLaiCoc(don, so);
-      } else { don.gia = Number(dn.giaTri); tinhLaiCoc(don, so); }
+      } else { don.gia = Number(dn.giaTri); tinhLaiHopDong(don, so, bayGio); tinhLaiCoc(don, so); }
     }
     ghiDon(don, `${tenVai(nguoi.vai)} ${l.dongY ? 'đồng ý' : 'không đồng ý'} đề nghị ${dn.id}`, nguoi.vai, bayGio);
     return { ma: dn.id };
@@ -144,6 +179,32 @@ export const XU_LY_DON: BangXuLy<LenhDon> = {
     for (const d of so.don.filter(x => x.trangThai === 'cho_coc' && x.coc && bayGio > x.coc.han)) {
       buocDon({ loai: 'buoc_don', ma: d.ma, buoc: 'quaHanCoc', thamSo: [] }, so, nguoi, bayGio);
     }
+    // Hợp đồng cọc: quá ngày giao chưa cân mà không ai đề nghị đổi lịch, giảm lượng thì ghi giao trễ (vào uy tín người bán)
+    for (const d of so.don.filter(x => x.trangThai === 'cho_giao' && !x.giaoTre && x.ngayGiao < homNay(bayGio))) {
+      if (so.deNghi.some(n => n.donMa === d.ma && n.trangThai === 'cho')) continue;
+      d.giaoTre = bayGio;
+      ghiDon(d, 'Quá ngày giao chưa cân, không có đề nghị đổi lịch hoặc giảm lượng: ghi giao trễ theo hợp đồng cọc', 'he_thong', bayGio);
+    }
     return {};
+  },
+  tra_hang_ve_lo(l, { so, nguoi, bayGio }) {
+    const don = so.don.find(d => d.ma === l.ma);
+    if (!don || nguoi.vai !== 'ban' || don.ban.id !== nguoi.id) return loi(`Không tìm thấy đơn ${l.ma} của bạn.`);
+    const kq = don.ketQuaCan;
+    if (!kq || kq.nguon !== 'ben_kia_xac_nhan' || !kq.tuChoi) return loi('Đơn chưa chốt cân hoặc không có hàng bị trả lại.');
+    if (don.traVeLoId) return loi(`Phần trả lại đã thành lô ${don.traVeLoId}.`);
+    if (l.gia != null && !soDuong(l.gia)) return loi('Giá phải lớn hơn 0, hoặc để trống để nhận báo giá.');
+    const goc = so.lo.find(x => x.id === don.loId);
+    const loai = loaiDuoi(don.hopDong?.tieuChuan.loai ?? (goc ? loaiCua(goc) : 'loai_1'));
+    const lo: Lo = {
+      id: capMa(so, 'LO'), ban: don.ban, matHang: don.matHang, ten: `${don.tenLo} · ${NHAN_LOAI[loai].toLowerCase()} (hàng trả lại)`, kg: kq.tuChoi, coSo: 'da_can',
+      gia: l.gia ?? null, hua: 0, giao: 0, thuocTinh: { ...(goc?.thuocTinh ?? {}) }, choCheBien: true, anh: kq.anh ?? [],
+      moTa: `Phần không đạt của đơn ${don.ma}, đã cân ${vnd(kq.tuChoi)} kg. Hợp cho chế biến.`, dangLuc: bayGio, conHangLuc: bayGio,
+      loai, banGap: { tu: bayGio, den: bayGio + chinhSachCua(so).hanBanGap }, traVeTuDon: don.ma, ...(goc?.vuonId ? { vuonId: goc.vuonId } : {}),
+    };
+    so.lo.unshift(lo);
+    don.traVeLoId = lo.id;
+    ghiDon(don, `Người bán đưa ${vnd(kq.tuChoi)} kg bị trả lại thành lô bán gấp ${lo.id}`, 'ban', bayGio);
+    return { ma: lo.id };
   },
 };

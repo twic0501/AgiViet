@@ -185,7 +185,7 @@ describe('Phí và cọc', () => {
     expect(p.don(b).coc).toMatchObject({ loaiPhi: 'moi_quen', phi: 3_000_000 });
   });
   it('tiền hàng nhỏ hơn cọc: đơn đóng luôn, hoàn cọc dư', () => {
-    p.buoc(DONG_XANH, a, 'nhapKetQua', 5, 95);
+    p.buoc(DONG_XANH, a, 'nhapKetQua', 5, 95, 0, ['anh-hang-hong.jpg']);
     p.buoc(NAM, a, 'ketQuaDung');
     expect(p.don(a)).toMatchObject({ trangThai: 'da_nhan_tien', phaiTra: 125_000, hoanCoc: 125_000, daTra: 125_000 });
   });

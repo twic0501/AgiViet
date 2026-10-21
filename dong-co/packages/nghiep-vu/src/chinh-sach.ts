@@ -29,6 +29,18 @@ export interface ChinhSach {
   /** Ứng tiền trước: tối đa bao nhiêu phần giá trị đơn, phí trên số ứng. */
   ungToiDa: number;
   phiUng: number;
+  /** Hợp đồng cọc: tỷ lệ hàng không đạt được phép trả lại mà không cần ảnh bằng chứng (mặc định khi lập đơn). */
+  loiChoPhepMacDinh: number;
+  /** Giá tính cọc, tính phí không thấp hơn tỷ lệ này của giá tham khảo (chống khai giá thấp để né cọc, né phí). */
+  tyLeGiaTinhCoc: number;
+  /** Giá đơn dưới tỷ lệ này của giá tham khảo là giá bất thường: người bán phải xác nhận thêm. */
+  nguongGiaBatThuong: number;
+  /** Giá dưới tỷ lệ này của giá tham khảo thì cảnh báo "thấp hơn mặt bằng" (không chặn). */
+  nguongGiaThap: number;
+  /** Cần ít nhất chừng này đơn đã chốt trong 30 ngày mới có giá tham khảo. */
+  soDonThamKhaoToiThieu: number;
+  /** Thời gian một lần bật bán gấp (mili giây). */
+  hanBanGap: number;
 }
 
 export const CHINH_SACH_MAC_DINH: ChinhSach = {
@@ -46,7 +58,16 @@ export const CHINH_SACH_MAC_DINH: ChinhSach = {
   giaBusiness: 1_500_000,
   ungToiDa: 0.7,
   phiUng: 0.015,
+  loiChoPhepMacDinh: 0.05,
+  tyLeGiaTinhCoc: 0.7,
+  nguongGiaBatThuong: 0.6,
+  nguongGiaThap: 0.8,
+  soDonThamKhaoToiThieu: 3,
+  hanBanGap: 3 * 24 * 3600_000,
 };
+
+/** Chính sách của sổ, bù các mức mới cho sổ lưu từ bản trước. */
+export const chinhSachCua = (so: { chinhSach: ChinhSach }): ChinhSach => ({ ...CHINH_SACH_MAC_DINH, ...so.chinhSach });
 
 export const tien = (kg: number, gia: number): number => Math.round(kg * gia);
 

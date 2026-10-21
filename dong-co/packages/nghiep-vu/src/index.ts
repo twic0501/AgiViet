@@ -9,5 +9,8 @@ export { LUAT, TEN_BUOC, aiLam, type Luat, type TenBuoc, type ThamSoBuoc } from 
 export * from './don/hien-thi.ts';
 export * from './so-giao-dich.ts';
 export * from './tong-hop.ts';
+export * from './gia.ts';
+export * from './don/hop-dong.ts';
+export type { DieuKhoan } from './lenh/don.ts';
 export { hetCachLy, type DuLieuLo } from './lenh/lo.ts';
 export { luotDaDung } from './lenh/ket-noi.ts';

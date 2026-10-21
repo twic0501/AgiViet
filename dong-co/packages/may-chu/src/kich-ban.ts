@@ -92,7 +92,7 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   const tao = (mua: NguoiLam, lo: string, kg: number, gia: number, giao = 4) => b.lam(mua, { loai: 'tao_don', loId: lo, kg, gia, ngayGiao: b.ngay(giao) });
   const xn = (ma: string) => b.buoc(N, ma, 'xacNhanDon');
   const coc = (mua: NguoiLam, ma: string) => b.buoc(mua, ma, 'datCoc');
-  const can = (mua: NguoiLam, ma: string, nhan: number, tuChoi = 0) => { b.buoc(mua, ma, 'nhapKetQua', nhan, tuChoi); };
+  const can = (mua: NguoiLam, ma: string, nhan: number, tuChoi = 0) => { b.buoc(mua, ma, 'nhapKetQua', nhan, tuChoi, 0, tuChoi ? ['anh-hang-khong-dat.jpg'] : []); };
 
   // Ba đơn đã xong sớm (uy tín, lô gộp, tiền về)
   const xongSom: string[] = [];

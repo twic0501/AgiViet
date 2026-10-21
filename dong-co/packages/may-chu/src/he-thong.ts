@@ -5,7 +5,7 @@ import type { DichVu } from './dich-vu.ts';
 
 export const HE_THONG: NguoiLam = { vai: 'he_thong', id: 'he-thong', ten: 'Hệ thống AgiViet' };
 
-const DOI_TAC = { kiem_dinh: ['Trung tâm Kiểm nghiệm Cần Thơ', 1_200_000], van_chuyen: ['Xe lạnh Phú Gia', 2_800_000], kho_lanh: ['Kho lạnh Sa Đéc', 900_000] } as const;
+const DOI_TAC = { kiem_dinh: ['Trung tâm Kiểm nghiệm Cần Thơ', 1_200_000], van_chuyen: ['Xe lạnh Phú Gia', 2_800_000], kho_lanh: ['Kho lạnh Sa Đéc', 900_000], so_che: ['Xưởng sấy, cấp đông Tân Phú Đông', 1_600_000] } as const;
 /** Ngân hàng, đối tác phản hồi sau bao lâu (giờ mô phỏng; tua đồng hồ để thấy ngay). */
 export const TRE = { nganHang: 2 * 60_000, doiTac: 60_000 };
 

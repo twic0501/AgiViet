@@ -7,7 +7,8 @@ import { conBan, traLuong } from '../lo.ts';
 /** Tham số của từng bước (ngoài mã đơn). */
 export interface ThamSoBuoc {
   rutDon: [];
-  xacNhanDon: [];
+  /** Đơn giá bất thường: người bán phải gửi true (đã đọc cảnh báo tiền ngoài app không được bảo vệ). */
+  xacNhanDon: [dongYGiaBatThuong?: boolean];
   tuChoiDon: [lyDo?: string];
   datCoc: [];
   quaHanCoc: [];
@@ -15,7 +16,8 @@ export interface ThamSoBuoc {
   yeuCauHuy: [lyDo?: string];
   dongYHuy: [];
   tuChoiHuy: [];
-  nhapKetQua: [nhan: number, tuChoi: number];
+  /** Kết quả cân 3 phần: đạt, trả lại, hạ cấp (giá hạ cấp của hợp đồng); trả lại vượt tỷ lệ cho phép phải kèm ảnh. */
+  nhapKetQua: [nhan: number, tuChoi: number, haCap?: number, anh?: string[]];
   ketQuaDung: [];
   ketQuaSai: [];
   chuyenTienDamBao: [so: number];
@@ -64,14 +66,18 @@ export const LUAT: { [B in TenBuoc]: Luat<B> } = {
   },
   xacNhanDon: {
     ten: 'xác nhận đơn', ai: ['ban'], tu: ['cho_ban_xac_nhan'], den: 'cho_coc',
-    lam: ({ don, lo, so, bayGio, cs }) => {
+    lam: ({ don, lo, so, bayGio, cs }, dongYGiaBatThuong) => {
       if (!lo) return loi('Lô của đơn không còn.');
       if (don.kg > conBan(lo)) return loi(`Lô chỉ còn bán được ${vnd(conBan(lo))} kg, đơn cần ${vnd(don.kg)} kg. Từ chối đơn hoặc hỏi bên mua giảm lượng.`);
+      const hd = don.hopDong;
+      if (hd?.giaBatThuong && !dongYGiaBatThuong) return loi(`Giá ${vnd(don.gia)} đ/kg thấp bất thường so với giá tham khảo ${vnd(hd.giaThamKhao ?? 0)} đ/kg. Tiền chỉ được bảo vệ theo đúng giá trên đơn; tiền trả thêm ngoài app không được tài khoản đảm bảo bảo vệ. Đọc kỹ và xác nhận lại nếu vẫn muốn bán giá này.`);
       lo.hua += don.kg;
-      const giaTri = tien(don.kg, don.gia);
+      if (hd?.giaBatThuong) hd.banDongYGiaBatThuong = bayGio;
+      // Cọc và phí tính trên giá tính cọc (không thấp hơn giá sàn theo giá tham khảo), không trên giá khai
+      const giaTri = tien(don.kg, hd?.giaTinhCoc ?? don.gia);
       const quen = so.don.some(x => x.ma !== don.ma && x.mua.id === don.mua.id && x.ban.id === don.ban.id && x.daCoc);
       don.coc = { so: tinhCoc(giaTri, cs), phi: tinhPhi(giaTri, quen, cs), loaiPhi: quen ? 'moi_quen' : 'gioi_thieu', han: bayGio + cs.hanCoc };
-      return `Người bán xác nhận đơn, giữ ${vnd(don.kg)} kg, chờ bên mua cọc ${vnd(don.coc.so)} đ`;
+      return `Người bán ký hợp đồng cọc, xác nhận đơn, giữ ${vnd(don.kg)} kg, chờ bên mua cọc ${vnd(don.coc.so)} đ${hd?.giaBatThuong ? '. Người bán đã xác nhận giá bất thường' : ''}`;
     },
   },
   tuChoiDon: {
@@ -131,11 +137,15 @@ export const LUAT: { [B in TenBuoc]: Luat<B> } = {
   },
   nhapKetQua: {
     ten: 'nhập kết quả cân', ai: ['mua'], tu: ['cho_giao'], den: 'cho_ban_xn_kq',
-    lam: ({ don, bayGio }, nhan, tuChoi) => {
-      if (!(nhan >= 0) || !(tuChoi >= 0) || nhan + tuChoi <= 0) return loi('Nhập số kg nhận và không nhận (không âm).');
-      if (nhan + tuChoi > don.kg) return loi(`Nhận + không nhận vượt ${vnd(don.kg)} kg của đơn.`);
-      don.ketQuaCan = { nhan, tuChoi, luc: bayGio, nguon: 'tu_khai' };
-      return `Bên mua nhập cân: nhận ${vnd(nhan)} kg, không nhận ${vnd(tuChoi)} kg (tự khai)`;
+    lam: ({ don, bayGio, cs }, nhan, tuChoi, haCap = 0, anh = []) => {
+      if (!(nhan >= 0) || !(tuChoi >= 0) || !(haCap >= 0) || nhan + tuChoi + haCap <= 0) return loi('Nhập số kg đạt, hạ cấp và trả lại (không âm).');
+      if (nhan + tuChoi + haCap > don.kg) return loi(`Đạt + hạ cấp + trả lại vượt ${vnd(don.kg)} kg của đơn.`);
+      if (haCap > 0 && !don.hopDong?.giaHaCap) return loi('Hợp đồng không có giá hạ cấp: phần không đạt chỉ được trả lại.');
+      const loiChoPhep = don.hopDong?.tieuChuan.loiChoPhep ?? cs.loiChoPhepMacDinh;
+      const tyLeTra = tuChoi / (nhan + tuChoi + haCap);
+      if (tyLeTra > loiChoPhep && !anh.length) return loi(`Trả lại ${Math.round(tyLeTra * 100)}% vượt mức cho phép ${Math.round(loiChoPhep * 100)}% của hợp đồng: kèm ảnh hàng không đạt làm bằng chứng.`);
+      don.ketQuaCan = { nhan, tuChoi, ...(haCap ? { haCap } : {}), ...(anh.length ? { anh } : {}), luc: bayGio, nguon: 'tu_khai' };
+      return `Bên mua nhập cân: đạt ${vnd(nhan)} kg${haCap ? `, hạ cấp ${vnd(haCap)} kg` : ''}, trả lại ${vnd(tuChoi)} kg${anh.length ? ` (kèm ${anh.length} ảnh)` : ''} (tự khai)`;
     },
   },
   ketQuaDung: {
@@ -143,10 +153,11 @@ export const LUAT: { [B in TenBuoc]: Luat<B> } = {
     lam: ({ don, lo }) => {
       const kq = don.ketQuaCan!, coc = don.daCoc!.so;
       kq.nguon = 'ben_kia_xac_nhan';
-      don.phaiTra = tien(kq.nhan, don.gia);
+      // Tiền hàng = phần đạt × giá đơn + phần hạ cấp × giá hạ cấp; phần trả lại không tính tiền, người bán đem bán gấp được
+      don.phaiTra = tien(kq.nhan, don.gia) + tien(kq.haCap ?? 0, don.hopDong?.giaHaCap ?? 0);
       don.conPhaiTra = Math.max(0, don.phaiTra - coc);
       don.daTra = Math.min(don.phaiTra, coc);
-      if (lo) lo.giao += kq.nhan;
+      if (lo) lo.giao += kq.nhan + (kq.haCap ?? 0);
       if (!don.conPhaiTra) {
         // Tiền hàng không quá tiền cọc: cọc trả đủ, phần dư hoàn bên mua, đơn đóng luôn
         don.hoanCoc = coc - don.phaiTra;

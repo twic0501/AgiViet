@@ -140,7 +140,7 @@ export const CA_KIEM_THU_MUA: CaKiemThu[] = [
   } },
   { ma: 'M17', nhom: 'Nghiệm thu', ten: 'Người bán báo số cân sai', kyVong: 'Đơn quay về chờ cân; bên mua nhập lại số mới.', chay(t) {
     const lo = tachMoi(t), ma = t.donDaCoc(lo, 2000);
-    t.buoc(t.mua[0], ma, 'nhapKetQua', 1800, 200);
+    t.buoc(t.mua[0], ma, 'nhapKetQua', 1800, 200, 0, ['anh-hang-khong-dat.jpg']);
     t.buoc(t.ban, ma, 'ketQuaSai');
     t.kiem('Đơn quay về chờ cân, có đánh dấu tranh chấp', t.d(ma).trangThai === 'cho_giao' && t.d(ma).ketQuaCan?.phanDoi === true);
     t.kiemDuoc('Nhập lại 1.950 kg', t.thuBuoc(t.mua[0], ma, 'nhapKetQua', 1950, 50));

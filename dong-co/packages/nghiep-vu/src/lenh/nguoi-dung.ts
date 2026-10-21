@@ -15,7 +15,9 @@ export type LenhNguoiDung =
   | { loai: 'go_thanh_vien'; sdt: string }
   | { loai: 'duyet_xac_minh'; nguoiDungId: string; dongY: boolean; lyDo?: string }
   | { loai: 'khoa_tai_khoan'; nguoiDungId: string; lyDo: string }
-  | { loai: 'mo_khoa_tai_khoan'; nguoiDungId: string };
+  | { loai: 'mo_khoa_tai_khoan'; nguoiDungId: string }
+  | { loai: 'cap_nhat_nhan_hang_kem_loai'; bat: boolean; matHang?: string[]; kgToiThieu?: number; vung?: string }
+  | { loai: 'dat_bao_tieu'; nguoiDungId: string; bat: boolean; giaSan?: Record<string, number>; diemGom?: string };
 
 const SDT = /^0\d{9,10}$/;
 const chuanSdt = (s: string) => s.replace(/[\s.\-]/g, '');
@@ -135,6 +137,26 @@ export const XU_LY_NGUOI_DUNG: BangXuLy<LenhNguoiDung> = {
     const n = so.nguoiDung.find(x => x.id === l.nguoiDungId);
     if (!n?.biKhoa) return loi('Tài khoản này không bị khóa.');
     delete n.biKhoa;
+    return { ma: n.id };
+  },
+  cap_nhat_nhan_hang_kem_loai(l, { so, nguoi }) {
+    if (nguoi.vai !== 'mua') return loi('Chỉ bên mua đăng ký nhận hàng kém loại.');
+    const n = so.nguoiDung.find(x => x.id === nguoi.id)!;
+    if (!l.bat) { delete n.nhanHangKemLoai; return { ma: n.id }; }
+    const kg = l.kgToiThieu ?? 0;
+    if (!(kg >= 0)) return loi('Lượng tối thiểu không âm.');
+    n.nhanHangKemLoai = { matHang: l.matHang ?? [], kgToiThieu: kg, vung: l.vung?.trim() ?? '' };
+    return { ma: n.id };
+  },
+  dat_bao_tieu(l, { so, nguoi, bayGio }) {
+    if (nguoi.vai !== 'van_hanh') return loi('Chỉ đội vận hành ghi đối tác bao tiêu (theo thỏa thuận khung đã ký).');
+    const n = so.nguoiDung.find(x => x.id === l.nguoiDungId);
+    if (!n || n.vai !== 'mua') return loi('Đối tác bao tiêu phải là một bên mua đã đăng ký.');
+    if (!l.bat) { delete n.baoTieu; return { ma: n.id }; }
+    const gia = Object.entries(l.giaSan ?? {});
+    if (!gia.length || gia.some(([, g]) => !(g > 0))) return loi('Ghi giá sàn (lớn hơn 0) cho ít nhất một mặt hàng.');
+    if (chuRong(l.diemGom)) return loi('Ghi điểm gom nhận hàng.');
+    n.baoTieu = { giaSan: Object.fromEntries(gia), diemGom: l.diemGom!.trim(), tu: bayGio };
     return { ma: n.id };
   },
 };

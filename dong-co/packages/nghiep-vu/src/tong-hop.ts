@@ -1,8 +1,9 @@
 // Phép tính tổng hợp (chỉ đọc sổ): uy tín, lời lỗ theo vụ, tổng kết tuần, nguồn gốc, chia tiền lô gộp, công nợ,
 // bảng kê 01/TNDN, chấm điểm nhà cung cấp, truy xuất, độ phủ kế hoạch.
-import { ngayCua, thangCua, tien } from './chinh-sach.ts';
-import type { Don, NhatKy, SoGiaoDich } from './kieu.ts';
+import { chinhSachCua, ngayCua, thangCua, tien } from './chinh-sach.ts';
+import type { Don, Lo, NhatKy, SoGiaoDich } from './kieu.ts';
 import { hetCachLy } from './lenh/lo.ts';
+import { conBan, dangBanGap, laKemLoai, loaiCua, loHienThi } from './lo.ts';
 
 const NGAY = 24 * 3600_000;
 const daChot = (d: Don) => ['da_chot', 'tien_dang_giu', 'bao_da_tra', 'chua_thay_tien', 'da_nhan_tien'].includes(d.trangThai);
@@ -20,6 +21,10 @@ export interface UyTin {
   tyLeTraDungHan: number | null;
   soHuyDoMinh: number;
   soTranhChap: number;
+  /** Người bán: kg bị trả lại / kg đã cân (giao đúng loại). */
+  tyLeTraLai: number | null;
+  /** Người bán: số đơn quá ngày giao không đề nghị đổi lịch, giảm lượng. */
+  soGiaoTre: number;
   diemDanhGia: number | null;
   soDanhGia: number;
 }
@@ -30,7 +35,11 @@ export function uyTin(so: SoGiaoDich, nguoiId: string): UyTin {
   const don = so.don.filter(d => (laBan ? d.ban.id : d.mua.id) === nguoiId);
   const xong = don.filter(d => d.trangThai === 'da_nhan_tien');
   const chot = don.filter(d => d.ketQuaCan && daChot(d));
-  const tyLeGiaoDu = laBan && chot.length ? chot.reduce((s, d) => s + d.ketQuaCan!.nhan, 0) / chot.reduce((s, d) => s + d.kg, 0) : null;
+  const nhanDuoc = (d: Don) => d.ketQuaCan!.nhan + (d.ketQuaCan!.haCap ?? 0);
+  const tyLeGiaoDu = laBan && chot.length ? chot.reduce((s, d) => s + nhanDuoc(d), 0) / chot.reduce((s, d) => s + d.kg, 0) : null;
+  const daCan = chot.reduce((s, d) => s + nhanDuoc(d) + d.ketQuaCan!.tuChoi, 0);
+  const tyLeTraLai = laBan && daCan ? chot.reduce((s, d) => s + d.ketQuaCan!.tuChoi, 0) / daCan : null;
+  const soGiaoTre = laBan ? don.filter(d => d.giaoTre).length : 0;
   const daTra = !laBan ? xong.filter(d => d.thanhToan) : [];
   const dungHan = daTra.filter(d => { const c = lucCua(d, 'Người bán xác nhận kết quả'), t = d.lichSu.at(-1)!.luc; return c !== undefined && t - c <= 3 * NGAY; });
   const tyLeTraDungHan = !laBan && daTra.length ? dungHan.length / daTra.length : null;
@@ -41,11 +50,11 @@ export function uyTin(so: SoGiaoDich, nguoiId: string): UyTin {
   const diemDanhGia = dg.length ? dg.reduce((s, g) => s + g.diem, 0) / dg.length : null;
   let bac: BacUyTin = 'moi';
   if (xong.length >= 3) {
-    const tot = (tyLeGiaoDu ?? 1) >= 0.95 && (tyLeTraDungHan ?? 1) >= 0.9 && soHuyDoMinh === 0 && (diemDanhGia ?? 5) >= 4.5;
-    const kha = (tyLeGiaoDu ?? 1) >= 0.85 && (tyLeTraDungHan ?? 1) >= 0.7 && (diemDanhGia ?? 5) >= 3.5;
+    const tot = (tyLeGiaoDu ?? 1) >= 0.95 && (tyLeTraDungHan ?? 1) >= 0.9 && soHuyDoMinh === 0 && (diemDanhGia ?? 5) >= 4.5 && (tyLeTraLai ?? 0) <= 0.1 && soGiaoTre === 0;
+    const kha = (tyLeGiaoDu ?? 1) >= 0.85 && (tyLeTraDungHan ?? 1) >= 0.7 && (diemDanhGia ?? 5) >= 3.5 && (tyLeTraLai ?? 0) <= 0.25;
     bac = tot && xong.length >= 10 ? 'rat_tot' : tot ? 'tot' : kha ? 'kha' : 'moi';
   }
-  return { bac, soDonXong: xong.length, tyLeGiaoDu, tyLeTraDungHan, soHuyDoMinh, soTranhChap, diemDanhGia, soDanhGia: dg.length };
+  return { bac, soDonXong: xong.length, tyLeGiaoDu, tyLeTraDungHan, soHuyDoMinh, soTranhChap, tyLeTraLai, soGiaoTre, diemDanhGia, soDanhGia: dg.length };
 }
 export const NHAN_BAC: Record<BacUyTin, string> = { moi: 'Mới', kha: 'Khá', tot: 'Tốt', rat_tot: 'Rất tốt' };
 
@@ -148,8 +157,9 @@ export function chamDiemNhaCungCap(so: SoGiaoDich, muaId: string) {
   const theoBan = new Map<string, Don[]>();
   for (const d of so.don.filter(x => x.mua.id === muaId && x.ketQuaCan && daChot(x))) theoBan.set(d.ban.id, [...(theoBan.get(d.ban.id) ?? []), d]);
   return [...theoBan.entries()].map(([id, ds]) => {
-    const giaoDu = ds.reduce((s, d) => s + d.ketQuaCan!.nhan, 0) / ds.reduce((s, d) => s + d.kg, 0);
-    const dungLoai = ds.reduce((s, d) => s + d.ketQuaCan!.nhan, 0) / ds.reduce((s, d) => s + d.ketQuaCan!.nhan + d.ketQuaCan!.tuChoi, 0);
+    const haCap = (d: Don) => d.ketQuaCan!.haCap ?? 0;
+    const giaoDu = ds.reduce((s, d) => s + d.ketQuaCan!.nhan + haCap(d), 0) / ds.reduce((s, d) => s + d.kg, 0);
+    const dungLoai = ds.reduce((s, d) => s + d.ketQuaCan!.nhan, 0) / ds.reduce((s, d) => s + d.ketQuaCan!.nhan + haCap(d) + d.ketQuaCan!.tuChoi, 0);
     const dungHen = ds.filter(d => ngayCua(d.ketQuaCan!.luc) <= d.ngayGiao).length / ds.length;
     const diem = Math.round((giaoDu * 0.4 + dungLoai * 0.4 + dungHen * 0.2) * 100);
     return { id, ten: ds[0]!.ban.ten, soDon: ds.length, giaoDu, dungLoai, dungHen, diem };
@@ -174,4 +184,37 @@ export function phuKeHoach(so: SoGiaoDich, muaId: string) {
       + so.donNgoai.filter(n => n.mua.id === muaId && n.matHang === k.matHang && n.ngay.startsWith(k.thang)).reduce((s, n) => s + n.kg, 0);
     return { ...k, daCo, thieu: Math.max(0, k.kgCan - daCo) };
   }).sort((a, b) => a.thang.localeCompare(b.thang));
+}
+
+/* ---------------- Đầu ra cho hàng kém loại ---------------- */
+
+/** Ai nhận lô kém loại (hoặc đang bán gấp) này: bên mua đã đăng ký nhận hàng kém loại đúng mặt hàng, bên mua có tin cần mua
+ *  đang mở cùng mặt hàng, và đối tác bao tiêu có giá sàn cho mặt hàng (người nhận cuối cùng). */
+export function nguoiNhanHangKemLoai(so: SoGiaoDich, lo: Lo) {
+  const kg = conBan(lo), tinh = (v: string) => v.split(',').at(-1)!.trim();
+  const vungBan = so.nguoiDung.find(n => n.id === lo.ban.id)?.vung ?? '';
+  const nhan = so.nguoiDung.filter(n => n.vai === 'mua' && !n.biKhoa && n.nhanHangKemLoai).filter(n => {
+    const k = n.nhanHangKemLoai!;
+    return (!k.matHang.length || k.matHang.includes(lo.matHang)) && k.kgToiThieu <= kg && (!k.vung || vungBan.includes(tinh(k.vung)) || k.vung.includes(tinh(vungBan)));
+  }).map(n => ({ id: n.id, ten: n.toChuc?.ten ?? n.ten, vung: n.vung, kgToiThieu: n.nhanHangKemLoai!.kgToiThieu, daKetNoi: so.ketNoi.some(k => k.loId === lo.id && k.mua.id === n.id) }));
+  const coNhuCau = so.nhuCau.filter(c => c.trangThai === 'mo' && c.matHang === lo.matHang && c.mua.id !== lo.ban.id && !nhan.some(n => n.id === c.mua.id))
+    .map(c => ({ id: c.mua.id, ten: c.mua.ten, nhuCauId: c.id, kg: c.kg, giaTran: c.giaTran }));
+  const baoTieu = so.nguoiDung.filter(n => n.vai === 'mua' && !n.biKhoa && n.baoTieu?.giaSan[lo.matHang])
+    .map(n => ({ id: n.id, ten: n.toChuc?.ten ?? n.ten, gia: n.baoTieu!.giaSan[lo.matHang]!, diemGom: n.baoTieu!.diemGom }));
+  return { nhan, coNhuCau, baoTieu };
+}
+
+/** Lô kém loại (hoặc hàng tươi) của người bán chưa có ai hỏi sau 24 giờ và chưa bán gấp: gợi ý bật bán gấp. */
+export function loNenBanGap(so: SoGiaoDich, banId: string, bayGio: number) {
+  return so.lo.filter(l => l.ban.id === banId && !l.an && conBan(l) > 0 && !dangBanGap(l, bayGio) && laKemLoai(l)
+    && bayGio - l.dangLuc >= NGAY && !so.ketNoi.some(k => k.loId === l.id && k.trangThai !== 'tu_choi'));
+}
+
+/** Lô kém loại khớp hồ sơ nhận hàng kém loại của bên mua (để báo bên mua). */
+export function loKemLoaiKhop(so: SoGiaoDich, muaId: string, bayGio: number) {
+  const n = so.nguoiDung.find(x => x.id === muaId);
+  if (!n?.nhanHangKemLoai) return [];
+  return so.lo.filter(l => l.ban.id !== muaId && loHienThi(l, bayGio, chinhSachCua(so).hanHienThiLo) && laKemLoai(l) && nguoiNhanHangKemLoai(so, l).nhan.some(x => x.id === muaId))
+    .sort((a, b) => Number(dangBanGap(b, bayGio)) - Number(dangBanGap(a, bayGio)) || b.dangLuc - a.dangLuc)
+    .map(l => ({ lo: l, loai: loaiCua(l), banGap: dangBanGap(l, bayGio) }));
 }

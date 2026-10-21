@@ -35,7 +35,7 @@ export class PhienThu extends BoDung {
   ketNoi(lo: string, mua = this.mua[0]) { const k = this.lam(mua, { loai: 'gui_loi_moi', loId: lo }); this.lam(this.ban, { loai: 'tra_loi_ket_noi', ketNoiId: k, dongY: true }); return k; }
   don(lo: string, kg: number, mua = this.mua[0], gia = 25000) { return this.lam(mua, { loai: 'tao_don', loId: lo, kg, gia, ngayGiao: this.ngay(3) }); }
   donDaCoc(lo: string, kg: number, mua = this.mua[0]) { const ma = this.don(lo, kg, mua); this.buoc(this.ban, ma, 'xacNhanDon'); this.buoc(mua, ma, 'datCoc'); return ma; }
-  donChot(lo: string, kg: number, nhan = kg, mua = this.mua[0]) { const ma = this.donDaCoc(lo, kg, mua); this.buoc(mua, ma, 'nhapKetQua', nhan, kg - nhan); this.buoc(this.ban, ma, 'ketQuaDung'); return ma; }
+  donChot(lo: string, kg: number, nhan = kg, mua = this.mua[0]) { const ma = this.donDaCoc(lo, kg, mua); this.buoc(mua, ma, 'nhapKetQua', nhan, kg - nhan, 0, kg > nhan ? ['anh-hang-khong-dat.jpg'] : []); this.buoc(this.ban, ma, 'ketQuaDung'); return ma; }
   d(ma: string) { return this.so.don.find(x => x.ma === ma)!; }
   l(id: string) { return this.so.lo.find(x => x.id === id)!; }
 }
@@ -252,7 +252,7 @@ export const CA_KIEM_THU_BAN: CaKiemThu[] = [
   } },
   { ma: 'B26', nhom: 'Đơn', ten: 'Số cân sai: bên mua nhập lại', kyVong: 'Người bán bấm "Không đúng" thì đơn quay về chờ cân.', chay(t) {
     const lo = t.lo(); t.ketNoi(lo); const ma = t.donDaCoc(lo, 1000);
-    t.buoc(t.mua[0], ma, 'nhapKetQua', 800, 200);
+    t.buoc(t.mua[0], ma, 'nhapKetQua', 800, 200, 0, ['anh-hang-khong-dat.jpg']);
     t.kiemDuoc('Báo không đúng', t.thuBuoc(t.ban, ma, 'ketQuaSai'));
     t.kiem('Đơn chờ cân lại, có đánh dấu phản đối', t.d(ma).trangThai === 'cho_giao' && !!t.d(ma).ketQuaCan?.phanDoi);
     t.man = `ket-qua?ma=${encodeURIComponent(ma)}`;
