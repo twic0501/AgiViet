@@ -1,4 +1,5 @@
-/* AgiViet · App Nhà sản xuất: phần bổ sung cho bản làm lại 10/2026 (màn vẽ từ dữ liệu, js/khung.js). Nạp sau app.css.
+/* AgiViet · thành phần dùng chung hai app cho bản làm lại 10/2026 (màn vẽ từ dữ liệu, js/khung.js). Nạp sau css gốc của từng app.
+   Nguồn ở dong-co/khung/moi.css; npm run dong-co chép vào fe-nongdan/css và fe-thumua/css.
    Nhãn "tới lượt ai" (màu + hình + chữ), thanh chặng 6 bước, thanh lượng lô, khung báo, hộp hỏi lại, chọn mặt hàng. */
 :root { --nhom-lam: #c77a12; --nhom-lam-nen: #fdf0cf; --nhom-cho: #315c60; --nhom-cho-nen: #e3eef0; --nhom-xong: #2c6b51; --nhom-xong-nen: #dcebd6; --nhom-loi: #b4452a; --nhom-loi-nen: #fbe6dc; --nhom-het: #6b7c70; }
 

@@ -2,211 +2,32 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#315c60">
-<title>Nhu cầu mua · AgiViet Thu mua</title>
+<title>Tin cần mua · AgiViet Thu mua</title>
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/fonts.css">
-<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/mua.css">
+<link rel="stylesheet" href="css/moi.css">
 </head>
 <body>
-<main>
-<!-- ============ DANH SÁCH NHU CẦU ============ -->
-<section class="man" id="nhu-cau" data-menu="nhu-cau" data-title="Nhu cầu mua">
-  <div class="dau-trang">
-    <div class="tieu-de"><h1>Nhu cầu mua</h1><p class="mo-ta">Tin mua hiện cho người bán đúng mặt hàng. Báo giá gửi riêng cho bạn, người bán khác không thấy.</p></div>
-    <div class="hanh-dong"><a class="btn" href="#tao-nhu-cau"><svg class="i"><use href="#i-cong"/></svg>Tạo nhu cầu mua</a></div>
-  </div>
-  <div class="bao canh chi-free"><svg class="i"><use href="#i-thong-tin"/></svg><div class="grow"><strong class="t">Còn 1 tin mua mới trong tháng 10 (4/5)</strong>Sửa tin, báo còn nhu cầu, tạm dừng rồi mở lại không tính lượt. Nhu cầu định kỳ hằng tuần có trong Business.</div><a class="btn bus nho" href="goi.html#so-sanh-goi">Xem Business</a></div>
-  <div class="hang giua boc">
-    <div class="seg" data-chon="loc-nc" role="group" aria-label="Lọc">
-      <button type="button" aria-pressed="true" data-khi="mo">Đang mở · 3</button>
-      <button type="button" aria-pressed="false" data-khi="dung">Tạm dừng · 1</button>
-      <button type="button" aria-pressed="false" data-khi="xong">Đã xong · 6</button>
-    </div>
-    <span class="nho nhat">Cập nhật 9/10, 8:40</span>
-  </div>
-  <div class="card bang-cuon">
-    <table class="bang">
-      <thead><tr><th>Nhu cầu</th><th>Lượng</th><th>Thời gian</th><th>Báo giá</th><th>Đã chắc</th><th>Trạng thái</th><th></th></tr></thead>
-      <tbody>
-        <tr>
-          <td><div class="hang"><span class="anh-sp bg-xoai"><img src="assets/anh/mango.jpg" alt=""></span><div><a class="dong-link" href="#chi-tiet-nhu-cau">N-014 · Xoài cát Chu loại 1</a><div class="rat-nho nhat">Giao tại nhà máy · trả khi cân</div></div></div></td>
-          <td class="so-o">20 tấn</td><td>10 – 20/10</td>
-          <td><span class="tag song">3 mới</span></td>
-          <td><div class="cot g4" style="min-width:110px"><span class="rat-nho dam">12/20 tấn</span><div class="thanh"><i style="width:60%;background:var(--reu)"></i></div></div></td>
-          <td><span class="tag cho"><span class="sh sh-vuong"></span>Thiếu 3 tấn</span></td>
-          <td class="phai"><a class="btn nho phu" href="#chi-tiet-nhu-cau">Mở</a></td>
-        </tr>
-        <tr>
-          <td><div class="hang"><span class="anh-sp bg-la"><img src="assets/ic-hang.svg" alt=""></span><div><a class="dong-link" href="#chi-tiet-nhu-cau">N-012 · Mít Thái</a><div class="rat-nho nhat">Giao tại nhà máy · trả sau 5 ngày</div></div></div></td>
-          <td class="so-o">8 tấn</td><td>15 – 30/10</td>
-          <td><span class="tag">1</span></td>
-          <td><div class="cot g4" style="min-width:110px"><span class="rat-nho dam">4/8 tấn</span><div class="thanh"><i style="width:50%;background:var(--reu)"></i></div></div></td>
-          <td><span class="tag song"><span class="sh sh-tron"></span>Đang tìm</span></td>
-          <td class="phai"><a class="btn nho phu" href="#chi-tiet-nhu-cau">Mở</a></td>
-        </tr>
-        <tr>
-          <td><div class="hang"><span class="anh-sp" style="background:#fbf0d2"><img src="assets/anh/paddy.jpg" alt=""></span><div><a class="dong-link" href="#chi-tiet-nhu-cau">N-009 · Chuối già</a> <span class="bus-tag">Định kỳ</span><div class="rat-nho nhat">Hằng tuần, chủ nhật · HTX Tân Phước</div></div></div></td>
-          <td class="so-o">15 tấn/tuần</td><td>đến 31/12</td>
-          <td><span class="tag">0</span></td>
-          <td><div class="cot g4" style="min-width:110px"><span class="rat-nho dam">15/15 tấn</span><div class="thanh"><i style="width:100%;background:var(--reu)"></i></div></div></td>
-          <td><span class="tag ok"><span class="sh sh-tron"></span>Đủ nguồn</span></td>
-          <td class="phai"><a class="btn nho phu" href="#chi-tiet-nhu-cau">Mở</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="nho nhat">“Đã chắc” chỉ tính lượng trong thỏa thuận đã ký. Báo giá chưa chấp nhận không được tính là hàng chắc chắn.</p>
-</section>
-
-<!-- ============ TẠO NHU CẦU ============ -->
-<section class="man" id="tao-nhu-cau" data-menu="nhu-cau" data-title="Tạo nhu cầu mua">
-  <div class="dau-trang">
-    <div class="tieu-de"><div class="vet"><a href="#nhu-cau">Nhu cầu mua</a> › Tạo mới</div><h1>Tạo nhu cầu mua</h1><p class="mo-ta">Điền đủ quy cách để người bán báo giá đúng. Mục nào chưa yêu cầu thì để trống, người bán sẽ thấy là “chưa yêu cầu”.</p></div>
-  </div>
-  <div class="luoi l-2-1">
-    <div class="cot g16">
-      <section class="card">
-        <div class="card-dau"><svg class="i song"><use href="#i-tia-set"/></svg><h2>Tạo nhanh từ mô tả</h2><span class="chi-free tag vien">AI 8/10 lượt</span><span class="chi-bus tag song">Business</span></div>
-        <div class="card-than cot">
-          <label class="sr-only" for="mo-ta-nhanh">Mô tả nhu cầu</label>
-          <textarea class="o" id="mo-ta-nhanh">Cần 20 tấn xoài cát Chu loại 1, trái từ 350 g, độ ngọt từ 13,8, giao nhà máy từ 10 đến 20/10, trả tiền khi cân.</textarea>
-          <div class="hang"><button class="btn phu nho" type="button" data-toast="AI đã điền 7 ô bên dưới. Bạn kiểm tra lại trước khi đăng."><svg class="i i16"><use href="#i-tia-set"/></svg>Điền giúp</button><span class="rat-nho nhat">AI chỉ điền nháp. Bạn xem lại từng ô.</span></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-dau"><h2>1. Hàng cần mua</h2></div>
-        <div class="card-than luoi l2">
-          <div class="truong"><label for="mh">Mặt hàng</label><select class="o" id="mh" onchange="const k=document.getElementById('mh-khac-o');k.hidden=this.value!=='khac';if(!k.hidden)k.querySelector('input').focus()"><option>Xoài cát Chu</option><option>Xoài Keo</option><option>Mít Thái</option><option>Chuối già</option><option value="khac">Mặt hàng khác, tự nhập…</option></select>
-            <div class="truong" id="mh-khac-o" hidden style="margin-top:6px"><label for="mh-khac" class="sr-only">Tên mặt hàng khác</label><input class="o" id="mh-khac" placeholder="Ví dụ: bưởi Phúc Trạch, cá bống tượng" maxlength="60"><span class="goi-y">Tin mua hiện nhãn “Tự nhập”. Đội AgiViet xem để thêm vào danh mục.</span></div></div>
-          <div class="truong"><label for="loai">Loại</label><select class="o" id="loai"><option>Loại 1</option><option>Loại 2</option><option>Chưa yêu cầu</option></select></div>
-          <div class="truong"><label for="size">Cỡ trái</label><div class="o-ghep"><input id="size" value="350"><span>g/trái trở lên</span></div></div>
-          <div class="truong"><label for="brix">Độ ngọt tối thiểu</label><div class="o-ghep"><input id="brix" value="13,8"><span>°Bx</span></div><span class="goi-y">Cách đo sẽ chốt trong thỏa thuận.</span></div>
-          <div class="truong" style="grid-column:1/-1"><span class="nhan">Giấy tờ yêu cầu</span><div class="hang boc" style="gap:6px"><button class="chip" type="button" data-bat aria-pressed="false">VietGAP</button><button class="chip" type="button" data-bat aria-pressed="true">Kết quả dư lượng thuốc</button><button class="chip" type="button" data-bat aria-pressed="false">Mã vùng trồng</button></div></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-dau"><h2>2. Lượng và thời gian</h2></div>
-        <div class="card-than luoi l2">
-          <div class="truong"><label for="luong">Lượng cần</label><div class="o-ghep"><input id="luong" value="20"><span>tấn</span></div></div>
-          <div class="truong"><label for="dung-sai">Được lệch</label><div class="o-ghep"><input id="dung-sai" value="5"><span>%</span></div></div>
-          <div class="truong"><label for="tu">Nhận từ</label><input class="o" id="tu" type="date" value="2026-10-10"></div>
-          <div class="truong"><label for="den">Đến</label><input class="o" id="den" type="date" value="2026-10-20"></div>
-          <div style="grid-column:1/-1">
-            <button class="cong-tac chi-bus" type="button" data-bat aria-pressed="false"><span class="grow"><strong>Nhu cầu định kỳ</strong><span class="nho muted" style="display:block">Lặp hằng tuần, tự báo khi tuần nào còn thiếu</span></span><span class="ray"></span></button>
-            <button class="cong-tac chi-free" type="button" data-luot="ke-hoach"><span class="grow"><strong>Nhu cầu định kỳ</strong> <span class="bus-tag">Business</span><span class="nho muted" style="display:block">Lặp hằng tuần, tự báo khi tuần nào còn thiếu</span></span><svg class="i nhat"><use href="#i-khoa"/></svg></button>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-dau"><h2>3. Giao nhận và tiền</h2></div>
-        <div class="card-than cot g16">
-          <div class="truong"><span class="nhan">Giao ở đâu</span>
-            <div class="luoi l2" data-chon="giao" style="gap:8px">
-              <button class="o-chon" type="button" aria-pressed="true" data-khi="nm"><span class="dot"></span><span><strong>Tại nhà máy</strong><span class="rat-nho muted" style="display:block">Người bán lo xe</span></span></button>
-              <button class="o-chon" type="button" aria-pressed="false" data-khi="vuon"><span class="dot"></span><span><strong>Lấy tại vườn</strong><span class="rat-nho muted" style="display:block">Bạn lo xe, cân tại vườn</span></span></button>
-            </div>
-          </div>
-          <div class="truong"><span class="nhan">Trả tiền</span>
-            <div class="seg" data-chon="tra" style="align-self:flex-start">
-              <button type="button" aria-pressed="true" data-khi="can">Khi cân xong</button>
-              <button type="button" aria-pressed="false" data-khi="5">Sau 5 ngày</button>
-              <button type="button" aria-pressed="false" data-khi="7">Sau 7 ngày</button>
-            </div>
-          </div>
-          <div class="truong"><label for="gia-du-kien">Giá dự kiến <span class="nhat" style="font-weight:500">· chỉ bạn thấy</span></label><div class="o-ghep" style="max-width:280px"><input id="gia-du-kien" data-so value="7.000"><span>đ/kg</span></div><span class="goi-y">Không hiện cho người bán. Người bán tự báo giá.</span></div>
-        </div>
-      </section>
-    </div>
-
-    <aside class="cot g16">
-      <section class="card">
-        <div class="card-dau"><svg class="i song"><use href="#i-mat"/></svg><h2>Người bán sẽ thấy</h2></div>
-        <div class="card-than cot">
-          <div class="hang"><span class="anh-sp bg-xoai" style="width:52px;height:52px"><img src="assets/anh/mango.jpg" alt="" style="width:38px;height:38px"></span><div><strong>Cần 20 tấn xoài cát Chu</strong><div class="nho muted">Loại 1 · từ 350 g · 10 – 20/10</div></div></div>
-          <div class="hang boc" style="gap:6px"><span class="tag">Độ ngọt ≥ 13,8 °Bx</span><span class="tag">Giao nhà máy</span><span class="tag">Trả khi cân</span></div>
-          <div class="bao thong-tin nho"><svg class="i"><use href="#i-thong-tin"/></svg><span>Chưa yêu cầu: VietGAP, mã vùng trồng. Người bán thấy chữ “chưa yêu cầu”, không phải “đạt”.</span></div>
-          <span class="nho muted">Hiện cho người bán xoài trong bán kính 100 km. Tên nhà máy hiện khi người bán kết nối.</span>
-        </div>
-      </section>
-      <section class="card chi-free"><div class="card-than cot"><span class="nho dam">Lượt tháng 10</span><div data-thanh-do="free:1"></div><span class="rat-nho nhat">Tin mới tính khi đăng lần đầu.</span></div></section>
-      <div class="cot" style="gap:8px">
-        <button class="btn lon" type="button" data-luot="tin" data-ok="Đã đăng N-015. Đã dùng 8/30 tin mua tháng này." data-den="#nhu-cau"><svg class="i"><use href="#i-gui"/></svg>Đăng nhu cầu</button>
-        <button class="btn phu" type="button" data-toast="Đã lưu nháp. Nháp không tính lượt.">Lưu nháp</button>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<!-- ============ CHI TIẾT NHU CẦU ============ -->
-<section class="man" id="chi-tiet-nhu-cau" data-menu="nhu-cau" data-title="N-014 · Xoài cát Chu">
-  <div class="dau-trang">
-    <div class="tieu-de"><div class="vet"><a href="#nhu-cau">Nhu cầu mua</a> › N-014</div><h1>N-014 · Xoài cát Chu loại 1</h1><p class="mo-ta">20 tấn · 10 – 20/10 · giao nhà máy · trả khi cân · đăng 28/9</p></div>
-    <div class="hanh-dong"><button class="btn phu" type="button" data-toast="Đã báo còn nhu cầu. Không tính lượt.">Báo còn nhu cầu</button><a class="btn phu" href="#tao-nhu-cau"><svg class="i"><use href="#i-but"/></svg>Sửa</a><a class="btn" href="#so-bao-gia">So 3 báo giá</a></div>
-  </div>
-  <div class="luoi l4">
-    <div class="card kpi"><span class="nhan">Cần</span><span class="so">20 tấn</span></div>
-    <div class="card kpi"><span class="nhan">Đã ký</span><span class="so xanh">12 tấn</span><span class="phu">HĐ-0245 anh Phúc</span></div>
-    <div class="card kpi"><span class="nhan">Đang chờ ký</span><span class="so" style="color:#8a5f2c">5 tấn</span><span class="phu">HĐ-0239 HTX Mỹ Xương</span></div>
-    <div class="card kpi"><span class="nhan">Còn thiếu</span><span class="so do">3 tấn</span><span class="phu">8 tấn nếu HTX không ký</span></div>
-  </div>
-  <section class="card">
-    <div class="card-dau">
-      <h2>Nguồn phù hợp</h2>
-      <div class="seg" data-chon="xep" role="group" aria-label="Xếp theo">
-        <button type="button" aria-pressed="true" data-khi="hop">Phù hợp</button>
-        <button type="button" aria-pressed="false" data-khi="gia">Giá</button>
-        <button type="button" aria-pressed="false" data-khi="gan">Gần</button>
-      </div>
-    </div>
-    <div class="card-than sat bang-cuon">
-      <table class="bang">
-        <thead><tr><th>Người bán</th><th>Hàng</th><th>Vì sao hợp</th><th>Chưa biết</th><th></th></tr></thead>
-        <tbody>
-          <tr>
-            <td><a class="dong-link" href="#ho-so-ban">Cô Hai Thu</a><div class="rat-nho nhat">Tự trồng · 18 km</div></td>
-            <td><strong>6 tấn</strong> <span class="tag ok" style="height:20px">Đã cân</span><div class="rat-nho nhat">Loại 1 · có ngay</div></td>
-            <td class="nho">Đúng loại, đúng lịch, đã cân</td>
-            <td class="nho do">Độ ngọt</td>
-            <td class="phai"><span class="tag ok">Đã kết nối</span> <a class="btn nho" href="#tin-nhan">Nhắn</a></td>
-          </tr>
-          <tr>
-            <td><a class="dong-link" href="#chi-tiet-lo">Anh Tư Bền</a><div class="rat-nho nhat">Tự trồng · 42 km</div></td>
-            <td><strong>8 tấn</strong> <span class="tag dut" style="height:20px">Ước tính</span><div class="rat-nho nhat">Hái 12 – 15/10</div></td>
-            <td class="nho">Đúng loại, đúng lịch</td>
-            <td class="nho do">Cỡ trái, giấy tờ</td>
-            <td class="phai"><button class="btn nho" type="button" data-luot="ket-noi" data-ok="Đã gửi lời mời, tạm giữ 1 lượt. Chỉ tính khi Anh Tư chấp nhận; từ chối hay hết hạn thì trả lại · còn 32/50.">Kết nối</button></td>
-          </tr>
-          <tr>
-            <td><a class="dong-link" href="#chi-tiet-lo">Vườn Thành Lợi</a><div class="rat-nho nhat">Tự trồng · 60 km</div></td>
-            <td><strong>15 tấn</strong> <span class="tag ok" style="height:20px">Đã cân</span><div class="rat-nho nhat">Loại 1 và 2 lẫn</div></td>
-            <td class="nho">Đủ lượng một lần</td>
-            <td class="nho do">Tỷ lệ loại 1</td>
-            <td class="phai"><button class="btn nho" type="button" data-luot="ket-noi" data-ok="Đã gửi lời mời, tạm giữ 1 lượt. Chỉ tính khi Vườn Thành Lợi chấp nhận; từ chối hay hết hạn thì trả lại · còn 32/50.">Kết nối</button></td>
-          </tr>
-          <tr>
-            <td><a class="dong-link" href="#chi-tiet-lo">Anh Sáu Lộc</a><div class="rat-nho nhat">Tự trồng · 25 km</div></td>
-            <td><strong>4 tấn</strong> <span class="tag dut" style="height:20px">Ước tính</span></td>
-            <td class="nho">Đúng loại</td>
-            <td class="nho"><span class="tag canh" style="height:20px"><span class="sh sh-tg"></span>Tin 16 ngày chưa cập nhật</span></td>
-            <td class="phai"><button class="btn nho phu" type="button" data-luot="ket-noi" data-ok="Đã gửi lời mời. Tin này cũ, nên hỏi người bán còn hàng không.">Kết nối</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="card-chan nho nhat"><svg class="i i16"><use href="#i-thong-tin"/></svg>Xếp theo mức phù hợp với quy cách của bạn. Nội dung quảng cáo, nếu có, sẽ được ghi rõ. “Chưa biết” không có nghĩa là không đạt.</div>
-  </section>
-</section>
+<!-- Tệp sinh bằng scripts/tao-trang-mua.mjs. Nội dung màn vẽ ở js/man/nhu-cau.js. -->
+<div class="shell">
+<aside class="sidebar" aria-label="Điều hướng"></aside>
+<div class="chinh">
+<header class="topbar"></header>
+<main class="app">
+<section class="screen" id="nhu-cau" data-title="Nhu cầu mua"></section>
+<section class="screen" id="tao-nhu-cau" data-title="Tạo nhu cầu"></section>
+<section class="screen" id="chi-tiet-nhu-cau" data-title="Chi tiết nhu cầu"></section>
 </main>
+</div>
+</div>
+<nav class="nav-duoi" aria-label="Mục chính"></nav>
+<script src="js/dong-co.js"></script>
+<script src="js/cau-hinh.js"></script>
+<script src="js/khung.js"></script>
 <script src="js/app.js"></script>
-<script src="js/he-thong.js"></script>
-<script src="js/kho-mau.js"></script>
-<script src="js/mo-phong.js"></script>
-<script src="js/tour.js"></script>
-<script src="js/huong-dan.js"></script>
+<script src="js/man/nhu-cau.js"></script>
 </body>
 </html>

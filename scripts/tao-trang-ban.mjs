@@ -1,4 +1,4 @@
-// Sinh các trang HTML của app bán (fe-nongdan) từ bảng TRANG trong js/khung.js: mỗi màn là một <section class="screen">
+// Sinh các trang HTML của app bán (fe-nongdan) từ bảng TRANG trong js/cau-hinh.js: mỗi màn là một <section class="screen">
 // trống, js/khung.js vẽ nội dung từ dữ liệu. Sinh thêm index.html (mục lục màn cho người kiểm thử).
 // Chạy: node scripts/tao-trang-ban.mjs
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -6,8 +6,9 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const goc = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'fe-nongdan');
-const khung = readFileSync(path.join(goc, 'js/khung.js'), 'utf8');
-const TRANG = Function(`return ${khung.match(/const TRANG = (\{[\s\S]*?\n {2}\});/)[1]}`)();
+const cuaSo = {};
+Function('window', readFileSync(path.join(goc, 'js/cau-hinh.js'), 'utf8'))(cuaSo);
+const TRANG = cuaSo.KHUNG_CAU_HINH.trang;
 const danhMuc = readFileSync(path.resolve(goc, '../dong-co/src/danh-muc-man.ts'), 'utf8');
 const TEN = Object.fromEntries([...danhMuc.matchAll(/id: "([^"]+)",\s*ten: "([^"]+)"/g)].map(m => [m[1], m[2]]));
 
@@ -43,6 +44,7 @@ for (const [tep, ds] of Object.entries(TRANG)) {
 ${man}
 </div>
 <script src="js/dong-co.js"></script>
+<script src="js/cau-hinh.js"></script>
 <script src="js/khung.js"></script>
 <script src="js/app.js"></script>
 <script src="js/mo-phong.js"></script>

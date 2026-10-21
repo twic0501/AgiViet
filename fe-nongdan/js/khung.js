@@ -1,34 +1,25 @@
-// AgiViet · App Nhà sản xuất: khung vẽ màn từ dữ liệu (window.AVN, js/dong-co.js).
+// AgiViet · khung vẽ màn từ dữ liệu (window.AVN, js/dong-co.js), dùng chung cho app bán và app mua.
+// Nguồn ở dong-co/khung/khung.js; npm run dong-co chép vào fe-nongdan/js và fe-thumua/js. Mỗi app khai báo window.KHUNG_CAU_HINH
+// trong js/cau-hinh.js (vai, bảng TRANG, trang vào app, trang chủ, có nút Nghe không, số việc trên điều hướng).
 // Mỗi trang đăng ký màn bằng AM.man(id, { ve(c), bam: { ten(c, el) }, st(c), sau(c, el) }).
 // Khung vẽ lại màn đang mở khi dữ liệu đổi (kể cả do tab hay app khác), giữ chữ đang nhập, chặn trang cần đăng nhập.
 (() => {
   const A = window.AVN;
-  const APP = 'ban';
+  const CH = window.KHUNG_CAU_HINH;
+  const APP = CH.app;
   const { h, tho } = A;
 
-  /* ---------- Màn nào nằm ở trang nào ---------- */
-  const TRANG = {
-    'bat-dau.html': ['chao-mung', 'dang-nhap', 'otp', 'vai-tro', 'mat-hang', 'ho-so', 'khai-bao-vuon', 'xac-minh', 'tro-giup-truy-cap'],
-    'hom-nay.html': ['hom-nay', 'tong-ket-tuan', 'thong-bao'],
-    'vuon.html': ['vuon', 'mua-vu', 'nhat-ky', 'thu-chi', 'ghi', 'xac-nhan-ghi', 'cach-ly', 'ho-so-vuon'],
-    'hang.html': ['hang', 'chi-tiet-lo', 'cap-nhat-luong', 'sap-co-hang', 'chung-tu', 'lo-gop'],
-    'dang.html': ['dang', 'chon-mat-hang', 'chup', 'nghe', 'kiem-tra', 'xem-lai', 'xong'],
-    'khach.html': ['khach', 'nhu-cau', 'ket-noi', 'ho-so-ben-mua', 'chat', 'bao-gia', 'hen-xem', 'bao-cao'],
-    'lich.html': ['lich', 'chi-tiet-don', 'xac-nhan-don', 'so-sanh', 'coc', 'mo-lien-lac', 'ket-qua', 'giao-mot-phan', 'doi-lich', 'yeu-cau-thay-doi', 'huy-don', 'tranh-chap', 'so-ban'],
-    'giao-dich.html': ['phuong-thuc', 'chon-luong', 'ky', 'quyen', 'ban-day-du', 'ky-otp', 'ky-xong', 'ky-giay'],
-    'tien.html': ['tien', 'tien-ve', 'quyet-toan', 'lich-su-tien', 'ung-tien'],
-    'toi.html': ['toi', 'uy-tin', 'dich-vu', 'dat-dich-vu', 'cai-dat', 'ho-tro', 'can-ho-tro', 'trang-thai', 'nguoi-giup', 'tai-khoan-nhan', 'bao-mat', 'rieng-tu', 'phan-cua-toi'],
-    'cong-cu.html': ['phong-thu', 'gia-lap'],
-  };
+  /* ---------- Màn nào nằm ở trang nào (js/cau-hinh.js) ---------- */
+  const TRANG = CH.trang;
   const MAN_O_TRANG = {};
   Object.entries(TRANG).forEach(([tep, ds]) => ds.forEach(id => { MAN_O_TRANG[id] = tep; }));
-  const TEN_MAN = Object.fromEntries(A.DANH_MUC_MAN.map(m => [m.id, m.ten]));
+  const TEN_MAN = Object.fromEntries((APP === 'mua' ? A.DANH_MUC_MAN_MUA : A.DANH_MUC_MAN).map(m => [m.id, m.ten]));
   const trangNay = location.pathname.split('/').pop() || 'index.html';
-  const KHONG_CAN_DANG_NHAP = new Set(['bat-dau.html', 'cong-cu.html', 'index.html', 'nhan-dien.html', 'nguon-anh.html']);
+  const KHONG_CAN_DANG_NHAP = new Set(CH.khongCanDangNhap);
 
   /* ---------- Khởi động: dữ liệu mẫu, nhịp hệ thống, chặn trang cần đăng nhập ---------- */
   A.batDau();
-  if (!KHONG_CAN_DANG_NHAP.has(trangNay) && !A.nguoi(APP)) { location.replace('bat-dau.html#chao-mung'); return; }
+  if (!KHONG_CAN_DANG_NHAP.has(trangNay) && !A.nguoi(APP)) { location.replace(CH.trangVao); return; }
 
   /* ---------- Đường dẫn: "trang.html#màn?tham=số" ---------- */
   const tachHash = () => { const [id, q = ''] = location.hash.slice(1).split('?'); return { id: decodeURIComponent(id || ''), q }; };
@@ -132,20 +123,24 @@
   /** Xóa trạng thái của một màn (để lần mở sau tính lại từ đầu). */
   function xoaSt(id, q = '') { const k = khoaSt(id, q); delete ST[k]; sessionStorage.removeItem(k); }
   // Màn gốc của thanh dưới: không có nút Quay lại, có lối vào Tôi
-  const dauMan = (tieuDe, goc = false) => h`<header class="top">${goc ? '' : tho('<button class="icon-btn" type="button" data-bam="_lui" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></button>')}<h1>${tieuDe}</h1>${goc ? h`<a class="icon-btn" href="toi.html#toi" aria-label="Tôi">${A.icon('user', 24)}</a>` : ''}<button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button></header>`;
+  const dauMan = (tieuDe, goc = false) => h`<header class="top">${goc ? '' : tho('<button class="icon-btn" type="button" data-bam="_lui" aria-label="Quay lại"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>')}<h1>${tieuDe}</h1>${goc && CH.lienKetToi ? h`<a class="icon-btn" href="${CH.lienKetToi}" aria-label="Tôi">${A.icon('user', 24)}</a>` : ''}${CH.nghe ? tho('<button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>') : ''}</header>`;
 
-  /* ---------- Số việc trên thanh dưới ---------- */
+  /* ---------- Số việc trên điều hướng ---------- */
   function capNhatNav(c) {
-    if (!c.n) return;
-    const viec = A.mc.viecCanLam(c.so, c.n, c.bg);
-    const dat = (tab, so) => { const ic = document.querySelector(`.nav a[data-tab="${tab}"] .ic`); if (!ic) return; let b = ic.querySelector('.badge-so'); if (!so) { b?.remove(); return; } if (!b) { b = document.createElement('span'); b.className = 'badge-so'; ic.appendChild(b); } b.textContent = so; };
-    dat('don', viec.don.length + viec.deNghi.length);
-    dat('ban', viec.loiMoi.length + viec.baoGia.length + viec.hen.length + viec.loSapAn.length);
+    if (!c.n || !CH.soViec) return;
+    for (const [tab, so] of Object.entries(CH.soViec(c, A))) {
+      document.querySelectorAll(`[data-tab="${tab}"] .ic`).forEach(ic => {
+        let b = ic.querySelector('.badge-so');
+        if (!so) { b?.remove(); return; }
+        if (!b) { b = document.createElement('span'); b.className = 'badge-so'; ic.appendChild(b); }
+        b.textContent = so;
+      });
+    }
   }
 
   /* ---------- Bấm nút ---------- */
   const SAN = {
-    _lui: () => { if (history.length > 1) history.back(); else location.href = 'hom-nay.html'; },
+    _lui: () => { if (history.length > 1) history.back(); else location.href = CH.trangChu; },
     _dat: (c, el) => c.dat({ [el.dataset.k]: giaTri(el.dataset.v) }),
     _bat: (c, el) => c.dat({ [el.dataset.k]: !c.st[el.dataset.k] }),
     _nhap: (c, el) => { const [khoa, k] = el.dataset.n.split(':'); c.nhap(khoa, {}).dat({ [k]: giaTri(el.dataset.v) }); },
@@ -261,10 +256,46 @@
     },
     /** Thẻ đơn trong danh sách. */
     theDon(d, bayGio, dich) {
-      const n = A.nv.nhom(d, 'ban', bayGio);
+      const n = A.nv.nhom(d, APP, bayGio);
+      const kia = APP === 'ban' ? d.mua.ten : d.ban.ten;
       return h`<a class="card stack s8 the-link ${n === 'lam' ? 'vien-lam' : n === 'loi' ? 'vien-loi' : ''}" href="${dich || den('chi-tiet-don', { ma: d.ma })}">
-        <div class="row top-align">${UI.anh(d.matHang, undefined, 'nho')}<div class="grow stack" style="gap:2px"><strong>${d.ma} · ${d.tenLo}</strong><span class="small muted">${d.mua.ten} · giao ${UI.ndNgan(d.ngayGiao)}</span><span class="small num">${UI.luong(d.kg)} × ${UI.so(d.gia)} đ</span></div></div>
+        <div class="row top-align">${UI.anh(d.matHang, undefined, 'nho')}<div class="grow stack" style="gap:2px"><strong>${d.ma} · ${d.tenLo}</strong><span class="small muted">${kia} · giao ${UI.ndNgan(d.ngayGiao)}</span><span class="small num">${UI.luong(d.kg)} × ${UI.so(d.gia)} đ</span></div></div>
         ${UI.nhom(n, A.nv.NHAN_TRANG_THAI[d.trangThai])}${UI.chang(d)}</a>`;
+    },
+    /** Thẻ lô nhìn từ bên mua: người bán, vùng, uy tín; không có liên lạc. */
+    theNguon(lo, so, bayGio, them = '') {
+      const hs = A.mc.hoSoCongKhai(so, lo.ban.id), anh = lo.anh.find(a => !a.startsWith('giay|'));
+      return h`<a class="card stack s8 the-link" href="${den('chi-tiet-lo', { lo: lo.id })}">
+        <div class="row top-align">${UI.anh(lo.matHang, anh)}<div class="grow stack" style="gap:4px"><span class="ten-lo">${lo.ten}</span>
+          <div class="row" style="gap:8px;flex-wrap:wrap"><span class="luong">${UI.luong(A.nv.conBan(lo))}</span><span class="qty ${lo.coSo === 'da_can' ? 'can' : 'uoc'}">${lo.coSo === 'da_can' ? 'Đã cân' : 'Ước tính'}</span></div>
+          <span class="small"><strong>${lo.gia ? `${UI.so(lo.gia)} đ/kg` : 'Nhận báo giá'}</strong>${lo.haiTu ? ` · hái ${UI.ndNgan(lo.haiTu)}` : ''}</span></div></div>
+        <span class="small muted">${lo.ban.ten} · ${hs?.vung ?? ''}</span>
+        <div class="lo-foot">${hs?.daXacMinh ? UI.chip('Đã xác minh', 'xong') : ''}${UI.chip(`Uy tín ${A.nv.NHAN_BAC[hs?.uyTin.bac ?? 'moi']}`)}${lo.choCheBien ? UI.chip('Cho chế biến', 'cho') : ''}${lo.vuonId ? UI.chip('Có nguồn gốc', 'xong') : ''}</div>${them}</a>`;
+    },
+    /** Điểm khớp một lô với một tin cần mua (0–100) và lý do, để xếp nguồn gợi ý. */
+    xepHang(n, lo, so) {
+      const ly = [];
+      let diem = 0;
+      if (lo.matHang === n.matHang) { diem += 45; ly.push('Đúng mặt hàng'); } else return { diem: 0, ly };
+      const con = A.nv.conBan(lo);
+      if (con >= n.kg) { diem += 20; ly.push(`Đủ ${UI.luong(n.kg)}`); } else if (con > 0) { diem += Math.round((con / n.kg) * 20); ly.push(`Có ${UI.luong(con)} / cần ${UI.luong(n.kg)}`); }
+      if (n.giaTran && lo.gia && lo.gia <= n.giaTran) { diem += 15; ly.push('Giá dưới giá trần'); } else if (!lo.gia) { diem += 7; ly.push('Nhận báo giá'); }
+      if (!lo.haiTu || (lo.haiTu <= n.den && (lo.haiDen ?? lo.haiTu) >= n.tu)) { diem += 10; ly.push('Kịp ngày nhận'); }
+      const loai = n.thuocTinh?.loai;
+      if (loai && lo.thuocTinh?.loai === loai) { diem += 5; ly.push(`Đúng ${loai}`); }
+      const ut = A.mc.hoSoCongKhai(so, lo.ban.id)?.uyTin.bac;
+      if (ut === 'tot' || ut === 'rat_tot') { diem += 5; ly.push('Người bán uy tín tốt'); }
+      return { diem: Math.min(100, diem), ly };
+    },
+    /** Bảng dữ liệu: cot = [[nhãn, 'so'?]], dong = mảng các mảng ô (Tho hoặc chữ). */
+    bang(cot, dong, chan) {
+      return h`<div class="cuon-bang"><table class="bang"><thead><tr>${cot.map(([t, k]) => h`<th class="${k || ''}">${t}</th>`)}</tr></thead>
+        <tbody>${dong.map(r => h`<tr class="${r.lop || ''}">${(r.o || r).map((o, i) => h`<td class="${cot[i]?.[1] || ''}">${o}</td>`)}</tr>`)}</tbody>${chan ? h`<tfoot><tr>${chan.map((o, i) => h`<td class="${cot[i]?.[1] || ''}">${o}</td>`)}</tr></tfoot>` : ''}</table></div>`;
+    },
+    /** Tải bảng thành tệp CSV (mở bằng Excel). */
+    taiCsv(ten, dong) {
+      const csv = '﻿' + dong.map(r => r.map(o => `"${String(o ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = ten; a.click();
     },
     /** Lưới chọn mặt hàng (một hoặc nhiều). Lưu vào trạng thái màn (k) hoặc bản nháp (n). */
     chonMH(c, tc) {

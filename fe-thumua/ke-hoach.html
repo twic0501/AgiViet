@@ -2,73 +2,30 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#315c60">
 <title>Kế hoạch mua · AgiViet Thu mua</title>
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/fonts.css">
-<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/mua.css">
+<link rel="stylesheet" href="css/moi.css">
 </head>
 <body>
-<main>
-<section class="man" id="ke-hoach" data-menu="ke-hoach" data-title="Kế hoạch mua">
-  <div class="dau-trang">
-    <div class="tieu-de"><h1>Kế hoạch mua <span class="bus-tag" style="vertical-align:middle">Business</span></h1><p class="mo-ta">So nhu cầu của nhà máy với lượng đã chắc chắn. Chỉ lượng trong thỏa thuận đã ký mới tính là chắc chắn.</p></div>
-    <div class="hanh-dong chi-bus"><div class="seg" data-chon="ky-kh"><button type="button" aria-pressed="false" data-khi="t9">Tháng 9</button><button type="button" aria-pressed="true" data-khi="t10">Tháng 10</button><button type="button" aria-pressed="false" data-khi="t11">Tháng 11</button></div><button class="btn phu" type="button" data-toast="Đã xuất ke-hoach-thang-10.xlsx"><svg class="i"><use href="#i-excel"/></svg>Xuất Excel</button></div>
-  </div>
-
-  <div class="chi-bus cot g16">
-    <div class="bao loi"><svg class="i"><use href="#i-canh-bao"/></svg><div class="grow"><strong class="t">Tuần 3 có thể thiếu 8 tấn xoài</strong>HĐ-0239 của HTX Mỹ Xương (5 tấn) chưa ký, và N-014 còn thiếu 3 tấn. Báo giá Cô Hai Thu (6 tấn) hết hạn 11/10.</div><a class="btn nho" href="#so-bao-gia">Xem báo giá</a></div>
-    <section class="card">
-      <div class="card-dau"><h2>Theo tuần · tháng 10</h2>
-        <div class="hang nho boc" style="gap:14px"><span class="hang" style="gap:6px"><span class="sh sh-vuong xanh"></span>Đã ký, đã cân</span><span class="hang" style="gap:6px"><span class="sh sh-vuong" style="color:#7fb069"></span>Đã ký, còn ước tính</span><span class="hang" style="gap:6px"><span class="sh sh-vuong" style="color:var(--mat-ong)"></span>Chờ ký</span><span class="hang" style="gap:6px"><span class="sh sh-vuong" style="color:var(--vien-2)"></span>Chưa có nguồn</span></div>
-      </div>
-      <div class="card-than sat bang-cuon"><table class="bang">
-        <thead><tr><th>Tuần</th><th>Mặt hàng</th><th class="phai">Cần</th><th style="width:40%">Nguồn</th><th class="phai">Thiếu</th><th></th></tr></thead>
-        <tbody>
-          <tr><td>T1 · 29/9 – 5/10</td><td>Xoài</td><td class="so-o">6 t</td><td><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--vien)"><span style="width:100%;background:var(--reu)"></span></div></td><td class="so-o xanh">0</td><td></td></tr>
-          <tr><td>T2 · 6 – 12/10</td><td>Xoài</td><td class="so-o">6 t</td><td><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--vien)"><span style="width:100%;background:#7fb069"></span></div></td><td class="so-o xanh">0</td><td></td></tr>
-          <tr><td>T3 · 13 – 19/10</td><td>Xoài</td><td class="so-o">8 t</td><td><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--vien)"><span style="width:62%;background:var(--mat-ong)"></span></div></td><td class="so-o do">3 – 8 t</td><td class="phai"><a class="btn nho" href="#nguon-hang">Tìm nguồn</a></td></tr>
-          <tr><td>T2 – T4</td><td>Mít</td><td class="so-o">8 t</td><td><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--vien)"><span style="width:48%;background:var(--reu)"></span><span style="width:2%;background:var(--do)"></span></div></td><td class="so-o do">4 t</td><td class="phai"><a class="btn nho phu" href="#bao-gia">Báo giá</a></td></tr>
-          <tr><td>Mỗi CN</td><td>Chuối <span class="tag song">Định kỳ</span></td><td class="so-o">15 t/tuần</td><td><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--vien)"><span style="width:100%;background:var(--reu)"></span></div></td><td class="so-o xanh">0</td><td></td></tr>
-        </tbody>
-      </table></div>
-      <div class="card-chan nho nhat"><svg class="i i16"><use href="#i-thong-tin"/></svg>Kế hoạch tính <strong>mọi đơn</strong>, kể cả đơn tự giao dịch không phí (Đ-0247 chuối 3 tấn). Hai chiều tách riêng: cam kết (chờ xác nhận, đã xác nhận) và thực hiện (ước tính, đã cân, đang chở, đã nhận); đã cân chưa phải đã nghiệm thu. Báo giá chưa chấp nhận không được tính. Lượng ước tính trong thỏa thuận có thể hụt khi người bán cân thật; app tách riêng để bạn thấy rủi ro.</div>
-    </section>
-    <div class="luoi l3">
-      <div class="card kpi"><span class="nhan">Đã ký, đã cân</span><span class="so xanh">16,0 t</span></div>
-      <div class="card kpi"><span class="nhan">Đã ký, còn ước tính</span><span class="so" style="color:#4d7a3a">6,0 t</span><span class="phu">Có thể hụt khi cân</span></div>
-      <div class="card kpi"><span class="nhan">Chờ ký</span><span class="so" style="color:#8a5f2c">5,0 t</span><span class="phu">HĐ-0239 · HTX Mỹ Xương</span></div>
-    </div>
-  </div>
-
-  <div class="khoa-tinh-nang chi-free">
-    <div class="xem-mo card card-than" aria-hidden="true"><table class="bang"><tbody>
-      <tr><td>T1 xoài</td><td>6 t</td><td><div style="height:12px;border-radius:6px;background:var(--reu)"></div></td></tr>
-      <tr><td>T2 xoài</td><td>6 t</td><td><div style="height:12px;border-radius:6px;background:#7fb069"></div></td></tr>
-      <tr><td>T3 xoài</td><td>8 t</td><td><div style="height:12px;width:62%;border-radius:6px;background:var(--mat-ong)"></div></td></tr>
-      <tr><td>Mít</td><td>8 t</td><td><div style="height:12px;width:48%;border-radius:6px;background:var(--reu)"></div></td></tr>
-      <tr><td>Chuối</td><td>15 t/tuần</td><td><div style="height:12px;border-radius:6px;background:var(--reu)"></div></td></tr>
-    </tbody></table></div>
-    <div class="lop"><div class="hop">
-      <span class="ic"><svg class="i i24"><use href="#i-ke-hoach"/></svg></span>
-      <h2 class="muc">Kế hoạch mua và báo thiếu hàng</h2>
-      <div class="cot g4 nho" style="text-align:left">
-        <span class="hang" style="gap:8px"><svg class="i i16 xanh"><use href="#i-check"/></svg>Nhu cầu theo tuần, nhu cầu định kỳ</span>
-        <span class="hang" style="gap:8px"><svg class="i i16 xanh"><use href="#i-check"/></svg>Tách đã cân, còn ước tính, chờ ký</span>
-        <span class="hang" style="gap:8px"><svg class="i i16 xanh"><use href="#i-check"/></svg>Báo sớm tuần nào thiếu, gợi ý nguồn</span>
-        <span class="hang" style="gap:8px"><svg class="i i16 xanh"><use href="#i-check"/></svg>Xuất Excel cho phòng sản xuất</span>
-      </div>
-      <a class="btn bus" href="goi.html#so-sanh-goi"><svg class="i"><use href="#i-vuong-mien"/></svg>Xem gói Business</a>
-    </div></div>
-  </div>
-</section>
+<!-- Tệp sinh bằng scripts/tao-trang-mua.mjs. Nội dung màn vẽ ở js/man/ke-hoach.js. -->
+<div class="shell">
+<aside class="sidebar" aria-label="Điều hướng"></aside>
+<div class="chinh">
+<header class="topbar"></header>
+<main class="app">
+<section class="screen" id="ke-hoach" data-title="Kế hoạch mua"></section>
 </main>
+</div>
+</div>
+<nav class="nav-duoi" aria-label="Mục chính"></nav>
+<script src="js/dong-co.js"></script>
+<script src="js/cau-hinh.js"></script>
+<script src="js/khung.js"></script>
 <script src="js/app.js"></script>
-<script src="js/he-thong.js"></script>
-<script src="js/kho-mau.js"></script>
-<script src="js/mo-phong.js"></script>
-<script src="js/tour.js"></script>
-<script src="js/huong-dan.js"></script>
+<script src="js/man/ke-hoach.js"></script>
 </body>
 </html>
