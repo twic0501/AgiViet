@@ -1,6 +1,6 @@
 // Máy chủ mô phỏng: kho kiểm phiên bản, hai tab ghi chen, đồng hồ tua, hệ thống tự động, quyền riêng tư của truy vấn,
 // kịch bản mẫu đủ 13 trạng thái, gợi ý giả lập bên mua chạy được, và toàn bộ ca kiểm thử của app bán.
-import { TRANG_THAI, type SoGiaoDich } from '@agiviet/nghiep-vu';
+import { giaThamKhao, loNenBanGap, nguoiNhanHangKemLoai, TRANG_THAI, type SoGiaoDich } from '@agiviet/nghiep-vu';
 import { describe, expect, it } from 'vitest';
 import {
   CA_KIEM_THU_BAN, chayCa, chayMotNhip, DichVu, dongHoCoDinh, hoSoCongKhai, kichBanMau, lienLacCua, NGUOI_BAN_MAU, NGUOI_MUA_MAU, PhienThu,
@@ -41,8 +41,21 @@ describe('Kịch bản mẫu và hệ thống', () => {
   const so = kichBanMau(Date.UTC(2026, 9, 19, 3));
   it('dựng được, có đơn ở đủ 13 trạng thái', () => {
     for (const t of TRANG_THAI) expect(so.don.some(d => d.trangThai === t), t).toBe(true);
-    expect(so.lo.length).toBe(8);
-    expect(so.nguoiDung.length).toBe(6);   // 3 người bán (chị Năm, Tư Bền, Hai Thu) + 3 bên mua
+    expect(so.lo.length).toBe(10);
+    expect(so.nguoiDung.length).toBe(7);   // 3 người bán (chị Năm, Tư Bền, Hai Thu) + 3 bên mua + đối tác bao tiêu Mekong
+  });
+  it('có đủ dữ liệu cho cơ chế chất lượng và giá: giá tham khảo, giá bất thường, nghiệm thu 3 phần, bán gấp, bao tiêu', () => {
+    const bg = Date.UTC(2026, 9, 19, 3);
+    expect(giaThamKhao(so, 'xoai-cat-chu', bg, { loai: 'loai_1' }).gia).toBe(25000);
+    expect(so.don.some(d => d.trangThai === 'cho_ban_xac_nhan' && d.hopDong?.giaBatThuong)).toBe(true);
+    expect(so.don.some(d => d.trangThai === 'cho_ban_xn_kq' && d.ketQuaCan?.haCap)).toBe(true);
+    expect(so.don.some(d => d.trangThai === 'da_chot' && d.ketQuaCan?.tuChoi && !d.traVeLoId)).toBe(true);
+    const banGap = so.lo.find(l => l.banGap && l.loai === 'loai_2')!;
+    expect(banGap.banGap!.den).toBeGreaterThan(bg);
+    const ai = nguoiNhanHangKemLoai(so, banGap);
+    expect(ai.nhan.map(n => n.id)).toEqual(expect.arrayContaining(['mua-dong-xanh', 'mua-mekong']));
+    expect(ai.baoTieu.map(n => n.id)).toEqual(['mua-mekong']);
+    expect(loNenBanGap(so, NGUOI_BAN_MAU.id, bg).map(l => l.loai)).toEqual(['dat']);
   });
   it('mọi đơn giữ bất biến: lịch sử = phiên bản; lượng đã hứa không vượt lô', () => {
     for (const d of so.don) expect(d.lichSu.length, d.ma).toBe(d.phienBan);

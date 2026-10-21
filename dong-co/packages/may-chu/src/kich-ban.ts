@@ -3,7 +3,7 @@
 import { ngayCua, TRANG_THAI, type Lenh, type NguoiLam, type SoGiaoDich, type TenBuoc, type ThamSoBuoc } from '@agiviet/nghiep-vu';
 import { DichVu } from './dich-vu.ts';
 import { dongHoCoDinh } from './dong-ho.ts';
-import { damBaoNguoiMuaMau, NGUOI_BAN_KHAC, NGUOI_MUA_MAU, VAN_HANH_MAU } from './gia-lap.ts';
+import { damBaoNguoiMuaMau, DOI_TAC_BAO_TIEU_MAU, GIA_SAN_BAO_TIEU, NGUOI_BAN_KHAC, NGUOI_MUA_MAU, VAN_HANH_MAU } from './gia-lap.ts';
 import { HE_THONG } from './he-thong.ts';
 import { taoKhoBoNho } from './kho.ts';
 
@@ -45,6 +45,15 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   dangKyNguoiBanMau(b);
   damBaoNguoiMuaMau(b.dv);
   b.lam(N, { loai: 'them_nguoi_giup', ten: 'Út Tâm (con gái)', sdt: '0909123123', quyen: 'thao_tac' });
+  // Đầu ra cho hàng kém loại: Đồng Xanh nhận xoài loại 2, 3 cho sấy; Nhà máy Mekong là đối tác bao tiêu (giá sàn hàng dạt)
+  const MK = DOI_TAC_BAO_TIEU_MAU;
+  b.lam(MK.nguoi, { loai: 'dang_ky', vai: 'mua', ten: MK.nguoiLienHe, sdt: MK.sdt, vung: MK.vung, toChuc: { ten: MK.nguoi.ten, maSoThue: MK.maSoThue, loaiHinh: MK.loaiHinh } });
+  b.lam(MK.nguoi, { loai: 'cap_nhat_ho_so', diaChi: MK.diaChi });
+  b.lam(MK.nguoi, { loai: 'gui_xac_minh', giayTo: 'giay-phep-kinh-doanh.pdf' });
+  b.lam(VAN_HANH_MAU, { loai: 'duyet_xac_minh', nguoiDungId: MK.nguoi.id, dongY: true });
+  b.lam(VAN_HANH_MAU, { loai: 'dat_bao_tieu', nguoiDungId: MK.nguoi.id, bat: true, giaSan: GIA_SAN_BAO_TIEU, diemGom: 'Điểm gom chợ đầu mối Cao Lãnh, xe nhà máy tới lấy' });
+  b.lam(MK.nguoi, { loai: 'cap_nhat_nhan_hang_kem_loai', bat: true, matHang: [], kgToiThieu: 300, vung: '' });
+  b.lam(DX, { loai: 'cap_nhat_nhan_hang_kem_loai', bat: true, matHang: ['xoai-cat-chu', 'thanh-long-ruot-do'], kgToiThieu: 500, vung: '' });
   // Nhà máy sấy Đồng Xanh dùng gói Business, có kế toán và người mua hàng
   b.lam(DX, { loai: 'chon_goi', goi: 'business' });
   b.lam(DX, { loai: 'them_thanh_vien', ten: 'Anh Quang (kế toán)', sdt: '0909000457', quyen: 'ke_toan' });
@@ -89,10 +98,10 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   b.lam(N, { loai: 'gui_tin', ketNoiId: kDX1, noiDung: 'Chào em, xoài bao trái, tuần này hái được 3 tấn.' });
   b.lam(DX, { loai: 'gui_tin', ketNoiId: kDX1, noiDung: 'Chị gọi em 0277 386 210 hoặc Zalo cho nhanh nha.' });
 
-  const tao = (mua: NguoiLam, lo: string, kg: number, gia: number, giao = 4) => b.lam(mua, { loai: 'tao_don', loId: lo, kg, gia, ngayGiao: b.ngay(giao) });
+  const tao = (mua: NguoiLam, lo: string, kg: number, gia: number, giao = 4, dk: { giaHaCap?: number; noiGiao?: 'tai_vuon' | 'tai_kho' } = {}) => b.lam(mua, { loai: 'tao_don', loId: lo, kg, gia, ngayGiao: b.ngay(giao), ...dk });
   const xn = (ma: string) => b.buoc(N, ma, 'xacNhanDon');
   const coc = (mua: NguoiLam, ma: string) => b.buoc(mua, ma, 'datCoc');
-  const can = (mua: NguoiLam, ma: string, nhan: number, tuChoi = 0) => { b.buoc(mua, ma, 'nhapKetQua', nhan, tuChoi, 0, tuChoi ? ['anh-hang-khong-dat.jpg'] : []); };
+  const can = (mua: NguoiLam, ma: string, nhan: number, tuChoi = 0, haCap = 0) => { b.buoc(mua, ma, 'nhapKetQua', nhan, tuChoi, haCap, tuChoi ? ['anh-hang-khong-dat.jpg'] : []); };
 
   // Ba đơn đã xong sớm (uy tín, lô gộp, tiền về)
   const xongSom: string[] = [];
@@ -155,14 +164,14 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   const choGiao = tao(DX, L1, 2000, 25000, 4); xn(choGiao); coc(DX, choGiao);                       // cho_giao (+ ứng tiền, đề nghị đổi lịch)
   const ut = b.lam(N, { loai: 'xin_ung_tien', donMa: choGiao, so: 30_000_000 }); b.tua(GIO); b.lam(HE_THONG, { loai: 'duyet_ung_tien', ungTienId: ut, dongY: true });
   const choHuy = tao(MT, L3, 400, 118000, 5); xn(choHuy); coc(MT, choHuy); b.buoc(MT, choHuy, 'yeuCauHuy', 'Khách nước ngoài lùi đơn'); // cho_dong_y_huy
-  const choKq = tao(DX, L1, 1000, 25000, 1); xn(choKq); coc(DX, choKq);
-  const daChot = tao(MT, L2, 800, 18200, 1); xn(daChot); coc(MT, daChot);
+  const choKq = tao(DX, L1, 1000, 25000, 1, { giaHaCap: 15000 }); xn(choKq); coc(DX, choKq);     // hợp đồng có giá hạ cấp
+  const daChot = tao(MT, L2, 800, 18200, 1, { giaHaCap: 11000, noiGiao: 'tai_kho' }); xn(daChot); coc(MT, daChot);
   const dangGiu = tao(DX, L1, 500, 25000, 1); xn(dangGiu); coc(DX, dangGiu);
   const baoTra = tao(UH, L2, 600, 17500, 1); xn(baoTra); coc(UH, baoTra);
   const chuaThay = tao(MT, L1, 700, 26000, 1); xn(chuaThay); coc(MT, chuaThay);
   b.tua(NGAY);
-  can(DX, choKq, 980, 20);                                                                          // cho_ban_xn_kq
-  can(MT, daChot, 800); b.buoc(N, daChot, 'ketQuaDung');                                            // da_chot
+  can(DX, choKq, 900, 20, 80);                                                                      // cho_ban_xn_kq (3 phần)
+  can(MT, daChot, 740, 20, 40); b.buoc(N, daChot, 'ketQuaDung');                                    // da_chot (có hàng trả lại)
   can(DX, dangGiu, 500); b.buoc(N, dangGiu, 'ketQuaDung');
   can(UH, baoTra, 600); b.buoc(N, baoTra, 'ketQuaDung');
   can(MT, chuaThay, 690, 10); b.buoc(N, chuaThay, 'ketQuaDung');
@@ -174,6 +183,8 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   b.tua(2 * GIO);
   b.lam(DX, { loai: 'de_nghi_don', ma: choGiao, deNghi: 'doi_lich', giaTri: b.ngay(5), lyDo: 'Xe lạnh bên em kẹt lịch, xin dời 1 ngày' });
   const choCoc = tao(MT, L1, 1500, 25500, 4); xn(choCoc);                                           // cho_coc
+  // Giá thấp bất thường (dưới 60% giá tham khảo xoài loại 1): chờ chị Năm xác nhận thêm khi ký
+  tao(UH, L1, 500, 13000, 5);
   b.lam(MT, { loai: 'gui_bao_gia', ketNoiId: kMT1, gia: 25000, kg: 2000, ngayGiao: b.ngay(8), ghiChu: 'Lấy thêm 2 tấn đợt sau nếu đạt loại 1.' });
   b.lam(N, { loai: 'gui_bao_gia', ketNoiId: kUH2, gia: 18500, kg: 500, ngayGiao: b.ngay(4) });
   b.lam(UH, { loai: 'de_nghi_hen', ketNoiId: kUH1, luc: `${b.ngay(1)}T08:30`, ghiChu: 'Cô ghé xem trái trên cây.' });
@@ -194,8 +205,14 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   b.lam(N, { loai: 'ghi_thu_chi', loaiTien: 'chi', so: 1_800_000, noiDung: 'Thức ăn tôm 2 bao', ngay: b.ngay(-2), muaVuId: vuT });
   b.lam(N, { loai: 'ghi_thu_chi', loaiTien: 'chi', so: 450_000, noiDung: 'Xăng chạy máy bơm', ngay: b.ngay(-4), muaVuId: vuX });
   b.lam(N, { loai: 'ghi_thu_chi', loaiTien: 'thu', so: 2_000_000, noiDung: 'Bán chuối ở chợ', ngay: b.ngay(-3) });
+  // Hàng kém loại: tách 800 kg xoài loại 2 (trái nhỏ, trầy) khỏi lô loại 1 và bật bán gấp; một lô thanh long dạt chưa ai hỏi
+  const L7 = b.lam(N, { loai: 'tach_lo', loId: L1, phan: [{ loai: 'loai_2', kg: 800, gia: 12000 }] });
+  b.lam(N, { loai: 'sua_lo', loId: L7, moTa: 'Trái nhỏ, trầy da, ngọt như loại 1. Hợp sấy dẻo, làm nước ép.' });
+  b.lam(N, { loai: 'bat_ban_gap', loId: L7 });
+  const L8 = b.lam(N, { loai: 'dang_lo', matHang: 'thanh-long-ruot-do', ten: 'Thanh long ruột đỏ hàng dạt', kg: 400, coSo: 'da_can', gia: null, loaiHang: 'dat', anh: ['dragon-fruit'], moTa: 'Trái nhỏ dưới 300 g, nám nhẹ.' });
   for (const l of [L1, L2, L3, L4]) b.dv.thucHien(N, { loai: 'con_hang', loId: l });   // lô đã chốt hết thì bỏ qua
   const so = b.so;
+  const lo8 = so.lo.find(l => l.id === L8)!; lo8.dangLuc -= 2 * NGAY; lo8.conHangLuc -= 2 * NGAY;      // đăng 2 ngày, chưa ai hỏi: app gợi ý bán gấp
   const lo6 = so.lo.find(l => l.id === L6)!; lo6.conHangLuc -= 13 * NGAY; lo6.dangLuc -= 13 * NGAY;   // mô phỏng tin đã đăng 13 ngày
   // Dồn giờ tới đúng ketThuc
   b.dongHo.dat(ketThuc);

@@ -1,6 +1,6 @@
 // Giả lập bên mua (giai đoạn 1, khi chưa có app Thu mua): ba bên mua mẫu; gợi ý việc bên mua làm tiếp được với người bán này.
 // Mỗi gợi ý là một lệnh thật, chạy qua dịch vụ và nghiệp vụ như app thật.
-import { conBan, ngayCua, type Lenh, type NguoiLam, type SoGiaoDich } from '@agiviet/nghiep-vu';
+import { conBan, dangBanGap, laKemLoai, ngayCua, type Lenh, type NguoiLam, type SoGiaoDich } from '@agiviet/nghiep-vu';
 import type { DichVu } from './dich-vu.ts';
 import { loDangBan } from './truy-van.ts';
 
@@ -24,6 +24,9 @@ export const NGUOI_BAN_KHAC = [
   { nguoi: { vai: 'ban', id: 'ban-tu-ben', ten: 'Anh Tư Bền' } as NguoiLam, sdt: '0907222333', vung: 'Vĩnh Châu, Sóc Trăng', diaChi: 'Ấp Biển Trên, Vĩnh Hải', matHang: ['tom-the-chan-trang'] },
   { nguoi: { vai: 'ban', id: 'ban-hai-thu', ten: 'Cô Hai Thu' } as NguoiLam, sdt: '0918555444', vung: 'Cái Bè, Tiền Giang', diaChi: 'Ấp Hòa Hảo, Hòa Khánh', matHang: ['xoai-cat-chu'] },
 ];
+/** Đối tác bao tiêu mẫu: AgiViet ký thỏa thuận khung, cam kết giá sàn thu mua hàng loại 3, hàng dạt (người nhận cuối cùng). */
+export const DOI_TAC_BAO_TIEU_MAU: NguoiMuaMau = { nguoi: { vai: 'mua', id: 'mua-mekong', ten: 'Nhà máy chế biến Mekong' }, nguoiLienHe: 'Anh Khoa', sdt: '0292386333', vung: 'Thốt Nốt, Cần Thơ', diaChi: 'Lô 8, KCN Thốt Nốt', loaiHinh: 'Nhà máy chế biến (nước ép, sấy, cấp đông)', maSoThue: '1801234570' };
+export const GIA_SAN_BAO_TIEU: Record<string, number> = { 'xoai-cat-chu': 6000, 'thanh-long-ruot-do': 4000, 'chanh-day': 5000, 'tom-the-chan-trang': 55000 };
 export const VAN_HANH_MAU: NguoiLam = { vai: 'van_hanh', id: 'van-hanh', ten: 'Đội vận hành AgiViet' };
 
 /** Đăng ký các bên mua mẫu (nếu chưa có) và cho họ đã xác minh. */
@@ -58,7 +61,10 @@ export function viecGiaLap(so: SoGiaoDich, banId: string, bayGio: number): ViecG
       if (!kn) ds.push({ nhom: 'ket_noi', nhan: `${t} gửi lời mời kết nối lô ${lo.ten}`, nguoi: m.nguoi, lenh: { loai: 'gui_loi_moi', loId: lo.id, loiNhan: 'Bên em cần hàng đều cho dây chuyền, chị cho xem thêm ảnh lô nha.' } });
       else if (kn.trangThai === 'dong_y' && conBan(lo) > 0 && !so.don.some(d => d.ketNoiId === kn.id && !['da_nhan_tien', 'da_huy', 'qua_han', 'ban_tu_choi'].includes(d.trangThai))) {
         const kg = Math.min(conBan(lo), Math.max(100, Math.round(conBan(lo) * 0.4 / 100) * 100));
-        ds.push({ nhom: 'don', nhan: `${t} tạo đơn ${kg.toLocaleString('vi-VN')} kg lô ${lo.ten}`, nguoi: m.nguoi, lenh: { loai: 'tao_don', loId: lo.id, kg, gia: lo.gia ?? 15000, ngayGiao: ngay(3) } });
+        const gia = lo.gia ?? 15000, giaHaCap = Math.round(gia * 0.6 / 100) * 100;
+        ds.push({ nhom: 'don', nhan: `${t} tạo đơn ${kg.toLocaleString('vi-VN')} kg lô ${lo.ten}`, nguoi: m.nguoi, lenh: { loai: 'tao_don', loId: lo.id, kg, gia, ngayGiao: ngay(3) } });
+        ds.push({ nhom: 'don', nhan: `${t} tạo đơn ${kg.toLocaleString('vi-VN')} kg lô ${lo.ten}, có giá hạ cấp ${giaHaCap.toLocaleString('vi-VN')} đ/kg, giao tại kho`, nguoi: m.nguoi, lenh: { loai: 'tao_don', loId: lo.id, kg, gia, ngayGiao: ngay(3), giaHaCap, noiGiao: 'tai_kho' } as Lenh });
+        ds.push({ nhom: 'don', nhan: `${t} tạo đơn giá thấp bất thường (${Math.round(gia * 0.5 / 100) * 100} đ/kg) lô ${lo.ten}`, nguoi: m.nguoi, lenh: { loai: 'tao_don', loId: lo.id, kg, gia: Math.round(gia * 0.5 / 100) * 100, ngayGiao: ngay(3) } });
       }
     }
   }
@@ -99,6 +105,8 @@ export function viecGiaLap(so: SoGiaoDich, banId: string, bayGio: number): ViecG
         if (!dn) {
           b('nhapKetQua', `cân đủ ${d.kg.toLocaleString('vi-VN')} kg`, [d.kg, 0]);
           b('nhapKetQua', `cân nhận ${Math.round(d.kg * 0.95).toLocaleString('vi-VN')} kg, trả lại 5%`, [Math.round(d.kg * 0.95), d.kg - Math.round(d.kg * 0.95)]);
+          b('nhapKetQua', 'cân đạt 88%, trả lại 12% (kèm ảnh hàng không đạt)', [Math.round(d.kg * 0.88), d.kg - Math.round(d.kg * 0.88), 0, ['anh-hang-khong-dat.jpg']]);
+          if (d.hopDong?.giaHaCap) b('nhapKetQua', 'cân 3 phần: đạt 85%, hạ cấp 12%, trả lại 3%', [Math.round(d.kg * 0.85), Math.round(d.kg * 0.03), d.kg - Math.round(d.kg * 0.85) - Math.round(d.kg * 0.03)]);
           ds.push({ nhom: 'don', nhan: `${mua.ten} · ${d.ma}: đề nghị dời ngày giao 2 ngày`, nguoi: mua, lenh: { loai: 'de_nghi_don', ma: d.ma, deNghi: 'doi_lich', giaTri: (() => { const x = new Date(d.ngayGiao + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + 2); return x.toISOString().slice(0, 10); })(), lyDo: 'Xe bên em kẹt lịch' } });
           b('yeuCauHuy', 'xin hủy đơn', ['Nhà máy ngưng một dây chuyền']);
         }
@@ -177,7 +185,9 @@ export function viecGiaLapBan(so: SoGiaoDich, muaId: string, bayGio: number): Vi
       ds.push({ nhom: 'don', nhan: `${nb.ten} · ${d.ma}: không đồng ý đề nghị ${dn.id}`, nguoi: nb, lenh: { loai: 'tra_loi_de_nghi', deNghiId: dn.id, dongY: false } });
     }
     switch (d.trangThai) {
-      case 'cho_ban_xac_nhan': if (!dn) b('xacNhanDon', 'xác nhận đơn (ký thỏa thuận)'); b('tuChoiDon', 'từ chối đơn', ['Hết hàng']); break;
+      case 'cho_ban_xac_nhan':
+        if (!dn) b('xacNhanDon', d.hopDong?.giaBatThuong ? 'ký hợp đồng cọc, xác nhận giá bất thường' : 'xác nhận đơn (ký hợp đồng cọc)', d.hopDong?.giaBatThuong ? [true] : []);
+        b('tuChoiDon', 'từ chối đơn', ['Hết hàng']); break;
       case 'cho_coc': b('huyTruocCoc', 'hủy trước khi cọc', ['Mưa bão, hàng hư']); break;
       case 'cho_giao':
         if (!dn) {
@@ -193,6 +203,11 @@ export function viecGiaLapBan(so: SoGiaoDich, muaId: string, bayGio: number): Vi
         if (!so.danhGia.some(g => g.donMa === d.ma && g.tu.id === nb.id)) ds.push({ nhom: 'khac', nhan: `${nb.ten} · ${d.ma}: đánh giá 5 sao`, nguoi: nb, lenh: { loai: 'danh_gia', ma: d.ma, diem: 5, nhanXet: 'Trả tiền nhanh, cân sòng phẳng.' } });
         break;
     }
+    if (d.ketQuaCan?.nguon === 'ben_kia_xac_nhan' && d.ketQuaCan.tuChoi && !d.traVeLoId)
+      ds.push({ nhom: 'khac', nhan: `${nb.ten} · ${d.ma}: đưa ${d.ketQuaCan.tuChoi.toLocaleString('vi-VN')} kg bị trả lại thành lô bán gấp`, nguoi: nb, lenh: { loai: 'tra_hang_ve_lo', ma: d.ma } });
   }
+  // Người bán mẫu bật bán gấp lô kém loại (để bên mua nhận hàng kém loại thấy thông báo)
+  for (const lo of so.lo.filter(l => banMau.some(n => n.id === l.ban.id) && laKemLoai(l) && conBan(l) > 0 && !l.an && !dangBanGap(l, bayGio)))
+    ds.push({ nhom: 'khac', nhan: `${lo.ban.ten} bật bán gấp lô ${lo.ten}`, nguoi: ban(lo.ban), lenh: { loai: 'bat_ban_gap', loId: lo.id } });
   return ds;
 }

@@ -1,6 +1,6 @@
 // Ca kiểm thử của app bán (giai đoạn 1): mỗi ca dựng tình huống trên máy chủ mô phỏng trong bộ nhớ, làm các bước như người dùng,
 // ghi từng điểm kiểm, và chỉ màn nên mở để xem kết quả. Dùng chung cho Vitest và màn "Phòng thử" trong app.
-import { chiaTienLoGop, loiLoVu, tienNguoiBan, uyTin, type Lenh, type NguoiLam, type SoGiaoDich, type TenBuoc, type ThamSoBuoc } from '@agiviet/nghiep-vu';
+import { chiaTienLoGop, loiLoVu, nguoiNhanHangKemLoai, tien, tienNguoiBan, tinhCoc, uyTin, type Lenh, type NguoiLam, type SoGiaoDich, type TenBuoc, type ThamSoBuoc } from '@agiviet/nghiep-vu';
 import { NGUOI_MUA_MAU } from './gia-lap.ts';
 import { HE_THONG } from './he-thong.ts';
 import { BoDung, dangKyNguoiBanMau, NGUOI_BAN_MAU } from './kich-ban.ts';
@@ -36,6 +36,15 @@ export class PhienThu extends BoDung {
   don(lo: string, kg: number, mua = this.mua[0], gia = 25000) { return this.lam(mua, { loai: 'tao_don', loId: lo, kg, gia, ngayGiao: this.ngay(3) }); }
   donDaCoc(lo: string, kg: number, mua = this.mua[0]) { const ma = this.don(lo, kg, mua); this.buoc(this.ban, ma, 'xacNhanDon'); this.buoc(mua, ma, 'datCoc'); return ma; }
   donChot(lo: string, kg: number, nhan = kg, mua = this.mua[0]) { const ma = this.donDaCoc(lo, kg, mua); this.buoc(mua, ma, 'nhapKetQua', nhan, kg - nhan, 0, kg > nhan ? ['anh-hang-khong-dat.jpg'] : []); this.buoc(this.ban, ma, 'ketQuaDung'); return ma; }
+  /** Ba đơn đã chốt cân ở 24.000, 25.000, 26.000 đ/kg với hai bên mua khác: lô này có giá tham khảo 25.000 đ/kg. */
+  giaThamKhaoMau(lo: string) {
+    [24000, 25000, 26000].forEach((gia, i) => {
+      const mua = this.mua[(i % 2) + 1]!;
+      if (!this.so.ketNoi.some(k => k.loId === lo && k.mua.id === mua.id && k.trangThai === 'dong_y')) this.ketNoi(lo, mua);
+      const ma = this.don(lo, 500, mua, gia); this.buoc(this.ban, ma, 'xacNhanDon'); this.buoc(mua, ma, 'datCoc');
+      this.buoc(mua, ma, 'nhapKetQua', 500, 0); this.buoc(this.ban, ma, 'ketQuaDung');
+    });
+  }
   d(ma: string) { return this.so.don.find(x => x.ma === ma)!; }
   l(id: string) { return this.so.lo.find(x => x.id === id)!; }
 }
@@ -351,5 +360,63 @@ export const CA_KIEM_THU_BAN: CaKiemThu[] = [
     t.lam(VAN_HANH_MAU, { loai: 'tra_loi_ho_tro', hoTroId: h, noiDung: 'Tiền đã vào tài khoản đảm bảo', xong: true });
     t.kiem('Yêu cầu đã đóng, có trả lời', t.so.hoTro[0]?.trangThai === 'xong' && t.so.hoTro[0].traLoi.length === 1);
     t.man = 'ho-tro';
+  } },
+  /* ---------- Hàng kém loại, giá, hợp đồng cọc ---------- */
+  { ma: 'B39', nhom: 'Hàng kém loại', ten: 'Tách lô theo loại', kyVong: 'Lô 4 tấn tách 1 tấn loại 2: lô gốc còn 3 tấn loại 1, phần loại 2 thành lô cho chế biến; không tách hết được.', chay(t) {
+    const lo = t.lo(4000);
+    t.kiemBiChan('Tách 4 tấn (hết lô) bị chặn', t.thu(t.ban, { loai: 'tach_lo', loId: lo, phan: [{ loai: 'loai_2', kg: 4000, gia: 14000 }] }), /nhỏ hơn/);
+    const moi = t.thu(t.ban, { loai: 'tach_lo', loId: lo, phan: [{ loai: 'loai_2', kg: 1000, gia: 14000 }] });
+    t.kiemDuoc('Tách 1 tấn loại 2', moi);
+    t.kiem('Lô gốc còn 3.000 kg loại 1', t.l(lo).kg === 3000 && t.l(lo).loai === 'loai_1');
+    t.kiem('Phần tách là lô loại 2 cho chế biến, 14.000 đ/kg', !!moi.ma && t.l(moi.ma).loai === 'loai_2' && t.l(moi.ma).choCheBien && t.l(moi.ma).gia === 14000);
+    t.man = `chi-tiet-lo?lo=${moi.ma ?? lo}`;
+  } },
+  { ma: 'B40', nhom: 'Hàng kém loại', ten: 'Bán gấp: ai nhận, ai cứu', kyVong: 'Lô loại 3 bật bán gấp: thấy bên mua đã đăng ký nhận hàng kém loại và lời chào giá sàn của đối tác bao tiêu.', chay(t) {
+    const lo = t.lo(1500, { ten: 'Xoài cát Chu loại 3', loaiHang: 'loai_3', gia: 8000 });
+    t.lam(t.mua[0], { loai: 'cap_nhat_nhan_hang_kem_loai', bat: true, matHang: ['xoai-cat-chu'], kgToiThieu: 500, vung: '' });
+    t.lam(VAN_HANH_MAU, { loai: 'dat_bao_tieu', nguoiDungId: t.mua[2].id, bat: true, giaSan: { 'xoai-cat-chu': 6000 }, diemGom: 'Chợ đầu mối Cao Lãnh' });
+    t.kiemBiChan('Người khác bật bán gấp lô này bị chặn', t.thu(t.mua[0], { loai: 'bat_ban_gap', loId: lo }));
+    t.kiemDuoc('Chị Năm bật bán gấp', t.thu(t.ban, { loai: 'bat_ban_gap', loId: lo }));
+    const ai = nguoiNhanHangKemLoai(t.so, t.l(lo));
+    t.kiem('Báo cho Nhà máy sấy Đồng Xanh (đăng ký nhận hàng kém loại)', ai.nhan.some(n => n.id === t.mua[0].id));
+    t.kiem('Có lời chào bao tiêu 6.000 đ/kg', ai.baoTieu.some(b => b.gia === 6000), ai.baoTieu.map(b => `${b.ten} ${b.gia}`).join(', '));
+    t.kiem('Hạn bán gấp 3 ngày', t.l(lo).banGap!.den - t.l(lo).banGap!.tu === 3 * NGAY);
+    t.man = `ban-gap?lo=${lo}`;
+  } },
+  { ma: 'B41', nhom: 'Hàng kém loại', ten: 'Hàng bị trả lại thành lô bán gấp', kyVong: 'Đơn 1 tấn bị trả lại 150 kg (có ảnh): chị Năm đưa 150 kg thành lô loại 2 bán gấp; mỗi đơn một lần.', chay(t) {
+    const lo = t.lo(); t.ketNoi(lo); const ma = t.donChot(lo, 1000, 850);
+    const moi = t.thu(t.ban, { loai: 'tra_hang_ve_lo', ma, gia: 12000 });
+    t.kiemDuoc('Đưa phần trả lại thành lô', moi);
+    t.kiem('Lô mới 150 kg loại 2, đang bán gấp', !!moi.ma && t.l(moi.ma).kg === 150 && t.l(moi.ma).loai === 'loai_2' && !!t.l(moi.ma).banGap);
+    t.kiemBiChan('Làm lần hai bị chặn', t.thu(t.ban, { loai: 'tra_hang_ve_lo', ma }), /đã thành lô/);
+    t.man = `ban-gap?lo=${moi.ma ?? lo}`;
+  } },
+  { ma: 'B42', nhom: 'Giá và hợp đồng', ten: 'Cọc tính theo giá sàn', kyVong: 'Giá tham khảo 25.000 đ/kg; đơn khai 16.000 đ/kg: cọc, phí tính trên 17.500 đ/kg (70% giá tham khảo), không trên giá khai.', chay(t) {
+    const lo = t.lo(6000); t.giaThamKhaoMau(lo); t.ketNoi(lo);
+    const ma = t.don(lo, 1000, t.mua[0], 16000);
+    const hd = t.d(ma).hopDong!;
+    t.kiem('Hợp đồng ghi giá tham khảo 25.000, giá tính cọc 17.500', hd.giaThamKhao === 25000 && hd.giaTinhCoc === 17500, `${hd.giaThamKhao} / ${hd.giaTinhCoc}`);
+    t.kiemDuoc('Chị Năm xác nhận (giá thấp nhưng chưa bất thường)', t.thuBuoc(t.ban, ma, 'xacNhanDon'));
+    t.kiem('Cọc = 10% × 1.000 kg × 17.500 đ', t.d(ma).coc?.so === tinhCoc(tien(1000, 17500)), `cọc ${t.d(ma).coc?.so}`);
+    t.man = `hop-dong?ma=${encodeURIComponent(ma)}`;
+  } },
+  { ma: 'B43', nhom: 'Giá và hợp đồng', ten: 'Giá bất thường phải xác nhận thêm', kyVong: 'Đơn 12.000 đ/kg (dưới 60% giá tham khảo): ký thường bị chặn; chị Năm đọc cảnh báo và xác nhận thì ký được.', chay(t) {
+    const lo = t.lo(6000); t.giaThamKhaoMau(lo); t.ketNoi(lo);
+    const ma = t.don(lo, 1000, t.mua[0], 12000);
+    t.kiem('Đơn bị đánh dấu giá bất thường', !!t.d(ma).hopDong?.giaBatThuong);
+    t.kiemBiChan('Ký không xác nhận bị chặn', t.thuBuoc(t.ban, ma, 'xacNhanDon'), /bất thường/);
+    t.kiemDuoc('Xác nhận đã hiểu rồi ký', t.thuBuoc(t.ban, ma, 'xacNhanDon', true));
+    t.kiem('Hợp đồng ghi lúc người bán xác nhận', !!t.d(ma).hopDong?.banDongYGiaBatThuong);
+    t.man = `hop-dong?ma=${encodeURIComponent(ma)}`;
+  } },
+  { ma: 'B44', nhom: 'Giá và hợp đồng', ten: 'Nghiệm thu 3 phần', kyVong: 'Hợp đồng có giá hạ cấp 15.000 đ: cân đạt 850, hạ cấp 50, trả lại 100 kg; trả lại 10% vượt 5% phải có ảnh; tiền = 850 × 25.000 + 50 × 15.000.', chay(t) {
+    const lo = t.lo(); t.ketNoi(lo);
+    const ma = t.lam(t.mua[0], { loai: 'tao_don', loId: lo, kg: 1000, gia: 25000, ngayGiao: t.ngay(3), giaHaCap: 15000 });
+    t.buoc(t.ban, ma, 'xacNhanDon'); t.buoc(t.mua[0], ma, 'datCoc');
+    t.kiemBiChan('Trả lại 10% không ảnh bị chặn', t.thuBuoc(t.mua[0], ma, 'nhapKetQua', 850, 100, 50), /ảnh/);
+    t.kiemDuoc('Kèm ảnh thì nhập được', t.thuBuoc(t.mua[0], ma, 'nhapKetQua', 850, 100, 50, ['anh-hang-khong-dat.jpg']));
+    t.kiemDuoc('Chị Năm xác nhận số cân', t.thuBuoc(t.ban, ma, 'ketQuaDung'));
+    t.kiem('Tiền hàng 22.000.000 đ', t.d(ma).phaiTra === 850 * 25000 + 50 * 15000, `${t.d(ma).phaiTra}`);
+    t.man = `ket-qua?ma=${encodeURIComponent(ma)}`;
   } },
 ];
