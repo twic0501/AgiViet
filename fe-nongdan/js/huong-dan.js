@@ -1,12 +1,12 @@
 // Hướng dẫn lần đầu vào app Nhà sản xuất: 5 thẻ lớn, hình trước chữ, bấm Nghe để nghe đọc.
-// Tự hiện lần đầu vào màn Hàng; xem lại ở mục Tôi (nút "Xem hướng dẫn dùng app"). Đã xem lưu ở localStorage "am.da-xem-hd".
+// Tự hiện lần đầu vào màn Hôm nay; xem lại ở mục Tôi (nút "Xem hướng dẫn dùng app", gọi window.moHuongDan). Đã xem lưu ở localStorage "am.da-xem-hd".
 (() => {
   const BUOC = [
-    { hinh: 'assets/ic-camera.svg', phu: 'assets/ic-mic.svg', tour: 'dang', tieu: 'Đăng hàng', chu: 'Bấm nút <b>+</b> ở giữa thanh dưới. Chụp ảnh hàng, hoặc bấm giữ micro và nói: “10 tấn xoài, hái tuần sau”.', doc: 'Đăng hàng. Bấm nút cộng ở giữa thanh dưới. Chụp ảnh hàng, hoặc bấm giữ micro và nói, ví dụ: 10 tấn xoài, hái tuần sau.' },
-    { hinh: 'assets/ic-khach.svg', tour: 'khach', tieu: 'Khách hỏi mua', chu: 'Khách muốn mua sẽ hiện ở mục <b>Khách hỏi</b>. So <b>tiền về tay</b> của từng khách rồi chọn người bạn muốn nói chuyện.', doc: 'Khách hỏi mua. Khách muốn mua sẽ hiện ở mục Khách hỏi. So tiền về tay của từng khách, rồi chọn người bạn muốn nói chuyện.' },
-    { hinh: 'assets/ic-can.svg', tieu: 'Chốt đơn, giao hàng', chu: 'Hai bên cùng xác nhận đơn. Khi cân, bạn xem số rồi bấm <b>Đúng</b> hoặc <b>Không đúng</b>. Không trả lời thì không tính là đồng ý.', doc: 'Chốt đơn, giao hàng. Hai bên cùng xác nhận đơn. Khi cân, bạn xem số rồi bấm Đúng hoặc Không đúng. Không trả lời thì không tính là đồng ý.' },
-    { hinh: 'assets/ic-tien.svg', tour: 'tien', tieu: 'Tiền hàng', chu: 'Xem tài khoản ngân hàng trước, rồi mới bấm <b>Đã nhận đủ</b>, <b>Nhận một phần</b> hoặc <b>Chưa thấy tiền</b>. Không ai được bắt bạn bấm trước.', doc: 'Tiền hàng. Xem tài khoản ngân hàng trước, rồi mới bấm đã nhận đủ, nhận một phần, hoặc chưa thấy tiền. Không ai được bắt bạn bấm trước.' },
-    { hinh: 'assets/ic-loa.svg', tieu: 'Cần giúp?', chu: 'Màn nào cũng có nút <b>Nghe</b> để app đọc cho bạn. Gặp chuyện lạ thì bấm <b>Cần hỗ trợ</b>. Không đọc mã OTP cho ai.', doc: 'Cần giúp? Màn nào cũng có nút Nghe để app đọc cho bạn. Gặp chuyện lạ thì bấm Cần hỗ trợ. Không đọc mã OTP cho ai.' },
+    { hinh: 'assets/ic-camera.svg', phu: 'assets/ic-mic.svg', tieu: 'Đăng hàng', chu: 'Bấm nút <b>+</b> ở giữa thanh dưới. Chụp ảnh hàng, hoặc bấm micro và nói: “Xoài cát Chu 10 tấn, giá 25 nghìn”.', doc: 'Đăng hàng. Bấm nút cộng ở giữa thanh dưới. Chụp ảnh hàng, hoặc bấm micro và nói, ví dụ: xoài cát Chu 10 tấn, giá 25 nghìn.' },
+    { hinh: 'assets/ic-khach.svg', tieu: 'Khách hỏi mua', chu: 'Bên mua muốn kết nối hiện ở mục <b>Bán</b>. Bạn thấy tên, vùng, uy tín của họ. Số điện thoại hai bên chỉ mở khi bên mua <b>đặt cọc</b>.', doc: 'Khách hỏi mua. Bên mua muốn kết nối hiện ở mục Bán. Bạn thấy tên, vùng, uy tín của họ. Số điện thoại hai bên chỉ mở khi bên mua đặt cọc.' },
+    { hinh: 'assets/ic-can.svg', tieu: 'Chốt đơn, giao hàng', chu: 'Bạn xác nhận đơn và ký bằng mã. Bên mua cọc 10% vào <b>tài khoản đảm bảo</b> của ngân hàng. Khi cân, bạn bấm <b>Đúng</b> hoặc <b>Không đúng</b>.', doc: 'Chốt đơn, giao hàng. Bạn xác nhận đơn và ký bằng mã. Bên mua cọc mười phần trăm vào tài khoản đảm bảo của ngân hàng. Khi cân, bạn bấm Đúng hoặc Không đúng.' },
+    { hinh: 'assets/ic-tien.svg', tieu: 'Tiền hàng', chu: 'Tiền qua tài khoản đảm bảo tự về tài khoản của bạn. Bên mua trả thẳng thì xem sổ ngân hàng trước, rồi mới bấm <b>Đã nhận đủ</b>. Bạn không trả phí.', doc: 'Tiền hàng. Tiền qua tài khoản đảm bảo tự về tài khoản của bạn. Bên mua trả thẳng thì xem sổ ngân hàng trước, rồi mới bấm đã nhận đủ. Bạn không trả phí.' },
+    { hinh: 'assets/ic-loa.svg', tieu: 'Cần giúp?', chu: 'Màn nào cũng có nút <b>Nghe</b> để app đọc cho bạn. Gặp chuyện lạ thì vào Tôi, bấm <b>Trung tâm hỗ trợ</b>. Không đọc mã OTP cho ai.', doc: 'Cần giúp? Màn nào cũng có nút Nghe để app đọc cho bạn. Gặp chuyện lạ thì vào Tôi, bấm Trung tâm hỗ trợ. Không đọc mã OTP cho ai.' },
   ];
   const KHOA = 'am.da-xem-hd';
   const daXem = () => { try { return localStorage.getItem(KHOA) === '1'; } catch { return true; } };
@@ -26,7 +26,7 @@
         <div class="hd-hinh"><img class="hd-mam" src="assets/linh-vat-chao.svg" alt=""><span class="hd-icon"><img src="${b.hinh}" alt="">${b.phu ? `<img src="${b.phu}" alt="">` : ''}</span></div>
         <h2 class="hd-tieu">${b.tieu}</h2>
         <p class="hd-chu">${b.chu}</p>
-        <div class="row" style="gap:8px;flex-wrap:wrap"><button type="button" class="nghe hd-nghe"><img src="assets/ic-loa.svg" alt="">Nghe</button>${b.tour ? `<button type="button" class="btn phu nho" data-tour-mo="${b.tour}">Làm thử từng bước</button>` : ""}</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap"><button type="button" class="nghe hd-nghe"><img src="assets/ic-loa.svg" alt="">Nghe</button></div>
         <div class="hd-cham" aria-hidden="true">${BUOC.map((_, k) => `<span class="${k === i ? 'on' : ''}"></span>`).join('')}</div>
         <div class="hd-nut">${i ? '<button type="button" class="btn phu hd-lui">Quay lại</button>' : ''}<button type="button" class="btn hd-tiep">${cuoi ? 'Bắt đầu dùng' : 'Tiếp'}</button></div>
       </div>`;
@@ -45,11 +45,7 @@
   window.moHuongDan = mo;
 
   const trang = location.pathname.split('/').pop();
-  // Lần đầu vào màn Hàng
-  const thu = () => { if (trang === 'hang.html' && (location.hash === '#hang' || !location.hash) && !daXem()) setTimeout(mo, 500); };
+  // Lần đầu vào màn Hôm nay
+  const thu = () => { if (trang === 'hom-nay.html' && (location.hash === '#hom-nay' || !location.hash) && !daXem()) setTimeout(mo, 500); };
   thu(); window.addEventListener('hashchange', thu);
-  // Nút xem lại trong mục Tôi
-  const menuToi = document.querySelector('#toi nav.menu');
-  if (menuToi && !document.getElementById('hd-xem-lai')) menuToi.insertAdjacentHTML('afterbegin', '<button type="button" id="hd-tung-buoc" onclick="window.moChonTour && moChonTour()"><span class="ic-menu bg-la"><img src="assets/ic-kiem.svg" alt=""></span><span class="grow"><strong>Hướng dẫn từng bước</strong><span class="small muted" style="display:block">App chỉ nút, bạn bấm thật</span></span><svg class="i chevron"><use href="#i-tiep"/></svg></button><button type="button" id="hd-xem-lai"><span class="ic-menu bg-cho"><img src="assets/ic-loa.svg" alt=""></span><span class="grow"><strong>Xem hướng dẫn dùng app</strong></span><svg class="i chevron"><use href="#i-tiep"/></svg></button>');
-  document.getElementById('hd-xem-lai')?.addEventListener('click', mo);
 })();

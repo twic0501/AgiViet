@@ -4,6 +4,7 @@ import * as DM from '@agiviet/danh-muc';
 import * as MC from '@agiviet/may-chu';
 import * as NV from '@agiviet/nghiep-vu';
 import type { Lenh, NguoiLam, SoGiaoDich } from '@agiviet/nghiep-vu';
+import qrcode from 'qrcode-generator';
 import { anhNho } from './anh-chup.ts';
 import { DANH_MUC_MAN } from './danh-muc-man.ts';
 import * as DD from './dinh-dang.ts';
@@ -119,3 +120,11 @@ export function anhMH(matHangId: string, anhLo?: string): string {
   return n ? `assets/dm/icon/${n.icon}.svg` : 'assets/mark.svg';
 }
 export const tenMH = (id: string) => DM.timMatHang(id)?.ten ?? id;
+
+/** Mã QR (SVG co giãn) cho mã truy xuất nguồn gốc. */
+export function maQr(noiDung: string) {
+  const q = qrcode(0, 'M');
+  q.addData(noiDung);
+  q.make();
+  return new Tho(q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }));
+}

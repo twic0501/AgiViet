@@ -149,6 +149,14 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   const L5 = b.lam(N, { loai: 'dang_lo', matHang: 'xoai-cat-chu', ten: 'Xoài cát Chu vụ chính', kg: 15000, coSo: 'uoc_tinh', gia: null, haiTu: b.ngay(40), haiDen: b.ngay(70), vuonId: vX, moTa: 'Sắp có hàng: nhận đặt trước.', anh: ['mango'] });
   void L5;
   const L6 = b.lam(N, { loai: 'dang_lo', matHang: 'chanh-day', ten: 'Chanh dây', kg: 800, coSo: 'da_can', gia: 21000, anh: ['passion-fruit'] });
+  // Tuần cuối: một đơn tôm vừa xong tiền về, vài khoản chi; chị Năm xác nhận còn hàng các lô đang bán
+  const tomXong = tao(DX, L3, 200, 115000, 0); xn(tomXong); coc(DX, tomXong); can(DX, tomXong, 200); b.buoc(N, tomXong, 'ketQuaDung');
+  b.buoc(DX, tomXong, 'chuyenTienDamBao', con(tomXong)); b.tua(GIO); b.buoc(HE_THONG, tomXong, 'giaiNgan');
+  b.lam(DX, { loai: 'danh_gia', ma: tomXong, diem: 5, nhanXet: 'Tôm sống, đúng size.' });
+  b.lam(N, { loai: 'ghi_thu_chi', loaiTien: 'chi', so: 1_800_000, noiDung: 'Thức ăn tôm 2 bao', ngay: b.ngay(-2), muaVuId: vuT });
+  b.lam(N, { loai: 'ghi_thu_chi', loaiTien: 'chi', so: 450_000, noiDung: 'Xăng chạy máy bơm', ngay: b.ngay(-4), muaVuId: vuX });
+  b.lam(N, { loai: 'ghi_thu_chi', loaiTien: 'thu', so: 2_000_000, noiDung: 'Bán chuối ở chợ', ngay: b.ngay(-3) });
+  for (const l of [L1, L2, L3, L4]) b.dv.thucHien(N, { loai: 'con_hang', loId: l });   // lô đã chốt hết thì bỏ qua
   const so = b.so;
   const lo6 = so.lo.find(l => l.id === L6)!; lo6.conHangLuc -= 13 * NGAY; lo6.dangLuc -= 13 * NGAY;   // mô phỏng tin đã đăng 13 ngày
   // Dồn giờ tới đúng ketThuc

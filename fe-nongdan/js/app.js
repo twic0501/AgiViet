@@ -1,4 +1,4 @@
-// AgiViet · App Nhà sản xuất — bản giao diện, số liệu mẫu, không có máy chủ.
+// AgiViet · App Nhà sản xuất: vỏ app (icon, chuyển màn theo #, thanh dưới, đọc to, ô nhập). Dữ liệu và vẽ màn: js/khung.js.
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -60,16 +60,7 @@
     Object.entries(ICON).map(([k, v]) => `<symbol id="i-${k}" viewBox="0 0 24 24">${v}</symbol>`).join('') + '</svg>');
 
   /* ---------- Màn nào nằm ở trang nào ---------- */
-  const TRANG = {
-    'bat-dau.html': ['chao-mung', 'dang-nhap', 'otp', 'vai-tro', 'mat-hang', 'ho-so', 'xac-minh', 'tro-giup-truy-cap'],
-    'hang.html': ['hang', 'chi-tiet-lo', 'cap-nhat-luong', 'sap-co-hang', 'chung-tu', 'lo-gop'],
-    'dang.html': ['dang', 'chon-mat-hang', 'chup', 'nghe', 'kiem-tra', 'xem-lai', 'xong'],
-    'khach.html': ['khach', 'nhu-cau', 'ket-noi', 'chat', 'bao-gia', 'hen-xem', 'bao-cao'],
-    'giao-dich.html': ['so-sanh', 'phuong-thuc', 'chon-luong', 'ky', 'quyen', 'ban-day-du', 'ky-otp', 'ky-xong', 'ky-giay', 'so-ban', 'coc'],
-    'lich.html': ['lich', 'chi-tiet-don', 'ket-qua', 'giao-mot-phan', 'tranh-chap', 'doi-lich', 'yeu-cau-thay-doi', 'huy-don'],
-    'tien.html': ['tien', 'quyet-toan', 'lich-su-tien'],
-    'toi.html': ['toi', 'thong-bao', 'dich-vu', 'dat-dich-vu', 'cai-dat', 'ho-tro', 'can-ho-tro', 'nguoi-giup', 'tai-khoan-nhan', 'bao-mat', 'rieng-tu', 'phan-cua-toi', 'trang-thai']
-  };
+  const TRANG = window.AM?.TRANG || {};   // khai báo ở js/khung.js
   const MAN_O_TRANG = {};
   Object.entries(TRANG).forEach(([file, ids]) => ids.forEach(id => { MAN_O_TRANG[id] = file; }));
 
@@ -147,20 +138,21 @@
 
   /* ---------- Thanh điều hướng dưới ---------- */
   const TAB = [
-    ['hang', 'hang.html#hang', 'ic-hang', 'Hàng'],
-    ['khach', 'khach.html#khach', 'ic-khach', 'Khách hỏi', 2],
+    ['hom-nay', 'hom-nay.html#hom-nay', 'home', 'Hôm nay'],
+    ['vuon', 'vuon.html#vuon', 'garden', 'Vườn'],
     ['dang', 'dang.html#dang', null, 'Đăng'],
-    ['lich', 'lich.html#lich', 'ic-lich', 'Đơn hàng'],
-    ['tien', 'tien.html#tien', 'ic-tien', 'Tiền hàng']
+    ['ban', 'hang.html#hang', 'stock', 'Bán'],
+    ['don', 'lich.html#lich', 'order', 'Đơn'],
+    ['tien', 'tien.html#tien', 'wallet', 'Tiền']
   ];
   let nav = null;
-  if ($('.screen[data-nav]')) {
+  if ($('.screen[data-nav]') && window.AVN) {
     nav = document.createElement('nav');
-    nav.className = 'nav';
+    nav.className = 'nav nav-6';
     nav.setAttribute('aria-label', 'Mục chính');
-    nav.innerHTML = TAB.map(([key, href, ic, ten, so]) => key === 'dang'
+    nav.innerHTML = TAB.map(([key, href, ic, ten]) => key === 'dang'
       ? `<a href="${href}" class="dang"><span class="ic"><svg class="i" style="width:30px;height:30px;color:#fff;stroke-width:3"><use href="#i-cong"/></svg></span>${ten}</a>`
-      : `<a href="${href}" data-tab="${key}"><span class="ic"><img src="assets/${ic}.svg" alt="">${so ? `<span class="badge-so">${so}</span>` : ''}</span>${ten}</a>`
+      : `<a href="${href}" data-tab="${key}"><span class="ic">${window.AVN.icon(ic, 28)}</span>${ten}</a>`
     ).join('');
     $('.app').appendChild(nav);
   }
@@ -194,7 +186,7 @@
   window.amMan = (id, h) => { hooks[id] = h; };
   let manHienTai = null;
   function hienMan() {
-    const id = location.hash.slice(1);
+    const id = decodeURIComponent(location.hash.slice(1).split('?')[0]);
     const man = (id && document.getElementById(id)?.classList.contains('screen'))
       ? document.getElementById(id)
       : $('.screen');
@@ -206,18 +198,20 @@
     if (nav) $$('a[data-tab]', nav).forEach(a => {
       if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
+    dungDoc();
+    window.AM?.ve();
     const tieuDe = man.dataset.title || $('h1', man)?.textContent.trim() || 'AgiViet';
     document.title = `${tieuDe} · AgiViet`;
-    dungDoc();
     if (man.id === 'can-ho-tro') {
       let ma = '';
       try { ma = sessionStorage.getItem('am.ma') || ''; } catch { /* bỏ qua */ }
       const o = document.getElementById('ma-lien-quan');
       if (o) o.textContent = ma || 'Chưa chọn đơn hoặc lô';
     }
-    if (manHienTai !== man) hooks[man.id]?.vao?.(man);
+    const doi = manHienTai !== man;
+    if (doi) hooks[man.id]?.vao?.(man);
     manHienTai = man;
-    window.scrollTo(0, 0);
+    if (doi) window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', hienMan);
 

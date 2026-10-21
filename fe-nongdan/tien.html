@@ -8,177 +8,21 @@
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/moi.css">
 </head>
 <body>
+<!-- Tệp sinh bằng scripts/tao-trang-ban.mjs. Nội dung màn vẽ ở js/man/tien.js. -->
 <div class="app">
-
-<!-- ============ S04 · TIỀN HÀNG ============ -->
-<section class="screen" id="tien" data-nav="tien" data-title="Tiền hàng"
-  data-read="Tiền hàng. Bên mua B báo đã trả đợt 1: hai mươi hai triệu hai trăm chín mươi tư nghìn đồng, lúc 8 giờ 15 hôm nay. Bạn xem tài khoản rồi chọn: đã nhận đủ, nhận một phần, hoặc chưa thấy tiền. Tiền cọc 10 triệu bạn đã xác nhận nhận. Khoản 200 ký đang đối soát, để riêng. Đơn này tiền chuyển trực tiếp giữa hai bên, app không giữ tiền.">
-  <header class="top">
-    <img class="tab-ic" src="assets/ic-tien.svg" alt="">
-    <h1>Tiền hàng</h1>
-    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
-  </header>
-
-  <section class="the-tien">
-    <span class="b" style="font-size:15px;color:#d5e2d6">Bên mua B báo đã trả · đợt 1 · 8:15</span>
-    <strong class="so">22.294.000 đ</strong>
-    <div class="row" style="gap:10px">
-      <span class="grow" style="font-size:15px;color:var(--la-nhat)">“Hai mươi hai triệu hai trăm chín mươi tư nghìn đồng”</span>
-      <button class="icon-btn nen-trang" type="button" aria-label="Nghe số tiền" data-noi="Hai mươi hai triệu hai trăm chín mươi tư nghìn đồng"><img src="assets/ic-loa.svg" alt="" style="width:30px;height:30px"></button>
-    </div>
-    <span class="xs" style="color:#d5e2d6">Chuyển khoản · mã FT2810•••• · có ảnh biên lai</span>
-    <div class="stack s8" id="tra-loi-dot-1" style="margin-top:6px">
-      <button class="btn nang" type="button" style="min-height:56px;font-size:17px" data-da-nhan><svg class="i"><use href="#i-check"/></svg>Đã nhận đủ</button>
-      <div class="grid2" style="gap:8px">
-        <button class="btn vien-trang" type="button" style="min-height:52px;font-size:15px" aria-expanded="false" aria-controls="mot-phan" onclick="const k=document.getElementById('mot-phan');k.hidden=!k.hidden;this.setAttribute('aria-expanded',String(!k.hidden));if(!k.hidden)k.querySelector('input').focus()">Nhận một phần</button>
-        <button class="btn vien-trang" type="button" style="min-height:52px;font-size:15px" data-toast="Đã báo Bên mua B và người hỗ trợ: bạn chưa thấy tiền. Chưa ai bị kết luận sai.">Chưa thấy tiền</button>
-      </div>
-      <div id="mot-phan" class="stack" style="gap:8px;padding:12px;border-radius:16px;background:#ffffff1f" hidden>
-        <label class="small b" for="so-da-nhan" style="color:#fff">Bạn thấy về bao nhiêu?</label>
-        <div class="o-nhap" style="padding-right:14px"><input id="so-da-nhan" inputmode="numeric" value="20.000.000" class="lon"><span class="tien-to">đ</span></div>
-        <span class="xs" style="color:#d5e2d6">Phần thiếu 2.294.000 đ được mở đối soát. App không kết luận ai sai.</span>
-        <button class="btn nang" type="button" data-toast="Đã ghi: nhận 20.000.000 đ. Mở đối soát 2.294.000 đ với Bên mua B.">Gửi số đã nhận</button>
-      </div>
-    </div>
-  </section>
-  <p class="row xs muted top-align" style="gap:8px"><svg class="i i20" style="flex-shrink:0"><use href="#i-thong-tin"/></svg>Xem tài khoản ngân hàng hoặc tin nhắn ngân hàng trước khi bấm. Không ai được bắt bạn bấm để xe được đi.</p>
-
-  <section class="card stack" style="padding:16px;gap:10px">
-    <div class="row" style="gap:10px"><img src="assets/anh/mh/mango.jpg" alt="" style="width:32px;height:32px"><strong class="grow">Đơn xoài · HĐ-0231</strong><span class="chip nho bg-nen">Chuyển trực tiếp</span></div>
-    <div class="thanh-don" aria-hidden="true">
-      <span style="width:15%;background:var(--reu)"></span>
-      <span style="width:33%;background:var(--mat-ong)"></span>
-      <span style="width:3%;background:var(--gach)"></span>
-      <span style="width:49%;background:var(--trang);border:2px dashed #9cb79a;border-radius:0 11px 11px 0"></span>
-    </div>
-    <div class="chu-giai">
-      <span><i class="sh sh-tron"></i>Đã nhận</span>
-      <span><i class="sh sh-vuong"></i>Chờ bạn trả lời</span>
-      <span><i class="sh sh-tg"></i>Đang đối soát</span>
-      <span><i class="sh sh-dut"></i>Chưa tới lượt</span>
-    </div>
-  </section>
-
-  <div class="grid3">
-    <a class="pill-btn" href="#coc" style="text-decoration:none;color:inherit;height:auto;min-height:64px;flex-direction:column;gap:2px;font-size:13px"><img src="assets/ic-tien.svg" alt="">Tiền cọc</a>
-    <a class="pill-btn" href="#quyet-toan" style="text-decoration:none;color:inherit;height:auto;min-height:64px;flex-direction:column;gap:2px;font-size:13px"><img src="assets/ic-kiem.svg" alt="">Quyết toán</a>
-    <a class="pill-btn" href="#lich-su-tien" style="text-decoration:none;color:inherit;height:auto;min-height:64px;flex-direction:column;gap:2px;font-size:13px"><svg class="i"><use href="#i-dong-ho"/></svg>Lịch sử</a>
-  </div>
-
-  <article class="card khoan" style="border-radius:20px;flex-direction:column;gap:10px">
-    <div class="khoan">
-      <span class="dau-khoan" style="background:var(--reu);color:#fff"><svg class="i" style="stroke-width:3"><use href="#i-check"/></svg></span>
-      <span class="grow stack" style="gap:2px"><span class="row between" style="gap:8px"><strong>Tiền cọc</strong><strong class="so-khoan">10.000.000</strong></span><span class="small muted">Bạn xác nhận đã nhận 2/10</span></span>
-    </div>
-    <button class="link-btn" type="button" style="align-self:flex-start;min-height:40px;padding:0;font-size:14px" data-toast="Nhập lý do bấm nhầm. App giữ lại lần xác nhận cũ, báo Bên mua B và mở đối soát; không tự đảo tiền.">Bấm nhầm? Báo sai xác nhận</button>
-  </article>
-  <article class="card khoan" style="border-radius:20px" id="khoan-dot-1">
-    <span class="dau-khoan bg-cho" style="border-radius:12px;border:2px solid var(--muc)"><svg class="i i22"><use href="#i-cat"/></svg></span>
-    <span class="grow stack" style="gap:2px"><span class="row between" style="gap:8px"><strong>Đợt 1 · 4.820 kg</strong><strong class="so-khoan">22.294.000</strong></span><span class="small muted" data-trang-thai>32.294.000 trừ cọc 10.000.000 · bên mua báo đã trả, chờ bạn</span></span>
-  </article>
-  <article class="khoan-tranh-chap">
-    <div class="khoan">
-      <img src="assets/ic-canh-bao.svg" alt="">
-      <span class="grow stack" style="gap:2px"><span class="row between" style="gap:8px"><strong class="do">Đang đối soát</strong><strong class="so-khoan do">1.340.000</strong></span><span class="small" style="color:#6e2a14">200 kg bên mua không nhận. Để riêng, chưa ai bị trừ.</span></span>
-    </div>
-    <a class="btn canh nho" href="#tranh-chap" style="min-height:48px;font-size:15px">Xem vụ việc HT-0412</a>
-  </article>
-  <article class="card vien-dut khoan" style="border-radius:20px">
-    <img src="assets/ic-lich.svg" alt="">
-    <span class="grow stack" style="gap:2px"><span class="row between" style="gap:8px"><strong>Đợt 2 · dự kiến</strong><strong class="so-khoan muted">~33.500.000</strong></span><span class="small muted">13/10 · theo lượng chốt</span></span>
-  </article>
-
-  <div class="grid2" style="gap:8px">
-    <button class="btn phu nho" type="button" style="min-height:52px" data-toast="Đang tạo hồ sơ tiền HĐ-0231 (PDF). Đây là bản đối soát, không phải hóa đơn thuế."><svg class="i i22"><use href="#i-tai"/></svg>Xuất hồ sơ tiền</button>
-    <a class="btn can-ho-tro-btn nho" href="#can-ho-tro" data-ma="HĐ-0231 · tiền hàng" style="min-height:52px"><svg class="i"><use href="#i-tro-giup"/></svg>Cần hỗ trợ</a>
-  </div>
-  <p class="row xs muted top-align" style="gap:8px"><svg class="i i20" style="flex-shrink:0"><use href="#i-thong-tin"/></svg><span>Chế độ tiền của đơn này: <strong>chuyển trực tiếp</strong>. App ghi lời báo của hai bên để đối chiếu, không giữ và không tự hoàn tiền. Phí dịch vụ do bên mua trả riêng.</span></p>
-</section>
-
-<!-- ============ QUYẾT TOÁN ============ -->
-<section class="screen" id="quyet-toan" data-title="Quyết toán đơn"
-  data-read="Quyết toán đơn HĐ 0231, tạm tính. Đợt 1 nhận 4 nghìn 820 ký, được 32 triệu 294 nghìn. Đợt 2 nhận 3 nghìn ký, được 20 triệu 100 nghìn. Đợt bù 2 nghìn ký chưa giao, chưa tính. Trừ tiền cọc 10 triệu, trừ số đã nhận đợt 1 là 22 triệu 294 nghìn. Phí app 0 đồng vì Bên mua B trả. Còn phải nhận 20 triệu 100 nghìn đồng. Khoản 200 ký đang đối soát để riêng, chưa tính. Đơn chỉ xong khi hết các khoản còn mở.">
-  <header class="top">
-    <a class="icon-btn" href="#tien" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
-    <h1>Quyết toán</h1>
-    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
-  </header>
-  <div class="row" style="gap:8px;flex-wrap:wrap">
-    <span class="chip cho"><span class="sh sh-vuong"></span>Tạm tính</span>
-    <span class="chip canh"><span class="sh sh-tg"></span>Còn 2 việc chưa xong</span>
-  </div>
-  <section class="card stack">
-    <div class="row" style="gap:10px"><img src="assets/anh/mh/mango.jpg" alt="" style="width:36px;height:36px"><strong class="grow">HĐ-0231 · Xoài cát Chu</strong><span class="small muted">6.700 đ/kg</span></div>
-    <div class="chia"></div>
-    <div class="row between small"><span>Đợt 1 · nhận 4.820 kg</span><strong>32.294.000</strong></div>
-    <div class="row between small"><span>Đợt 2 · nhận 3.000 kg</span><strong>20.100.000</strong></div>
-    <div class="row between small muted"><span>Đợt bù · 2.000 kg · chưa giao</span><span>chưa tính</span></div>
-    <div class="row between small"><span>Giảm theo độ ngọt</span><strong>0</strong></div>
-    <div class="chia"></div>
-    <div class="row between"><span class="b">Tiền hàng</span><strong class="num" style="font-size:20px">52.394.000</strong></div>
-    <div class="row between small"><span>Trừ tiền cọc đã nhận</span><strong>− 10.000.000</strong></div>
-    <div class="row between small"><span>Trừ tiền đã nhận đợt 1</span><strong>− 22.294.000</strong></div>
-    <div class="row between small"><span>Phí dịch vụ (Bên mua B trả, hóa đơn riêng)</span><strong>0</strong></div>
-    <div class="chia"></div>
-    <div class="row between" style="background:var(--la-nhat);border-radius:14px;padding:12px"><span class="b">Còn phải nhận</span><strong class="ve-tay" style="font-size:26px">20.100.000 đ</strong></div>
-  </section>
-  <p class="xs muted">Nếu bạn nhận chịu một phần phí dịch vụ: phí có <strong>hóa đơn riêng</strong>, hạn trả 7 ngày, không trừ vào tiền hàng. Quá 15 ngày chỉ tạm chưa bật hỗ trợ cho đơn mới; đơn đang chạy và tiền hàng không bị ảnh hưởng.</p>
-  <a class="khoan-tranh-chap" href="#tranh-chap" style="text-decoration:none;color:inherit">
-    <div class="khoan"><img src="assets/ic-canh-bao.svg" alt=""><span class="grow stack" style="gap:2px"><span class="row between" style="gap:8px"><strong class="do">Để riêng: đang đối soát</strong><strong class="so-khoan do">1.340.000</strong></span><span class="small" style="color:#6e2a14">200 kg đợt 1 · chưa cộng, chưa trừ</span></span></div>
-  </a>
-  <p class="row small muted top-align" style="gap:8px"><svg class="i i20"><use href="#i-thong-tin"/></svg>Đơn chỉ xong khi hết các khoản còn mở: đợt giao bù và khoản đối soát.</p>
-  <div class="bottom-actions">
-    <button class="btn phu" type="button" data-doc-man><img src="assets/ic-loa.svg" alt="" style="width:28px;height:28px">Nghe bảng tính</button>
-    <button class="btn" type="button" data-toast="Đã ghi: bạn đồng ý bảng tạm tính. Bên mua B sẽ xác nhận."><svg class="i"><use href="#i-check"/></svg>Tôi thấy bảng này đúng</button>
-  </div>
-</section>
-
-<!-- ============ LỊCH SỬ TIỀN ============ -->
-<section class="screen" id="lich-su-tien" data-title="Lịch sử tiền"
-  data-read="Lịch sử tiền. Tháng 10: đã nhận 10 triệu tiền cọc xoài; đang chờ 22 triệu 294 nghìn đợt 1. Tháng 9: đã nhận 18 triệu 500 nghìn tiền thanh long từ Bên mua C, và 9 triệu 200 nghìn tiền tôm.">
-  <header class="top">
-    <a class="icon-btn" href="#tien" aria-label="Quay lại"><svg class="i"><use href="#i-lui"/></svg></a>
-    <h1>Lịch sử tiền</h1>
-    <button class="nghe" type="button"><img src="assets/ic-loa.svg" alt="">Nghe</button>
-  </header>
-  <div class="phan-doan" data-chon="loc-tien" role="group" aria-label="Lọc">
-    <button type="button" aria-pressed="true" data-khi="tat">Tất cả</button>
-    <button type="button" aria-pressed="false" data-khi="nhan">Đã nhận</button>
-    <button type="button" aria-pressed="false" data-khi="cho">Đang chờ</button>
-  </div>
-  <div class="row between"><h2 class="h2">Tháng 10</h2><span class="small muted b">Đã nhận 10 triệu</span></div>
-  <div class="menu">
-    <div class="row" style="padding:12px 16px;border-bottom:1px solid #eef1ea"><span class="thumb nho bg-cho"><svg class="i i22"><use href="#i-cat"/></svg></span><span class="grow stack" style="gap:0"><strong>Xoài · đợt 1</strong><span class="xs muted">Bên mua B · chờ chuyển</span></span><strong class="num" style="font-size:18px">+22.294.000</strong></div>
-    <div class="row" style="padding:12px 16px"><span class="thumb nho" style="background:var(--reu);color:#fff"><svg class="i i22" style="stroke-width:3"><use href="#i-check"/></svg></span><span class="grow stack" style="gap:0"><strong>Xoài · tiền cọc</strong><span class="xs muted">Bên mua B · 2/10</span></span><strong class="num xanh" style="font-size:18px">+10.000.000</strong></div>
-  </div>
-  <div class="row between"><h2 class="h2">Tháng 9</h2><span class="small muted b">Đã nhận 27,7 triệu</span></div>
-  <div class="menu">
-    <div class="row" style="padding:12px 16px;border-bottom:1px solid #eef1ea"><span class="thumb nho" style="background:var(--reu);color:#fff"><svg class="i i22" style="stroke-width:3"><use href="#i-check"/></svg></span><span class="grow stack" style="gap:0"><strong>Thanh long · 1,1 tấn</strong><span class="xs muted">Bên mua C · 15/9</span></span><strong class="num xanh" style="font-size:18px">+18.500.000</strong></div>
-    <div class="row" style="padding:12px 16px"><span class="thumb nho" style="background:var(--reu);color:#fff"><svg class="i i22" style="stroke-width:3"><use href="#i-check"/></svg></span><span class="grow stack" style="gap:0"><strong>Tôm thẻ · 80 kg</strong><span class="xs muted">Bán ngoài app · bạn tự ghi</span></span><strong class="num xanh" style="font-size:18px">+9.200.000</strong></div>
-  </div>
-  <p class="xs muted">Tiền “đã nhận” là tiền bạn đã bấm xác nhận. App không đọc tài khoản ngân hàng của bạn.</p>
-</section>
-
+<section class="screen" id="tien" data-title="Tiền hàng" data-nav="tien"></section>
+<section class="screen" id="tien-ve" data-title="Tiền đã về"></section>
+<section class="screen" id="quyet-toan" data-title="Quyết toán"></section>
+<section class="screen" id="lich-su-tien" data-title="Lịch sử tiền"></section>
+<section class="screen" id="ung-tien" data-title="Nhận tiền trước"></section>
 </div>
+<script src="js/dong-co.js"></script>
+<script src="js/khung.js"></script>
 <script src="js/app.js"></script>
-<script src="js/he-thong.js"></script>
-<script src="js/kho-mau.js"></script>
 <script src="js/mo-phong.js"></script>
-<script src="js/tour.js"></script>
-<script>
-(() => {
-  const nut = document.querySelector('[data-da-nhan]');
-  if (!nut) return;
-  nut.addEventListener('click', () => {
-    const k = document.getElementById('khoan-dot-1');
-    k.querySelector('.dau-khoan').outerHTML = '<span class="dau-khoan" style="background:var(--reu);color:#fff"><svg class="i" style="stroke-width:3"><use href="#i-check"/></svg></span>';
-    k.querySelector('[data-trang-thai]').textContent = 'Đã nhận · bạn vừa xác nhận';
-    document.getElementById('tra-loi-dot-1').innerHTML = '<button class="btn vien-trang" type="button" style="min-height:52px;font-size:15px" data-toast="Nhập lý do bấm nhầm. App giữ lần xác nhận cũ, báo Bên mua B và mở đối soát; không tự đảo tiền.">Bấm nhầm? Báo sai xác nhận</button>';
-    amToast('Đã ghi: bạn xác nhận nhận 22.294.000 đ');
-  });
-})();
-</script>
+<script src="js/man/tien.js"></script>
 </body>
 </html>
