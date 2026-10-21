@@ -4,7 +4,7 @@ import { TRANG_THAI, type SoGiaoDich } from '@agiviet/nghiep-vu';
 import { describe, expect, it } from 'vitest';
 import {
   CA_KIEM_THU_BAN, chayCa, chayMotNhip, DichVu, dongHoCoDinh, hoSoCongKhai, kichBanMau, lienLacCua, NGUOI_BAN_MAU, NGUOI_MUA_MAU, PhienThu,
-  taoDongHo, taoKhoBoNho, taoKhoTrinhDuyet, tinNhanCua, TRE, viecGiaLap, type NoiLuu,
+  taoDongHo, taoKhoBoNho, taoKhoTrinhDuyet, tinNhanCua, TRE, viecGiaLap, viecGiaLapBan, CA_KIEM_THU_MUA, NGUOI_BAN_KHAC, type NoiLuu,
 } from '../src/index.ts';
 
 const noiLuuGia = (): NoiLuu & { m: Map<string, string> } => { const m = new Map<string, string>(); return { m, getItem: k => m.get(k) ?? null, setItem: (k, v) => void m.set(k, v), removeItem: k => void m.delete(k) }; };
@@ -41,8 +41,8 @@ describe('Kịch bản mẫu và hệ thống', () => {
   const so = kichBanMau(Date.UTC(2026, 9, 19, 3));
   it('dựng được, có đơn ở đủ 13 trạng thái', () => {
     for (const t of TRANG_THAI) expect(so.don.some(d => d.trangThai === t), t).toBe(true);
-    expect(so.lo.length).toBe(6);
-    expect(so.nguoiDung.length).toBe(4);
+    expect(so.lo.length).toBe(8);
+    expect(so.nguoiDung.length).toBe(6);   // 3 người bán (chị Năm, Tư Bền, Hai Thu) + 3 bên mua
   });
   it('mọi đơn giữ bất biến: lịch sử = phiên bản; lượng đã hứa không vượt lô', () => {
     for (const d of so.don) expect(d.lichSu.length, d.ma).toBe(d.phienBan);
@@ -94,5 +94,43 @@ describe('Ca kiểm thử app bán', () => {
   it('phiên thử dựng sẵn người bán đã xác minh và ba bên mua', () => {
     const t = new PhienThu();
     expect(t.so.nguoiDung.map(n => n.xacMinh)).toEqual(['da_xac_minh', 'da_xac_minh', 'da_xac_minh', 'da_xac_minh']);
+  });
+});
+
+describe('App mua: giả lập người bán và ca kiểm thử', () => {
+  const so = kichBanMau(Date.UTC(2026, 9, 19, 3));
+  it('kịch bản có nguồn của ba người bán và dữ liệu quản lý của Đồng Xanh', () => {
+    const dx = NGUOI_MUA_MAU[0]!.nguoi.id;
+    expect(NGUOI_BAN_KHAC.every(k => so.lo.some(l => l.ban.id === k.nguoi.id))).toBe(true);
+    expect(so.nguoiDung.find(n => n.id === dx)?.goi).toBe('business');
+    expect(so.kho.filter(p => p.mua.id === dx).length).toBeGreaterThan(0);
+    expect(so.donNgoai.filter(n => n.mua.id === dx).length).toBe(2);
+    expect(so.keHoach.filter(k => k.mua.id === dx).length).toBe(3);
+  });
+  it('mọi gợi ý giả lập người bán đều chạy được qua nghiệp vụ', () => {
+    const gio = Date.UTC(2026, 9, 19, 3);
+    for (const m of NGUOI_MUA_MAU) {
+      const viec = viecGiaLapBan(so, m.nguoi.id, gio);
+      const loi: string[] = [];
+      for (const v of viec) {
+        const dv = new DichVu(taoKhoBoNho(structuredClone(so)), dongHoCoDinh(gio));
+        const kq = dv.thucHien(v.nguoi, v.lenh);
+        if (!kq.ok) loi.push(`${v.nhan}: ${kq.loi}`);
+      }
+      expect(loi).toEqual([]);
+    }
+    expect(viecGiaLapBan(so, NGUOI_MUA_MAU[0]!.nguoi.id, gio).length).toBeGreaterThan(10);
+  });
+  for (const ca of CA_KIEM_THU_MUA) {
+    it(`${ca.ma} · ${ca.ten}`, () => {
+      const kq = chayCa(ca);
+      expect(kq.loi).toBeUndefined();
+      expect(kq.kiemTra.filter(k => !k.dat)).toEqual([]);
+      expect(kq.dat).toBe(true);
+    });
+  }
+  it('mã ca app mua không trùng, khác mã ca app bán', () => {
+    const ma = [...CA_KIEM_THU_BAN, ...CA_KIEM_THU_MUA].map(c => c.ma);
+    expect(new Set(ma).size).toBe(ma.length);
   });
 });

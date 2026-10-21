@@ -3,7 +3,7 @@
 import { ngayCua, TRANG_THAI, type Lenh, type NguoiLam, type SoGiaoDich, type TenBuoc, type ThamSoBuoc } from '@agiviet/nghiep-vu';
 import { DichVu } from './dich-vu.ts';
 import { dongHoCoDinh } from './dong-ho.ts';
-import { damBaoNguoiMuaMau, NGUOI_MUA_MAU, VAN_HANH_MAU } from './gia-lap.ts';
+import { damBaoNguoiMuaMau, NGUOI_BAN_KHAC, NGUOI_MUA_MAU, VAN_HANH_MAU } from './gia-lap.ts';
 import { HE_THONG } from './he-thong.ts';
 import { taoKhoBoNho } from './kho.ts';
 
@@ -45,6 +45,17 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   dangKyNguoiBanMau(b);
   damBaoNguoiMuaMau(b.dv);
   b.lam(N, { loai: 'them_nguoi_giup', ten: 'Út Tâm (con gái)', sdt: '0909123123', quyen: 'thao_tac' });
+  // Nhà máy sấy Đồng Xanh dùng gói Business, có kế toán và người mua hàng
+  b.lam(DX, { loai: 'chon_goi', goi: 'business' });
+  b.lam(DX, { loai: 'them_thanh_vien', ten: 'Anh Quang (kế toán)', sdt: '0909000457', quyen: 'ke_toan' });
+  b.lam(DX, { loai: 'them_thanh_vien', ten: 'Chị Lan (mua hàng)', sdt: '0909000458', quyen: 'mua_hang' });
+  // Hai người bán mẫu khác để bên mua có nhiều nguồn
+  for (const k of NGUOI_BAN_KHAC) {
+    b.lam(k.nguoi, { loai: 'dang_ky', vai: 'ban', ten: k.nguoi.ten, sdt: k.sdt, vung: k.vung, loaiBan: 'ho' });
+    b.lam(k.nguoi, { loai: 'cap_nhat_ho_so', diaChi: k.diaChi, matHang: k.matHang });
+    b.lam(k.nguoi, { loai: 'gui_xac_minh', giayTo: 'can-cuoc.jpg' });
+    b.lam(VAN_HANH_MAU, { loai: 'duyet_xac_minh', nguoiDungId: k.nguoi.id, dongY: true });
+  }
 
   // Sổ vườn
   const vX = b.lam(N, { loai: 'them_vuon', ten: 'Vườn xoài sau nhà', loaiVuon: 'vuon', dienTich: 12, donViDienTich: 'cong', cay: 'Xoài cát Chu', soGoc: 320, namTrong: 2014 });
@@ -84,8 +95,9 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   const can = (mua: NguoiLam, ma: string, nhan: number, tuChoi = 0) => { b.buoc(mua, ma, 'nhapKetQua', nhan, tuChoi); };
 
   // Ba đơn đã xong sớm (uy tín, lô gộp, tiền về)
+  const xongSom: string[] = [];
   for (const [mua, lo, kg, gia] of [[DX, L1, 1200, 24500], [MT, L2, 600, 18000], [DX, L4, 3000, 23000]] as const) {
-    const ma = tao(mua, lo, kg, gia, 2); xn(ma); coc(mua, ma);
+    const ma = tao(mua, lo, kg, gia, 2); xn(ma); coc(mua, ma); xongSom.push(ma);
     b.tua(2 * NGAY); can(mua, ma, kg); b.buoc(N, ma, 'ketQuaDung');
     b.buoc(mua, ma, 'chuyenTienDamBao', b.so.don.find(d => d.ma === ma)!.conPhaiTra!); b.tua(GIO); b.buoc(HE_THONG, ma, 'giaiNgan');
     b.lam(mua, { loai: 'danh_gia', ma, diem: 5, nhanXet: 'Hàng đúng loại, giao đúng hẹn.' });
@@ -108,7 +120,33 @@ export function kichBanMau(ketThuc = Date.now()): SoGiaoDich {
   b.lam(MT, { loai: 'dang_nhu_cau', matHang: 'xoai-cat-chu', ten: 'Xoài cát Chu loại 1 xuất khẩu', kg: 8000, tu: b.ngay(3), den: b.ngay(25), giaTran: 27000, thuocTinh: { loai: 'Loại 1' }, ghiChu: 'Cần hồ sơ vùng trồng.' });
   const ncDX = b.lam(DX, { loai: 'dang_nhu_cau', matHang: 'xoai-cat-chu', ten: 'Xoài loại 2, 3 cho sấy dẻo', kg: 5000, tu: b.ngay(2), den: b.ngay(20), giaTran: 14000, thuocTinh: { loai: 'Loại 2' } });
   b.lam(UH, { loai: 'dang_nhu_cau', matHang: 'thanh-long-ruot-do', ten: 'Thanh long ruột đỏ cho chợ đầu mối', kg: 1500, tu: b.ngay(1), den: b.ngay(10) });
-  void ncDX;
+  // Nguồn khác: Anh Tư Bền (tôm), Cô Hai Thu (xoài loại 2 cho chế biến) chào hàng vào tin cần mua của Đồng Xanh
+  const [TB, HT] = NGUOI_BAN_KHAC.map(k => k.nguoi) as [NguoiLam, NguoiLam];
+  const loTB = b.lam(TB, { loai: 'dang_lo', matHang: 'tom-the-chan-trang', ten: 'Tôm thẻ size 40', kg: 2000, coSo: 'da_can', gia: 118000, thuocTinh: { 'con-kg': '40', tuoi: 'Sống', 'khang-sinh': 'Không dùng' }, anh: ['shrimp'], moTa: 'Ao bạt, có giấy kiểm nghiệm kháng sinh.' });
+  const loHT = b.lam(HT, { loai: 'dang_lo', matHang: 'xoai-cat-chu', ten: 'Xoài cát Chu loại 2', kg: 5000, coSo: 'uoc_tinh', gia: 13500, choCheBien: true, thuocTinh: { loai: 'Loại 2' }, anh: ['mango'], moTa: 'Trái loại 2, 3 hợp sấy dẻo, hái theo đợt.' });
+  b.lam(HT, { loai: 'chao_hang', nhuCauId: ncDX, loId: loHT, loiNhan: 'Bên em có 5 tấn loại 2, giao theo đợt được.' });
+  const kTB = b.lam(DX, { loai: 'gui_loi_moi', loId: loTB, loiNhan: 'Bên em cần tôm sống cho đơn hàng đông lạnh.' });
+  b.lam(TB, { loai: 'tra_loi_ket_noi', ketNoiId: kTB, dongY: true });
+  b.lam(TB, { loai: 'gui_tin', ketNoiId: kTB, noiDung: 'Tôm size 40 đều, anh ghé ao xem được. Gọi em 0907 222 333 nha.' });
+  // Quản lý của Đồng Xanh: mối quen ngoài app, đơn mua ngoài app, kế hoạch mua, kho
+  b.lam(DX, { loai: 'nhap_moi_quen', danhSach: [
+    { ten: 'Anh Sáu Lộc', sdt: '0918000771', vung: 'Mỹ Hiệp, Cao Lãnh', matHang: 'Xoài' },
+    { ten: 'Chị Út Mai', sdt: '0918000772', vung: 'Châu Thành, Tiền Giang', matHang: 'Thanh long' },
+    { ten: 'HTX Mỹ Xương', sdt: '0277386999', vung: 'Mỹ Xương, Cao Lãnh', matHang: 'Xoài' },
+  ] });
+  b.lam(DX, { loai: 'ghi_don_ngoai', nguoiBan: 'Anh Sáu Lộc', diaChiNguoiBan: 'Mỹ Hiệp, Cao Lãnh, Đồng Tháp', matHang: 'xoai-cat-chu', ten: 'Xoài cát Chu loại 2', kg: 2000, gia: 13000, ngay: b.ngay(-2), daTra: 15_000_000 });
+  b.lam(DX, { loai: 'ghi_don_ngoai', nguoiBan: 'Chị Út Mai', diaChiNguoiBan: 'Châu Thành, Tiền Giang', matHang: 'thanh-long-ruot-do', ten: 'Thanh long ruột đỏ loại 2', kg: 800, gia: 12000, ngay: b.ngay(-1), daTra: 9_600_000 });
+  const thangNay = ngayCua(ketThuc).slice(0, 7);
+  const thangSau = ngayCua(ketThuc + 31 * NGAY).slice(0, 7);
+  b.lam(DX, { loai: 'them_ke_hoach', matHang: 'xoai-cat-chu', ten: 'Xoài cát Chu', thang: thangNay, kgCan: 20000 });
+  b.lam(DX, { loai: 'them_ke_hoach', matHang: 'xoai-cat-chu', ten: 'Xoài cát Chu', thang: thangSau, kgCan: 25000 });
+  b.lam(DX, { loai: 'them_ke_hoach', matHang: 'thanh-long-ruot-do', ten: 'Thanh long ruột đỏ', thang: thangNay, kgCan: 3000 });
+  for (const ma of xongSom.filter(m => b.so.don.find(d => d.ma === m)!.mua.id === DX.id)) {
+    const d = b.so.don.find(x => x.ma === ma)!;
+    b.lam(DX, { loai: 'nhap_kho', donMa: ma, phanLoai: d.tenLo.includes('gộp') ? 'Loại 2' : 'Loại 1', kg: d.ketQuaCan!.nhan, viTri: d.tenLo.includes('gộp') ? 'Kho lạnh B2' : 'Kho lạnh A1', ngayNhap: b.ngay(0), hanDung: b.ngay(20) });
+  }
+  const pk = b.so.kho.find(p => p.mua.id === DX.id && p.kg >= 3000);
+  if (pk) b.lam(DX, { loai: 'xuat_kho', phieuId: pk.id, kg: 1200, ngay: b.ngay(0), ghiChu: 'Xuất cho chuyền sấy số 2' });
 
   // Các đơn đang chạy, mỗi trạng thái một đơn: dồn vào 1,5 ngày cuối để không quá hạn khi nạp
   b.dongHo.dat(ketThuc - 1.5 * NGAY);

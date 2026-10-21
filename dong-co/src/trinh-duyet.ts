@@ -7,11 +7,12 @@ import type { Lenh, NguoiLam, SoGiaoDich } from '@agiviet/nghiep-vu';
 import qrcode from 'qrcode-generator';
 import { anhNho } from './anh-chup.ts';
 import { DANH_MUC_MAN } from './danh-muc-man.ts';
+import { DANH_MUC_MAN_MUA } from './danh-muc-man-mua.ts';
 import * as DD from './dinh-dang.ts';
 import * as TN from './tieng-noi.ts';
 import * as TL from './tro-ly.ts';
 
-export { DM as dm, MC as mc, NV as nv, DD as dd, TN as tn, TL as tl, anhNho, DANH_MUC_MAN };
+export { DM as dm, MC as mc, NV as nv, DD as dd, TN as tn, TL as tl, anhNho, DANH_MUC_MAN, DANH_MUC_MAN_MUA };
 
 /* ---------------- Kho, đồng hồ, dịch vụ ---------------- */
 
@@ -90,8 +91,12 @@ export const viecGiaLap = (banId: string) => MC.viecGiaLap(so(), banId, bayGio()
 export const lenhNhuCauMau = (i: number) => MC.lenhNhuCauMau(so(), bayGio(), i);
 export const CA_KIEM_THU_BAN = MC.CA_KIEM_THU_BAN;
 export const chayCa = (ma: string) => { const ca = MC.CA_KIEM_THU_BAN.find(c => c.ma === ma); return ca ? MC.chayCa(ca) : null; };
-/** Nạp dữ liệu kết quả của một ca, đăng nhập người bán mẫu. */
-export function xemCa(kq: MC.KetQuaCa) { if (kq.so) { dv.nap(kq.so); datPhien('ban', MC.NGUOI_BAN_MAU); } }
+/** Nạp dữ liệu kết quả của một ca, đăng nhập người bán mẫu và bên mua mẫu (Đồng Xanh). */
+export function xemCa(kq: MC.KetQuaCa) { if (kq.so) { dv.nap(kq.so); datPhien('ban', MC.NGUOI_BAN_MAU); datPhien('mua', MC.NGUOI_MUA_MAU[0]!.nguoi); } }
+export const NGUOI_BAN_KHAC = MC.NGUOI_BAN_KHAC;
+export const viecGiaLapBan = (muaId: string) => MC.viecGiaLapBan(so(), muaId, bayGio());
+export const CA_KIEM_THU_MUA = MC.CA_KIEM_THU_MUA;
+export const chayCaMua = (ma: string) => MC.chayCaMua(ma);
 
 /* ---------------- Vẽ giao diện ---------------- */
 

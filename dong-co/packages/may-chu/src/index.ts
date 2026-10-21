@@ -7,3 +7,4 @@ export * from './truy-van.ts';
 export * from './gia-lap.ts';
 export * from './kich-ban.ts';
 export * from './ca-kiem-thu.ts';
+export * from './ca-kiem-thu-mua.ts';
