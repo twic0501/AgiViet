@@ -26,7 +26,8 @@
       const viec = A.mc.viecCanLam(c.so, c.n, c.bg);
       const tuan = A.nv.tongKetTuan(c.so, c.n.id, c.bg).nay;
       const cachLy = c.so.vuon.filter(v => v.ban.id === c.n.id).map(v => ({ v, hs: A.nv.hoSoNguonGoc(c.so, v.id, c.bg) })).filter(x => x.hs?.dangCachLy);
-      const tong = viec.don.length + viec.loiMoi.length + viec.baoGia.length + viec.hen.length + viec.deNghi.length + viec.loSapAn.length;
+      const banGap = A.nv.loNenBanGap(c.so, c.n.id, c.bg);
+      const tong = viec.don.length + viec.loiMoi.length + viec.baoGia.length + viec.hen.length + viec.deNghi.length + viec.loSapAn.length + banGap.length;
       const tenKia = kn => c.so.ketNoi.find(x => x.id === kn)?.mua.ten ?? '';
       const tt = thoiTiet(c.bg);
       return {
@@ -42,6 +43,7 @@
             ${viec.baoGia.map(b => U.the(h`<strong>${tenKia(b.ketNoiId)} gửi báo giá ${U.dong(b.gia)}/kg</strong><span class="small muted">${U.luong(b.kg)} · giao ${U.nd(b.ngayGiao)}</span>`, { den: AM.den('bao-gia', { kn: b.ketNoiId }), vien: 'lam' }))}
             ${viec.hen.map(x => U.the(h`<strong>${tenKia(x.ketNoiId)} đề nghị hẹn xem vườn</strong><span class="small muted">${x.luc.replace('T', ' lúc ')}</span>`, { den: AM.den('hen-xem', { kn: x.ketNoiId }), vien: 'lam' }))}
             ${viec.loSapAn.map(l => U.the(h`<strong>Tin ${l.ten} ${l.tinhTrang === 'da_an' ? 'đã tự ẩn' : 'sắp tự ẩn'}</strong><span class="small muted">Bên mua chỉ thấy lô khi bạn xác nhận còn hàng trong 14 ngày.</span>${U.nut('Vẫn còn hàng', { bam: 'conHang', nho: true, data: { lo: l.id } })}`, { vien: 'lam' }))}
+            ${banGap.map(l => U.the(h`<strong>${l.ten} chưa có khách hỏi sau ${Math.floor((c.bg - l.dangLuc) / 864e5)} ngày</strong><span class="small muted">${A.nv.NHAN_LOAI[A.nv.loaiCua(l)]}, còn ${U.luong(A.nv.conBan(l))}. Bật bán gấp để app báo nhà máy chế biến; có đối tác bao tiêu nhận ở giá sàn.</span>${U.nut('Bán gấp, ai nhận', { den: AM.den('ban-gap', { lo: l.id }), nho: true })}`, { vien: 'lam' }))}
           </section>
           ${cachLy.map(({ v, hs }) => U.bao(`${v.ten} đang trong thời gian cách ly thuốc tới hết ${U.nd(hs.cachLy)}. Chưa hái bán trước ngày này.`, 'vang'))}
           ${U.the(h`<div class="row between"><h2 class="h2">Thời tiết 3 ngày</h2>${U.chip('dự báo mô phỏng')}</div>

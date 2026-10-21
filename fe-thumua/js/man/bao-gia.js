@@ -16,7 +16,7 @@
           b.trangThai === 'cho' && b.tu === 'ban' ? h`<div class="row" style="gap:6px">${U.nut('Chốt', { bam: 'traLoi', nho: true, data: { id: b.id, v: 1 } })}${U.nut('Không', { bam: 'traLoi', kieu: 'phu', nho: true, data: { id: b.id, v: 0 } })}</div>`
             : b.trangThai === 'dong_y' ? (don ? h`<a href="${AM.den('chi-tiet-don', { ma: don.ma })}">${don.ma}</a>` : U.nut('Lập đơn', { den: AM.den('thoa-thuan', { lo: k?.loId, bg: b.id }), nho: true })) : U.nut('Gửi giá khác', { den: AM.den('gui-bao-gia', { kn: b.ketNoiId }), kieu: 'phu', nho: true })] }; };
       return h`<div class="row between">${U.tab(c, 'tab', [['cho', 'Chờ bạn', nhom.cho.length], ['gui', 'Bạn đã gửi'], ['chot', 'Đã chốt', nhom.chot.filter(b => !c.so.don.some(d => d.baoGiaId === b.id)).length], ['cu', 'Đã đóng']])}</div>
-        ${nhom[c.st.tab].length ? U.bang([['Người bán'], ['Giá', 'so'], ['Lượng', 'so'], ['Giao'], ['Ai gửi'], ['Trạng thái'], ['']], nhom[c.st.tab].map(dong)) : U.trong('Không có báo giá', c.st.tab === 'cho' ? 'Người bán gửi báo giá sau khi hai bên kết nối.' : '')}
+        ${nhom[c.st.tab].length ? U.bang([['Người bán'], ['Giá', 'so'], ['So giá tham khảo'], ['Lượng', 'so'], ['Giao'], ['Ai gửi'], ['Trạng thái'], ['']], nhom[c.st.tab].map(dong)) : U.trong('Không có báo giá', c.st.tab === 'cho' ? 'Người bán gửi báo giá sau khi hai bên kết nối.' : '')}
         <div class="row" style="gap:8px;flex-wrap:wrap">${U.nut('So báo giá theo mặt hàng', { den: '#so-bao-gia', kieu: 'phu', nho: true, icon: 'compare' })}</div>`;
     },
     bam: { traLoi: (c, el) => c.lam({ loai: 'tra_loi_bao_gia', baoGiaId: el.dataset.id, dongY: el.dataset.v === '1' }, { bao: el.dataset.v === '1' ? 'Đã chốt giá. Bấm "Lập đơn" để gửi đơn cho người bán ký.' : 'Đã trả lời không đồng ý.' }) },
@@ -33,10 +33,11 @@
       const cs = c.so.chinhSach;
       const tinh = b => { const k = knCua(c, b), gt = NV.tien(b.kg, b.gia), quen = c.so.don.some(d => d.mua.id === c.n.id && d.ban.id === k.ban.id && d.daCoc); const phi = NV.tinhPhi(gt, quen, cs); return { k, gt, phi, tong: gt + phi, coc: NV.tinhCoc(gt, cs), quen, hs: A.mc.hoSoCongKhai(c.so, k.ban.id) }; };
       const re = Math.min(...ss.map(b => tinh(b).tong / b.kg));
+      const tk = b => { const lo = c.so.lo.find(l => l.id === knCua(c, b)?.loId); return lo ? NV.danhGiaGia(c.so, lo.matHang, b.gia, c.bg, NV.loaiCua(lo)) : null; };
       return h`${mhCo.length > 1 ? U.chonO(c, { k: 'mh', nhan: 'Mặt hàng', lua: mhCo.map(m => [m, A.tenMH(m)]) }) : h`<strong>${A.tenMH(mh)}</strong>`}
         ${c.hs.goi !== 'business' ? U.bao('Gói Business có thêm cột chấm điểm nhà cung cấp và gợi ý chọn. Bảng so cơ bản dùng được ở mọi gói.') : ''}
         ${U.bang([['Người bán'], ['Giá', 'so'], ['Lượng', 'so'], ['Giao'], ['Phí', 'so'], ['Tổng chi phí nhận hàng', 'so'], ['Bình quân', 'so'], ['Cọc', 'so'], ['Uy tín'], ['']], ss.map(b => { const t = tinh(b), bq = t.tong / b.kg;
-          return { lop: bq === re ? 'lam' : '', o: [h`<strong>${t.k.ban.ten}</strong>`, U.so(b.gia), U.luong(b.kg), U.ndNgan(b.ngayGiao), h`${U.so(t.phi)}${t.quen ? h`<br><span class="xs muted">mối quen</span>` : ''}`, U.so(t.tong), h`<strong>${U.so(Math.round(bq))}</strong>${bq === re ? h`<br>${U.chip('Rẻ nhất', 'xong')}` : ''}`, U.so(t.coc), t.hs ? NV.NHAN_BAC[t.hs.uyTin.bac] : '',
+          return { lop: bq === re ? 'lam' : '', o: [h`<strong>${t.k.ban.ten}</strong>`, U.so(b.gia), (g => (!g || g.muc === 'chua_du' ? h`<span class="xs muted">chưa đủ dữ liệu</span>` : h`${U.so(g.thamKhao.gia)}<br><span class="xs ${g.muc === 'binh_thuong' ? 'muted' : ''}">${g.lech > 0 ? `thấp hơn ${g.lech}%` : `cao hơn ${-g.lech}%`}</span>`))(tk(b)), U.luong(b.kg), U.ndNgan(b.ngayGiao), h`${U.so(t.phi)}${t.quen ? h`<br><span class="xs muted">mối quen</span>` : ''}`, U.so(t.tong), h`<strong>${U.so(Math.round(bq))}</strong>${bq === re ? h`<br>${U.chip('Rẻ nhất', 'xong')}` : ''}`, U.so(t.coc), t.hs ? NV.NHAN_BAC[t.hs.uyTin.bac] : '',
             b.trangThai === 'cho' ? U.nut('Chốt', { bam: 'chot', nho: true, data: { id: b.id } }) : U.chip('Đã chốt', 'xong')] }; }))}
         <span class="small muted">Tổng chi phí = tiền hàng + phí giới thiệu (đơn đầu ${cs.phiGioiThieu * 100}%) hoặc phí mối quen (${cs.phiMoiQuen * 100}%), sàn ${U.so(cs.phiSan)} đ, trần ${U.so(cs.phiTran)} đ. Chưa tính xe, kiểm định.</span>`;
     },

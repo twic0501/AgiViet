@@ -61,12 +61,17 @@
         ${U.the(h`${U.dong2('Lô', d.tenLo)}${U.dong2('Lượng', U.luong(d.kg))}${U.dong2('Giá', `${U.so(d.gia)} đ/kg`)}${U.dong2('Giá trị đơn', U.dong(giaTri))}${U.dong2('Ngày giao', U.nd(d.ngayGiao))}
           ${d.coc ? U.dong2('Cọc', `${U.dong(d.coc.so)} ${d.daCoc ? '(đã vào tài khoản đảm bảo)' : '(chưa cọc)'}`) : ''}
           ${d.coc ? U.dong2(`Phí ${d.coc.loaiPhi === 'moi_quen' ? 'mối quen' : 'giới thiệu'} (bên mua trả)`, U.dong(d.coc.phi)) : ''}
-          ${d.ketQuaCan ? U.dong2('Cân', `nhận ${U.luong(d.ketQuaCan.nhan)}, trả lại ${U.luong(d.ketQuaCan.tuChoi)}${d.ketQuaCan.phanDoi ? ' (bạn đã báo sai)' : ''}`) : ''}
+          ${d.ketQuaCan ? U.dong2('Cân', `đạt ${U.luong(d.ketQuaCan.nhan)}${d.ketQuaCan.haCap ? `, hạ cấp ${U.luong(d.ketQuaCan.haCap)}` : ''}, trả lại ${U.luong(d.ketQuaCan.tuChoi)}${d.ketQuaCan.phanDoi ? ' (bạn đã báo sai)' : ''}`) : ''}
           ${d.phaiTra !== undefined ? U.dong2('Tiền hàng', U.dong(d.phaiTra)) : ''}${d.conPhaiTra !== undefined ? U.dong2('Còn phải trả', U.dong(d.conPhaiTra)) : ''}
           ${d.huy ? U.dong2('Hủy / từ chối', `${d.huy.ben === 'ban' ? 'Bạn' : 'Bên mua'}: ${d.huy.lyDo}`) : ''}
           ${ungs.map(u => U.dong2('Ứng trước', `${U.dong(u.so)} · ${{ cho_duyet: 'chờ ngân hàng duyệt', da_giai_ngan: 'đã nhận', da_thu_hoi: 'đã trừ vào tiền hàng', tu_choi: 'không duyệt' }[u.trangThai]}`))}`)}
         ${d.ketLuan ? U.bao(`Vận hành ghi nhận: ${d.ketLuan.noiDung}`) : ''}
+        ${d.giaoTre ? U.bao('Quá ngày giao chưa cân mà không có đề nghị đổi lịch hoặc giảm lượng: hợp đồng cọc ghi giao trễ, tính vào uy tín. Lần sau xin đổi lịch trước ngày giao.', 'vang') : ''}
+        ${d.ketQuaCan?.nguon === 'ben_kia_xac_nhan' && d.ketQuaCan.tuChoi ? U.the(d.traVeLoId
+          ? h`<strong>Hàng bị trả lại đã thành lô bán gấp</strong><span class="small muted">${U.luong(d.ketQuaCan.tuChoi)} đang được báo tới bên mua nhận hàng kém loại.</span>${U.nut('Xem lô bán gấp', { den: AM.den('ban-gap', { lo: d.traVeLoId }), kieu: 'phu', nho: true })}`
+          : h`<strong>${U.luong(d.ketQuaCan.tuChoi)} bị trả lại</strong><span class="small muted">Đừng bán đổ: đưa phần này thành lô loại dưới, bật bán gấp 3 ngày, app báo nhà máy chế biến và đối tác bao tiêu.</span>${U.nut('Bán gấp phần bị trả lại', { bam: 'traVeLo', nho: true })}`, { vien: d.traVeLoId ? '' : 'lam' }) : ''}
         <div class="grid2">
+          ${U.nut('Hợp đồng cọc', { den: denDon(d.ma, 'hop-dong'), kieu: 'phu', nho: true, icon: 'signature' })}
           ${U.nut('Các bản', { den: denDon(d.ma, 'so-ban'), kieu: 'phu', nho: true, icon: 'versions' })}
           ${['cho_ban_xac_nhan', 'cho_coc', 'cho_giao'].includes(d.trangThai) ? U.nut('Xin thay đổi', { den: denDon(d.ma, 'yeu-cau-thay-doi'), kieu: 'phu', nho: true, icon: 'change' }) : ''}
           ${['cho_giao', 'cho_ban_xn_kq', 'da_chot'].includes(d.trangThai) && !ungs.some(u => ['cho_duyet', 'da_giai_ngan'].includes(u.trangThai)) ? U.nut('Nhận tiền trước', { den: AM.den('ung-tien', { ma: d.ma }), kieu: 'phu', nho: true, icon: 'wallet' }) : ''}
@@ -81,6 +86,7 @@
       motPhan: c => buoc(c, c.ts('ma'), 'nhanMotPhan', [], { bao: 'Đã ghi nhận một phần.' }),
       tienChua: c => buoc(c, c.ts('ma'), 'tienChua', [], { bao: 'Đã mở đối soát.' }),
       traLoiDN: (c, el) => c.lam({ loai: 'tra_loi_de_nghi', deNghiId: el.dataset.id, dongY: el.dataset.v === '1' }, { bao: el.dataset.v === '1' ? 'Đã đồng ý. Thỏa thuận có bản mới.' : 'Đã trả lời không đồng ý. Đơn giữ như cũ.' }),
+      traVeLo: c => c.lam({ loai: 'tra_hang_ve_lo', ma: c.ts('ma') }, { bao: 'Đã tạo lô bán gấp từ phần bị trả lại.', den: ma => ['ban-gap', { lo: ma }] }),
       danhGia: c => c.lam({ loai: 'danh_gia', ma: c.ts('ma'), diem: Number(c.st.sao) || 5, ...(c.st.nhanXet ? { nhanXet: c.st.nhanXet } : {}) }, { bao: 'Cảm ơn bạn đã đánh giá.' }),
     },
   });
@@ -94,9 +100,17 @@
       if (d.trangThai !== 'cho_ban_xac_nhan') return saiBuoc(d, 'Đơn đã được trả lời.');
       const lo = c.so.lo.find(l => l.id === d.loId), con = lo ? NV.conBan(lo) : 0, hs = A.mc.hoSoCongKhai(c.so, d.mua.id);
       const cungLo = c.so.don.filter(x => x.loId === d.loId && x.trangThai === 'cho_ban_xac_nhan'), giaTri = NV.tien(d.kg, d.gia);
+      const sl = NV.soLieuCoc(d, c.so), hd = d.hopDong, g = NV.danhGiaGia(c.so, d.matHang, d.gia, c.bg, hd?.tieuChuan.loai);
+      const von = lo ? NV.giaVonCuaVuon(c.so, lo.vuonId) : null;
       return {
         than: h`<span class="muted">Đơn ${d.ma} · ${U.tuongDoi(d.taoLuc, c.bg)}</span>
-          ${U.the(h`<strong class="so-lon">${U.luong(d.kg)} × ${U.so(d.gia)} đ</strong>${U.dong2('Giá trị', U.dong(giaTri))}${U.dong2('Giao ngày', U.nd(d.ngayGiao))}${U.dong2('Cọc bên mua sẽ đặt', U.dong(NV.tinhCoc(giaTri, c.so.chinhSach)))}`, { lop: 'noi' })}
+          ${U.the(h`<strong class="so-lon">${U.luong(d.kg)} × ${U.so(d.gia)} đ</strong>${U.dong2('Giá trị', U.dong(giaTri))}${U.dong2('Giao ngày', U.nd(d.ngayGiao))}${U.dong2('Cọc bên mua sẽ đặt', U.dong(sl.coc))}${sl.giaTinhCoc !== d.gia ? U.dong2('Giá tính cọc', `${U.so(sl.giaTinhCoc)} đ/kg`) : ''}`, { lop: 'noi' })}
+          ${hd?.giaBatThuong ? U.bao(`Giá ${U.so(d.gia)} đ/kg thấp bất thường: thấp hơn ${g.lech}% so với giá tham khảo ${U.so(hd.giaThamKhao)} đ/kg. Tiền chỉ được bảo vệ theo đúng giá trên đơn; nếu bên mua hứa trả thêm ngoài app, phần đó không được bảo vệ. Khi ký bạn sẽ phải xác nhận thêm.`, 'loi')
+            : g.muc === 'thap' ? U.bao(`Giá thấp hơn mặt bằng ${g.lech}% (giá tham khảo ${U.so(g.thamKhao.gia)} đ/kg, ${g.thamKhao.soDon} đơn 30 ngày qua). Bạn có thể từ chối hoặc đề nghị đổi giá.`, 'vang')
+            : g.thamKhao.gia ? h`<span class="small muted">Giá tham khảo ${U.so(g.thamKhao.gia)} đ/kg (${g.thamKhao.soDon} đơn đã chốt 30 ngày qua).</span>` : ''}
+          ${von && d.gia < von ? U.bao(`Giá này dưới giá vốn ước tính của bạn (${U.so(von)} đ/kg, theo sổ thu chi của vụ).`, 'vang') : ''}
+          ${hd ? U.the(h`<strong>Điều khoản hợp đồng cọc</strong>${U.dong2('Tiêu chuẩn', NV.NHAN_LOAI[hd.tieuChuan.loai])}${U.dong2('Trả lại không cần ảnh tới', `${Math.round(hd.tieuChuan.loiChoPhep * 100)}%`)}${U.dong2('Giá hạ cấp', hd.giaHaCap ? `${U.so(hd.giaHaCap)} đ/kg` : 'không có (hàng không đạt trả lại)')}${U.dong2('Nơi giao', hd.noiGiao === 'tai_kho' ? 'Kho bên mua: bạn chịu rủi ro tới lúc cân' : 'Tại vườn: bốc lên xe là bên mua chịu')}
+            ${U.nut('Đọc toàn văn hợp đồng', { den: denDon(d.ma, 'hop-dong'), kieu: 'phu', nho: true })}`) : ''}
           ${hs ? U.the(h`<strong>${hs.ten}</strong><span class="small muted">${hs.vung} · uy tín ${NV.NHAN_BAC[hs.uyTin.bac]} · ${hs.uyTin.soDonXong} đơn hoàn tất</span>`, { den: AM.den('ho-so-ben-mua', { id: hs.id }) }) : ''}
           ${d.kg > con ? U.bao(`Lô ${lo?.ten} chỉ còn bán được ${U.luong(con)}, đơn cần ${U.luong(d.kg)}. Từ chối, hoặc nhắn bên mua giảm lượng.`, 'loi') : U.bao(`Lô ${lo?.ten} còn bán được ${U.luong(con)}. Xác nhận thì giữ ${U.luong(d.kg)} cho đơn này.`, 'tot')}
           ${lo?.coSo === 'uoc_tinh' ? U.bao('Lượng lô đang là ước tính. Chỉ hứa phần bạn chắc chắn hái được.', 'vang') : ''}
@@ -169,6 +183,20 @@
     },
   });
 
+  AM.man('hop-dong', {
+    ten: 'Hợp đồng cọc',
+    ve(c) {
+      const d = don(c);
+      if (!d) return khongCo();
+      const hl = NV.hieuLucHopDong(d), ban = NV.banHopDong(d, c.so);
+      return h`<div class="row between"><strong>${d.ma}</strong>${U.chip(hl.coHieuLuc ? 'Có hiệu lực' : 'Chưa có hiệu lực', hl.coHieuLuc ? 'xong' : 'cho')}</div>
+        ${U.bao(hl.coHieuLuc ? 'Bên mua đã cọc qua tài khoản đảm bảo: app bảo vệ hai bên theo đúng giá và điều khoản dưới đây.' : 'Hợp đồng chỉ ràng buộc và được app bảo vệ khi bên mua đặt cọc qua app. Hai bên tự trả tiền ngoài app thì tự chịu.', hl.coHieuLuc ? 'tot' : '')}
+        ${U.the(h`<strong class="h2">${ban[0]}</strong>${ban.slice(1).map(x => h`<p style="margin:0">${x}</p>`)}`)}
+        <div class="grid2">${U.nghe(ban.join(' '), 'Nghe đọc')}${U.nut('In hoặc lưu', { bam: 'in', kieu: 'phu', nho: true })}</div>`;
+    },
+    bam: { in: () => print() },
+  });
+
   AM.man('ket-qua', {
     st: () => ({ anhCan: '' }),
     ve(c) {
@@ -176,11 +204,14 @@
       if (!d) return khongCo();
       const kq = d.ketQuaCan;
       if (d.trangThai !== 'cho_ban_xn_kq' || !kq) return saiBuoc(d, d.trangThai === 'cho_giao' ? 'Chờ bên mua cân và gửi số.' : 'Kết quả cân đã xử lý.');
-      const tienHang = NV.tien(kq.nhan, d.gia), coc = d.daCoc?.so ?? 0;
+      const haCap = kq.haCap ?? 0, giaHaCap = d.hopDong?.giaHaCap ?? 0;
+      const tienHang = NV.tien(kq.nhan, d.gia) + NV.tien(haCap, giaHaCap), coc = d.daCoc?.so ?? 0;
+      const tyLeTra = kq.tuChoi / Math.max(1, kq.nhan + kq.tuChoi + haCap), loiCP = d.hopDong?.tieuChuan.loiChoPhep ?? c.so.chinhSach.loiChoPhepMacDinh ?? 0.05;
       return {
         than: h`<span class="muted">Bên mua nhập kết quả cân đơn ${d.ma}</span>
-          ${U.the(h`${U.dong2('Đơn', U.luong(d.kg))}${U.dong2('Nhận', U.luong(kq.nhan))}${U.dong2('Không nhận (trả lại)', U.luong(kq.tuChoi))}${kq.phieu ? U.dong2('Phiếu cân', kq.phieu) : h`<span class="small muted">Bên mua chưa gửi ảnh phiếu cân.</span>`}`)}
-          ${U.the(h`${U.dong2(`${U.luong(kq.nhan)} × ${U.so(d.gia)} đ`, U.dong(tienHang))}${U.dong2('Trừ cọc đã giữ', `− ${U.dong(Math.min(coc, tienHang))}`)}${U.dong2(h`<strong>Bên mua còn phải trả</strong>`, h`<strong>${U.dong(Math.max(0, tienHang - coc))}</strong>`)}`, { lop: 'noi' })}
+          ${U.the(h`${U.dong2('Đơn', U.luong(d.kg))}${U.dong2('Đạt', U.luong(kq.nhan))}${haCap ? U.dong2(`Hạ cấp (giá ${U.so(giaHaCap)} đ/kg)`, U.luong(haCap)) : ''}${U.dong2(`Trả lại (${Math.round(tyLeTra * 100)}%)`, U.luong(kq.tuChoi))}${kq.phieu ? U.dong2('Phiếu cân', kq.phieu) : h`<span class="small muted">Bên mua chưa gửi ảnh phiếu cân.</span>`}${kq.anh?.length ? U.dong2('Ảnh hàng không đạt', `${kq.anh.length} ảnh`) : ''}`)}
+          ${tyLeTra > loiCP ? U.bao(`Trả lại vượt mức hợp đồng cho phép (${Math.round(loiCP * 100)}%). Bên mua đã gửi ảnh làm bằng chứng; thấy không đúng thì bấm "Không đúng" và chụp hàng của bạn, cần thì thuê kiểm định (bên sai chịu phí).`, 'vang') : ''}
+          ${U.the(h`${U.dong2(`${U.luong(kq.nhan)} × ${U.so(d.gia)} đ`, U.dong(NV.tien(kq.nhan, d.gia)))}${haCap ? U.dong2(`${U.luong(haCap)} × ${U.so(giaHaCap)} đ`, U.dong(NV.tien(haCap, giaHaCap))) : ''}${U.dong2('Trừ cọc đã giữ', `− ${U.dong(Math.min(coc, tienHang))}`)}${U.dong2(h`<strong>Bên mua còn phải trả</strong>`, h`<strong>${U.dong(Math.max(0, tienHang - coc))}</strong>`)}`, { lop: 'noi' })}
           <label class="btn phu nho">${U.icon('scale', 22)}${c.st.anhCan ? `Đã chụp: ${String(c.st.anhCan).split(/[\\/]/).pop()}` : 'Chụp số trên cân của tôi'}<input type="file" accept="image/*" capture="environment" class="sr-only" data-st="anhCan" data-ve-lai></label>`,
         duoi: h`<div class="grid2">${U.nut('Không đúng', { bam: 'sai', kieu: 'canh', hoi: 'Báo số cân không đúng?|Đơn quay về chờ cân: bên mua kiểm lại và gửi số mới. Bạn nên chụp số trên cân của mình làm bằng.|Báo không đúng|canh' })}${U.nut('Đúng, chốt số', { bam: 'dung' })}</div>`,
       };

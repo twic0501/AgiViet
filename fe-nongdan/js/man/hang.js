@@ -37,7 +37,7 @@
       const cachLy = lo.vuonId ? A.nv.hetCachLy(c.so, lo.vuonId) : null;
       return h`<div class="anh-lon"><img src="${A.anhMH(lo.matHang, anh[0])}" alt="${lo.ten}"></div>
         ${anh.length > 1 ? h`<div class="hang-anh">${anh.slice(1).map(a => U.anh(lo.matHang, a, 'nho'))}</div>` : ''}
-        <div class="row between">${chipLo(tt)}${lo.choCheBien ? U.chip('Hàng cho chế biến', 'cho') : ''}</div>
+        <div class="row between">${chipLo(tt)}<span class="row" style="gap:6px">${A.nv.dangBanGap(lo, c.bg) ? U.chip('Bán gấp', 'loi') : ''}${U.chip(A.nv.NHAN_LOAI[A.nv.loaiCua(lo)], lo.choCheBien ? 'cho' : '')}</span></div>
         ${lo.moTa ? h`<p>${lo.moTa}</p>` : ''}
         ${U.the(h`${U.dong2('Lượng lô', `${U.luong(lo.kg)} ${lo.coSo === 'da_can' ? 'đã cân' : 'ước tính'}`)}${U.dong2('Còn bán được', U.luong(A.nv.conBan(lo)))}${U.dong2('Đã hứa (đơn đã xác nhận)', U.luong(lo.hua))}${U.dong2('Đã giao', U.luong(lo.giao))}
           ${U.dong2('Giá', lo.gia ? `${U.so(lo.gia)} đ/kg` : 'Nhận báo giá')}
@@ -54,6 +54,7 @@
             : U.nut('Ẩn tin', { bam: 'an', kieu: 'phu', nho: true, hoi: 'Ẩn tin lô này?|Bên mua không tìm thấy lô nữa. Đơn đang có vẫn chạy bình thường.|Ẩn tin' })}
           ${U.nut('Chứng từ', { den: AM.den('chung-tu', { lo: lo.id }), kieu: 'phu', nho: true })}
         </div>
+        ${A.nv.conBan(lo) > 0 ? h`<div class="grid2">${U.nut(A.nv.laKemLoai(lo) ? 'Bán gấp, ai nhận hàng' : 'Ai nhận hàng xấu', { den: AM.den('ban-gap', { lo: lo.id }), kieu: A.nv.laKemLoai(lo) ? '' : 'phu', nho: true })}${!lo.thanhPhan ? U.nut('Tách theo loại', { den: AM.den('tach-lo', { lo: lo.id }), kieu: 'phu', nho: true }) : ''}</div>` : ''}
         ${lo.vuonId ? U.nut('Hồ sơ nguồn gốc của lô', { den: AM.den('ho-so-vuon', { vuon: lo.vuonId }), kieu: 'phu', nho: true, icon: 'origin' }) : ''}
         ${lo.thanhPhan ? U.the(h`<strong class="h2">Phần của từng hộ</strong>${lo.thanhPhan.map(t => U.dong2(t.ho, U.luong(t.kg)))}${U.nut('Xem tiền chia từng hộ', { den: 'toi.html#phan-cua-toi', kieu: 'phu', nho: true })}`) : ''}
         <section class="stack s8"><h2 class="h2">Đơn của lô (${don.length})</h2>${don.length ? don.map(d => U.theDon(d, c.bg)) : h`<span class="muted">Chưa có đơn.</span>`}</section>
@@ -66,6 +67,76 @@
       conHang: c => c.lam({ loai: 'con_hang', loId: c.ts('lo') }, { bao: 'Đã xác nhận còn hàng. Tin hiện 14 ngày nữa.' }),
       hien: c => c.lam({ loai: 'an_lo', loId: c.ts('lo'), an: false }, { bao: 'Tin đã hiện lại.' }),
       an: c => c.lam({ loai: 'an_lo', loId: c.ts('lo'), an: true }, { bao: 'Đã ẩn tin.' }),
+    },
+  });
+
+  // Hàng kém loại: bán gấp, ai nhận (bên mua chế biến, tin cần mua, đối tác bao tiêu), giữ hàng hoặc sơ chế thay vì bán đổ
+  AM.man('ban-gap', {
+    ten: 'Bán gấp, ai nhận hàng',
+    st: () => ({ gia: '' }),
+    ve(c) {
+      const x = loCua(c);
+      if (!x) return khongCoLo();
+      const { lo } = x, NV = A.nv, con = NV.conBan(lo), loai = NV.loaiCua(lo);
+      const gap = NV.dangBanGap(lo, c.bg), ai = NV.nguoiNhanHangKemLoai(c.so, lo);
+      const g = NV.giaThamKhao(c.so, lo.matHang, c.bg, { loai });
+      return h`<div class="row between"><strong>${lo.ten}</strong>${U.chip(NV.NHAN_LOAI[loai], NV.laKemLoai(lo) ? 'cho' : '')}</div>
+        <p class="small muted">Còn ${U.luong(con)} · ${lo.gia ? `${U.so(lo.gia)} đ/kg` : 'nhận báo giá'}. Hàng loại 2, 3, hàng dạt vẫn có người mua: nhà máy sấy, nước ép, đông lạnh, chợ đầu mối. App báo cho họ; bạn không phải hạ giá hàng đẹp.</p>
+        ${U.the(gap
+          ? h`<div class="row between"><strong class="h2">Đang bán gấp</strong>${U.chip(`tới ${U.gioNgay(lo.banGap.den)}`, 'loi')}</div><span class="small muted">Lô lên đầu danh sách và được báo tới mọi bên mua nhận hàng kém loại.</span>${U.nut('Tắt bán gấp', { bam: 'tat', kieu: 'phu', nho: true })}`
+          : h`<strong class="h2">Bật bán gấp ${c.so.chinhSach.hanBanGap ? `${Math.round(c.so.chinhSach.hanBanGap / 864e5)} ngày` : '3 ngày'}</strong>
+            <span class="small muted">${g.gia ? `Giá tham khảo ${NV.NHAN_LOAI[loai].toLowerCase()}: ${U.so(g.gia)} đ/kg (${g.soDon} đơn đã chốt 30 ngày qua). App không ép giá: bạn tự đặt.` : 'Chưa đủ đơn đã chốt để có giá tham khảo cho loại này.'}</span>
+            ${U.o(c, { k: 'gia', nhan: 'Giá bán gấp (để trống = giữ giá hiện tại)', kieu: 'so', donVi: 'đ/kg' })}
+            ${U.nut('Bật bán gấp', { bam: 'bat', nho: true, tat: !con })}`, { vien: gap ? 'loi' : '' })}
+        <section class="stack s8"><h2 class="h2">Bên mua nhận hàng kém loại (${ai.nhan.length})</h2>
+          ${ai.nhan.length ? ai.nhan.map(n => U.the(h`<div class="row between"><strong>${n.ten}</strong>${U.chip(n.daKetNoi ? 'Đã kết nối' : gap ? 'Đã được báo' : 'Sẽ được báo khi bán gấp', n.daKetNoi ? 'xong' : 'cho')}</div><span class="small muted">${n.vung} · nhận từ ${U.luong(n.kgToiThieu)}</span>`)) : h`<span class="muted small">Chưa có bên mua đăng ký nhận ${A.tenMH(lo.matHang).toLowerCase()} kém loại với lượng này.</span>`}
+          ${ai.coNhuCau.map(n => U.the(h`<strong>${n.ten}</strong><span class="small muted">Đang cần ${U.luong(n.kg)}${n.giaTran ? `, giá tới ${U.so(n.giaTran)} đ/kg` : ''}</span>${U.nut('Chào hàng vào tin này', { den: AM.den('nhu-cau', { nc: n.nhuCauId }), kieu: 'phu', nho: true })}`, { den: AM.den('nhu-cau', { nc: n.nhuCauId }) }))}
+        </section>
+        <section class="stack s8"><h2 class="h2">Người nhận cuối cùng (bao tiêu)</h2>
+          ${ai.baoTieu.length ? ai.baoTieu.map(b => U.the(h`<div class="row between"><strong>${b.ten}</strong>${U.chip('Đối tác bao tiêu', 'xong')}</div>
+            ${U.dong2('Giá sàn cam kết', `${U.so(b.gia)} đ/kg`)}${U.dong2('Ước tính cho phần còn lại', `${U.so(b.gia * con)} đ`)}${U.dong2('Nơi nhận', b.diemGom)}
+            <span class="small muted">AgiViet đã ký thỏa thuận khung: dù không ai mua, lô vẫn có người nhận ở giá sàn này.</span>
+            ${U.nut('Nhờ AgiViet nối với đối tác', { bam: 'baoTieu', nho: true, data: { ten: b.ten, gia: b.gia } })}`)) : h`<span class="muted small">Chưa có đối tác bao tiêu cho mặt hàng này.</span>`}
+        </section>
+        ${U.the(h`<strong class="h2">Giữ hàng chờ giá, hoặc sơ chế</strong><span class="small muted">Thay vì bán đổ: gửi kho lạnh giữ hàng, hoặc thuê sấy, cấp đông để bán được lâu.</span>
+          <div class="grid2">${U.nut('Thuê kho lạnh', { bam: 'dichVu', kieu: 'phu', nho: true, data: { dv: 'kho_lanh' } })}${U.nut('Thuê sấy, cấp đông', { bam: 'dichVu', kieu: 'phu', nho: true, data: { dv: 'so_che' } })}</div>`)}
+        ${!lo.thanhPhan && loai === 'loai_1' ? U.nut('Tách phần kém loại ra lô riêng', { den: AM.den('tach-lo', { lo: lo.id }), kieu: 'phu', nho: true }) : ''}`;
+    },
+    bam: {
+      bat: c => c.lam({ loai: 'bat_ban_gap', loId: c.ts('lo'), ...(String(c.st.gia).trim() ? { gia: U.docSo(c.st.gia) } : {}) }, { bao: 'Đã bật bán gấp. App báo cho các bên mua nhận hàng kém loại.' }),
+      tat: c => c.lam({ loai: 'tat_ban_gap', loId: c.ts('lo') }, { bao: 'Đã tắt bán gấp.' }),
+      baoTieu: (c, el) => { const lo = loCua(c)?.lo; c.lam({ loai: 'gui_ho_tro', chuDe: 'Bao tiêu', noiDung: `Nhờ nối ${lo?.ten} (${U.luong(A.nv.conBan(lo))}) với ${el.dataset.ten}, giá sàn ${U.so(Number(el.dataset.gia))} đ/kg` }, { bao: 'Đã gửi. Đội AgiViet gọi lại để hẹn xe nhận hàng.' }); },
+      dichVu: (c, el) => c.lam({ loai: 'yeu_cau_dich_vu', dichVu: el.dataset.dv, ngay: A.nv.ngayCua(c.bg + 864e5), loId: c.ts('lo'), ghiChu: el.dataset.dv === 'kho_lanh' ? 'Giữ hàng kém loại chờ giá' : 'Sấy hoặc cấp đông hàng kém loại' }, { bao: 'Đã gửi yêu cầu. Đối tác báo giá trong ít phút.', den: ['dich-vu', {}] }),
+    },
+  });
+
+  AM.man('tach-lo', {
+    ten: 'Tách lô theo loại',
+    st: () => ({ loai1: 'loai_2', kg1: '', gia1: '', loai2: 'dat', kg2: '', gia2: '' }),
+    ve(c) {
+      const x = loCua(c);
+      if (!x) return khongCoLo();
+      const { lo } = x, NV = A.nv, con = NV.conBan(lo);
+      const LUA = NV.LOAI_HANG.filter(l => l !== 'loai_1').map(l => [l, NV.NHAN_LOAI[l]]);
+      const tong = (U.docSo(c.st.kg1) || 0) + (U.docSo(c.st.kg2) || 0);
+      const gtk = l => { const g = NV.giaThamKhao(c.so, lo.matHang, c.bg, { loai: l }); return g.gia ? `Giá tham khảo ${U.so(g.gia)} đ/kg` : 'Chưa có giá tham khảo'; };
+      const phan = i => U.the(h`<strong>Phần ${i}</strong>${U.chon(c, { k: `loai${i}`, nhan: 'Loại', boc: true, lua: LUA })}
+        <div class="grid2">${U.o(c, { k: `kg${i}`, nhan: 'Lượng', kieu: 'so', donVi: 'kg', veLai: true })}${U.o(c, { k: `gia${i}`, nhan: 'Giá (trống = báo giá)', kieu: 'so', donVi: 'đ/kg' })}</div>
+        <span class="small muted">${gtk(c.st[`loai${i}`])}</span>`);
+      return {
+        than: h`<p class="muted">${lo.ten}: còn bán được ${U.luong(con)}. Tách phần trái nhỏ, trầy, chín ép ra lô riêng: lô gốc giữ giá hàng đẹp, phần kém loại đi tới bên mua chế biến.</p>
+          ${phan(1)}${phan(2)}
+          ${U.dong2('Lô gốc còn lại', U.luong(Math.max(0, lo.kg - tong)))}
+          ${tong >= con ? U.bao(`Phần tách phải nhỏ hơn ${U.luong(con)} còn bán được.`, 'vang') : ''}`,
+        duoi: U.nut('Tách lô', { bam: 'tach' }),
+      };
+    },
+    bam: {
+      tach(c) {
+        const phan = [1, 2].map(i => ({ loai: c.st[`loai${i}`], kg: U.docSo(c.st[`kg${i}`]) || 0, gia: String(c.st[`gia${i}`]).trim() ? U.docSo(c.st[`gia${i}`]) : null })).filter(p => p.kg > 0);
+        if (!phan.length) return c.bao('Nhập lượng cho ít nhất một phần.', 'loi');
+        c.lam({ loai: 'tach_lo', loId: c.ts('lo'), phan }, { bao: `Đã tách ${phan.length} lô kém loại.`, den: ma => ['ban-gap', { lo: ma }] });
+      },
     },
   });
 

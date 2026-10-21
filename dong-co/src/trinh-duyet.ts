@@ -16,7 +16,7 @@ export { DM as dm, MC as mc, NV as nv, DD as dd, TN as tn, TL as tl, anhNho, DAN
 
 /* ---------------- Kho, đồng hồ, dịch vụ ---------------- */
 
-const KHOA = { so: 'agiviet.web.so.v1', dongHo: 'agiviet.web.dong-ho.v1', phien: (app: App) => `agiviet.web.phien.${app}` };
+const KHOA = { so: 'agiviet.web.so.v2', dongHo: 'agiviet.web.dong-ho.v1', phien: (app: App) => `agiviet.web.phien.${app}` };
 export type App = 'ban' | 'mua';
 
 const kho = MC.taoKhoTrinhDuyet(localStorage, KHOA.so, f => addEventListener('storage', e => f(e.key)));

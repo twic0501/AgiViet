@@ -251,7 +251,7 @@
           <div class="row" style="gap:8px;flex-wrap:wrap"><span class="luong">${UI.luong(lo.kg)}</span><span class="qty ${lo.coSo === 'da_can' ? 'can' : 'uoc'}">${lo.coSo === 'da_can' ? 'Đã cân' : 'Ước tính'}</span></div>
           <span class="small muted">${lo.gia ? `${UI.so(lo.gia)} đ/kg` : 'Nhận báo giá'}${lo.haiTu ? ` · hái ${UI.ndNgan(lo.haiTu)}` : ''}</span></div></div>
         <div class="thanh-luong" aria-label="Còn bán được ${UI.luong(conBan)} trên ${UI.luong(lo.kg)}"><i class="giao" style="width:${(lo.giao / lo.kg) * 100}%"></i><i class="hua" style="width:${(Math.max(0, lo.hua - lo.giao) / lo.kg) * 100}%"></i></div>
-        <div class="lo-foot">${UI.chip(NHAN[tinhTrang][0], NHAN[tinhTrang][1])}${lo.thanhPhan ? UI.chip(`Lô gộp ${lo.thanhPhan.length} hộ`) : ''}${soKhach ? UI.chip(`${soKhach} khách đang hỏi`, 'cho') : ''}<span class="small muted grow" style="text-align:right">còn ${UI.luong(conBan)}</span></div>
+        <div class="lo-foot">${UI.chip(NHAN[tinhTrang][0], NHAN[tinhTrang][1])}${A.nv.dangBanGap(lo, A.bayGio()) ? UI.chip('Bán gấp', 'loi') : ''}${A.nv.laKemLoai(lo) ? UI.chip(A.nv.NHAN_LOAI[A.nv.loaiCua(lo)]) : ''}${lo.thanhPhan ? UI.chip(`Lô gộp ${lo.thanhPhan.length} hộ`) : ''}${soKhach ? UI.chip(`${soKhach} khách đang hỏi`, 'cho') : ''}<span class="small muted grow" style="text-align:right">còn ${UI.luong(conBan)}</span></div>
       </a>`;
     },
     /** Thẻ đơn trong danh sách. */
@@ -270,7 +270,7 @@
           <div class="row" style="gap:8px;flex-wrap:wrap"><span class="luong">${UI.luong(A.nv.conBan(lo))}</span><span class="qty ${lo.coSo === 'da_can' ? 'can' : 'uoc'}">${lo.coSo === 'da_can' ? 'Đã cân' : 'Ước tính'}</span></div>
           <span class="small"><strong>${lo.gia ? `${UI.so(lo.gia)} đ/kg` : 'Nhận báo giá'}</strong>${lo.haiTu ? ` · hái ${UI.ndNgan(lo.haiTu)}` : ''}</span></div></div>
         <span class="small muted">${lo.ban.ten} · ${hs?.vung ?? ''}</span>
-        <div class="lo-foot">${hs?.daXacMinh ? UI.chip('Đã xác minh', 'xong') : ''}${UI.chip(`Uy tín ${A.nv.NHAN_BAC[hs?.uyTin.bac ?? 'moi']}`)}${lo.choCheBien ? UI.chip('Cho chế biến', 'cho') : ''}${lo.vuonId ? UI.chip('Có nguồn gốc', 'xong') : ''}</div>${them}</a>`;
+        <div class="lo-foot">${hs?.daXacMinh ? UI.chip('Đã xác minh', 'xong') : ''}${UI.chip(`Uy tín ${A.nv.NHAN_BAC[hs?.uyTin.bac ?? 'moi']}`)}${A.nv.dangBanGap(lo, bayGio) ? UI.chip('Bán gấp', 'loi') : ''}${A.nv.laKemLoai(lo) ? UI.chip(A.nv.NHAN_LOAI[A.nv.loaiCua(lo)], 'cho') : ''}${lo.vuonId ? UI.chip('Có nguồn gốc', 'xong') : ''}</div>${them}</a>`;
     },
     /** Điểm khớp một lô với một tin cần mua (0–100) và lý do, để xếp nguồn gợi ý. */
     xepHang(n, lo, so) {

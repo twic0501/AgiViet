@@ -44,7 +44,7 @@ const TS = {
   ky: { ma: theo('cho_ban_xac_nhan') }, quyen: { ma: theo('cho_ban_xac_nhan') }, 'ban-day-du': { ma: theo('cho_ban_xac_nhan') }, 'ky-otp': { ma: theo('cho_ban_xac_nhan') }, 'ky-xong': { ma: theo('cho_coc') },
   'ky-giay': { ma: theo('cho_ban_xac_nhan') }, 'tien-ve': { ma: theo('da_nhan_tien') }, 'quyet-toan': { ma: theo('da_chot') }, chat: { kn: kn.id }, 'bao-gia': { kn: kn.id }, 'hen-xem': { kn: kn.id },
   'ket-noi': { kn: kn.id }, 'ho-so-ben-mua': { id: kn.mua.id }, 'bao-cao': { nguoi: kn.mua.id }, 'chi-tiet-lo': { lo: lo.id }, 'cap-nhat-luong': { lo: lo.id }, 'chung-tu': { lo: lo.id },
-  'mua-vu': { vuon: vuon.id }, 'ho-so-vuon': { vuon: vuon.id },
+  'mua-vu': { vuon: vuon.id }, 'ho-so-vuon': { vuon: vuon.id }, 'ban-gap': { lo: s0.lo.find(l => l.ban.id === 'ban-nam' && l.banGap)?.id ?? lo.id }, 'tach-lo': { lo: lo.id }, 'hop-dong': { ma: theo('cho_giao') },
 };
 const TRANG = await p.evaluate(() => AM.TRANG);
 let soMan = 0;
@@ -73,7 +73,7 @@ await bam(/phun thuốc trừ rầy/); await bam('Tiếp: kiểm tra'); await ba
 kiem('Ghi nhật ký phun thuốc từ câu nói', (await toast()).includes('nhật ký') && (await so()).nhatKy.some(k => k.loai === 'phun_thuoc' && k.ngayCachLy === 7 && k.noiDung.includes('rầy')));
 
 // 4. Một đơn từ xác nhận tới tiền về
-const ma = theo('cho_ban_xac_nhan'), em = encodeURIComponent(ma);
+const ma = don.find(d => d.trangThai === 'cho_ban_xac_nhan' && !d.hopDong?.giaBatThuong).ma, em = encodeURIComponent(ma);
 const giaLap = async (nhom, nhan) => { await di('cong-cu.html#gia-lap'); await p.locator('.pill-nhom', { hasText: nhom }).click(); await p.waitForTimeout(150); await p.getByRole('button', { name: nhan }).first().click(); await p.waitForTimeout(250); };
 await di(`lich.html#xac-nhan-don?ma=${em}`);
 await bam('Xác nhận và ký', 'link'); await bam('Tiếp tục', 'link'); await bam('Tiếp tục');
@@ -111,6 +111,38 @@ if (vuonCachLy) {
   await di('dang.html#kiem-tra'); await bam('Tiếp: xem lại');
   kiem('Vườn đang cách ly: không cho sang bước đăng', (await toast()).includes('cách ly') && p.url().includes('kiem-tra'));
 }
+
+// 5b. Chất lượng, giá và chống lách: giá bất thường phải xác nhận, hợp đồng cọc, bán gấp, hàng trả lại, tách lô
+const bt = don.find(d => d.trangThai === 'cho_ban_xac_nhan' && d.hopDong?.giaBatThuong);
+const ebt = encodeURIComponent(bt.ma);
+await di(`lich.html#xac-nhan-don?ma=${ebt}`);
+kiem('Đơn giá thấp bất thường có cảnh báo khi xem', (await chu()).includes('thấp bất thường'));
+await di(`giao-dich.html#ky?ma=${ebt}`);
+await bam(/Đồng ý, ký bằng mã/);
+kiem('Chưa bật "Tôi hiểu" thì chưa ký được', (await toast()).includes('Tôi hiểu') && !p.url().includes('ky-otp'));
+await p.locator('.screen.active .cong-tac').first().click(); await p.waitForTimeout(150);
+await bam(/Đồng ý, ký bằng mã/, 'link');
+await p.locator('input[data-st="ma"]').fill('123456'); await bam('Ký và xác nhận đơn'); await p.waitForTimeout(300);
+const dbt = (await so()).don.find(d => d.ma === bt.ma);
+kiem('Ký đơn giá bất thường: cọc tính trên giá tính cọc', dbt.trangThai === 'cho_coc' && !!dbt.hopDong.banDongYGiaBatThuong && dbt.hopDong.giaTinhCoc > dbt.gia, `${dbt.hopDong.giaTinhCoc} > ${dbt.gia}`);
+await di(`lich.html#hop-dong?ma=${ebt}`);
+kiem('Màn hợp đồng cọc: toàn văn, chưa hiệu lực khi chưa cọc', (await chu()).includes('HỢP ĐỒNG CỌC') && (await chu()).includes('Chưa có hiệu lực'));
+await di('hom-nay.html#hom-nay');
+kiem('Hôm nay gợi ý bán gấp lô kém loại chưa có khách', (await chu()).includes('chưa có khách hỏi'));
+await bam('Bán gấp, ai nhận', 'link'); await p.waitForTimeout(200);
+kiem('Màn bán gấp có lời chào bao tiêu', (await chu()).includes('Nhà máy chế biến Mekong') && (await chu()).includes('Giá sàn cam kết'));
+const loDat = new URLSearchParams(p.url().split('?')[1]).get('lo');
+await bam('Bật bán gấp');
+kiem('Bật bán gấp', !!(await so()).lo.find(l => l.id === loDat)?.banGap);
+const tra = (await so()).don.find(d => d.trangThai === 'da_chot' && d.ketQuaCan?.tuChoi && !d.traVeLoId);
+await di(`lich.html#chi-tiet-don?ma=${encodeURIComponent(tra.ma)}`);
+await bam('Bán gấp phần bị trả lại'); await p.waitForTimeout(300);
+kiem('Hàng bị trả lại thành lô bán gấp', p.url().includes('ban-gap') && (await so()).lo.some(l => l.traVeTuDon === tra.ma && l.banGap));
+const loTach = (await so()).lo.find(l => l.ban.id === 'ban-nam' && !l.thanhPhan && (l.loai ?? 'loai_1') === 'loai_1' && l.kg - l.hua > 1000 && !l.an);
+await di(`hang.html#tach-lo?lo=${loTach.id}`);
+await p.locator('input[data-st="kg1"]').fill('300'); await p.waitForTimeout(100);
+await bam('Tách lô'); await p.waitForTimeout(300);
+kiem('Tách lô theo loại: phần loại 2 thành lô riêng', p.url().includes('ban-gap') && (await so()).lo.some(l => l.tachTu === loTach.id && l.kg === 300));
 
 // 6. Phòng thử
 await di('cong-cu.html#phong-thu');

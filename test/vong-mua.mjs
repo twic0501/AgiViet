@@ -39,7 +39,7 @@ const TS = {
   'chi-tiet-lo': { lo: s0.lo.find(l => l.ban.id === 'ban-tu-ben').id }, 'ho-so-ban': { id: 'ban-nam' }, 'chi-tiet-nhu-cau': { nc: s0.nhuCau.find(n => n.mua.id === dx).id },
   'gui-bao-gia': { kn: kn0.id }, 'tin-nhan': { kn: kn0.id }, 'hen-xem-vuon': { kn: kn0.id }, 'chi-tiet-don': { ma: theo('cho_giao') }, 'thoa-thuan': { lo: kn0.loId }, 'dat-coc': { ma: theo('cho_coc') },
   'mo-lien-lac': { ma: theo('cho_giao') }, 'nghiem-thu': { ma: theo('cho_giao') }, 'doc-phieu-can': { ma: theo('cho_giao') }, 'doi-soat': { ma: theo('chua_thay_tien') }, 'huy-don': { ma: theo('cho_giao') },
-  'ghi-thanh-toan': { ma: theo('da_chot') }, 'truy-xuat': { phieu: s0.kho.find(x => x.mua.id === dx)?.id },
+  'ghi-thanh-toan': { ma: theo('da_chot') }, 'hop-dong': { ma: theo('cho_giao') }, 'truy-xuat': { phieu: s0.kho.find(x => x.mua.id === dx)?.id },
 };
 const TRANG = await p.evaluate(() => AM.TRANG);
 for (const [w, hh] of [[1280, 900], [390, 844]]) {
@@ -78,7 +78,7 @@ await di('bao-gia.html#bao-gia');
 await p.locator('.phan-doan button', { hasText: 'Đã chốt' }).click(); await p.waitForTimeout(200);
 await p.getByRole('link', { name: 'Lập đơn' }).first().click(); await p.waitForTimeout(300);
 kiem('Chưa đồng ý điều khoản thì chưa gửi được đơn', (await p.getByRole('button', { name: 'Gửi đơn cho người bán ký' }).isDisabled()));
-await p.locator('.cong-tac').click(); await p.waitForTimeout(150);
+await p.locator('[data-k="dongY"]').click(); await p.waitForTimeout(150);
 await bam('Gửi đơn cho người bán ký'); await p.waitForTimeout(200);
 const ma = decodeURIComponent(p.url()).match(/ma=([^&]+)/)?.[1];
 const d1 = (await so()).don.find(d => d.ma === ma);
@@ -115,6 +115,32 @@ await di(`kho.html#truy-xuat?phieu=${pk?.id}`);
 kiem('Truy xuất phiếu kho về đơn và người bán', (await chu()).includes(ma) && (await chu()).includes('Chị Năm'));
 await di('bao-cao.html#bang-ke');
 kiem('Bảng kê 01/TNDN có đơn vừa xong', (await chu()).includes(ma));
+
+// 3b. Hợp đồng cọc có giá hạ cấp → nghiệm thu 3 phần (trả lại vượt mức phải có ảnh) → chốt đúng tiền
+await di(`don-hang.html#thoa-thuan?lo=${lo.id}`);
+await p.locator('input[data-st="kg"]').fill('300'); await p.locator('input[data-st="gia"]').fill('20000');
+await p.locator('[data-k="coHaCap"]').click(); await p.waitForTimeout(150);
+await p.locator('input[data-st="giaHaCap"]').fill('12000');
+await p.locator('[data-k="dongY"]').click(); await p.waitForTimeout(150);
+await bam('Gửi đơn cho người bán ký'); await p.waitForTimeout(200);
+const ma2 = decodeURIComponent(p.url()).match(/ma=([^&]+)/)?.[1], em2 = encodeURIComponent(ma2);
+kiem('Lập đơn là soạn hợp đồng cọc: có giá hạ cấp', (await so()).don.find(d => d.ma === ma2)?.hopDong?.giaHaCap === 12000, ma2);
+await giaLap('Đơn', new RegExp(`${ma2}: xác nhận đơn`));
+await di(`don-hang.html#dat-coc?ma=${em2}`); await bam(/Tôi đã chuyển/); await p.waitForTimeout(300);
+await di(`don-hang.html#hop-dong?ma=${em2}`);
+kiem('Hợp đồng cọc có hiệu lực sau khi cọc qua app', (await chu()).includes('Có hiệu lực') && (await chu()).includes('12.000 đồng/kg'));
+await di(`don-hang.html#nghiem-thu?ma=${em2}`);
+await p.locator('input[data-st="nhan"]').fill('250'); await p.locator('input[data-st="haCap"]').fill('25'); await p.locator('input[data-st="tuChoi"]').fill('25'); await p.waitForTimeout(150);
+await bam('Gửi kết quả cân cho người bán');
+kiem('Trả lại 8% (vượt 5%) không ảnh bị chặn', (await toast()).includes('ảnh') && (await so()).don.find(d => d.ma === ma2).trangThai === 'cho_giao');
+await p.locator('input[data-st="anhTra"]').setInputFiles({ name: 'hang-dap.jpg', mimeType: 'image/jpeg', buffer: Buffer.from([0xff, 0xd8, 0xff]) }); await p.waitForTimeout(200);
+await bam('Gửi kết quả cân cho người bán'); await p.waitForTimeout(200);
+kiem('Kèm ảnh thì gửi được kết quả 3 phần', (await so()).don.find(d => d.ma === ma2).ketQuaCan?.anh?.length === 1);
+await giaLap('Đơn', new RegExp(`${ma2}: xác nhận số cân đúng`));
+const d4 = (await so()).don.find(d => d.ma === ma2);
+kiem('Chốt: 250 × 20.000 + 25 × 12.000 = 5,3 triệu', d4.phaiTra === 5_300_000, String(d4.phaiTra));
+await di('nguon-hang.html#hang-kem-loai');
+kiem('Màn hàng kém loại: lô khớp hồ sơ nhận hàng của Đồng Xanh', (await chu()).includes('Lô khớp hồ sơ') && (await chu()).includes('loại 2'));
 
 // 4. Cùng đơn nhìn từ app bán
 await p.evaluate(() => AVN.datPhien('ban', AVN.NGUOI_BAN_MAU));

@@ -2,7 +2,7 @@
 (() => {
   if (!window.AM) return;
   const A = window.AVN, U = AM.ui, { h } = A, NV = A.nv;
-  const TEN = { kiem_dinh: 'Kiểm định chất lượng, dư lượng', van_chuyen: 'Xe chở hàng (xe lạnh)', kho_lanh: 'Thuê kho lạnh' };
+  const TEN = { kiem_dinh: 'Kiểm định chất lượng, dư lượng', van_chuyen: 'Xe chở hàng (xe lạnh)', kho_lanh: 'Thuê kho lạnh', so_che: 'Sấy, cấp đông thuê' };
   const NHAN = { cho_bao_gia: ['Chờ đối tác báo giá', 'cho'], da_bao_gia: ['Có báo giá, chờ bạn đặt', 'lam'], da_dat: ['Đã đặt', 'cho'], xong: ['Hoàn tất', 'xong'], huy: ['Đã hủy', 'loi'] };
 
   AM.man('dich-vu', {

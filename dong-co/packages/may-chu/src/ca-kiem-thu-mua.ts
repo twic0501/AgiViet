@@ -1,6 +1,7 @@
 // Ca kiểm thử app mua (giai đoạn B): cùng khung PhienThu với app bán; bên mua chính là Nhà máy sấy Đồng Xanh (mua[0]).
 // Mỗi ca chỉ màn của app mua nên mở để xem kết quả (đường dẫn trong app mua, không có /mua).
-import { bangKe01, congNo, phuKeHoach, tien, thangCua, truyXuat, type NguoiLam } from '@agiviet/nghiep-vu';
+import { bangKe01, banHopDong, congNo, danhGiaGia, hieuLucHopDong, loKemLoaiKhop, nguoiNhanHangKemLoai, phuKeHoach, tien, thangCua, tinhCoc, truyXuat, type NguoiLam } from '@agiviet/nghiep-vu';
+import { VAN_HANH_MAU } from './gia-lap.ts';
 import { chayCa, PhienThu, type CaKiemThu, type KetQuaCa } from './ca-kiem-thu.ts';
 import { chayMotNhip, TRE } from './he-thong.ts';
 import { lienLacCua, tinNhanCua } from './truy-van.ts';
@@ -238,6 +239,53 @@ export const CA_KIEM_THU_MUA: CaKiemThu[] = [
     t.kiem('Đối tác đã báo giá', t.so.dichVu.find(x => x.id === y)?.trangThai === 'da_bao_gia');
     t.kiemDuoc('Đặt dịch vụ', t.thu(t.mua[0], { loai: 'dat_dich_vu', yeuCauId: y }));
     t.man = 'dich-vu';
+  } },
+  /* ---------- Hợp đồng cọc, giá, hàng kém loại ---------- */
+  { ma: 'M28', nhom: 'Hợp đồng và giá', ten: 'Lập đơn là soạn hợp đồng cọc', kyVong: 'Đơn ghi tiêu chuẩn, lỗi cho phép 3%, giá hạ cấp, giao tại kho; chưa cọc thì hợp đồng chưa hiệu lực, cọc xong thì có hiệu lực.', chay(t) {
+    const lo = tachMoi(t);
+    t.kiemBiChan('Giá hạ cấp không thấp hơn giá đơn bị chặn', t.thu(t.mua[0], { loai: 'tao_don', loId: lo, kg: 1000, gia: 25000, ngayGiao: t.ngay(3), giaHaCap: 26000 }), /hạ cấp/);
+    const ma = t.lam(t.mua[0], { loai: 'tao_don', loId: lo, kg: 1000, gia: 25000, ngayGiao: t.ngay(3), giaHaCap: 15000, noiGiao: 'tai_kho', loiChoPhep: 0.03 });
+    const hd = t.d(ma).hopDong;
+    t.kiem('Hợp đồng ghi đủ điều khoản', hd?.giaHaCap === 15000 && hd.noiGiao === 'tai_kho' && hd.tieuChuan.loiChoPhep === 0.03 && hd.tieuChuan.loai === 'loai_1');
+    t.kiem('Chưa cọc: chưa có hiệu lực', !hieuLucHopDong(t.d(ma)).coHieuLuc && /Chưa có hiệu lực/.test(banHopDong(t.d(ma), t.so).join(' ')));
+    t.buoc(t.ban, ma, 'xacNhanDon'); t.buoc(t.mua[0], ma, 'datCoc');
+    t.kiem('Cọc qua app: hợp đồng có hiệu lực', hieuLucHopDong(t.d(ma)).coHieuLuc);
+    t.man = `hop-dong?ma=${encodeURIComponent(ma)}`;
+  } },
+  { ma: 'M29', nhom: 'Hợp đồng và giá', ten: 'Giá tham khảo và giá tính cọc', kyVong: 'Giá tham khảo 25.000 đ/kg; trả 19.000 thì báo thấp hơn mặt bằng; khai 15.000 thì cọc vẫn tính trên 17.500 đ/kg.', chay(t) {
+    const lo = t.lo(6000); t.giaThamKhaoMau(lo); t.ketNoi(lo);
+    const g = danhGiaGia(t.so, 'xoai-cat-chu', 19000, t.dongHo.bayGio(), 'loai_1');
+    t.kiem('19.000 đ/kg: thấp hơn mặt bằng 24%', g.muc === 'thap' && g.lech === 24, `${g.muc} ${g.lech}%`);
+    const ma = t.don(lo, 1000, t.mua[0], 15000);
+    t.buoc(t.ban, ma, 'xacNhanDon');
+    t.kiem('Cọc tính trên 17.500 đ/kg', t.d(ma).coc?.so === tinhCoc(tien(1000, 17500)), `cọc ${t.d(ma).coc?.so}`);
+    t.man = `thoa-thuan?lo=${lo}`;
+  } },
+  { ma: 'M30', nhom: 'Hợp đồng và giá', ten: 'Nghiệm thu 3 phần, ảnh khi trả nhiều', kyVong: 'Đơn không có giá hạ cấp: nhập hạ cấp bị chặn; trả lại 8% không ảnh bị chặn; kèm ảnh thì nhập được.', chay(t) {
+    const lo = tachMoi(t), ma = t.donDaCoc(lo, 1000);
+    t.kiemBiChan('Hạ cấp khi hợp đồng không có giá hạ cấp bị chặn', t.thuBuoc(t.mua[0], ma, 'nhapKetQua', 900, 0, 100), /hạ cấp/);
+    t.kiemBiChan('Trả lại 8% không ảnh bị chặn', t.thuBuoc(t.mua[0], ma, 'nhapKetQua', 920, 80), /ảnh/);
+    t.kiemDuoc('Kèm ảnh thì nhập được', t.thuBuoc(t.mua[0], ma, 'nhapKetQua', 920, 80, 0, ['anh-hang-khong-dat.jpg']));
+    t.kiem('Kết quả lưu ảnh bằng chứng', (t.d(ma).ketQuaCan?.anh?.length ?? 0) === 1);
+    t.man = `nghiem-thu?ma=${encodeURIComponent(ma)}`;
+  } },
+  { ma: 'M31', nhom: 'Hàng kém loại', ten: 'Đăng ký nhận hàng loại 2, 3, hàng dạt', kyVong: 'Đồng Xanh đăng ký nhận xoài kém loại từ 500 kg: lô loại 2 của chị Năm hiện trong danh sách; lô 300 kg thì không.', chay(t) {
+    t.kiemDuoc('Đăng ký nhận hàng kém loại', t.thu(t.mua[0], { loai: 'cap_nhat_nhan_hang_kem_loai', bat: true, matHang: ['xoai-cat-chu'], kgToiThieu: 500, vung: '' }));
+    const lon = t.lo(2000, { ten: 'Xoài cát Chu loại 2', loaiHang: 'loai_2', gia: 13000 });
+    const nho = t.lo(300, { ten: 'Xoài dạt', loaiHang: 'dat', gia: 7000 });
+    t.lam(t.ban, { loai: 'bat_ban_gap', loId: lon });
+    const ds = loKemLoaiKhop(t.so, t.mua[0].id, t.dongHo.bayGio());
+    t.kiem('Lô loại 2 (2 tấn, đang bán gấp) có trong danh sách', ds.some(x => x.lo.id === lon && x.banGap));
+    t.kiem('Lô 300 kg (dưới lượng tối thiểu) không có', !ds.some(x => x.lo.id === nho));
+    t.man = 'hang-kem-loai';
+  } },
+  { ma: 'M32', nhom: 'Hàng kém loại', ten: 'Đối tác bao tiêu', kyVong: 'Bên mua tự ghi mình là bao tiêu bị chặn; vận hành ghi Đồng Xanh bao tiêu xoài 6.000 đ/kg thì lô dạt có lời chào giá sàn.', chay(t) {
+    t.kiemBiChan('Bên mua tự ghi bao tiêu bị chặn', t.thu(t.mua[0], { loai: 'dat_bao_tieu', nguoiDungId: t.mua[0].id, bat: true, giaSan: { 'xoai-cat-chu': 6000 }, diemGom: 'Sa Đéc' }), /vận hành/);
+    t.kiemDuoc('Vận hành ghi theo thỏa thuận khung', t.thu(VAN_HANH_MAU, { loai: 'dat_bao_tieu', nguoiDungId: t.mua[0].id, bat: true, giaSan: { 'xoai-cat-chu': 6000 }, diemGom: 'Kho Sa Đéc' }));
+    const lo = t.lo(800, { ten: 'Xoài dạt', loaiHang: 'dat', gia: null });
+    const ai = nguoiNhanHangKemLoai(t.so, t.l(lo));
+    t.kiem('Lô dạt có lời chào bao tiêu 6.000 đ/kg', ai.baoTieu.some(b => b.id === t.mua[0].id && b.gia === 6000));
+    t.man = 'hang-kem-loai';
   } },
 ];
 

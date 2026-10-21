@@ -6,24 +6,55 @@
   const ketNoiLo = (c, lo) => c.so.ketNoi.find(k => k.loId === lo.id && k.mua.id === c.n.id && ['cho', 'dong_y'].includes(k.trangThai));
 
   AM.man('nguon-hang', {
-    st: () => ({ tim: '', nhom: '', daCan: false, cheBien: false, xep: 'moi' }),
+    st: () => ({ tim: '', nhom: '', daCan: false, cheBien: false, banGap: false, xep: 'moi' }),
     ve(c) {
       const boDau = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
       let ds = A.mc.loDangBan(c.so, c.bg).filter(l => NV.conBan(l) > 0);
       if (c.st.tim.trim()) ds = ds.filter(l => boDau(`${l.ten} ${A.tenMH(l.matHang)} ${l.ban.ten}`).includes(boDau(c.st.tim)));
       if (c.st.nhom) ds = ds.filter(l => A.dm.nhomCua(l.matHang)?.id === c.st.nhom);
       if (c.st.daCan) ds = ds.filter(l => l.coSo === 'da_can');
-      if (c.st.cheBien) ds = ds.filter(l => l.choCheBien);
+      if (c.st.cheBien) ds = ds.filter(l => NV.laKemLoai(l));
+      if (c.st.banGap) ds = ds.filter(l => NV.dangBanGap(l, c.bg));
       const xep = { moi: (a, b) => b.dangLuc - a.dangLuc, gia: (a, b) => (a.gia ?? 9e9) - (b.gia ?? 9e9), luong: (a, b) => NV.conBan(b) - NV.conBan(a) }[c.st.xep];
-      ds.sort(xep);
+      ds.sort((a, b) => Number(NV.dangBanGap(b, c.bg)) - Number(NV.dangBanGap(a, c.bg)) || xep(a, b));
+      const khop = NV.loKemLoaiKhop(c.so, c.n.id, c.bg);
       return h`${U.bao('Bạn thấy tên, vùng, uy tín người bán. Số điện thoại, địa chỉ vườn chỉ mở khi bạn đặt cọc một đơn.')}
         <div class="card stack s8">
           <div class="grid2">${U.o(c, { k: 'tim', nhan: 'Tìm', ph: 'Xoài, tôm, tên người bán…', veLai: true })}${U.chonO(c, { k: 'nhom', nhan: 'Nhóm hàng', lua: [['', 'Tất cả nhóm'], ...A.dm.NHOM_HANG.map(g => [g.id, g.ten])] })}</div>
-          <div class="row" style="flex-wrap:wrap;gap:16px">${U.congTac(c, { k: 'daCan', nhan: 'Chỉ lô đã cân' })}${U.congTac(c, { k: 'cheBien', nhan: 'Hàng cho chế biến' })}</div>
+          <div class="row" style="flex-wrap:wrap;gap:16px">${U.congTac(c, { k: 'daCan', nhan: 'Chỉ lô đã cân' })}${U.congTac(c, { k: 'cheBien', nhan: 'Hàng loại 2, 3, dạt' })}${U.congTac(c, { k: 'banGap', nhan: 'Đang bán gấp' })}</div>
           ${U.chon(c, { k: 'xep', nhan: 'Sắp xếp', lua: [['moi', 'Mới đăng'], ['gia', 'Giá thấp'], ['luong', 'Lượng nhiều']] })}
         </div>
+        ${khop.length ? U.the(h`<div class="row between"><span><strong>${khop.length} lô kém loại khớp hồ sơ nhận hàng của bạn</strong><br><span class="small muted">${khop.filter(x => x.banGap).length} lô đang bán gấp</span></span>${U.nut('Xem', { den: '#hang-kem-loai', nho: true })}</div>`, { vien: 'lam' }) : ''}
         <div class="row between"><span class="muted">${ds.length} lô đang bán</span>${U.nut('Gợi ý khớp tin cần mua', { den: '#goi-y', kieu: 'phu', nho: true, icon: 'search' })}</div>
         ${ds.length ? h`<div class="luoi-the">${ds.map(l => U.theNguon(l, c.so, c.bg, ketNoiLo(c, l) ? U.chip(ketNoiLo(c, l).trangThai === 'dong_y' ? 'Đang trao đổi' : 'Đã gửi lời mời', 'cho') : ''))}</div>` : U.trong('Không có lô khớp bộ lọc', 'Bỏ bớt bộ lọc, hoặc đăng tin cần mua để người bán chào hàng.', U.nut('Đăng tin cần mua', { den: 'nhu-cau.html#tao-nhu-cau', nho: true }))}`;
+    },
+  });
+
+  // Hàng loại 2, 3, hàng dạt: hồ sơ nhận hàng (để được báo), lô khớp, và (nếu là đối tác bao tiêu) giá sàn đã cam kết
+  AM.man('hang-kem-loai', {
+    ten: 'Hàng loại 2, 3, hàng dạt',
+    st(c) { const k = c.hs?.nhanHangKemLoai; return { bat: !!k, matHang: k?.matHang ?? [], kg: k ? String(k.kgToiThieu) : '500', vung: k?.vung ?? '' }; },
+    ve(c) {
+      const k = c.hs.nhanHangKemLoai, bt = c.hs.baoTieu, khop = NV.loKemLoaiKhop(c.so, c.n.id, c.bg);
+      return h`${U.bao('Hàng kém loại vẫn hợp cho sấy, nước ép, đông lạnh, chợ đầu mối. Đăng ký nhận thì khi người bán đăng hoặc bật bán gấp lô đúng mặt hàng, lô hiện ở đây và trong Nguồn hàng.')}
+        <div class="hai-cot hep-trai"><div class="stack">
+          ${U.the(h`<strong class="h2">Hồ sơ nhận hàng kém loại</strong>
+            ${U.congTac(c, { k: 'bat', nhan: 'Tôi nhận hàng loại 2, 3, hàng dạt' })}
+            ${c.st.bat ? h`${U.chonMH(c, { k: 'matHang' })}<span class="xs muted">Không chọn mặt hàng nào = nhận mọi mặt hàng.</span>
+              ${U.o(c, { k: 'kg', nhan: 'Lượng tối thiểu mỗi lô', kieu: 'so', donVi: 'kg' })}
+              ${U.o(c, { k: 'vung', nhan: 'Chỉ nhận ở tỉnh (trống = mọi nơi)', ph: 'Đồng Tháp' })}` : ''}
+            ${U.nut('Lưu', { bam: 'luu', nho: true })}
+            ${k ? h`<span class="small muted">Đang nhận: ${k.matHang.length ? k.matHang.map(A.tenMH).join(', ') : 'mọi mặt hàng'}, từ ${U.luong(k.kgToiThieu)}${k.vung ? `, ở ${k.vung}` : ''}.</span>` : ''}`)}
+          ${bt ? U.the(h`<div class="row between"><strong class="h2">Đối tác bao tiêu</strong>${U.chip('Thỏa thuận khung với AgiViet', 'xong')}</div>
+            <span class="small muted">Bạn cam kết nhận hàng loại 3, hàng dạt ở giá sàn dưới đây. Người bán có lô không ai mua thấy lời chào của bạn.</span>
+            ${Object.entries(bt.giaSan).map(([m, g]) => U.dong2(A.tenMH(m), `${U.so(g)} đ/kg`))}${U.dong2('Điểm gom', bt.diemGom)}`) : U.the(h`<strong>Làm đối tác bao tiêu</strong><span class="small muted">Nhà máy cam kết giá sàn hàng dạt theo mùa thì được ưu tiên báo mọi lô kém loại. Đội AgiViet ký thỏa thuận khung rồi ghi lên hồ sơ.</span>${U.nut('Liên hệ AgiViet', { bam: 'lienHe', kieu: 'phu', nho: true })}`)}
+        </div><section class="stack s8"><h2 class="h2">Lô khớp hồ sơ (${khop.length})</h2>
+          ${khop.length ? h`<div class="luoi-the">${khop.map(x => U.theNguon(x.lo, c.so, c.bg))}</div>` : U.trong(k ? 'Chưa có lô kém loại khớp' : 'Bật nhận hàng kém loại để xem lô khớp', k ? 'Khi người bán đăng hoặc bán gấp lô đúng mặt hàng, lô hiện ở đây.' : '')}
+        </section></div>`;
+    },
+    bam: {
+      luu: c => c.lam({ loai: 'cap_nhat_nhan_hang_kem_loai', bat: !!c.st.bat, matHang: c.st.matHang, kgToiThieu: U.docSo(c.st.kg) || 0, vung: c.st.vung }, { bao: c.st.bat ? 'Đã lưu. App báo khi có lô kém loại khớp.' : 'Đã tắt nhận hàng kém loại.' }),
+      lienHe: c => c.lam({ loai: 'gui_ho_tro', chuDe: 'Bao tiêu', noiDung: 'Tổ chức muốn ký thỏa thuận khung bao tiêu hàng loại 3, hàng dạt' }, { bao: 'Đã gửi. Đội AgiViet liên hệ để ký thỏa thuận khung.' }),
     },
   });
 
