@@ -10,6 +10,10 @@
     "du-lieu-mau": "node scripts/du-lieu-mau.js",
     "test": "node --test --test-concurrency=1 test/*.test.js",
     "build:hosting": "node scripts/build-hosting.js",
+    "dong-co": "npm --prefix dong-co run build",
+    "trang-ban": "node scripts/tao-trang-ban.mjs",
+    "test:ban": "node test/vong-ban.mjs",
+    "deploy:thu": "node scripts/build-hosting.js && \"$HOME/rnd idea/node_modules/.bin/firebase\" hosting:channel:deploy thu-nghiem --expires 30d --project agiviet-23a94",
     "deploy": "node scripts/build-hosting.js && \"$HOME/rnd idea/node_modules/.bin/firebase\" deploy --only hosting --project agiviet-23a94"
   }
 }

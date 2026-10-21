@@ -11,6 +11,14 @@
 > | `src/`, `db/` | API + CSDL (chưa lên site; site đang tắt API) |
 >
 > Triển khai lại: `npm run deploy` (đóng gói `hosting-build/` từ ba thư mục trên rồi đẩy lên Firebase).
+>
+> **Nhánh `lam-lai-html` (đang thử nghiệm):** app bán làm lại theo nghiệp vụ mới, 82 màn vẽ từ động cơ `dong-co/`
+> (`js/dong-co.js` = luật + máy chủ mô phỏng, `js/khung.js` = khung vẽ màn, `js/man/*.js` = từng trang). Dữ liệu mẫu tự nạp lần đầu;
+> đăng nhập số 0918 234 421, mã 123456; dải "Mô phỏng" mở Giả lập bên mua và Phòng thử.
+> - `npm run dong-co`: build lại `js/dong-co.js` sau khi sửa `dong-co/` (`npm --prefix dong-co test` chạy 112 test nghiệp vụ)
+> - `npm run trang-ban`: sinh lại các trang HTML của app bán từ bảng `TRANG` trong `js/khung.js`
+> - `npm run deploy:thu`: đăng lên link thử nghiệm (kênh `thu-nghiem`, 30 ngày), không đụng site chính
+> - `npm run test:ban [base]`: 18 điểm kiểm luồng thật trên trình duyệt
 
 Hệ thống thật phía sau hai giao diện `fe-nongdan/` (Nhà sản xuất) và `fe-thumua/` (Thu mua),
 làm theo **Đặc tả kiến trúc v4** và **Quy trình vận hành v3** (`~/Downloads/AgriMatch_*_v3.md`, `_v4.md`).
