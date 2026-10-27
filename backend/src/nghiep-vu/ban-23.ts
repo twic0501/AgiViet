@@ -12,6 +12,10 @@ const can = (b: any, keys: string[]) => {
 const so = (v: any, ten: string) => { const s = String(v); if (!/^\d+$/.test(s)) throw loi('DU_LIEU_KHONG_HOP_LE', `${ten} phải là số nguyên không âm`); return s; };
 const nhanVien = (nd: NguoiDung) => { if (!nd.vaiVanHanh?.length) throw loi('KHONG_CO_QUYEN'); };
 
+// Codex chốt: toàn bộ kế hoạch và giá chỉ cho bên mua (chủ, thu mua, kế toán) và vận hành đúng vai;
+// vai vận hành bất kỳ (vd kiểm định) không được xem mọi khách hàng.
+const VAI_MUA_XEM_KE_HOACH = ['owner', 'purchaser', 'accountant'];
+const VAI_VAN_HANH_XEM_KE_HOACH = ['dispatcher', 'supervisor', 'finance', 'risk'];
 // ---------- Hồ sơ mở (hộp việc) ----------
 export async function hopViec(t: GiaoDich, nd: NguoiDung, q: any) {
   nhanVien(nd);
@@ -27,10 +31,10 @@ export async function giaoHoSo(t: GiaoDich, nd: NguoiDung, b: any) {
 }
 export async function hoSoDon(t: GiaoDich, nd: NguoiDung, orderId: string) {
   const ok = await t.gtri<boolean>(`SELECT EXISTS(SELECT 1 FROM core.orders WHERE id=$1 AND $2 IN (buyer_org_id,seller_org_id))`, [orderId, nd.thanhVien.orgId]);
-  if (!ok && !nd.vaiVanHanh?.length) throw loi('KHONG_TIM_THAY');
+  if (!ok && !nd.vaiVanHanh.some((v) => [...VAI_VAN_HANH_XEM_KE_HOACH, 'support'].includes(v))) throw loi('KHONG_TIM_THAY');
   const ds = await t.q(`SELECT kind, ref_id, note FROM core.open_dossiers($1)`, [orderId]);
   const nhan = await t.gtri<string>(`SELECT nhan_hien_thi FROM core.v_order_display_status WHERE order_id=$1`, [orderId]);
-  const chuaBaoDam = await t.q(`SELECT dispute_id, claim_kind, inspection_fee_vnd::text, penalty_vnd::text, security_status FROM core.v_unsecured_claims WHERE order_id=$1`, [orderId]);
+  const chuaBaoDam = await t.q(`SELECT dispute_id, claim_kind, inspection_fee_vnd::text, penalty_vnd::text, security_status FROM core.unsecured_claims_of($1)`, [orderId]);
   return { nhan_hien_thi: nhan, ho_so_mo: ds, khoan_doi_them_chua_bao_dam: chuaBaoDam };
 }
 
@@ -65,8 +69,10 @@ export async function lapThoaThuanNguon(t: GiaoDich, nd: NguoiDung, b: any) {
   return { id };
 }
 async function laBenMuaThoaThuan(t: GiaoDich, nd: NguoiDung, id: string) {
-  const ok = await t.gtri<boolean>(`SELECT EXISTS(SELECT 1 FROM core.sourcing_agreements WHERE id=$1 AND buyer_org_id=$2)`, [id, nd.thanhVien.orgId]);
-  if (!ok && !nd.vaiVanHanh?.length) throw loi('KHONG_TIM_THAY');
+  const laBenMua = await t.gtri<boolean>(`SELECT EXISTS(SELECT 1 FROM core.sourcing_agreements WHERE id=$1 AND buyer_org_id=$2)`, [id, nd.thanhVien.orgId]);
+  const muaDungVai = laBenMua && nd.thanhVien.vai.some((v) => VAI_MUA_XEM_KE_HOACH.includes(v));
+  const vanHanhDungVai = nd.vaiVanHanh.some((v) => VAI_VAN_HANH_XEM_KE_HOACH.includes(v));
+  if (!muaDungVai && !vanHanhDungVai) throw loi('KHONG_TIM_THAY');
 }
 export async function doPhuNguon(t: GiaoDich, nd: NguoiDung, id: string) {
   await laBenMuaThoaThuan(t, nd, id);
@@ -106,4 +112,9 @@ export async function baoGiaoThieu(t: GiaoDich, nd: NguoiDung, id: string, b: an
 }
 export async function dungNguon(t: GiaoDich, nd: NguoiDung, id: string) {
   return { forecasts_cancelled: await appCmd<number>(t, nd, 'buyer', 'stop_sourcing', [id]), ghi_chu: 'Phân bổ đã cam kết vẫn giữ.' };
+}
+export async function traLoiChiPhiDoiLuong(t: GiaoDich, nd: NguoiDung, id: string, b: any) {
+  if (typeof b?.accept !== 'boolean') throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần accept: true/false');
+  await appCmd(t, nd, 'buyer', 'answer_sourcing_cost', [id, b.accept]);
+  return { status: b.accept ? 'phai_tra' : 'tranh_chap' };
 }

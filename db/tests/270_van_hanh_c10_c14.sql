@@ -46,7 +46,7 @@ SELECT test.expect_error('C12 quyết định không đúng loại/đơn không 
  $$INSERT INTO core.platform_liabilities(order_id,kind,amount_vnd,payee_org_id,reason,decision_id,prevention_note)
    SELECT test.id('R59A'),'dat_nham_dich_vu',500000,test.org('TC-B01'),'Đặt xe thường thay xe lạnh',id,'Kiểm loại xe theo mặt hàng trước khi đặt' FROM ops.decisions WHERE proposed_by<>approved_by LIMIT 1$$,'ck_decision_two_people');
 INSERT INTO ops.decisions(id,kind,entity,entity_id,proposed_by,approved_by,reason,evidence_document_id,detail)
- VALUES(test.id('C12:qd'),'platform_liability','order',test.id('R59A'),test.person('Đỗ Minh Trí'),test.person('Nguyễn Hữu Tâm'),'Lỗi đặt nhầm xe của AgiViet',test.id('R59A:bbnt:1'),'{}');
+ VALUES(test.id('C12:qd'),'platform_liability','order',test.id('R59A'),test.person('Đỗ Minh Trí'),test.person('Nguyễn Hữu Tâm'),'Lỗi đặt nhầm xe của AgiViet',test.id('R59A:bbnt:1'),'{"amount_vnd":500000}');
 INSERT INTO core.platform_liabilities(order_id,kind,amount_vnd,payee_org_id,reason,decision_id)
  VALUES(test.id('R59A'),'dat_nham_dich_vu',500000,test.org('TC-B01'),'Đặt xe thường thay xe lạnh',test.id('C12:qd'));
 SELECT test.expect_error('C12 đánh dấu đã trả phải có chứng từ ngân hàng',
