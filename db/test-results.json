@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T18:55:46.586Z",
+  "checked_at": "2026-10-27T19:06:56.195Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -62,12 +62,13 @@
     "0058_quy_trinh_ban_23_e1_e2_dong_ho_so.sql",
     "0059_chinh_sach_theo_don_khao_sat_ky_thay.sql",
     "0060_sua_ra_soat_d37991a.sql",
-    "0061_giao_ngay_c1_c6.sql"
+    "0061_giao_ngay_c1_c6.sql",
+    "0062_sua_ra_soat_1614c70.sql"
   ],
   "tables": 164,
   "migration_seed_replay": true,
-  "checks": 658,
-  "passed": 658,
+  "checks": 673,
+  "passed": 673,
   "failed": 0,
   "results": [
     {
@@ -493,7 +494,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản f2403c3e-a89a-49d6-bf25-054618946c7e (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản aa2cc69b-ccad-4dde-86e1-5a8779ba2167 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2238,7 +2239,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:55:44.402+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:06:53.881+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3216,9 +3217,9 @@
       "detail": "bị chặn: Chỉ liên hệ của người đến đã khai"
     },
     {
-      "name": "P1-1 đơn đã có quyết toán E1 không hạ về chính sách 22",
+      "name": "P1-1b đơn ký trước khi E1 có hiệu lực về 22 dù đã có quyết toán công thức 3",
       "passed": true,
-      "detail": "bị chặn: Đơn đã quyết toán theo E1 không hạ về chính sách cũ"
+      "detail": null
     },
     {
       "name": "P1-1 hàm sửa dữ liệu trả đơn E1 về 23, không đụng đơn cũ thật",
@@ -3344,6 +3345,81 @@
       "name": "C6 đơn còn hồ sơ mở thì không hoàn tất toàn bộ",
       "passed": true,
       "detail": null
+    },
+    {
+      "name": "R62-2 phân bổ đầu: còn phần chờ xử lý, chưa có khoản hoàn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-2 quyết định mới tạo phiên bản 2, hết phần chờ, tạo khoản hoàn 280.000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-2 gọi lại cùng quyết định trả đúng phân bổ cũ, không tạo thêm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-2 chỉ một khoản hoàn cho kiểm định này",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-5 mọi khoản hoàn phí có hạn trả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-3 khiếu nại trong hạn 12 giờ sau giao qua lệnh được nhận",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-3 quá hạn, không gắn tiêu chí kiểm sau: bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Quá hạn khiếu nại: chỉ ghi phản ánh (core.late_feedback)"
+    },
+    {
+      "name": "R62-3 tiêu chí kiểm sau KHÔNG mở cửa cho khiếu nại thiếu cân",
+      "passed": true,
+      "detail": "bị chặn: Quá hạn khiếu nại: chỉ ghi phản ánh (core.late_feedback)"
+    },
+    {
+      "name": "R62-3 khiếu nại chất lượng gắn đúng tiêu chí kiểm sau không đạt được nhận",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-4 đóng rồi mở lại không kéo dài quá 6 giờ tính từ lần đầu",
+      "passed": true,
+      "detail": "bị chặn: Chờ đối soát cọc tối đa 6 giờ tính từ lần mở đầu tiên của đơn"
+    },
+    {
+      "name": "R62-4 hồ sơ đối soát quá hạn được đóng \"hết hạn\"",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-6 quét tạo việc V25 cho hồ sơ chưa có người phụ trách",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-6 quét lại không tạo việc trùng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-6 hồ sơ đã giao người phụ trách và hạn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R62-6 không giao cho hồ sơ không tồn tại",
+      "passed": true,
+      "detail": "bị chặn: Sai hồ sơ / người phụ trách / hạn"
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",

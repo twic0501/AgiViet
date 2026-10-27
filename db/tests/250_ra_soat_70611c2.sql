@@ -82,8 +82,18 @@ SELECT test.context(NULL,NULL,'system');
 
 -- ---------- Hồi quy theo Codex rà d37991a ----------
 -- P1-1: đơn đã quyết toán theo E1 không hạ về chính sách cũ; hàm sửa dữ liệu trả đơn về 23.
-SELECT test.expect_error('P1-1 đơn đã có quyết toán E1 không hạ về chính sách 22',
- $$UPDATE core.orders SET policy_version=22 WHERE id=test.id('R59A')$$,'ck_policy_committed');
+-- (Rà 1614c70) Luật đúng: phân loại theo LÚC KÝ, không theo công thức đã chạy.
+SELECT test.expect_ok('P1-1b đơn ký trước khi E1 có hiệu lực về 22 dù đã có quyết toán công thức 3', $$DO $b$ BEGIN
+ SET LOCAL session_replication_role=replica; -- giả lập: chữ ký hai bên của R59A có trước 0058
+ UPDATE core.signatures SET signed_at=(SELECT applied_at FROM public.schema_migrations WHERE name LIKE '0058%')-interval '1 day'
+  WHERE document_id=(SELECT document_id FROM core.order_versions WHERE order_id=test.id('R59A') AND version_no=1);
+ SET LOCAL session_replication_role=origin;
+ PERFORM core.backfill_order_policy();
+ IF (SELECT policy_version FROM core.orders WHERE id=test.id('R59A'))<>22 THEN RAISE EXCEPTION 'đơn ký trước E1 không về 22'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM core.settlements WHERE order_id=test.id('R59A') AND hold_formula_version=3) THEN RAISE EXCEPTION 'lịch sử quyết toán bị sửa'; END IF;
+ RAISE EXCEPTION 'hoàn tác' USING ERRCODE='T0002';
+EXCEPTION WHEN SQLSTATE 'T0002' THEN NULL;
+END $b$;$$);
 SELECT test.expect_ok('P1-1 hàm sửa dữ liệu trả đơn E1 về 23, không đụng đơn cũ thật', $$DO $b$ BEGIN
  -- Giả lập dữ liệu lệch do 0059 để lại (bỏ qua trigger chỉ trong lệnh thử này).
  SET LOCAL session_replication_role=replica;

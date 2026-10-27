@@ -13,6 +13,12 @@ Cách đọc: mỗi mục có **giờ**, **việc**, **ai quyết** (Người s�
 | E1 | Còn tranh chấp: trả đủ phần đã công nhận; khoản đòi thêm ghi chưa bảo đảm | Người sáng lập | 28/10 |
 | E2 | Lệnh tiền ngoại lệ: người thứ hai duyệt, là người khác thật | Người sáng lập | 28/10 |
 | C1 | Chính sách đơn: giữ chính sách đã cam kết với đơn (đơn đã chạy E1 không bị hạ về luật cũ) | Codex | 28/10 |
+| Q25 | Tìm nguồn định kỳ: mặc định duyệt từng phương án; khách được chủ động ủy quyền trong phạm vi rõ ràng | Codex | 28/10 |
+| Q26 | Hạn chốt 14:00 hôm trước, cấu hình theo mặt hàng/lịch nhận, lưu trong thỏa thuận; đổi sau hạn cần người bán bị ảnh hưởng đồng ý, bên mua chịu chi phí thực tế có chứng cứ | Codex | 28/10 |
+| Q27 | Thỏa thuận dịch vụ với AgiViet + mua bán giữa bên mua và từng người bán; mỗi nguồn mỗi đợt là một core.orders | Codex | 28/10 |
+| Q28 | 2 đợt giao thiếu trong 30 ngày → mở rà soát (không tự trừ uy tín/lượng mời); có giải trình; chỉ giảm lượng mời sau rà soát | Codex | 28/10 |
+| CN | Mức cho nợ mặc định 0 đ ngoài khoản bảo đảm hợp lệ; người bán tự cấp từng bên mua; nợ quá hạn chặn cam kết mới | Codex | 28/10 |
+| C2 | Chính sách đơn phân loại theo lúc cam kết (ký), không theo công thức đã chạy; lịch sử tiền đã chi giữ nguyên | Codex | 28/10 |
 | H1 | Hạ tầng: Firebase Hosting (miễn phí) + Supabase (miễn phí); AI OpenAI API có trần chi tiêu; tên miền agiviet.id.vn | Người sáng lập | 28/10 |
 
 ## Diễn biến
@@ -24,4 +30,6 @@ Cách đọc: mỗi mục có **giờ**, **việc**, **ai quyết** (Người s�
 - Codex rà d37991a: E1 qua lệnh thật **đã hết**, ký thay **đã hết**; 3 lệch P1 mới: (1) 0059 hạ nhầm đơn đã áp E1 về chính sách cũ — **Codex quyết: giữ chính sách đã cam kết, không chia theo thời điểm chạy migration**; (2) NULL trong danh sách người đến làm lọt quyền; (3) tài khoản bị khóa vẫn đọc liên lạc khảo sát.
 - **0060**: sửa 3 lệch (trả đơn E1 về chính sách 23 + chặn hạ chính sách khi đã có quyết toán E1; cấm NULL, kiểm quyền mặc định từ chối; kiểm tài khoản bị khóa cả người gọi lẫn người được tra). 636/636.
 - **0061** giao ngay C1–C6: nhãn "Đã quyết toán mua bán · còn hồ sơ mở" + người phụ trách/hạn từng hồ sơ (ops.v_open_dossiers = hộp việc); phân bổ phí kiểm định bằng quyết định hai người, tổng = phí, tự tạo khoản hoàn; nguồn xác minh mỗi khoản tiền; chờ đối soát cọc ≤ 6 giờ không đóng đơn/không nhả lượng; hạn khiếu nại (mặc định 12 giờ, trong extra_terms), tiêu chí kiểm sau giao, phản ánh muộn chỉ ghi nhận. 658/658. Gửi Codex rà.
+- Codex rà 1614c70: NULL và tài khoản khóa **đã hết**; 6 lệch mới. Codex chốt Q25–Q28 và mức cho nợ (xem bảng quyết định).
+- **0062**: sửa 6 lệch — phân loại chính sách theo lúc ký (bỏ trigger cũ, lịch sử tiền giữ nguyên); phân bổ phí có phiên bản (chờ xử lý → kết luận cuối, chỉ lập phần hoàn chênh, có hạn 7 ngày); lệnh khiếu nại sau giao `cmd.open_post_delivery_claim` (trong hạn được; quá hạn chỉ khi gắn đúng tiêu chí kiểm sau không đạt, loại chất lượng); đối soát cọc hạn tuyệt đối 6 giờ từ lần mở đầu + `cmd.expire_deposit_reconciliations`; quét hồ sơ mở tạo việc V25 + `cmd.assign_dossier`. 673/673.
 - Ghi chú kỹ thuật: thêm cột vào order_versions làm gãy lệnh tạo đơn (whitelist) → hạn khiếu nại đặt trong extra_terms.
