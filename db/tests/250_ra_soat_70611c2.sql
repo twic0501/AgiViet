@@ -79,3 +79,34 @@ SELECT test.expect_error('R3 người bán không đọc liên lạc người b�
 SELECT test.context(NULL,NULL,'system');
 
 -- 4) Ký thay bên mua trên đơn bản 23: kiểm qua đúng chuỗi lệnh TH-040b ở tests/175 (V23FM).
+
+-- ---------- Hồi quy theo Codex rà d37991a ----------
+-- P1-1: đơn đã quyết toán theo E1 không hạ về chính sách cũ; hàm sửa dữ liệu trả đơn về 23.
+SELECT test.expect_error('P1-1 đơn đã có quyết toán E1 không hạ về chính sách 22',
+ $$UPDATE core.orders SET policy_version=22 WHERE id=test.id('R59A')$$,'ck_policy_committed');
+SELECT test.expect_ok('P1-1 hàm sửa dữ liệu trả đơn E1 về 23, không đụng đơn cũ thật', $$DO $b$ BEGIN
+ -- Giả lập dữ liệu lệch do 0059 để lại (bỏ qua trigger chỉ trong lệnh thử này).
+ SET LOCAL session_replication_role=replica;
+ UPDATE core.orders SET policy_version=22 WHERE id=test.id('R59A');
+ SET LOCAL session_replication_role=origin;
+ PERFORM core.backfill_order_policy();
+ IF (SELECT policy_version FROM core.orders WHERE id=test.id('R59A'))<>23 THEN RAISE EXCEPTION 'không trả về 23'; END IF;
+END $b$;$$);
+-- Ghi chú: R59B là đơn "cũ" giả lập nhưng được tạo sau 0058, nên theo luật Codex chốt (đơn tạo khi E1 đã hiệu lực là đơn E1)
+-- hàm sửa dữ liệu sẽ trả về 23; không dùng R59B để kiểm nhánh "đơn cũ thật".
+-- P1-2: không có NULL trong danh sách người đến.
+SELECT test.expect_error('P1-2 danh sách người đến không chứa NULL',
+ $$UPDATE core.survey_visits SET visitor_user_ids=ARRAY[test.person('Võ Hoàng Phúc'),NULL::uuid] WHERE id=test.id('KS:dang')$$,'ck_survey_visitors_no_null');
+-- P1-3: người đến bị khóa không đọc được; người bán không đọc được số của tài khoản bị khóa.
+CREATE FUNCTION test.p13_lot() RETURNS text LANGUAGE plpgsql AS $f$ DECLARE r text:='';
+BEGIN
+ UPDATE core.users SET disabled_at=now() WHERE id=test.person('Võ Hoàng Phúc');
+ PERFORM test.context('Võ Hoàng Phúc','TC-M01','buyer');
+ BEGIN PERFORM pii.read_survey_contact(test.id('KS:dang'),test.person('Nguyễn Thị Năm')); r:=r||'nguoi-bi-khoa-doc-duoc;'; EXCEPTION WHEN OTHERS THEN NULL; END;
+ PERFORM test.context('Nguyễn Thị Năm','TC-B01','seller');
+ BEGIN PERFORM pii.read_survey_contact(test.id('KS:dang'),test.person('Võ Hoàng Phúc')); r:=r||'lo-so-tai-khoan-bi-khoa;'; EXCEPTION WHEN OTHERS THEN NULL; END;
+ UPDATE core.users SET disabled_at=NULL WHERE id=test.person('Võ Hoàng Phúc');
+ PERFORM test.context(NULL,NULL,'system');
+ RETURN r;
+END $f$;
+SELECT test.check('P1-3 tài khoản bị khóa không đọc và không bị lộ liên lạc khảo sát',test.p13_lot()='');

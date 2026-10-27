@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T18:32:00.750Z",
+  "checked_at": "2026-10-27T18:50:59.883Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -60,12 +60,13 @@
     "0056_nhat_ky_xac_minh_mat_hang_va_ban_gap.sql",
     "0057_dat_truoc_va_bao_tieu_theo_vu.sql",
     "0058_quy_trinh_ban_23_e1_e2_dong_ho_so.sql",
-    "0059_chinh_sach_theo_don_khao_sat_ky_thay.sql"
+    "0059_chinh_sach_theo_don_khao_sat_ky_thay.sql",
+    "0060_sua_ra_soat_d37991a.sql"
   ],
   "tables": 159,
   "migration_seed_replay": true,
-  "checks": 632,
-  "passed": 632,
+  "checks": 636,
+  "passed": 636,
   "failed": 0,
   "results": [
     {
@@ -491,7 +492,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản 903bb946-55a0-4271-83d1-e5713c3bb9fe (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản 62d36cee-9bdf-4a42-877c-9b7d58e0b502 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2236,7 +2237,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:31:58.581+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:50:57.736+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3212,6 +3213,26 @@
       "name": "R3 người bán không đọc liên lạc người bên mua không đi khảo sát",
       "passed": true,
       "detail": "bị chặn: Chỉ liên hệ của người đến đã khai"
+    },
+    {
+      "name": "P1-1 đơn đã có quyết toán E1 không hạ về chính sách 22",
+      "passed": true,
+      "detail": "bị chặn: Đơn đã quyết toán theo E1 không hạ về chính sách cũ"
+    },
+    {
+      "name": "P1-1 hàm sửa dữ liệu trả đơn E1 về 23, không đụng đơn cũ thật",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "P1-2 danh sách người đến không chứa NULL",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"survey_visits\" violates check constraint \"ck_survey_visitors_no_null\""
+    },
+    {
+      "name": "P1-3 tài khoản bị khóa không đọc và không bị lộ liên lạc khảo sát",
+      "passed": true,
+      "detail": null
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",
