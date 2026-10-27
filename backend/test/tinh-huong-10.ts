@@ -57,19 +57,19 @@ them('TH-API-NC', 'Tạo nhu cầu thiếu min_source_qty_g trả 422, không 50
   th.bang('Đủ trường: tạo được', r3.status, 200);
 });
 
-them('TH-PHIEN-BEN', 'Phiên đăng nhập OTP lưu bền ở auth.sessions: khởi động lại vẫn dùng được, đăng xuất thu hồi', async (may, th) => {
+them('TH-PHIEN-BEN', 'Phiên đăng nhập OTP lưu bền ở app_auth.sessions: khởi động lại vẫn dùng được, đăng xuất thu hồi', async (may, th) => {
   const sdt = SDT.nam;
   const ch = await otp(may, sdt);
   const r = await may.app.inject({ method: 'POST', url: '/v1/auth/otp/verify', payload: { challenge_id: ch, phone: sdt, code: '123456' } });
   th.bang('Đăng nhập OTP', r.statusCode, 200);
   const token = r.json().token as string;
-  const n = await may.v<number>(`SELECT count(*)::int FROM auth.sessions WHERE token_hash=digest($1,'sha256')`, [token]);
-  th.bang('Có bản ghi auth.sessions (chỉ SHA-256 token)', n, 1);
+  const n = await may.v<number>(`SELECT count(*)::int FROM app_auth.sessions WHERE token_hash=digest($1,'sha256')`, [token]);
+  th.bang('Có bản ghi app_auth.sessions (chỉ SHA-256 token)', n, 1);
   (may.ht.phien as any).phien.clear(); // giả lập khởi động lại tiến trình
   const s1 = await may.app.inject({ method: 'GET', url: '/v1/auth/session', headers: { authorization: `Bearer ${token}` } });
   th.bang('Sau khởi động lại vẫn đăng nhập', s1.statusCode, 200);
   await may.app.inject({ method: 'POST', url: '/v1/auth/logout', headers: { authorization: `Bearer ${token}` }, payload: {} });
-  const thuHoi = await may.v<boolean>(`SELECT revoked_at IS NOT NULL FROM auth.sessions WHERE token_hash=digest($1,'sha256')`, [token]);
+  const thuHoi = await may.v<boolean>(`SELECT revoked_at IS NOT NULL FROM app_auth.sessions WHERE token_hash=digest($1,'sha256')`, [token]);
   th.bang('Đăng xuất thu hồi phiên bền', thuHoi, true);
   (may.ht.phien as any).phien.clear();
   const s2 = await may.app.inject({ method: 'GET', url: '/v1/auth/session', headers: { authorization: `Bearer ${token}` } });
@@ -83,14 +83,14 @@ them('TH-PHIEN-BEN-2', 'Phiên bền cho người giúp (ủy quyền) và ngư�
     return r.json().token as string;
   };
   const tk = await dn(SDT.teo);
-  th.bang('Người giúp: phiên loại helper', await may.v<string>(`SELECT session_kind FROM auth.sessions WHERE token_hash=digest($1,'sha256')`, [tk]), 'helper');
+  th.bang('Người giúp: phiên loại helper', await may.v<string>(`SELECT session_kind FROM app_auth.sessions WHERE token_hash=digest($1,'sha256')`, [tk]), 'helper');
   const sdt = '0939000197';
   const ch = await otp(may, sdt);
   const r = await may.app.inject({ method: 'POST', url: '/v1/auth/register', payload: { challenge_id: ch, phone: sdt, code: '123456', name: 'Trần Văn Chín', org: { side: 'sell', kind: 'household', display_name: 'Hộ Trần Văn Chín', province_code: 'DT' } } });
   th.bang('Đăng ký', r.statusCode, 200);
   await may.he('/v1/test/clock', { advance_minutes: 2 }); // giới hạn gửi OTP cùng số
   const tk2 = await dn(sdt);
-  th.bang('Người đăng ký chờ duyệt: phiên pending_registration', await may.v<string>(`SELECT session_kind FROM auth.sessions WHERE token_hash=digest($1,'sha256')`, [tk2]), 'pending_registration');
+  th.bang('Người đăng ký chờ duyệt: phiên pending_registration', await may.v<string>(`SELECT session_kind FROM app_auth.sessions WHERE token_hash=digest($1,'sha256')`, [tk2]), 'pending_registration');
   (may.ht.phien as any).phien.clear();
   for (const [ten, t] of [['người giúp', tk], ['người đăng ký', tk2]] as const) {
     const s = await may.app.inject({ method: 'GET', url: '/v1/auth/session', headers: { authorization: `Bearer ${t}` } });

@@ -19,6 +19,8 @@ Cách đọc: mỗi mục có **giờ**, **việc**, **ai quyết** (Người s�
 | Q28 | 2 đợt giao thiếu trong 30 ngày → mở rà soát (không tự trừ uy tín/lượng mời); có giải trình; chỉ giảm lượng mời sau rà soát | Codex | 28/10 |
 | CN | Mức cho nợ mặc định 0 đ ngoài khoản bảo đảm hợp lệ; người bán tự cấp từng bên mua; nợ quá hạn chặn cam kết mới | Codex | 28/10 |
 | C2 | Chính sách đơn phân loại theo lúc cam kết (ký), không theo công thức đã chạy; lịch sử tiền đã chi giữ nguyên | Codex | 28/10 |
+| C3 | Một khoản phí chỉ thu một lần: đơn 23 ưu tiên hồ sơ hoàn riêng, đối chiếu phần đã thu/trừ | Codex | 28/10 |
+| C4 | Khiếu nại còn hạn vẫn nhận sau quyết toán: hiện trong hộp việc, đơn chuyển "còn hồ sơ", không tự đảo tiền đã chi | Codex | 28/10 |
 | H1 | Hạ tầng: Firebase Hosting (miễn phí) + Supabase (miễn phí); AI OpenAI API có trần chi tiêu; tên miền agiviet.id.vn | Người sáng lập | 28/10 |
 
 ## Diễn biến

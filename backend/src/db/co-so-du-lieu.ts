@@ -311,8 +311,8 @@ export class CoSoDuLieu {
       GRANT agiviet_app,agiviet_orchestrator TO agv_backend_broker WITH ADMIN OPTION;
       GRANT agiviet_auth_worker TO agv_backend_auth;
       GRANT agiviet_bank_worker TO agv_backend_bank;
-      GRANT USAGE ON SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,auth TO agv_backend_read;
-      GRANT SELECT ON ALL TABLES IN SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,auth TO agv_backend_read;
+      GRANT USAGE ON SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,app_auth TO agv_backend_read;
+      GRANT SELECT ON ALL TABLES IN SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,app_auth TO agv_backend_read;
       GRANT EXECUTE ON FUNCTION ref.clock_at(),core.signature_binding(uuid),core.payment_binding(uuid,bigint),core.invitation_binding(uuid),evt.otp_hash(text,uuid,jsonb) TO agv_backend_read;
       GRANT USAGE ON SCHEMA cmd TO agv_backend_broker,agv_backend_clock;
       GRANT SELECT,INSERT,UPDATE ON cmd.login_principals TO agv_backend_broker;

@@ -1,16 +1,16 @@
 {
- "luc": "2026-10-27T03:47:03.318Z",
- "migrations": 0,
- "tinh_huong_dat": 72,
+ "luc": "2026-10-27T19:16:04.923Z",
+ "migrations": 64,
+ "tinh_huong_dat": 66,
  "tinh_huong_tong": 72,
- "buoc_dat": 544,
- "buoc_tong": 544,
+ "buoc_dat": 518,
+ "buoc_tong": 534,
  "ket_qua": [
   {
    "ma": "TH-006",
    "ten": "HĐ luồng thuận: giao tại vườn, nghiệm thu tại vườn, trả thẳng trước bốc",
    "dat": true,
-   "ms": 572,
+   "ms": 1520,
    "loi": null,
    "buoc": [
     {
@@ -190,52 +190,12 @@
   {
    "ma": "TH-003",
    "ten": "Đăng lô: chặn cách ly, cảnh báo giá, ảnh chụp trong app, giá kín không lộ",
-   "dat": true,
-   "ms": 106,
-   "loi": null,
+   "dat": false,
+   "ms": 442,
+   "loi": "/v1/org/delegations -> 409 {\"errors\":[{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":{\"db\":\"ck_command_payload\",\"thong_bao\":\"Đã bỏ vai người giúp (bản 23)\"}}],\"request_id\":\"req-70f755392d47cfbb\"}",
    "buoc": [
     {
      "ten": "Chặn ngày hái trước hết cách ly = CHUA_HET_CACH_LY",
-     "dat": true
-    },
-    {
-     "ten": "Người giúp tạo lô nháp được = draft",
-     "dat": true
-    },
-    {
-     "ten": "Cảnh báo thấp hơn mặt bằng 24%",
-     "dat": true
-    },
-    {
-     "ten": "Giá tham khảo 25.000 = 25000",
-     "dat": true
-    },
-    {
-     "ten": "Chỉ ảnh tải lên: chưa đăng được = DU_LIEU_KHONG_HOP_LE",
-     "dat": true
-    },
-    {
-     "ten": "Phiên bản cũ: REVISION_XUNG_DOT = REVISION_XUNG_DOT",
-     "dat": true
-    },
-    {
-     "ten": "Lô đang bán = on_sale",
-     "dat": true
-    },
-    {
-     "ten": "Sự kiện lo.da_dang",
-     "dat": true
-    },
-    {
-     "ten": "Bên mua không thấy 19000 ở API lô/tìm nguồn",
-     "dat": true
-    },
-    {
-     "ten": "Chủ lô thấy giá kín = 19000",
-     "dat": true
-    },
-    {
-     "ten": "Sổ lượng khả dụng 1.000 kg = 1000000",
      "dat": true
     }
    ]
@@ -244,7 +204,7 @@
    "ma": "TH-005",
    "ten": "Đồng ý giá, giữ lượng hết hạn sau 24 giờ",
    "dat": true,
-   "ms": 83,
+   "ms": 497,
    "loi": null,
    "buoc": [
     {
@@ -289,7 +249,7 @@
    "ma": "TH-010",
    "ten": "Trả giá tối đa 2 lượt mỗi bên",
    "dat": true,
-   "ms": 104,
+   "ms": 538,
    "loi": null,
    "buoc": [
     {
@@ -318,7 +278,7 @@
    "ma": "TH-011",
    "ten": "Lời chào dưới giá kín tự từ chối, không lộ số",
    "dat": true,
-   "ms": 68,
+   "ms": 455,
    "loi": null,
    "buoc": [
     {
@@ -343,7 +303,7 @@
    "ma": "TH-012",
    "ten": "Ngưỡng 80% (cảnh báo) và 60% (chặn) khi bên mua chào",
    "dat": true,
-   "ms": 66,
+   "ms": 452,
    "loi": null,
    "buoc": [
     {
@@ -360,7 +320,7 @@
    "ma": "TH-014",
    "ten": "Chào vượt 2 lần lượng cần của phiếu bị chặn; cùng loại cùng giá",
    "dat": true,
-   "ms": 80,
+   "ms": 491,
    "loi": null,
    "buoc": [
     {
@@ -381,7 +341,7 @@
    "ma": "TH-015",
    "ten": "Giá bất thường: cần tick xác nhận, cọc theo giá tính cọc",
    "dat": true,
-   "ms": 174,
+   "ms": 648,
    "loi": null,
    "buoc": [
     {
@@ -422,7 +382,7 @@
    "ma": "TH-019",
    "ten": "Trả thẳng một phần: chặn bốc, bổ sung đủ",
    "dat": true,
-   "ms": 276,
+   "ms": 867,
    "loi": null,
    "buoc": [
     {
@@ -463,7 +423,7 @@
    "ma": "TH-020",
    "ten": "Báo đã chuyển nhưng chưa nhận: đối soát, không cộng tiền",
    "dat": true,
-   "ms": 221,
+   "ms": 744,
    "loi": null,
    "buoc": [
     {
@@ -496,7 +456,7 @@
    "ma": "TH-021",
    "ten": "Cọc sai số tiền: thiếu thì treo, đủ thì hiệu lực; thừa hoàn về nguồn",
    "dat": true,
-   "ms": 218,
+   "ms": 718,
    "loi": null,
    "buoc": [
     {
@@ -529,7 +489,7 @@
    "ma": "TH-022",
    "ten": "Sự kiện ngân hàng: chữ ký sai, lặp, tiền lạ vào ngăn treo",
    "dat": true,
-   "ms": 195,
+   "ms": 673,
    "loi": null,
    "buoc": [
     {
@@ -562,7 +522,7 @@
    "ma": "TH-022b",
    "ten": "Lệnh hoàn thất bại: không cộng tiền, có việc vận hành",
    "dat": true,
-   "ms": 281,
+   "ms": 810,
    "loi": null,
    "buoc": [
     {
@@ -587,7 +547,7 @@
    "ma": "TH-024",
    "ten": "Trả lại nhiều: người bán còn phải hoàn ngoài app",
    "dat": true,
-   "ms": 431,
+   "ms": 1148,
    "loi": null,
    "buoc": [
     {
@@ -644,7 +604,7 @@
    "ma": "TH-026",
    "ten": "Mã giao dịch trùng khi xác nhận trả thẳng",
    "dat": true,
-   "ms": 244,
+   "ms": 788,
    "loi": null,
    "buoc": [
     {
@@ -669,7 +629,7 @@
    "ma": "TH-042",
    "ten": "Hủy trước khi người bán ký: rút đơn; quá hạn ký",
    "dat": true,
-   "ms": 268,
+   "ms": 767,
    "loi": null,
    "buoc": [
     {
@@ -698,7 +658,7 @@
    "ma": "TH-043",
    "ten": "Quá hạn cọc hàng tươi 12 giờ",
    "dat": true,
-   "ms": 185,
+   "ms": 682,
    "loi": null,
    "buoc": [
     {
@@ -727,7 +687,7 @@
    "ma": "TH-044",
    "ten": "Bên mua xin hủy sau cọc: cọc về người bán, phí không hoàn",
    "dat": true,
-   "ms": 288,
+   "ms": 830,
    "loi": null,
    "buoc": [
     {
@@ -776,7 +736,7 @@
    "ma": "TH-044b",
    "ten": "Xin hủy: bên kia im lặng 24 giờ = không đồng ý",
    "dat": true,
-   "ms": 212,
+   "ms": 679,
    "loi": null,
    "buoc": [
     {
@@ -797,7 +757,7 @@
    "ma": "TH-045",
    "ten": "Người bán xin hủy sau cọc: cọc và phí hoàn bên mua; người giúp bị chặn",
    "dat": true,
-   "ms": 288,
+   "ms": 847,
    "loi": null,
    "buoc": [
     {
@@ -826,7 +786,7 @@
    "ma": "TH-046",
    "ten": "Bất khả kháng sau khi đã trả thẳng: người bán hoàn 32.200.000",
    "dat": true,
-   "ms": 345,
+   "ms": 965,
    "loi": null,
    "buoc": [
     {
@@ -855,11 +815,11 @@
    "ma": "TH-060",
    "ten": "Gửi lại cùng khóa chống lặp: đúng một chữ ký, trả kết quả cũ",
    "dat": true,
-   "ms": 149,
+   "ms": 590,
    "loi": null,
    "buoc": [
     {
-     "ten": "Lặp lại trả cùng đơn = 0089e3e5-df34-4a01-bd8c-782a2a1cbb28",
+     "ten": "Lặp lại trả cùng đơn = 0f107f87-3bc8-4f90-b6f1-47a5aa104f06",
      "dat": true
     },
     {
@@ -887,9 +847,9 @@
   {
    "ma": "TH-061",
    "ten": "Người giúp bị chặn đúng chỗ ở API",
-   "dat": true,
-   "ms": 207,
-   "loi": null,
+   "dat": false,
+   "ms": 707,
+   "loi": "/v1/org/delegations -> 409 {\"errors\":[{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":{\"db\":\"ck_command_payload\",\"thong_bao\":\"Đã bỏ vai người giúp (bản 23)\"}}],\"request_id\":\"req-7d062ea162dabe7d\"}",
    "buoc": [
     {
      "ten": "Tiền điều kiện: đơn hiệu lực = active",
@@ -906,14 +866,6 @@
     {
      "ten": "Người giúp không xin hủy = KHONG_CO_QUYEN",
      "dat": true
-    },
-    {
-     "ten": "Người giúp tạo lô được = 200",
-     "dat": true
-    },
-    {
-     "ten": "Lịch sử ghi vai người giúp = helper",
-     "dat": true
     }
    ]
   },
@@ -921,7 +873,7 @@
    "ma": "TH-062",
    "ten": "PDF: xác minh mã băm, tệp bị sửa không khớp, trang công khai không trả bản gốc",
    "dat": true,
-   "ms": 181,
+   "ms": 645,
    "loi": null,
    "buoc": [
     {
@@ -950,7 +902,7 @@
    "ma": "BM-01",
    "ten": "Bảo mật: dữ liệu theo tổ chức, quyền theo hành động, giá kín, webhook",
    "dat": true,
-   "ms": 220,
+   "ms": 678,
    "loi": null,
    "buoc": [
     {
@@ -998,8 +950,8 @@
   {
    "ma": "TH-029A",
    "ten": "Khiếu nại khác mẫu, kiểm định kết luận người bán sai",
-   "dat": true,
-   "ms": 587,
+   "dat": false,
+   "ms": 1297,
    "loi": null,
    "buoc": [
     {
@@ -1012,7 +964,8 @@
     },
     {
      "ten": "Chi tạm C_nb_tam 9.570.000 (N-08) = 9570000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"9850000\",\"mong\":\"9570000\"}"
     },
     {
      "ten": "Hiển thị: đã chốt phần không tranh chấp = Đã chốt phần không tranh chấp · đang xử lý phần còn lại",
@@ -1020,7 +973,8 @@
     },
     {
      "ten": "Giữ thêm G_them 280.000 = 280000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"0\",\"mong\":\"280000\"}"
     },
     {
      "ten": "Webhook kiểm định có chữ ký được nhận = 200",
@@ -1036,27 +990,31 @@
     },
     {
      "ten": "C_bm 4.230.000 (gồm bù phí kiểm định) = 4230000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"3950000\",\"mong\":\"4230000\"}"
     },
     {
      "ten": "T_nb 0 = 0",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"280000\",\"mong\":\"0\"}"
     },
     {
      "ten": "Đơn hoàn tất = completed",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"outstanding\",\"mong\":\"completed\"}"
     },
     {
      "ten": "Năm thực nhận 41.770.000 = 41770000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"42050000\",\"mong\":\"41770000\"}"
     }
    ]
   },
   {
    "ma": "TH-029B",
    "ten": "Khiếu nại khác mẫu, kiểm định kết luận người bán đúng",
-   "dat": true,
-   "ms": 598,
+   "dat": false,
+   "ms": 1273,
    "loi": null,
    "buoc": [
     {
@@ -1069,7 +1027,8 @@
     },
     {
      "ten": "Chi tạm C_nb_tam 9.570.000 (N-08) = 9570000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"9850000\",\"mong\":\"9570000\"}"
     },
     {
      "ten": "Hiển thị: đã chốt phần không tranh chấp = Đã chốt phần không tranh chấp · đang xử lý phần còn lại",
@@ -1077,7 +1036,8 @@
     },
     {
      "ten": "Giữ thêm G_them 280.000 = 280000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"0\",\"mong\":\"280000\"}"
     },
     {
      "ten": "Kết quả kiểm định không chữ ký hợp lệ: 401 (N-11) = 401",
@@ -1089,7 +1049,8 @@
     },
     {
      "ten": "Chi thêm 2.580.000 = 2580000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"2300000\",\"mong\":\"2580000\"}"
     },
     {
      "ten": "C_bm 1.650.000 = 1650000",
@@ -1097,15 +1058,16 @@
     },
     {
      "ten": "Đơn hoàn tất = completed",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"outstanding\",\"mong\":\"completed\"}"
     }
    ]
   },
   {
    "ma": "TH-031",
    "ten": "Kiểm định không kết luận, quá 14 ngày: chuyển cơ chế khác, tiền vẫn giữ",
-   "dat": true,
-   "ms": 476,
+   "dat": false,
+   "ms": 1117,
    "loi": null,
    "buoc": [
     {
@@ -1118,7 +1080,8 @@
     },
     {
      "ten": "Chi tạm C_nb_tam 9.570.000 (N-08) = 9570000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"9850000\",\"mong\":\"9570000\"}"
     },
     {
      "ten": "Hiển thị: đã chốt phần không tranh chấp = Đã chốt phần không tranh chấp · đang xử lý phần còn lại",
@@ -1126,7 +1089,8 @@
     },
     {
      "ten": "Giữ thêm G_them 280.000 = 280000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"0\",\"mong\":\"280000\"}"
     },
     {
      "ten": "Không kết luận = inconclusive",
@@ -1138,7 +1102,8 @@
     },
     {
      "ten": "Tiền tranh chấp vẫn giữ 4.230.000 = 4230000",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"3950000\",\"mong\":\"4230000\"}"
     },
     {
      "ten": "Đơn chưa hoàn tất",
@@ -1150,7 +1115,7 @@
    "ma": "TH-029x",
    "ten": "Khiếu nại quá 2 giờ bị chặn",
    "dat": true,
-   "ms": 385,
+   "ms": 978,
    "loi": null,
    "buoc": [
     {
@@ -1167,7 +1132,7 @@
    "ma": "TH-009A",
    "ten": "Trả sau 7 ngày (bưởi, vựa), trả đúng hạn; lệnh chi ≥ 20 triệu tài khoản mới phải gọi lại",
    "dat": true,
-   "ms": 410,
+   "ms": 1072,
    "loi": null,
    "buoc": [
     {
@@ -1244,7 +1209,7 @@
    "ma": "TH-052a",
    "ten": "Đơn vượt hạn mức người lập: phải duyệt nội bộ, người lập không tự duyệt",
    "dat": true,
-   "ms": 169,
+   "ms": 658,
    "loi": null,
    "buoc": [
     {
@@ -1280,8 +1245,8 @@
   {
    "ma": "TH-007",
    "ten": "Giao tại kho bên mua, người bán thuê xe, trả khi nhận",
-   "dat": true,
-   "ms": 394,
+   "dat": false,
+   "ms": 994,
    "loi": null,
    "buoc": [
     {
@@ -1330,7 +1295,8 @@
     },
     {
      "ten": "Hoàn tất = completed",
-     "dat": true
+     "dat": false,
+     "chi_tiet": "{\"thuc\":\"outstanding\",\"mong\":\"completed\"}"
     }
    ]
   },
@@ -1338,7 +1304,7 @@
    "ma": "TH-037a",
    "ten": "Giao trong dung sai 1.960 kg",
    "dat": true,
-   "ms": 381,
+   "ms": 982,
    "loi": null,
    "buoc": [
     {
@@ -1367,7 +1333,7 @@
    "ma": "TH-037b",
    "ten": "Giao vượt 2.100 kg, bên mua nhận phần vượt",
    "dat": true,
-   "ms": 417,
+   "ms": 1063,
    "loi": null,
    "buoc": [
     {
@@ -1400,7 +1366,7 @@
    "ma": "TH-038",
    "ten": "Giao thiếu 1.850 kg không báo trước: kết thúc phần thiếu, phạt 100% cọc phần thiếu",
    "dat": true,
-   "ms": 390,
+   "ms": 973,
    "loi": null,
    "buoc": [
     {
@@ -1429,7 +1395,7 @@
    "ma": "TH-039",
    "ten": "Giao bù 150 kg ở đợt 2; không quyết toán ở đợt 1",
    "dat": true,
-   "ms": 458,
+   "ms": 1113,
    "loi": null,
    "buoc": [
     {
@@ -1462,7 +1428,7 @@
    "ma": "TH-027",
    "ten": "Phản đối dòng tại vườn, người bán rút phần tranh chấp",
    "dat": true,
-   "ms": 467,
+   "ms": 1118,
    "loi": null,
    "buoc": [
     {
@@ -1499,7 +1465,7 @@
    "ma": "TH-R2-CANLAI",
    "ten": "Phản đối dòng chia_lai, bên mua cân lại có chứng cứ mới, người bán đồng ý, tranh chấp đóng",
    "dat": true,
-   "ms": 403,
+   "ms": 1003,
    "loi": null,
    "buoc": [
     {
@@ -1536,7 +1502,7 @@
    "ma": "TH-040",
    "ten": "Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục hai bên ký",
    "dat": true,
-   "ms": 519,
+   "ms": 1211,
    "loi": null,
    "buoc": [
     {
@@ -1617,7 +1583,7 @@
    "ma": "TH-040s",
    "ten": "Đề nghị giảm lượng, bên mua im lặng 24 giờ = không đồng ý",
    "dat": true,
-   "ms": 205,
+   "ms": 678,
    "loi": null,
    "buoc": [
     {
@@ -1638,7 +1604,7 @@
    "ma": "TH-AM-1",
    "ten": "Tăng lượng 2.000 → 2.400 kg: cọc bổ sung, chặn giao tới khi ngân hàng nhận",
    "dat": true,
-   "ms": 329,
+   "ms": 968,
    "loi": null,
    "buoc": [
     {
@@ -1683,7 +1649,7 @@
    "ma": "TH-AM-2",
    "ten": "Phụ lục giảm giá 23.000 → 20.000: hoàn cọc chênh về nguồn, phí giữ theo Q06",
    "dat": true,
-   "ms": 270,
+   "ms": 816,
    "loi": null,
    "buoc": [
     {
@@ -1712,7 +1678,7 @@
    "ma": "TH-001",
    "ten": "Đăng ký người bán mới, xác minh, tài khoản nhận tiền chờ 24 giờ",
    "dat": true,
-   "ms": 79,
+   "ms": 466,
    "loi": null,
    "buoc": [
     {
@@ -1749,7 +1715,7 @@
    "ma": "TH-002",
    "ten": "Mời thành viên theo gói (Thu mua tối đa 5), nhận lời mời bằng OTP đúng số",
    "dat": true,
-   "ms": 70,
+   "ms": 456,
    "loi": null,
    "buoc": [
     {
@@ -1786,7 +1752,7 @@
    "ma": "TH-023",
    "ten": "Đổi tài khoản nhận tiền: người giúp bị chặn, chờ 24 giờ, không phải tôi",
    "dat": true,
-   "ms": 76,
+   "ms": 472,
    "loi": null,
    "buoc": [
     {
@@ -1819,7 +1785,7 @@
    "ma": "GD-01",
    "ten": "Thành viên tổ chức: danh sách, đổi vai (vai đặc quyền chờ 24 giờ)",
    "dat": true,
-   "ms": 60,
+   "ms": 449,
    "loi": null,
    "buoc": [
     {
@@ -1844,7 +1810,7 @@
    "ma": "GD-02",
    "ten": "Cờ ký phản ánh hạn mức và duyệt nội bộ",
    "dat": true,
-   "ms": 148,
+   "ms": 580,
    "loi": null,
    "buoc": [
     {
@@ -1869,7 +1835,7 @@
    "ma": "GD-03",
    "ten": "Yêu cầu hủy hiện hành, hướng dẫn trả thẳng theo quyền",
    "dat": true,
-   "ms": 211,
+   "ms": 674,
    "loi": null,
    "buoc": [
     {
@@ -1906,7 +1872,7 @@
    "ma": "GD-04",
    "ten": "Danh sách tranh chấp của đơn sau khi tải lại",
    "dat": true,
-   "ms": 307,
+   "ms": 884,
    "loi": null,
    "buoc": [
     {
@@ -1923,7 +1889,7 @@
    "ma": "TH-004dp",
    "ten": "Ghép: AI lỗi → dự phòng bằng luật, cùng nhóm, không lộ giá",
    "dat": true,
-   "ms": 59,
+   "ms": 423,
    "loi": null,
    "buoc": [
     {
@@ -1952,7 +1918,7 @@
    "ma": "GD-05",
    "ten": "Outbox gửi thông báo; sổ tiền; gói; hỗ trợ; hồ sơ nguồn",
    "dat": true,
-   "ms": 506,
+   "ms": 1691,
    "loi": null,
    "buoc": [
     {
@@ -2009,7 +1975,7 @@
    "ma": "TH-001B",
    "ten": "Tổ chức mới: chủ đầu tiên qua xác minh hai người, vai chủ hiệu lực sau 24 giờ",
    "dat": true,
-   "ms": 80,
+   "ms": 501,
    "loi": null,
    "buoc": [
     {
@@ -2054,7 +2020,7 @@
    "ma": "TH-API-ANH",
    "ten": "Bên mua đọc được ảnh của lô công khai, không đọc được chứng từ riêng",
    "dat": true,
-   "ms": 54,
+   "ms": 425,
    "loi": null,
    "buoc": [
     {
@@ -2075,7 +2041,7 @@
    "ma": "TH-API-NC",
    "ten": "Tạo nhu cầu thiếu min_source_qty_g trả 422, không 500",
    "dat": true,
-   "ms": 56,
+   "ms": 430,
    "loi": null,
    "buoc": [
     {
@@ -2098,9 +2064,9 @@
   },
   {
    "ma": "TH-PHIEN-BEN",
-   "ten": "Phiên đăng nhập OTP lưu bền ở auth.sessions: khởi động lại vẫn dùng được, đăng xuất thu hồi",
+   "ten": "Phiên đăng nhập OTP lưu bền ở app_auth.sessions: khởi động lại vẫn dùng được, đăng xuất thu hồi",
    "dat": true,
-   "ms": 43,
+   "ms": 410,
    "loi": null,
    "buoc": [
     {
@@ -2108,7 +2074,7 @@
      "dat": true
     },
     {
-     "ten": "Có bản ghi auth.sessions (chỉ SHA-256 token) = 1",
+     "ten": "Có bản ghi app_auth.sessions (chỉ SHA-256 token) = 1",
      "dat": true
     },
     {
@@ -2129,7 +2095,7 @@
    "ma": "TH-PHIEN-BEN-2",
    "ten": "Phiên bền cho người giúp (ủy quyền) và người đăng ký tổ chức đang chờ (0055)",
    "dat": true,
-   "ms": 66,
+   "ms": 444,
    "loi": null,
    "buoc": [
     {
@@ -2158,7 +2124,7 @@
    "ma": "TH-TI-01",
    "ten": "Thời tiết 7 ngày theo tỉnh, lời khuyên mưa lớn/nắng nóng/gió, bộ đệm 1 giờ, lỗi mạng báo rõ",
    "dat": true,
-   "ms": 44,
+   "ms": 406,
    "loi": null,
    "buoc": [
     {
@@ -2211,7 +2177,7 @@
    "ma": "TH-TI-02",
    "ten": "Tin nông nghiệp lọc theo mặt hàng/tỉnh, chỉ tiêu đề/nguồn/ngày/link, nguồn lỗi được ghi",
    "dat": true,
-   "ms": 45,
+   "ms": 424,
    "loi": null,
    "buoc": [
     {
@@ -2240,7 +2206,7 @@
    "ma": "TH-TI-03",
    "ten": "Lịch sử người bán gộp lô, lời chào, đơn; bên mua không xem được",
    "dat": true,
-   "ms": 187,
+   "ms": 643,
    "loi": null,
    "buoc": [
     {
@@ -2265,7 +2231,7 @@
    "ma": "TH-NV-01",
    "ten": "Mặt hàng đã xác minh của tổ chức; lô mặt hàng chưa xác minh bị chặn từ bản nháp",
    "dat": true,
-   "ms": 57,
+   "ms": 430,
    "loi": null,
    "buoc": [
     {
@@ -2286,7 +2252,7 @@
    "ma": "TH-NV-02",
    "ten": "Nhật ký canh tác: danh sách theo vụ, phun thuốc tính ngày cách ly, ảnh, nhãn tự ghi/nhân viên, sửa bằng bản mới",
    "dat": true,
-   "ms": 87,
+   "ms": 495,
    "loi": null,
    "buoc": [
     {
@@ -2314,7 +2280,7 @@
      "dat": true
     },
     {
-     "ten": "Gửi lặp cùng khóa trả cùng ID = 231b7958-ef9f-40b8-ae34-7dc0c2b4be42",
+     "ten": "Gửi lặp cùng khóa trả cùng ID = d03becf1-80ce-4e8e-aef6-06514bc86dae",
      "dat": true
     },
     {
@@ -2343,7 +2309,7 @@
    "ma": "TH-NV-03",
    "ten": "Bán gấp: bật có hạn và lý do, bên mua thấy cờ ở đầu danh sách, tắt được",
    "dat": true,
-   "ms": 63,
+   "ms": 449,
    "loi": null,
    "buoc": [
     {
@@ -2368,7 +2334,7 @@
    "ma": "TH-NV-04",
    "ten": "Đặt trước khi hái: lập, ký, cọc 30%; danh sách/chi tiết cho người bán; cập nhật sản lượng; đề nghị chốt lượng",
    "dat": true,
-   "ms": 294,
+   "ms": 826,
    "loi": null,
    "buoc": [
     {
@@ -2429,7 +2395,7 @@
    "ma": "TH-NV-05",
    "ten": "Từ chối đề nghị chốt lượng",
    "dat": true,
-   "ms": 200,
+   "ms": 664,
    "loi": null,
    "buoc": [
     {
@@ -2446,7 +2412,7 @@
    "ma": "TH-NV-06",
    "ten": "Bao tiêu theo vụ 2 đợt: lập, ký, cọc vụ; mất mùa giảm lượng bằng phụ lục có chứng cứ, giảm đợt cuối",
    "dat": true,
-   "ms": 293,
+   "ms": 844,
    "loi": null,
    "buoc": [
     {
@@ -2495,7 +2461,7 @@
    "ma": "DC-NV11",
    "ten": "Người bán (chủ vườn) có quyền bắt đầu cân tại vườn: hành động delivery.record và cờ start_check của đợt",
    "dat": true,
-   "ms": 255,
+   "ms": 759,
    "loi": null,
    "buoc": [
     {
@@ -2524,7 +2490,7 @@
    "ma": "DC-NV26",
    "ten": "GET đợt giao trả cờ ký nghiệm thu seller_agreed_at/buyer_agreed_at trên ket_qua",
    "dat": true,
-   "ms": 318,
+   "ms": 858,
    "loi": null,
    "buoc": [
     {
@@ -2549,7 +2515,7 @@
    "ma": "DC-NV24",
    "ten": "GET điều khoản hợp đồng bao tiêu demo (DEMO56-OFFTAKE, giá công thức) không lỗi 500",
    "dat": true,
-   "ms": 56,
+   "ms": 425,
    "loi": null,
    "buoc": [
     {
@@ -2578,7 +2544,7 @@
    "ma": "DC-B08",
    "ten": "Tin đăng tự ẩn khỏi tìm nguồn sau 14 ngày không xác nhận còn hàng; xác nhận lại thì hiện",
    "dat": true,
-   "ms": 78,
+   "ms": 492,
    "loi": null,
    "buoc": [
     {
@@ -2607,7 +2573,7 @@
    "ma": "DC-NV22",
    "ten": "Người bán xem mọi đợt giao của đơn, đơn chỉ ra đợt cần làm tiếp",
    "dat": true,
-   "ms": 205,
+   "ms": 676,
    "loi": null,
    "buoc": [
     {
@@ -2632,7 +2598,7 @@
    "ma": "DC-B18",
    "ten": "Người bán từ chối đơn: giữ lý do cụ thể khi đọc lại",
    "dat": true,
-   "ms": 153,
+   "ms": 606,
    "loi": null,
    "buoc": [
     {
@@ -2653,7 +2619,7 @@
    "ma": "DEMO-10-SO",
    "ten": "Dựng 10 tình huống, đăng nhập 0001–0010 bằng OTP 123456, đúng vai và đúng trạng thái; chạy lại giữ nguyên",
    "dat": true,
-   "ms": 1553,
+   "ms": 3297,
    "loi": null,
    "buoc": [
     {

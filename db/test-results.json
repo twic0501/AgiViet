@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T19:14:13.886Z",
+  "checked_at": "2026-10-27T19:20:30.223Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -65,12 +65,13 @@
     "0061_giao_ngay_c1_c6.sql",
     "0062_sua_ra_soat_1614c70.sql",
     "0063_tim_nguon_dinh_ky_c7_c9.sql",
-    "0064_van_hanh_c10_c14.sql"
+    "0064_van_hanh_c10_c14.sql",
+    "0065_sua_ra_soat_f73497a.sql"
   ],
   "tables": 175,
   "migration_seed_replay": true,
-  "checks": 702,
-  "passed": 702,
+  "checks": 710,
+  "passed": 710,
   "failed": 0,
   "results": [
     {
@@ -496,7 +497,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản fdfcd9d8-1595-4694-a286-25c286c30ad1 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản 085c639e-9c6f-42fd-ba77-58287143c4f5 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2241,7 +2242,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:14:11.467+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:20:27.781+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3421,7 +3422,7 @@
     {
       "name": "R62-6 không giao cho hồ sơ không tồn tại",
       "passed": true,
-      "detail": "bị chặn: Sai hồ sơ / người phụ trách / hạn"
+      "detail": "bị chặn: Sai hồ sơ / người phụ trách (phải còn hiệu lực, không bị khóa) / hạn"
     },
     {
       "name": "DK thỏa thuận mặc định duyệt từng phương án, chốt 14:00",
@@ -3567,6 +3568,46 @@
       "name": "C14 chi phí đơn gồm bồi hoàn do lỗi AgiViet",
       "passed": true,
       "detail": null
+    },
+    {
+      "name": "F1 phí đã thu qua quyết toán: không lập khoản hoàn trùng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "F2 khiếu nại sau giao được đánh dấu post_delivery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "F4 dòng đã có tranh chấp mở: không mở thêm",
+      "passed": true,
+      "detail": "bị chặn: Dòng này đã có tranh chấp đang mở"
+    },
+    {
+      "name": "F2 khiếu nại sau giao người bán sai: trừ 10 kg × 23.000 = 230.000 qua quyết toán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "F3 ký đủ sau khi E1 hiệu lực → chính sách 23",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "F5 đơn completed có hồ sơ mới hiện trong hộp việc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "F5 nhãn hiển thị \"còn hồ sơ mở\", trạng thái tiền không đảo",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "F6 không giao cho tài khoản đã khóa",
+      "passed": true,
+      "detail": "bị chặn: Sai hồ sơ / người phụ trách (phải còn hiệu lực, không bị khóa) / hạn"
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",

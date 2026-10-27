@@ -5,8 +5,8 @@ SELECT set_config('app.test_time','2026-11-04 07:00+07',true);
 -- dòng 3 tranh chấp chất lượng 100 kg, bên mua ứng phí kiểm định 280.000.
 CREATE FUNCTION test.e1_kich_ban(k text, p_policy smallint) RETURNS void LANGUAGE plpgsql AS $f$ BEGIN
  PERFORM test.command_order(k,'TC-M01','Trần Thu Hà','spot'); -- chụp tài khoản nhận tiền hiện hành của người bán
- UPDATE core.orders SET policy_version=p_policy WHERE id=test.id(k);
  PERFORM test.sign_order(k,'TC-M01','Trần Thu Hà');
+ UPDATE core.orders SET policy_version=p_policy WHERE id=test.id(k);
  PERFORM test.fund_order(k);
  INSERT INTO core.direct_payments(id,code,order_id,kind,direction,payer_org_id,payee_org_id,amount_due_vnd,due_trigger,status)
   VALUES(test.id(k||':goods'),'TEST-'||k||'-GOODS',test.id(k),'goods_after_days','buyer_to_seller',test.org('TC-M01'),test.org('TC-B01'),32200000,'after_days','due');

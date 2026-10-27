@@ -30,7 +30,7 @@ SELECT test.c6_dong_luot_giao(20);
 SELECT test.as_login('db_test_buyer',$$SELECT test.expect_error('R62-3 quá hạn, không gắn tiêu chí kiểm sau: bị chặn','SELECT cmd.open_post_delivery_claim(current_setting(''test.k.l2'')::uuid,10000,''Muộn'',''quality'')','ck_complaint_window')$$);
 UPDATE core.deferred_checks SET result='khong_dat',result_at=ref.clock_at() WHERE id=current_setting('test.k.chk')::uuid;
 SELECT test.as_login('db_test_buyer',$$SELECT test.expect_error('R62-3 tiêu chí kiểm sau KHÔNG mở cửa cho khiếu nại thiếu cân','SELECT cmd.open_post_delivery_claim(current_setting(''test.k.l2'')::uuid,10000,''Thiếu cân'',''shortfall'',current_setting(''test.k.chk'')::uuid)','ck_complaint_window')$$);
-SELECT test.as_login('db_test_buyer',$$SELECT test.expect_ok('R62-3 khiếu nại chất lượng gắn đúng tiêu chí kiểm sau không đạt được nhận','SELECT cmd.open_post_delivery_claim(current_setting(''test.k.l4'')::uuid,10000,''Dư lượng không đạt'',''quality'',current_setting(''test.k.chk'')::uuid)')$$);
+SELECT test.as_login('db_test_buyer',$$SELECT test.expect_ok('R62-3 khiếu nại chất lượng gắn đúng tiêu chí kiểm sau không đạt được nhận','SELECT cmd.open_post_delivery_claim(current_setting(''test.k.l2'')::uuid,10000,''Dư lượng không đạt'',''quality'',current_setting(''test.k.chk'')::uuid)')$$);
 
 -- 4: chờ đối soát cọc, hạn tuyệt đối 6 giờ; hồ sơ quá hạn được đóng.
 SELECT test.command_order('C62D','TC-M01','Trần Thu Hà','spot');
