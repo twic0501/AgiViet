@@ -1,3 +1,4 @@
+UPDATE ref.feature_flags SET enabled=true WHERE code='nguoi_giup'; -- kiểm luật ủy quyền cũ; V1 tắt (bản 23)
 SELECT test.make_order('SEC-EXCESS','TC-M01','Trần Thu Hà','spot');
 SELECT test.sign_order('SEC-EXCESS','TC-M01','Trần Thu Hà');
 SELECT test.apply_bank_event(test.bank_receipt('SEC-EXCESS:ev',14938000,'AGV TEST-SEC-EXCESS COC'));
@@ -78,3 +79,4 @@ SET CONSTRAINTS ALL IMMEDIATE;
 SET LOCAL timezone='UTC';
 SELECT test.check('D19 xuất hash ổn định khi đổi timezone',NOT EXISTS(SELECT 1 FROM evt.audit_log a JOIN evt.audit_chain c ON c.audit_id=a.id WHERE c.row_json<>evt.audit_payload(a) OR c.row_sha256<>digest(c.previous_sha256||convert_to(evt.audit_payload(a),'UTF8'),'sha256')));
 SET LOCAL timezone='Asia/Ho_Chi_Minh';
+UPDATE ref.feature_flags SET enabled=false WHERE code='nguoi_giup';

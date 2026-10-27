@@ -1,3 +1,4 @@
+UPDATE ref.feature_flags SET enabled=true WHERE code='nguoi_giup'; -- kiểm mã người giúp cũ; V1 tắt (bản 23)
 -- SMS/OTP mô phỏng; không lưu token rõ. Dùng API auth worker nguyên trạng.
 DELETE FROM cmd.test_clock;
 SELECT test.context(NULL,NULL,'system');
@@ -75,3 +76,4 @@ SELECT test.check('C55 scope và delegation chỉ auth adapter dùng, app không
  AND NOT has_table_privilege('db_test_pending','app_auth.sessions','INSERT')
  AND NOT has_function_privilege('db_test_pending','cmd.record_login_session(uuid,uuid,text,bytea,timestamptz,text,text)','EXECUTE'));
 SET CONSTRAINTS ALL IMMEDIATE;
+UPDATE ref.feature_flags SET enabled=false WHERE code='nguoi_giup';

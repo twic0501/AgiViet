@@ -121,5 +121,5 @@ sql('REFRESH MATERIALIZED VIEW mkt.reference_prices')
 sql("PERFORM set_config('app.allow_any_initial','off',true)")
 # Không có bản PDF/đơn chi tiết quá khứ trong nguồn: bảo toàn nguyên bản bao_tieu trong seed_sources.
 header="-- Tự sinh từ du-lieu-ao.json bằng db/tools/tao-seed.py. Không sửa tay.\nDO $seed$ BEGIN\nIF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-ao.json') THEN\n IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-ao.json' AND sha256=decode('"+digest+"','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;\n RETURN; END IF;\n"
-(ROOT/'db/seed/000_du_lieu_ao.sql').write_text(header+'\n'.join(s)+'\nEND $seed$;\n')
+(ROOT/'db/seed/000_du_lieu_ao.sql').write_text("SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có thương lái, người giúp (bản 23 không tạo mới)\n"+header+'\n'.join(s)+"\nEND $seed$;\nSELECT set_config('app.nap_du_lieu_cu','off',false);\n")
 print('Đã sinh db/seed/000_du_lieu_ao.sql; SHA-256 '+digest)

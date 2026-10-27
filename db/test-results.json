@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T17:40:05.882Z",
+  "checked_at": "2026-10-27T18:08:04.918Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -58,12 +58,13 @@
     "0054_danh_tinh_qua_cong_tin_cay.sql",
     "0055_phien_ben_cho_dang_ky_va_nguoi_giup.sql",
     "0056_nhat_ky_xac_minh_mat_hang_va_ban_gap.sql",
-    "0057_dat_truoc_va_bao_tieu_theo_vu.sql"
+    "0057_dat_truoc_va_bao_tieu_theo_vu.sql",
+    "0058_quy_trinh_ban_23_e1_e2_dong_ho_so.sql"
   ],
-  "tables": 157,
+  "tables": 159,
   "migration_seed_replay": true,
-  "checks": 602,
-  "passed": 602,
+  "checks": 616,
+  "passed": 616,
   "failed": 0,
   "results": [
     {
@@ -489,7 +490,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản f310a771-9d63-4f32-a1a8-162a02179761 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản 96471dd3-7c8f-4390-a7fc-02ad1c2bd99f (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -725,6 +726,16 @@
       "name": "LS1 còn T_bm thì chưa hoàn tất",
       "passed": true,
       "detail": "bị chặn: Còn công nợ"
+    },
+    {
+      "name": "B23 còn hàng trả lại thì chưa hoàn tất",
+      "passed": true,
+      "detail": "bị chặn: Còn hồ sơ mở, chưa thể Hoàn tất toàn bộ"
+    },
+    {
+      "name": "B23 hồ sơ mở chỉ còn hàng trả lại 30000 g",
+      "passed": true,
+      "detail": null
     },
     {
       "name": "LS1 TH047 hoàn tất, người bán nhận 45150000",
@@ -1357,17 +1368,22 @@
       "detail": null
     },
     {
-      "name": "N08 công thức chi tạm cũ bị CHECK chặn",
+      "name": "E1 chi tạm kiểu cũ (giữ 280000) bị CHECK chặn",
       "passed": true,
       "detail": "bị chặn: new row for relation \"settlements\" violates check constraint \"ck_st_interim\""
     },
     {
-      "name": "N08 DB tự giữ 280000 kể cả người gọi khai 0",
+      "name": "E1 người bán nhận đủ phần công nhận 9850000, không giữ thêm",
       "passed": true,
       "detail": null
     },
     {
-      "name": "N08 snapshot khoản giữ thêm bất biến",
+      "name": "E1 khoản đòi thêm (phí bên mua ứng + phạt) ghi chưa bảo đảm, không trừ vào tiền người bán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "E1 snapshot bất biến",
       "passed": true,
       "detail": "bị chặn: Quyết toán bất biến; tạo phiên bản kế tiếp"
     },
@@ -1452,7 +1468,7 @@
       "detail": null
     },
     {
-      "name": "N08 snapshot mới dùng công thức phiên bản 2",
+      "name": "N08 snapshot mới dùng công thức phiên bản 3 (E1, không giữ thêm)",
       "passed": true,
       "detail": null
     },
@@ -1472,7 +1488,7 @@
       "detail": "bị chặn: Bảng core.inspections là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
     },
     {
-      "name": "N08 sau chi tạm trở lại held chỉ còn 4230000",
+      "name": "N08 sau chi tạm trở lại held chỉ còn 3950000",
       "passed": true,
       "detail": null
     },
@@ -2204,7 +2220,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 00:40:03.738+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:08:02.82+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3058,6 +3074,61 @@
     },
     {
       "name": "C58 mất mùa: hai chữ ký rồi mới giảm đợt chưa giao, hoàn cọc chênh không phạt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "B23 công tắc người giúp mặc định tắt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "B23 không tạo ủy quyền người giúp khi công tắc tắt",
+      "passed": true,
+      "detail": "bị chặn: Đã bỏ vai người giúp (bản 23)"
+    },
+    {
+      "name": "B23 không tạo mới thương lái",
+      "passed": true,
+      "detail": "bị chặn: V1 chỉ nhận người sản xuất trực tiếp và bên mua doanh nghiệp"
+    },
+    {
+      "name": "B23 không tạo mới tổ hợp gom",
+      "passed": true,
+      "detail": "bị chặn: V1 chỉ nhận người sản xuất trực tiếp và bên mua doanh nghiệp"
+    },
+    {
+      "name": "B23 HTX sản xuất vẫn đăng ký được",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "B23 dữ liệu ảo cũ vẫn còn (không xóa lịch sử)",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "E2 cùng số CCCD không gắn được tài khoản thứ hai",
+      "passed": true,
+      "detail": "bị chặn: duplicate key value violates unique constraint \"uq_iddoc\""
+    },
+    {
+      "name": "E2 người duyệt trùng người lập bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Người duyệt trùng người đề xuất (cùng giấy tờ tùy thân)"
+    },
+    {
+      "name": "E2 quyết định đã duyệt không sửa được số tiền",
+      "passed": true,
+      "detail": "bị chặn: Bảng ops.decisions là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "B23 liên lạc khảo sát chưa mở khi không có chuyến hợp lệ",
+      "passed": true,
+      "detail": "bị chặn: Liên lạc khảo sát chưa mở hoặc đã hết hạn"
+    },
+    {
+      "name": "B23 mở liên lạc không còn ngưỡng 3 triệu",
       "passed": true,
       "detail": null
     },

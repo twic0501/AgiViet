@@ -75,6 +75,12 @@ SELECT test.context('Nguyễn Thị Năm','TC-B01','seller');
 INSERT INTO core.direct_payment_confirmations(direct_payment_id,result,amount_vnd,confirmed_by,bank_txn_ref,otp_challenge_id)
 SELECT id,'full',800000,test.person('Nguyễn Thị Năm'),'LS1-ADJ2',test.payment_otp(id,800000,ref.ctx_user()) FROM core.direct_payments WHERE settlement_id=test.id('LS1:s2');
 SELECT test.context(NULL,NULL,'system');
+-- Bản 23: tiền đã xong nhưng còn 30 kg hàng trả lại thì chưa Hoàn tất toàn bộ.
+SELECT test.expect_error('B23 còn hàng trả lại thì chưa hoàn tất', $$UPDATE core.orders SET status='completed' WHERE id=test.id('LS1')$$,'ck_open_dossiers');
+SELECT test.check('B23 hồ sơ mở chỉ còn hàng trả lại 30000 g',(SELECT string_agg(kind,',')='hang_tra_lai' FROM core.open_dossiers(test.id('LS1'))));
+SELECT test.context('Nguyễn Thị Năm','TC-B01','seller');
+SELECT cmd.create_return_lot(test.id('LS1'),30000,(SELECT l.grade_code FROM core.lots l JOIN core.orders o ON o.lot_id=l.id WHERE o.id=test.id('LS1')),'TEST-LS1-TRA-LAI');
+SELECT test.context(NULL,NULL,'system');
 UPDATE core.orders SET status='completed' WHERE id=test.id('LS1');
 SELECT test.check('LS1 TH047 hoàn tất, người bán nhận 45150000',(SELECT sum(e.amount_vnd)=45150000 FROM ledger.entries e JOIN ledger.transactions t ON t.id=e.transaction_id JOIN ledger.accounts a ON a.id=e.account_id WHERE t.order_id=test.id('LS1') AND a.account_type='external' AND a.org_id=test.org('TC-B01')));
 -- Sửa tiếp theo hướng giảm N sau khi tiền đã đi: chỉ phát sinh hoàn ngoài app.

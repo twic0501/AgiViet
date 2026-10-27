@@ -1,3 +1,4 @@
+UPDATE ref.feature_flags SET enabled=true WHERE code='nguoi_giup'; -- kiểm mã người giúp cũ; V1 tắt (bản 23)
 -- Dữ liệu SMS/bank/PDF vẫn mô phỏng; mọi command đang kiểm dùng SESSION AUTHORIZATION.
 DELETE FROM cmd.test_clock;
 SELECT test.context(NULL,NULL,'system');
@@ -86,3 +87,4 @@ SELECT test.as_login('db_test_seller',$$SELECT set_config('test.x.task',cmd.repo
 SELECT test.as_login('db_test_seller',$$SELECT cmd.report_payment_not_received(current_setting('test.x.pay')::uuid,'Vẫn chưa thấy tiền')$$);
 SELECT test.check('C48 báo chưa nhận chỉ mismatch và một task đối soát',EXISTS(SELECT 1 FROM core.direct_payments WHERE id=test.id('C48PAY-P') AND status='mismatch') AND (SELECT count(*)=1 FROM ops.tasks WHERE dedup_key='not-received:'||test.id('C48PAY-P')) AND NOT EXISTS(SELECT 1 FROM core.direct_payment_confirmations WHERE direct_payment_id=test.id('C48PAY-P')));
 SET CONSTRAINTS ALL IMMEDIATE;
+UPDATE ref.feature_flags SET enabled=false WHERE code='nguoi_giup';

@@ -32,10 +32,12 @@ CREATE FUNCTION test.n08_interim(p_release bigint,p_extra bigint DEFAULT 0) RETU
  INSERT INTO core.settlements(id,order_id,seq,is_final,v_vnd,d_vnd,c_vnd,n_vnd,c_nb_formula_vnd,release_vnd,refund_vnd,t_bm_vnd,t_nb_vnd,inputs,additional_hold_vnd,hold_formula_version)
  VALUES(test.id('N08:s1'),test.id('N08'),1,false,42050000,32200000,13800000,42050000,9850000,p_release,0,0,0,'{"test":"N08"}',p_extra,1)
 $$;
-SELECT test.expect_error('N08 công thức chi tạm cũ bị CHECK chặn', $$SELECT test.n08_interim(9850000)$$,'ck_st_interim');
-SELECT test.n08_interim(9570000,0);
-SELECT test.check('N08 DB tự giữ 280000 kể cả người gọi khai 0',EXISTS(SELECT 1 FROM core.settlements WHERE id=test.id('N08:s1') AND additional_hold_vnd=280000 AND release_vnd=9570000 AND c_vnd-release_vnd=4230000));
-SELECT test.expect_error('N08 snapshot khoản giữ thêm bất biến', $$UPDATE core.settlements SET additional_hold_vnd=0 WHERE id=test.id('N08:s1')$$,'ck_append_only');
+-- Bản 23 E1 (28/10/2026): trả đủ phần đã công nhận; không giữ lại phí kiểm định/phạt từ tiền người bán.
+SELECT test.expect_error('E1 chi tạm kiểu cũ (giữ 280000) bị CHECK chặn', $$SELECT test.n08_interim(9570000,280000)$$,'ck_st_interim');
+SELECT test.n08_interim(9850000,0);
+SELECT test.check('E1 người bán nhận đủ phần công nhận 9850000, không giữ thêm',EXISTS(SELECT 1 FROM core.settlements WHERE id=test.id('N08:s1') AND additional_hold_vnd=0 AND hold_formula_version=3 AND release_vnd=9850000));
+SELECT test.check('E1 khoản đòi thêm (phí bên mua ứng + phạt) ghi chưa bảo đảm, không trừ vào tiền người bán',(SELECT sum(inspection_fee_vnd+penalty_vnd)=core.dispute_additional_hold(test.id('N08')) AND sum(inspection_fee_vnd)=280000 AND bool_and(security_status='chưa bảo đảm') FROM core.v_unsecured_claims WHERE order_id=test.id('N08')));
+SELECT test.expect_error('E1 snapshot bất biến', $$UPDATE core.settlements SET additional_hold_vnd=280000 WHERE id=test.id('N08:s1')$$,'ck_append_only');
 
 -- D-07/D-18: tài khoản mới phải được chụp trong hợp đồng trước ký.
 SELECT test.context('Nguyễn Thị Năm','TC-B01','seller');

@@ -1,3 +1,4 @@
+UPDATE ref.feature_flags SET enabled=true WHERE code='nguoi_giup'; -- kiểm mã người giúp cũ; V1 tắt (bản 23)
 DELETE FROM cmd.test_clock;
 SELECT test.context(NULL,NULL,'system');
 SELECT set_config('app.test_time','',true);
@@ -69,3 +70,4 @@ SELECT test.as_login('db_test_seller',$$SELECT cmd.set_urgent_sale(current_setti
 SELECT test.check('C56 bán gấp có từ/đến/lý do và hạn worker',EXISTS(SELECT 1 FROM core.lots WHERE code='C56-URGENT' AND urgent_sale_from IS NOT NULL AND urgent_sale_until>urgent_sale_from AND urgent_sale_reason IS NOT NULL));
 SELECT test.check('C56 app không có DML nhật ký/xác minh, helper nội bộ không public',NOT has_table_privilege('db_test_seller','core.cultivation_entries','INSERT') AND NOT has_function_privilege('db_test_seller','cmd.assert_lot_verified(uuid)','EXECUTE'));
 SET CONSTRAINTS ALL IMMEDIATE;
+UPDATE ref.feature_flags SET enabled=false WHERE code='nguoi_giup';

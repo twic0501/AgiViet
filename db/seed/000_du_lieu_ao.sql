@@ -1,3 +1,4 @@
+SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có thương lái, người giúp (bản 23 không tạo mới)
 -- Tự sinh từ du-lieu-ao.json bằng db/tools/tao-seed.py. Không sửa tay.
 DO $seed$ BEGIN
 IF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-ao.json') THEN
@@ -2524,3 +2525,4 @@ INSERT INTO core.substandard_receivers(buyer_org_id,product_id,grade_codes,min_q
 REFRESH MATERIALIZED VIEW mkt.reference_prices;
 PERFORM set_config('app.allow_any_initial','off',true);
 END $seed$;
+SELECT set_config('app.nap_du_lieu_cu','off',false);
