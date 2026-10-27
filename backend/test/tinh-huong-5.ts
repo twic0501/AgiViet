@@ -65,7 +65,9 @@ them('TH-007', 'Giao tại kho bên mua, người bán thuê xe, trả khi nhậ
   th.bang('Việc xử lý 20 kg trả lại ở kho', viec, 1);
   const tri = await may.dangNhap(SDT.tri);
   await may.he('/v1/sim/bank/process-instructions', {}); await may.he('/v1/sim/bank/deliver', {}); await tri.ok('/v1/ops/reconcile', {});
-  th.bang('Hoàn tất', (await ha.get(`/v1/orders/${d.id}`)).json.status, 'completed');
+  // Bản 23: tiền đã xong nhưng 20 kg trả lại ở kho chưa xử lý → chưa hoàn tất toàn bộ.
+  th.bang('Đã quyết toán, còn hồ sơ 20 kg trả lại', (await ha.get(`/v1/orders/${d.id}`)).json.status, 'outstanding');
+  th.bang('Hồ sơ mở: hàng trả lại', await may.v<string>(`SELECT string_agg(DISTINCT kind,',') FROM core.open_dossiers($1)`, [d.id]), 'hang_tra_lai');
 });
 
 them('TH-037a', 'Giao trong dung sai 1.960 kg', async (may, th) => {

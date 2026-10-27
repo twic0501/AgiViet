@@ -21,11 +21,10 @@ them('TH-003', 'Đăng lô: chặn cách ly, cảnh báo giá, ảnh chụp tron
   const tao = { product_code: 'XOAI_CAT_CHU', grade_code: 'L1', qty_basis: 'weighed', qty_g: 1000000, harvest_on: '2026-10-31', spray_clear_on: '2026-11-01', available_from: '2026-11-02', ask_price_vnd: 24000, floor_price_vnd: 19000 };
   const r1 = await nam.post('/v1/lots', tao);
   th.bang('Chặn ngày hái trước hết cách ly', r1.json.errors?.[0]?.code, 'CHUA_HET_CACH_LY');
-  const teo = await may.dangNhap(SDT.teo);
-  // 0048: DB tách quyền nháp (lot.draft) và đặt giá/đăng (lot.update); chủ hộ ủy quyền thêm qua API.
-  await nam.ok('/v1/org/delegations', { helper_user_id: teo.userId, actions: ['lot.draft', 'lot.update'], valid_to: '2026-12-31T00:00:00+07:00' });
+  // Bản 23: đã bỏ vai người giúp; chủ hộ tự đăng lô.
+  const teo = nam;
   const r2 = await teo.ok('/v1/lots', { ...tao, harvest_on: '2026-11-02' });
-  th.bang('Người giúp tạo lô nháp được', r2.status, 'draft');
+  th.bang('Chủ hộ tạo lô nháp được', r2.status, 'draft');
   th.kiem('Cảnh báo thấp hơn mặt bằng 24%', (r2.data.canh_bao ?? []).some((c: any) => c.cau === 'Thấp hơn mặt bằng 24%'), r2.data.canh_bao);
   th.bang('Giá tham khảo 25.000', r2.data.gia_tham_khao?.gia_vnd, '25000');
   await teo.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'lot', entity_id: r2.id, captured_in_app: false });
@@ -405,11 +404,9 @@ them('TH-061', 'Người giúp bị chặn đúng chỗ ở API', async (may, th
   th.bang('Người giúp không xác nhận tiền', tien.json.errors?.[0]?.code, 'KHONG_CO_QUYEN');
   const huy = await teo.post(`/v1/orders/${b.orderId}/cancellation-requests`, {});
   th.bang('Người giúp không xin hủy', huy.json.errors?.[0]?.code, 'KHONG_CO_QUYEN');
-  await b.nam.ok('/v1/org/delegations', { helper_user_id: teo.userId, actions: ['lot.draft', 'lot.update'], valid_to: '2026-12-31T00:00:00+07:00' });
-  const lo = await teo.post('/v1/lots', { product_code: 'XOAI_CAT_CHU', grade_code: 'L2', qty_basis: 'weighed', qty_g: 100000, ask_price_vnd: 15000, floor_price_vnd: 12000 });
-  th.bang('Người giúp tạo lô được', lo.status, 200);
-  const hist = await may.v<string>(`SELECT actor_kind FROM evt.state_history WHERE entity_id=$1 ORDER BY id LIMIT 1`, [lo.json.id]);
-  th.bang('Lịch sử ghi vai người giúp', hist, 'helper');
+  // Bản 23: không tạo mới ủy quyền người giúp.
+  const uq = await b.nam.post('/v1/org/delegations', { helper_user_id: teo.userId, actions: ['lot.draft', 'lot.update'], valid_to: '2026-12-31T00:00:00+07:00' });
+  th.bang('Không tạo mới ủy quyền người giúp (bản 23)', uq.json.errors?.[0]?.details?.thong_bao, 'Đã bỏ vai người giúp (bản 23)');
 });
 
 them('TH-062', 'PDF: xác minh mã băm, tệp bị sửa không khớp, trang công khai không trả bản gốc', async (may, th) => {

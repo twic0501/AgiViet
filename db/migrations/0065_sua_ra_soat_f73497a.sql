@@ -52,7 +52,8 @@ CREATE VIEW core.v_fee_dossier AS
   a.buyer_vnd, a.seller_vnd, a.partner_vnd, a.platform_vnd, a.pending_vnd,
   coalesce(p.due_vnd,0) AS reimburse_due_vnd, coalesce(p.paid_vnd,0) AS reimbursed_vnd, p.han_som_nhat AS reimburse_due_at,
   core.inspection_fee_collected(i.id,'seller')+core.inspection_fee_collected(i.id,'buyer') AS collected_in_settlement_vnd,
-  CASE WHEN a.inspection_id IS NULL AND EXISTS(SELECT 1 FROM core.dispute_resolutions r WHERE r.dispute_id=i.dispute_id) THEN 'đã xử lý theo kết luận tranh chấp'
+  CASE WHEN a.inspection_id IS NULL AND EXISTS(SELECT 1 FROM core.dispute_resolutions r LEFT JOIN core.inspection_results ir ON ir.id=r.inspection_result_id
+                                                WHERE r.dispute_id=i.dispute_id OR ir.inspection_id=i.id) THEN 'đã xử lý theo kết luận tranh chấp'
        WHEN a.inspection_id IS NULL THEN 'chưa phân bổ'
        WHEN a.pending_vnd>0 THEN 'còn phần chờ xử lý'
        WHEN coalesce(p.con_mo,false) THEN 'còn thiếu hoàn'
@@ -167,3 +168,37 @@ CREATE VIEW ops.v_open_dossiers AS
  WHERE o.status NOT IN ('drafting');
 COMMENT ON VIEW ops.v_open_dossiers IS 'Hộp việc: hồ sơ còn mở mọi đơn (kể cả đã hoàn tất nhận khiếu nại còn hạn); người phụ trách bị khóa = chưa có người.';
 REVOKE ALL ON ops.v_open_dossiers FROM PUBLIC;
+
+-- Hồ sơ phí đã xử lý theo kết luận tranh chấp không còn là hồ sơ mở.
+CREATE OR REPLACE FUNCTION core.open_dossiers(p_order uuid) RETURNS TABLE(kind text, ref_id uuid, note text)
+LANGUAGE sql STABLE AS $$
+ SELECT 'tranh_chap', id, 'Tranh chấp chưa có kết quả' FROM core.disputes WHERE order_id=p_order AND status<>'resolved'
+ UNION ALL
+ SELECT 'tien_truc_tiep', id, 'Khoản trả trực tiếp chưa nhận đủ (' || status || ')' FROM core.direct_payments
+  WHERE order_id=p_order AND status NOT IN ('fully_received','cancelled')
+ UNION ALL
+ SELECT 'lenh_ngan_hang', id, 'Lệnh ngân hàng chưa có kết quả cuối (' || status || ')' FROM core.bank_instructions
+  WHERE order_id=p_order AND status IN ('created','sent','processing','succeeded')
+ UNION ALL
+ SELECT 'hang_tra_lai', lot_id, 'Hàng trả lại chưa xử lý: ' || qty || ' g' FROM ledger.qty_balances
+  WHERE order_key=p_order AND bucket='returned_pending' AND qty>0
+ UNION ALL
+ SELECT 'phi_kiem_dinh', inspection_id, 'Hồ sơ phí kiểm định: ' || trang_thai FROM core.v_fee_dossier
+  WHERE order_id=p_order AND trang_thai NOT IN ('đã xong','còn thiếu hoàn','đã xử lý theo kết luận tranh chấp')
+ UNION ALL
+ SELECT 'kiem_sau_giao', id, 'Tiêu chí kiểm sau giao chưa có kết quả: ' || criterion FROM core.deferred_checks
+  WHERE order_id=p_order AND result IS NULL
+ UNION ALL
+ SELECT 'doi_soat_coc', id, 'Đang chờ đối soát cọc' FROM core.deposit_reconciliations
+  WHERE order_id=p_order AND closed_at IS NULL
+ UNION ALL
+ SELECT 'agiviet_boi_hoan', id, 'AgiViet chưa trả bồi hoàn: ' || amount_vnd || ' đ' FROM core.platform_liabilities
+  WHERE order_id=p_order AND paid_at IS NULL AND amount_vnd>0
+ UNION ALL
+ SELECT 'su_co_mau', x.id, 'Sự cố mẫu chưa xác định bên chịu' FROM core.sample_incidents x
+  JOIN core.sealed_samples s ON s.id=x.sample_id JOIN core.deliveries d ON d.id=s.delivery_id
+  WHERE d.order_id=p_order AND x.responsible='cho_xu_ly'
+ UNION ALL
+ SELECT 'giu_tai_cho', id, 'Đang giữ hàng tại chỗ, hạn quyết định ' || to_char(decide_by,'HH24:MI DD/MM') FROM core.hold_in_place
+  WHERE order_id=p_order AND ended_at IS NULL
+$$;

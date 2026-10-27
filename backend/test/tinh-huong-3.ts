@@ -25,11 +25,12 @@ async function moDau(may: May, th: TinhHuong) {
   th.bang('Tranh chấp chờ kiểm định', k.status, 'awaiting_inspection');
   const qt = k.data.quyet_toan_tam;
   th.bang('V_kt 42.050.000', qt?.V, '42050000');
-  th.bang('Chi tạm C_nb_tam 9.570.000 (N-08)', qt?.release_vnd, '9570000');
+  // Bản 23 · E1: trả đủ phần đã công nhận; phí bên mua ứng là khoản đòi thêm chưa bảo đảm, không giữ từ tiền người bán.
+  th.bang('E1 chi tạm đủ phần công nhận 9.850.000', qt?.release_vnd, '9850000');
   const o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;
   th.bang('Hiển thị: đã chốt phần không tranh chấp', o.hien_thi.ten, 'Đã chốt phần không tranh chấp · đang xử lý phần còn lại');
   const so = (await b.ha.get(`/v1/orders/${b.orderId}/money`)).json;
-  th.bang('Giữ thêm G_them 280.000', so.quyet_toan[0]?.additional_hold_vnd, '280000');
+  th.bang('E1 không giữ thêm', so.quyet_toan[0]?.additional_hold_vnd, '0');
   await may.he('/v1/sim/bank/process-instructions', {});
   await may.he('/v1/sim/bank/deliver', {});
   return { b, k };
@@ -42,13 +43,15 @@ them('TH-029A', 'Khiếu nại khác mẫu, kiểm định kết luận người
   const qt = r.body.quyet_toan;
   th.bang('N 41.770.000', qt?.N, '41770000');
   th.bang('Không chi thêm', qt?.release_vnd, '0');
-  th.bang('C_bm 4.230.000 (gồm bù phí kiểm định)', qt?.refund_vnd, '4230000');
-  th.bang('T_nb 0', qt?.t_nb_vnd, '0');
+  th.bang('Hoàn bên mua phần cọc còn lại 3.950.000', qt?.refund_vnd, '3950000');
+  th.bang('E1: người bán hoàn phí 280.000 (đã nhận đủ trước)', qt?.t_nb_vnd, '280000');
   await lenhNganHangVaDoiSoat(b);
   const o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;
-  th.bang('Đơn hoàn tất', o.status, 'completed');
+  th.bang('Còn hồ sơ: khoản người bán hoàn phí + 30 kg hàng bị từ chối', o.status, 'outstanding');
+  const hs = await may.v<string>(`SELECT string_agg(DISTINCT kind,',' ORDER BY kind) FROM core.open_dossiers($1)`, [b.orderId]);
+  th.bang('Hồ sơ mở đúng loại', hs, 'hang_tra_lai,tien_truc_tiep');
   const nhan = await may.v<string>(`SELECT coalesce(sum(e.amount_vnd),0)::text FROM ledger.entries e JOIN ledger.transactions t ON t.id=e.transaction_id JOIN ledger.accounts a ON a.id=e.account_id WHERE t.order_id=$1 AND a.account_type='external' AND a.org_id=(SELECT seller_org_id FROM core.orders WHERE id=$1) AND e.amount_vnd>0`, [b.orderId]);
-  th.bang('Năm thực nhận 41.770.000', nhan, '41770000');
+  th.bang('Năm đã nhận 42.050.000, còn nghĩa vụ hoàn 280.000 (ròng 41.770.000)', nhan, '42050000');
 });
 
 them('TH-029B', 'Khiếu nại khác mẫu, kiểm định kết luận người bán đúng', async (may, th) => {
@@ -58,11 +61,13 @@ them('TH-029B', 'Khiếu nại khác mẫu, kiểm định kết luận người
   const r = await may.he('/v1/sim/inspection/result', { inspection_id: k.data.inspection_id, result: 'passed', sample_code: 'M-2291' });
   const qt = r.body.quyet_toan;
   th.bang('V 44.350.000', qt?.V, '44350000');
-  th.bang('Chi thêm 2.580.000', qt?.release_vnd, '2580000');
+  th.bang('Chi thêm 2.300.000 (đã chi đủ phần công nhận từ trước)', qt?.release_vnd, '2300000');
   th.bang('C_bm 1.650.000', qt?.refund_vnd, '1650000');
   await lenhNganHangVaDoiSoat(b);
   const o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;
-  th.bang('Đơn hoàn tất', o.status, 'completed');
+  th.bang('Người bán đúng: tiền xong, không còn hồ sơ → hoàn tất', o.status, 'completed');
+  const hs = await may.v<string | null>(`SELECT string_agg(DISTINCT kind,',' ORDER BY kind) FROM core.open_dossiers($1)`, [b.orderId]);
+  th.bang('Không còn hồ sơ mở (phí kiểm định đã xử lý theo kết luận)', hs, null);
 });
 
 them('TH-031', 'Kiểm định không kết luận, quá 14 ngày: chuyển cơ chế khác, tiền vẫn giữ', async (may, th) => {
@@ -73,7 +78,7 @@ them('TH-031', 'Kiểm định không kết luận, quá 14 ngày: chuyển cơ 
   const st = await may.v<string>(`SELECT status FROM core.disputes WHERE id=$1`, [k.id]);
   th.bang('Chuyển cơ chế khác', st, 'external_resolution');
   const giu = await may.v<string>(`SELECT coalesce(sum(balance_vnd),0)::text FROM ledger.v_account_balances WHERE order_id=$1 AND account_type='deposit_escrow'`, [b.orderId]);
-  th.bang('Tiền tranh chấp vẫn giữ 4.230.000', giu, '4230000');
+  th.bang('Cọc còn giữ 3.950.000 (E1 đã chi đủ phần công nhận)', giu, '3950000');
   const o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;
   th.kiem('Đơn chưa hoàn tất', o.status !== 'completed', o.status);
 });
