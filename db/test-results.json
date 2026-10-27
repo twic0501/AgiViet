@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T19:06:56.195Z",
+  "checked_at": "2026-10-27T19:11:09.559Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -63,12 +63,13 @@
     "0059_chinh_sach_theo_don_khao_sat_ky_thay.sql",
     "0060_sua_ra_soat_d37991a.sql",
     "0061_giao_ngay_c1_c6.sql",
-    "0062_sua_ra_soat_1614c70.sql"
+    "0062_sua_ra_soat_1614c70.sql",
+    "0063_tim_nguon_dinh_ky_c7_c9.sql"
   ],
-  "tables": 164,
+  "tables": 171,
   "migration_seed_replay": true,
-  "checks": 673,
-  "passed": 673,
+  "checks": 690,
+  "passed": 690,
   "failed": 0,
   "results": [
     {
@@ -494,7 +495,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản aa2cc69b-ccad-4dde-86e1-5a8779ba2167 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản c320d385-f2b6-40c0-9647-68ea3dd83074 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2239,7 +2240,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:06:53.881+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:11:07.169+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3420,6 +3421,91 @@
       "name": "R62-6 không giao cho hồ sơ không tồn tại",
       "passed": true,
       "detail": "bị chặn: Sai hồ sơ / người phụ trách / hạn"
+    },
+    {
+      "name": "DK thỏa thuận mặc định duyệt từng phương án, chốt 14:00",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK chốt sau hạn (hôm nay, hạn 14:00 hôm qua) bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Đã qua hạn chốt hoặc thỏa thuận đã dừng"
+    },
+    {
+      "name": "DK chưa được bên mua duyệt thì người bán chưa cam kết được",
+      "passed": true,
+      "detail": "bị chặn: Chưa được bên mua duyệt hoặc vượt phạm vi ủy quyền"
+    },
+    {
+      "name": "DK độ phủ ngày 1: cần 5 tấn · cam kết 2 · thiếu 3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK công nợ chồng tăng đúng 80 triệu sau hai đợt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK vượt mức cho nợ người bán đặt bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Vượt mức cho nợ người bán đã đặt"
+    },
+    {
+      "name": "DK không sửa thẳng lượng đã cam kết",
+      "passed": true,
+      "detail": "bị chặn: Phân bổ đã cam kết chỉ đổi khi người bán đồng ý"
+    },
+    {
+      "name": "DK yêu cầu giảm chưa có hiệu lực khi người bán chưa đồng ý",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK báo chi phí phải có chứng cứ",
+      "passed": true,
+      "detail": "bị chặn: Chi phí phải có chứng cứ"
+    },
+    {
+      "name": "DK người bán đồng ý: lượng còn 1 tấn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK sau hạn chốt không sửa lượng ngày",
+      "passed": true,
+      "detail": "bị chặn: Sau hạn chốt: đổi lượng qua yêu cầu có người bán đồng ý"
+    },
+    {
+      "name": "DK lần thiếu đầu: chưa mở rà soát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK lần thiếu thứ hai trong 30 ngày: mở việc rà soát V26",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK báo trước giờ nhận được ghi là báo sớm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK nợ quá hạn chặn cam kết mới",
+      "passed": true,
+      "detail": "bị chặn: Bên mua đang có khoản quá hạn với người bán này"
+    },
+    {
+      "name": "DK dừng: dự kiến bị hủy, không phát sinh nghĩa vụ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "DK dừng rồi không chốt ngày mới",
+      "passed": true,
+      "detail": "bị chặn: Đã qua hạn chốt hoặc thỏa thuận đã dừng"
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",
