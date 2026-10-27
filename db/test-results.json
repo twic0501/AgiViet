@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T19:30:09.643Z",
+  "checked_at": "2026-10-27T19:39:09.134Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -67,12 +67,13 @@
     "0063_tim_nguon_dinh_ky_c7_c9.sql",
     "0064_van_hanh_c10_c14.sql",
     "0065_sua_ra_soat_f73497a.sql",
-    "0066_quyen_ham_cong_no.sql"
+    "0066_quyen_ham_cong_no.sql",
+    "0067_sua_ra_soat_e93e590.sql"
   ],
-  "tables": 175,
+  "tables": 176,
   "migration_seed_replay": true,
-  "checks": 710,
-  "passed": 710,
+  "checks": 723,
+  "passed": 723,
   "failed": 0,
   "results": [
     {
@@ -498,7 +499,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản bf64e734-b9a3-4e9c-8ff8-868c6a9b69bf (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản 66792187-9138-4b34-b44f-df7464cc7396 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2243,7 +2244,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:30:06.97+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:39:06.655+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3516,6 +3517,11 @@
       "detail": "bị chặn: Mặt hàng không giữ được tại chỗ"
     },
     {
+      "name": "C9 hợp đồng chưa ủy quyền giữ tại chỗ thì bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Hợp đồng chưa ủy quyền phương án giữ tại chỗ và mức chi"
+    },
+    {
       "name": "C10 hạn quyết định = bắt đầu + 6 giờ, giữ tối đa 12 giờ",
       "passed": true,
       "detail": null
@@ -3551,9 +3557,14 @@
       "detail": "bị chặn: Mẫu có sự cố (mất niêm/hỏng/thất lạc): không dùng làm căn cứ"
     },
     {
-      "name": "C12 ghi bồi hoàn do AgiViet đặt nhầm xe (quyết định hai người)",
+      "name": "C12 quyết định không đúng loại/đơn không dùng được cho bồi hoàn",
       "passed": true,
-      "detail": null
+      "detail": "bị chặn: Cần quyết định hai người loại platform_liability cho đúng đơn"
+    },
+    {
+      "name": "C12 đánh dấu đã trả phải có chứng từ ngân hàng",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"platform_liabilities\" violates check constraint \"ck_pl_paid_evidence\""
     },
     {
       "name": "C12 bồi hoàn AgiViet chưa trả là hồ sơ mở",
@@ -3609,6 +3620,61 @@
       "name": "F6 không giao cho tài khoản đã khóa",
       "passed": true,
       "detail": "bị chặn: Sai hồ sơ / người phụ trách (phải còn hiệu lực, không bị khóa) / hạn"
+    },
+    {
+      "name": "Tiền đề: còn khoản quá hạn giữa hai bên",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C8 thỏa thuận đã dừng: không cam kết mới",
+      "passed": true,
+      "detail": "bị chặn: Thỏa thuận đã dừng: không nhận cam kết mới hay tăng cam kết"
+    },
+    {
+      "name": "C6 độ phủ ngày 1 giữ 0,5 tấn đã giao, không về 0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C5 tăng cam kết qua đổi lượng vượt mức cho nợ bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Vượt mức cho nợ người bán đã đặt"
+    },
+    {
+      "name": "C8 chi phí đổi lượng thành khoản chờ bên mua xác nhận",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C8 bên mua xác nhận → khoản phải trả có hạn 7 ngày",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C8 đánh dấu đã trả phải có chứng từ",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"sourcing_cost_claims\" violates check constraint \"sourcing_cost_claims_check\""
+    },
+    {
+      "name": "C9 lần giữ thứ hai dùng hạn của lần đầu, lấy phương án và mức chi từ hợp đồng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C3 đã có phân bổ phí: luồng kết luận không thu thêm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C7 khiếu nại lại cùng phần hàng vượt lượng đã nhận bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Tổng lượng khiếu nại sau giao vượt lượng đã nhận của dòng"
+    },
+    {
+      "name": "Q24 công ghi qua việc tính vào đơn của việc",
+      "passed": true,
+      "detail": null
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",

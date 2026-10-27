@@ -6,6 +6,14 @@ SELECT set_config('test.h.order',test.id('R59A')::text,false),set_config('test.h
 SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('C10 mặt hàng chưa có thông số giữ thì không giữ tại chỗ','SELECT cmd.start_hold_in_place(current_setting(''test.h.order'')::uuid,current_setting(''test.h.checker'')::uuid,''Giao một phần bằng xe nhỏ'',2000000)','ck_hold_not_allowed')$$);
 INSERT INTO core.product_hold_limits(product_id,max_hold_hours,check_every_hours,decide_before_hours,note)
  SELECT product_id,12,3,6,'Bóng mát, thông số minh họa' FROM core.orders WHERE id=test.id('R59A');
+SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('C9 hợp đồng chưa ủy quyền giữ tại chỗ thì bị chặn','SELECT cmd.start_hold_in_place(current_setting(''test.h.order'')::uuid,current_setting(''test.h.checker'')::uuid,''x'',1)','ck_hold_not_authorized')$$);
+CREATE FUNCTION test.h_uy_quyen() RETURNS void LANGUAGE plpgsql AS $f$ BEGIN
+ SET LOCAL session_replication_role=replica; -- giả lập điều khoản ủy quyền đã có trong hợp đồng đã ký
+ UPDATE core.order_versions v SET extra_terms=coalesce(v.extra_terms,'{}')||'{"hold_default_plan":"Giao một phần bằng xe nhỏ","hold_max_cost_vnd":2000000}'
+  FROM core.orders o WHERE o.id=test.id('R59A') AND v.order_id=o.id AND v.version_no=o.effective_version_no;
+ SET LOCAL session_replication_role=origin;
+END $f$;
+SELECT test.h_uy_quyen();
 SELECT test.as_login('db_test_approve',$$SELECT set_config('test.h.id',cmd.start_hold_in_place(current_setting('test.h.order')::uuid,current_setting('test.h.checker')::uuid,'Giao một phần bằng xe nhỏ',2000000)::text,false)$$);
 SELECT test.check('C10 hạn quyết định = bắt đầu + 6 giờ, giữ tối đa 12 giờ',
  (SELECT decide_by=started_at+interval '6 hours' AND max_until=started_at+interval '12 hours' FROM core.hold_in_place WHERE id=current_setting('test.h.id')::uuid));
@@ -34,11 +42,15 @@ SELECT test.expect_error('C11 không ghi kết quả kiểm định trên mẫu 
    SELECT i.id,'pass',test.person('Phạm Quốc Bảo'),'{}',now() FROM core.inspections i JOIN core.sample_incidents x ON x.sample_id=i.sample_id LIMIT 1$$,'ck_sample_invalid');
 
 -- C12: lỗi AgiViet: phải có quyết định hai người; chưa trả là hồ sơ mở.
-SELECT test.expect_ok('C12 ghi bồi hoàn do AgiViet đặt nhầm xe (quyết định hai người)',
+SELECT test.expect_error('C12 quyết định không đúng loại/đơn không dùng được cho bồi hoàn',
  $$INSERT INTO core.platform_liabilities(order_id,kind,amount_vnd,payee_org_id,reason,decision_id,prevention_note)
-   SELECT test.id('R59A'),'dat_nham_dich_vu',500000,test.org('TC-B01'),'Đặt xe thường thay xe lạnh',id,'Kiểm loại xe theo mặt hàng trước khi đặt' FROM ops.decisions WHERE proposed_by<>approved_by LIMIT 1$$);
+   SELECT test.id('R59A'),'dat_nham_dich_vu',500000,test.org('TC-B01'),'Đặt xe thường thay xe lạnh',id,'Kiểm loại xe theo mặt hàng trước khi đặt' FROM ops.decisions WHERE proposed_by<>approved_by LIMIT 1$$,'ck_decision_two_people');
+INSERT INTO ops.decisions(id,kind,entity,entity_id,proposed_by,approved_by,reason,evidence_document_id,detail)
+ VALUES(test.id('C12:qd'),'platform_liability','order',test.id('R59A'),test.person('Đỗ Minh Trí'),test.person('Nguyễn Hữu Tâm'),'Lỗi đặt nhầm xe của AgiViet',test.id('R59A:bbnt:1'),'{}');
 INSERT INTO core.platform_liabilities(order_id,kind,amount_vnd,payee_org_id,reason,decision_id)
- SELECT test.id('R59A'),'dat_nham_dich_vu',500000,test.org('TC-B01'),'Đặt xe thường thay xe lạnh',id FROM ops.decisions WHERE proposed_by<>approved_by ORDER BY created_at LIMIT 1;
+ VALUES(test.id('R59A'),'dat_nham_dich_vu',500000,test.org('TC-B01'),'Đặt xe thường thay xe lạnh',test.id('C12:qd'));
+SELECT test.expect_error('C12 đánh dấu đã trả phải có chứng từ ngân hàng',
+ $$UPDATE core.platform_liabilities SET paid_at=now() WHERE decision_id=test.id('C12:qd')$$,'ck_pl_paid_evidence');
 SELECT test.check('C12 bồi hoàn AgiViet chưa trả là hồ sơ mở',EXISTS(SELECT 1 FROM core.open_dossiers(test.id('R59A')) WHERE kind='agiviet_boi_hoan'));
 
 -- C14: chi phí phục vụ theo đơn (Q24, phương pháp).

@@ -21,6 +21,11 @@ Cách đọc: mỗi mục có **giờ**, **việc**, **ai quyết** (Người s�
 | C2 | Chính sách đơn phân loại theo lúc cam kết (ký), không theo công thức đã chạy; lịch sử tiền đã chi giữ nguyên | Codex | 28/10 |
 | C3 | Một khoản phí chỉ thu một lần: đơn 23 ưu tiên hồ sơ hoàn riêng, đối chiếu phần đã thu/trừ | Codex | 28/10 |
 | C4 | Khiếu nại còn hạn vẫn nhận sau quyết toán: hiện trong hộp việc, đơn chuyển "còn hồ sơ", không tự đảo tiền đã chi | Codex | 28/10 |
+| C5 | Mọi lần tăng nghĩa vụ (kể cả sửa cam kết) đều kiểm lại mức cho nợ, quá hạn, bảo đảm | Codex | 28/10 |
+| C6 | Giao thiếu: giữ phần giao được và nghĩa vụ tương ứng, chỉ thay phần thiếu | Codex | 28/10 |
+| C7 | Một phần hàng không được hoàn giá trị hai lần; kiểm lại/kháng nghị điều chỉnh hồ sơ cũ | Codex | 28/10 |
+| C8 | Thỏa thuận dừng thì chặn cam kết mới; chi phí đổi lượng phải xác nhận và thành khoản phải trả | Codex | 28/10 |
+| C9 | Giữ hàng tại chỗ phải có ủy quyền trong hợp đồng và hạn theo đơn; bồi hoàn AgiViet chỉ đóng khi tiền được xác minh | Codex | 28/10 |
 | H1 | Hạ tầng: Firebase Hosting (miễn phí) + Supabase (miễn phí); AI OpenAI API có trần chi tiêu; tên miền agiviet.id.vn | Người sáng lập | 28/10 |
 
 ## Diễn biến
@@ -42,4 +47,7 @@ Cách đọc: mỗi mục có **giờ**, **việc**, **ai quyết** (Người s�
 - **API bản 23** (`backend/src/nghiep-vu/ban-23.ts`, routes trong `v1.ts`): hộp việc `/v1/ops/dossiers` (+ giao người), hồ sơ của đơn `/v1/orders/:id/dossiers` (gồm khoản đòi thêm chưa bảo đảm), phân bổ phí `/v1/ops/inspections/:id/fee-allocation-proposals` + `/v1/ops/fee-allocations`, khiếu nại sau giao `/v1/acceptance-lines/:id/post-delivery-claim`, tìm nguồn định kỳ (`/v1/sourcing-agreements`, `/days`, `/coverage`, `/stop`, `/v1/ops/sourcing-days/:id/allocations`, `/v1/sourcing-allocations/:id/approve|commit|change|shortfall`, `/v1/allocation-changes/:id/answer`, `/v1/credit-terms`).
 - **0066**: hàm công nợ chạy quyền chủ DB (lỗi thật do kiểm thử API bắt được: vai đọc không gọi được ref.div_round).
 - Kiểm thử API mới TH-B23-DK (6 bước, đạt), TH-B23-HV (đạt nhưng **nhánh giao người bị bỏ qua khi hộp việc trống** — cần dữ liệu cố định, việc còn lại). Toàn bộ: DB 710/710; backend 74/74 · 554/554; kiểm quyền 11/11; tsc sạch.
+- Codex rà e93e590: probe cũ f73497a **đã hết**; 9 lệch mới (phí phân bổ trước kết luận bị thu hai lần; khiếu nại lại cùng phần hàng; tăng cam kết qua đổi lượng lọt mức nợ/quá hạn; giao thiếu một phần xóa cả phần đã giao; thỏa thuận dừng vẫn nhận cam kết; chi phí đổi lượng chưa thành khoản phải trả; giữ tại chỗ không cần ủy quyền và kéo dài được; bồi hoàn dùng quyết định sai loại, đóng không cần chứng từ; ghi công qua việc không vào chi phí đơn). Codex chốt C5–C9.
+- **0067**: sửa cả 9 + lệnh `cmd.link_allocation_order` (nối phân bổ sang đơn đúng cặp/mặt hàng), `core.sourcing_cost_claims` + `cmd.answer_sourcing_cost`. Kiểm thử tests/280. DB 723/723; backend 74/74 · 554/554; kiểm quyền 11/11.
+- Còn mở theo Codex: bảo đảm dùng chung cho kế hoạch định kỳ (phân bổ/giải phóng/hoàn theo kế hoạch) chưa có — làm khi dựng luồng hợp đồng khung cho định kỳ.
 - Ghi chú kỹ thuật: thêm cột vào order_versions làm gãy lệnh tạo đơn (whitelist) → hạn khiếu nại đặt trong extra_terms.
