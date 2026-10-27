@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-27T01:49:39.994Z",
+  "origin": "http://127.0.0.1:40889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "harvest",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Xin giảm lượng → phụ lục hai bên ký, phiên bản 2",
+      "seed": "thu-0",
+      "log": "Đối ứng đồng ý lập phụ lụcĐối ứng ký phụ lục bằng OTP thử"
+    },
+    {
+      "profile": "harvest",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Xin giảm lượng → phụ lục hai bên ký, phiên bản 2",
+      "seed": "thu-0",
+      "log": "Đối ứng ký phụ lục bằng OTP thử"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "harvest-seller-mo-ho-so.png",
+    "harvest-seller-dat-dich.png",
+    "harvest-buyer-mo-ho-so.png",
+    "harvest-buyer-dat-dich.png"
+  ]
+}

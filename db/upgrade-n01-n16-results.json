@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-10-25T19:22:41.131Z",
+  "from": "0029",
+  "to": "0032",
+  "checks": 6,
+  "passed": 6,
+  "results": [
+    {
+      "name": "Entries trước nâng cấp không đổi",
+      "passed": true
+    },
+    {
+      "name": "Quyết toán cũ giữ nguyên cột tiền và inputs",
+      "passed": true
+    },
+    {
+      "name": "Cọc thiếu cũ chuyển 1 triệu sang ngăn treo",
+      "passed": true
+    },
+    {
+      "name": "Tiền thừa cũ tách khỏi C, giữ nguyên F",
+      "passed": true
+    },
+    {
+      "name": "Nộp bù sau nâng cấp phân bổ đủ C và F",
+      "passed": true
+    },
+    {
+      "name": "Tiền thiếu lịch sử sau nâng cấp đóng đơn và hoàn nguồn được",
+      "passed": true
+    }
+  ]
+}

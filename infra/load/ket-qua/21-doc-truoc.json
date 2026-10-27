@@ -1,0 +1,132 @@
+{
+  "nhan": "21-doc-truoc",
+  "kich_ban": "doc-nang",
+  "mo_ta": "Chỉ đọc nặng: ghép + giá tham khảo 60 yc/giây trong 60 giây",
+  "luc": "2026-10-25T06:06:48.620Z",
+  "base": "http://127.0.0.1:8180",
+  "pdf": "sync",
+  "ref": "live",
+  "he_so": 1,
+  "thoi_gian_giay": 35.229,
+  "he_so_thoi_gian": 0.5,
+  "ket_qua_nghiep_vu": {},
+  "generator_lag_max_ms": 18.8,
+  "throughput_hoan_tat": 51.1,
+  "bo_lo_do_qua_dong_thoi": 0,
+  "dong_thoi_toi_da": 312,
+  "pha": [
+    {
+      "pha": "doc",
+      "so_yc": 1800,
+      "yc_giay": 60,
+      "p50": 5002.1,
+      "p95": 5352.8,
+      "p99": 5481.1,
+      "loi_pct": 19
+    }
+  ],
+  "luong": [
+    {
+      "pha": "doc",
+      "luong": "mua_gia_tk",
+      "so_yc": 900,
+      "yc_giay": 30,
+      "p50": 5001.9,
+      "p95": 5437.9,
+      "p99": 5497.6,
+      "max": 5565.8,
+      "loi_pct": 27.33,
+      "ma": {
+        "200": 654,
+        "500": 246
+      }
+    },
+    {
+      "pha": "doc",
+      "luong": "mua_ghep",
+      "so_yc": 900,
+      "yc_giay": 30,
+      "p50": 5063.5,
+      "p95": 5295.1,
+      "p99": 5332.9,
+      "max": 5352.8,
+      "loi_pct": 10.67,
+      "ma": {
+        "200": 804,
+        "500": 96
+      }
+    }
+  ],
+  "tai_nguyen": {
+    "postgres": {
+      "cpu_tb_pct": 237,
+      "cpu_p95_pct": 250,
+      "rss_max_mb": 609
+    },
+    "backend": {
+      "cpu_tb_pct": 3,
+      "cpu_p95_pct": 5,
+      "rss_max_mb": 88
+    },
+    "ai": {
+      "cpu_tb_pct": 5,
+      "cpu_p95_pct": 9,
+      "rss_max_mb": 133
+    },
+    "worker": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 0,
+      "rss_max_mb": 58
+    }
+  },
+  "db": {
+    "giao_dich_commit": 4401,
+    "rollback": 0,
+    "ti_le_cache": 99.93
+  },
+  "toan_ven": {
+    "tong_but_toan": "0",
+    "gd_lech": "0",
+    "so_du_lech": "0",
+    "don_coc_hai_lan": "0",
+    "viec_pdf_dang_cho": "0",
+    "viec_pdf_hong": "0"
+  },
+  "top_sql": [
+    {
+      "calls": "654",
+      "total_ms": "189228",
+      "mean_ms": "289.34",
+      "max_ms": "592.8",
+      "q": "SELECT percentile_cont($4) WITHIN GROUP (ORDER BY unit_price_vnd_per_kg)::bigint AS median_vnd_per_kg, count(*"
+    },
+    {
+      "calls": "804",
+      "total_ms": "155929",
+      "mean_ms": "193.94",
+      "max_ms": "383.7",
+      "q": "SELECT l.code, l.grade, qb.qty_g AS available_g, l.harvest_on, l.province_code, round(x.dist_km::numeric, $2) "
+    },
+    {
+      "calls": "35",
+      "total_ms": "0",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "UPDATE bench.jobs SET status = $1, started_at = now(), attempts = attempts + $2 WHERE id = (SELECT id FROM ben"
+    },
+    {
+      "calls": "1",
+      "total_ms": "0",
+      "mean_ms": "0.06",
+      "max_ms": "0.1",
+      "q": "SELECT pg_stat_statements_reset()"
+    },
+    {
+      "calls": "2",
+      "total_ms": "0",
+      "mean_ms": "0.02",
+      "max_ms": "0.0",
+      "q": "SELECT xact_commit, xact_rollback, blks_hit, blks_read FROM pg_stat_database WHERE datname = current_database("
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "agiviet-v2-backend",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx test/chay-tinh-huong.ts",
+    "test:commands": "tsx test/kiem-quyen-command.ts",
+    "test:pg": "node scripts/test-pg.mjs",
+    "demo:10-so": "tsx scripts/demo-10-so.ts"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.3.16",
+    "@pdf-lib/fontkit": "^1.1.1",
+    "fastify": "^5.12.7",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.23.1",
+    "qrcode": "^1.5.4",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
+    "@types/qrcode": "^1.5.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

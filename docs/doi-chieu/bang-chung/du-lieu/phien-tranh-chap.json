@@ -1,0 +1,51 @@
+{
+  "scenario": [
+    "TH-031",
+    "Kiểm định không kết luận, quá 14 ngày: chuyển cơ chế khác, tiền vẫn giữ"
+  ],
+  "checks": [
+    {
+      "ten": "Tranh chấp chờ kiểm định = awaiting_inspection",
+      "dat": true
+    },
+    {
+      "ten": "V_kt 42.050.000 = 42050000",
+      "dat": true
+    },
+    {
+      "ten": "Chi tạm C_nb_tam 9.570.000 (N-08) = 9570000",
+      "dat": true
+    },
+    {
+      "ten": "Hiển thị: đã chốt phần không tranh chấp = Đã chốt phần không tranh chấp · đang xử lý phần còn lại",
+      "dat": true
+    },
+    {
+      "ten": "Giữ thêm G_them 280.000 = 280000",
+      "dat": true
+    },
+    {
+      "ten": "Không kết luận = inconclusive",
+      "dat": true
+    },
+    {
+      "ten": "Chuyển cơ chế khác = external_resolution",
+      "dat": true
+    },
+    {
+      "ten": "Tiền tranh chấp vẫn giữ 4.230.000 = 4230000",
+      "dat": true
+    },
+    {
+      "ten": "Đơn chưa hoàn tất",
+      "dat": true
+    }
+  ],
+  "disputes": [
+    {
+      "id": "525889e8-649f-4fa4-84e9-e76a5be4653a",
+      "status": "external_resolution",
+      "order_id": "3c1b3be2-8568-49f7-aaf8-f08dcaa4b19a"
+    }
+  ]
+}

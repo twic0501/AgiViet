@@ -1,0 +1,97 @@
+{
+  "at": "2026-10-26T17:28:11.783Z",
+  "results": [
+    {
+      "name": "Tải chứng cứ, đề xuất xác minh, người lập không có nút tự duyệt",
+      "pass": true
+    },
+    {
+      "name": "Giám sát khác người lập duyệt; server trả active, quyết định và thời điểm vai chủ",
+      "pass": true,
+      "owner_effective_at": "2026-11-03T01:00:00.935Z"
+    },
+    {
+      "name": "Việc V05 P0 thật có SLA; nhận việc đọc lại claimed và người nhận",
+      "pass": true
+    },
+    {
+      "name": "Đối soát bằng vai giám sát gọi API thật",
+      "pass": true
+    },
+    {
+      "name": "Đăng nhập OTP vai dispatcher",
+      "pass": true
+    },
+    {
+      "name": "Đăng nhập OTP vai field",
+      "pass": true
+    },
+    {
+      "name": "Đăng nhập OTP vai finance",
+      "pass": true
+    },
+    {
+      "name": "Không lỗi JavaScript; không tràn ngang các màn đã kiểm",
+      "pass": true
+    }
+  ],
+  "blockers": [
+    {
+      "name": "Hoàn tất việc API thất bại",
+      "status": 409,
+      "body": {
+        "errors": [
+          {
+            "code": "TRANG_THAI_KHONG_CHO_PHEP",
+            "message": "Bước này không làm được ở trạng thái hiện tại.",
+            "fix": "Tải lại để xem trạng thái mới nhất.",
+            "details": {
+              "db": "ck_command_payload",
+              "thong_bao": "Hành động việc không hợp lệ"
+            }
+          }
+        ],
+        "request_id": "req-aab683da3a9d5a34"
+      }
+    }
+  ],
+  "errors": [],
+  "shots": [
+    {
+      "file": "01-lap-ho-so-khong-tu-duyet.png",
+      "name": "01-lap-ho-so-khong-tu-duyet",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "02-nguoi-khac-duyet-cap-vai-cho-24h.png",
+      "name": "02-nguoi-khac-duyet-cap-vai-cho-24h",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "03-v05-chi-tiet-sla.png",
+      "name": "03-v05-chi-tiet-sla",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "04-v05-da-nhan.png",
+      "name": "04-v05-da-nhan",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "05-ket-qua-hoan-tat-viec.png",
+      "name": "05-ket-qua-hoan-tat-viec",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "06-doi-soat-api-that.png",
+      "name": "06-doi-soat-api-that",
+      "role": "quan-tri",
+      "width": 1280
+    }
+  ]
+}

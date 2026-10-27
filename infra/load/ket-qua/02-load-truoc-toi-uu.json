@@ -1,0 +1,396 @@
+{
+  "nhan": "02-load-truoc-toi-uu",
+  "kich_ban": "load",
+  "mo_ta": "Tải: tăng dần 30 giây rồi giữ mức cao điểm mùa vụ 50 yc/giây trong 180 giây",
+  "luc": "2026-10-24T23:41:37.221Z",
+  "base": "http://127.0.0.1:8080",
+  "pdf": "sync",
+  "ref": "live",
+  "he_so": 1,
+  "thoi_gian_giay": 212.852,
+  "bo_lo_do_qua_dong_thoi": 0,
+  "dong_thoi_toi_da": 13,
+  "pha": [
+    {
+      "pha": "tang",
+      "so_yc": 749,
+      "yc_giay": 25,
+      "p50": 26.5,
+      "p95": 113.2,
+      "p99": 1443.6,
+      "loi_pct": 0
+    },
+    {
+      "pha": "cao_diem",
+      "so_yc": 9000,
+      "yc_giay": 50,
+      "p50": 39,
+      "p95": 160.1,
+      "p99": 1582.8,
+      "loi_pct": 0
+    }
+  ],
+  "luong": [
+    {
+      "pha": "tang",
+      "luong": "mua_duyet_lo",
+      "so_yc": 225,
+      "yc_giay": 7.5,
+      "p50": 23.9,
+      "p95": 43.5,
+      "p99": 67,
+      "max": 80,
+      "loi_pct": 0,
+      "ma": {
+        "200": 225
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "mua_gia_tk",
+      "so_yc": 112,
+      "yc_giay": 3.7,
+      "p50": 43.7,
+      "p95": 67.7,
+      "p99": 83.5,
+      "max": 83.9,
+      "loi_pct": 0,
+      "ma": {
+        "200": 112
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "mua_ghep",
+      "so_yc": 90,
+      "yc_giay": 3,
+      "p50": 31.4,
+      "p95": 68.2,
+      "p99": 87.8,
+      "max": 87.8,
+      "loi_pct": 0,
+      "ma": {
+        "200": 90
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "anh",
+      "so_yc": 75,
+      "yc_giay": 2.5,
+      "p50": 4.8,
+      "p95": 73.3,
+      "p99": 86.8,
+      "max": 86.8,
+      "loi_pct": 0,
+      "ma": {
+        "201": 75
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "qr_quet",
+      "so_yc": 75,
+      "yc_giay": 2.5,
+      "p50": 5.9,
+      "p95": 19.4,
+      "p99": 57.9,
+      "max": 57.9,
+      "loi_pct": 0,
+      "ma": {
+        "200": 75
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "ban_dang_lo",
+      "so_yc": 60,
+      "yc_giay": 2,
+      "p50": 8.5,
+      "p95": 73.7,
+      "p99": 89.3,
+      "max": 89.3,
+      "loi_pct": 0,
+      "ma": {
+        "200": 4,
+        "201": 56
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "webhook",
+      "so_yc": 60,
+      "yc_giay": 2,
+      "p50": 104.6,
+      "p95": 142.2,
+      "p99": 163.7,
+      "max": 163.7,
+      "loi_pct": 0,
+      "ma": {
+        "200": 60
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "pdf",
+      "so_yc": 30,
+      "yc_giay": 1,
+      "p50": 50,
+      "p95": 83.9,
+      "p99": 88.1,
+      "max": 88.1,
+      "loi_pct": 0,
+      "ma": {
+        "201": 30
+      }
+    },
+    {
+      "pha": "tang",
+      "luong": "giong_noi",
+      "so_yc": 22,
+      "yc_giay": 0.7,
+      "p50": 1240.7,
+      "p95": 2181.4,
+      "p99": 2356.5,
+      "max": 2356.5,
+      "loi_pct": 0,
+      "ma": {
+        "200": 22
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "mua_duyet_lo",
+      "so_yc": 2700,
+      "yc_giay": 15,
+      "p50": 32.2,
+      "p95": 58.4,
+      "p99": 91.2,
+      "max": 116.5,
+      "loi_pct": 0,
+      "ma": {
+        "200": 2700
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "mua_gia_tk",
+      "so_yc": 1350,
+      "yc_giay": 7.5,
+      "p50": 58.7,
+      "p95": 96.7,
+      "p99": 105.9,
+      "max": 121.8,
+      "loi_pct": 0,
+      "ma": {
+        "200": 1350
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "mua_ghep",
+      "so_yc": 1080,
+      "yc_giay": 6,
+      "p50": 47.2,
+      "p95": 78.6,
+      "p99": 99.4,
+      "max": 130.2,
+      "loi_pct": 0,
+      "ma": {
+        "200": 1080
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "anh",
+      "so_yc": 900,
+      "yc_giay": 5,
+      "p50": 5.6,
+      "p95": 80,
+      "p99": 98.5,
+      "max": 129.6,
+      "loi_pct": 0,
+      "ma": {
+        "201": 900
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "qr_quet",
+      "so_yc": 900,
+      "yc_giay": 5,
+      "p50": 6.4,
+      "p95": 29.3,
+      "p99": 55.6,
+      "max": 105.3,
+      "loi_pct": 0,
+      "ma": {
+        "200": 900
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "ban_dang_lo",
+      "so_yc": 720,
+      "yc_giay": 4,
+      "p50": 8.1,
+      "p95": 73.1,
+      "p99": 102.8,
+      "max": 132.2,
+      "loi_pct": 0,
+      "ma": {
+        "200": 75,
+        "201": 645
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "webhook",
+      "so_yc": 720,
+      "yc_giay": 4,
+      "p50": 140.5,
+      "p95": 229.4,
+      "p99": 248.3,
+      "max": 265.8,
+      "loi_pct": 0,
+      "ma": {
+        "200": 720
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "pdf",
+      "so_yc": 360,
+      "yc_giay": 2,
+      "p50": 65.5,
+      "p95": 99.3,
+      "p99": 118.3,
+      "max": 131,
+      "loi_pct": 0,
+      "ma": {
+        "201": 360
+      }
+    },
+    {
+      "pha": "cao_diem",
+      "luong": "giong_noi",
+      "so_yc": 270,
+      "yc_giay": 1.5,
+      "p50": 1276.7,
+      "p95": 2460.6,
+      "p99": 3085.8,
+      "max": 3269,
+      "loi_pct": 0,
+      "ma": {
+        "200": 270
+      }
+    }
+  ],
+  "tai_nguyen": {
+    "postgres": {
+      "cpu_tb_pct": 119,
+      "cpu_p95_pct": 154,
+      "rss_max_mb": 470
+    },
+    "backend": {
+      "cpu_tb_pct": 11,
+      "cpu_p95_pct": 14,
+      "rss_max_mb": 403
+    },
+    "ai": {
+      "cpu_tb_pct": 7,
+      "cpu_p95_pct": 10,
+      "rss_max_mb": 117
+    },
+    "worker": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 0,
+      "rss_max_mb": 36
+    }
+  },
+  "db": {
+    "giao_dich_commit": 32264,
+    "rollback": 0,
+    "ti_le_cache": 99.97
+  },
+  "toan_ven": {
+    "tong_but_toan": "0",
+    "gd_lech": "0",
+    "so_du_lech": "0",
+    "don_coc_hai_lan": "0",
+    "viec_pdf_dang_cho": "0",
+    "viec_pdf_hong": "0"
+  },
+  "top_sql": [
+    {
+      "calls": "1390",
+      "total_ms": "90019",
+      "mean_ms": "64.76",
+      "max_ms": "122.8",
+      "q": "INSERT INTO bench.ledger_entries (transaction_id, line_no, account_id, amount_vnd) VALUES ($1, $6, bench.ledge"
+    },
+    {
+      "calls": "2925",
+      "total_ms": "86460",
+      "mean_ms": "29.56",
+      "max_ms": "75.7",
+      "q": "SELECT l.code, l.commodity_id, l.grade, l.province_code, l.harvest_on, l.created_at, l.photo_count, l.id FROM "
+    },
+    {
+      "calls": "1462",
+      "total_ms": "82638",
+      "mean_ms": "56.52",
+      "max_ms": "109.5",
+      "q": "SELECT percentile_cont($4) WITHIN GROUP (ORDER BY unit_price_vnd_per_kg)::bigint AS median_vnd_per_kg, count(*"
+    },
+    {
+      "calls": "1170",
+      "total_ms": "48949",
+      "mean_ms": "41.84",
+      "max_ms": "101.3",
+      "q": "SELECT l.code, l.grade, qb.qty_g AS available_g, l.harvest_on, l.province_code, round(x.dist_km::numeric, $2) "
+    },
+    {
+      "calls": "1390",
+      "total_ms": "823",
+      "mean_ms": "0.59",
+      "max_ms": "15.8",
+      "q": "INSERT INTO bench.ledger_txns (kind, order_id, idempotency_key, memo) VALUES ($1, $2, $3, $4) RETURNING id"
+    },
+    {
+      "calls": "701",
+      "total_ms": "621",
+      "mean_ms": "0.89",
+      "max_ms": "15.6",
+      "q": "INSERT INTO bench.lots (code, seller_org_id, commodity_id, grade, qty_total_g, floor_price_vnd_per_kg, provinc"
+    },
+    {
+      "calls": "390",
+      "total_ms": "608",
+      "mean_ms": "1.56",
+      "max_ms": "16.1",
+      "q": "SELECT o.id, o.code, o.grade, o.qty_g, o.unit_price_vnd_per_kg, o.deposit_vnd, o.fee_vnd, c.name_vi AS commodi"
+    },
+    {
+      "calls": "390",
+      "total_ms": "425",
+      "mean_ms": "1.09",
+      "max_ms": "16.2",
+      "q": "INSERT INTO bench.documents (order_id, kind, version, sha256, storage_key, bytes) VALUES ($1, $5, coalesce((SE"
+    },
+    {
+      "calls": "695",
+      "total_ms": "242",
+      "mean_ms": "0.35",
+      "max_ms": "5.7",
+      "q": "UPDATE bench.orders SET deposit_status = $2, status = $3, version = version + $4 WHERE id = $1"
+    },
+    {
+      "calls": "701",
+      "total_ms": "73",
+      "mean_ms": "0.10",
+      "max_ms": "1.6",
+      "q": "INSERT INTO bench.qty_movements (lot_id, from_bucket, to_bucket, qty_g, idem_key) VALUES ($1, $4, $5, $2, $3)"
+    }
+  ]
+}

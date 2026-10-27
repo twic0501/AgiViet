@@ -1,0 +1,130 @@
+{
+  "nhan": "24-doc-sau",
+  "kich_ban": "doc-nang",
+  "mo_ta": "Chỉ đọc nặng: ghép + giá tham khảo 60 yc/giây trong 60 giây",
+  "luc": "2026-10-25T06:07:59.594Z",
+  "base": "http://127.0.0.1:8180",
+  "pdf": "sync",
+  "ref": "mv",
+  "he_so": 1,
+  "thoi_gian_giay": 30.22,
+  "he_so_thoi_gian": 0.5,
+  "ket_qua_nghiep_vu": {},
+  "generator_lag_max_ms": 17.8,
+  "throughput_hoan_tat": 59.6,
+  "bo_lo_do_qua_dong_thoi": 0,
+  "dong_thoi_toi_da": 3,
+  "pha": [
+    {
+      "pha": "doc",
+      "so_yc": 1800,
+      "yc_giay": 60,
+      "p50": 4.6,
+      "p95": 18.6,
+      "p99": 22.1,
+      "loi_pct": 0
+    }
+  ],
+  "luong": [
+    {
+      "pha": "doc",
+      "luong": "mua_gia_tk",
+      "so_yc": 900,
+      "yc_giay": 30,
+      "p50": 2,
+      "p95": 2.3,
+      "p99": 2.7,
+      "max": 4.7,
+      "loi_pct": 0,
+      "ma": {
+        "200": 900
+      }
+    },
+    {
+      "pha": "doc",
+      "luong": "mua_ghep",
+      "so_yc": 900,
+      "yc_giay": 30,
+      "p50": 11.7,
+      "p95": 20.2,
+      "p99": 26.5,
+      "max": 38.2,
+      "loi_pct": 0,
+      "ma": {
+        "200": 900
+      }
+    }
+  ],
+  "tai_nguyen": {
+    "postgres": {
+      "cpu_tb_pct": 29,
+      "cpu_p95_pct": 36,
+      "rss_max_mb": 597
+    },
+    "backend": {
+      "cpu_tb_pct": 2,
+      "cpu_p95_pct": 3,
+      "rss_max_mb": 79
+    },
+    "ai": {
+      "cpu_tb_pct": 5,
+      "cpu_p95_pct": 8,
+      "rss_max_mb": 118
+    },
+    "worker": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 1,
+      "rss_max_mb": 58
+    }
+  },
+  "db": {
+    "giao_dich_commit": 1784,
+    "rollback": 0,
+    "ti_le_cache": 99.98
+  },
+  "toan_ven": {
+    "tong_but_toan": "0",
+    "gd_lech": "0",
+    "so_du_lech": "0",
+    "don_coc_hai_lan": "0",
+    "viec_pdf_dang_cho": "0",
+    "viec_pdf_hong": "0"
+  },
+  "top_sql": [
+    {
+      "calls": "900",
+      "total_ms": "8985",
+      "mean_ms": "9.98",
+      "max_ms": "29.4",
+      "q": "SELECT l.code, l.grade, qb.qty_g AS available_g, l.harvest_on, l.province_code, round(x.dist_km::numeric, $2) "
+    },
+    {
+      "calls": "900",
+      "total_ms": "19",
+      "mean_ms": "0.02",
+      "max_ms": "0.0",
+      "q": "SELECT median_vnd_per_kg, n_orders, n_pairs, refreshed_at FROM bench.mkt_ref_price WHERE commodity_id = $1 AND"
+    },
+    {
+      "calls": "30",
+      "total_ms": "0",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "UPDATE bench.jobs SET status = $1, started_at = now(), attempts = attempts + $2 WHERE id = (SELECT id FROM ben"
+    },
+    {
+      "calls": "1",
+      "total_ms": "0",
+      "mean_ms": "0.06",
+      "max_ms": "0.1",
+      "q": "SELECT pg_stat_statements_reset()"
+    },
+    {
+      "calls": "2",
+      "total_ms": "0",
+      "mean_ms": "0.02",
+      "max_ms": "0.0",
+      "q": "SELECT xact_commit, xact_rollback, blks_hit, blks_read FROM pg_stat_database WHERE datname = current_database("
+    }
+  ]
+}

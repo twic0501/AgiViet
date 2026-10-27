@@ -1,0 +1,42 @@
+{
+  "started_at": "2026-10-26T18:06:16.697Z",
+  "health": {
+    "ok": true,
+    "moi_truong": "thu",
+    "migrations": 55,
+    "dau_van_tay_db": "9aa00c5cfb0abc96",
+    "gio": "2026-11-02T01:00:34.475Z"
+  },
+  "frontend": "http://127.0.0.1:8090",
+  "runs": [
+    {
+      "command": "npm test",
+      "started_at": "2026-10-26T18:06:16.717Z",
+      "finished_at": "2026-10-26T18:06:16.884Z",
+      "exit_code": 0,
+      "log": "kiem-thu-luot-4-test.log"
+    },
+    {
+      "command": "npm run test:branches",
+      "started_at": "2026-10-26T18:06:16.885Z",
+      "finished_at": "2026-10-26T18:06:23.354Z",
+      "exit_code": 0,
+      "log": "kiem-thu-luot-4-test-branches.log"
+    },
+    {
+      "command": "npm run test:round2",
+      "started_at": "2026-10-26T18:06:23.354Z",
+      "finished_at": "2026-10-26T18:07:04.704Z",
+      "exit_code": 1,
+      "log": "kiem-thu-luot-4-test-round2.log"
+    },
+    {
+      "command": "npm run test:e2e",
+      "started_at": "2026-10-26T18:07:04.704Z",
+      "finished_at": "2026-10-26T18:07:17.416Z",
+      "exit_code": 0,
+      "log": "kiem-thu-luot-4-test-e2e.log"
+    }
+  ],
+  "finished_at": "2026-10-26T18:07:17.416Z"
+}

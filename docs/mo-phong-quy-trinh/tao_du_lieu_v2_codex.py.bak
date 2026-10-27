@@ -1,0 +1,496 @@
+# Sinh quy-trinh.json cho trang mô phỏng quy trình.
+# Căn cứ chính: ~/Documents/AgiViet/tai-lieu-tong-hop/index.html (24/10/2026, mục A–G).
+# Bổ sung (chấm cam): phỏng vấn người sáng lập gửi 27/10/2026. Mâu thuẫn chờ chốt: chấm đỏ.
+# Người sáng lập có thể sửa thẳng quy-trinh.json hoặc dùng chế độ Sửa trên trang; script này chỉ dựng bản đầu.
+import json, os
+
+TRANG_THAI = ["Chờ người bán ký", "Chờ cọc", "Đã cọc, chờ giao", "Đang giao", "Chờ nghiệm thu",
+              "Chờ người bán xác nhận", "Chờ thanh toán", "Quyết toán", "Đã gửi lệnh cọc", "Hoàn tất"]
+TT_TRA_TRUOC = ["Chờ người bán ký", "Chờ cọc", "Đã cọc, chờ giao", "Chờ thanh toán", "Đang giao", "Chờ nghiệm thu",
+                "Chờ người bán xác nhận", "Quyết toán", "Đã gửi lệnh cọc", "Hoàn tất"]
+
+def B(vai, viec, o_dau="app", luong=(), dieu_kien="", han="", chi_tiet="", nguon=(), loai="goc", tt=None, so=None, trich=""):
+    return {"vai": vai, "viec": viec, "o_dau": o_dau, "luong": [dict(zip(("loai", "den", "nhan", "tu"), l)) for l in luong],
+            "dieu_kien": dieu_kien, "han": han, "chi_tiet": chi_tiet, "nguon": list(nguon), "loai_nguon": loai,
+            "trang_thai": tt, "so": so or {}, "trich": trich}
+def TH(id, ten, nhom, mo_ta, buoc, nguon=(), vi_du=None, trang_thai=None, vai=None, loai="goc"):
+    d = {"id": id, "ten": ten, "nhom": nhom, "mo_ta": mo_ta, "nguon": list(nguon), "loai_nguon": loai, "buoc": buoc, "vi_du": vi_du or {}}
+    if trang_thai: d["trang_thai"] = trang_thai
+    if vai: d["vai_tham_gia"] = vai
+    return d
+
+VAI = [
+ {"id": "ban", "ten": "Người bán (hộ, HTX)", "ten_ngan": "Người bán", "mau": "#1d5a42", "dung": "App bán (điện thoại)", "nguon": "B1",
+  "lam": ["Đăng lô (nói, chụp, gõ)", "Trả lời lời chào giá", "Ký bằng mã 6 số", "Chuẩn bị, bốc hàng, lập biên bản", "Xác nhận số cân", "Bấm \"Đã nhận [số tiền]\""],
+  "khong": "trả phí giao dịch"},
+ {"id": "giup", "ten": "Người giúp (con cháu)", "ten_ngan": "Người giúp", "mau": "#5f8f6e", "dung": "App bán, cùng tài khoản", "nguon": "B1",
+  "lam": ["Xem, hoặc bấm thay"], "khong": "ký, đổi tài khoản nhận tiền"},
+ {"id": "htx", "ten": "HTX, điểm gom, đầu mối", "ten_ngan": "HTX / điểm gom", "mau": "#8a6d3b", "dung": "App bán (vai HTX)", "nguon": "B1, C10",
+  "lam": ["Đăng ký giúp hộ", "Gom, kiểm, cân chung, đóng gói", "Làm đầu mối hợp đồng khung cho nhà hàng", "Nhận phí gom"]},
+ {"id": "mua", "ten": "Bên mua (nhà máy, XNK, vựa, nhà hàng)", "ten_ngan": "Bên mua", "mau": "#2b5f8a", "dung": "App mua (máy tính, điện thoại)", "nguon": "B1",
+  "lam": ["Tạo phiếu nhu cầu", "Chào giá", "Lập và ký hợp đồng", "Chuyển cọc 30% + phí qua app", "Trả phần còn lại theo hợp đồng", "Nhận hàng, nghiệm thu 3 phần", "Kho, thuế, bảng kê"]},
+ {"id": "nv", "ten": "Nhân viên vận hành AgiViet", "ten_ngan": "Nhân viên AgiViet", "mau": "#6b4c9a", "dung": "Trang vận hành (chỉ nội bộ)", "nguon": "B1, B3",
+  "lam": ["Xác minh hồ sơ, đại sứ đăng ký tại chỗ", "Sàng lọc nguồn theo yêu cầu (phỏng vấn)", "Hỗ trợ, hòa giải", "Đối soát tiền khi hai bên lệch", "Cập nhật giá tham khảo", "Xử lý vi phạm"]},
+ {"id": "app", "ten": "Hệ thống AgiViet (tự động)", "ten_ngan": "Hệ thống", "mau": "#4b5a52", "dung": "Bộ máy E3", "nguon": "E2, E3",
+  "lam": ["Ghép hàng giấu giá", "Áp giá thấp nhất kín, hạn giờ", "Kiểm điều kiện chuyển bước C13", "Tính quyết toán", "Gửi lệnh ngân hàng", "Che liên lạc trước cọc", "Sinh chứng từ"]},
+ {"id": "nh", "ten": "Ngân hàng đối tác", "ten_ngan": "Ngân hàng", "mau": "#1f4e79", "dung": "Kết nối hệ thống", "nguon": "B1, C6",
+  "lam": ["Giữ tiền cọc suốt đơn", "Chuyển, hoàn, chia cọc theo lệnh", "Xác nhận kết quả lệnh", "Ứng tiền (sau)"]},
+ {"id": "xe", "ten": "Nhà xe, kho lạnh, sơ chế", "ten_ngan": "Nhà xe / dịch vụ", "mau": "#b7791f", "dung": "Kết nối đối tác", "nguon": "B1, C7",
+  "lam": ["Báo giá, chở hàng", "Ghi vị trí, nhiệt độ", "Kho lạnh, sấy, cấp đông theo yêu cầu", "Đền theo hợp đồng vận chuyển"]},
+ {"id": "kd", "ten": "Kiểm định", "ten_ngan": "Kiểm định", "mau": "#b5402a", "dung": "Kết nối đối tác", "nguon": "C8",
+  "lam": ["Lấy mẫu, kết luận trong 24–48 giờ", "Bên sai chịu phí"]},
+]
+DONG_CHAY = [
+ {"tu": "mua", "den": "app", "loai": "tin", "nhan": "phiếu nhu cầu, giá tối đa kín"},
+ {"tu": "ban", "den": "app", "loai": "tin", "nhan": "lô hàng, giá thấp nhất kín"},
+ {"tu": "mua", "den": "nh", "loai": "tien", "nhan": "cọc 30% + phí giới thiệu"},
+ {"tu": "mua", "den": "ban", "loai": "tien", "nhan": "phần còn lại, trả thẳng theo hợp đồng"},
+ {"tu": "ban", "den": "mua", "loai": "hang", "nhan": "hàng, biên bản bốc"},
+ {"tu": "nh", "den": "ban", "loai": "tien", "nhan": "cọc chuyển sau quyết toán"},
+ {"tu": "nh", "den": "mua", "loai": "tien", "nhan": "phần cọc hoàn (nếu dư)"},
+ {"tu": "app", "den": "mua", "loai": "giay", "nhan": "bảng kê 01/TNDN, biên bản, chứng từ"},
+ {"tu": "htx", "den": "mua", "loai": "hang", "nhan": "hàng gom nhiều hộ, giỏ định kỳ"},
+ {"tu": "nv", "den": "mua", "loai": "tin", "nhan": "nguồn đã sàng lọc, nhãn đã kiểm / tự khai"},
+]
+
+T = []
+# 1. Luồng thuận HĐ-0018 (D bước 1–8)
+so0 = {"gia_tri": 46000000}
+T.append(TH("hd0018", "Giao ngay · trả trước khi bốc (HĐ-0018)", "thuan",
+  "Đồng Xanh mua 2 tấn xoài loại 1 của chị Năm, 23.000 đ/kg, giao xa 180 km, bên mua tự lo xe. Cọc 30% qua ngân hàng; phần còn lại chuyển thẳng trước khi bốc.",
+  [B("mua", "Tạo phiếu nhu cầu, giá tối đa kín", luong=[("tin", "app", "2 tấn · 25.000 kín")], dieu_kien="Có mặt hàng, loại, lượng, ngày, nơi nhận, giấy tờ", nguon=["C3", "D bước 1"]),
+   B("ban", "Đăng lô, giá thấp nhất kín", luong=[("tin", "app", "8 tấn · 21.500 kín")], dieu_kien="Không chọn ngày hái trước ngày hết cách ly thuốc", nguon=["C2", "D bước 1"]),
+   B("app", "Ghép giấu giá, chia 3 nhóm", o_dau="he_thong", luong=[("tin", "mua", "6 lô phù hợp, không có giá")], dieu_kien="Giá thấp nhất ≤ giá tối đa × 1,05", nguon=["C4", "E3"]),
+   B("mua", "Chào giá 23.000 đ/kg", luong=[("tin", "ban", "lời chào")], han="24 giờ / lượt", chi_tiet="Chào thấp hơn giá thấp nhất kín thì app tự từ chối, không lộ số. Tối đa 2 lần trả giá mỗi bên.", nguon=["C4", "D bước 3"]),
+   B("ban", "Đồng ý giá", luong=[("tin", "mua", "chốt 23.000")], chi_tiet="Chị Năm thấy giá chào, tiền ròng, so giá tham khảo và giá vốn.", nguon=["D bước 3"]),
+   B("mua", "Lập hợp đồng, ký mã", luong=[("giay", "ban", "hợp đồng HĐ-0018")], dieu_kien="Chọn cách chở, giá hạ cấp, tỷ lệ trả lại, lúc trả", nguon=["C5", "D bước 4"], tt="Chờ người bán ký"),
+   B("ban", "Nghe 5 điều, ký bằng mã 6 số", han="24 giờ", dieu_kien="Đánh dấu \"Tôi chắc chắn giao được\"", chi_tiet="Không ký trong 24 giờ thì đơn tự rút.", nguon=["C5", "D bước 4"], tt="Chờ cọc"),
+   B("mua", "Chuyển cọc 13.800.000 + phí 138.000", luong=[("tien", "nh", "13.938.000 đ")], han="48 giờ", nguon=["C6", "D bước 5"]),
+   B("nh", "Xác nhận đã giữ cọc", o_dau="ngan_hang", luong=[("tin", "ban", "cọc đang giữ"), ("tin", "mua", "mở liên lạc")], dieu_kien="Ngân hàng xác nhận, không phải bên mua tự báo", nguon=["C13 chặng 2"], tt="Đã cọc, chờ giao", so={"coc_giu": 13800000}),
+   B("mua", "Chuyển thẳng 32.200.000, ghi đã trả", o_dau="ngoai_app", luong=[("tien", "ban", "32.200.000 đ")], dieu_kien="Kèm ủy nhiệm chi", nguon=["C6", "D bước 6"], tt="Chờ thanh toán"),
+   B("ban", "Bấm \"Đã nhận 32.200.000 đ\"", dieu_kien="Chính chị thấy tiền trong tài khoản", chi_tiet="Ảnh ủy nhiệm chi và im lặng không phải bằng chứng tiền về. Cọc vẫn chưa về.", nguon=["C6", "C13 chặng 3"], so={"tra_thang": 32200000}),
+   B("ban", "Quét mã xe, cân, chụp, niêm mẫu", o_dau="ngoai_app", luong=[("hang", "mua", "2.000 kg lên xe"), ("giay", "mua", "biên bản bốc")], dieu_kien="Mã nhận hàng khớp xe 66C-123.45", nguon=["C7", "C8", "D bước 6"], tt="Đang giao"),
+   B("mua", "Xem video, bấm \"Đạt khi bốc\"", dieu_kien="Giao xa > 100 km: bắt buộc chốt lúc bốc", chi_tiet="Từ lúc này rủi ro đường thuộc bên mua (tự lo xe, giao tại vườn).", nguon=["C8"]),
+   B("mua", "Nhận hàng, nhập 3 phần", han="2 giờ từ lúc ký nhận", luong=[("tin", "ban", "1.850 đạt · 120 hạ cấp · 30 trả lại")], dieu_kien="Trả lại quá 5% phải có ảnh", nguon=["C8", "D bước 7"], tt="Chờ người bán xác nhận", so={"phai_tra": 44350000}),
+   B("ban", "Bấm \"Đúng, chốt số\"", han="24 giờ", chi_tiet="Không bấm thì cọc vẫn giữ; quá 24 giờ nhắc rồi người vận hành đối chiếu.", nguon=["C9", "D bước 7"], tt="Quyết toán"),
+   B("app", "Quyết toán: chuyển 12.150.000, hoàn 1.650.000", o_dau="he_thong", luong=[("giay", "nh", "lệnh chia cọc")], dieu_kien="Nghiệm thu chốt, trả thẳng đã xác minh, không tranh chấp", nguon=["C13 chặng 6"], tt="Đã gửi lệnh cọc"),
+   B("nh", "Chuyển cọc, báo kết quả", o_dau="ngan_hang", luong=[("tien", "ban", "12.150.000 đ"), ("tien", "mua", "1.650.000 đ")], nguon=["C13 chặng 7"], so={"coc_giu": 0, "coc_chi_ban": 12150000, "hoan_mua": 1650000}),
+   B("app", "Hoàn tất, sinh chứng từ", o_dau="he_thong", luong=[("giay", "mua", "bảng kê 01/TNDN"), ("giay", "ban", "lịch sử tiền")], chi_tiet="30 kg bị trả lại gợi ý thành lô loại 2 bán gấp 3 ngày.", nguon=["C6", "D bước 8"], tt="Hoàn tất")],
+  nguon=["D bước 1–8", "C13"], vi_du={"ma": "HĐ-0018", "gia_tri": 46000000, "ghi": "Kiểm phép tính (C13): cọc chi người bán + hoàn bên mua = cọc; người bán đã nhận 32.200.000 + 12.150.000 = 44.350.000 = giá trị nghiệm thu."},
+  trang_thai=TT_TRA_TRUOC, vai=["mua", "app", "ban", "nh"]))
+
+# 2–4 biến thể lúc trả
+T.append(TH("tra-khi-nhan", "Giao ngay · trả khi nhận hàng", "thuan", "Cùng đơn, nhưng bên mua trả phần còn lại sau nghiệm thu: đúng giá trị nghiệm thu trừ cọc.",
+  [B("mua", "Ký, chuyển cọc 13.800.000", luong=[("tien", "nh", "cọc + phí")], nguon=["C13"], tt="Chờ cọc"),
+   B("nh", "Xác nhận giữ cọc", o_dau="ngan_hang", tt="Đã cọc, chờ giao", so={"coc_giu": 13800000}, nguon=["C13 chặng 2"]),
+   B("ban", "Giao, lập biên bản", o_dau="ngoai_app", luong=[("hang", "mua", "2.000 kg")], tt="Đang giao", nguon=["C8"]),
+   B("mua", "Nghiệm thu 3 phần: 44.350.000", luong=[("tin", "ban", "kết quả cân")], tt="Chờ người bán xác nhận", so={"phai_tra": 44350000}, nguon=["C8"]),
+   B("ban", "Đúng, chốt số", tt="Chờ thanh toán", nguon=["C9"]),
+   B("mua", "Chuyển thẳng 30.550.000", o_dau="ngoai_app", luong=[("tien", "ban", "30.550.000 đ")], dieu_kien="= giá trị nghiệm thu − cọc", nguon=["C13 biến thể"]),
+   B("ban", "Bấm \"Đã nhận 30.550.000 đ\"", so={"tra_thang": 30550000}, tt="Quyết toán", nguon=["C6"]),
+   B("nh", "Chuyển toàn bộ cọc cho người bán", o_dau="ngan_hang", luong=[("tien", "ban", "13.800.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 13800000}, tt="Hoàn tất", nguon=["C13 ví dụ"])],
+  nguon=["C13 thứ tự theo lúc trả"], vi_du={"ma": "HĐ-0018 (trả khi nhận)", "gia_tri": 46000000}, trang_thai=TRANG_THAI, vai=["mua", "ban", "nh"]))
+T.append(TH("tra-sau", "Giao ngay · trả sau 7 ngày", "thuan", "Người bán chịu rủi ro 30.550.000 đ trong 7 ngày; cọc chờ tới khi người bán xác nhận khoản này.",
+  [B("ban", "Giao, bên mua nghiệm thu 44.350.000", o_dau="ngoai_app", luong=[("hang", "mua", "2.000 kg")], tt="Chờ người bán xác nhận", so={"coc_giu": 13800000, "phai_tra": 44350000}, nguon=["C13"]),
+   B("app", "Nhắc hạn trả 48, 24, 6 giờ trước", o_dau="he_thong", han="7 ngày", luong=[("tin", "mua", "nhắc hạn")], tt="Chờ thanh toán", nguon=["E2"]),
+   B("mua", "Chuyển thẳng 30.550.000 đúng hạn", o_dau="ngoai_app", luong=[("tien", "ban", "30.550.000 đ")], nguon=["C13"]),
+   B("ban", "Bấm \"Đã nhận\"", so={"tra_thang": 30550000}, tt="Quyết toán", nguon=["C6"]),
+   B("nh", "Chuyển cọc cho người bán", o_dau="ngan_hang", luong=[("tien", "ban", "13.800.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 13800000}, tt="Hoàn tất", nguon=["C13 ví dụ"])],
+  nguon=["C13"], vi_du={"ma": "HĐ-0018 (trả sau)", "gia_tri": 46000000, "ghi": "Có thể đặt mức bảo đảm cao hơn nếu hai bên chọn (C13)."}, trang_thai=TRANG_THAI, vai=["mua", "app", "ban", "nh"]))
+T.append(TH("tra-lai-nhieu", "Trả trước khi bốc · trả lại nhiều (còn công nợ)", "thuan", "Nghiệm thu chỉ 29.100.000 đ < 32.200.000 đ đã trả thẳng. Cọc hoàn hết cho bên mua vẫn thiếu 3.100.000 đ người bán phải trả lại ngoài app.",
+  [B("ban", "Đã nhận 32.200.000, bốc hàng", o_dau="ngoai_app", luong=[("hang", "mua", "2.000 kg")], tt="Đang giao", so={"coc_giu": 13800000, "tra_thang": 32200000}, nguon=["C13"]),
+   B("mua", "Nghiệm thu: chỉ 29.100.000", luong=[("tin", "ban", "trả lại nhiều, có ảnh")], tt="Chờ người bán xác nhận", so={"phai_tra": 29100000}, nguon=["C13 ví dụ"]),
+   B("ban", "Đúng, chốt số", tt="Quyết toán", nguon=["C9"]),
+   B("nh", "Hoàn toàn bộ cọc cho bên mua", o_dau="ngan_hang", luong=[("tien", "mua", "13.800.000 đ")], so={"coc_giu": 0, "hoan_mua": 13800000, "con_no": "Người bán còn phải hoàn 3.100.000 đ"}, tt="Đã giao xong · còn công nợ", nguon=["C13 điểm rút ra"]),
+   B("ban", "Trả lại 3.100.000, bấm \"Đã trả lại\"", o_dau="ngoai_app", luong=[("tien", "mua", "3.100.000 đ")], nguon=["C13"], so={"ban_da_hoan": 3100000}),
+   B("mua", "Xác nhận đã nhận lại", so={"con_no": ""}, tt="Hoàn tất", chi_tiet="Công nợ hết mới Hoàn tất.", nguon=["C13 ví dụ"])],
+  nguon=["C13 ví dụ"], vi_du={"ma": "HĐ-0018 (trả lại nhiều)", "gia_tri": 46000000}, trang_thai=TT_TRA_TRUOC + ["Đã giao xong · còn công nợ"], vai=["mua", "ban", "nh"]))
+
+# Nhánh D2
+def nhanh(id, ten, mo, buoc, nguon, vd=None, vai=None):
+    T.append(TH(id, ten, "nhanh", mo, buoc, nguon=nguon, vi_du=vd, vai=vai))
+nhanh("n1-tu-choi", "Người bán từ chối, hoặc không ký 24 giờ", "Chưa cọc nên không ai mất tiền; phiếu nhu cầu vẫn mở.",
+  [B("mua", "Lập hợp đồng, ký", luong=[("giay", "ban", "HĐ-0018")], tt="Chờ người bán ký", nguon=["Nhánh 1"]),
+   B("ban", "Không nhận: chọn lý do", han="24 giờ", luong=[("tin", "mua", "Đã hứa khách khác")], chi_tiet="Không nhận đơn chưa ký thì không bị trừ uy tín.", nguon=["Nhánh 1"]),
+   B("app", "Đóng đơn, gợi ý hộ khác", o_dau="he_thong", luong=[("tin", "mua", "Cô Hai · 3 tấn")], tt="Đóng", nguon=["E1"])], ["D2 nhánh 1"], vai=["mua", "app", "ban"])
+nhanh("n2-huy-truoc-coc", "Hủy trước khi cọc", "Hai bên đều hủy được, không cần bên kia đồng ý.",
+  [B("ban", "Đã ký, chờ cọc", tt="Chờ cọc", nguon=["Nhánh 2"]),
+   B("mua", "Hủy, ghi lý do", luong=[("tin", "ban", "Đổi kế hoạch sản xuất")], nguon=["Nhánh 2"]),
+   B("app", "Trả 2 tấn về lô, ghi uy tín nếu hủy nhiều", o_dau="he_thong", luong=[("tin", "ban", "lượng trả về lô")], tt="Đóng", nguon=["Nhánh 2"])], ["D2 nhánh 2"], vai=["mua", "app", "ban"])
+nhanh("n3-huy-sau-coc", "Xin hủy sau khi đã cọc", "Bên nào xin hủy, bên kia đồng ý thì cọc thuộc về bên kia. Im lặng 24 giờ là không đồng ý.",
+  [B("nh", "Đang giữ cọc 13.800.000", o_dau="ngan_hang", tt="Đã cọc, chờ giao", so={"coc_giu": 13800000}, nguon=["Nhánh 3, 10"]),
+   B("ban", "Xin hủy: mưa bão, 3 ảnh", luong=[("tin", "mua", "yêu cầu hủy")], chi_tiet="Mất mùa có xác nhận HTX nên gửi đề nghị giảm lượng (nhánh 4) để không bị phạt.", nguon=["Nhánh 3"]),
+   B("mua", "Đồng ý hủy", han="24 giờ", nguon=["Nhánh 3"]),
+   B("nh", "Hoàn cọc cho bên mua", o_dau="ngan_hang", luong=[("tien", "mua", "13.800.000 đ")], so={"coc_giu": 0, "hoan_mua": 13800000}, tt="Đóng", nguon=["C6", "C9"])],
+  ["D2 nhánh 3, 10"], vd={"gia_tri": 46000000}, vai=["mua", "ban", "nh"])
+nhanh("n4-mat-mua", "Mất mùa: đề nghị giảm lượng có bằng chứng", "Bất khả kháng báo trước, có xác nhận HTX hoặc khuyến nông: không phạt, hoàn cọc phần thiếu, app tìm hộ bù.",
+  [B("ban", "Đề nghị 2 tấn → 1,2 tấn, ảnh + xác nhận HTX", luong=[("giay", "mua", "bằng chứng lũ 20/10")], dieu_kien="Báo trước ngày giao", nguon=["Nhánh 4", "C9"], so={"coc_giu": 13800000}, tt="Đã cọc, chờ giao"),
+   B("htx", "Xác nhận thiệt hại", o_dau="ngoai_app", luong=[("giay", "ban", "xác nhận")], nguon=["C9"]),
+   B("mua", "Đồng ý, tìm hộ bù 800 kg", luong=[("tin", "app", "tìm hộ bù")], han="24 giờ", nguon=["Nhánh 4"]),
+   B("nh", "Hoàn cọc phần thiếu 5.520.000", o_dau="ngan_hang", luong=[("tien", "mua", "5.520.000 đ")], so={"coc_giu": 8280000, "hoan_mua": 5520000}, nguon=["Nhánh 4"]),
+   B("app", "Không phạt, không trừ uy tín", o_dau="he_thong", chi_tiet="Ước sai báo trước ≥ 3 ngày: phạt 10% cọc phần thiếu. Không báo, giao thiếu: mất cọc phần thiếu.", nguon=["C9"])],
+  ["D2 nhánh 4", "C9"], vd={"gia_tri": 46000000}, vai=["ban", "htx", "mua", "app", "nh"])
+nhanh("n5-qua-han-coc", "Quá hạn cọc", "48 giờ (hàng tươi 12 giờ). Nhắc lúc 24 và 6 giờ trước hạn.",
+  [B("ban", "Đã ký", tt="Chờ cọc", nguon=["Nhánh 5"]),
+   B("app", "Nhắc bên mua 24 và 6 giờ trước hạn", o_dau="he_thong", luong=[("tin", "mua", "nhắc cọc")], han="48 giờ", nguon=["Nhánh 5"]),
+   B("app", "Đóng đơn, lượng về lô, ghi bỏ đơn", o_dau="he_thong", luong=[("tin", "ban", "2 tấn về lô")], tt="Đóng", nguon=["E1"])], ["D2 nhánh 5"], vai=["mua", "app", "ban"])
+nhanh("n6-khong-tra-du", "Bên mua không trả đủ phần còn lại", "Chị Năm mới thấy 20 / 32,2 triệu. Bên mua có 48 giờ trả nốt hoặc gửi chứng từ; người vận hành đối soát.",
+  [B("mua", "Báo đã trả, kèm ủy nhiệm chi", o_dau="ngoai_app", luong=[("tien", "ban", "20.000.000 đ")], tt="Chờ thanh toán", so={"coc_giu": 13800000}, nguon=["Nhánh 6"]),
+   B("ban", "Bấm \"Chưa nhận\": thấy 20 / 32,2 triệu", luong=[("tin", "mua", "thiếu 12.200.000")], chi_tiet="Chưa nhận đủ thì chưa cần cho bốc.", nguon=["Nhánh 6"]),
+   B("nv", "Đối soát sao kê người bán", o_dau="nhan_vien", han="48 giờ", dieu_kien="Ảnh ủy nhiệm chi chưa đủ", nguon=["C6", "C9"]),
+   B("nh", "Không có khoản trả: cọc về người bán", o_dau="ngan_hang", luong=[("tien", "ban", "13.800.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 13800000}, tt="Đóng", chi_tiet="Uy tín \"trả đúng hạn\" của bên mua giảm. Người bán không phải giao.", nguon=["Nhánh 6", "E1"])],
+  ["D2 nhánh 6"], vd={"gia_tri": 46000000}, vai=["mua", "ban", "nv", "nh"])
+nhanh("n7-can-khong-dung", "Người bán báo số cân không đúng", "Cân lại 24 giờ; vẫn lệch thì kiểm định 48 giờ. Cọc giữ tới khi có kết quả; bên sai chịu phí.",
+  [B("mua", "Gửi kết quả: trả lại 30 kg", luong=[("tin", "ban", "kết quả cân")], tt="Chờ người bán xác nhận", so={"coc_giu": 13800000}, nguon=["Nhánh 7"]),
+   B("ban", "\"Không đúng\" + ảnh cân, ảnh trái", luong=[("giay", "mua", "bằng chứng")], nguon=["Nhánh 7"]),
+   B("mua", "Cân lại, gửi số mới", han="24 giờ", nguon=["Nhánh 7"]),
+   B("kd", "Vẫn lệch: lấy mẫu, kết luận", o_dau="ngoai_app", han="48 giờ", luong=[("giay", "app", "kết quả kiểm định")], nguon=["C8", "C9"], tt="Đang kiểm định"),
+   B("app", "Chốt theo kết quả, bên sai chịu phí", o_dau="he_thong", tt="Quyết toán", nguon=["E1"])],
+  ["D2 nhánh 7"], vd={"gia_tri": 46000000}, vai=["mua", "ban", "kd", "app"])
+nhanh("n8-khac-mau", "Giao xa: hàng tới khác mẫu lúc bốc", "Mở mẫu đối chứng niêm phong; hư do đường thì đòi nhà xe/bảo hiểm, khác mẫu thì kiểm định 24 giờ. Hàng tươi không chở ngược.",
+  [B("mua", "Mở mẫu M-2291, 200 kg sượng", luong=[("giay", "ban", "ảnh, mở tranh chấp")], tt="Chờ nghiệm thu", so={"coc_giu": 13800000}, nguon=["Nhánh 8", "C8"]),
+   B("xe", "Gửi kho lạnh chờ kiểm định", o_dau="ngoai_app", luong=[("hang", "xe", "200 kg")], nguon=["C8"]),
+   B("ban", "Gửi ảnh, video lúc bốc", luong=[("giay", "kd", "đối chứng")], nguon=["Nhánh 8"]),
+   B("kd", "Lấy mẫu 15:00, kết luận", o_dau="ngoai_app", han="24 giờ", luong=[("giay", "app", "kết quả")], tt="Đang kiểm định", nguon=["C9"]),
+   B("app", "Lỗi người bán: trừ 200 kg vào cọc", o_dau="he_thong", chi_tiet="Người bán đúng thì bên mua chịu phí và trả đủ.", tt="Quyết toán", nguon=["Nhánh 8"])],
+  ["D2 nhánh 8"], vd={"gia_tri": 46000000}, vai=["mua", "xe", "ban", "kd", "app"])
+nhanh("n9-xe-tre", "Xe bên mua tới trễ", "Hư do chờ thuộc bên mua; trễ quá 24 giờ người bán được hủy, giữ cọc, app gợi ý bán gấp.",
+  [B("mua", "Báo xe trễ 2 giờ", luong=[("tin", "ban", "tới 7:40")], tt="Đã cọc, chờ giao", so={"coc_giu": 13800000}, nguon=["Nhánh 9"]),
+   B("ban", "Chụp hàng sẵn lúc 5:30", luong=[("giay", "app", "ảnh có giờ")], chi_tiet="App ghi \"đã sẵn hàng\".", nguon=["C7"]),
+   B("app", "Trễ > 24 giờ: cho người bán hủy, giữ cọc", o_dau="he_thong", nguon=["C7", "Nhánh 9"])],
+  ["D2 nhánh 9"], vd={"gia_tri": 46000000}, vai=["mua", "ban", "app"])
+nhanh("n11-13-de-nghi", "Đề nghị đổi lịch, giá, lượng, cách chở", "Bên nào cũng gửi được. Hạn 24 giờ, im lặng là không đồng ý. Giá chỉ đổi trước khi cọc.",
+  [B("mua", "Đề nghị dời 28/10 → 30/10", luong=[("tin", "ban", "đề nghị")], nguon=["Nhánh 11"]),
+   B("ban", "Đồng ý hoặc không", han="24 giờ", chi_tiet="Hàng tươi: có thể từ chối nếu trái chín trước ngày mới.", nguon=["Nhánh 11"]),
+   B("ban", "Đề nghị đổi giá 23.000 → 24.000 (trước cọc)", luong=[("tin", "mua", "đề nghị")], nguon=["Nhánh 12"]),
+   B("app", "Tính lại cọc 14.400.000 nếu đồng ý", o_dau="he_thong", nguon=["Nhánh 12"]),
+   B("ban", "Đề nghị đổi sang xe qua app", luong=[("tin", "mua", "xe 2.400.000, bên mua trả")], chi_tiet="Rủi ro đường chuyển sang nhà xe nếu đồng ý.", nguon=["Nhánh 13"])],
+  ["D2 nhánh 11–13"], vai=["mua", "ban", "app"])
+nhanh("n14-tu-choi-ca-lo", "Bên mua từ chối nhận cả lô tại chỗ", "Phải có lý do và ảnh trong 2 giờ; kiểm định 24 giờ quyết định cọc về ai.",
+  [B("ban", "Giao 2 tấn tới kho", o_dau="ngoai_app", luong=[("hang", "mua", "2 tấn")], tt="Chờ nghiệm thu", so={"coc_giu": 13800000}, nguon=["Nhánh 14"]),
+   B("mua", "Từ chối: sai loại, 6 ảnh", han="2 giờ", luong=[("giay", "ban", "lý do + ảnh")], nguon=["Nhánh 14"]),
+   B("ban", "Không đồng ý: mở kiểm định", luong=[("tin", "kd", "mời kiểm định")], nguon=["Nhánh 14"]),
+   B("kd", "Kết luận", o_dau="ngoai_app", han="24 giờ", tt="Đang kiểm định", chi_tiet="Bên mua đúng: cọc hoàn bên mua, người bán chịu phí. Bên mua sai: cọc về người bán.", nguon=["Nhánh 14"])],
+  ["D2 nhánh 14"], vd={"gia_tri": 46000000}, vai=["ban", "mua", "kd"])
+nhanh("n15-bo-don", "Người bán bỏ đơn, không giao", "Có 12 giờ sau giờ giao để giải thích hoặc dời lịch; không thì cọc hoàn bên mua, ghi bỏ đơn.",
+  [B("app", "Quá giờ giao, chưa giao", o_dau="he_thong", luong=[("tin", "ban", "cảnh báo")], tt="Đã cọc, chờ giao", so={"coc_giu": 13800000}, nguon=["Nhánh 15"]),
+   B("ban", "Không gửi đề nghị dời lịch", han="12 giờ", nguon=["Nhánh 15"]),
+   B("nh", "Hoàn cọc bên mua", o_dau="ngan_hang", luong=[("tien", "mua", "13.800.000 đ")], so={"coc_giu": 0, "hoan_mua": 13800000}, tt="Đóng", nguon=["C6"]),
+   B("app", "Gợi ý hộ thay cùng giá", o_dau="he_thong", luong=[("tin", "mua", "hộ thay")], chi_tiet="Lặp lại thì khóa tạm. Phạt thêm (nếu hợp đồng có) hai bên tự thi hành.", nguon=["Nhánh 15"])],
+  ["D2 nhánh 15"], vd={"gia_tri": 46000000}, vai=["app", "ban", "mua", "nh"])
+nhanh("n16-thuong-luong", "Thương lượng không thành", "Mỗi lượt 24 giờ, tối đa 2 lần trả giá mỗi bên. Chưa cọc, không ai mất gì.",
+  [B("mua", "Chào 3 hộ 23.000", luong=[("tin", "ban", "lời chào")], nguon=["Nhánh 16"]),
+   B("ban", "Trả giá 24.500 (lần 2)", luong=[("tin", "mua", "trả giá")], han="24 giờ", nguon=["Nhánh 16"]),
+   B("app", "Hết lượt: đóng chào giá", o_dau="he_thong", chi_tiet="Phiếu vẫn mở với hộ khác; lô vẫn bán, không bị ghi gì.", nguon=["Nhánh 16"])], ["D2 nhánh 16"], vai=["mua", "ban", "app"])
+
+# Hợp đồng D3, C10, C11
+T.append(TH("dat-truoc", "Đặt trước khi hái", "hop_dong", "Trái còn trên cây, hái sau 1–8 tuần. Lượng theo khoảng, giá chốt hoặc công thức có sàn và trần; cọc tính lại khi chốt.",
+  [B("mua", "Lập đơn 8–10 tấn, sàn 20.000, trần 28.000", luong=[("giay", "ban", "hợp đồng đặt trước")], nguon=["D3 loại 2", "C5"], tt="Chờ người bán ký"),
+   B("ban", "Ký; cọc 30% trên mức tối thiểu", nguon=["C5"], tt="Chờ cọc"),
+   B("nh", "Giữ cọc 13.800.000", o_dau="ngan_hang", so={"coc_giu": 13800000}, tt="Đã cọc, chờ giao", nguon=["C13 ví dụ"]),
+   B("ban", "Cập nhật vườn 2 tuần/lần: 4 ảnh, ước 9,2 tấn", luong=[("giay", "mua", "ảnh vườn")], nguon=["D3 loại 2"]),
+   B("mua", "Gần ngày hái: chốt 2,1 tấn × 24.000", luong=[("tin", "ban", "đề nghị chốt")], han="24 giờ", nguon=["C13 biến thể"]),
+   B("mua", "Bổ sung cọc chênh 1.320.000", luong=[("tien", "nh", "1.320.000 đ")], dieu_kien="Là một dòng của thẻ Sẵn sàng giao", so={"coc_giu": 15120000, "gia_tri": 50400000}, nguon=["C13 điểm rút ra"]),
+   B("ban", "Giao, nghiệm thu như giao ngay", o_dau="ngoai_app", luong=[("hang", "mua", "2,1 tấn")], tt="Chờ thanh toán", nguon=["D3"]),
+   B("mua", "Trả thẳng 35.280.000", o_dau="ngoai_app", luong=[("tien", "ban", "35.280.000 đ")], so={"tra_thang": 35280000}, nguon=["C13 ví dụ"]),
+   B("nh", "Chuyển cọc 15.120.000", o_dau="ngan_hang", luong=[("tien", "ban", "15.120.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 15120000}, tt="Hoàn tất", nguon=["C13 ví dụ"])],
+  nguon=["D3 loại 2", "C13"], vi_du={"ma": "HĐ-0025", "gia_tri": 50400000, "ghi": "Mức cọc 30% cho đặt trước còn chờ chốt (bản trước ghi 10–20%)."}, trang_thai=TRANG_THAI, vai=["mua", "ban", "nh"]))
+T.append(TH("bao-tieu", "Bao tiêu theo vụ, 3 đợt", "hop_dong", "Ký trước khi trồng; bên mua ứng vật tư; giá sàn + thưởng chất lượng; mỗi đợt nghiệm thu và trả riêng, cuối vụ chỉ xử lý phần chênh.",
+  [B("mua", "Ký vụ: sàn 18.000, thưởng +2.000 nếu L1 ≥ 70%", luong=[("giay", "ban", "hợp đồng vụ")], nguon=["D3 loại 3"], tt="Chờ người bán ký"),
+   B("mua", "Cọc vụ 10.000.000, ứng phân bón 15.000.000", luong=[("tien", "nh", "cọc vụ"), ("hang", "ban", "vật tư 15 triệu")], so={"coc_giu": 10000000}, tt="Đã cọc, chờ giao", nguon=["C13 ví dụ"]),
+   B("ban", "Ghi nhật ký canh tác bắt buộc", luong=[("giay", "mua", "nhật ký, cách ly")], nguon=["C5", "D3"]),
+   B("ban", "Giao đợt 1, nghiệm thu, trừ vật tư 5 triệu", o_dau="ngoai_app", luong=[("hang", "mua", "đợt 1")], tt="Chờ thanh toán", nguon=["C10 bao tiêu"]),
+   B("mua", "Trả tiền từng đợt theo hạn đợt", o_dau="ngoai_app", luong=[("tien", "ban", "tiền đợt")], so={"tra_thang": 126200000, "gia_tri": 151200000}, nguon=["C10"]),
+   B("app", "Quyết toán vụ: chỉ phần chênh", o_dau="he_thong", tt="Quyết toán", nguon=["C10"]),
+   B("nh", "Chuyển cọc vụ 10.000.000", o_dau="ngan_hang", luong=[("tien", "ban", "10.000.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 10000000}, tt="Hoàn tất", chi_tiet="Người bán đã nhận 136.200.000 tiền + 15.000.000 vật tư đối trừ.", nguon=["C13 ví dụ"])],
+  nguon=["D3 loại 3", "C10"], vi_du={"ma": "Bao tiêu xoài", "gia_tri": 151200000}, trang_thai=TRANG_THAI, vai=["mua", "ban", "app", "nh"]))
+T.append(TH("khung-bep-sen", "Hợp đồng khung · nhà hàng qua HTX", "hop_dong", "Bếp Sen đặt xoài, thanh long thứ 2 và thứ 5 qua đầu mối HTX Mỹ Xương. Mức được phép = bảo đảm khả dụng + cho nợ thêm (mặc định 0 đ).",
+  [B("mua", "Ký khung, cọc khung 1.160.000", luong=[("tien", "nh", "1.160.000 đ")], so={"coc_giu": 1160000}, nguon=["C10", "D3 loại 4"], tt="Đã cọc, chờ giao"),
+   B("htx", "Cho nợ thêm 1.500.000 (ban điều hành duyệt)", luong=[("tin", "mua", "hạn mức")], nguon=["C10"], loai="goc"),
+   B("htx", "Giao thứ 2, Bếp Sen xác nhận", o_dau="ngoai_app", luong=[("hang", "mua", "30 kg xoài · 20 kg thanh long")], nguon=["C10"]),
+   B("mua", "Đặt thêm 10 kg xoài", luong=[("tin", "app", "+260.000 đ")], nguon=["C10 ví dụ"]),
+   B("app", "Vượt mức 180.000: dừng cam kết mới", o_dau="he_thong", luong=[("tin", "mua", "nộp thêm cọc khung")], chi_tiet="Lần đã cam kết vẫn chạy. 2.660.000 được phép − 2.580.000 đã dùng = còn 80.000.", nguon=["C10"]),
+   B("mua", "Trả cuối tuần (trả thẳng)", o_dau="ngoai_app", luong=[("tien", "htx", "theo kỳ")], so={"tra_thang": 4000000, "gia_tri": 5160000}, nguon=["C10"]),
+   B("htx", "Mua lại từ nông dân trên app", luong=[("tin", "ban", "đơn nhỏ từ hộ")], chi_tiet="Nhà hàng đi qua đầu mối vì nông dân không giao lẻ mỗi ngày được. Khớp nhận xét phỏng vấn: HORECA không mua lẻ từng hộ.", nguon=["C10", "Phỏng vấn 27/10"], loai="phong_van",
+     trich="HORECA không thể mua trực tiếp nhiều loại từ từng người sản xuất")],
+  nguon=["C10", "D3 loại 4"], vi_du={"ma": "Khung Bếp Sen", "gia_tri": 5160000}, trang_thai=["Đã cọc, chờ giao", "Đang chạy · chờ bổ sung bảo đảm"], vai=["mua", "htx", "ban", "app", "nh"]))
+T.append(TH("don-nhom", "Đơn nhóm: gom nhiều hộ cho đủ lượng", "hop_dong", "Phiếu cần 200 kg; app gợi ý tổ hợp hộ gần nhau. Mỗi hộ ký, cọc, được trả riêng; hộ khác rớt không ảnh hưởng.",
+  [B("mua", "Phiếu 200 kg loại 1, \"chỉ khi đủ\"", luong=[("tin", "app", "phiếu")], nguon=["C10", "D3 loại 5"]),
+   B("app", "Gợi ý A 100 + B 60 + C 40 kg", o_dau="he_thong", luong=[("tin", "ban", "mời vào nhóm")], nguon=["C10"]),
+   B("ban", "Mỗi hộ ký phần mình, cọc riêng", luong=[("tien", "nh", "414.000 đ (anh Sáu)")], so={"coc_giu": 414000}, nguon=["C13 ví dụ"]),
+   B("app", "Cô Hai rớt: mời Út Lan 40 kg", o_dau="he_thong", luong=[("tin", "ban", "hộ thay")], han="chốt nhóm 18:00", nguon=["D3 loại 5"]),
+   B("htx", "Điểm gom kiểm, cân, đóng gói", o_dau="ngoai_app", luong=[("hang", "mua", "một chuyến")], nguon=["C10"]),
+   B("mua", "Trả riêng từng hộ", o_dau="ngoai_app", luong=[("tien", "ban", "920.000 đ")], so={"tra_thang": 920000}, nguon=["C13 ví dụ"]),
+   B("nh", "Chuyển cọc phần anh Sáu", o_dau="ngan_hang", luong=[("tien", "ban", "414.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 414000}, tt="Hoàn tất", nguon=["C13 ví dụ"])],
+  nguon=["C10", "D3 loại 5"], vi_du={"ma": "Đơn nhóm · phần anh Sáu", "gia_tri": 1334000, "ghi": "58/60 kg đạt."}, trang_thai=TRANG_THAI, vai=["mua", "app", "ban", "htx", "nh"]))
+T.append(TH("kem-loai", "Hàng kém loại, bán gấp, bao tiêu hàng dạt", "hop_dong", "Hàng xấu có người mua khác. Lô bán gấp có sàn bằng giá bao tiêu; bên mua chỉ thấy \"giao được trong 48 giờ\".",
+  [B("ban", "Tách lô: loại 1 và loại 2, 3, dạt", luong=[("tin", "app", "2 lô")], nguon=["C11", "C2"]),
+   B("app", "24 giờ chưa ai hỏi: gợi ý bán gấp", o_dau="he_thong", luong=[("tin", "ban", "gợi ý")], nguon=["C11"]),
+   B("ban", "Bật bán gấp 3 ngày", nguon=["C11"]),
+   B("app", "Báo bên nhận hàng kém loại, bao tiêu", o_dau="he_thong", luong=[("tin", "mua", "lô khớp")], nguon=["C11"]),
+   B("mua", "Chào dưới sàn: tự từ chối", chi_tiet="App gợi ý bán cho đối tác bao tiêu (giá sàn hàng dạt).", nguon=["C11"]),
+   B("xe", "Hoặc: kho lạnh, sấy, cấp đông thay vì bán rẻ", o_dau="ngoai_app", luong=[("hang", "xe", "lô loại 2")], nguon=["C11"])],
+  nguon=["C11"], vai=["ban", "app", "mua", "xe"]))
+
+# Bổ sung từ phỏng vấn (chấm cam) gắn vào khung gốc
+T.append(TH("dang-ky-xac-minh", "Đăng ký, xác minh người bán tại chỗ", "dich_vu", "Người bán vào qua HTX và đại sứ. Nhân viên xác minh tại vườn; hồ sơ ghi rõ phần \"đã kiểm\" và phần \"tự khai\".",
+  [B("htx", "Đăng ký giúp hộ tại chỗ", luong=[("tin", "app", "hồ sơ hộ")], nguon=["B2", "C1"]),
+   B("ban", "Chụp căn cước, so khuôn mặt", luong=[("giay", "app", "giấy tờ")], nguon=["C1"]),
+   B("nv", "Đến vườn: kiểm diện tích, mặt hàng, năng lực", o_dau="nhan_vien", luong=[("giay", "app", "biên bản xác minh")], nguon=["Phỏng vấn 27/10", "B1"], loai="phong_van",
+     trich="Kiểm tra nguồn gốc, năng lực cung cấp, hồ sơ trước khi nhận nhà cung cấp mới"),
+   B("app", "Gắn nhãn từng trường: đã kiểm / tự khai", o_dau="he_thong", luong=[("tin", "mua", "hồ sơ công khai")], chi_tiet="Hồ sơ ngành hàng, chứng nhận, uy tín hiện kèm nguồn kiểm.", nguon=["Phỏng vấn 27/10", "Idea Track"], loai="phong_van"),
+   B("ban", "Đăng lô chỉ với mặt hàng đã xác minh", nguon=["C2"])],
+  nguon=["C1", "B2", "Phỏng vấn"], loai="phong_van", vai=["htx", "ban", "nv", "app", "mua"]))
+T.append(TH("thu-mau", "Thử mẫu, thẩm định trước đơn đầu", "dich_vu", "Bên mua mới chưa quen: thử mẫu, thẩm định trước khi đặt đơn lớn. Tài liệu gốc đã gợi ý \"đơn thử nhỏ\" (C8); phỏng vấn cho thấy đây là bước bắt buộc của bên mua chuyên nghiệp.",
+  [B("mua", "Phiếu nhu cầu + yêu cầu mẫu", luong=[("tin", "nv", "quy cách, tiêu chí")], nguon=["Phỏng vấn 27/10"], loai="phong_van", trich="Phải thử mẫu, thẩm định trước đơn đầu tiên"),
+   B("nv", "Sàng lọc 2–3 nguồn phù hợp", o_dau="nhan_vien", luong=[("tin", "mua", "nguồn + nhãn đã kiểm")], nguon=["Phỏng vấn 27/10"], loai="phong_van"),
+   B("ban", "Gửi mẫu (có thể qua xe đối tác)", o_dau="ngoai_app", luong=[("hang", "mua", "mẫu")], nguon=["Phỏng vấn 27/10"], loai="phong_van"),
+   B("mua", "Đánh giá mẫu, phản hồi", luong=[("tin", "ban", "đạt / chỉnh báo giá")], nguon=["Phỏng vấn 27/10"], loai="phong_van"),
+   B("mua", "Đơn thử nhỏ (giao ngay)", luong=[("giay", "ban", "hợp đồng nhỏ")], nguon=["C8 đơn thử nhỏ"]),
+   B("app", "Đơn hoàn tất hợp lệ → mối quen", o_dau="he_thong", chi_tiet="Mối quen chỉ để tính phí; không tự cho nợ, không bỏ kiểm hàng.", nguon=["A2"])],
+  nguon=["C8", "A2", "Phỏng vấn"], loai="phong_van", vai=["mua", "nv", "ban", "app"]))
+T.append(TH("dieu-phoi", "Sau đơn đầu: điều phối định kỳ, nguồn thay thế", "dich_vu", "Trả lời câu hỏi phỏng vấn \"sau hợp đồng đầu tiên AgiViet còn làm gì\": hợp đồng khung, cảnh báo thiếu hàng, tìm nguồn thay thế cùng quy cách.",
+  [B("mua", "Chuyển sang hợp đồng khung", luong=[("giay", "htx", "lịch giao lặp")], nguon=["C10"]),
+   B("htx", "Báo thiếu hàng trước 24 giờ", luong=[("tin", "app", "thiếu 15 kg")], nguon=["C10"]),
+   B("app", "Gợi ý nguồn thay thế cùng quy cách", o_dau="he_thong", luong=[("tin", "mua", "2 nguồn")], nguon=["C10 hộ thay", "Phỏng vấn 27/10"], loai="phong_van", trich="Cần nguồn hàng đều, giao đúng lịch"),
+   B("nv", "Theo dõi đơn, lưu bằng chứng sự cố", o_dau="nhan_vien", nguon=["Phỏng vấn 27/10"], loai="phong_van"),
+   B("app", "Uy tín theo giao dịch đã hoàn tất", o_dau="he_thong", chi_tiet="Giao đủ, đúng giờ, bị trả lại, trả tiền đúng hạn; không chỉ số sao.", nguon=["E3", "Phỏng vấn"], loai="phong_van")],
+  nguon=["C10", "Phỏng vấn"], loai="phong_van", vai=["mua", "htx", "app", "nv"]))
+
+# Bản 2: thay toàn bộ tình huống bằng bản đã sửa theo góp ý người sáng lập (tinh_huong.py).
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tinh_huong import xay, CAN_CHOT_THEM
+T = xay(B, TH, TRANG_THAI)
+
+# Rà soát độc lập 27/10: chỉ bổ sung storyboard có căn cứ; giữ nguyên 28
+# tình huống đầu để các sai lệch trong ra-soat-codex.md còn đối chiếu được.
+# Không dùng Motion v2 làm nguồn chốt luật. Không tạo engine giao dịch.
+def bo_sung_ra_soat():
+    def them(id, ten, mo, buoc, nguon, gia_tri=None, loai="goc", ghi=""):
+        vd = {"gia_tri": gia_tri, "ghi": ghi} if gia_tri is not None else {}
+        T.append(TH(id, ten, "ra_soat", mo, buoc, nguon=nguon, vi_du=vd,
+                    vai=list(dict.fromkeys([b["vai"] for b in buoc] +
+                        [l["den"] for b in buoc for l in b["luong"]])), loai=loai))
+
+    them("rs-tra-thieu-bo-sung", "Rà soát · nhận 20 triệu, bổ sung rồi mới bốc",
+      "Biến thể trả trước khi bốc. 20 triệu là khoản đã xác nhận, 12,2 triệu là khoản còn thiếu; chưa đủ thì chưa giao.", [
+        B("nh", "Đã xác nhận cọc 13.800.000", o_dau="ngan_hang", so={"coc_giu": 13800000}, tt="Đã cọc, chờ giao", nguon=["C13 chặng 2"]),
+        B("mua", "Ghi đã trả 20.000.000", o_dau="ngoai_app", luong=[("tien", "ban", "20.000.000 đ")], nguon=["Prompt mua V2 §8.3"]),
+        B("ban", "Nhận một phần: 20.000.000", so={"tra_thang": 20000000, "con_no": "Bên mua còn phải trả trước khi bốc 12.200.000 đ"}, dieu_kien="Chưa đủ 32.200.000: chưa cho bốc; cọc vẫn giữ", nguon=["Brief bán §3.5", "Prompt mua V2 §8.3"]),
+        B("mua", "Trả nốt 12.200.000", o_dau="ngoai_app", luong=[("tien", "ban", "12.200.000 đ")], nguon=["Prompt mua V2 §8.3"]),
+        B("ban", "Xác nhận tổng đã nhận 32.200.000", so={"tra_thang": 32200000, "con_no": ""}, dieu_kien="Tự kiểm tài khoản; cọc chưa chuyển", nguon=["C6"]),
+        B("app", "Chỉ cho bốc khi đủ mọi dòng Sẵn sàng giao", o_dau="he_thong", tt="Đang giao", dieu_kien="Tiền, hàng, người nhận, xe, hồ sơ, mốc rủi ro đều đủ", chi_tiet="Dừng ở mốc được giao; chưa nghiệm thu hay quyết toán.", nguon=["C13 chặng 3–4"])],
+      ["C6", "C13", "Prompt mua V2 §8.3"], 46000000)
+
+    them("rs-lech-tien", "Rà soát · báo trả 32,2 triệu, chỉ thấy 20 triệu",
+      "Lệch cần đối soát khác với vi phạm đã xác minh. Không lấy ảnh ủy nhiệm chi hoặc im lặng làm tiền đã nhận.", [
+        B("nh", "Cọc đang giữ 13.800.000", o_dau="ngan_hang", so={"coc_giu": 13800000}, nguon=["C6"]),
+        B("mua", "Báo đã chuyển 32.200.000, gửi chứng từ", luong=[("giay", "app", "ủy nhiệm chi")], nguon=["Prompt mua V2 §8.4"]),
+        B("ban", "Chỉ xác nhận đã thấy 20.000.000", so={"tra_thang": 20000000}, tt="Lệch, đang đối soát", dieu_kien="Chưa bốc, chưa phạt, chưa chuyển cọc", nguon=["Đặc tả mua V1 §1 L5", "Prompt mua V2 §8.4"]),
+        B("nv", "Đối chiếu chứng từ với sao kê, mời bổ sung", o_dau="nhan_vien", han="48 giờ khi bên mua báo trả mà chưa xác nhận", chi_tiet="Chỉ chốt số có bằng chứng; chưa có kết quả thì giữ trạng thái đối soát, không tự kết luận đã trả hoặc vi phạm.", nguon=["C6", "C9"])],
+      ["C6", "C9", "Prompt mua V2 §8.4"], 46000000)
+
+    them("rs-phan-doi-mot-dong", "Rà soát · chỉ phản đối dòng hạ cấp",
+      "Giữ các dòng đã thống nhất; dòng hạ cấp 120 kg đi cân lại rồi kiểm định nếu vẫn bất đồng.", [
+        B("mua", "Gửi 1.850 đạt, 120 hạ cấp, 30 trả lại", luong=[("tin", "ban", "bảng nghiệm thu từng dòng")], nguon=["Prompt mua V2 §8.6"]),
+        B("ban", "Có phần không đúng: chọn dòng 120 kg", chi_tiet="Đạt và trả lại vẫn chốt; chưa coi tổng tiền là nghiệm thu cuối.", tt="Đã chốt phần không tranh chấp · đang kiểm định phần còn lại", nguon=["Brief bán G7", "C13 chặng 8"]),
+        B("mua", "Cân lại riêng dòng bất đồng", han="24 giờ", luong=[("giay", "ban", "ảnh cân lại")], nguon=["C9"]),
+        B("kd", "Vẫn bất đồng: kiểm định, bên sai chịu phí", o_dau="ngoai_app", han="48 giờ", chi_tiet="Cọc giữ tới kết quả; chưa có kết luận thì chưa quyết toán. Chốt lại giá trị nghiệm thu từ kết quả, không tự giải ngân phần tiền đang tranh chấp.", nguon=["C9", "Prompt mua V2 §8.6"])],
+      ["C9", "C13", "Prompt mua V2 §8.6"])
+
+    them("rs-can-lech", "Rà soát · cân 1.960 kg và thử ngoài khoảng",
+      "Hai phép thử của cùng hợp đồng 2.000 kg, khoảng ±5% đã ký. Ba phần phải cộng đúng lượng cân thực tế.", [
+        B("mua", "Cân 1.960 kg: trong khoảng 1.900–2.100 kg", dieu_kien="Khoảng ±5% có trong hợp đồng; không phải luật chung mọi mặt hàng", nguon=["Đặc tả mua H5", "Prompt mua V2 §8.7"]),
+        B("app", "Trong khoảng: giữ luồng thuận", o_dau="he_thong", chi_tiet="Đạt + hạ cấp + trả lại = 1.960 kg; chưa có phân bổ thì chưa tính giá trị nghiệm thu.", nguon=["C5", "Prompt mua V2 §8.7"]),
+        B("mua", "Phép thử khác: cân 1.850 kg", chi_tiet="Đây là phép thử thay thế 1.960 kg, không phải một lần giao thêm.", nguon=["Prompt mua V2 §8.7"]),
+        B("app", "Ngoài khoảng: mở xử lý thiếu lượng", o_dau="he_thong", tt="Chờ xử lý thiếu lượng", dieu_kien="Xác định nguyên nhân, phần thiếu và nghĩa vụ giao bù; chưa Hoàn tất", nguon=["C9", "Prompt mua V2 §8.7"])],
+      ["C5", "C9", "Prompt mua V2 §8.7"])
+
+    them("rs-thieu-luong", "Rà soát · ước sai, không báo, còn phải giao bù",
+      "Phân biệt với bất khả kháng ở n4-mat-mua. Mỗi nguyên nhân có cách xử lý riêng; không gộp thành mất mùa.", [
+        B("ban", "Ước sai: báo giảm lượng trước ít nhất 3 ngày", luong=[("tin", "mua", "đề nghị giảm lượng")], chi_tiet="Bên mua đồng ý hoặc tìm bù qua đơn nhóm; phạt 10% cọc phần thiếu, giảm uy tín theo C9. Cách trích khoản phạt cần đối chiếu quy tắc cọc, chưa tự tính thêm.", nguon=["C9 thiếu lượng"]),
+        B("app", "Nếu không báo, giao thiếu tại chỗ: tách phần thiếu", o_dau="he_thong", chi_tiet="C6 và D2 nhánh 4: cọc phần thiếu hoàn bên mua; C9 gọi là người bán mất cọc phần thiếu. Hai cách diễn đạt cùng hướng, không phải hai khoản phạt. Không suy ra cọc đủ bù toàn bộ hàng.", nguon=["C6", "C9", "D2 nhánh 4"]),
+        B("ban", "Nếu hai bên chọn giao bù: ghi lượng, ngày, tiền", luong=[("tin", "app", "nghĩa vụ giao sau")], dieu_kien="Hai bên đồng ý, có lịch và tiền riêng cho phần giao bù", nguon=["C13 chặng 8", "CSV luồng 8: Giao đợt sau"]),
+        B("app", "Còn giao bù thì chưa Hoàn tất", o_dau="he_thong", tt="Đã giao một phần · còn nghĩa vụ giao bù", nguon=["C13 chặng 8"])],
+      ["C6", "C9", "C13 chặng 8"])
+
+    them("rs-huy-ben-mua", "Rà soát · bên mua xin hủy sau cọc",
+      "Nhánh 10 còn thiếu chiều khởi xướng. Chưa trả thẳng, chưa giao; đề nghị im lặng không thành hủy.", [
+        B("nh", "Đang giữ cọc 13.800.000", o_dau="ngan_hang", so={"coc_giu": 13800000}, nguon=["D2b nhánh 10"]),
+        B("mua", "Xin hủy, xem riêng hàng, cọc, phí, trả thẳng", luong=[("tin", "ban", "yêu cầu hủy")], han="24 giờ", chi_tiet="Hàng về lô nếu đồng ý; cọc về người bán. Phí 138.000 không hoàn là đề xuất chờ chốt, không phải luật đã duyệt.", nguon=["D2b nhánh 10", "C9 hoàn phí"], loai="mau_thuan"),
+        B("app", "Không đồng ý hoặc im lặng: đơn tiếp tục", o_dau="he_thong", dieu_kien="Không tự chuyển cọc vì hết hạn trả lời", nguon=["D2b nhánh 10"]),
+        B("ban", "Nhánh đồng ý: chấp thuận hủy", luong=[("tin", "app", "đồng ý hủy")], chi_tiet="Bước này là nhánh thay thế bước không đồng ý, không nối hai quyết định thành một.", nguon=["D2b nhánh 10"]),
+        B("nh", "Xác nhận cọc 13.800.000 đã về người bán", o_dau="ngan_hang", luong=[("tien", "ban", "13.800.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 13800000}, tt="Đóng · hủy có thỏa thuận", nguon=["C6", "C13 chặng 7"])],
+      ["D2b nhánh 10", "Prompt mua V2 §8.8"], 46000000, "mau_thuan", "Cọc ở đây xử lý do hủy, không áp đẳng thức giá trị nghiệm thu cho tiền bồi hoàn cam kết.")
+
+    them("rs-de-nghi-dang-cho", "Rà soát · đề nghị chưa trả lời thì chưa ký, chưa cọc",
+      "Bên nào cũng có thể đề nghị. Minh họa người bán đổi 28/10 → 29/10 trước ký; không âm thầm sửa bản đã đồng ý.", [
+        B("ban", "Đề nghị ngày giao 28/10 → 29/10", luong=[("tin", "mua", "đề nghị đúng mục")], han="24 giờ", nguon=["Prompt mua V2 §8.2", "D2b nhánh 11"]),
+        B("app", "Giữ bản 1; khóa ký và cọc khi đang đề nghị", o_dau="he_thong", tt="Đang đề nghị", nguon=["Đặc tả mua L10, H8"]),
+        B("mua", "Đồng ý: tạo bản 2, dời hạn trả thẳng theo", chi_tiet="Không đồng ý hoặc im lặng 24 giờ thì giữ bản 1. Hai nhánh thay thế nhau.", nguon=["Prompt mua V2 §8.2", "C9"]),
+        B("app", "Chỉ ký khi hai bên cùng chấp thuận một phiên bản", o_dau="he_thong", nguon=["C13 chặng 1"])],
+      ["C9", "C13", "Prompt mua V2 §8.2"])
+
+    them("rs-han-kiem-hang", "Rà soát · ký nhận, chưa kiểm được, gia hạn một lần",
+      "Hạn hai giờ giao xa tính từ người được chỉ định ký nhận. Không tính từ xe tới; không lấy luật hàng thay cho xác nhận tiền.", [
+        B("app", "Xe tới nhưng chưa đúng người ký: chưa bắt đầu 2 giờ", o_dau="he_thong", dieu_kien="Người nhận sai không được ký; đổi người theo thẩm quyền trước giao", nguon=["C8", "C9", "Đặc tả mua G4"]),
+        B("mua", "Người được chỉ định ký nhận, bắt đầu hạn", han="2 giờ từ ký nhận trên app", chi_tiet="Báo khi bắt đầu và còn 30 phút.", nguon=["C8", "C9"]),
+        B("mua", "Chưa kiểm được: kho đóng, kèm lý do", dieu_kien="Hợp đồng cho phép; chỉ gia hạn một lần theo hợp đồng", nguon=["C8", "C9", "Đặc tả mua G3"]),
+        B("app", "Lưu hạn mới và lịch sử, chờ kiểm", o_dau="he_thong", tt="Chờ nghiệm thu", chi_tiet="Nếu không gửi Chưa kiểm được và hết hạn hợp lệ: hàng coi là đạt theo điều khoản. Nếu giao gần chưa nhập cân thì chỉ đối chiếu số tạm sau 12 giờ hàng tươi / 24 giờ; cọc vẫn giữ. Người bán không xác nhận cân sau 24 giờ: nhắc 3 lần, gọi tự động, vận hành đối chiếu; không tự đồng ý.", nguon=["C8", "C9"])],
+      ["C8", "C9", "Đặc tả mua G3–G4"])
+
+    them("rs-lenh-ngan-hang", "Rà soát · lệnh cọc chưa thành công, không báo đã về",
+      "Tách gửi lệnh, xử lý, xác nhận và đối soát. Lỗi ngân hàng không làm tiền tự tới hoặc tự cho đơn Hoàn tất.", [
+        B("app", "Quyết toán đã chốt: chi 12.150.000, hoàn 1.650.000", o_dau="he_thong", so={"coc_giu": 13800000, "tra_thang": 32200000, "phai_tra": 44350000}, tt="Quyết toán", dieu_kien="Nghiệm thu chốt, khoản trả đã xác minh, không tranh chấp", nguon=["C13 ví dụ HĐ-0018"]),
+        B("app", "Gửi lệnh, chờ ngân hàng xử lý", o_dau="he_thong", luong=[("giay", "nh", "lệnh chi / hoàn")], tt="Đã gửi lệnh cọc", nguon=["C13 chặng 7"]),
+        B("nh", "Ngân hàng báo lỗi, chưa xác nhận chuyển", o_dau="ngan_hang", chi_tiet="Giữ nguyên số đã nhận; chưa báo Cọc đã về. Đối soát trạng thái trước xử lý lại; quyết toán gọi lại không tạo lệnh thứ hai. Chưa đặt SLA thử lại vì nguồn không ghi.", nguon=["C13 kiểm phép tính", "Brief bán §3.7", "Đặc tả mua T9"]),
+        B("nh", "Nhánh xử lý thành công: xác nhận chi và hoàn", o_dau="ngan_hang", luong=[("tien", "ban", "12.150.000 đ"), ("tien", "mua", "1.650.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 12150000, "hoan_mua": 1650000}, nguon=["C13 chặng 7"]),
+        B("app", "Đối soát khớp, hết nghĩa vụ mới Hoàn tất", o_dau="he_thong", tt="Hoàn tất", nguon=["C13 chặng 7–8"])],
+      ["C13", "Brief bán §3.7"], 46000000)
+
+    them("rs-nhom-chua-du", "Rà soát · pha gom hết giờ chưa đủ tổng",
+      "Chọn Chỉ khi đủ khác với Nhận từng phần. Trước chốt nhóm, chưa phần nào được giao.", [
+        B("mua", "Chọn chỉ khi đủ 200 kg, đặt giờ chốt nhóm", luong=[("tin", "app", "điều kiện gom")], nguon=["C10 hai pha"]),
+        B("app", "Gom chưa đủ, gợi ý hộ thay", o_dau="he_thong", dieu_kien="Chưa cho giao ở pha gom", nguon=["C10"]),
+        B("app", "Hết giờ vẫn thiếu: đóng nhóm, không phạt ai", o_dau="he_thong", luong=[("giay", "nh", "lệnh hoàn cọc mọi phần")], nguon=["C10"]),
+        B("nh", "Xác nhận hoàn cọc riêng từng phần", o_dau="ngan_hang", tt="Đóng", chi_tiet="Nếu đã chốt nhóm sang thực hiện: từng phần độc lập; phần giao đúng vẫn được trả. Không dùng quy tắc đóng cả nhóm cho pha này.", nguon=["C10", "C13 chặng 7"])],
+      ["C10", "D3 loại 5"])
+
+    them("rs-khung-chi-coc", "Rà soát · khung chi cọc do trễ hạn, bổ sung trước cam kết mới",
+      "Đủ các số ở ví dụ hai tuần C13; cọc khung không chuyển hết mỗi kỳ thanh toán.", [
+        B("nh", "Giữ cọc khung 1.160.000", o_dau="ngan_hang", so={"coc_giu": 1160000}, nguon=["C10", "C13 ví dụ khung"]),
+        B("htx", "Bốn số: 1.160.000 bảo đảm; cho nợ 1.500.000", chi_tiet="Đã giao chưa trả 1.160.000 + sắp giao 1.420.000 = 2.580.000. Mức 2.660.000, còn 80.000; thêm 260.000 thì vượt 180.000. Hai lối: thêm cọc hoặc HTX chủ động cấp nợ; không tự cấp theo gói / mối quen.", nguon=["C10"]),
+        B("htx", "Xác nhận tiền hàng hai tuần đã trả thẳng 4.000.000", so={"tra_thang": 4000000, "phai_tra": 5160000}, chi_tiet="Tuần 1 cọc vẫn giữ; tuần 2 trễ hạn xử lý theo điều kiện khung đã ký.", nguon=["C13 ví dụ khung"]),
+        B("nh", "Xác nhận chi cọc 1.160.000 do trễ hạn", o_dau="ngan_hang", luong=[("tien", "htx", "1.160.000 đ")], so={"coc_giu": 0, "coc_chi_ban": 1160000}, nguon=["C13 ví dụ khung"]),
+        B("app", "Bảo đảm còn 0, mức cho phép còn 1.500.000", o_dau="he_thong", tt="Đang chạy · chờ bổ sung bảo đảm", chi_tiet="Lịch tuần sau 2.580.000 vượt mức 1.500.000; dừng cam kết mới, yêu cầu bổ sung. Các lần đã cam kết vẫn chạy. Chưa kết thúc hợp đồng.", nguon=["C10", "C13 điểm rút ra"])],
+      ["C10", "C13 ví dụ khung"], 5160000)
+
+    them("rs-xuat-khau-6-nguon", "Rà soát · container 18 tấn, một trong sáu nguồn rớt",
+      "Nhiều nguồn ký riêng; không đánh đồng với đóng nhóm ở pha gom. Chưa có số tiền từng nguồn trong nguồn dẫn nên không tự đặt tổng cọc.", [
+        B("mua", "Phiếu container 18 tấn, sáu nguồn, lịch tàu", luong=[("tin", "app", "quy cách, hồ sơ, lịch")], nguon=["Prompt mua V2 §8.11", "Đặc tả mua K1"]),
+        B("kd", "Kiểm định dư lượng trước bốc từng nguồn", o_dau="ngoai_app", dieu_kien="Giấy tờ, nhật ký, cách ly theo yêu cầu; chưa đạt thì chưa bốc nguồn đó", nguon=["Đặc tả mua M5, K1–K2"]),
+        B("app", "Một nguồn không đạt: loại riêng nguồn đó", o_dau="he_thong", luong=[("giay", "nh", "hoàn cọc nguồn lỗi người bán")], chi_tiet="Nguồn khác tiếp tục; tổng lượng đủ và cọc giữ phải tính theo từng nguồn. Chưa có giá và lượng từng phần: chưa kiểm tổng tiền.", nguon=["Đặc tả mua K2", "Prompt mua V2 §8.11"]),
+        B("mua", "Chọn nguồn bù cùng chuẩn, kiểm lại trước bốc", luong=[("tin", "app", "nguồn thay")], tt="Chờ nguồn bù", nguon=["Đặc tả mua K2"])],
+      ["C13 nhiều nguồn", "Prompt mua V2 §8.11"])
+
+    them("rs-xe-ben-mua", "Rà soát · C7 cách 2, xe bên mua và hư do đường",
+      "Bên mua nhập biển số, tài xế; quét mã chứng minh đúng người nhận. Rủi ro còn phải theo nơi giao và điều khoản đã ký.", [
+        B("mua", "Nhập biển số, tài xế trước giờ bốc", luong=[("tin", "ban", "xe và người nhận chỉ định")], chi_tiet="Đường dẫn theo dõi xe thuê ngoài là tùy chọn.", nguon=["C7 cách 2"]),
+        B("ban", "Chỉ giao khi đúng mã nhận hoặc biển số khớp", o_dau="ngoai_app", dieu_kien="Xe sai thì chưa giao; đủ tiền đến hạn và hồ sơ mới bốc", nguon=["C7", "C13 chặng 3–4"]),
+        B("mua", "Giao xa: chốt Đạt khi bốc", dieu_kien="Trên 100 km hoặc hàng tươi chở trên 6 giờ có biên bản bốc", nguon=["C7", "C8"]),
+        B("mua", "Hư do đường: lập biên bản với tài xế", luong=[("giay", "app", "biên bản, mẫu đối chứng")], chi_tiet="Ví dụ giao tại vườn, bên mua tự lo xe: vẫn trả đủ người bán, tự đòi nhà xe thuê ngoài / bảo hiểm; AgiViet cung cấp chứng cứ. Không gọi hư do đường là khác mẫu để trừ người bán.", nguon=["C7 cách 2", "C8 hư do đường"])],
+      ["C7 cách 2", "C8"])
+
+    them("rs-diem-gom", "Rà soát · C7 cách 4, giao tại điểm gom",
+      "Mỗi hộ chịu tới điểm gom; ký nhận thay bên mua chỉ khi được ủy quyền. Chặng sau theo cách 1 hoặc 2.", [
+        B("ban", "Mang đúng phần hàng tới điểm gom", o_dau="ngoai_app", luong=[("hang", "htx", "phần của từng hộ")], nguon=["C7 cách 4"]),
+        B("htx", "Kiểm, cân, đóng gói, cấp phiếu từng hộ", o_dau="ngoai_app", luong=[("giay", "ban", "phiếu nhận riêng")], dieu_kien="Có ủy quyền mới ký nhận thay bên mua", nguon=["C7 cách 4"]),
+        B("mua", "Chốt người lo chặng sau và tiền xe", luong=[("tin", "xe", "chặng sau cách 1 hoặc 2")], dieu_kien="Hai bên cùng chấp thuận, ghi ranh giới trách nhiệm", nguon=["C7"]),
+        B("app", "Giữ nghiệm thu, cọc, thanh toán riêng từng hộ", o_dau="he_thong", chi_tiet="Một hộ thiếu/sai không tự trừ tiền hộ khác; phí gom và chủ thể chịu lỗi sau gom phải có thỏa thuận, chưa có thì chưa kiểm.", nguon=["C10", "C13 nhiều nguồn"])],
+      ["C7 cách 4", "C10"])
+
+    them("rs-che-lien-lac-uy-tin", "Rà soát · che liên lạc, tiền trong chat, mối quen",
+      "Phân biệt liên lạc với số tiền; chỉ đơn hợp lệ mới tạo mối quen, uy tín. Không chứng nhận chất lượng bằng điểm ghép.", [
+        B("app", "Trước cọc: che số, Zalo, tài khoản trong chữ và ảnh", o_dau="he_thong", chi_tiet="Số tiền có đ / nghìn / triệu không che nhầm; nhắc chốt bằng nút Chào giá. Tin nhắn không sửa giá hợp đồng.", nguon=["C12", "E3", "Đặc tả mua L9"]),
+        B("nh", "Xác nhận đúng cọc, đúng đơn rồi mới mở liên lạc", o_dau="ngan_hang", luong=[("tin", "app", "cọc đã xác nhận")], nguon=["C13 chặng 2", "C6"]),
+        B("app", "Đơn hoàn tất hợp lệ: ghi mối quen theo chủ thể", o_dau="he_thong", chi_tiet="Giao nhận thật, quyết toán đủ, không hủy, không giao dịch giả / tự tạo. Dữ liệu mô phỏng này không tạo uy tín thật. Gói Thu mua: đơn sau 0%; Cơ bản: 0,5% có sàn/trần; không tự cho nợ hay bỏ kiểm.", nguon=["A2"]),
+        B("app", "Uy tín từ giao đủ, đúng giờ, trả đúng hạn, hạ loại có căn cứ", o_dau="he_thong", chi_tiet="Đơn ngoài app chỉ tự khai, không bảo vệ, không tính uy tín; không gắn nhãn chỉ vì hay chào thấp. Chưa có công thức bậc / trọng số được chốt: chưa kiểm.", nguon=["C4", "C12", "Đặc tả mua N4"] )],
+      ["A2", "C4", "C12", "E3"])
+
+    them("rs-nguoi-giup", "Rà soát · người giúp bị chặn ký và xác nhận tiền",
+      "Người giúp xem hoặc bấm thay; chủ tài khoản giữ quyền ký, xác nhận tiền và đổi tài khoản. B1 chưa kể đủ hạn chế; brief bán §2 ghi rõ.", [
+        B("giup", "Xem hoặc bấm thay trong quyền được cấp", nguon=["B1", "Brief bán §2"]),
+        B("app", "Chặn người giúp ký, xác nhận nhận tiền, đổi tài khoản", o_dau="he_thong", dieu_kien="Không để Bấm thay vượt ba quyền cấm", nguon=["Brief bán §2", "Brief bán U4"]),
+        B("ban", "Chủ tài khoản tự kiểm tiền và xác nhận đúng số", dieu_kien="Không cho nhân viên hỗ trợ ký / nhận tiền thay", nguon=["Brief bán §2", "C6"])],
+      ["B1", "Brief bán §2, U4"])
+
+    them("rs-ho-so-nganh", "Rà soát · hồ sơ ngành hàng, giấy tờ là bộ lọc cứng",
+      "Tám mặt hàng dự kiến không đồng nghĩa đã có tám hồ sơ được HTX / khuyến nông duyệt. Thông số thiếu thì ghi chưa kiểm.", [
+        B("ban", "Chọn xoài / tôm / lúa theo hồ sơ riêng", chi_tiet="Xoài: loại, tấn; tôm: size; sầu riêng: ngày đậu trái; lúa: giống, độ ẩm. Có đơn vị, ảnh chia loại, bảo quản, hao hụt, kiểu hợp đồng và phiên bản hồ sơ.", nguon=["C2", "E4"]),
+        B("mua", "Phiếu ghi rõ giấy tờ cần, hồ sơ đúng sản phẩm", luong=[("tin", "app", "yêu cầu chứng nhận / kiểm nghiệm")], nguon=["C3"]),
+        B("app", "Thiếu giấy tờ yêu cầu: không coi là khớp đủ", o_dau="he_thong", dieu_kien="Giấy tờ là lọc cứng; không thay bằng điểm uy tín hay ảnh đẹp", nguon=["C3", "E3"]),
+        B("nv", "Đối chiếu trạng thái từng giấy tờ với nguồn công bố", o_dau="nhan_vien", chi_tiet="Ghi đã xác minh / tự khai. Chưa có bộ hồ sơ tám mặt hàng và mức hao hụt đã duyệt trong nguồn được giao: chưa kiểm; không tự đặt size, hao hụt hay chuẩn xuất khẩu chung.", nguon=["Đặc tả mua M6", "G việc cần chốt"])],
+      ["C2", "C3", "E4", "G"])
+
+    them("rs-mat-mang", "Rà soát · mất mạng, lưu nháp, không tính tiền đã về",
+      "Mạng yếu phải có nháp và thông báo quan trọng dự phòng; không thể lấy thao tác chưa gửi làm xác nhận ngân hàng.", [
+        B("ban", "Mất mạng khi đang khai lô: giữ nháp", o_dau="ngoai_app", chi_tiet="Nén ảnh; chưa coi là lô đã đăng lên hệ thống.", nguon=["B2 mạng yếu"]),
+        B("app", "Tin quan trọng có SMS / Zalo dự phòng", o_dau="he_thong", luong=[("tin", "ban", "thông báo quan trọng")], nguon=["B2"]),
+        B("app", "Có mạng lại: kiểm trạng thái đã xác nhận", o_dau="he_thong", dieu_kien="Chưa có xác nhận ngân hàng thì cọc chưa tính là đã nhận", chi_tiet="Chính sách xếp hàng / tự gửi lại thao tác tiền và cách chống gửi trùng khi mất mạng chưa được A–G chốt chi tiết: chưa kiểm. Motion v2 chỉ cung cấp tình huống kiểm độ phủ.", nguon=["C13 chặng 2, 7", "B2"], loai="mau_thuan")],
+      ["B2", "C13"], loai="mau_thuan")
+
+bo_sung_ra_soat()
+
+D = {
+ "phien_ban": "2-rs1 · 27/10/2026",
+ "nguon_chinh": "Căn cứ chính: ~/Documents/AgiViet/tai-lieu-tong-hop (24/10/2026). Bổ sung: phỏng vấn người sáng lập gửi 27/10/2026, hồ sơ Idea Track RND to Startup 2026. Mọi số tiền lấy từ ví dụ trong tài liệu gốc.",
+ "ten_nhom": {"thuan": "Luồng thuận", "nhanh": "Nhánh phát sinh (D2)", "hop_dong": "Loại hợp đồng (D3)", "dich_vu": "Dịch vụ, bổ sung từ phỏng vấn"},
+ "trang_thai_don": TRANG_THAI,
+ "vai": VAI, "dong_chay": DONG_CHAY, "tinh_huong": T,
+ "dich_vu": {"mo_ta": "AgiViet là bên trung gian trung lập: không định giá, không mua bán thay, không giữ hàng (A1). Phỏng vấn đặt câu hỏi AgiViet tham gia tới đâu; ba bậc dưới là phạm vi đề xuất cho thử nghiệm.",
+   "bac": [
+    {"ten": "Tìm và sàng lọc nguồn theo yêu cầu", "mo_ta": "Ghép giấu giá (C4) + nhân viên sàng lọc nguồn cho phiếu nhu cầu, hồ sơ ghi rõ đã kiểm / tự khai.", "loai_nguon": "phong_van", "nguon": "C4 + phỏng vấn",
+     "ai_lam": [["mua", "Đưa yêu cầu cụ thể"], ["nv", "Xác minh, sàng lọc"], ["app", "Ghép, xếp theo độ khớp"], ["ban", "Đăng lô, lịch thu hoạch"]], "thu": "Phí giới thiệu khi cọc (giả thuyết, chưa chứng minh sẵn sàng trả)"},
+    {"ten": "Hỗ trợ tới đơn đầu tiên", "mo_ta": "Thử mẫu, báo giá so được, hợp đồng có điều khoản cân, sai lệch, xử lý không đạt; cọc qua ngân hàng.", "loai_nguon": "phong_van", "nguon": "C5, C6, C8 + phỏng vấn",
+     "ai_lam": [["mua", "Thử mẫu, ký"], ["ban", "Gửi mẫu, ký"], ["nh", "Giữ cọc"], ["kd", "Kiểm khi cần"]], "thu": "Phí giới thiệu đơn đầu theo gói (A2)"},
+    {"ten": "Điều phối cung ứng định kỳ", "mo_ta": "Hợp đồng khung qua HTX/đầu mối, nguồn thay thế, uy tín theo giao dịch, chứng từ thuế.", "loai_nguon": "goc", "nguon": "C10",
+     "ai_lam": [["htx", "Gom, giao theo lịch"], ["mua", "Gọi hàng, trả theo kỳ"], ["app", "Theo dõi mức bảo đảm"], ["nv", "Xử lý sự cố"]], "thu": "Gói Thu mua / Bếp theo tháng (A2)"},
+    {"ten": "Không làm trong thử nghiệm: trực tiếp phân phối", "mo_ta": "Đứng ra mua bán, ôm hàng, vốn. Phỏng vấn gợi ý nhưng trái A1 (không mua bán thay, không giữ hàng).", "loai_nguon": "mau_thuan", "nguon": "A1 vs phỏng vấn",
+     "ai_lam": [["nv", "Không áp dụng"]], "thu": "—"}],
+   "goi": [["Cơ bản", "Mua thử, vựa nhỏ", "0 đ", "1% đơn đầu, 0,5% đơn sau (sàn 20.000, trần 2.000.000)"], ["Thu mua", "Vựa, nhà máy chế biến", "1.500.000 đ/tháng", "0,3% (mối quen 0%)"],
+            ["Doanh nghiệp", "Xuất khẩu, chuỗi bán lẻ", "Theo năm", "0,2%, kèm kiểm định, truy xuất"], ["Bếp", "Nhà hàng, bếp ăn", "490.000 đ/tháng", "0%"]]},
+ "van_hanh": {"mo_ta": "Việc của nhân viên AgiViet trên trang vận hành nội bộ. Mỗi việc có hạn và đầu ra.",
+   "cot": [
+    {"ten": "Xác minh", "viec": [{"ten": "Duyệt hồ sơ người bán", "han": "trong ngày", "nguon": "B3", "dau_ra": "Đã xác minh / bổ sung"}, {"ten": "Đến vườn xác minh tại chỗ", "han": "theo lịch", "nguon": "phỏng vấn", "loai_nguon": "phong_van", "dau_ra": "Biên bản, nhãn đã kiểm"}, {"ten": "Duyệt giấy phép bên mua", "han": "trong ngày", "nguon": "C1"}]},
+    {"ten": "Ghép và sàng lọc", "viec": [{"ten": "Sàng lọc nguồn cho phiếu khó", "han": "24 giờ", "nguon": "phỏng vấn", "loai_nguon": "phong_van", "dau_ra": "2–3 nguồn đề xuất"}, {"ten": "Cập nhật giá tham khảo", "han": "chiều tối", "nguon": "B3"}]},
+    {"ten": "Theo dõi đơn", "viec": [{"ten": "Đơn quá hạn chờ đối chiếu", "han": "sau nhắc lần 3", "nguon": "C9", "dau_ra": "Chốt hoặc mời kiểm định"}, {"ten": "Kiểm tin che liên lạc lặp lại", "han": "hằng ngày", "nguon": "B3"}]},
+    {"ten": "Tiền", "viec": [{"ten": "Đối soát khi bên mua báo trả, người bán chưa nhận", "han": "48 giờ", "nguon": "C6, C9", "dau_ra": "Xác minh có / không khoản trả"}, {"ten": "Theo dõi lệnh ngân hàng", "han": "trong ngày", "nguon": "C13 chặng 7"}]},
+    {"ten": "Sự cố", "viec": [{"ten": "Hòa giải tranh chấp", "han": "48 giờ", "nguon": "B3"}, {"ten": "Điều phối kiểm định", "han": "24–48 giờ", "nguon": "C8"}, {"ten": "Trả lời hỗ trợ", "han": "trong giờ làm việc", "nguon": "B3"}]}],
+   "mot_ngay": [["Sáng", ["Gửi thời tiết, cảnh báo theo xã", "Nhắc lô sắp tự ẩn", "Nhắc hạn trả tiền theo hợp đồng"]], ["Trong ngày", ["Ghép phiếu mới với lô", "Chuyển lời chào giá", "Đặt xe, kiểm định", "Biên bản bốc hàng"]],
+                ["Chiều tối", ["Nghiệm thu nơi đến", "Người bán xác nhận tiền, chuyển cọc", "Xử lý quá hạn", "Cập nhật giá tham khảo, uy tín"]], ["Đội vận hành", ["Duyệt xác minh", "Trả lời hỗ trợ", "Hòa giải tranh chấp", "Kiểm tin che liên lạc"]]]},
+ "han_gio": [["Người bán chưa ký", "24 giờ", "Đơn tự rút"], ["Bên mua chưa cọc", "48 giờ (tươi 12 giờ)", "Đơn đóng, lượng về lô"], ["Bên mua chưa trả phần còn lại", "Theo hợp đồng", "Báo chưa nhận; 48 giờ gửi chứng từ; không có thì cọc về người bán"],
+   ["Bên mua báo đã trả, người bán không xác nhận", "48 giờ", "Nhắc, rồi người vận hành đối soát; im lặng không phải đã nhận"], ["Bên mua chưa nhập cân", "12 / 24 giờ", "Nhắc, người vận hành mời gửi kết quả; cọc giữ"],
+   ["Người bán chưa xác nhận số cân", "24 giờ", "Nhắc 3 lần, gọi tự động, rồi người vận hành đối chiếu"], ["Nhận hàng giao xa", "2 giờ từ lúc ký nhận", "Luật im lặng duy nhất về hàng: coi như đạt theo điều khoản"],
+   ["Đề nghị thay đổi", "24 giờ", "Coi như không đồng ý"], ["Lời chào, trả giá", "24 giờ / lượt", "Hết hiệu lực"]],
+ "can_chot": [
+  {"chu_de": "Mức cọc cho đặt trước khi hái", "lua_chon": [["30% như giao ngay", "Tài liệu tổng hợp 24/10 (A3) đề xuất"], ["10–20%", "Bản cơ chế trước (co_che_production)"]], "de_xuat": "30% cho cả hai, cọc tính lại khi chốt lượng.", "can_cu": "A3, G", "loai": "mau_thuan"},
+  {"chu_de": "AgiViet giữ tiền tới đâu", "lua_chon": [["Chỉ giữ cọc 30%", "A3, C6 (tài liệu tổng hợp, brief chốt)"], ["Giữ toàn bộ tiền hàng", "co_che_production (bản cũ, đã bị thay)"], ["Không giữ tiền", "Hồ sơ Idea Track 30/9"]], "de_xuat": "Giữ cọc như A3. Phỏng vấn: bên mua chưa từng mất cọc, nên trình bày cọc là bảo đảm cho cả hai bên, không phải điều kiện khó.", "can_cu": "A3, C6; phỏng vấn 27/10", "loai": "mau_thuan"},
+  {"chu_de": "Phí bên mua", "lua_chon": [["Gói Cơ bản / Thu mua / Doanh nghiệp / Bếp", "A2 tài liệu tổng hợp"], ["0,8% / 0,3% có trần", "Hồ sơ Idea Track"]], "de_xuat": "Theo A2; chốt với 3 bên mua thật (G). Phỏng vấn chưa chứng minh sẵn sàng trả phí.", "can_cu": "A2, G; phỏng vấn", "loai": "mau_thuan"},
+  {"chu_de": "Thử mẫu, thẩm định trước đơn đầu", "lua_chon": [["Thành bước chính thức (có màn, có hạn)", "Phỏng vấn"], ["Chỉ là gợi ý đơn thử nhỏ", "C8"]], "de_xuat": "Thành bước tùy chọn trước hợp đồng đầu, nhân viên hỗ trợ.", "can_cu": "Phỏng vấn 27/10; C8", "loai": "phong_van"},
+  {"chu_de": "Nhãn đã kiểm / tự khai trên hồ sơ", "lua_chon": [["Theo từng trường hồ sơ", "Phỏng vấn, Idea Track"], ["Chỉ một trạng thái xác minh chung", "C1"]], "de_xuat": "Theo từng trường; bên mua thấy rõ ai kiểm, khi nào.", "can_cu": "Phỏng vấn; Idea Track", "loai": "phong_van"},
+  {"chu_de": "Trả chậm có hạn mức cho bên mua quen", "lua_chon": [["Cho nợ thêm do người bán cấp (mặc định 0 đ)", "C10 (đã chốt V1)"], ["Hạn mức do AgiViet duyệt", "Gợi ý từ phỏng vấn"]], "de_xuat": "Giữ C10: người bán tự cấp; AgiViet không cấp tín dụng.", "can_cu": "C10; phỏng vấn", "loai": "phong_van"},
+  {"chu_de": "Quy tắc hoàn phí khi hủy", "lua_chon": [["Đề xuất C9", "Hoàn đủ khi lỗi người bán / bất khả kháng; không hoàn khi bên mua hủy"]], "de_xuat": "Chốt theo C9.", "can_cu": "C9, G", "loai": "mau_thuan"},
+  {"chu_de": "Ngành hàng, vùng thử nghiệm", "lua_chon": [["1 vùng Đồng Tháp/Tiền Giang, 2–3 mặt hàng, 3–5 bên mua neo, 2 HTX", "B2, G"], ["Một chuỗi HTX → nhà hàng trong khu vực", "Phỏng vấn"]], "de_xuat": "Giữ B2 và thêm một chuỗi HTX → nhà hàng qua hợp đồng khung.", "can_cu": "B2, G; phỏng vấn", "loai": "phong_van"}],
+ "doi_chieu": {
+  "a3": [["Chỉ giữ cọc qua ngân hàng; phần còn lại trả thẳng", ["hd0018", "tra-khi-nhan", "tra-sau"]], ["Cọc 30% chỉ xử lý khi đủ điều kiện C13", ["hd0018", "tra-lai-nhieu"]], ["Người bán không trả phí", ["hd0018"]],
+         ["Năm loại hợp đồng", ["hd0018", "dat-truoc", "bao-tieu", "khung-bep-sen", "don-nhom"]], ["Ghép hàng giấu giá", ["hd0018"]], ["Chào giá kín có luật", ["hd0018", "n16-thuong-luong"]],
+         ["Mọi bước có hạn; im lặng không bao giờ = đã nhận tiền", ["n5-qua-han-coc", "n6-khong-tra-du", "tra-sau"]], ["Tranh chấp: cọc giữ tới kiểm định 48 giờ", ["n7-can-khong-dung", "n8-khac-mau", "n14-tu-choi-ca-lo"]],
+         ["Hàng tươi không chở ngược", ["n8-khac-mau"]], ["Vận chuyển là điều khoản hợp đồng", ["n9-xe-tre", "n11-13-de-nghi"]], ["Hồ sơ ngành hàng riêng", ["dang-ky-xac-minh"]], ["Chống giao dịch ngoài bằng giá trị", ["thu-mau", "dieu-phoi"]]],
+  "c": [["C1 Đăng ký, hồ sơ", ["dang-ky-xac-minh"]], ["C2 Đăng lô", ["hd0018", "kem-loai"]], ["C3 Phiếu nhu cầu", ["hd0018", "thu-mau"]], ["C4 Ghép giấu giá, chào giá kín", ["hd0018", "n16-thuong-luong"]],
+        ["C5 Hợp đồng, ký", ["hd0018", "n1-tu-choi"]], ["C6 Tiền chỉ giữ cọc", ["hd0018", "tra-khi-nhan", "tra-sau", "n6-khong-tra-du"]], ["C7 Vận chuyển", ["hd0018", "n9-xe-tre", "n11-13-de-nghi"]],
+        ["C8 Giao nhận, nghiệm thu", ["hd0018", "n8-khac-mau", "n14-tu-choi-ca-lo"]], ["C9 Ngoại lệ", ["n3-huy-sau-coc", "n4-mat-mua", "n5-qua-han-coc", "n15-bo-don"]], ["C10 Đơn nhóm, hợp đồng khung", ["don-nhom", "khung-bep-sen", "dieu-phoi"]],
+        ["C11 Kém loại, bán gấp", ["kem-loai"]], ["C12 Chống ép giá, giao dịch ngoài", ["hd0018", "kem-loai"]], ["C13 Điều kiện chuyển bước", ["hd0018", "tra-lai-nhieu", "dat-truoc", "bao-tieu"]]],
+  "phong_van": [["Trước đơn đầu phải kiểm nguồn gốc, năng lực, hồ sơ, tài chính; thử mẫu, thẩm định", "Đã có cơ sở", "Tình huống Thử mẫu; Đăng ký, xác minh"],
+    ["Giao thiếu, trễ, sai chất lượng được xử lý bằng hợp đồng", "Đã có cơ sở", "Điều khoản bắt buộc C5; nhánh D2"], ["Chưa từng mất cọc", "Đã có cơ sở", "Việc cần chốt: cách trình bày cọc"],
+    ["Dùng phần mềm kế toán, Excel", "Đã có cơ sở", "Chứng từ, bảng kê xuất được (C6, E3)"], ["Hỏi: ai gom, kiểm, chở, ai chịu khi thiếu/sai", "Đã có cơ sở", "Bản đồ các bên; C7; C9"],
+    ["Hỏi: sau đơn đầu AgiViet làm gì", "Đã có cơ sở", "Tình huống Điều phối định kỳ; Dịch vụ bậc 3"], ["HORECA không mua lẻ từng hộ", "Giả thuyết cần kiểm", "Hợp đồng khung qua HTX đầu mối (C10)"],
+    ["Nhà máy không mua lô nhỏ", "Giả thuyết cần kiểm", "Đơn nhóm (C10)"], ["Người trả lời là DN thực phẩm đóng gói, chưa mua trực tiếp từ nông dân", "Đã có cơ sở", "Cần phỏng vấn tiếp đúng người mua nông sản tươi"],
+    ["Sẵn sàng trả phí, muốn dùng app", "Chưa có bằng chứng", "Không đưa vào kết luận; đo trong thử nghiệm (G)"]]},
+}
+D["can_chot"] = CAN_CHOT_THEM + D["can_chot"]
+D["ten_nhom"]["ra_soat"] = "Bổ sung rà soát độc lập (27/10)"
+D["nguon_chinh"] += " Bản 2 sửa theo góp ý người sáng lập 27/10 (chấm tím): hệ thống soạn hợp đồng từ nghĩa vụ hai bên, ngân hàng mở tài khoản giữ cọc, chọn dịch vụ khi cọc, trả phần còn lại sau nghiệm thu và đối soát, nhân viên đảm bảo từng khâu."
+# Tình huống "trả khi nhận" nay là luồng chính HĐ-0018; trỏ đối chiếu về đó.
+def doi(ds): return [("hd0018" if x == "tra-khi-nhan" else x) for x in ds]
+D["doi_chieu"]["a3"] = [[q, doi(ds)] for q, ds in D["doi_chieu"]["a3"]]
+D["doi_chieu"]["c"] = [[q, doi(ds)] for q, ds in D["doi_chieu"]["c"]]
+D["doi_chieu"]["c"][5][1] += ["tien-mat-tai-cho", "chua-tra-tien-mat", "ung-tien"]
+D["doi_chieu"]["c"][4][1] = ["hd0018", "n1-tu-choi", "n11-13-de-nghi"]
+ids = {t["id"] for t in T}
+for nhom in ("a3", "c"):
+    for _, ds in D["doi_chieu"][nhom]:
+        assert all(x in ids for x in ds), [x for x in ds if x not in ids]
+p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "quy-trinh.json")
+json.dump(D, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+print("ok", len(T), "tình huống,", sum(len(t["buoc"]) for t in T), "bước")

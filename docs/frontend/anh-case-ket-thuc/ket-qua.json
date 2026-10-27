@@ -1,0 +1,187 @@
+{
+  "at": "2026-10-26T18:08:43.114Z",
+  "origin": "http://127.0.0.1:18889",
+  "adminAuth": "test/impersonate",
+  "results": [
+    {
+      "template": "completed",
+      "pass": true,
+      "record": {
+        "id": "e9e42fb9-ef15-4634-bd0d-525687bab17e",
+        "createdAt": "2026-10-26T18:08:41.162Z",
+        "template": "completed",
+        "seller": {
+          "display_name": "Nguyễn Thị Năm",
+          "phone": "0918000421",
+          "org_code": "TC-B01",
+          "org_name": "Hộ Nguyễn Thị Năm",
+          "org_kind": "household",
+          "can_sell": true,
+          "can_buy": false,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "buyer": {
+          "display_name": "Nguyễn Đức Thịnh",
+          "phone": "0909000213",
+          "org_code": "TC-M01",
+          "org_name": "Nhà máy sấy Đồng Xanh",
+          "org_kind": "enterprise",
+          "can_sell": false,
+          "can_buy": true,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "product": "XOAI_CAT_CHU",
+        "grade": "L1",
+        "qty": "50",
+        "price": "23000",
+        "plate": "66C-678.90",
+        "qty_g": "50000",
+        "phase": "ready",
+        "steps": [
+          {
+            "name": "Đóng vai người bán",
+            "at": "2026-10-26T18:08:41.171Z"
+          },
+          {
+            "name": "Đóng vai bên mua",
+            "at": "2026-10-26T18:08:41.177Z"
+          },
+          {
+            "name": "Tạo lô dữ liệu thử",
+            "at": "2026-10-26T18:08:41.198Z"
+          },
+          {
+            "name": "Gắn ảnh giả có nhãn dữ liệu thử",
+            "at": "2026-10-26T18:08:41.217Z"
+          },
+          {
+            "name": "Đăng lô thử",
+            "at": "2026-10-26T18:08:41.240Z"
+          },
+          {
+            "name": "Gửi lời chào mua",
+            "at": "2026-10-26T18:08:41.254Z"
+          },
+          {
+            "name": "Người bán đồng ý giá",
+            "at": "2026-10-26T18:08:41.277Z"
+          },
+          {
+            "name": "Lập hợp đồng",
+            "at": "2026-10-26T18:08:41.382Z"
+          },
+          {
+            "name": "Bên mua ký OTP thử",
+            "at": "2026-10-26T18:08:41.430Z"
+          },
+          {
+            "name": "Người bán ký OTP thử",
+            "at": "2026-10-26T18:08:41.470Z"
+          },
+          {
+            "name": "Ngân hàng ảo nhận cọc",
+            "at": "2026-10-26T18:08:41.481Z"
+          },
+          {
+            "name": "Giao webhook cọc",
+            "at": "2026-10-26T18:08:41.508Z"
+          },
+          {
+            "name": "Tạo chứng từ trả thẳng giả",
+            "at": "2026-10-26T18:08:41.528Z"
+          },
+          {
+            "name": "Bên mua báo trả tiền ảo",
+            "at": "2026-10-26T18:08:41.544Z"
+          },
+          {
+            "name": "Người bán xác nhận tiền ảo",
+            "at": "2026-10-26T18:08:41.574Z"
+          },
+          {
+            "name": "Chỉ định người nhận",
+            "at": "2026-10-26T18:08:41.599Z"
+          },
+          {
+            "name": "Lưu chuyến xe trong seed thử",
+            "at": "2026-10-26T18:08:41.618Z"
+          },
+          {
+            "name": "Đặt đồng hồ thử tại mốc giao hiện tại",
+            "at": "2026-10-26T18:08:41.622Z"
+          },
+          {
+            "name": "Bắt đầu nghiệm thu",
+            "at": "2026-10-26T18:08:41.643Z"
+          },
+          {
+            "name": "Bên mua ký nghiệm thu thử",
+            "at": "2026-10-26T18:08:41.712Z"
+          },
+          {
+            "name": "Người bán ký PIN thử",
+            "at": "2026-10-26T18:08:41.741Z"
+          },
+          {
+            "name": "Ghi cân nơi đến",
+            "at": "2026-10-26T18:08:41.755Z"
+          },
+          {
+            "name": "Xác nhận nơi đến",
+            "at": "2026-10-26T18:08:41.826Z"
+          },
+          {
+            "name": "Ngân hàng ảo xử lý QT-5666a8ba-5ae8-437f-95b3-7ac719bbc504-CHI",
+            "at": "2026-10-26T18:08:41.839Z"
+          },
+          {
+            "name": "Giao webhook tiền về",
+            "at": "2026-10-26T18:08:41.854Z"
+          },
+          {
+            "name": "Đối soát tiền ảo",
+            "at": "2026-10-26T18:08:41.885Z"
+          },
+          {
+            "name": "Đọc lại và kiểm tra trạng thái đích",
+            "at": "2026-10-26T18:08:41.911Z"
+          }
+        ],
+        "step": "Đã kiểm trạng thái qua API",
+        "lotId": "52e54579-3953-4ee3-acec-fe98e3eb02f1",
+        "offerId": "f9cafc27-4404-47aa-bfbf-e8cacfc9801f",
+        "orderId": "b6045f08-ccd9-493f-b1fe-0334562758a5",
+        "deliveryId": "752198c3-27d9-4455-bb8d-9d534a1cf167",
+        "actualStatus": "completed"
+      },
+      "opened": [
+        {
+          "app": "ban",
+          "status": "completed",
+          "phone": "0918000421"
+        },
+        {
+          "app": "mua",
+          "status": "completed",
+          "phone": "0909000213"
+        }
+      ]
+    },
+    {
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Đọc lại và kiểm tra trạng thái đích: Trạng thái thật active; mẫu cần closed.\n\n'failed' !== 'ready'\n\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/admin-cases.mjs:53:51"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "admin-completed.png",
+    "ban-completed.png",
+    "mua-completed.png",
+    "LOI.png"
+  ]
+}

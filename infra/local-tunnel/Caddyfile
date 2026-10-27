@@ -1,0 +1,78 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+	storage file_system {
+		root {$STATE}/caddy
+	}
+	servers {
+		timeouts {
+			read_header 10s
+			read_body 60s
+			idle 2m
+		}
+	}
+}
+(pilot_common) {
+	# Thêm 1 byte sentinel để pilot phát hiện quá 12 MiB cho cả chunked.
+	request_body {
+		max_size 12582913
+	}
+	# cloudflared gọi từ loopback: dùng ngân sách chung, không tin XFF/CF-IP.
+	rate_limit {
+		sweep_interval 1m
+		disable_metrics
+		zone auth_total {
+			match {
+				path /v1/auth*
+			}
+			key all
+			events 30
+			window 1m
+		}
+		zone api_total {
+			match {
+				path /v1*
+			}
+			key all
+			events 300
+			window 1m
+		}
+		zone pilot_total {
+			key all
+			events 600
+			window 1m
+		}
+	}
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		Cache-Control no-store
+	}
+}
+http://:{$CADDY_PORT} {
+	bind 127.0.0.1
+	import pilot_common
+	route {
+		@too_large expression `{http.request.header.Content-Length} != "" && int({http.request.header.Content-Length}) > 12582912`
+		respond @too_large 413
+		@private path /v1/test* /v1/sim*
+		respond @private 404
+		# Quản trị và mọi tệp con không tồn tại ở ingress công khai, trước pilot.
+		@admin path /quan-tri /quan-tri/*
+		respond @admin 404
+		reverse_proxy 127.0.0.1:{$PILOT_PORT} {
+			header_up X-Agv-Scope external
+		}
+	}
+}
+# Cổng này KHÔNG được đưa vào ingress tunnel: chỉ trình diễn đầy đủ trên laptop.
+http://:{$OPERATOR_PORT} {
+	bind 127.0.0.1
+	import pilot_common
+	@too_large expression `{http.request.header.Content-Length} != "" && int({http.request.header.Content-Length}) > 12582912`
+	respond @too_large 413
+	reverse_proxy 127.0.0.1:{$PILOT_PORT} {
+		header_up X-Agv-Scope operator
+	}
+}

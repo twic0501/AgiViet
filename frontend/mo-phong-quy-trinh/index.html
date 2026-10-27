@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AgiViet · Mô phỏng quy trình</title>
+<style>
+:root{--nen:#f4f5f1;--mat:#fff;--chu:#16241d;--chu2:#4b5a52;--chu3:#7a877f;--vien:#dce2d9;--xanh:#1d5a42;--xanh-nhat:#e3eee6;--vang:#b7791f;--vang-nhat:#fbf1d9;--do:#b5402a;--do-nhat:#fbe9e5;--cam:#c2621a;--cam-nhat:#fdeedf;--lam:#2b5f8a;--lam-nhat:#e4eef6;--tim:#6b4c9a;--tim-nhat:#efe9f7;--bo:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.45 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,select,input,textarea{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:20;background:var(--xanh);color:#fff;padding:10px 16px calc(8px);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+header h1{font-size:17px;margin:0;font-weight:700;flex:1 1 auto}
+header small{opacity:.8;font-weight:400}
+nav.tab{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;width:100%}
+nav.tab button{border:0;background:transparent;color:#cfe0d6;padding:8px 12px;border-radius:20px;white-space:nowrap;cursor:pointer;font-weight:600}
+nav.tab button[aria-pressed=true]{background:#fff;color:var(--xanh)}
+.nut{border:1px solid var(--vien);background:var(--mat);border-radius:22px;min-height:40px;padding:0 14px;cursor:pointer;font-weight:600}
+.nut.chinh{background:var(--xanh);border-color:var(--xanh);color:#fff}
+.nut.nho{min-height:32px;padding:0 10px;font-size:13px}
+header .nut{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+header .nut[aria-pressed=true]{background:var(--vang);border-color:var(--vang)}
+main{padding:12px 16px 80px;max-width:1400px;margin:0 auto}
+.an{display:none!important}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:12px;background:var(--xanh-nhat);color:var(--xanh);white-space:nowrap}
+.chip.cam{background:var(--cam-nhat);color:var(--cam)}.chip.do{background:var(--do-nhat);color:var(--do)}.chip.xam{background:#eef0ec;color:var(--chu2)}
+.cham{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.cham.goc{background:var(--xanh)}.cham.phong_van{background:var(--cam)}.cham.mau_thuan{background:var(--do)}.cham.sang_lap{background:var(--tim)}.cham.gop_y{background:#2b7bb9}
+.chip.lam{background:#e1eef8;color:#1f5f8f}
+.bang-quy-tac .dong b{min-width:38%}
+.chip.tim{background:var(--tim-nhat);color:var(--tim)}
+.nv-dam-bao{margin-top:8px;background:var(--tim-nhat);border-radius:10px;padding:8px 10px;font-size:13.5px;color:#3f2c5e}
+.nv-dam-bao b{color:var(--tim)}
+/* Tình huống */
+.th-bo{display:grid;grid-template-columns:260px 1fr;gap:14px}
+@media(max-width:900px){.th-bo{grid-template-columns:1fr}}
+.th-bo>section,.th-bo>aside{min-width:0}
+.chon-th{display:none;width:100%;min-height:44px;border:1px solid var(--vien);border-radius:12px;padding:0 10px;background:#fff;font-weight:600;margin-bottom:10px}
+@media(max-width:900px){.ds-th{display:none}.chon-th{display:block}}
+.ds-th{background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);padding:8px;align-self:start;position:sticky;top:96px;max-height:calc(100vh - 110px);overflow:auto}
+@media(max-width:900px){.ds-th{position:static;max-height:none}.ds-th details:not([open]) .ds-muc{display:none}}
+.ds-th h3{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--chu3);margin:10px 8px 4px}
+.ds-th button{display:flex;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:transparent;padding:8px;border-radius:10px;cursor:pointer}
+.ds-th button[aria-current=true]{background:var(--xanh-nhat);font-weight:700}
+.ds-th summary{cursor:pointer;font-weight:700;padding:6px 8px}
+.th-dau{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.th-dau h2{margin:0;font-size:20px;flex:1 1 280px}
+.th-mo{color:var(--chu2);margin:0 0 10px}
+.dieu-khien{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
+.dieu-khien .so-buoc{font-weight:700;min-width:70px;text-align:center}
+.tien-do{flex:1 1 160px;height:6px;background:var(--vien);border-radius:3px;overflow:hidden}
+.tien-do i{display:block;height:100%;background:var(--xanh);transition:width .25s}
+/* Làn bơi */
+.lan-khung{overflow-x:auto;background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);-webkit-overflow-scrolling:touch}
+.lan{display:grid;min-width:max-content}
+.lan .ten-lan{position:sticky;left:0;z-index:3;background:var(--mat);border-right:1px solid var(--vien);padding:8px 10px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px;width:118px}
+.lan .ten-lan i{width:8px;align-self:stretch;border-radius:4px;flex:none}
+.lan .o{border-top:1px solid var(--vien);border-right:1px dashed #edf0eb;padding:6px;width:168px;min-height:74px;position:relative}
+.lan .dau-cot{border-top:0;min-height:0;padding:6px;font-size:12px;color:var(--chu3);font-weight:700;text-align:center;cursor:pointer}
+.lan .dau-cot.dang{color:var(--xanh)}
+.lan .o.dang{background:#f7fbf8}
+.the{border:1.5px solid var(--vien);border-radius:12px;padding:7px 8px;background:#fff;font-size:13px;line-height:1.3;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s,opacity .2s}
+.the b{display:block;font-size:13.5px}
+.the .noi{display:flex;gap:4px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.the.mo{opacity:.35}
+.the.dang{border-color:var(--xanh);box-shadow:0 0 0 3px rgba(29,90,66,.18);transform:translateY(-1px)}
+.the.xong{opacity:.7}
+.the .goc-chi{position:absolute;top:6px;right:6px}
+.o-dau{font-size:11px;padding:1px 6px;border-radius:8px;background:#eef0ec;color:var(--chu2)}
+.o-dau.app{background:var(--xanh-nhat);color:var(--xanh)}.o-dau.ngan_hang{background:var(--lam-nhat);color:var(--lam)}.o-dau.nhan_vien{background:var(--tim-nhat);color:var(--tim)}.o-dau.ai{background:#efe9f7;color:#3f2c5e}.o-dau.ngoai_app{background:var(--vang-nhat);color:var(--vang)}
+.luong{display:flex;flex-direction:column;gap:3px;margin-top:5px}
+.luong span{font-size:11.5px;display:flex;gap:4px;align-items:center;color:var(--chu2)}
+.bieu{width:16px;height:16px;border-radius:5px;display:inline-grid;place-items:center;font-size:10px;font-weight:800;color:#fff;flex:none}
+.bieu.hang{background:#8a6d3b}.bieu.tien{background:var(--xanh)}.bieu.giay{background:var(--lam)}.bieu.tin{background:var(--tim)}
+.goi{position:absolute;z-index:5;pointer-events:none;transition:top .6s cubic-bezier(.4,0,.2,1),left .6s cubic-bezier(.4,0,.2,1),opacity .3s;font-size:12px;font-weight:700;padding:3px 8px;border-radius:12px;color:#fff;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+/* Bảng cạnh */
+.chi-tiet{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:900px){.chi-tiet{grid-template-columns:1fr}}
+.hop{background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);padding:12px 14px}
+.hop h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--chu3)}
+.hop .lon{font-size:18px;font-weight:700;margin:0 0 6px}
+.dong{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid #eef0ec;font-size:14px}
+.dong:first-of-type{border-top:0}
+.dong b{font-variant-numeric:tabular-nums}
+.thanh-tien{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:6px 0 4px;background:#eef0ec}
+.thanh-tien i{display:block;height:100%;transition:width .4s}
+.chu-giai{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--chu2)}
+.chu-giai span{display:flex;gap:4px;align-items:center}
+.trang-thai{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.trang-thai span{font-size:12px;padding:3px 8px;border-radius:10px;background:#eef0ec;color:var(--chu3)}
+.trang-thai span.qua{background:var(--xanh-nhat);color:var(--xanh)}
+.trang-thai span.dang{background:var(--xanh);color:#fff;font-weight:700}
+.nguon{font-size:12.5px;color:var(--chu2);display:flex;gap:6px;align-items:flex-start;margin-top:6px}
+/* Bản đồ vai */
+.ban-do{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.vai-o{background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);padding:12px;border-top:5px solid var(--x,var(--xanh))}
+.vai-o h3{margin:0 0 4px;font-size:16px}
+.vai-o ul{margin:6px 0 0;padding-left:18px;font-size:13.5px;color:var(--chu2)}
+.mui{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;font-size:13px;padding:6px 0;border-top:1px solid #eef0ec}
+/* Dịch vụ */
+.bac{display:flex;flex-direction:column;gap:10px}
+.bac-o{display:grid;grid-template-columns:56px 1fr;gap:12px;background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);padding:12px}
+.bac-o .so{width:56px;height:56px;border-radius:14px;background:var(--xanh);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:800}
+.bac-o h3{margin:0;font-size:16px}
+.luoi-vai{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;margin-top:8px}
+.luoi-vai div{font-size:13px;background:#f7f8f5;border-radius:10px;padding:6px 8px}
+/* Kanban */
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,1fr);gap:10px;overflow-x:auto;padding-bottom:6px}
+.cot-k{background:#eceee9;border-radius:var(--bo);padding:8px}
+.cot-k h3{font-size:13px;margin:4px 6px 8px}
+.viec-k{background:#fff;border-radius:10px;padding:8px;margin-bottom:6px;font-size:13px;border-left:4px solid var(--tim)}
+.viec-k .han{font-size:11.5px;color:var(--chu3)}
+/* Bảng */
+table{border-collapse:collapse;width:100%;background:var(--mat);border-radius:var(--bo);overflow:hidden;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-top:1px solid var(--vien);vertical-align:top}
+th{background:#eef0ec;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--chu2)}
+.bang-khung{overflow-x:auto;border:1px solid var(--vien);border-radius:var(--bo)}
+/* Sửa */
+body.sua .the [data-sua]{outline:1px dashed var(--vang);outline-offset:2px;cursor:text}
+.thanh-sua{position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--vang-nhat);border-top:2px solid var(--vang);padding:8px 16px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px}
+.o-sua{display:grid;gap:6px}
+.o-sua label{display:grid;gap:3px;font-size:12px;font-weight:600;color:var(--chu2)}
+.o-sua input,.o-sua select,.o-sua textarea{border:1px solid var(--vien);border-radius:8px;padding:6px 8px;background:#fff;font-size:14px}
+.ghi-chu-ng{background:var(--vang-nhat);border:1px dashed var(--vang);border-radius:10px;padding:6px 8px;font-size:13px;margin-top:6px}
+.trong{color:var(--chu3);font-size:13px}
+/* Ghi chú tại chỗ khi đang xem */
+.o-ghi{margin-top:10px;border-top:1px dashed var(--vien);padding-top:10px}
+.o-ghi label{font-size:12px;font-weight:700;color:var(--vang);text-transform:uppercase;letter-spacing:.04em}
+.o-ghi textarea{width:100%;min-height:64px;margin-top:4px;border:1px solid #e8d7ad;background:var(--vang-nhat);border-radius:10px;padding:8px 10px;font-size:14px;resize:vertical}
+.o-ghi .da-luu{font-size:12px;color:var(--chu3);margin-left:6px;font-weight:400;text-transform:none;letter-spacing:0}
+.dau-ghi{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:8px;background:var(--vang);color:#fff;margin-top:4px}
+.ghi-th textarea{min-height:44px}
+.ds-ghi .dong{cursor:pointer;align-items:flex-start}
+.ds-ghi .dong:hover{background:#fafbf8}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>AgiViet · Mô phỏng quy trình <small id="phien-ban"></small></h1>
+  <button class="nut nho" id="nut-sua" aria-pressed="false">Sửa</button>
+  <nav class="tab" aria-label="Khung nhìn">
+    <button data-khung="tinh-huong" aria-pressed="true">Tình huống</button>
+    <button data-khung="vai">Các bên</button>
+    <button data-khung="dich-vu">Dịch vụ</button>
+    <button data-khung="van-hanh">Nhân viên, quản trị</button>
+    <button data-khung="he-thong">Hệ thống, tính năng</button>
+    <button data-khung="can-chot">Việc cần chốt</button>
+    <button data-khung="doi-chieu">Nguồn</button>
+    <button data-khung="ghi-chu">Ghi chú của tôi</button>
+  </nav>
+</header>
+<main id="noi-dung"></main>
+<div class="thanh-sua an" id="thanh-sua">
+  <b>Đang sửa</b><span>Bấm chữ trên thẻ để sửa. Thay đổi lưu trên máy này.</span>
+  <button class="nut nho" id="tai-json">Tải quy-trinh.json</button>
+  <label class="nut nho" style="display:inline-flex;align-items:center">Nạp tệp<input type="file" accept=".json" id="nap-json" hidden></label>
+  <button class="nut nho" id="ve-goc">Bỏ thay đổi, về bản gốc</button>
+</div>
+<script>
+"use strict";
+const KHOA = "agv-mo-phong-quy-trinh";
+let D = null, goc = null, khung = "tinh-huong", thId = null, buoc = 0, dangSua = false;
+const $ = (s, el = document) => el.querySelector(s);
+const e = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const tien = (n) => (n == null ? "—" : Number(n).toLocaleString("vi-VN") + " đ");
+const BIEU = { hang: "H", tien: "đ", giay: "G", tin: "i" };
+const TEN_LUONG = { hang: "Hàng", tien: "Tiền", giay: "Giấy tờ", tin: "Thông tin" };
+const O_DAU = { app: "trên app", ngan_hang: "ngân hàng", nhan_vien: "nhân viên", ngoai_app: "ngoài app", he_thong: "tự động", ai: "trợ lý AI" };
+const LOAI_NGUON = { goc: "Theo tài liệu gốc", phong_van: "Bổ sung từ phỏng vấn", sang_lap: "Theo chỉ đạo người sáng lập 27/10", gop_y: "Theo góp ý rà bản 3 (28/10)", mau_thuan: "Mâu thuẫn, chờ chốt" };
+
+function luu() { try { localStorage.setItem(KHOA, JSON.stringify(D)); } catch {} }
+async function nap() {
+  goc = await (await fetch("quy-trinh.json", { cache: "no-store" })).json();
+  let ban = null;
+  try { ban = JSON.parse(localStorage.getItem(KHOA) || "null"); } catch {}
+  D = ban && ban.phien_ban === goc.phien_ban ? ban : structuredClone(goc);
+  // Đổi phiên bản: giữ ghi chú và quyết định cũ (khớp tình huống + nội dung bước), không để mất ghi chú của người xem.
+  if (ban && ban.phien_ban !== goc.phien_ban) {
+    let giu = 0, lac = [];
+    for (const tCu of ban.tinh_huong || []) {
+      const tMoi = D.tinh_huong.find((t) => t.id === tCu.id);
+      if (tCu.ghi_chu) { if (tMoi) { tMoi.ghi_chu = tCu.ghi_chu; giu++; } else lac.push(tCu.ten + ": " + tCu.ghi_chu); }
+      for (const bCu of tCu.buoc || []) {
+        if (!bCu.ghi_chu) continue;
+        const bMoi = tMoi?.buoc.find((x) => x.viec === bCu.viec);
+        if (bMoi) { bMoi.ghi_chu = bCu.ghi_chu; giu++; } else lac.push(`${tCu.ten} · ${bCu.viec}: ${bCu.ghi_chu}`);
+      }
+    }
+    for (const cCu of ban.can_chot || []) { const c = D.can_chot.find((x) => x.chu_de === cCu.chu_de); if (cCu.quyet_dinh && c) { c.quyet_dinh = cCu.quyet_dinh; giu++; } }
+    // Ghi chú không còn bước tương ứng thì gom vào ghi chú tình huống đầu để không mất.
+    if (lac.length) D.tinh_huong[0].ghi_chu = [D.tinh_huong[0].ghi_chu, "Ghi chú từ bản trước:\n" + lac.join("\n")].filter(Boolean).join("\n\n");
+    luu();
+  }
+  $("#phien-ban").textContent = "· bản " + D.phien_ban;
+  const h = new URLSearchParams(location.hash.slice(1));
+  khung = h.get("k") || "tinh-huong"; thId = h.get("th") || D.tinh_huong[0].id; buoc = Number(h.get("b") || 0);
+  ve();
+}
+function datHash() { history.replaceState(null, "", `#k=${khung}&th=${thId}&b=${buoc}`); }
+function vai(id) { return D.vai.find((v) => v.id === id) || { ten: id, mau: "#999" }; }
+function ve() {
+  document.querySelectorAll("nav.tab button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.khung === khung)));
+  const m = $("#noi-dung");
+  m.innerHTML = { "tinh-huong": veTinhHuong, vai: veVai, "dich-vu": veDichVu, "van-hanh": veVanHanh, "can-chot": veCanChot, "doi-chieu": veDoiChieu, "he-thong": veHeThong, "ghi-chu": veGhiChu }[khung]();
+  if (khung === "tinh-huong") sauVeTinhHuong();
+  datHash();
+}
+/* ---------- Tình huống ---------- */
+function veTinhHuong() {
+  const th = D.tinh_huong.find((t) => t.id === thId) || D.tinh_huong[0];
+  thId = th.id; buoc = Math.max(0, Math.min(buoc, th.buoc.length - 1));
+  const nhom = [...new Set(D.tinh_huong.map((t) => t.nhom))];
+  const ds = nhom.map((n) => `<details open><summary>${e(D.ten_nhom?.[n] || n)}</summary><div class="ds-muc">${D.tinh_huong.filter((t) => t.nhom === n).map((t) => `<button data-th="${e(t.id)}" aria-current="${t.id === th.id}"><span class="cham ${t.loai_nguon && t.loai_nguon !== "goc" ? t.loai_nguon : t.buoc.some((b) => b.loai_nguon === "mau_thuan") ? "mau_thuan" : t.buoc.some((b) => b.loai_nguon === "gop_y") ? "gop_y" : t.buoc.some((b) => b.loai_nguon === "sang_lap") ? "sang_lap" : t.buoc.some((b) => b.loai_nguon === "phong_van") ? "phong_van" : "goc"}"></span>${e(t.ten)}</button>`).join("")}</div></details>`).join("");
+  // Làn = các bên khai báo + mọi bên có bước (không để thẻ nào mất làn, kể cả khi thêm bước ở chế độ Sửa).
+  const lan = [...new Set([...(th.vai_tham_gia || []), ...th.buoc.map((b) => b.vai)])];
+  const cot = `grid-template-columns:118px repeat(${th.buoc.length},168px)`;
+  let luoi = `<div class="lan" style="${cot}"><div class="ten-lan" style="border-top:0"></div>${th.buoc.map((b, i) => `<div class="o dau-cot ${i === buoc ? "dang" : ""}" data-b="${i}">Bước ${i + 1}</div>`).join("")}`;
+  for (const l of lan) {
+    const v = vai(l);
+    luoi += `<div class="ten-lan" style="border-top:1px solid var(--vien)"><i style="background:${v.mau}"></i>${e(v.ten_ngan || v.ten)}</div>`;
+    th.buoc.forEach((b, i) => {
+      luoi += `<div class="o ${i === buoc ? "dang" : ""}" data-lan="${e(l)}" data-o="${i}">${b.vai === l ? theBuoc(b, i) : ""}</div>`;
+    });
+  }
+  luoi += `</div>`;
+  const b = th.buoc[buoc];
+  const chon = `<select class="chon-th" aria-label="Chọn tình huống" data-chon-th>${nhom.map((n) => `<optgroup label="${e(D.ten_nhom?.[n] || n)}">${D.tinh_huong.filter((t) => t.nhom === n).map((t) => `<option value="${e(t.id)}" ${t.id === th.id ? "selected" : ""}>${e(t.ten)}</option>`).join("")}</optgroup>`).join("")}</select>`;
+  return `<div class="th-bo"><aside class="ds-th">${ds}</aside><section>${chon}
+  <div class="th-dau"><h2>${e(th.ten)}</h2>${(th.nguon || []).map((n) => `<span class="chip ${{ phong_van: "cam", sang_lap: "tim", mau_thuan: "do", gop_y: "lam" }[th.loai_nguon] || ""}">${e(n)}</span>`).join("")}${(th.ma_chot || []).map((m) => `<a class="chip do" href="#k=can-chot" data-khung="can-chot" title="Đang dùng đề xuất chờ chốt">${e(m)}</a>`).join("")}</div>
+  <p class="th-mo" ${dangSua ? 'contenteditable="true" data-sua-th="mo_ta"' : ""}>${e(th.mo_ta)}</p>
+  <div class="o-ghi ghi-th" style="margin:0 0 10px;border:0;padding:0"><label>Ghi chú cho cả tình huống<span class="da-luu" data-luu-th></span></label><textarea data-ghi-th placeholder="Ví dụ: tình huống này thực tế hay xảy ra ở vựa, cần thêm bước…">${e(th.ghi_chu || "")}</textarea></div>
+  <div class="dieu-khien"><button class="nut" data-di="-1" aria-label="Bước trước">◀</button><span class="so-buoc">${buoc + 1} / ${th.buoc.length}</span><button class="nut chinh" data-di="1" aria-label="Bước sau">▶</button><button class="nut nho" data-chay>Chạy hết</button><div class="tien-do"><i style="width:${((buoc + 1) / th.buoc.length) * 100}%"></i></div></div>
+  <div class="lan-khung" id="lan-khung">${luoi}</div>
+  <div class="chi-tiet">${veChiTiet(th, b)}${veSoTien(th, b)}</div>
+  </section></div>`;
+}
+function theBuoc(b, i) {
+  const tt = i < buoc ? "xong" : i === buoc ? "dang" : "mo";
+  return `<div class="the ${tt}" data-b="${i}"><span class="cham ${b.loai_nguon || "goc"} goc-chi" title="${e(LOAI_NGUON[b.loai_nguon || "goc"])}"></span><b data-sua="viec" data-i="${i}">${e(b.viec)}</b>${b.ghi_chu ? `<span class="dau-ghi" title="${e(b.ghi_chu)}">Ghi chú</span>` : ""}${b.nv ? `<span class="dau-ghi" style="background:var(--tim)" title="${e(b.nv)}">NV</span>` : ""}<div class="noi">${b.moc ? `<span class="o-dau" style="background:#1d2b24;color:#fff">${e(b.moc)}</span>` : ""}<span class="o-dau ${e(b.o_dau)}">${e(O_DAU[b.o_dau] || b.o_dau)}</span>${b.han ? `<span class="o-dau">${e(b.han)}</span>` : ""}</div>${(b.luong || []).length ? `<div class="luong">${b.luong.map((l) => `<span><i class="bieu ${l.loai}">${BIEU[l.loai]}</i>→ ${e(vai(l.den).ten_ngan || vai(l.den).ten)}${l.nhan ? ": " + e(l.nhan) : ""}</span>`).join("")}</div>` : ""}</div>`;
+}
+function veChiTiet(th, b) {
+  const v = vai(b.vai);
+  const sua = dangSua ? `<div class="o-sua" style="margin-top:10px">
+    <label>Ai làm<select data-sua-b="vai">${D.vai.map((x) => `<option value="${e(x.id)}" ${x.id === b.vai ? "selected" : ""}>${e(x.ten)}</option>`).join("")}</select></label>
+    <label>Làm ở đâu<select data-sua-b="o_dau">${Object.entries(O_DAU).map(([k, t]) => `<option value="${k}" ${k === b.o_dau ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+    <label>Việc (ngắn)<input data-sua-b="viec" value="${e(b.viec)}"></label>
+    <label>Điều kiện qua bước<input data-sua-b="dieu_kien" value="${e(b.dieu_kien || "")}"></label>
+    <label>Hạn<input data-sua-b="han" value="${e(b.han || "")}"></label>
+    <label>Nhân viên AgiViet đảm bảo<input data-sua-b="nv" value="${e(b.nv || "")}"></label>
+    <label>Chi tiết<textarea rows="3" data-sua-b="chi_tiet">${e(b.chi_tiet || "")}</textarea></label>
+    <label>Ghi chú của người sáng lập<textarea rows="2" data-sua-b="ghi_chu">${e(b.ghi_chu || "")}</textarea></label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="nut nho" data-them-buoc>+ Thêm bước sau</button><button class="nut nho" data-xoa-buoc>Xóa bước này</button><button class="nut nho" data-doi="-1">Dời trái</button><button class="nut nho" data-doi="1">Dời phải</button></div></div>` : "";
+  return `<div class="hop"><h4>Bước ${buoc + 1} · ${e(v.ten)}</h4><p class="lon">${e(b.viec)}</p>
+  ${b.dieu_kien ? `<div class="dong"><span>Điều kiện qua bước</span><b style="text-align:right">${e(b.dieu_kien)}</b></div>` : ""}
+  <div class="dong"><span>Làm ở đâu</span><b>${e(O_DAU[b.o_dau] || b.o_dau)}</b></div>
+  ${b.moc ? `<div class="dong"><span>Thời điểm (giả định)</span><b>${e(b.moc)}</b></div>` : ""}
+  ${b.han ? `<div class="dong"><span>Hạn</span><b>${e(b.han)}</b></div>` : ""}
+  ${(b.luong || []).map((l) => `<div class="dong"><span><i class="bieu ${l.loai}">${BIEU[l.loai]}</i> ${e(TEN_LUONG[l.loai])}: ${e(vai(l.tu || b.vai).ten_ngan || vai(l.tu || b.vai).ten)} → ${e(vai(l.den).ten_ngan || vai(l.den).ten)}</span><b>${e(l.nhan || "")}</b></div>`).join("")}
+  ${b.chi_tiet ? `<p style="font-size:14px;color:var(--chu2);margin:8px 0 0">${e(b.chi_tiet)}</p>` : ""}
+  ${b.nv ? `<div class="nv-dam-bao"><b>Nhân viên AgiViet đảm bảo:</b> ${e(b.nv)}</div>` : ""}
+  <div class="nguon"><span class="cham ${b.loai_nguon || "goc"}" style="margin-top:4px"></span><span>${e(LOAI_NGUON[b.loai_nguon || "goc"])}${(b.nguon || []).length ? ": " + e(b.nguon.join(" · ")) : ""}${b.trich ? `<br><i>“${e(b.trich)}”</i>` : ""}</span></div>
+  ${dangSua ? "" : `<div class="o-ghi"><label>Ghi chú của bạn cho bước này<span class="da-luu" data-luu-b></span></label><textarea data-ghi-b placeholder="Gõ ghi chú, tự lưu. Ví dụ: chỗ này nhân viên phải gọi xác nhận…">${e(b.ghi_chu || "")}</textarea></div>`}${sua}</div>`;
+}
+function soTai(th, i) { const s = {}; for (let k = 0; k <= i; k++) Object.assign(s, th.buoc[k].so || {}); return s; }
+function veSoTien(th, b) {
+  const tt = th.trang_thai || D.trang_thai_don;
+  let hien = null; for (let k = 0; k <= buoc; k++) if (th.buoc[k].trang_thai) hien = th.buoc[k].trang_thai;
+  const idx = tt.indexOf(hien);
+  const s = soTai(th, buoc);
+  const vd = th.vi_du || {};
+  const coc = s.coc_giu ?? 0, tt2 = s.tra_thang ?? 0, chi = s.coc_chi_ban ?? 0, hoan = s.hoan_mua ?? 0;
+  const tong = Math.max(vd.gia_tri || 0, coc + tt2 + chi + hoan, 1);
+  const pc = (x) => Math.max(0, Math.min(100, (x / tong) * 100)) + "%";
+  return `<div class="hop"><h4>Trạng thái đơn ${vd.ma ? "· " + e(vd.ma) : ""}</h4>
+  <div class="trang-thai">${tt.map((x, i) => `<span class="${i < idx ? "qua" : i === idx ? "dang" : ""}">${e(x)}</span>`).join("")}</div>
+  ${hien && idx < 0 ? `<p class="lon" style="color:var(--do)">${e(hien)}</p>` : ""}
+  ${vd.gia_tri ? `<h4 style="margin-top:12px">Sổ tiền</h4>
+  <div class="thanh-tien"><i style="width:${pc(coc)};background:var(--lam)"></i><i style="width:${pc(tt2)};background:var(--xanh)"></i><i style="width:${pc(chi)};background:#2f8f5b"></i><i style="width:${pc(hoan)};background:var(--vang)"></i></div>
+  <div class="chu-giai"><span><i class="cham" style="background:var(--lam)"></i>Ngân hàng giữ cọc</span><span><i class="cham" style="background:var(--xanh)"></i>Trả cho người bán ngoài cọc</span><span><i class="cham" style="background:#2f8f5b"></i>Cọc chuyển người bán</span><span><i class="cham" style="background:var(--vang)"></i>Hoàn bên mua</span></div>
+  <div class="dong"><span>Giá trị đơn</span><b>${tien(s.gia_tri ?? vd.gia_tri)}</b></div>
+  <div class="dong"><span>Ngân hàng đang giữ cọc</span><b>${tien(coc)}</b></div>
+  <div class="dong"><span>Đã trả cho người bán ngoài cọc (bên mua trả thẳng hoặc ngân hàng giải ngân)</span><b>${tien(tt2)}</b></div>
+  ${s.phai_tra != null ? `<div class="dong"><span>Giá trị phải trả sau nghiệm thu</span><b>${tien(s.phai_tra)}</b></div>` : ""}
+  <div class="dong"><span>Cọc chuyển người bán</span><b>${tien(chi)}</b></div>
+  <div class="dong"><span>Hoàn bên mua</span><b>${tien(hoan)}</b></div>
+  ${s.con_no ? `<div class="dong"><span style="color:var(--do)">Còn công nợ</span><b style="color:var(--do)">${e(s.con_no)}</b></div>` : ""}
+  ${s.tien_vao ? `<div class="dong"><span>Tiền thực vào tài khoản giữ</span><b>${tien(s.tien_vao)}</b></div>` : ""}
+  ${s.ung_nhan ? `<div class="dong"><span>Ứng tiền ngân hàng (thực nhận)</span><b>${tien(s.ung_nhan)}</b></div><div class="dong"><span>Phí ứng (người bán trả)</span><b>${tien(s.phi_ung)}</b></div>` : ""}
+  ${s.ban_da_hoan ? `<div class="dong"><span>Người bán đã hoàn lại</span><b>${tien(s.ban_da_hoan)}</b></div>${s.xac_minh_hoan ? `<div class="dong"><span>Nguồn xác minh</span><b style="text-align:right;font-weight:500">${e(s.xac_minh_hoan)}</b></div>` : ""}` : ""}
+  ${s.phi_mua_ung || s.phi_ban_ung ? `<h4 style="margin-top:12px">Hồ sơ phí kiểm định (tách khỏi tiền hàng)</h4>
+  ${s.phi_mua_ung ? `<div class="dong"><span>Bên mua đã ứng</span><b>${tien(s.phi_mua_ung)}</b></div>` : ""}
+  ${s.phi_ban_ung ? `<div class="dong"><span>Người bán đã ứng</span><b>${tien(s.phi_ban_ung)}</b></div>` : ""}
+  ${s.phi_ben_chiu ? `<div class="dong"><span>Bên chịu cuối cùng</span><b style="text-align:right">${e(s.phi_ben_chiu)}</b></div>` : ""}
+  ${s.phi_da_hoan ? `<div class="dong"><span>Đã hoàn</span><b>${tien(s.phi_da_hoan)}</b></div>` : ""}
+  ${s.phi_con_thieu != null ? `<div class="dong"><span style="color:${s.phi_con_thieu ? "var(--do)" : "inherit"}">Còn thiếu</span><b>${tien(s.phi_con_thieu)}</b></div>` : ""}` : ""}
+  <div class="dong"><span>Người bán đã nhận (thực)</span><b>${tien((s.tra_thang ?? 0) + chi + (s.ung_nhan ?? 0) - (s.ban_da_hoan ?? 0))}</b></div>` : `<p class="trong">Chưa mô phỏng sổ tiền cho tình huống này.</p>`}
+  ${vd.ghi ? `<p style="font-size:12.5px;color:var(--chu3);margin:8px 0 0">${e(vd.ghi)}</p>` : ""}</div>`;
+}
+let hen = null;
+function sauVeTinhHuong() {
+  const k = $("#lan-khung"), th = D.tinh_huong.find((t) => t.id === thId), b = th.buoc[buoc];
+  const the = k.querySelector(`.the[data-b="${buoc}"]`);
+  if (the) { const r = the.getBoundingClientRect(), rk = k.getBoundingClientRect(); if (r.left < rk.left + 118 || r.right > rk.right) k.scrollLeft += r.left - rk.left - 140; }
+  // Gói hàng/tiền/giấy bay từ làn người làm tới làn nhận.
+  (b.luong || []).forEach((l, j) => {
+    const tu = k.querySelector(`.o[data-lan="${l.tu || b.vai}"][data-o="${buoc}"]`), den = k.querySelector(`.o[data-lan="${l.den}"][data-o="${buoc}"]`);
+    if (!tu || !den || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const g = document.createElement("span");
+    g.className = "goi"; g.style.background = { hang: "#8a6d3b", tien: "#1d5a42", giay: "#2b5f8a", tin: "#6b4c9a" }[l.loai];
+    g.textContent = (BIEU[l.loai] === "đ" ? "đ " : "") + (l.nhan || TEN_LUONG[l.loai]);
+    const lan = k.querySelector(".lan"); lan.style.position = "relative"; lan.appendChild(g);
+    // Bay sát mép dưới ô để không đè chữ trên thẻ.
+    const day = (o) => o.offsetTop + o.offsetHeight - 26 - j * 22;
+    g.style.left = tu.offsetLeft + 8 + "px"; g.style.top = day(tu) + "px";
+    requestAnimationFrame(() => requestAnimationFrame(() => { g.style.left = den.offsetLeft + 8 + "px"; g.style.top = day(den) + "px"; }));
+    setTimeout(() => { g.style.opacity = "0"; }, 1800); setTimeout(() => g.remove(), 2200);
+  });
+}
+/* ---------- Các bên ---------- */
+function veVai() {
+  return `<p class="th-mo">Mỗi ô là một bên: là ai, các vai bên trong và quyền của từng vai, không được làm gì. Dưới cùng là hàng, tiền, giấy tờ đi giữa các bên.</p>
+  <div class="ban-do">${D.vai.map((v) => `<div class="vai-o" style="--x:${v.mau}"><h3>${e(v.ten)}</h3><span class="chip xam">${e(v.dung || "")}</span>
+    ${v.mo ? `<p style="font-size:13.5px;color:var(--chu2);margin:6px 0">${e(v.mo)}</p>` : ""}
+    ${(v.loai_to_chuc || []).length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px">${v.loai_to_chuc.map((x) => `<span class="chip">${e(x)}</span>`).join("")}</div>` : ""}
+    ${(v.vai_con || []).map(([t, q]) => `<div class="dong" style="display:block"><b style="font-size:13.5px">${e(t)}</b><div style="font-size:13px;color:var(--chu2)">${e(q)}</div></div>`).join("")}
+    ${v.khong ? `<p style="font-size:12.5px;color:var(--do);margin:8px 0 0">Không: ${e(v.khong)}</p>` : ""}</div>`).join("")}</div>
+  ${D.quyen ? `<div class="hop" style="margin-top:12px"><h4>Ba thông tin định danh tách riêng</h4>${D.quyen.dinh_danh.map(([a, b]) => `<div class="dong"><b>${e(a)}</b><span style="text-align:right;max-width:62%">${e(b)}</span></div>`).join("")}</div>
+  <div class="hop" style="margin-top:12px"><h4>Quyền theo hành động</h4><p style="font-size:13px;color:var(--chu2);margin:0 0 8px">${e(D.quyen.mo_ta)}</p><div class="bang-khung"><table><tr><th>Hành động</th><th>Bên</th><th>Xem</th><th>Lập đề nghị</th><th>Chấp thuận / ký</th><th>Xác nhận tiền</th></tr>${D.quyen.hanh_dong.map((r) => `<tr>${r.map((x, i) => `<td>${i === 0 ? `<b>${e(x)}</b>` : e(x)}</td>`).join("")}</tr>`).join("")}</table></div></div>` : ""}
+  <div class="hop" style="margin-top:12px"><h4>Dòng chảy giữa các bên</h4>${(D.dong_chay || []).map((d) => `<div class="mui"><span style="text-align:right"><b>${e(vai(d.tu).ten_ngan || vai(d.tu).ten)}</b></span><span><i class="bieu ${d.loai}">${BIEU[d.loai]}</i> → </span><span><b>${e(vai(d.den).ten_ngan || vai(d.den).ten)}</b> · ${e(d.nhan)}</span></div>`).join("")}</div>`;
+}
+/* ---------- Dịch vụ ---------- */
+function veDichVu() {
+  const DV = D.dich_vu;
+  return `<p class="th-mo">${e(DV.mo_ta)}</p>
+  ${DV.vong_doi ? `<div class="hop" style="margin-bottom:12px"><h4>Mỗi dịch vụ đi qua</h4><div class="trang-thai">${DV.vong_doi.map((x, i) => `<span class="${i === 2 ? "dang" : "qua"}">${i + 1}. ${e(x)}</span>`).join("")}</div><p style="font-size:12.5px;color:var(--chu3);margin:4px 0 0">Bước 3: người có quyền chấp thuận chi phí (nhân viên không tự tạo chi phí).</p></div>` : ""}
+  ${DV.hoan_phi ? `<div class="hop" style="margin-bottom:12px"><h4>Dịch vụ đã dùng mà đơn hỏng</h4><div class="bang-khung"><table><tr><th>Trường hợp</th><th>Xử lý</th></tr>${DV.hoan_phi.map(([a, b]) => `<tr><td><b>${e(a)}</b></td><td>${e(b)}</td></tr>`).join("")}</table></div></div>` : ""}
+  ${(DV.quy_tac || []).length ? `<div class="hop bang-quy-tac" style="margin-bottom:12px"><h4>Quy tắc dịch vụ</h4>${DV.quy_tac.map(([a, b]) => `<div class="dong"><b>${e(a)}</b><span style="text-align:right;max-width:60%">${e(b)}</span></div>`).join("")}</div>` : ""}
+  <div class="ban-do">${DV.ds.map(([ten, la, dung, cap, phi, khi, ln]) => `<div class="vai-o" style="--x:${{ sang_lap: "var(--tim)", phong_van: "var(--cam)", mau_thuan: "var(--do)" }[ln] || "var(--xanh)"}">
+    <h3>${e(ten)}</h3><p style="font-size:13.5px;color:var(--chu2);margin:4px 0 8px">${e(la)}</p>
+    <div class="dong"><span>Ai dùng</span><b style="text-align:right">${e(dung)}</b></div>
+    <div class="dong"><span>Ai cung cấp</span><b style="text-align:right">${e(cap)}</b></div>
+    <div class="dong"><span>Ai trả, phí</span><b style="text-align:right">${e(phi)}</b></div>
+    <div class="dong"><span>Khi nào</span><b style="text-align:right">${e(khi)}</b></div>
+    <div class="nguon"><span class="cham ${ln}" style="margin-top:4px"></span><span>${e(LOAI_NGUON[ln])}</span></div></div>`).join("")}</div>`;
+}
+/* ---------- Nhân viên, quản trị ---------- */
+function veVanHanh() {
+  const V = D.van_hanh;
+  return `<p class="th-mo">${e(V.mo_ta)}</p>
+  <div class="hop"><h4>Ai làm gì, dùng công cụ gì</h4><div class="bang-khung"><table><tr><th>Vai</th><th>Làm gì</th><th>Công cụ</th><th>Quyền tiền</th><th>Giờ làm</th></tr>${V.bang_vai.map((r) => `<tr><td><b>${e(r[0])}</b></td><td>${e(r[1])}</td><td>${e(r[2])}</td><td>${e(r[3])}</td><td>${e(r[4])}</td></tr>`).join("")}</table></div></div>
+  ${(V.quy_tac || []).length ? `<div class="hop bang-quy-tac" style="margin-top:12px;border-left:5px solid #2b7bb9"><h4>Quy tắc quyền, tiền, tranh chấp</h4>${V.quy_tac.map(([a, b]) => `<div class="dong"><b>${e(a)}</b><span style="text-align:right;max-width:60%">${e(b)}</span></div>`).join("")}</div>` : ""}
+  <div class="hop" style="margin-top:12px;border-left:5px solid var(--tim)"><h4>Ngoài giờ làm việc: hệ thống và trợ lý AI</h4>${V.ngoai_gio.map(([a, b]) => `<div class="dong"><b>${e(a)}</b><span style="text-align:right;max-width:62%">${e(b)}</span></div>`).join("")}</div>
+  <h4 style="margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--chu3)">Hàng việc mẫu</h4>
+  <div class="kanban">${V.cot.map((c) => `<div class="cot-k"><h3>${e(c.ten)}</h3>${c.viec.map((v) => `<div class="viec-k" style="border-left-color:${v.loai_nguon === "sang_lap" ? "var(--tim)" : "var(--xanh)"}"><b>${e(v.ten)}</b><div class="han">${e(v.han || "")}</div>${v.dau_ra ? `<div style="font-size:12.5px;color:var(--chu2);margin-top:3px">Đầu ra: ${e(v.dau_ra)}</div>` : ""}</div>`).join("")}</div>`).join("")}</div>
+  <div class="hop" style="margin-top:12px"><h4>Hạn giờ</h4><div class="bang-khung"><table><tr><th>Việc</th><th>Hạn</th><th>Quá hạn thì</th></tr>${D.han_gio.map((h) => `<tr><td>${e(h[0])}</td><td>${e(h[1])}</td><td>${e(h[2])}</td></tr>`).join("")}</table></div></div>`;
+}
+/* ---------- Hệ thống, tính năng ---------- */
+function veHeThong() {
+  const H = D.he_thong;
+  return `<p class="th-mo">Hệ thống tự làm gì hằng ngày, và các tính năng bên cạnh việc mua bán. Khái quát để khi dựng app không đi sai hướng.</p>
+  <div class="hop"><h4>Hệ thống tự làm</h4>${H.viec_thuong.map(([khi, gi]) => `<div class="dong"><b>${e(khi)}</b><span style="text-align:right;max-width:65%">${e(gi)}</span></div>`).join("")}</div>
+  ${(H.quy_tac || []).length ? `<div class="hop bang-quy-tac" style="margin-top:12px;border-left:5px solid #2b7bb9"><h4>Quy tắc vận hành phải có trước khi lập trình</h4>${H.quy_tac.map(([a, b]) => `<div class="dong"><b>${e(a)}</b><span style="text-align:right;max-width:60%">${e(b)}</span></div>`).join("")}</div>` : ""}
+  <div class="hop" style="margin-top:12px"><h4>Tính năng bên cạnh</h4><div class="bang-khung"><table><tr><th>Tính năng</th><th>Là gì</th><th>Cho ai</th></tr>${H.tinh_nang.map((r) => `<tr><td><b>${e(r[0])}</b></td><td>${e(r[1])}</td><td>${e(r[2])}</td></tr>`).join("")}</table></div></div>`;
+}
+/* ---------- Việc cần chốt ---------- */
+function veCanChot() {
+  const mau = { phong_van: "var(--cam)", sang_lap: "var(--tim)", mau_thuan: "var(--do)", gop_y: "#2b7bb9" };
+  const nhom = D.nhom_chot || { V1: "Cần chốt" };
+  const the = (c) => { const i = D.can_chot.indexOf(c); return `<div class="hop" style="margin-bottom:10px;border-left:5px solid ${mau[c.loai] || "var(--do)"}"><h4>${e(c.ma ? c.ma + " · " : "")}${e(c.chu_de)}</h4>
+    <div class="trang-thai"><span class="${c.quyet_dinh ? "qua" : "dang"}">${e(c.quyet_dinh ? "Đã ghi quyết định" : c.trang_thai || "Chưa chốt")}</span>${c.nguoi_chot ? `<span>Người chốt: ${e(c.nguoi_chot)}</span>` : ""}${c.pham_vi ? `<span>Phạm vi: ${e(c.pham_vi)}</span>` : ""}${c.han ? `<span>Hạn: ${e(c.han)}</span>` : ""}</div>
+    <div class="bang-khung" style="border:0"><table>${c.lua_chon.map((l) => `<tr><td style="width:40%"><b>${e(l[0])}</b></td><td>${e(l[1])}</td></tr>`).join("")}</table></div>
+    <p style="margin:8px 0 0"><b>Đề xuất:</b> ${e(c.de_xuat)}</p>
+    ${c.huong ? `<p style="margin:6px 0 0;font-size:13px;color:var(--chu2)"><b>Hướng xử lý:</b> ${e(c.huong)}</p>` : ""}
+    ${(c.ban_cu || []).map((b) => `<details style="margin-top:6px;font-size:13px;color:var(--chu2)"><summary>Bản trước để đối chiếu: ${e(b.nhan)}</summary><p style="margin:4px 0"><b>${e(b.chu_de)}</b></p>${b.lua_chon.map(([x, y]) => `<div>• ${e(x)}${y ? " — " + e(y) : ""}</div>`).join("")}<p style="margin:4px 0 0">Đề xuất cũ: ${e(b.de_xuat)}</p></details>`).join("")}
+    ${c.bang_chung ? `<p style="margin:4px 0 0;font-size:13.5px"><b>Bằng chứng cần có:</b> ${e(c.bang_chung)}</p>` : ""}
+    ${(c.tinh_huong || []).length ? `<p style="margin:4px 0 0;font-size:13.5px"><b>Tình huống bị ảnh hưởng:</b> ${c.tinh_huong.map((id) => `<a href="#k=tinh-huong&th=${e(id)}&b=0" data-lien="${e(id)}">${e(D.tinh_huong.find((t) => t.id === id)?.ten || id)}</a>`).join(", ")}</p>` : ""}
+    <p class="nguon" style="margin-top:4px">Căn cứ: ${e(c.can_cu)}</p>
+    ${dangSua ? `<div class="o-sua" style="margin-top:6px"><label>Quyết định của người sáng lập<textarea rows="2" data-chot="${i}">${e(c.quyet_dinh || "")}</textarea></label></div>` : c.quyet_dinh ? `<div class="ghi-chu-ng">Quyết định: ${e(c.quyet_dinh)}</div>` : ""}</div>`; };
+  return `<p class="th-mo">Chia ba nhóm: chốt để duyệt luồng V1, xác nhận trước khi chạy thử thật, và để sau. Bật Sửa để ghi quyết định.</p>
+  ${Object.entries(nhom).map(([k, ten]) => { const ds = D.can_chot.filter((c) => (c.nhom || "V1") === k); return ds.length ? `<h3 style="margin:18px 0 8px;font-size:16px">${e(ten)} (${ds.length})</h3>${ds.map(the).join("")}` : ""; }).join("")}`;
+}
+/* ---------- Nguồn ---------- */
+function veDoiChieu() {
+  const dem = { goc: 0, phong_van: 0, sang_lap: 0, gop_y: 0, mau_thuan: 0 };
+  D.tinh_huong.forEach((t) => t.buoc.forEach((b) => dem[b.loai_nguon || "goc"]++));
+  const theo = (ln) => D.tinh_huong.filter((t) => t.buoc.some((b) => b.loai_nguon === ln));
+  return `<div class="hop" style="margin-bottom:12px"><h4>Màu chấm trên mỗi bước</h4><div class="chu-giai" style="font-size:14px"><span><i class="cham goc"></i>Theo tài liệu gốc 24/10 (${dem.goc} bước)</span><span><i class="cham sang_lap"></i>Theo chỉ đạo người sáng lập 27/10 (${dem.sang_lap})</span><span><i class="cham gop_y"></i>Theo góp ý 28/10 (${dem.gop_y})</span><span><i class="cham phong_van"></i>Bổ sung từ phỏng vấn (${dem.phong_van})</span><span><i class="cham mau_thuan"></i>Chờ chốt (${dem.mau_thuan})</span></div><p style="font-size:13px;color:var(--chu2);margin:8px 0 0">${e(D.nguon_chinh)}</p></div>
+  ${D.thi_truong ? `<div class="hop" style="margin-bottom:12px"><h4>Thị trường: nông dân được lợi gì</h4><p style="font-size:13.5px;margin:0 0 8px">${e(D.thi_truong.y_chinh)}</p>
+  <div class="bang-khung"><table><tr><th>Khó khăn của nông dân</th><th>Đã có</th><th>Còn thiếu</th></tr>${D.thi_truong.bang.map((r) => `<tr>${r.map((x, i) => `<td>${i === 0 ? `<b>${e(x)}</b>` : e(x)}</td>`).join("")}</tr>`).join("")}</table></div>
+  ${D.thi_truong.cach_mua ? `<h4 style="margin-top:12px">Ba cách mua</h4><p style="font-size:13px;color:var(--chu2);margin:0 0 6px">${e(D.thi_truong.y_cach_mua)}</p><div class="bang-khung"><table><tr><th>Cách mua</th><th>Bên mua muốn</th><th>AgiViet hỗ trợ</th></tr>${D.thi_truong.cach_mua.map((r) => `<tr>${r.map((x, i) => `<td>${i === 0 ? `<b>${e(x)}</b>` : e(x)}</td>`).join("")}</tr>`).join("")}</table></div>` : ""}
+  <h4 style="margin-top:12px">Chống ép giá</h4>${D.thi_truong.chong_ep_gia.map(([a, b]) => `<div class="dong" style="display:block"><b style="font-size:13.5px">${e(a)}</b><div style="font-size:13px;color:var(--chu2)">${e(b)}</div></div>`).join("")}
+  <p style="font-size:12.5px;color:var(--chu3);margin:8px 0">${e(D.thi_truong.luu_y)}</p>
+  <h4>Đo khi pilot</h4><div style="display:flex;flex-wrap:wrap;gap:4px">${D.thi_truong.chi_so.map((x) => `<span class="chip" style="white-space:normal;max-width:100%">${e(x)}</span>`).join("")}</div></div>` : ""}
+  ${D.chi_phi ? `<div class="hop" style="margin-bottom:12px"><h4>Chi phí phục vụ (Q24)</h4><p style="font-size:13.5px;margin:0 0 8px">${e(D.chi_phi.y)}</p>
+  <div class="bang-khung"><table><tr><th>Cách mua</th><th>Đơn vị đo chi phí</th></tr>${D.chi_phi.don_vi.map(([a, b]) => `<tr><td><b>${e(a)}</b></td><td>${e(b)}</td></tr>`).join("")}</table></div>
+  <h4 style="margin-top:12px">Khoản cần ghi</h4>${D.chi_phi.khoan.map((x) => `<div style="font-size:13px;margin:2px 0">• ${e(x)}</div>`).join("")}
+  <h4 style="margin-top:12px">Phân bổ công trực</h4>${D.chi_phi.phan_bo.map((x) => `<div style="font-size:13px;margin:2px 0">• ${e(x)}</div>`).join("")}
+  <p style="font-size:13px;color:var(--chu2);margin:8px 0">${e(D.chi_phi.vi_du)}</p>
+  <h4>Dự toán 3 nhóm đơn (giả định)</h4>${D.chi_phi.uoc.map((u) => `<div class="bang-khung" style="margin-bottom:8px"><table><tr><th>${e(u.ten)}</th><th>Người làm</th><th>Thời gian</th><th>Chi phí</th></tr>${u.viec.map((r) => `<tr>${r.map((x) => `<td>${e(x)}</td>`).join("")}</tr>`).join("")}<tr><td><b>Tổng</b></td><td></td><td></td><td><b>${e(u.tong)}</b></td></tr></table></div>`).join("")}
+  <p style="font-size:12.5px;color:var(--chu3);margin:6px 0 0">${e(D.chi_phi.ghi_uoc)}</p></div>` : ""}
+  ${D.can_chot_ghi ? `<p style="font-size:13px;color:var(--chu2);margin:0 0 10px">${e(D.can_chot_ghi)}</p>` : ""}
+  ${D.kiem_thu ? `<div class="hop" style="margin-bottom:12px"><h4>Kết quả kiểm thử giao ngay</h4><div class="bang-khung"><table><tr>${D.kiem_thu.cot.map((c) => `<th>${e(c)}</th>`).join("")}</tr>${D.kiem_thu.dong.map((r) => `<tr><td>${e(r[0])}</td>${r.slice(1).map((x) => `<td><span class="chip ${x.startsWith("đạt") ? "" : x === "lỗi" ? "do" : x.startsWith("chưa kiểm") ? "cam" : "xam"}">${e(x)}</span></td>`).join("")}</tr>`).join("")}</table></div><p style="font-size:12.5px;color:var(--chu3);margin:6px 0 0">${e(D.kiem_thu.ghi)}</p></div>` : ""}
+  ${["mau_thuan", "gop_y", "sang_lap", "phong_van"].map((ln) => `<div class="hop" style="margin-bottom:12px"><h4>${e(LOAI_NGUON[ln])}: có ở tình huống</h4>${theo(ln).map((t) => `<div class="dong"><a href="#k=tinh-huong&th=${e(t.id)}&b=0" data-lien="${e(t.id)}">${e(t.ten)}</a><span>${t.buoc.filter((b) => b.loai_nguon === ln).length} bước</span></div>`).join("") || '<p class="trong">Không có.</p>'}</div>`).join("")}`;
+}
+/* ---------- Ghi chú của tôi ---------- */
+function veGhiChu() {
+  const ds = [];
+  D.tinh_huong.forEach((t) => {
+    if (t.ghi_chu) ds.push([t.id, 0, t.ten, "Cả tình huống", t.ghi_chu]);
+    t.buoc.forEach((b, i) => { if (b.ghi_chu) ds.push([t.id, i, t.ten, `Bước ${i + 1} · ${b.viec}`, b.ghi_chu]); });
+  });
+  D.can_chot.forEach((c) => { if (c.quyet_dinh) ds.push(["", 0, "Việc cần chốt", c.chu_de, c.quyet_dinh]); });
+  return `<p class="th-mo">Mọi ghi chú bạn gõ khi xem quy trình. Lưu trên máy này; bấm "Tải ghi chú" để gửi lại cho đội làm.</p>
+  <div class="dieu-khien"><button class="nut chinh" id="tai-ghi">Tải ghi chú (${ds.length})</button><button class="nut" id="tai-json-2">Tải toàn bộ quy-trinh.json</button></div>
+  ${ds.length ? `<div class="hop ds-ghi">${ds.map(([id, i, ten, cho, nd]) => `<div class="dong" ${id ? `data-toi="${e(id)}" data-toi-b="${i}"` : 'data-toi-chot'}><span><b>${e(ten)}</b><br><span style="color:var(--chu3);font-size:12.5px">${e(cho)}</span></span><span style="text-align:right;max-width:55%">${e(nd)}</span></div>`).join("")}</div>` : `<p class="trong">Chưa có ghi chú. Mở một tình huống, chọn bước, gõ vào ô "Ghi chú của bạn".</p>`}`;
+}
+function taiTep(ten, noiDung, kieu) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([noiDung], { type: kieu }));
+  a.download = ten; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+let henLuu = null;
+document.addEventListener("input", (ev) => {
+  const t = ev.target;
+  if (!("ghiB" in t.dataset) && !("ghiTh" in t.dataset)) return;
+  const th = D.tinh_huong.find((x) => x.id === thId);
+  if ("ghiB" in t.dataset) th.buoc[buoc].ghi_chu = t.value; else th.ghi_chu = t.value;
+  clearTimeout(henLuu);
+  henLuu = setTimeout(() => {
+    luu();
+    const nhan = document.querySelector("ghiB" in t.dataset ? "[data-luu-b]" : "[data-luu-th]");
+    if (nhan) nhan.textContent = "· đã lưu";
+    // Cập nhật dấu "Ghi chú" trên thẻ mà không vẽ lại cả trang (giữ con trỏ trong ô).
+    const the = document.querySelector(`.the[data-b="${buoc}"]`);
+    if (the && "ghiB" in t.dataset) { let d = the.querySelector(".dau-ghi"); if (t.value && !d) { d = document.createElement("span"); d.className = "dau-ghi"; d.textContent = "Ghi chú"; the.querySelector("b").after(d); } if (!t.value && d) d.remove(); }
+  }, 400);
+});
+/* ---------- Sự kiện ---------- */
+document.addEventListener("click", (ev) => {
+  const toi = ev.target.closest("[data-toi],[data-toi-chot]");
+  if (toi) { if (toi.dataset.toi) { khung = "tinh-huong"; thId = toi.dataset.toi; buoc = Number(toi.dataset.toiB); } else khung = "can-chot"; ve(); scrollTo(0, 0); return; }
+  if (ev.target.id === "tai-ghi") {
+    const dong = [];
+    D.tinh_huong.forEach((t) => { if (t.ghi_chu) dong.push(`## ${t.ten}\n(cả tình huống) ${t.ghi_chu}`); t.buoc.forEach((b, i) => { if (b.ghi_chu) dong.push(`## ${t.ten}\nBước ${i + 1} · ${b.viec}\n→ ${b.ghi_chu}`); }); });
+    D.can_chot.forEach((c) => { if (c.quyet_dinh) dong.push(`## Việc cần chốt: ${c.chu_de}\n→ ${c.quyet_dinh}`); });
+    taiTep("ghi-chu-quy-trinh.txt", `Ghi chú quy trình AgiViet · bản ${D.phien_ban} · ${new Date().toLocaleString("vi-VN")}\n\n${dong.join("\n\n")}\n`, "text/plain;charset=utf-8");
+    return;
+  }
+  if (ev.target.id === "tai-json-2") { $("#tai-json").click(); return; }
+  const t = ev.target.closest("button,a,.the,.dau-cot");
+  if (!t) return;
+  if (t.dataset.khung) { khung = t.dataset.khung; ve(); scrollTo(0, 0); return; }
+  if (t.dataset.lien) { ev.preventDefault(); khung = "tinh-huong"; thId = t.dataset.lien; buoc = 0; ve(); scrollTo(0, 0); return; }
+  if (t.dataset.th) { thId = t.dataset.th; buoc = 0; ve(); return; }
+  if (t.dataset.di) { const th = D.tinh_huong.find((x) => x.id === thId); buoc = Math.max(0, Math.min(th.buoc.length - 1, buoc + Number(t.dataset.di))); ve(); return; }
+  if ("chay" in t.dataset) { clearInterval(hen); buoc = 0; ve(); const th = D.tinh_huong.find((x) => x.id === thId); hen = setInterval(() => { if (buoc >= th.buoc.length - 1 || khung !== "tinh-huong") return clearInterval(hen); buoc++; ve(); }, 2200); return; }
+  if (t.dataset.b != null && (t.classList.contains("the") || t.classList.contains("dau-cot")) && !(dangSua && ev.target.closest("[data-sua]"))) { buoc = Number(t.dataset.b); ve(); return; }
+  if (!dangSua) return;
+  const th = D.tinh_huong.find((x) => x.id === thId);
+  if ("themBuoc" in t.dataset) { const moi = structuredClone(th.buoc[buoc]); moi.viec = "Bước mới"; moi.luong = []; moi.so = {}; moi.trang_thai = null; moi.loai_nguon = "phong_van"; moi.nguon = ["Người sáng lập thêm"]; th.buoc.splice(buoc + 1, 0, moi); buoc++; luu(); ve(); }
+  if ("xoaBuoc" in t.dataset && th.buoc.length > 1) { th.buoc.splice(buoc, 1); buoc = Math.max(0, buoc - 1); luu(); ve(); }
+  if (t.dataset.doi) { const j = buoc + Number(t.dataset.doi); if (j >= 0 && j < th.buoc.length) { [th.buoc[buoc], th.buoc[j]] = [th.buoc[j], th.buoc[buoc]]; buoc = j; luu(); ve(); } }
+});
+document.addEventListener("change", (ev) => {
+  const t = ev.target;
+  if ("chonTh" in t.dataset) { thId = t.value; buoc = 0; ve(); return; }
+  if (!dangSua) return;
+  const th = D.tinh_huong.find((x) => x.id === thId);
+  if (t.dataset.suaB) { th.buoc[buoc][t.dataset.suaB] = t.value; luu(); ve(); }
+  if (t.dataset.chot != null) { D.can_chot[Number(t.dataset.chot)].quyet_dinh = t.value; luu(); }
+});
+document.addEventListener("focusout", (ev) => {
+  const t = ev.target; if (!dangSua) return;
+  if (t.dataset.suaTh) { const th = D.tinh_huong.find((x) => x.id === thId); th[t.dataset.suaTh] = t.innerText.trim(); luu(); }
+  if (t.dataset.sua) { const th = D.tinh_huong.find((x) => x.id === thId); th.buoc[Number(t.dataset.i)][t.dataset.sua] = t.innerText.trim(); luu(); }
+});
+$("#nut-sua").addEventListener("click", () => {
+  dangSua = !dangSua; document.body.classList.toggle("sua", dangSua);
+  $("#nut-sua").setAttribute("aria-pressed", String(dangSua)); $("#thanh-sua").classList.toggle("an", !dangSua);
+  ve(); if (dangSua) document.querySelectorAll(".the [data-sua]").forEach((x) => x.setAttribute("contenteditable", "true"));
+});
+new MutationObserver(() => { if (dangSua) document.querySelectorAll(".the [data-sua]:not([contenteditable])").forEach((x) => x.setAttribute("contenteditable", "true")); }).observe($("#noi-dung"), { childList: true, subtree: true });
+$("#tai-json").addEventListener("click", () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(D, null, 2)], { type: "application/json" }));
+  a.download = "quy-trinh.json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$("#nap-json").addEventListener("change", async (ev) => { const f = ev.target.files[0]; if (!f) return; try { D = JSON.parse(await f.text()); luu(); ve(); } catch { alert("Tệp không đúng định dạng."); } });
+$("#ve-goc").addEventListener("click", () => { if (!confirm("Bỏ mọi thay đổi trên máy này?")) return; D = structuredClone(goc); try { localStorage.removeItem(KHOA); } catch {} ve(); });
+document.addEventListener("keydown", (ev) => { if (khung !== "tinh-huong" || ev.target.closest("input,textarea,[contenteditable]")) return; if (ev.key === "ArrowRight") $('[data-di="1"]')?.click(); if (ev.key === "ArrowLeft") $('[data-di="-1"]')?.click(); });
+nap().catch((err) => { $("#noi-dung").innerHTML = `<p>Chưa tải được quy-trinh.json: ${e(err.message)}</p>`; });
+</script>
+</body>
+</html>

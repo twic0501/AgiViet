@@ -1,0 +1,33 @@
+200    138.2 ms  GET /v1/_bench/ids?n=5  {"demand_ids":["27210b08-8b94-4c35-b915-2215ce719097","f6c5af38-93fc-47e0-8868-ca648f43f2a6","e5f64c23-8ee5-44d6-a1a5-97a2741167a0","8a46b93
+200      1.7 ms  GET /health  {"ok":true,"service":"stub-backend","gia_lap":true,"pid":121}
+200      2.7 ms  GET /ready  {"ok":true}
+200     81.6 ms  GET /v1/demands/27210b08-8b94-4c35-b915-2215ce719097/matches  {"demand_id":"27210b08-8b94-4c35-b915-2215ce719097","matches":[{"code":"LO-0113548","grade":1,"available_g":"19728000","harvest_on":"2026-11
+200     41.5 ms  GET /v1/ref-price?commodity_id=1&grade=1  {"median_vnd_per_kg":"25018","n_orders":5694,"n_pairs":5672,"nguon":"trung vị 5694 đơn đã nghiệm thu 30 ngày"}
+200     35.4 ms  GET /v1/ref-price?commodity_id=1&grade=1&province=2  {"median_vnd_per_kg":"24964","n_orders":456,"n_pairs":453,"nguon":"trung vị 456 đơn đã nghiệm thu 30 ngày"}
+200     22.0 ms  GET /v1/lots?commodity_id=6&province=12  {"items":[{"code":"LO-0062434","commodity_id":6,"grade":1,"province_code":12,"harvest_on":"2026-11-10T17:00:00.000Z","created_at":"2026-10-2
+200     22.7 ms  GET /v1/lots?commodity_id=6&province=12&cursor=MjAyNi0xMC0yMVQwNzowNjo0Mi42NDRafDJhN2JiOGU2LTAzNDUtNDMyMS05NGFkLTBiZDI4ZjQyZDhhMA  {"items":[{"code":"LO-0005713","commodity_id":6,"grade":2,"province_code":12,"harvest_on":"2026-11-21T17:00:00.000Z","created_at":"2026-10-2
+201     12.5 ms  POST /v1/lots  {"lot_id":"1da6de01-2ddd-47df-8fd8-2be818d8c9b2","code":"LN-ed7818e99b9f"}
+200      2.9 ms  POST /v1/lots  {"code":"LN-ed7818e99b9f","lot_id":"1da6de01-2ddd-47df-8fd8-2be818d8c9b2","lap_lai":true}
+200    145.6 ms  POST /v1/webhooks/bank  {"result":"ok"}
+200      2.5 ms  POST /v1/webhooks/bank  {"trung_lap":true}
+401      1.8 ms  POST /v1/webhooks/bank  {"loi":"sai chữ ký webhook"}
+200     32.2 ms  GET /v1/orders/DC-00006663/ledger  {"accounts":[{"account_type":"deposit_escrow","balance_vnd":"15000000"},{"account_type":"fee_held","balance_vnd":"500000"}]}
+200      6.0 ms  POST /v1/qr/scan  {"delivery_id":"3a41160f-9ae3-455b-a79a-ad8687f8c836","result":"ok"}
+200      3.8 ms  POST /v1/qr/scan  {"delivery_id":"3a41160f-9ae3-455b-a79a-ad8687f8c836","result":"already_scanned"}
+200      8.2 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"ok"}
+200      9.4 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     10.0 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     11.3 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     12.3 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     14.3 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     15.0 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     16.0 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     17.3 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+200     18.3 ms  POST /v1/qr/scan  {"delivery_id":"0cfe9706-8089-4478-935a-4408a21937cb","result":"already_scanned"}
+400      1.9 ms  POST /v1/qr/scan  {"loi":"mã QR không hợp lệ"}
+201    162.5 ms  POST /v1/orders/DH-00127571/contract-pdf?mode=sync  {"document_id":"5becad4e-5b89-4695-9c3a-0210f6ac299d","version":1,"bytes":22701,"sha256":"ce863f6a7e4d3f6229ed7a0bba64c372039d10951b21e66b22
+202     17.7 ms  POST /v1/orders/DH-00102845/contract-pdf?mode=queue  {"job_id":"1","trang_thai":"đang tạo tài liệu"}
+200      2.7 ms  GET /v1/jobs/1  {"id":"1","status":"done","result":{"bytes":22734,"sha256":"725b8229587076d53b05bcaccfb590432b8b7e3f84b2f7ef033615b7e82bd3b3"},"created_at":
+200   1538.5 ms  POST /v1/voice  {"text":"xoài cát chu loại một hai tấn hái thứ bảy (GIẢ LẬP)","confidence":0.82}
+201      4.5 ms  POST /v1/uploads/photo  {"photo_id":"4e17630f-d9f4-4590-8140-34483defb8b5","bytes":256000}
+KHÓI: đạt

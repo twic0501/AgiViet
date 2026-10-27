@@ -1,0 +1,30 @@
+# Ghép qua chung.sh khi OCI_SIZE=6: 1 OCPU/6 GB, cùng volume/project với 12 GB.
+# Tổng kể cả migrate: 1 CPU, 3456 MiB; thường trực: 0.83 CPU, 3200 MiB.
+services:
+  db:
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    cpus: 0.30
+    command: [postgres, -c, timezone=Asia/Ho_Chi_Minh, -c, shared_buffers=384MB, -c, work_mem=2MB, -c, maintenance_work_mem=64MB, -c, max_connections=32, -c, password_encryption=scram-sha-256, -c, log_statement=none, -c, log_min_error_statement=panic]
+  backend:
+    mem_limit: 768m
+    memswap_limit: 768m
+    cpus: 0.25
+    environment:
+      NODE_OPTIONS: --max-old-space-size=448
+  frontend:
+    mem_limit: 192m
+    memswap_limit: 192m
+    cpus: 0.08
+  ai:
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: 0.12
+  https:
+    mem_limit: 192m
+    memswap_limit: 192m
+    cpus: 0.08
+  migrate:
+    mem_limit: 256m
+    memswap_limit: 256m
+    cpus: 0.17

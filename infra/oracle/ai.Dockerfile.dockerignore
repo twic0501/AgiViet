@@ -1,0 +1,7 @@
+**
+!ai/requirements.txt
+!ai/agiviet_ai/**
+!ai/thu_nghiem/**
+**/__pycache__
+**/*.pyc
+**/.env*

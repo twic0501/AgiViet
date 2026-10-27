@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-27T02:32:57.691Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "arrival",
+      "side": "seller",
+      "pass": false,
+      "error": "Error: Chưa giao được kết quả: Bước này không làm được ở trạng thái hiện tại. · req-3cc0949b2f9eb9bf\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:78:138\n    at async wait (file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:43:176)\n    at async file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:78:9"
+    },
+    {
+      "profile": "arrival",
+      "side": "buyer",
+      "pass": false,
+      "error": "Error: Chưa giao được kết quả: Bước này không làm được ở trạng thái hiện tại. · req-12e738667fcdb20e\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:78:138\n    at async wait (file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:43:176)\n    at async file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:78:9"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "arrival-seller-mo-ho-so.png",
+    "arrival-seller-LOI.png",
+    "arrival-buyer-mo-ho-so.png",
+    "arrival-buyer-LOI.png"
+  ]
+}

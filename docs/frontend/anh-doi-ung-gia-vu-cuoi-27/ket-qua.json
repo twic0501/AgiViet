@@ -1,0 +1,47 @@
+{
+  "at": "2026-10-27T01:49:57.963Z",
+  "origin": "http://127.0.0.1:38889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "low",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Lời chào trả giá → hợp đồng đủ chữ ký",
+      "seed": "thu-0",
+      "log": "Đối ứng đồng ý lời chàoĐối ứng lập hợp đồng từ lời chào đã đồng ýĐối ứng ký hợp đồng bằng OTP thử"
+    },
+    {
+      "profile": "low",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Lời chào trả giá → hợp đồng đủ chữ ký",
+      "seed": "thu-0",
+      "log": "Đối ứng trả giá trong biên độ 2%Đối ứng ký hợp đồng bằng OTP thử"
+    },
+    {
+      "profile": "harvest",
+      "side": "seller",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Đã có hiệu lực/. Input:\n\n'Đề nghị sửa\\n' +\n  '?\\n' +\n  '\\n' +\n  'HD-3001 · Nhà máy sấy Đồng Xanh\\n' +\n  '\\n' +\n  'Ký\\n' +\n  'Cọc\\n' +\n  'Giao nhận\\n' +\n  'Thanh toán\\n' +\n  'Xong\\n' +\n  'Mỗi đề nghị sửa một mục. Im lặng 24 giờ là không đồng ý. Chỉ khi đủ chữ ký, phụ lục mới thay thỏa thuận hiện hành.\\n' +\n  'Giảm lượng do bất khả kháng\\n' +\n  'Chờ đủ chữ ký\\n' +\n  'Bên gửi\\n' +\n  'Tổ chức bạn\\n' +\n  'Lý do\\n' +\n  'DỮ LIỆU GIẢ: mưa làm rụng trái; xin giảm lượng, chờ bên mua quyết định.\\n' +\n  'Lượng mới\\n' +\n  '960 kg\\n' +\n  'Hệ quả phụ lục\\n' +\n  'Giá trị cũ → mới\\n' +\n  '27.600.000 đ → 22.080.000 đ\\n' +\n  'Cọc cũ → mới\\n' +\n  '8.280.000 đ → 6.624.000 đ\\n' +\n  'Phí cũ → mới\\n' +\n  '82.800 đ → 66.240 đ\\n' +\n  'Xem PDF phụ lục\\n' +\n  'Bạn đã ký phụ lục. Chờ bên kia ký.'\n\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:73:92"
+    },
+    {
+      "profile": "harvest",
+      "side": "buyer",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Đã có hiệu lực/. Input:\n\n'Môi trường thử\\n' +\n  'Mở app bán\\n' +\n  'Công cụ thử\\n' +\n  'AgiViet\\n' +\n  'Sổ làm ăn · Thu mua\\n' +\n  'Nguyễn Đức Thịnh\\n' +\n  'Nhà máy sấy Đồng Xanh\\n' +\n  'Đăng xuất\\n' +\n  '\\n' +\n  'SỔ LÀM ĂN\\n' +\n  '\\n' +\n  'Tổng quan\\n' +\n  'Nguồn hàng\\n' +\n  'Nhu cầu mua\\n' +\n  'So báo giá\\n' +\n  'Hợp đồng\\n' +\n  'Tiền và công nợ\\n' +\n  'Tổ chức\\n' +\n  'Gói dịch vụ\\n' +\n  'Thông báoHỗ trợTin nhắn\\n' +\n  '\\n' +\n  'Tiền ảo để xem quy trình, không chuyển tiền thật\\n' +\n  '\\n' +\n  'HD-3001\\n' +\n  '\\n' +\n  'Hộ Nguyễn Thị Năm\\n' +\n  '\\n' +\n  'Tải lại\\n' +\n  'Ký\\n' +\n  'Cọc\\n' +\n  'Giao nhận\\n' +\n  'Thanh toán\\n' +\n  'Xong\\n' +\n  'Đã cọc, chờ giao\\n' +\n  'Bên mua · Trả khoản trước bốc\\n' +\n  'Thỏa thuận\\n' +\n  'Cọc\\n' +\n  'Trả thẳng\\n' +\n  'Giao nhận\\n' +\n  'Quyết toán\\n' +\n  'Giấy tờ\\n' +\n  'Hủy\\n' +\n  'Tranh chấp\\n' +\n  'Sửa / phụ lục\\n' +\n  'Mỗi đề nghị sửa một mục. Im lặng 24 giờ là không đồng ý. Chỉ khi đủ chữ ký, phụ lục mới thay thỏa thuận hiện hành.\\n' +\n  'Giảm lượng do bất khả kháng\\n' +\n  'Chờ đủ chữ ký\\n' +\n  'Bên gửi\\n' +\n  'Bên kia\\n' +\n  'Lý do\\n' +\n  'DỮ LIỆU GIẢ: mưa làm rụng trái; xin giảm lượng, chờ bên mua quyết định.\\n' +\n  'Lượng mới\\n' +\n  '960 kg\\n' +\n  'Hệ quả phụ lục\\n' +\n  'Giá trị cũ → mới\\n' +\n  '27.600.000 đ → 22.080.000 đ\\n' +\n  'Cọc cũ → mới\\n' +\n  '8.280.000 đ → 6.624.000 đ\\n' +\n  'Phí cũ → mới\\n' +\n  '82.800 đ → 66.240 đ\\n' +\n  'Xem PDF phụ lục\\n' +\n  'Bạn đã ký phụ lục. Chờ bên kia ký.'\n\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:73:92"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "low-seller-mo-ho-so.png",
+    "low-seller-dat-dich.png",
+    "low-buyer-mo-ho-so.png",
+    "low-buyer-dat-dich.png",
+    "harvest-seller-mo-ho-so.png",
+    "harvest-seller-LOI.png",
+    "harvest-buyer-mo-ho-so.png",
+    "harvest-buyer-LOI.png"
+  ]
+}

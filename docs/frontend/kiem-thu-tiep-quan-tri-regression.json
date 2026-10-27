@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-27T02:26:28.062Z",
+  "state": "/tmp/agv-regression-review-rlQbss",
+  "results": [
+    {
+      "command": "npm --prefix frontend test",
+      "exit": 0
+    },
+    {
+      "command": "npm --prefix frontend run test:branches",
+      "exit": 0
+    },
+    {
+      "command": "npm --prefix frontend run test:round2",
+      "exit": 0
+    },
+    {
+      "command": "npm --prefix frontend run test:e2e",
+      "exit": 0
+    }
+  ]
+}

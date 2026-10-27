@@ -1,0 +1,4 @@
+/* Khung linh vật hình nguyên con (biến dạng lưới). Bóng đặt dưới chân (đáy móng ở 94% khung). */
+.lvg{position:relative;flex:none;user-select:none;-webkit-user-select:none}
+.lvg canvas{position:relative}
+.lvg-bong{position:absolute;left:50%;top:91.5%;width:38%;height:5%;border-radius:50%;background:rgba(30,40,25,.14);transform:translateX(-50%)}

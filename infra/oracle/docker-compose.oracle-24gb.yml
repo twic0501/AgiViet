@@ -1,0 +1,6 @@
+# Chỉ ghép khi tenancy xác nhận hạn mức miễn phí tương ứng.
+services:
+  db:
+    mem_limit: 6g
+    memswap_limit: 6g
+    command: [postgres, -c, timezone=Asia/Ho_Chi_Minh, -c, shared_buffers=1536MB, -c, work_mem=8MB, -c, maintenance_work_mem=256MB, -c, max_connections=80, -c, password_encryption=scram-sha-256, -c, log_statement=none, -c, log_min_error_statement=panic]

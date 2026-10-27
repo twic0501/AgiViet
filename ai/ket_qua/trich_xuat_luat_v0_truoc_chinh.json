@@ -1,0 +1,454 @@
+{
+ "luat": {
+  "che_do": "luat",
+  "so_cau": 52,
+  "so_o_truong": 517,
+  "ty_le_dung": 0.9381,
+  "dem_tong": {
+   "dung": 485,
+   "bo_sot": 13,
+   "sai": 11,
+   "bia": 8
+  },
+  "theo_truong": {
+   "mat_hang": {
+    "dung": 52,
+    "ty_le_dung": 1.0
+   },
+   "loai": {
+    "dung": 50,
+    "bo_sot": 2,
+    "ty_le_dung": 0.962
+   },
+   "luong_kg": {
+    "dung": 41,
+    "sai": 9,
+    "bia": 1,
+    "bo_sot": 1,
+    "ty_le_dung": 0.788
+   },
+   "uoc_tinh": {
+    "dung": 47,
+    "sai": 1,
+    "bo_sot": 1,
+    "ty_le_dung": 0.959
+   },
+   "co_con_kg": {
+    "dung": 50,
+    "bia": 2,
+    "ty_le_dung": 0.962
+   },
+   "ngay_giao": {
+    "dung": 48,
+    "bia": 3,
+    "bo_sot": 1,
+    "ty_le_dung": 0.923
+   },
+   "hinh_thuc": {
+    "dung": 49,
+    "bo_sot": 2,
+    "bia": 1,
+    "ty_le_dung": 0.942
+   },
+   "noi_giao": {
+    "dung": 52,
+    "ty_le_dung": 1.0
+   },
+   "gia_mong_muon": {
+    "dung": 49,
+    "bo_sot": 2,
+    "sai": 1,
+    "ty_le_dung": 0.942
+   },
+   "gia_thap_nhat": {
+    "dung": 47,
+    "bo_sot": 4,
+    "bia": 1,
+    "ty_le_dung": 0.904
+   }
+  },
+  "cau_dung_het": 31,
+  "tien_sai_hoac_bia": 2,
+  "tien_sai_khong_bat_xac_nhan": 0,
+  "do_tre_ms": {
+   "trung_vi": 0.2,
+   "p95": 0.2,
+   "lon_nhat": 4.1
+  },
+  "loi_mo_hinh": 0,
+  "chi_tiet_loi": [
+   {
+    "id": "CN-005",
+    "van_ban": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "bo_sot",
+      "dung": "dat_truoc_khi_hai",
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "mac_dinh"
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-007",
+    "van_ban": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "2026-10-25",
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": [
+     "gia_mong_muon 4.000 đ/kg lệch xa mặt bằng: có thể nghe nhầm số"
+    ]
+   },
+   {
+    "id": "CN-008",
+    "van_ban": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "loi": {
+     "co_con_kg": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": 1,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại ao, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-009",
+    "van_ban": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "loi": {
+     "loai": {
+      "loai_loi": "bo_sot",
+      "dung": "L2",
+      "he_thong": null,
+      "nguon": null
+     },
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 800,
+      "he_thong": 802.0,
+      "nguon": "luat"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ xoài cát chu loại một, loại hai hay hàng dạt ạ? Anh chị nói trái nặng chừng nhiêu gam cũng được.",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-013",
+    "van_ban": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "bo_sot",
+      "dung": "2026-11-05",
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": [
+     "Ngày theo âm lịch: em chưa tự đổi, cần hỏi ngày dương"
+    ]
+   },
+   {
+    "id": "CN-018",
+    "van_ban": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 3000,
+      "he_thong": 13000.0,
+      "nguon": "luat"
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bo_sot",
+      "dung": 16000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-021",
+    "van_ban": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 2000,
+      "he_thong": 22000.0,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-023",
+    "van_ban": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "bo_sot",
+      "dung": "giao_ngay",
+      "he_thong": "giao_ngay",
+      "nguon": "mac_dinh"
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-025",
+    "van_ban": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "loi": {
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 26000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-029",
+    "van_ban": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "loi": {
+     "loai": {
+      "loai_loi": "bo_sot",
+      "dung": "L1",
+      "he_thong": null,
+      "nguon": null
+     },
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 2000,
+      "he_thong": 1000.0,
+      "nguon": "luat"
+     },
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ chanh không hạt loại một, loại hai hay hàng dạt ạ? Anh chị nói trái nặng chừng nhiêu gam cũng được.",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-030",
+    "van_ban": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "2026-10-25",
+      "nguon": "luat"
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bo_sot",
+      "dung": 130000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại ao, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-031",
+    "van_ban": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": 10.0,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ có phải xoài cát chu không ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-032",
+    "van_ban": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 800,
+      "he_thong": 1800.0,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-035",
+    "van_ban": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 12000,
+      "he_thong": 5042000.0,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ có phải lúa tươi không ạ?",
+    "canh_bao": [
+     "Lượng bất thường: hỏi lại"
+    ]
+   },
+   {
+    "id": "CN-036",
+    "van_ban": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 1500,
+      "he_thong": null,
+      "nguon": null
+     },
+     "uoc_tinh": {
+      "loai_loi": "bo_sot",
+      "dung": false,
+      "he_thong": null,
+      "nguon": null
+     },
+     "gia_mong_muon": {
+      "loai_loi": "sai",
+      "dung": 18000,
+      "he_thong": 1,
+      "nguon": "luat"
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": 18000,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ thanh long anh chị có khoảng bao nhiêu ký, hay bao nhiêu tấn ạ?",
+    "canh_bao": [
+     "gia_mong_muon 1 đ/kg lệch xa mặt bằng: có thể nghe nhầm số",
+     "Giá thấp nhất cao hơn giá mong muốn: hỏi lại"
+    ]
+   },
+   {
+    "id": "CN-037",
+    "van_ban": "Chanh loại một ba tạ, mai, mười bốn",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 300,
+      "he_thong": 1300.0,
+      "nguon": "luat"
+     },
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 14000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ có phải chanh không hạt không ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-039",
+    "van_ban": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "2026-10-25",
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-040",
+    "van_ban": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "loi": {
+     "gia_thap_nhat": {
+      "loai_loi": "bo_sot",
+      "dung": 14000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-043",
+    "van_ban": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 800,
+      "he_thong": 810.0,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "CN-044",
+    "van_ban": "Bán gà ta năm chục con",
+    "loi": {
+     "co_con_kg": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": 50,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ mặt hàng này app chưa mở mua bán, anh chị vẫn ghi sổ được. Anh chị có bán xoài cát Chu, chanh không hạt, tôm thẻ hay lúa tươi không ạ?",
+    "canh_bao": [
+     "Mặt hàng 'ga' chưa hỗ trợ giao dịch trên app (chỉ ghi sổ)"
+    ]
+   },
+   {
+    "id": "CN-048",
+    "van_ban": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 3000,
+      "he_thong": 13000.0,
+      "nguon": "luat"
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bo_sot",
+      "dung": 23000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ bên mua tới lấy tại vườn, hay anh chị chở tới kho ạ?",
+    "canh_bao": []
+   }
+  ]
+ },
+ "_do_luc": "2026-10-25T06:36:07"
+}

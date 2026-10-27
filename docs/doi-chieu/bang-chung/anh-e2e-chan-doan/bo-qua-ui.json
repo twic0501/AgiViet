@@ -1,0 +1,257 @@
+[
+  {
+    "step": "Bắt đầu cân",
+    "reason": "Giao diện không hiện form batDau",
+    "user": {
+      "user_id": "3bc485dc-fc01-58ca-8708-2c60aceb8680",
+      "name": "Nguyễn Thị Năm",
+      "phone_masked": "0918***421",
+      "is_staff": false,
+      "staff_roles": [],
+      "org": {
+        "id": "91020315-f111-5802-ae6e-81df0b59def1",
+        "code": "TC-B01",
+        "name": "Hộ Nguyễn Thị Năm",
+        "kind": "household",
+        "can_sell": true,
+        "can_buy": false
+      },
+      "roles": [
+        "owner"
+      ],
+      "approval_limit_vnd": null,
+      "helper_of": null,
+      "orgs": [
+        {
+          "orgId": "91020315-f111-5802-ae6e-81df0b59def1",
+          "orgCode": "TC-B01",
+          "orgTen": "Hộ Nguyễn Thị Năm"
+        }
+      ],
+      "actions": [
+        "lot.create",
+        "lot.publish",
+        "lot.update",
+        "lot.price",
+        "lot.close",
+        "lot.view_private",
+        "offer.send.seller",
+        "offer.accept.seller",
+        "offer.counter.seller",
+        "order.sign.seller",
+        "order.decline",
+        "order.view.seller",
+        "money.confirm.seller",
+        "delivery.ship",
+        "acceptance.respond",
+        "cancel.seller",
+        "dispute.seller"
+      ]
+    },
+    "order": {
+      "id": "5d19fa38-d0f5-4133-b057-277a31b240bf",
+      "code": "HD-3001",
+      "status": "active",
+      "revision": 5,
+      "close_reason": null,
+      "phia_cua_ban": "seller",
+      "hien_thi": {
+        "ten": "Sẵn sàng giao",
+        "chang": "Giao nhận",
+        "toi_luot": {
+          "phia": "seller",
+          "viec": "Giao hàng, quét QR nhận hàng"
+        }
+      },
+      "buyer": {
+        "code": "TC-M01",
+        "display_name": "Nhà máy sấy Đồng Xanh"
+      },
+      "seller": {
+        "code": "TC-B01",
+        "display_name": "Hộ Nguyễn Thị Năm"
+      },
+      "effective_version_no": 1,
+      "co": {
+        "gia_bat_thuong": false,
+        "vi_pham_thanh_toan": false,
+        "de_nghi_mo": false,
+        "dang_xin_huy": false
+      },
+      "dieu_khoan": {
+        "version_no": 1,
+        "qty_g": "2000000",
+        "unit_price_vnd": "23000",
+        "downgrade_price_vnd": "15000",
+        "ref_price_vnd": "25000",
+        "deposit_price_vnd": "23000",
+        "contract_value_vnd": "46000000",
+        "deposit_vnd": "13800000",
+        "fee_vnd": "138000",
+        "payment_timing": "before_loading",
+        "pay_after_days": null,
+        "delivery_mode": "at_farm",
+        "acceptance_point": "tai_vuon",
+        "transport_by": "buyer",
+        "delivery_from": null,
+        "seller_account": {
+          "bank_code": "Agribank",
+          "masked": "****2186",
+          "holder": "Nguyễn Thị Năm"
+        },
+        "designated_receiver_user_id": null,
+        "silent_accept_hours": null,
+        "reject_allowance_bps": 500
+      },
+      "lien_lac": "full",
+      "dot_giao": [
+        {
+          "id": "ba50100c-81b8-4d12-a5c6-eedcd012e54f",
+          "code": "HD-3001-D1",
+          "batch_no": 1,
+          "planned_qty_g": "2000000",
+          "status": "ready",
+          "revision": 3,
+          "receiver_user_id": "473a2319-83db-5dbb-b06c-7512bd71cd8b",
+          "window_from": "2026-11-03T23:00:00.000Z",
+          "window_to": "2026-11-04T05:00:00.000Z"
+        }
+      ],
+      "han": [
+        {
+          "id": "2aaa1d70-fb29-49bb-8b9f-0125815388c9",
+          "kind": "direct_payment_confirm",
+          "entity": "direct_payment",
+          "due_at": "2026-11-04T01:00:09.024Z",
+          "status": "open"
+        }
+      ],
+      "lich_su": [
+        {
+          "entity": "order",
+          "from_status": null,
+          "to_status": "drafting",
+          "actor_kind": "buyer",
+          "command": "lap_don",
+          "reason": null,
+          "at": "2026-10-27T00:43:27.735Z"
+        },
+        {
+          "entity": "order",
+          "from_status": "drafting",
+          "to_status": "awaiting_seller",
+          "actor_kind": "buyer",
+          "command": "ky",
+          "reason": null,
+          "at": "2026-10-27T00:43:29.121Z"
+        },
+        {
+          "entity": "order",
+          "from_status": "awaiting_seller",
+          "to_status": "awaiting_deposit",
+          "actor_kind": "system",
+          "command": "ky",
+          "reason": null,
+          "at": "2026-10-27T00:43:30.293Z"
+        },
+        {
+          "entity": "order",
+          "from_status": "awaiting_deposit",
+          "to_status": "active",
+          "actor_kind": "system",
+          "command": "webhook_ngan_hang",
+          "reason": null,
+          "at": "2026-10-27T00:43:31.097Z"
+        },
+        {
+          "entity": "delivery",
+          "from_status": null,
+          "to_status": "preparing",
+          "actor_kind": "system",
+          "command": "webhook_ngan_hang",
+          "reason": null,
+          "at": "2026-10-27T00:43:31.097Z"
+        },
+        {
+          "entity": "delivery",
+          "from_status": "preparing",
+          "to_status": "ready",
+          "actor_kind": "system",
+          "command": "dat_xe",
+          "reason": null,
+          "at": "2026-10-27T00:43:34.719Z"
+        }
+      ],
+      "tai_lieu": [
+        {
+          "id": "174c0577-0bf7-4b3e-9347-917771c3d6e0",
+          "code": "HD-3001-HD",
+          "doc_type": "contract",
+          "version_no": 1,
+          "status": "fully_signed",
+          "content_sha256": "1e8dbc11f73bee95c7a2e4e72f8e11c6afe2416c26ed7f73e8bbdde67891ada7",
+          "file_sha256": "d9de3c12f1ba258e24509d6711d18ef343265c8a4a025ac14142c67755c5684c",
+          "created_at": "2026-11-02T01:00:04.795Z"
+        }
+      ],
+      "ky": {
+        "duoc_ky": false,
+        "can_duyet_noi_bo": false,
+        "da_duyet": null,
+        "han_muc_vnd": null,
+        "gia_tri_vnd": "46000000",
+        "ly_do": "Chưa tới lượt người bán ký"
+      },
+      "hanh_dong": [
+        "request_cancel"
+      ]
+    },
+    "delivery": {
+      "id": "ba50100c-81b8-4d12-a5c6-eedcd012e54f",
+      "code": "HD-3001-D1",
+      "order_id": "5d19fa38-d0f5-4133-b057-277a31b240bf",
+      "order_code": "HD-3001",
+      "status": "ready",
+      "revision": 3,
+      "batch_no": 1,
+      "planned_qty_g": "2000000",
+      "receiver_user_id": "473a2319-83db-5dbb-b06c-7512bd71cd8b",
+      "acceptance_point": "tai_vuon",
+      "window_from": "2026-11-03T23:00:00.000Z",
+      "window_to": "2026-11-04T05:00:00.000Z",
+      "the_san_sang": [
+        {
+          "ma": "hang",
+          "ten": "Hàng",
+          "ok": true
+        },
+        {
+          "ma": "tien",
+          "ten": "Tiền",
+          "ok": true
+        },
+        {
+          "ma": "nguoi_nhan",
+          "ten": "Người nhận",
+          "ok": true
+        },
+        {
+          "ma": "xe",
+          "ten": "Xe",
+          "ok": true
+        },
+        {
+          "ma": "ho_so",
+          "ten": "Hồ sơ",
+          "ok": true
+        },
+        {
+          "ma": "de_nghi",
+          "ten": "Không có đề nghị/hủy đang chờ",
+          "ok": true
+        }
+      ],
+      "ket_qua": []
+    }
+  }
+]

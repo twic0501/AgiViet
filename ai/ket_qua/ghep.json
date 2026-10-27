@@ -1,0 +1,603 @@
+{
+ "tinh_huong": [
+  {
+   "ma": "TH-004 (09, nguyên văn)",
+   "nguon": "09-tinh-huong-kiem-thu.md",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0420",
+      68.2
+     ],
+     [
+      "L-0430",
+      55.7
+     ],
+     [
+      "L-0431",
+      51.9
+     ]
+    ],
+    "gan_khop_gia": [
+     [
+      "L-0432",
+      70.7
+     ]
+    ]
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "NC-3008 thiếu 500 kg (10, suy ra)",
+   "nguon": "10 mục 6 + luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0414",
+      71.2
+     ],
+     [
+      "L-0420",
+      64.4
+     ],
+     [
+      "L-0430",
+      53.2
+     ],
+     [
+      "L-0431",
+      50.7
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "NC-3002 dòng L2 kém loại, giao tới kho (suy ra)",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [],
+    "khop_mot_phan": [
+     [
+      "L-0413",
+      56.2
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 17,
+    "H11": 15,
+    "H1": 13,
+    "H6": 1
+   }
+  },
+  {
+   "ma": "NC-3003 sầu riêng xuất khẩu cần gom (suy ra; 09 nêu 6 nguồn)",
+   "nguon": "09 TH đơn nhóm + luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [],
+    "khop_mot_phan": [
+     [
+      "L-0440",
+      59.2
+     ],
+     [
+      "L-0442",
+      58.4
+     ],
+     [
+      "L-0444",
+      58.2
+     ],
+     [
+      "L-0441",
+      57.9
+     ],
+     [
+      "L-0443",
+      57.7
+     ],
+     [
+      "L-0447",
+      57.4
+     ],
+     [
+      "L-0445",
+      57.2
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": {
+    "nguon": [
+     {
+      "lo_id": "L-0440",
+      "luong_kg": 3200.0
+     },
+     {
+      "lo_id": "L-0442",
+      "luong_kg": 3040.0
+     },
+     {
+      "lo_id": "L-0444",
+      "luong_kg": 3040.0
+     },
+     {
+      "lo_id": "L-0441",
+      "luong_kg": 3040.0
+     },
+     {
+      "lo_id": "L-0443",
+      "luong_kg": 3040.0
+     },
+     {
+      "lo_id": "L-0447",
+      "luong_kg": 2640.0
+     }
+    ],
+    "da_gom_kg": 18000.0,
+    "con_thieu_kg": 0,
+    "can_xac_nhan": true,
+    "ghi_chu": "Chưa giữ lượng; điểm gom do backend chọn theo hợp đồng điểm gom"
+   },
+   "loai_bo": {
+    "H1": 12,
+    "H2": 12,
+    "LUONG_TOI_THIEU": 3,
+    "H4": 9,
+    "H11": 1
+   }
+  },
+  {
+   "ma": "NC-3004 tôm xuất khẩu (suy ra)",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [],
+    "khop_mot_phan": [
+     [
+      "L-0470",
+      70.7
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H1": 18,
+    "H2": 18,
+    "H4": 18,
+    "LUONG_TOI_THIEU": 3,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "NC-3005 bưởi (suy ra)",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0460",
+      77.2
+     ]
+    ],
+    "khop_mot_phan": [],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H1": 18,
+    "H2": 12,
+    "H3": 10,
+    "H11": 8,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "NC-3006 lúa ước tính (suy ra)",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [],
+    "khop_mot_phan": [
+     [
+      "L-0480",
+      76.5
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H1": 18,
+    "H2": 18,
+    "H11": 17,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "NC-3007 200 kg điểm gom (suy ra)",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0420",
+      90.3
+     ],
+     [
+      "L-0412",
+      87.0
+     ],
+     [
+      "L-0430",
+      84.0
+     ],
+     [
+      "L-0431",
+      81.5
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0414",
+      89.0
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H1": 13,
+    "H11": 10,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: H3 khóa an toàn",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0420",
+      68.2
+     ],
+     [
+      "L-0430",
+      55.7
+     ],
+     [
+      "L-0431",
+      51.9
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H3": 1,
+    "H2": 12,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: H5 chưa hết cách ly",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0430",
+      55.7
+     ],
+     [
+      "L-0431",
+      51.9
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H5": 1,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: H9 cùng tổ chức (vựa hai vai)",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0420",
+      68.2
+     ],
+     [
+      "L-0431",
+      51.9
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H9": 1,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: H11 giá kín quá xa",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0420",
+      68.2
+     ],
+     [
+      "L-0430",
+      55.7
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H11": 11,
+    "H1": 13,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: CG-02 quá 14 ngày chưa xác nhận",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0430",
+      55.7
+     ],
+     [
+      "L-0431",
+      51.9
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "XAC_NHAN": 1,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: H6 ngoài bán kính",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0420",
+      68.2
+     ],
+     [
+      "L-0431",
+      51.9
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 12,
+    "H6": 2,
+    "H1": 13,
+    "H11": 10,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Biên: H2 sai loại",
+   "nguon": "luật 05",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-0414",
+      76.2
+     ],
+     [
+      "L-0412",
+      71.2
+     ]
+    ],
+    "khop_mot_phan": [
+     [
+      "L-0420",
+      68.2
+     ],
+     [
+      "L-0430",
+      55.7
+     ]
+    ],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "H2": 13,
+    "H1": 13,
+    "H11": 10,
+    "H6": 1,
+    "H7": 1
+   }
+  },
+  {
+   "ma": "Nhà hàng: chỉ HTX/vựa đã xác minh",
+   "nguon": "02 mục 2.2",
+   "sai": [],
+   "thu_tu": {
+    "khop_du": [
+     [
+      "L-HTX",
+      84.1
+     ]
+    ],
+    "khop_mot_phan": [],
+    "gan_khop_gia": []
+   },
+   "goi_y_gom": null,
+   "loai_bo": {
+    "DAU_MOI": 19,
+    "H2": 12,
+    "H1": 13,
+    "H6": 11,
+    "H11": 10,
+    "H7": 1
+   }
+  }
+ ],
+ "thuoc_tinh": {
+  "lo_gia_trong_dau_ra": 0,
+  "doi_thu_tu_khi_doi_gia_kin": "0/300",
+  "tat_dinh": true,
+  "diem_uy_tin_nguoi_moi": 15,
+  "chieu_nguoi_ban_L0412": [
+   "NC-3007",
+   "NC-3001",
+   "NC-3008"
+  ],
+  "chieu_nguoi_ban_khong_lo_gia": true
+ },
+ "do_tre_ms": {
+  "10": {
+   "trung_vi": 0.09,
+   "lon_nhat": 0.11
+  },
+  "100": {
+   "trung_vi": 0.73,
+   "lon_nhat": 2.22
+  },
+  "1000": {
+   "trung_vi": 7.34,
+   "lon_nhat": 7.73
+  }
+ },
+ "ty_le_khop_mong_doi": "42/42"
+}

@@ -1,0 +1,27 @@
+{
+  "_ghi_chu": "MẪU. Đường dẫn wh/ngan_hang và auth/otp/gui theo docs/nghiep-vu/12 mục API; các đường còn lại là GIẢ ĐỊNH. Backend sao chép thành cau-hinh.json và sửa cho đúng. Token là của người dùng ảo trong dữ liệu thử.",
+  "tokens": {
+    "nguoi_ban_chu": "", "nguoi_giup": "", "ben_mua_ke_toan": "", "nguoi_ngoai": "", "van_hanh_ds": "", "he_thong": ""
+  },
+  "webhook": { "kid": "bank-sim-2026-10", "secret": "" },
+  "ids": {
+    "ma_don": "HĐ-2001", "don_id": "", "khoan_id": "", "tai_lieu_id": "",
+    "so_tien_tra_thang": 32200000, "coc_cong_phi_dung": 13938000, "ma_noi_dung_coc": "AGV HD2001 COC"
+  },
+  "paths": {
+    "chi_tiet_don": "/api/don/:don_id",
+    "tai_lieu_pdf": "/api/tai-lieu/:tai_lieu_id/tep",
+    "tao_huong_dan_coc": "/api/don/:don_id/coc/huong-dan",
+    "bao_da_chuyen_coc": "/api/don/:don_id/coc/bao-da-chuyen",
+    "xac_nhan_tra_thang": "/api/khoan-tra-thang/:khoan_id/xac-nhan",
+    "yeu_cau_doi_tai_khoan": "/api/tai-khoan-nhan-tien/yeu-cau-doi",
+    "kich_hoat_tai_khoan": "/api/tai-khoan-nhan-tien/kich-hoat",
+    "webhook_ngan_hang": "/wh/ngan_hang",
+    "chay_quyet_toan": "/api/noi-bo/don/:don_id/quyet-toan",
+    "lenh_ngan_hang_cua_don": "/api/van-hanh/don/:don_id/lenh",
+    "bang_quyet_toan": "/api/van-hanh/don/:don_id/quyet-toan",
+    "gui_otp": "/auth/otp/gui",
+    "lenh_thu_cong": "/api/van-hanh/lenh-thu-cong",
+    "xac_minh_cong_khai": "/xac-minh/:tai_lieu_id"
+  }
+}

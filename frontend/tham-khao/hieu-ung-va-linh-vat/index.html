@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hiệu ứng và linh vật AgiViet</title>
+<link rel="stylesheet" href="hieu-ung-app.css"><link rel="stylesheet" href="linh-vat.css">
+<style>
+@font-face{font-family:'Be Vietnam Pro';font-weight:500;src:url(fonts/bevietnampro-500-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:500;src:url(fonts/bevietnampro-500-latin.woff2) format('woff2')}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;src:url(fonts/bevietnampro-700-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;src:url(fonts/bevietnampro-700-latin.woff2) format('woff2')}
+@font-face{font-family:'Baloo 2';font-weight:800;src:url(fonts/baloo2-800-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Baloo 2';font-weight:800;src:url(fonts/baloo2-800-latin.woff2) format('woff2')}
+:root{--nen:#ebede6;--the:#fff;--san:#f7f8f2;--chu:#233c31;--phu:#51625a;--vien:#dfe5d8;--xanh:#235c45;--xanh2:#dcebd6;--vang:#f5b83d;--do:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);font:500 15px/1.5 'Be Vietnam Pro',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;letter-spacing:-.01em;margin:0}
+h1{font-size:34px;line-height:1.1;color:var(--xanh)}h2{font-size:26px;margin-bottom:6px}h3{font-size:19px;line-height:1.2}
+button{font:inherit;cursor:pointer}
+.trang{max-width:1240px;margin:0 auto;padding:28px 16px 80px}
+.dau-trang{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dau-trang p{margin:6px 0 0;color:var(--phu);max-width:70ch}
+nav.muc{position:sticky;top:0;z-index:20;background:rgba(235,237,230,.92);backdrop-filter:blur(8px);display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin-bottom:10px;scrollbar-width:none}
+nav.muc a{flex:none;text-decoration:none;color:var(--chu);font-weight:700;font-size:14px;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid var(--vien)}
+nav.muc a:hover{border-color:var(--xanh)}
+section{margin-top:36px;scroll-margin-top:64px}
+.mo-ta{color:var(--phu);margin:0 0 16px;max-width:80ch}
+.luoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.the{background:var(--the);border:1px solid var(--vien);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.the .nhan{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--xanh2);color:#173f2f}
+.chip.vang{background:#fdf0cf;color:#6b4a14}.chip.do{background:#f8dcd6;color:#8e2a1c}.chip.xam{background:#eef0ea;color:var(--phu)}
+.the p{margin:0;color:var(--phu);font-size:14px}
+.the dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px}
+.the dt{color:var(--phu)}.the dd{margin:0;font-weight:600}
+.san{position:relative;background:var(--san);border:1px solid var(--vien);border-radius:14px;min-height:190px;padding:14px;display:flex;flex-direction:column;justify-content:center;gap:10px;overflow:hidden}
+.dk{display:flex;flex-wrap:wrap;gap:6px}
+.nut{border:none;background:var(--xanh);color:#fff;font-weight:700;border-radius:12px;padding:10px 14px;box-shadow:0 3px 0 #173f2f;transition:background .2s}
+.nut:disabled{background:#b8c4bd;box-shadow:0 3px 0 #9aa8a0;cursor:not-allowed}
+.nut.phu{background:#fff;color:var(--chu);border:1.5px solid var(--vien);box-shadow:0 3px 0 var(--vien)}
+.nut.nho{padding:6px 11px;font-size:13px;border-radius:10px;box-shadow:0 2px 0 #173f2f}
+.nut.phu.nho{box-shadow:0 2px 0 var(--vien)}
+.o{width:100%;border:1.5px solid var(--vien);border-radius:12px;padding:10px 12px;font:inherit;background:#fff;color:var(--chu)}
+.dong{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--vien);font-size:14px}
+.dong b{font-variant-numeric:tabular-nums}
+.so-lon{font:800 30px/1 'Baloo 2';color:var(--xanh);font-variant-numeric:tabular-nums;padding:4px 8px;border-radius:10px;display:inline-block}
+/* thành phần mẫu */
+.lane{position:relative;display:flex;justify-content:space-between;padding-top:4px}
+.hu-noi{position:absolute;left:12px;right:12px;top:15px;height:4px;background:var(--vien);border-radius:4px}
+.hu-noi i{display:block;height:100%;width:0;background:var(--xanh);border-radius:4px}
+.hu-buoc{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--phu);width:20%;text-align:center}
+.hu-buoc b{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--vien);display:block}
+.hu-buoc.xong b{background:var(--xanh);border-color:var(--xanh)}
+.hu-buoc.dang b{border-color:var(--xanh);background:#fff;box-shadow:0 0 0 4px rgba(35,92,69,.15)}
+.hu-buoc.dang{color:var(--chu)}
+.trang-thai{display:inline-block;font-weight:700;font-size:13px;padding:4px 12px;border-radius:999px;background:#fdf0cf;color:#6b4a14}
+.trang-thai[data-loai="xanh"]{background:var(--xanh2);color:#173f2f}.trang-thai[data-loai="do"]{background:#f8dcd6;color:#8e2a1c}
+.vong{width:64px;height:64px;position:relative}
+.vong svg{width:100%;height:100%;transform:rotate(-90deg)}
+.vong circle{fill:none;stroke-width:4}.vong .nen-v{stroke:var(--vien)}
+.vong .chay{stroke:var(--xanh);stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .4s}
+.vong[data-muc="vang"] .chay{stroke:var(--vang)}.vong[data-muc="do"] .chay{stroke:var(--do)}
+.vong span{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:13px;font-variant-numeric:tabular-nums}
+.thanh-kq{display:flex;height:22px;border-radius:8px;overflow:hidden;border:1px solid var(--vien)}
+.thanh-kq>i{transform-origin:left;display:block}
+.chu-giai{display:flex;gap:12px;font-size:12px;color:var(--phu);flex-wrap:wrap}.chu-giai span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--m)}
+.ds-tick{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ds-tick li{display:flex;gap:8px;align-items:center;font-size:14px;padding:7px 10px;background:#fff;border-radius:10px;border:1px solid var(--vien);color:var(--phu)}
+.ds-tick li .hop{width:20px;height:20px;border-radius:6px;border:2px solid var(--vien);display:grid;place-items:center;color:#fff;flex:none}
+.ds-tick li.xong{color:var(--chu)}.ds-tick li.xong .hop{background:var(--xanh);border-color:var(--xanh)}
+.ds-tick li .hu-tick path{stroke-dashoffset:24}.ds-tick li.xong .hu-tick path{stroke-dashoffset:0}
+.otp{display:flex;gap:6px}.otp i{width:36px;height:44px;border-radius:10px;border:1.5px solid var(--vien);background:#fff;display:grid;place-items:center;font:800 20px 'Baloo 2';font-style:normal}
+.otp i.dung{background:var(--xanh2);border-color:var(--xanh);color:#173f2f}.otp i.sai{border-color:var(--do);color:var(--do)}
+.giay{position:relative;background:#fffdf6;border:1px solid var(--vien);border-radius:10px;height:120px}
+.giay svg{position:absolute;inset:0;width:100%;height:100%}
+.dau-do{position:absolute;right:14px;top:22px;border:2.5px solid var(--do);color:var(--do);font:800 15px 'Baloo 2';padding:2px 10px;border-radius:8px;visibility:hidden;transform:rotate(-8deg)}
+.khoa{display:flex;gap:10px;align-items:center}
+.khoa svg{width:30px;height:30px;flex:none}
+.khoa .an{filter:blur(6px);opacity:.5;font-weight:700}
+.bang-mang{position:absolute;left:0;right:0;top:0;background:#fdf0cf;color:#6b4a14;font-size:13px;font-weight:700;padding:8px 12px;transform:translateY(-100%);display:flex;gap:8px;align-items:center}
+.bang-mang:not(.mat){background:var(--xanh2);color:#173f2f}
+.song{display:flex;gap:4px;align-items:center;height:40px}.song i{width:6px;height:40px;border-radius:3px;background:var(--xanh);transform:scaleY(.15);transition:transform .08s}
+.chuong{width:28px;height:28px;position:relative;transform-origin:50% 10%}
+.chuong .hh{position:absolute;right:-6px;top:-6px;background:var(--do);color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+.tab-g{position:relative;display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;border:1px solid var(--vien)}
+.tab-g button{flex:1;border:none;background:none;padding:8px;font-weight:700;color:var(--phu);position:relative;z-index:1}
+.tab-g .gach{position:absolute;left:4px;top:4px;bottom:4px;width:30%;background:var(--xanh2);border-radius:9px}
+.the-hang{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.the-hang button{border:1.5px solid var(--vien);background:#fff;border-radius:12px;padding:10px;text-align:left;font-weight:700;color:var(--chu)}
+.the-hang small{display:block;font-weight:500;color:var(--phu);font-size:12px}
+.go{display:flex;gap:4px;padding:8px 12px;background:#fff;border-radius:14px;width:max-content;border:1px solid var(--vien)}
+.go i{width:6px;height:6px;border-radius:50%;background:var(--phu);animation:hu-cham 1s infinite}.go i:nth-child(2){animation-delay:.15s}.go i:nth-child(3){animation-delay:.3s}
+.tin{max-width:80%;padding:8px 12px;border-radius:14px;background:#fff;border:1px solid var(--vien);font-size:14px;overflow:hidden}
+.tin.toi{align-self:flex-end;background:var(--xanh2)}
+/* linh vật */
+.san-lv{align-items:center;min-height:230px;justify-content:flex-end;padding-bottom:0;background:linear-gradient(#f7f8f2 70%,#e9efe1)}
+.goi-y{font-size:12px;color:var(--phu);text-align:center}
+.quy-tac{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px}
+.quy-tac div{background:#fff;border:1px solid var(--vien);border-radius:14px;padding:12px 14px;font-size:14px}
+.quy-tac b{display:block;margin-bottom:2px}
+/* đánh giá */
+.so-lieu{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:14px 0}
+.so-lieu div{background:#fff;border:1px solid var(--vien);border-radius:14px;padding:12px 14px}
+.so-lieu b{display:block;font:800 30px/1.1 'Baloo 2';color:var(--xanh)}
+.so-lieu div.xau b{color:var(--do)}
+.bang{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;font-size:14px}
+.bang th,.bang td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--vien);vertical-align:top}
+.bang th{background:#f3f5ef;font-size:13px;color:var(--phu)}
+.cuon{overflow-x:auto;border-radius:14px;border:1px solid var(--vien)}
+.anh-dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}
+.anh-dg a{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--vien);background:#fff}
+.anh-dg img{width:100%;display:block}
+.loc{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.loc button{border:1px solid var(--vien);background:#fff;border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px;color:var(--chu)}
+.loc button[aria-pressed="true"]{background:var(--xanh);color:#fff;border-color:var(--xanh)}
+td code,p code{font-size:12.5px;background:#f0f3ec;padding:1px 6px;border-radius:6px}
+/* điện thoại ví dụ */
+.ba-may{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;align-items:start}
+.may{width:100%;max-width:330px;margin:0 auto;background:#121614;border-radius:42px;padding:7px;box-shadow:0 24px 50px -24px rgba(20,40,30,.55)}
+.may .man{position:relative;background:var(--san);border-radius:36px;height:620px;overflow:hidden;display:flex;flex-direction:column}
+.may .tieu{padding:22px 18px 8px;font:800 19px 'Baloo 2'}
+.may .than-man{flex:1;padding:4px 16px 16px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.may-chu{text-align:center;margin-top:10px}
+.may-chu b{display:block}.may-chu span{color:var(--phu);font-size:13px}
+@media (max-width:520px){h1{font-size:28px}.trang{padding-top:18px}}
+</style></head><body>
+<div class="trang">
+  <header class="dau-trang">
+    <div><h1>Hiệu ứng và linh vật AgiViet</h1>
+    <p>Bộ asset cho app bán (bản mẫu Motion v2): đánh giá sơ bộ toàn bộ 92 màn, rồi chia hai nhóm. <b>Hiệu ứng app</b> báo hoặc xác thực một việc đã xảy ra. <b>Chuyển động linh vật</b> giúp người dùng và tạo cảm giác gần gũi, dùng ít, đúng chỗ, phản ứng theo người dùng thay vì phát clip lặp.</p></div>
+  </header>
+  <nav class="muc"><a href="#danh-gia">Đánh giá</a><a href="#app">Hiệu ứng app</a><a href="#linh-vat">Linh vật</a><a href="#vi-du">Ví dụ luồng</a><a href="#ban-do">Gắn vào 92 màn</a><a href="#dung">Cách dùng</a></nav>
+
+  <section id="danh-gia">
+    <h2>Đánh giá sơ bộ</h2>
+    <p class="mo-ta">Duyệt tự động <code>http://127.0.0.1:8772/</code> ngày 24/10/2026: mở lần lượt 92 màn bằng <code>AgiVietCases.go()</code>, chụp vùng điện thoại, ghi lỗi console, tệp hỏng, tràn ngang và đếm chuyển động đang chạy. Trình duyệt Chromium, khung 390 × 844.</p>
+    <div class="so-lieu">
+      <div><b>92</b>màn mở được</div>
+      <div><b>0</b>lỗi JavaScript, 0 tệp tải hỏng</div>
+      <div class="xau"><b>82</b>màn không có chuyển động nào</div>
+      <div class="xau"><b>8</b>lỗi console khi tải trang</div>
+      <div class="xau"><b>7</b>lỗi giao diện cần sửa</div>
+    </div>
+    <h3 style="margin:18px 0 8px">Lỗi tìm thấy</h3>
+    <div class="cuon"><table class="bang"><thead><tr><th>Mức</th><th>Màn</th><th>Lỗi</th><th>Cách sửa</th></tr></thead><tbody>
+      <tr><td><span class="chip do">Cao</span></td><td>harvest_plan, plant_plan, settlement</td><td>Nút Đăng tròn (+) che nút hành động chính ngay khi mở màn. Người dùng phải cuộn mới bấm được.</td><td>Đặt nút chính dính đáy phía trên thanh menu, hoặc chừa khoảng trống ≥ 96 px dưới nút cuối.</td></tr>
+      <tr><td><span class="chip do">Cao</span></td><td>topup</td><td>Linh vật đứng cạnh khoản cọc và câu "Chị không bấm để tự coi cọc đã đủ". Trái quy tắc không đặt linh vật cạnh tiền.</td><td>Bỏ linh vật ở màn này. Dùng <code>demSo</code> cho phần chênh khi ngân hàng xác nhận.</td></tr>
+      <tr><td><span class="chip vang">Vừa</span></td><td>settlement</td><td>Nhãn nút "Yêu cầu ngân hàng xử lý đúng phần bổ…" dài, bị cắt.</td><td>Rút gọn: "Gửi lệnh cho ngân hàng". Phần giải thích đưa lên trên nút.</td></tr>
+      <tr><td><span class="chip vang">Vừa</span></td><td>costs</td><td>"Chi phí đã ghi1.050.000 đ", "đơn này0 đ": lớp <code>money-grid</code> không có CSS nên nhãn dính số.</td><td>Thêm kiểu <code>.money-grid</code> (lưới 2 cột, nhãn trên, số dưới).</td></tr>
+      <tr><td><span class="chip vang">Vừa</span></td><td>photo_post</td><td>Ô chọn ảnh là input gốc: "Choose File / No file chosen" tiếng Anh.</td><td>Ẩn input, dùng nút "Chụp hoặc chọn ảnh" và ô xem trước.</td></tr>
+      <tr><td><span class="chip xam">Thấp</span></td><td>Tải trang</td><td>8 lỗi <code>&lt;path&gt; attribute d: "{{ st.d }}"</code>: SVG gán thuộc tính trước khi khuôn mẫu điền giá trị (có từ bản gốc).</td><td>Viết <code>data-d</code> rồi gán <code>d</code> sau khi render, hoặc để trống tới khi có dữ liệu.</td></tr>
+      <tr><td><span class="chip xam">Thấp</span></td><td>payment, form có ngày</td><td>Hạn "05:30:00 28/10/2026" khó đọc. Ô ngày hiện theo ngôn ngữ trình duyệt (máy thử tiếng Anh ra mm/dd/yyyy).</td><td>Viết "5 giờ 30 · 28/10". Kiểm ô ngày trên máy tiếng Việt hoặc tự định dạng dd/mm/yyyy.</td></tr>
+    </tbody></table></div>
+    <h3 style="margin:18px 0 8px">Nhận xét chuyển động</h3>
+    <div class="quy-tac">
+      <div><b>Màn gốc có, màn mở rộng không</b>Trang chủ, Bán hàng, Hỏi đáp, Giao hàng dùng bộ <code>data-a</code> (rise, pop, coin, wheel). 89 màn mở rộng trong <code>case-flow.mjs</code> gần như tĩnh: bấm Lưu, Gửi, Xác nhận chỉ hiện toast.</div>
+      <div><b>Thiếu phản hồi ở chỗ quan trọng nhất</b>OTP, ký, cọc, nghiệm thu, quyết toán, hoàn tiền là chỗ người dùng cần biết chắc việc đã ghi nhận, nhưng hiện chưa có tín hiệu nào ngoài chữ.</div>
+      <div><b>Linh vật lặp một khuôn</b>Ảnh nhỏ giống nhau ở 6 màn. Clip MP4 có nền tối ở màn Motion. Bộ cảnh trước đây (trâu sau bàn, gật đầu) đều một khuôn nên dễ nhàm. Bộ này thay bằng động tác phản ứng.</div>
+      <div><b>Điểm tốt nên giữ</b>Không chạy hiệu ứng tiền khi chưa có xác nhận ngân hàng. Mừng chỉ ở Hoàn tất. Có chế độ giảm chuyển động. Mất kết nối không tự gửi.</div>
+    </div>
+    <div class="anh-dg"><a href="danh-gia/bang-0.png" target="_blank"><img src="danh-gia/bang-0.png" alt="Ảnh chụp màn 1 đến 24" loading="lazy"></a><a href="danh-gia/bang-1.png" target="_blank"><img src="danh-gia/bang-1.png" alt="Ảnh chụp màn 25 đến 48" loading="lazy"></a><a href="danh-gia/bang-2.png" target="_blank"><img src="danh-gia/bang-2.png" alt="Ảnh chụp màn 49 đến 72" loading="lazy"></a><a href="danh-gia/bang-3.png" target="_blank"><img src="danh-gia/bang-3.png" alt="Ảnh chụp màn 73 đến 92" loading="lazy"></a></div>
+  </section>
+
+  <section id="app">
+    <h2>1 · Hiệu ứng app</h2>
+    <p class="mo-ta">Để báo hoặc xác thực một việc. Mỗi hiệu ứng gắn với một sự kiện có thật, chạy một lần, không lặp. Thời lượng 120–900 ms. Bấm nút trong từng ô để xem.</p>
+    <div class="luoi" id="luoi-app"></div>
+  </section>
+
+  <section id="linh-vat">
+    <h2>2a · Chuyển động linh vật (bộ lớp nửa người)</h2>
+    <p class="mo-ta">Trâu dựng từ bộ lớp tách từ ảnh gốc (3 thân, 6 đầu), điều khiển trực tiếp. Mỗi động tác có cách chuyển động riêng. Luôn có lớp nền: thở, chớp mắt ngẫu nhiên, nhìn theo ngón tay hoặc con trỏ. Rê chuột lên từng ô để thấy trâu nhìn theo.</p>
+    <div class="quy-tac">
+      <div><b>Có việc mới xuất hiện</b>Chào lần đầu, đang nghe, đang chờ, báo bình tĩnh, mừng hoàn tất, mẹo học. Không trang trí cho có.</div>
+      <div><b>Không cạnh tiền, ký, hủy</b>Không đứng cạnh số tiền, nút ký, OTP, hủy, cọc. Không che số liệu. Không pháo giấy.</div>
+      <div><b>Không lặp khuôn</b>Động tác một lần (chào, gật, mừng, ló đầu) chạy xong thì về thở yên. Chào tối đa một lần mỗi ngày.</div>
+      <div><b>Giảm chuyển động</b>Hệ thống bật giảm chuyển động thì chỉ đổi nét mặt, đứng yên.</div>
+    </div>
+    <div class="luoi" id="luoi-lv"></div>
+  </section>
+
+  
+
+  <section id="vi-du">
+    <h2>3 · Ví dụ ghép thành luồng</h2>
+    <p class="mo-ta">Ba luồng thật trong app bán, ghép cả hai nhóm để hình dung nhịp độ. Luồng thứ hai cố ý không có linh vật vì toàn chuyện tiền và ký.</p>
+    <div class="ba-may" id="ba-may"></div>
+  </section>
+
+  <section id="ban-do">
+    <h2>4 · Gắn vào 92 màn</h2>
+    <p class="mo-ta">Đề xuất cho từng màn của bản mẫu. Cột linh vật trống nghĩa là không đặt linh vật (chỉ 18 màn có). Tên hiệu ứng trùng tên hàm trong <code>hieu-ung-app.js</code> và động tác trong <code>linh-vat.js</code>.</p>
+    <div class="loc" id="loc"></div>
+    <div class="cuon"><table class="bang" id="bang-man"><thead><tr><th>Màn</th><th>Hiệu ứng app</th><th>Linh vật</th><th>Ghi chú</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="dung">
+    <h2>Cách dùng</h2>
+    <div class="quy-tac">
+      <div><b>Hiệu ứng app</b>Nạp <code>hieu-ung-app.css</code> và <code>hieu-ung-app.js</code>. Gọi <code>HieuUng.thanhCong(nut, 'Đã lưu')</code> sau khi máy chủ trả kết quả, không gọi trước.</div>
+      <div><b>Linh vật</b>Nạp <code>linh-vat.css</code> và <code>linh-vat.js</code>, chép thư mục <code>lop/</code>. <code>const tv = new LinhVat(el, {goc:'lop/', co:160}); tv.lam('nghe'); tv.mucAm(0.6);</code></div>
+      <div><b>Nhìn theo người dùng</b><code>addEventListener('pointermove', e =&gt; tv.nhinVe(e.clientX, e.clientY))</code>. Trên điện thoại gọi khi người dùng chạm hoặc khi ô nhập được chọn.</div>
+      <div><b>Tệp</b><code>index.html</code> trang này · <code>hieu-ung-app.*</code> · <code>linh-vat.*</code> · <code>lop/</code> 9 lớp trâu · <code>ban-do-man.js</code> · <code>danh-gia/</code> ảnh chụp và kết quả duyệt.</div>
+    </div>
+  </section>
+</div>
+
+<script src="hieu-ung-app.js"></script>
+<script src="linh-vat.js"></script>
+
+
+<script src="ban-do-man.js"></script>
+<script>
+const HU = window.HieuUng, $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const ngu = ms => new Promise(r => setTimeout(r, ms));
+const TICK = '<svg class="hu-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg>';
+const lane = (ten, i = 0) => `<div class="lane"><div class="hu-noi"><i></i></div>${ten.map((t, k) => `<div class="hu-buoc ${k < i ? 'xong' : k === i ? 'dang' : ''}"><b></b>${t}</div>`).join('')}</div>`;
+
+/* ---------- 1. Hiệu ứng app ---------- */
+const APP = [
+  { id: 'vaoMan', ten: 'Vào màn / quay lại', bao: 'Biết mình vừa đi tới hay lùi lại', man: 'Mọi màn', tg: '260 ms · trượt 28 px', nhom: 'Điều hướng',
+    html: `<div class="kv" style="display:flex;flex-direction:column;gap:8px"><div class="dong"><span>Hồ sơ giao dịch</span><b>HĐ-0101</b></div><div class="dong"><span>Lượng · giá</span><b>2.000 kg</b></div></div><div class="dk"><button class="nut nho" data-h="toi">Đi tới</button><button class="nut phu nho" data-h="lui">Quay lại</button></div>`,
+    gan(s) { $$('[data-h]', s).forEach(b => b.onclick = () => HU.vaoMan($('.kv', s), b.dataset.h)); } },
+  { id: 'noiLen', ten: 'Danh sách nổi lần lượt', bao: 'Có dữ liệu mới tải xong, mắt đi theo thứ tự', man: 'home, orders, matches, lots', tg: '320 ms · cách 45 ms', nhom: 'Điều hướng',
+    html: `<div class="kv" style="display:flex;flex-direction:column;gap:6px">${['HTX Thuận Nông · 1.000 kg', 'Nhà máy sấy Đồng Xanh · 2.000 kg', 'Đầu mối Bếp Sen · 200 kg', 'Vựa Tư Bền · 500 kg tôm'].map(x => `<div class="dong"><span>${x}</span></div>`).join('')}</div><div class="dk"><button class="nut nho">Tải lại</button></div>`,
+    gan(s) { $('button', s).onclick = () => HU.noiLen($$('.dong', s)); } },
+  { id: 'gachTab', ten: 'Đổi tab', bao: 'Tab đang chọn, gạch nền trượt theo', man: 'sales', tg: '280 ms', nhom: 'Điều hướng',
+    html: `<div class="tab-g"><div class="gach"></div><button>Chào giá</button><button>Đơn</button><button>Hàng của tôi</button></div>`,
+    gan(s) { const g = $('.gach', s); $$('.tab-g button', s).forEach(b => b.onclick = () => HU.gachTab(g, b)); } },
+  { id: 'chonThe', ten: 'Chọn thẻ', bao: 'Đã chọn mặt hàng / giai đoạn', man: 'products, post_type, permissions', tg: '300 ms', nhom: 'Chạm',
+    html: `<div class="the-hang">${[['Tôm thẻ', 'Thủy sản'], ['Gạo ST25', 'Lúa gạo'], ['Cà phê nhân', 'Cây công nghiệp'], ['Xoài cát Chu', 'Trái cây']].map(([a, b]) => `<button>${a}<small>${b}</small></button>`).join('')}</div>`,
+    gan(s) { const ds = $$('.the-hang button', s); ds.forEach(b => { HU.nhan(b); b.onclick = () => HU.chonThe(b, ds); }); } },
+  { id: 'luu', ten: 'Đang gửi → Đã lưu', bao: 'Việc đã được ghi nhận thật, chống bấm hai lần', man: 'amend, offer_new, journal_new, transport...', tg: 'chờ thật + 420 ms', nhom: 'Gửi và lưu',
+    html: `<input class="o" value="Tưới gốc vườn xoài A, 3 bao kali"><button class="nut">Lưu nhật ký</button><button class="nut phu nho" data-lai>Làm lại</button>`,
+    gan(s) { const n = $('.nut', s); n.onclick = async () => { const xong = HU.dangGui(n); await ngu(900); await HU.thanhCong(n, 'Đã lưu'); }; $('[data-lai]', s).onclick = () => { n.className = 'nut'; n.disabled = false; n.textContent = 'Lưu nhật ký'; }; } },
+  { id: 'loiTruong', ten: 'Nhập chưa đúng', bao: 'Chỉ đúng ô sai và nói rõ cách sửa', man: 'amend, crop_adjust, payment, cancel...', tg: '360 ms · lắc 2 nhịp', nhom: 'Gửi và lưu',
+    html: `<label style="font-size:13px;font-weight:700">Lượng chị chào (kg)<input class="o" value="0" inputmode="numeric"></label><button class="nut">Gửi lời chào</button>`,
+    gan(s) { $('.nut', s).onclick = () => { const o = $('.o', s); if (!(+o.value > 0)) HU.loiTruong(o, 'Lượng phải lớn hơn 0. Còn có thể chào 4.000 kg.'); else HU.thongBao(s, 'Đã gửi lời chào'); }; } },
+  { id: 'moNut', ten: 'Mở khóa nút', bao: 'Đủ điều kiện rồi mới bấm được', man: 'sign, ready', tg: '700 ms · vòng lan', nhom: 'Gửi và lưu',
+    html: `<label style="display:flex;gap:8px;font-size:14px"><input type="checkbox"> Tôi đã đọc các điều khoản và chắc chắn có thể thực hiện.</label><button class="nut" disabled>Ký bản này</button>`,
+    gan(s) { const c = $('input', s), n = $('.nut', s); c.onchange = () => c.checked ? HU.moNut(n) : (n.disabled = true); } },
+  { id: 'thongBao', ten: 'Báo nhanh', bao: 'Việc phụ đã xong, không chặn màn', man: 'support, chat, lot_status', tg: '260 ms vào · 2,6 giây', nhom: 'Gửi và lưu',
+    html: `<div class="dk"><button class="nut nho" data-l="ok">Đã lưu yêu cầu</button><button class="nut phu nho" data-l="canh">Chưa gửi được</button></div>`,
+    gan(s) { $$('[data-l]', s).forEach(b => b.onclick = () => HU.thongBao(s, b.dataset.l === 'ok' ? 'Đã lưu yêu cầu hỗ trợ' : 'Chưa gửi được · đã giữ bản nháp', b.dataset.l)); } },
+  { id: 'demSo', ten: 'Số tiền vừa được xác nhận', bao: 'Số mới, đã xác nhận, nhìn thấy nó đổi', man: 'wallet, topup, settlement, refund, result', tg: '900 ms + nền vàng 1,4 giây', nhom: 'Tiền',
+    html: `<div class="dong"><span>Cọc ngân hàng đang giữ</span><b class="so">0 đ</b></div><button class="nut nho">Ngân hàng xác nhận</button><p style="font-size:12px">Chỉ gọi khi ngân hàng đã xác nhận, không gọi khi bên mua mới "báo đã chuyển".</p>`,
+    gan(s) { $('.nut', s).onclick = () => HU.demSo($('.so', s), 0, 13800000); } },
+  { id: 'xuBay', ten: 'Tiền về ví', bao: 'Khoản đã vào tài khoản nhận tiền', man: 'wallet (sau xác nhận)', tg: '680 ms mỗi xu', nhom: 'Tiền',
+    html: `<div style="display:flex;justify-content:space-between;align-items:center"><div class="nh" style="font-weight:700;font-size:13px;text-align:center"><svg width="44" height="40" viewBox="0 0 44 40"><path d="M2 14L22 3L42 14Z" fill="#3f6fa8" stroke="#130a06" stroke-width="2" stroke-linejoin="round"/><rect x="6" y="16" width="5" height="16" fill="#f3efe2" stroke="#130a06" stroke-width="1.5"/><rect x="19.5" y="16" width="5" height="16" fill="#f3efe2" stroke="#130a06" stroke-width="1.5"/><rect x="33" y="16" width="5" height="16" fill="#f3efe2" stroke="#130a06" stroke-width="1.5"/><rect x="2" y="32" width="40" height="5" fill="#3f6fa8" stroke="#130a06" stroke-width="2"/></svg><br>Agribank</div><div class="vi dong" style="flex-direction:column;align-items:flex-end;background:#173f2f;color:#fff;border:none;padding:10px 14px"><span style="font-size:12px;opacity:.8">Đã nhận ròng</span><b class="so" style="font:800 20px 'Baloo 2'">0 đ</b></div></div><button class="nut nho">Ngân hàng báo đã chuyển</button>`,
+    gan(s) { $('.nut', s).onclick = async () => { await HU.xuBay($('.nh', s), $('.vi', s), 5); HU.demSo($('.so', s), 0, 32200000); }; } },
+  { id: 'buocTien', ten: 'Dòng bước tiến lên', bao: 'Đơn đang ở bước nào, ai làm tiếp', man: 'order, bank, inspection, seasons...', tg: '520 ms', nhom: 'Tiến trình',
+    html: `${lane(['Thỏa thuận', 'Cọc', 'Giao', 'Nghiệm thu', 'Quyết toán'])}<div class="dk"><button class="nut nho">Bước tiếp</button><button class="nut phu nho">Về đầu</button></div>`,
+    gan(s) { let i = 0; const l = $('.lane', s); $$('.nut', s)[0].onclick = () => { i = Math.min(4, i + 1); HU.buocTien(l, i); }; $$('.nut', s)[1].onclick = () => { i = 0; HU.buocTien(l, 0); }; } },
+  { id: 'doiTrangThai', ten: 'Đổi trạng thái', bao: 'Trạng thái đổi do sự kiện thật', man: 'bank, refund, cancel_wait, lots', tg: '360 ms', nhom: 'Tiến trình',
+    html: `<div><span class="trang-thai" data-loai="vang">Chờ ngân hàng xác nhận</span></div><div class="dk"><button class="nut nho" data-t="Đã xác nhận · 13.800.000 đ" data-l="xanh">Ngân hàng xác nhận</button><button class="nut phu nho" data-t="Lỗi ngân hàng · gửi lại" data-l="do">Ngân hàng báo lỗi</button></div>`,
+    gan(s) { $$('[data-t]', s).forEach(b => b.onclick = () => HU.doiTrangThai($('.trang-thai', s), b.dataset.t, b.dataset.l)); } },
+  { id: 'demNguoc', ten: 'Hạn trả lời', bao: 'Còn bao lâu; xanh → vàng → đỏ theo hạn, không theo giá', man: 'offers, offer, warehouse, account_change', tg: 'theo giờ thật', nhom: 'Tiến trình',
+    html: `<div style="display:flex;gap:14px;align-items:center"><div class="vong" data-muc="xanh"><svg viewBox="0 0 36 36"><circle class="nen-v" cx="18" cy="18" r="16"/><circle class="chay" cx="18" cy="18" r="16"/></svg><span>20</span></div><div><b>Nhà máy sấy Đồng Xanh</b><br><span style="font-size:13px;color:var(--phu)">Hạn trả lời lời chào giá (mô phỏng 20 giây)</span></div></div>`,
+    gan(s) { const v = $('.vong', s); let c = 20; const f = () => { HU.demNguoc(v, c, 20); $('span', v).textContent = c; c = c > 0 ? c - 1 : 20; }; f(); setInterval(f, 1000); } },
+  { id: 'thanhKetQua', ten: 'Kết quả nghiệm thu 3 phần', bao: 'Đạt / hạ cấp / trả lại, nhìn tỷ lệ một lần', man: 'result, shortage, stock, framework', tg: '520 ms mỗi phần', nhom: 'Tiến trình',
+    html: `<div class="thanh-kq"><i style="width:90%;background:#235c45"></i><i style="width:7.5%;background:#f5b83d"></i><i style="width:2.5%;background:#c0392b"></i></div><div class="chu-giai"><span style="--m:#235c45">Đạt 1.800 kg</span><span style="--m:#f5b83d">Hạ cấp 150 kg</span><span style="--m:#c0392b">Trả lại 50 kg</span></div><button class="nut nho">Có kết quả cân</button>`,
+    gan(s) { $('.nut', s).onclick = () => HU.thanhKetQua($('.thanh-kq', s)); } },
+  { id: 'tickLanLuot', ten: 'Điều kiện đã đủ', bao: 'Từng điều kiện được xác nhận', man: 'ready, match, harvest_plan, lesson', tg: '220 ms mỗi dòng', nhom: 'Tiến trình',
+    html: `<ul class="ds-tick">${['Hàng và quy cách đã chuẩn bị', 'Đúng tài xế / người nhận', 'Hồ sơ, mẫu đã thống nhất', 'Hai bên đã hiểu mốc chuyển rủi ro'].map(x => `<li><span class="hop">${TICK}</span>${x}</li>`).join('')}</ul><button class="nut nho">Kiểm tra</button>`,
+    gan(s) { $('.nut', s).onclick = () => { $$('li', s).forEach(l => l.classList.remove('xong')); HU.tickLanLuot($$('li', s)); }; } },
+  { id: 'hienDong', ten: 'Lời chào mới tới', bao: 'Có việc mới, không làm mất chỗ đang đọc', man: 'offers, notifications, messages', tg: '300 ms + nền xanh', nhom: 'Thông báo',
+    html: `<div style="display:flex;justify-content:space-between;align-items:center"><b>Lời chào đang tới</b><div class="chuong"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#233c31" stroke-width="2" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="hh">2</span></div></div><div class="ds" style="display:flex;flex-direction:column;gap:6px"><div class="dong"><span>HTX Thuận Nông</span><b>1.000 kg</b></div></div><button class="nut nho">Có lời chào mới</button>`,
+    gan(s) { let n = 2; $('.nut', s).onclick = () => { const d = document.createElement('div'); d.className = 'dong'; d.innerHTML = `<span>Vựa Tư Bền · tôm thẻ</span><b>500 kg</b>`; $('.ds', s).prepend(d); HU.hienDong(d); HU.huyHieu($('.hh', s), ++n, $('.chuong', s)); }; } },
+  { id: 'dangGo', ten: 'Bên kia đang gõ', bao: 'Có người đang trả lời', man: 'chat', tg: 'chấm nhảy 1 giây', nhom: 'Thông báo',
+    html: `<div class="hoi" style="display:flex;flex-direction:column;gap:6px"><div class="tin toi">Chị giao được 28/10 không?</div><div class="go" hidden><i></i><i></i><i></i></div></div><button class="nut nho">Bên mua trả lời</button>`,
+    gan(s) { $('.nut', s).onclick = async () => { HU.dangGo($('.go', s), true); await ngu(1400); HU.dangGo($('.go', s), false); const t = document.createElement('div'); t.className = 'tin'; t.textContent = 'Được, xe tới vườn 7 giờ sáng.'; $('.go', s).before(t); HU.hienDong(t); }; } },
+  { id: 'otp', ten: 'Mã ký OTP', bao: 'Mã đúng thì xanh lan, sai thì lắc', man: 'otp, auth_otp', tg: '120 ms mỗi số', nhom: 'Ký và bảo mật',
+    html: `<div class="otp">${'<i></i>'.repeat(6)}</div><div class="dk"><button class="nut nho" data-m="123456" data-d="1">Nhập đúng</button><button class="nut phu nho" data-m="123450">Nhập sai</button></div>`,
+    gan(s) { $$('[data-m]', s).forEach(b => b.onclick = () => { const o = $$('.otp i', s); o.forEach(x => { x.className = ''; x.textContent = ''; }); HU.otp(o, b.dataset.m, !!b.dataset.d); }); } },
+  { id: 'ky', ten: 'Ký và đóng dấu', bao: 'Hợp đồng đã ký, có phiên bản', man: 'otp (sau mã đúng), handover, warehouse', tg: '1,3 giây + 420 ms', nhom: 'Ký và bảo mật',
+    html: `<div class="giay"><svg viewBox="0 0 300 120"><text x="14" y="26" font-size="12" font-weight="700" fill="#233c31">HĐ-0101 · bản 1</text><path d="M14 40H280M14 54H240" stroke="#e4e1d6" stroke-width="2"/><path class="ky" d="M40 92c8-18 16-22 18-10s-6 14 4 4 14-20 18-8-2 14 8 6 12-16 20-12 4 10 14 4 16-6 30-2" fill="none" stroke="#1e3a8a" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1000" stroke-dashoffset="1000"/></svg><div class="dau-do">ĐÃ KÝ</div></div><button class="nut nho">Mã OTP đúng</button>`,
+    gan(s) { $('.nut', s).onclick = async () => { const d = $('.dau-do', s); d.style.visibility = 'hidden'; await HU.kyTen($('.ky', s)); await HU.dongDau(d); }; } },
+  { id: 'moKhoa', ten: 'Mở liên lạc sau cọc', bao: 'Thông tin bên kia chỉ hiện khi cọc đã vào tài khoản đảm bảo', man: 'order, privacy', tg: '360 + 520 ms', nhom: 'Ký và bảo mật',
+    html: `<div class="khoa"><svg viewBox="0 0 30 30"><g class="quai" style="transform-origin:21px 13px"><path d="M9 13V9a6 6 0 0 1 12 0v4" fill="none" stroke="#233c31" stroke-width="2.6"/></g><rect x="5" y="13" width="20" height="14" rx="3" fill="#f5b83d" stroke="#130a06" stroke-width="2"/></svg><div><span style="font-size:13px;color:var(--phu)">Liên lạc Nhà máy sấy Đồng Xanh</span><div class="an">0909 000 456 · anh Trí</div></div></div><button class="nut nho">Cọc đã vào tài khoản đảm bảo</button>`,
+    gan(s) { $('.nut', s).onclick = () => HU.moKhoa($('.khoa', s), $('.an', s)); } },
+  { id: 'matKetNoi', ten: 'Mất / có lại kết nối', bao: 'Dữ liệu vẫn giữ, chưa gửi được xác nhận', man: 'connection, mọi màn', tg: '280 ms', nhom: 'Bối cảnh',
+    html: `<div class="bang-mang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/></svg><span></span></div><div style="height:30px"></div><div class="dk"><button class="nut nho" data-m="1">Mất mạng</button><button class="nut phu nho">Có mạng lại</button></div>`,
+    gan(s) { const b = $('.bang-mang', s); $$('.nut', s)[0].onclick = () => HU.matKetNoi(b, true); $$('.nut', s)[1].onclick = () => HU.matKetNoi(b, false); } },
+  { id: 'khungCho', ten: 'Đang tải', bao: 'Có dữ liệu sắp tới, giữ chỗ bố cục', man: 'products, prices, news', tg: 'tới khi có dữ liệu', nhom: 'Bối cảnh',
+    html: `<div class="ds" style="display:flex;flex-direction:column;gap:6px">${['Tôm thẻ · 168.000 đ/kg', 'Gạo ST25 · 21.500 đ/kg', 'Cà phê nhân · 118.000 đ/kg'].map(x => `<div class="dong"><span>${x}</span></div>`).join('')}</div><button class="nut nho">Tải giá tham khảo</button>`,
+    gan(s) { $('.nut', s).onclick = async () => { $$('.dong', s).forEach(d => HU.khungCho(d, true)); await ngu(1300); $$('.dong', s).forEach(d => HU.khungCho(d, false)); HU.noiLen($$('.dong', s)); }; } },
+  { id: 'tuyenGiao', ten: 'Xe trên tuyến', bao: 'Hàng đi tới đâu (theo vị trí thật, không tự đoán)', man: 'delivery', tg: 'theo dữ liệu', nhom: 'Bối cảnh',
+    html: `<svg class="tg" viewBox="0 0 300 110" style="width:100%"><path class="tuyen" d="M20 85C80 85 70 30 140 35S220 90 280 40" fill="none" stroke="#d9dfd2" stroke-width="6" stroke-linecap="round"/><path class="da-di tuyen2" d="M20 85C80 85 70 30 140 35S220 90 280 40" fill="none" stroke="#235c45" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="85" r="7" fill="#fff" stroke="#235c45" stroke-width="3"/><circle cx="280" cy="40" r="7" fill="#f5b83d" stroke="#130a06" stroke-width="2"/><text x="20" y="106" font-size="11" text-anchor="middle" fill="#51625a">Vườn</text><text x="280" y="62" font-size="11" text-anchor="middle" fill="#51625a">Kho</text><g class="xe"><rect x="-13" y="-9" width="17" height="11" rx="2" fill="#4f7a58" stroke="#130a06" stroke-width="1.6"/><rect x="4" y="-7" width="9" height="9" rx="2" fill="#c4532f" stroke="#130a06" stroke-width="1.6"/><circle cx="-7" cy="3" r="2.6" fill="#2b2421"/><circle cx="8" cy="3" r="2.6" fill="#2b2421"/></g></svg><input type="range" min="0" max="100" value="30" aria-label="Vị trí xe">`,
+    gan(s) { const sv = $('.tg', s), r = $('input', s); const f = () => HU.tuyenGiao(sv, r.value / 100); r.oninput = f; f(); } },
+  { id: 'veDuong', ten: 'Giá tham khảo 30 ngày', bao: 'Xu hướng, đọc từ trái sang phải', man: 'prices, lot, season', tg: '900 ms', nhom: 'Bối cảnh',
+    html: `<svg viewBox="0 0 300 90" style="width:100%"><path d="M10 80H290" stroke="#e4e8df"/><path class="dg" d="M10 60L40 55L70 62L100 48L130 50L160 38L190 42L220 30L250 34L290 22" fill="none" stroke="#235c45" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="400" stroke-dashoffset="400"/><circle cx="290" cy="22" r="4" fill="#235c45"/><text x="290" y="14" font-size="11" text-anchor="end" fill="#233c31" font-weight="700">23.000 đ/kg</text></svg><button class="nut nho">Vẽ lại</button>`,
+    gan(s) { $('.nut', s).onclick = () => HU.veDuong($('.dg', s)); HU.veDuong($('.dg', s)); } },
+  { id: 'songAm', ten: 'Đang nghe giọng nói', bao: 'Micro đang nhận, cột cao theo âm lượng thật', man: 'voice', tg: 'theo micro', nhom: 'Bối cảnh',
+    html: `<div style="display:flex;gap:14px;align-items:center"><div style="width:52px;height:52px;border-radius:50%;background:#235c45;display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><div class="song">${'<i></i>'.repeat(9)}</div></div><label style="font-size:13px">Âm lượng (mô phỏng) <input type="range" min="0" max="100" value="60"></label>`,
+    gan(s) { const c = $$('.song i', s), r = $('input', s); (function f() { HU.songAm(c, r.value / 100); requestAnimationFrame(f); })(); } },
+];
+const luoiApp = $('#luoi-app');
+for (const h of APP) {
+  const el = document.createElement('article'); el.className = 'the';
+  el.innerHTML = `<div class="nhan"><span class="chip xam">${h.nhom}</span><span class="chip">${h.id === 'luu' ? 'dangGui · thanhCong' : h.id === 'ky' ? 'kyTen · dongDau' : h.id}</span></div><h3>${h.ten}</h3><p>${h.bao}</p><div class="san">${h.html}</div><dl><dt>Màn</dt><dd>${h.man}</dd><dt>Nhịp</dt><dd>${h.tg}</dd></dl>`;
+  luoiApp.appendChild(el); h.gan($('.san', el));
+}
+
+/* ---------- 2. Linh vật ---------- */
+const LV = [
+  { id: 'chao', ten: 'Chào', khi: 'Lần mở app đầu ngày, màn đăng nhập', khong: 'Mỗi lần vào màn; cạnh nút', mau: 'Lấy đà, vẫy hai bức tay luân phiên, đầu lắc theo nhịp vẫy, mặt vui', nut: [['Chào', 'chao']] },
+  { id: 'nghe', ten: 'Lắng nghe', khi: 'Hỏi đáp đăng hàng bằng giọng nói', khong: 'Khi micro tắt', mau: 'Nghiêng đầu giữ nguyên; gật nhỏ theo âm lượng thật của người nói', nut: [['Bắt đầu nghe', 'nghe'], ['Thôi', 'cho']], am: true },
+  { id: 'gat', ten: 'Gật đầu ghi nhận', khi: 'Nghe xong một câu trả lời; lưu xong bản đăng', khong: 'Thay cho xác nhận tiền', mau: 'Nhổm lên lấy đà, cúi xuống nhắm mắt, nảy về', nut: [['Gật', 'gat']] },
+  { id: 'doc', ten: 'Đọc lại', khi: 'Rà lại bản đăng, sổ vườn', khong: 'Màn hợp đồng, tiền', mau: 'Đầu cúi, lia từng dòng trái sang phải, về đầu dòng kèm cái gật nhỏ', nut: [['Đọc', 'doc'], ['Thôi', 'cho']] },
+  { id: 'nghi', ten: 'Đang nghĩ / chờ', khi: 'Chưa có kết nối, chờ bên kia', khong: 'Khi đang xử lý tiền (dùng chấm tải trên nút)', mau: 'Mặt suy nghĩ, đầu đung đưa chậm, ba chấm nổi', nut: [['Nghĩ', 'nghi'], ['Thôi', 'cho']] },
+  { id: 'binhtinh', ten: 'Bình tĩnh hỗ trợ', khi: 'Mất mùa, mất kết nối, cần hỗ trợ', khong: 'Rung lắc, mặt lo kéo dài', mau: 'Thoáng chú ý rồi về mặt thường, thở sâu chậm, nghiêng nhẹ', nut: [['Bình tĩnh', 'binhtinh'], ['Thôi', 'cho']] },
+  { id: 'chi', ten: 'Chỉ đường', khi: 'Gợi ý lần đầu: mốc mùa vụ tiếp theo, bài học', khong: 'Chỉ vào nút tiền / ký', mau: 'Giơ tay về một phía, đầu quay theo, thỉnh thoảng nhấn tay', nut: [['Chỉ', 'chi'], ['Thôi', 'cho']], bong: 'Mốc tiếp: bón thúc 02/11' },
+  { id: 'lodau', ten: 'Ló đầu', khi: 'Thẻ mẹo, màn trống chưa có gợi ý', khong: 'Màn có số liệu quan trọng', mau: 'Trồi từ mép thẻ, nhìn trái, nhìn phải, chớp mắt, lặn xuống', nut: [['Ló đầu', 'lodau']] },
+  { id: 'giatminh', ten: 'Chú ý', khi: 'Có lời chào hoặc nhu cầu mới khớp lô', khong: 'Báo lỗi tiền', mau: 'Nhảy nhỏ, mặt chú ý, nghiêng đầu rồi về', nut: [['Có tin mới', 'giatminh']] },
+  { id: 'mung', ten: 'Mừng hoàn tất', khi: 'Chỉ khi đơn đã hết nghĩa vụ hàng và tiền', khong: 'Đăng lô, gửi chào, ký (chưa xong việc)', mau: 'Nhún, bật lên, giơ tay ở đỉnh, tiếp đất có nén, nhảy nhỏ lần hai', nut: [['Mừng', 'mung']] },
+  { id: 'cho', ten: 'Đứng yên và nhìn theo', khi: 'Nền của mọi động tác', khong: '—', mau: 'Thở, chớp mắt ngẫu nhiên, đầu nghiêng về phía ngón tay / con trỏ', nut: [['Đứng yên', 'cho']] },
+];
+const luoiLv = $('#luoi-lv'), dsLv = [];
+for (const m of LV) {
+  const el = document.createElement('article'); el.className = 'the';
+  el.innerHTML = `<div class="nhan"><span class="chip">${m.id}</span></div><h3>${m.ten}</h3><div class="san san-lv">${m.bong ? `<div style="position:absolute;right:12px;top:14px;background:#fff;border:1px solid var(--vien);border-radius:12px;padding:6px 10px;font-size:12px;font-weight:700">${m.bong}</div>` : ''}${m.id === 'lodau' ? '<div style="position:absolute;inset:auto 0 0 0;height:40px;background:#fff;border-top:1px solid var(--vien)"></div>' : ''}<div class="tv" style="position:relative"></div></div><div class="dk">${m.nut.map(([t, a]) => `<button class="nut nho${a === 'cho' ? ' phu' : ''}" data-a="${a}">${t}</button>`).join('')}</div>${m.am ? '<label style="font-size:13px">Âm lượng người nói <input type="range" min="0" max="100" value="55"></label>' : ''}<dl><dt>Dùng khi</dt><dd>${m.khi}</dd><dt>Không dùng</dt><dd>${m.khong}</dd><dt>Động tác</dt><dd>${m.mau}</dd></dl>`;
+  luoiLv.appendChild(el);
+  const tv = new LinhVat($('.tv', el), { goc: 'lop/', co: 170 }); dsLv.push(tv);
+  if (m.id === 'lodau') { tv.khung.style.transform = 'translateY(92%)'; }
+  $$('[data-a]', el).forEach(b => b.onclick = () => tv.lam(b.dataset.a));
+  const san = $('.san', el);
+  san.addEventListener('pointermove', e => tv.nhinVe(e.clientX, e.clientY)); san.addEventListener('pointerleave', () => tv.nhinVe());
+  if (m.am) { const r = $('input', el); const f = () => tv.mucAm(tv.hd.ten === 'nghe' ? r.value / 100 * (.6 + .4 * Math.abs(Math.sin(performance.now() / 260))) : 0); setInterval(f, 60); }
+  if (m.id === 'lodau') tv.lam('lodau', { sau: 'cho' }).then(() => { tv.khung.style.transform = ''; });
+}
+/* động tác một lần phát khi cuộn tới để xem ngay */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const i = [...luoiLv.children].indexOf(e.target); const m = LV[i]; if (['chao', 'gat', 'mung', 'giatminh'].includes(m.id)) dsLv[i].lam(m.id); else if (!['cho', 'lodau'].includes(m.id)) dsLv[i].lam(m.id); io.unobserve(e.target); } }), { threshold: .6 });
+[...luoiLv.children].forEach(c => io.observe(c));
+
+const MAY = [
+  { ten: 'Đăng lô bằng giọng nói', mo: 'Linh vật có việc thật: báo đang nghe, gật khi hiểu câu trả lời', html: `<div class="tieu">Đăng hàng</div><div class="than-man"><div style="display:flex;justify-content:center"><div class="tv"></div></div><div class="song" style="justify-content:center">${'<i></i>'.repeat(9)}</div><div class="cau" style="font-weight:700;text-align:center;min-height:24px"></div><div class="truong" style="display:flex;flex-direction:column;gap:6px"></div><button class="nut" style="margin-top:auto" hidden>Đăng lô</button></div>`,
+    async chay(m, tv) {
+      const song = $$('.song i', m), cau = $('.cau', m), tr = $('.truong', m), nut = $('.nut', m);
+      tr.innerHTML = ''; cau.textContent = ''; nut.hidden = true; nut.className = 'nut'; nut.disabled = false; nut.textContent = 'Đăng lô';
+      let am = 0; const v = setInterval(() => { HU.songAm(song, am * (.5 + .5 * Math.abs(Math.sin(performance.now() / 120)))); tv.mucAm(am); }, 50);
+      const hoi = [['Chị bán mặt hàng gì?', 'Mặt hàng', 'Tôm thẻ chân trắng'], ['Lượng khoảng bao nhiêu?', 'Lượng', '1.200 kg'], ['Ngày nào có hàng?', 'Ngày có hàng', '02/11/2026']];
+      for (const [q, k, a] of hoi) {
+        cau.textContent = q; tv.lam('nghe'); await ngu(500); am = .8; await ngu(1300); am = 0; await ngu(200);
+        await tv.lam('gat', { sau: 'cho' });
+        const d = document.createElement('div'); d.className = 'dong'; d.innerHTML = `<span>${k}</span><b>${a}</b>`; tr.appendChild(d); HU.hienDong(d); await ngu(500);
+      }
+      cau.textContent = 'Em đọc lại cho chị nghe.'; tv.lam('doc'); await ngu(2200); tv.lam('cho');
+      nut.hidden = false; HU.vaoMan(nut); await ngu(900);
+      HU.dangGui(nut); await ngu(900); await HU.thanhCong(nut, 'Đã đăng lô'); tv.lam('gat'); clearInterval(v); HU.songAm(song, 0);
+    } },
+  { ten: 'Ký hợp đồng và cọc', mo: 'Không có linh vật: toàn chuyện ký và tiền. Hiệu ứng chỉ chạy khi có xác nhận', html: `<div class="tieu">Hợp đồng HĐ-0101</div><div class="than-man">${lane(['Thỏa thuận', 'Ký', 'Cọc', 'Giao', 'Quyết toán'], 1)}<div class="otp" style="justify-content:center">${'<i></i>'.repeat(6)}</div><div class="giay"><svg viewBox="0 0 300 120"><text x="14" y="26" font-size="12" font-weight="700" fill="#233c31">2.000 kg · 23.000 đ/kg</text><path d="M14 40H280M14 54H240" stroke="#e4e1d6" stroke-width="2"/><path class="ky" d="M40 92c8-18 16-22 18-10s-6 14 4 4 14-20 18-8-2 14 8 6 12-16 20-12 4 10 14 4 16-6 30-2" fill="none" stroke="#1e3a8a" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1000" stroke-dashoffset="1000"/></svg><div class="dau-do">ĐÃ KÝ</div></div><div class="dong"><span>Cọc ngân hàng giữ</span><b class="so">0 đ</b></div><div><span class="trang-thai" data-loai="vang">Chưa có lệnh cọc</span></div><div class="khoa"><svg viewBox="0 0 30 30"><g class="quai" style="transform-origin:21px 13px"><path d="M9 13V9a6 6 0 0 1 12 0v4" fill="none" stroke="#233c31" stroke-width="2.6"/></g><rect x="5" y="13" width="20" height="14" rx="3" fill="#f5b83d" stroke="#130a06" stroke-width="2"/></svg><div><span style="font-size:12px;color:var(--phu)">Liên lạc bên mua</span><div class="an">0909 000 456 · anh Trí</div></div></div></div>`,
+    async chay(m) {
+      const o = $$('.otp i', m); o.forEach(x => { x.className = ''; x.textContent = ''; }); $('.dau-do', m).style.visibility = 'hidden'; const k = $('.ky', m); k.style.strokeDashoffset = 1000;
+      $('.so', m).textContent = '0 đ'; const tt = $('.trang-thai', m); tt.textContent = 'Chưa có lệnh cọc'; tt.dataset.loai = 'vang';
+      $('.khoa', m).classList.remove('mo'); $('.khoa .quai', m).getAnimations().forEach(a => a.cancel()); $('.an', m).getAnimations().forEach(a => a.cancel());
+      HU.buocTien($('.lane', m), 1); await ngu(600);
+      await HU.otp(o, '123456', true); await ngu(300);
+      await HU.kyTen(k, 1100); await HU.dongDau($('.dau-do', m)); await ngu(400);
+      HU.buocTien($('.lane', m), 2); await HU.doiTrangThai(tt, 'Chờ ngân hàng xác nhận', 'vang'); await ngu(1600);
+      await HU.doiTrangThai(tt, 'Ngân hàng đã xác nhận', 'xanh'); await HU.demSo($('.so', m), 0, 13800000); await HU.moKhoa($('.khoa', m), $('.an', m)); HU.buocTien($('.lane', m), 3);
+    } },
+  { ten: 'Nghiệm thu đến hoàn tất', mo: 'Mừng chỉ xuất hiện ở bước cuối, sau khi tiền đã về', html: `<div class="tieu">Quyết toán HĐ-0101</div><div class="than-man">${lane(['Giao', 'Nghiệm thu', 'Quyết toán', 'Xong'], 1)}<div class="thanh-kq"><i style="width:90%;background:#235c45"></i><i style="width:7.5%;background:#f5b83d"></i><i style="width:2.5%;background:#c0392b"></i></div><div class="chu-giai"><span style="--m:#235c45">Đạt 1.800</span><span style="--m:#f5b83d">Hạ cấp 150</span><span style="--m:#c0392b">Trả lại 50</span></div><div style="display:flex;justify-content:space-between;align-items:center"><div class="nh" style="font-weight:700;font-size:12px">Agribank</div><div class="vi dong" style="flex-direction:column;align-items:flex-end;background:#173f2f;color:#fff;border:none"><span style="font-size:11px;opacity:.8">Đã nhận ròng</span><b class="so" style="font:800 18px 'Baloo 2'">0 đ</b></div></div><div class="cuoi" style="display:flex;flex-direction:column;align-items:center;margin-top:auto;visibility:hidden"><div class="tv"></div><b>Đơn đã hoàn tất</b></div></div>`,
+    async chay(m, tv) {
+      $('.cuoi', m).style.visibility = 'hidden'; $('.so', m).textContent = '0 đ'; $$('.thanh-kq i', m).forEach(i => i.style.transform = 'scaleX(0)');
+      HU.buocTien($('.lane', m), 1); await ngu(500); $$('.thanh-kq i', m).forEach(i => i.style.transform = ''); await HU.thanhKetQua($('.thanh-kq', m)); await ngu(500);
+      HU.buocTien($('.lane', m), 2); await ngu(700); await HU.xuBay($('.nh', m), $('.vi', m), 4); await HU.demSo($('.so', m), 0, 44270000); await ngu(300);
+      await HU.buocTien($('.lane', m), 4); $('.cuoi', m).style.visibility = 'visible'; HU.vaoMan($('.cuoi', m)); tv.lam('mung');
+    } },
+];
+const baMay = $('#ba-may');
+for (const v of MAY) {
+  const w = document.createElement('div');
+  w.innerHTML = `<div class="may"><div class="man">${v.html}</div></div><div class="may-chu"><b>${v.ten}</b><span>${v.mo}</span><div class="dk" style="justify-content:center;margin-top:8px"><button class="nut nho">Phát lại</button></div></div>`;
+  baMay.appendChild(w);
+  const tvEl = $('.tv', w), tv = tvEl ? new LinhVat(tvEl, { goc: 'lop/', co: 130 }) : null;
+  let dang = false; const chay = async () => { if (dang) return; dang = true; try { await v.chay($('.man', w), tv); } finally { dang = false; } };
+  $('.nut', w.querySelector('.may-chu')).onclick = chay;
+  new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { chay(); ob.disconnect(); } }, { threshold: .5 }).observe(w);
+}
+
+/* ---------- 4. Bản đồ màn ---------- */
+const nhom = [...new Set(BAN_DO_MAN.map(m => m.nhom))], loc = $('#loc'), tb = $('#bang-man tbody');
+let chon = 'Tất cả';
+const ve = () => { tb.innerHTML = BAN_DO_MAN.filter(m => chon === 'Tất cả' || (chon === 'Có linh vật' ? m.lv : m.nhom === chon)).map(m => `<tr><td><b>${m.ten}</b><br><code>${m.id}</code></td><td>${m.hu}</td><td>${m.lv ? `<span class="chip">${m.lv}</span>` : '<span style="color:var(--phu)">—</span>'}</td><td>${/^Sửa/.test(m.gc) ? `<span class="chip do">${m.gc}</span>` : m.gc}</td></tr>`).join(''); };
+['Tất cả', 'Có linh vật', ...nhom].forEach(n => { const b = document.createElement('button'); b.textContent = n; b.setAttribute('aria-pressed', n === chon); b.onclick = () => { chon = n; $$('button', loc).forEach(x => x.setAttribute('aria-pressed', x === b)); ve(); }; loc.appendChild(b); });
+ve();
+</script>
+</body></html>

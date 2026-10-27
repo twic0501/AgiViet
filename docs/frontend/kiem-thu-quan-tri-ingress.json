@@ -1,0 +1,361 @@
+{
+  "at": "2026-10-27T02:37:03.242Z",
+  "fixture": true,
+  "ports": [
+    28888,
+    28889
+  ],
+  "results": [
+    {
+      "scope": "external",
+      "path": "/quan-tri",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/index.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/index.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/index.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/test-pages.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/test-pages.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/test-pages.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/case-engine.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/case-engine.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/case-engine.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/launch.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/launch.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/launch.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/launch.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/launch.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/launch.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/fixture.png.base64",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/fixture.png.base64",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/fixture.png.base64",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/profiles.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/profiles.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/profiles.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/opponent.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/opponent.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/opponent.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.html",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.css",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.css",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.css",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/play.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/demo-data.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/demo-data.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/demo-data.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/%71uan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/%71uan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/%71uan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri%2fadmin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri%2fadmin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri%2fadmin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "//quan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "//quan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "//quan-tri/admin.js",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/no-such-file",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/no-such-file",
+      "status": 404
+    },
+    {
+      "scope": "external",
+      "path": "/quan-tri/no-such-file",
+      "status": 404
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/admin.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/test-pages.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/case-engine.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/launch.html",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/launch.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/fixture.png.base64",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/profiles.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/opponent.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/play.html",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/play.css",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/play.js",
+      "status": 200
+    },
+    {
+      "scope": "operator",
+      "path": "/quan-tri/demo-data.js",
+      "status": 200
+    }
+  ],
+  "publicLogin": true
+}

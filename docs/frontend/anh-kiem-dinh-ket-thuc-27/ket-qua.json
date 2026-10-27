@@ -1,0 +1,87 @@
+{
+  "at": "2026-10-27T02:42:35.759Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "arrival",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Khác mẫu tại nơi đến → đặt kiểm định → webhook giả → kết luận hiện trong app → quyết toán cuối, đơn completed",
+      "seed": "thu-0",
+      "log": "Đối ứng khiếu nại 10% hàng kèm ảnh giả; backend đặt kiểm định, chưa có kết luận.Ngân hàng ảo xử lý và giao webhook QT-e710a9b2-2a8b-435d-8d66-3dbe3f035bdd-CHITài chính thử đối soát sau webhook ngân hàng ảoĐối tác kiểm định giả giao kết quả Đạt qua webhook; hồ sơ đã giải quyết.Ngân hàng ảo xử lý và giao webhook QT-34f0c1ac-643f-487b-8868-d3919a4e8631-CHITài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "arrival",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Khác mẫu tại nơi đến → đặt kiểm định → webhook giả → kết luận hiện trong app → quyết toán cuối, đơn completed",
+      "seed": "thu-0",
+      "log": "Ngân hàng ảo xử lý và giao webhook QT-0fe45a50-15e4-4fdd-8943-ea580f8664bb-CHITài chính thử đối soát sau webhook ngân hàng ảoĐối tác kiểm định giả giao kết quả Đạt qua webhook; hồ sơ đã giải quyết.Ngân hàng ảo xử lý và giao webhook QT-36ef9bfb-9e44-4928-8fb8-e068ccab1fa2-CHITài chính thử đối soát sau webhook ngân hàng ảo"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "inspectionResponses": [
+    {
+      "profile": "arrival",
+      "side": "seller",
+      "http": 200,
+      "body": {
+        "ket_qua": "passed",
+        "dispute_id": "f42218c0-20ff-48d2-9558-82b27945c051",
+        "quyet_toan": {
+          "settlement_id": "34f0c1ac-643f-487b-8868-d3919a4e8631",
+          "seq": 2,
+          "is_final": true,
+          "V": "27600000",
+          "D": "19320000",
+          "C": "8280000",
+          "N": "27600000",
+          "release_vnd": "3060000",
+          "refund_vnd": "0",
+          "t_bm_vnd": "0",
+          "t_nb_vnd": "0",
+          "lenh": [
+            "QT-34f0c1ac-643f-487b-8868-d3919a4e8631-CHI"
+          ],
+          "document_id": "0997599a-9009-2613-90e6-918e28f15863"
+        }
+      }
+    },
+    {
+      "profile": "arrival",
+      "side": "buyer",
+      "http": 200,
+      "body": {
+        "ket_qua": "passed",
+        "dispute_id": "5828c51d-f9b7-4310-85dd-3f27e3259b40",
+        "quyet_toan": {
+          "settlement_id": "36ef9bfb-9e44-4928-8fb8-e068ccab1fa2",
+          "seq": 2,
+          "is_final": true,
+          "V": "27600000",
+          "D": "19320000",
+          "C": "8280000",
+          "N": "27600000",
+          "release_vnd": "3060000",
+          "refund_vnd": "0",
+          "t_bm_vnd": "0",
+          "t_nb_vnd": "0",
+          "lenh": [
+            "QT-36ef9bfb-9e44-4928-8fb8-e068ccab1fa2-CHI"
+          ],
+          "document_id": "205930c4-e939-b029-ce57-f532344d2057"
+        }
+      }
+    }
+  ],
+  "shots": [
+    "arrival-seller-mo-ho-so.png",
+    "arrival-seller-ket-luan-kiem-dinh.png",
+    "arrival-seller-dat-dich.png",
+    "arrival-buyer-mo-ho-so.png",
+    "arrival-buyer-ket-luan-kiem-dinh.png",
+    "arrival-buyer-dat-dich.png"
+  ]
+}

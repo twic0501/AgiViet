@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quy trình AgiViet</title>
+<meta name="description" content="Quy trình mua bán nông sản, thủy sản trên AgiViet: xác minh, chào giá, hợp đồng, tiền, giao nhận, sự cố và dịch vụ sau tất toán.">
+<style>
+@font-face{font-family:'Be Vietnam Pro';font-weight:400;src:url(assets/fonts/bevietnampro-400-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:400;src:url(assets/fonts/bevietnampro-400-latin.woff2) format('woff2')}
+@font-face{font-family:'Be Vietnam Pro';font-weight:600;src:url(assets/fonts/bevietnampro-600-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:600;src:url(assets/fonts/bevietnampro-600-latin.woff2) format('woff2')}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;src:url(assets/fonts/bevietnampro-700-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;src:url(assets/fonts/bevietnampro-700-latin.woff2) format('woff2')}
+
+/* Bộ token "Sổ làm ăn" */
+:root{
+  --nen:#f4f5f1; --mat:#fff; --mat-2:#eef1eb; --vien:#e2e6de; --vien-dam:#cfd6cb;
+  --chu:#16241d; --chu-2:#4b5a52; --chu-3:#7b877f;
+  --xanh:#1d5a42; --xanh-dam:#14412f; --xanh-nhat:#e3eee6;
+  --vang:#c98a12; --vang-nhat:#fbf1d9; --vang-chu:#7a520a;
+  --do:#b5402a; --do-nhat:#f8e6e1;
+  --tim:#5b4a8b; --tim-nhat:#ece8f5;
+  --bo:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --nen:#111a15; --mat:#18231d; --mat-2:#1f2c25; --vien:#2b3a32; --vien-dam:#3a4b41;
+  --chu:#e8efe9; --chu-2:#b3c1b8; --chu-3:#8a988f;
+  --xanh:#6fc59b; --xanh-dam:#9edcbc; --xanh-nhat:#1e3a2d;
+  --vang:#e2a93c; --vang-nhat:#3a2e14; --vang-chu:#f0cd85;
+  --do:#ec8a74; --do-nhat:#3a1f19; --tim:#b7a6ec; --tim-nhat:#2a2440;
+}}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--nen);color:var(--chu);font:400 15px/1.6 'Be Vietnam Pro',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+a{color:var(--xanh)}
+.khung{max-width:1080px;margin:0 auto;padding:0 16px}
+header.dau{background:var(--xanh-dam);color:#fff;padding:40px 0 34px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) header.dau{background:#0c2419}}
+header.dau .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+header.dau .logo img{background:#fff;border-radius:10px;padding:4px}
+header.dau h1{font-size:clamp(26px,4vw,38px);line-height:1.15;letter-spacing:-.02em;margin-top:22px;max-width:22ch}
+header.dau p{color:#cfe0d6;max-width:62ch;margin-top:12px}
+.chu-thich{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+nav.muc-luc{position:sticky;top:0;z-index:5;background:var(--mat);border-bottom:1px solid var(--vien)}
+nav.muc-luc .khung{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:none}
+nav.muc-luc a{flex:none;text-decoration:none;color:var(--chu-2);font-size:13px;font-weight:600;padding:6px 10px;border-radius:999px}
+nav.muc-luc a:hover{background:var(--mat-2);color:var(--chu)}
+section{padding:44px 0 8px}
+h2{font-size:24px;letter-spacing:-.01em;line-height:1.25}
+h2 .so{color:var(--chu-3);font-weight:600;margin-right:6px}
+h3{font-size:17px;font-weight:600;margin:22px 0 8px}
+.mo{color:var(--chu-2);max-width:72ch;margin-top:8px}
+.the{background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);padding:16px}
+.luoi{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));margin-top:16px}
+.nho{font-size:13px;color:var(--chu-2)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--xanh-nhat);color:var(--xanh-dam);white-space:nowrap}
+.chip.vang{background:var(--vang-nhat);color:var(--vang-chu)}
+.chip.do{background:var(--do-nhat);color:var(--do)}
+.chip.tim{background:var(--tim-nhat);color:var(--tim)}
+.chip.xam{background:var(--mat-2);color:var(--chu-2)}
+header.dau .chip{background:rgba(255,255,255,.12);color:#fff}
+header.dau .chip.vang{background:#f3e3b5;color:#14412f}
+header.dau .chip.tim{background:#e3dcf5;color:#3d2f6b}
+
+/* Dòng chảy dọc: mỗi bước là một thẻ, nối bằng đường kẻ */
+ol.luong{list-style:none;padding:0;margin-top:18px;position:relative}
+ol.luong>li{position:relative;padding-left:48px;padding-bottom:14px}
+ol.luong>li::before{content:"";position:absolute;left:17px;top:36px;bottom:-2px;width:2px;background:var(--vien-dam)}
+ol.luong>li:last-child::before{display:none}
+ol.luong .so-buoc{position:absolute;left:0;top:6px;width:36px;height:36px;border-radius:50%;background:var(--xanh);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) ol.luong .so-buoc{color:#0c2419}}
+ol.luong .so-buoc.nguoi{background:var(--tim)}
+ol.luong .so-buoc.tien{background:var(--vang)}
+.the h4{font-size:15px;font-weight:600;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.the p,.the ul{margin-top:6px}
+.the ul{padding-left:18px}
+.the li{margin-top:2px}
+.ai{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+
+/* Dải chặng ngang */
+.chang{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:16px}
+.chang div{background:var(--mat);border:1px solid var(--vien);border-radius:12px;padding:10px;text-align:center}
+.chang b{display:block;font-size:14px}
+.chang span{font-size:12px;color:var(--chu-2)}
+.chang i{display:block;height:4px;border-radius:2px;background:var(--xanh);margin-bottom:8px}
+@media (max-width:560px){.chang{grid-template-columns:1fr 1fr}.chang div:last-child{grid-column:span 2}}
+
+/* Sơ đồ tiền */
+.tien-so{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:16px}
+.tien-so .o{background:var(--mat);border:1px solid var(--vien);border-radius:var(--bo);padding:14px;text-align:center}
+.tien-so .o b{display:block}
+.tien-so .o.giua{border:2px solid var(--xanh)}
+.tien-so .mui{color:var(--chu-3);font-size:22px;text-align:center}
+@media (max-width:720px){.tien-so{grid-template-columns:1fr}.tien-so .mui{transform:rotate(90deg)}}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--vien);vertical-align:top}
+th{background:var(--mat-2);font-size:13px;color:var(--chu-2);font-weight:600}
+.cuon{overflow-x:auto;border:1px solid var(--vien);border-radius:var(--bo);background:var(--mat);margin-top:14px}
+.cuon table{min-width:640px}
+tr:last-child td{border-bottom:none}
+
+.canh{display:flex;gap:12px;align-items:flex-start;background:var(--vang-nhat);border:1px solid var(--vien);border-radius:var(--bo);padding:14px;margin-top:16px}
+.canh img{width:56px;height:56px;object-fit:contain;flex:none}
+.canh b{color:var(--vang-chu)}
+footer{padding:40px 0 60px;color:var(--chu-3);font-size:13px}
+</style></head><body>
+
+<header class="dau"><div class="khung">
+  <div class="logo"><img src="assets/mark.svg" width="34" height="34" alt="">AgiViet</div>
+  <h1>Quy trình mua bán nông sản, thủy sản trên AgiViet</h1>
+  <p>Từ lúc người bán được xác minh, qua chào giá, hợp đồng, tiền, giao nhận, xử lý sự cố, tới các dịch vụ sau khi tất toán. App lo phần ghi nhận và nhắc việc; nhân viên AgiViet lo những việc phải có người thật.</p>
+  <div class="chu-thich">
+    <span class="chip">Đã có trong app thử</span>
+    <span class="chip tim">Có nhân viên AgiViet</span>
+    <span class="chip vang">Đề xuất, đang kiểm chứng</span>
+  </div>
+</div></header>
+
+<nav class="muc-luc" aria-label="Mục lục"><div class="khung">
+  <a href="#vai">Ai làm gì</a><a href="#xac-minh">Xác minh</a><a href="#ghep">Tìm nguồn, mẫu thử</a><a href="#don">Vòng đời đơn</a><a href="#tien">Đường đi của tiền</a><a href="#giao">Giao nhận</a><a href="#su-co">Sự cố</a><a href="#sau">Sau tất toán</a><a href="#thu">Phòng thử</a><a href="#han">Các hạn</a>
+</div></nav>
+
+<main class="khung">
+
+<section id="vai">
+  <h2><span class="so">1</span>Ai làm gì</h2>
+  <p class="mo">AgiViet không mua bán thay, không định giá, không phân xử thay tòa. AgiViet giúp hai bên tìm đúng nhau, ghi lại thỏa thuận, giữ tiền qua ngân hàng và đứng ra điều phối khi có sự cố.</p>
+  <div class="luoi">
+    <div class="the"><h4>Người bán</h4><p class="nho">Hộ trồng, chủ ao, HTX, tổ hợp tác, hộ kinh doanh gom hàng. Có người giúp (con cháu) thao tác thay. <b>Dùng miễn phí.</b></p></div>
+    <div class="the"><h4>Bên mua</h4><p class="nho">Nhà máy chế biến, doanh nghiệp xuất khẩu, nhà hàng và bếp ăn, vựa đầu mối. <b>Trả phí</b> theo đơn hoặc theo gói.</p></div>
+    <div class="the"><h4>Nhân viên AgiViet <span class="chip tim">Người thật</span></h4><p class="nho">Xác minh hồ sơ tại vườn, ao; duyệt hai người; điều phối mẫu thử; xử lý sự cố, đối soát tiền; gọi lại khi lệnh tiền lớn.</p></div>
+    <div class="the"><h4>Đối tác</h4><p class="nho">Ngân hàng giữ hộ cọc; đơn vị kiểm định, phòng thử nghiệm; nhà xe, kho lạnh, sơ chế. Hai bên trả trực tiếp cho đối tác.</p></div>
+  </div>
+</section>
+
+<section id="xac-minh">
+  <h2><span class="so">2</span>Xác minh người bán và bên mua</h2>
+  <p class="mo">Tài khoản chỉ được giao dịch sau khi có người thật kiểm. Mỗi thông tin trên hồ sơ ghi rõ nguồn: <b>AgiViet đã kiểm</b>, <b>bên thứ ba chứng nhận</b>, hay <b>tự khai</b>.</p>
+  <ol class="luong">
+    <li><span class="so-buoc">1</span><div class="the"><h4>Đăng ký sơ bộ <span class="chip">App</span></h4><p>Người bán khai số điện thoại, mặt hàng, vùng, diện tích hoặc số ao, sản lượng ước, lịch thu hoạch. Bên mua khai tên doanh nghiệp, mã số thuế, mặt hàng cần, quy cách.</p></div></li>
+    <li><span class="so-buoc nguoi">2</span><div class="the"><h4>Nhân viên hẹn lịch và đến tận nơi <span class="chip tim">Người thật</span> <span class="chip vang">Đề xuất</span></h4><p>Nhân viên hoặc cộng tác viên hiện trường (cán bộ HTX, khuyến nông) đến vườn, ao, kho. Chụp ảnh có tọa độ và giờ; kiểm:</p>
+      <ul class="nho"><li>Giấy tờ đất hoặc hợp đồng thuê, giấy tờ hộ kinh doanh, HTX.</li><li>Chứng nhận VietGAP, GlobalGAP, hữu cơ; mã số vùng trồng, mã cơ sở đóng gói (nếu có).</li><li>Nhật ký canh tác: phân, thuốc, ngày cách ly (nếu có).</li><li>Năng lực thật: sản lượng, sơ chế, kho mát, xe, thời gian giao từ khi nhận đơn.</li></ul></div></li>
+    <li><span class="so-buoc nguoi">3</span><div class="the"><h4>Người thứ hai duyệt hồ sơ <span class="chip tim">Người thật</span> <span class="chip">App</span></h4><p>Người duyệt khác người đi kiểm. Duyệt xong mới cấp vai chủ tài khoản (hiệu lực sau 24 giờ). Đã có trong app thử: xác minh chủ tổ chức hai người.</p></div></li>
+    <li><span class="so-buoc">4</span><div class="the"><h4>Phân hạng theo yêu cầu của từng loại bên mua <span class="chip vang">Đề xuất</span></h4><p>Một người bán có thể đủ cho chợ đầu mối nhưng chưa đủ cho xuất khẩu. Hệ thống ghép dựa trên hạng này, không dựa trên lời quảng cáo.</p>
+      <div class="ai"><span class="chip xam">Chợ, vựa</span><span class="chip xam">Nhà hàng, bếp ăn</span><span class="chip xam">Nhà máy chế biến</span><span class="chip xam">Xuất khẩu theo thị trường</span></div></div></li>
+    <li><span class="so-buoc nguoi">5</span><div class="the"><h4>Xác minh bên mua và hạn mức trả sau <span class="chip tim">Người thật</span> <span class="chip vang">Đề xuất</span></h4><p>Doanh nghiệp quen trả sau theo công nợ, ít khi đặt cọc. AgiViet kiểm năng lực thanh toán và lịch sử trả tiền để cấp hạn mức; người bán thấy rõ đơn nào được ngân hàng giữ tiền, đơn nào trả sau.</p></div></li>
+    <li><span class="so-buoc nguoi">6</span><div class="the"><h4>Tái xác minh định kỳ <span class="chip tim">Người thật</span> <span class="chip vang">Đề xuất</span></h4><p>Hồ sơ có hạn hiệu lực theo mùa vụ; kiểm ngẫu nhiên; nhân viên luân chuyển vùng. Phát hiện khai sai thì hạ hạng, khóa ghép, ghi vào lịch sử.</p></div></li>
+  </ol>
+</section>
+
+<section id="ghep">
+  <h2><span class="so">3</span>Tìm nguồn và mẫu thử trước đơn đầu</h2>
+  <p class="mo">Bên mua thường thẩm định 1–2 tuần và thử mẫu khoảng 1 tuần rồi mới đặt đơn đầu với nhà cung cấp mới. AgiViet làm gọn hai việc này, không bỏ qua chúng.</p>
+  <ol class="luong">
+    <li><span class="so-buoc">1</span><div class="the"><h4>Bên mua đăng nhu cầu <span class="chip">App</span></h4><p>Mặt hàng, quy cách (loại, cỡ, độ chín), lượng mỗi đợt, nơi giao, lịch, tiêu chí nghiệm thu, cách thanh toán.</p></div></li>
+    <li><span class="so-buoc">2</span><div class="the"><h4>Hệ thống gợi ý nguồn <span class="chip">App</span></h4><p>Ghép theo hạng, vùng, lịch thu hoạch và lượng; trả lý do khớp hoặc thiếu. Không xếp theo giá rẻ nhất. Liên lạc được che tới khi có cọc để chống lách.</p></div></li>
+    <li><span class="so-buoc nguoi">3</span><div class="the"><h4>Mẫu thử <span class="chip tim">Người thật</span> <span class="chip vang">Đề xuất</span></h4><p>Bên mua xin mẫu → người bán gửi mẫu (nhân viên có thể lấy giúp) → bên mua đánh giá đạt hoặc không đạt, ghi lý do. Chỉ khi mẫu đạt mới mở báo giá cho đơn đầu.</p></div></li>
+    <li><span class="so-buoc">4</span><div class="the"><h4>Chào giá, trả giá <span class="chip">App</span></h4><p>Bên mua chào; người bán đồng ý, trả giá hoặc không bán. App hiện <b>giá tham khảo</b> (trung vị 30 ngày, cần tối thiểu 3 đơn từ 2 cặp mua bán) và cảnh báo khi giá thấp dưới 80%. Giá kín của người bán không lộ cho bên mua.</p></div></li>
+  </ol>
+</section>
+
+<section id="don">
+  <h2><span class="so">4</span>Vòng đời một đơn</h2>
+  <p class="mo">Mỗi đơn đi qua năm chặng. Trên app, mỗi màn của đơn có dải chặng này để biết đang ở đâu và tới lượt ai.</p>
+  <div class="chang">
+    <div><i></i><b>Ký</b><span>Hợp đồng PDF, ký OTP hai bên</span></div>
+    <div><i></i><b>Cọc</b><span>Bên mua chuyển cọc vào ngân hàng giữ hộ</span></div>
+    <div><i></i><b>Giao nhận</b><span>QR nhận hàng, cân, nghiệm thu</span></div>
+    <div><i></i><b>Thanh toán</b><span>Trả thẳng phần còn lại, quyết toán</span></div>
+    <div><i></i><b>Xong</b><span>Chi cọc, đối soát, đánh giá</span></div>
+  </div>
+  <ol class="luong">
+    <li><span class="so-buoc">1</span><div class="the"><h4>Lập hợp đồng <span class="chip">App</span></h4><p>Tám điều khoản bắt buộc: hàng và tiêu chuẩn, giá (kèm giá hạ cấp và giá tính cọc), tiền, nơi giao và lúc chuyển rủi ro, nghiệm thu, thiếu và vượt lượng, tranh chấp, hủy. Đơn vượt hạn mức người lập phải có người khác trong doanh nghiệp duyệt.</p></div></li>
+    <li><span class="so-buoc">2</span><div class="the"><h4>Ký bằng OTP <span class="chip">App</span></h4><p>Mã OTP gắn với đúng số tiền và phiên bản hợp đồng. Màn OTP luôn nhắc: AgiViet không bao giờ hỏi mã này qua điện thoại. Hợp đồng PDF có mã băm SHA-256 để kiểm tra không bị sửa.</p></div></li>
+    <li><span class="so-buoc tien">3</span><div class="the"><h4>Cọc <span class="chip">App</span></h4><p>Bên mua chuyển cọc (mặc định 30%) và phí giới thiệu vào tài khoản đảm bảo của ngân hàng. Hạn 48 giờ, hàng tươi 12 giờ. Ngân hàng báo về bằng webhook có chữ ký; app luôn tra lại ngân hàng trước khi ghi nhận.</p></div></li>
+    <li><span class="so-buoc">4</span><div class="the"><h4>Giao nhận và nghiệm thu <span class="chip">App</span></h4><p>Xem mục 6.</p></div></li>
+    <li><span class="so-buoc tien">5</span><div class="the"><h4>Trả thẳng và quyết toán <span class="chip">App</span></h4><p>Phần còn lại bên mua trả thẳng cho người bán; người bán xác nhận đã thấy tiền bằng OTP. Quyết toán tính lại theo số nghiệm thu thật, có phiên bản; ngân hàng chi cọc cho người bán hoặc hoàn về đúng tài khoản nguồn.</p></div></li>
+  </ol>
+</section>
+
+<section id="tien">
+  <h2><span class="so">5</span>Đường đi của tiền</h2>
+  <p class="mo">Tiền không đi qua tài khoản của AgiViet. Cọc nằm ở ngân hàng tới khi giao nhận xong; phần còn lại đi thẳng giữa hai bên.</p>
+  <div class="tien-so">
+    <div class="o"><b>Bên mua</b><span class="nho">chuyển cọc 30% + phí</span></div>
+    <div class="mui" aria-hidden="true">→</div>
+    <div class="o giua"><b>Ngân hàng giữ hộ</b><span class="nho">cọc nằm đây tới khi nghiệm thu, quyết toán xong</span></div>
+    <div class="mui" aria-hidden="true">→</div>
+    <div class="o"><b>Người bán</b><span class="nho">nhận cọc khi quyết toán; nhận phần còn lại trả thẳng</span></div>
+  </div>
+  <div class="cuon"><table>
+    <thead><tr><th>Ví dụ: 2.000 kg xoài × 23.000 đ/kg</th><th>Số tiền</th><th>Đi đâu</th></tr></thead>
+    <tbody>
+      <tr><td>Giá trị hợp đồng</td><td>46.000.000 đ</td><td>—</td></tr>
+      <tr><td>Cọc 30%</td><td>13.800.000 đ</td><td>Bên mua → ngân hàng giữ hộ → người bán khi quyết toán</td></tr>
+      <tr><td>Phí giới thiệu (gói Thu mua, 0,3%)</td><td>138.000 đ</td><td>Bên mua → AgiViet, ngân hàng tách lúc nhận cọc</td></tr>
+      <tr><td>Phần trả thẳng</td><td>32.200.000 đ</td><td>Bên mua → người bán, người bán xác nhận bằng OTP</td></tr>
+    </tbody></table></div>
+  <div class="canh"><img src="assets/trau-chao.webp" alt=""><div><b>Trả sau theo hạn mức</b> <span class="chip vang">Đề xuất</span><p class="nho">Cho bên mua quen trả công nợ: không cọc, ngân hàng không giữ tiền. App hiện rõ "tiền chưa được giữ hộ", hạn trả, uy tín trả tiền của bên mua; quá hạn thì nhắc, gắn cờ và có nhân viên gọi.</p></div></div>
+</section>
+
+<section id="giao">
+  <h2><span class="so">6</span>Giao nhận và nghiệm thu</h2>
+  <ol class="luong">
+    <li><span class="so-buoc">1</span><div class="the"><h4>Chọn nơi giao và lúc chuyển rủi ro <span class="chip">App</span></h4><p><b>Tại vườn, ao:</b> bên mua kiểm, chọn hàng trước khi bốc; bốc lên xe là bên mua chịu. <b>Tại kho bên mua:</b> người bán lo xe và chịu tới lúc cân.</p></div></li>
+    <li><span class="so-buoc">2</span><div class="the"><h4>Nhận hàng bằng QR <span class="chip">App</span></h4><p>QR có chữ ký, dùng một lần, kèm mã 6 số dự phòng khi mất sóng.</p></div></li>
+    <li><span class="so-buoc">3</span><div class="the"><h4>Nghiệm thu ba phần <span class="chip">App</span></h4><p><b>Đạt</b> (giá hợp đồng) · <b>Hạ cấp</b> (giá hạ cấp) · <b>Trả lại</b> (không tính tiền; vượt mức lỗi cho phép phải có ảnh). Ký biên bản bằng PIN. Người bán bấm "Không đúng" nếu không đồng ý từng dòng.</p></div></li>
+    <li><span class="so-buoc">4</span><div class="the"><h4>Phần trả lại không bỏ đi <span class="chip">App</span></h4><p>Tự thành lô con, gợi ý bán gấp cho nhà máy chế biến, nước ép, sấy.</p></div></li>
+  </ol>
+</section>
+
+<section id="su-co">
+  <h2><span class="so">7</span>Khi có sự cố</h2>
+  <div class="cuon"><table>
+    <thead><tr><th>Tình huống</th><th>Cách xử lý</th><th>Ai</th></tr></thead>
+    <tbody>
+      <tr><td>Giao thiếu</td><td>Báo trước ngày giao để ký phụ lục giảm lượng (bất khả kháng được hoàn phí phần thiếu). Không báo: phạt theo thang trên cọc phần thiếu. <span class="chip vang">Đề xuất</span> thêm bồi thường chi phí mua hàng thay thế có chứng từ.</td><td><span class="chip">App</span></td></tr>
+      <tr><td>Giao vượt</td><td>Bên mua chọn nhận phần vượt hay không; nhận thì tính tiền thêm.</td><td><span class="chip">App</span></td></tr>
+      <tr><td>Giao trễ, xe bên mua trễ</td><td>Quá 4 giờ (hàng tươi 2 giờ) không báo: người bán được ghi "đã sẵn hàng"; quá 24 giờ được hủy, giữ cọc.</td><td><span class="chip">App</span> <span class="chip tim">Người thật</span></td></tr>
+      <tr><td>Hàng không đạt, hai bên không thống nhất</td><td>Cân lại trong 24 giờ; không xong thì kiểm định bên thứ ba trong 48 giờ, bên sai chịu phí. Trong lúc chờ, phần không tranh chấp vẫn được chi tạm.</td><td><span class="chip">App</span> <span class="chip tim">Người thật</span></td></tr>
+      <tr><td>Bên mua báo đã chuyển nhưng người bán chưa thấy tiền</td><td>Không cộng tiền; mở việc đối soát cho nhân viên.</td><td><span class="chip tim">Người thật</span></td></tr>
+      <tr><td>Hủy trước cọc / sau cọc</td><td>Trước cọc: đóng đơn. Sau cọc: cọc về bên không xin hủy; phí theo bảng hoàn.</td><td><span class="chip">App</span></td></tr>
+      <tr><td>Bất khả kháng (mưa bão, dịch bệnh)</td><td>Phải có ảnh hoặc giấy tờ chứng cứ; ký phụ lục giảm lượng hai bên; hoàn cọc chênh ngay.</td><td><span class="chip">App</span> <span class="chip tim">Người thật</span></td></tr>
+      <tr><td>Đổi giá</td><td>Chỉ bằng đề nghị được bên kia đồng ý. <span class="chip vang">Đề xuất</span> hợp đồng khung phải báo trước 15–30 ngày.</td><td><span class="chip">App</span></td></tr>
+      <tr><td>Lệnh chi từ 20 triệu tới tài khoản vừa đổi</td><td>Giữ lệnh, nhân viên tài chính gọi lại xác nhận trước khi chi.</td><td><span class="chip tim">Người thật</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<section id="sau">
+  <h2><span class="so">8</span>Sau khi tất toán: AgiViet còn làm gì</h2>
+  <p class="mo">Câu hỏi bên mua đặt ra: sau đơn đầu thì vai trò AgiViet là gì? Đây là những dịch vụ tiếp nối. Phần lớn đang ở mức <span class="chip vang">Đề xuất</span>; làm thật cần đối tác.</p>
+  <div class="luoi">
+    <div class="the"><h4>Đơn lặp lại, hợp đồng khung</h4><p class="nho">Đặt theo mùa, theo tuần; lịch giao cố định; báo trước khi đổi giá.</p></div>
+    <div class="the"><h4>Hồ sơ uy tín từ giao dịch thật</h4><p class="nho">Giao đủ, đúng giờ, tỷ lệ bị trả lại, trả tiền đúng hạn. Không dùng số sao chung chung.</p></div>
+    <div class="the"><h4>Chứng từ, xuất Excel</h4><p class="nho">Bảng kê, biên bản, quyết toán xuất sang Excel và phần mềm kế toán bên mua đang dùng.</p></div>
+    <div class="the"><h4>Gợi ý vụ sau</h4><p class="nho">Bên mua cần gì, khi nào, quy cách nào; người bán chuẩn bị giống và lịch xuống giống lệch đợt.</p></div>
+    <div class="the"><h4>Dịch vụ đối tác</h4><p class="nho">Xe lạnh, kho, sơ chế, kiểm nghiệm (ví dụ cadimi, vàng O với sầu riêng).</p></div>
+    <div class="the"><h4>Vốn, bảo hiểm, hồ sơ xuất khẩu</h4><p class="nho">Qua đối tác, dựa trên lịch sử giao dịch; hỗ trợ mã vùng trồng và truy xuất.</p></div>
+  </div>
+</section>
+
+<section id="thu">
+  <h2><span class="so">9</span>Phòng thử: tự trải nghiệm quy trình</h2>
+  <p class="mo">Mỗi người vào thử có một phòng riêng, dữ liệu không ảnh hưởng người khác, tự xóa sau một thời gian. <span class="chip vang">Đề xuất, đang xây</span></p>
+  <ol class="luong">
+    <li><span class="so-buoc">1</span><div class="the"><h4>Chọn vai</h4><p>Ví dụ "Chị Năm, người bán xoài ở Đồng Tháp" đã có hồ sơ xác minh, giấy tờ, nhật ký canh tác; hoặc "Nhà máy sấy Đồng Xanh" ở phía mua.</p></div></li>
+    <li><span class="so-buoc">2</span><div class="the"><h4>Chọn tình huống</h4><div class="ai"><span class="chip xam">Thuận lợi</span><span class="chip xam">Bên mua ép giá</span><span class="chip xam">Giao thiếu</span><span class="chip xam">Hàng không đạt</span><span class="chip xam">Trả chậm</span><span class="chip xam">Bất khả kháng</span><span class="chip xam">Ngẫu nhiên</span></div></div></li>
+    <li><span class="so-buoc">3</span><div class="the"><h4>Thị trường giả đang chạy</h4><p>Bên kia là ảo: đăng nhu cầu, chào giá, mặc cả, khiếu nại. AI chỉ viết lời thoại; tiền và trạng thái đơn do luật kịch bản quyết định, đúng như quy trình thật.</p></div></li>
+    <li><span class="so-buoc">4</span><div class="the"><h4>Tiền ảo, ngân hàng ảo</h4><p>Mọi số tài khoản là của "Ngân hàng ảo AgiViet". Không chuyển tiền thật.</p></div></li>
+  </ol>
+</section>
+
+<section id="han">
+  <h2><span class="so">10</span>Các hạn chính</h2>
+  <div class="cuon"><table>
+    <thead><tr><th>Việc</th><th>Hạn mặc định</th><th>Hết hạn thì</th></tr></thead>
+    <tbody>
+      <tr><td>Trả lời lời chào giá</td><td>24 giờ (vựa 6 hoặc 12 giờ)</td><td>Lời chào hết hiệu lực</td></tr>
+      <tr><td>Người bán ký</td><td>24 giờ</td><td>Đơn đóng</td></tr>
+      <tr><td>Cọc</td><td>48 giờ; hàng tươi 12 giờ</td><td>Đơn đóng</td></tr>
+      <tr><td>Xác nhận khoản trả thẳng</td><td>48 giờ</td><td>Nhân viên đối soát, không coi như đã nhận</td></tr>
+      <tr><td>Người bán xác nhận số cân tại điểm giao</td><td>60 phút</td><td>Việc ưu tiên cho nhân viên</td></tr>
+      <tr><td>Khiếu nại tại nơi đến (giao xa)</td><td>2 giờ từ lúc ký nhận</td><td>Coi như đạt</td></tr>
+      <tr><td>Cân lại khi tranh chấp</td><td>24 giờ</td><td>Chuyển sang kiểm định</td></tr>
+      <tr><td>Kiểm định trả kết quả</td><td>48 giờ (sầu riêng tối đa 5 ngày)</td><td>Việc cho nhân viên</td></tr>
+      <tr><td>Đổi tài khoản nhận tiền</td><td>Chờ 24 giờ</td><td>Mới kích hoạt</td></tr>
+    </tbody></table></div>
+</section>
+
+</main>
+<footer><div class="khung">AgiViet · tài liệu quy trình, bản 27/10/2026. Nguồn: đặc tả nghiệp vụ trong <code>docs/nghiep-vu/</code>. Các mục "Đề xuất" chưa có trong app, đang chờ kiểm chứng với người dùng thật.</div></footer>
+</body></html>

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-27T00:57:17.292Z",
+  "status": 500,
+  "data": {
+    "errors": [
+      {
+        "code": "LOI_HE_THONG",
+        "message": "Có lỗi hệ thống.",
+        "fix": "Thử lại; nếu vẫn lỗi bấm Cần hỗ trợ và gửi mã yêu cầu.",
+        "details": null
+      }
+    ],
+    "request_id": "req-cc13ea1c26d7ae09"
+  }
+}

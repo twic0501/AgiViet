@@ -1,0 +1,12 @@
+# Giao việc: CSDL cho nhật ký canh tác, đặt trước khi hái, bao tiêu theo vụ, bán gấp (Codex gpt-6.1-sol)
+
+Kiến trúc sư CSDL AgiViet v2. Làm tiếp, không làm lại: `db/` có 53+ migrations, mọi kiểm thử đạt; backend chạy qua `cmd.*` dưới login riêng (không owner). Đọc `docs/nghiep-vu/03-vong-doi-don.md` mục 12 (12.1 đặt trước khi hái, 12.2 bao tiêu theo vụ, 12.3 khung, 12.5 lô gộp), `docs/nghien-cuu/01-…`, `03-…`, `04-…` (nếu có) và `docs/database/06-huong-dan-cho-backend.md`.
+
+Người dùng thấy app bán còn thiếu các tính năng nhà vườn cần: nhật ký và lịch sử làm vườn, đặt trước khi hái, bao tiêu theo vụ, bán gấp/giao ngay. Việc:
+1. **Nhật ký canh tác** gắn với cơ sở sản xuất (vườn/ao) của người bán: ngày, việc (bón phân, phun thuốc + tên thuốc + ngày cách ly, tưới, ra hoa, đậu trái, thu hoạch, sự cố thời tiết/sâu bệnh), ảnh (tham chiếu tệp), người ghi (chủ/người giúp), nhãn nguồn "tự ghi" / "nhân viên AgiViet xác nhận". Chỉ thêm, sửa bằng bản ghi mới (append-only). Ngày cách ly lấy từ nhật ký để chặn đăng lô khi chưa hết cách ly.
+2. **Mặt hàng đã xác minh của người bán** (hồ sơ do nhân viên duyệt hai người): bảng mặt hàng × cơ sở × hạng/tiêu chí, nguồn kiểm, hạn hiệu lực. Đăng lô chỉ cho mặt hàng đã xác minh còn hiệu lực.
+3. **Đặt trước khi hái** (12.1) và **bao tiêu theo vụ** (12.2) theo đặc tả: trạng thái, lượng ước/khoảng, giá hoặc công thức giá, cọc theo đợt, lịch thu hoạch dự kiến, cập nhật sản lượng, phụ lục giảm lượng khi mất mùa.
+4. **Bán gấp**: cờ trên lô (từ khi, đến khi, lý do), lô kém loại, gợi ý tự động khi hàng tươi không ai hỏi 24 giờ; lời chào bao tiêu hàng dạt của đối tác (nếu đặc tả có).
+5. Hàm `cmd.*` cho mọi thao tác ghi; quyền theo vai (chủ, người giúp được ủy quyền nhật ký); RLS đọc theo tổ chức. Seed dữ liệu ảo: chị Năm (0918000421) có vườn xoài cát Chu đã xác minh, nhật ký 1 vụ (khoảng 15 dòng thực tế), một đơn đặt trước khi hái, một hợp đồng bao tiêu; thêm **4 xe ảo** để dữ liệu trình diễn không bị kẹt lịch xe (lỗi `trips_vehicle_id_scheduled_during_excl`, xem `docs/frontend/de-xuat-backend.md` mục cuối) và sửa để chuyến xe kết thúc khi đợt giao xong.
+
+Migration mới; kiểm thử; chạy toàn bộ PGlite + `node security/tests/db/kiem-tra-db.mjs --chi-tiet` (chỉ chạy) + `cd backend && npm test` (chỉ chạy, giữ xanh). Ghi tên hàm `cmd.*` và cách gọi vào `docs/database/06-huong-dan-cho-backend.md`. Chỉ ghi `db/` và `docs/database/`. Không chờ vòng lặp. Xong in tóm tắt rồi dừng.

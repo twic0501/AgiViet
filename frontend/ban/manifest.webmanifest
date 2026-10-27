@@ -1,0 +1,29 @@
+{
+  "id": "/ban/",
+  "name": "AgiViet · Bán hàng",
+  "short_name": "AgiViet",
+  "description": "Sổ làm ăn của nhà vườn: chào giá, hợp đồng, tiền giữ hộ qua ngân hàng.",
+  "lang": "vi",
+  "dir": "ltr",
+  "start_url": "/ban/#/home",
+  "scope": "/ban/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#14412f",
+  "theme_color": "#1d5a42",
+  "categories": ["business", "finance", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Đăng hàng", "short_name": "Đăng hàng", "url": "/ban/#/post", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Lời chào giá", "short_name": "Lời chào", "url": "/ban/#/offers", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Tiền", "short_name": "Tiền", "url": "/ban/#/ledger", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Thời tiết", "short_name": "Thời tiết", "url": "/ban/#/thoi-tiet", "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

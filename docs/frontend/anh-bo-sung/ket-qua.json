@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-27T02:25:10.750Z",
+  "results": [
+    {
+      "name": "Lưu lô từ lưới mặt hàng và tải ảnh qua API",
+      "pass": true
+    },
+    {
+      "name": "Đăng công khai lô với expected_revision vừa đọc",
+      "pass": true
+    },
+    {
+      "name": "Tạo và đăng nhu cầu rồi ghép có lý do",
+      "pass": true
+    },
+    {
+      "name": "Lọc nguồn theo mặt hàng và mã lô",
+      "pass": true
+    },
+    {
+      "name": "Lập hợp đồng vượt hạn mức và gửi người khác duyệt",
+      "pass": true
+    },
+    {
+      "name": "Người giúp được xem và soạn lô, không có nút ký hoặc tiền",
+      "pass": true
+    },
+    {
+      "name": "Người bán được xem đủ tab và nút cuối không bị thanh dưới che",
+      "pass": true
+    },
+    {
+      "name": "Không đúng mở phản đối từng phần và hồ sơ thật (chuẩn bị bằng API)",
+      "pass": true
+    },
+    {
+      "name": "Kho dùng được app mua ở 390px",
+      "pass": true
+    },
+    {
+      "name": "Không lỗi JavaScript, console hoặc HTTP; ảnh lô bên mua tải thật",
+      "pass": true
+    }
+  ],
+  "shots": [
+    {
+      "file": "ban-01-dang-lo.png",
+      "name": "dang-lo",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-02-lo-nhap-co-anh.png",
+      "name": "lo-nhap-co-anh",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-03-lo-da-dang.png",
+      "name": "lo-da-dang",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-04-nhu-cau-da-dang.png",
+      "name": "nhu-cau-da-dang",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-05-hang-khop-co-ly-do.png",
+      "name": "hang-khop-co-ly-do",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-06-loc-nguon.png",
+      "name": "loc-nguon",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-07-cho-duyet-noi-bo.png",
+      "name": "cho-duyet-noi-bo",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-08-quan-ly-da-duyet.png",
+      "name": "quan-ly-da-duyet",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-09-nguoi-giup.png",
+      "name": "nguoi-giup",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-10-day-man-khong-che.png",
+      "name": "day-man-khong-che",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-tab-390x844-dau.png",
+      "name": "tab khi cuộn dau",
+      "role": "ban",
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    {
+      "file": "ban-tab-390x844-giua.png",
+      "name": "tab khi cuộn giua",
+      "role": "ban",
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    {
+      "file": "ban-tab-390x844-cuoi.png",
+      "name": "tab khi cuộn cuoi",
+      "role": "ban",
+      "width": 390,
+      "height": 844,
+      "fullPage": false
+    },
+    {
+      "file": "ban-14-phan-doi-tung-phan.png",
+      "name": "phan-doi-tung-phan",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-15-ho-so-tranh-chap.png",
+      "name": "ho-so-tranh-chap",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-16-kho-dien-thoai.png",
+      "name": "kho-dien-thoai",
+      "role": "mua",
+      "width": 390
+    },
+    {
+      "file": "mua-17-kho-giao-nhan.png",
+      "name": "kho-giao-nhan",
+      "role": "mua",
+      "width": 390
+    },
+    {
+      "file": "mua-18-anh-lo-that-ben-mua.png",
+      "name": "anh-lo-that-ben-mua",
+      "role": "mua",
+      "width": 390
+    }
+  ],
+  "errors": [],
+  "deniedImages": [],
+  "pageErrors": [],
+  "lot": "2073793e-6709-4c22-9897-ddd88ee998a0",
+  "demand": "f471eafe-1a0c-4497-81fb-235854a060b4",
+  "offer": "c22401d8-3c52-4ee4-8685-d7f40b9f7ae6",
+  "order": "51c2ec1b-9b40-4514-b3bd-1f9d5f2c66d1"
+}

@@ -1,0 +1,33 @@
+groups:
+  - name: agiviet
+    rules:
+      - alert: MatDichVu
+        expr: up == 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: 'Không thu được chỉ số {{ $labels.job }}'}
+      - alert: NhieuLoiAPI
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total[5m])), 0.01) > 0.01
+        for: 5m
+        labels: {severity: critical}
+        annotations: {summary: 'Lỗi API trên 1% trong 5 phút'}
+      - alert: APIP95Cham
+        expr: histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket{route!~"voice|metrics|bench_ids"}[5m]))) > 0.8
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: 'p95 API trên 800 ms'}
+      - alert: ChoKetNoiDB
+        expr: pg_pool_waiting > 5
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: 'Hàng chờ pool PostgreSQL trên 5'}
+      - alert: PDFTonDong
+        expr: pdf_oldest_pending_seconds > 60
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: 'PDF chờ trên 60 giây hoặc worker treo'}
+      - alert: PDFHong
+        expr: pdf_failed_jobs > 0
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: 'Có việc PDF thất bại cần kiểm tra'}

@@ -1,0 +1,8528 @@
+{
+ "small|sach|khong_goi_y": {
+  "wer_trung_binh": 0.6046,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.6925,
+  "gia_sai_hoac_bia": "6/50",
+  "do_tre_ms": {
+   "trung_vi": 130,
+   "p95": 148
+  },
+  "tai_mo_hinh_ms": 633,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Sạn tôi có hai tấn sử xoài các chú loại một, mốt sao được lấy tại vườn xá 25.000 một khí, thấp nhất 21.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2500,
+      2000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "bắn 30 ký tranh không hạt loại 2, mai dạo 10.000 1 ký.",
+    "wer": 0.6,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "đại áo tư trừng 2 tấn tồn thẻ cỡ 50 còn 1 ký. Thứ năm nay bắt giá 102.",
+    "wer": 0.65,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      120000,
+      102000
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "đuôi mờ 18 khoảng 8 tấn ngày 30 tháng 10 gặt xá 6.006 lấy tại ruộm.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ruong",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6600,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu Dinh G6 ngoại A Trường Bốn Tính, đầu tháng sau mới cắt giá 75.000.",
+    "wer": 0.471,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      4000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Tôi bắn bửa giả xanh rại 1-500 ký, trái trường 1-1,5-6 ngay, giá 30-2000.",
+    "wer": 0.727,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      32000,
+      30000
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "thanh long ruột đỏ hàng xạt chừng 7-8 tạ bán viền xá 4.000.",
+    "wer": 0.467,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      4000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Tá trang nguyên liệu 15 tấn cỡ 1 ký 1 con tuần sau sổ ảo 20 giữ 1 ký.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Xai cắt chú loay 2800 kỷ sau ngày mai, xa 10 năm ghi.",
+    "wer": 1.0,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Tránh không hạt hàng số trừng một tấn, ai mua thì lấy tại vườn 12.000.",
+    "wer": 0.353,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Sạm bữa nay tôi có bà tạn giữ xoài loại một nè.",
+    "wer": 0.417,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tu thẻ xây 40 bắt ngày 28 tháng 10 xá 140.000.",
+    "wer": 0.684,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      140000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lũ đại thâm tắm trường 20 tính ngày mùng 5 tháng 11 gạt 6 ngàn tắm.",
+    "wer": 0.778,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6800,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xài các chu không biết bao nhiêu ký.\"",
+    "wer": 0.364,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "có trường 1 tấn 2 tranh không hạt loại 1 giá 14.000, 0 giới 12.000 thì tôi không bán.",
+    "wer": 0.609,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "bán theo hơi 2 tạt.",
+    "wer": 0.6,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "dầu dìm mong trái 3-4 ký, trừng 2 tấn dữ ích cắt ngày 20 tháng 11 ra 80 ngàn.",
+    "wer": 0.727,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "thanh lòng ruột trắng loại 1, 3 tấn thứ 6 xạo giá 18.000 bất lắm thì 16.",
+    "wer": 0.55,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "tô thể trường tắm tạm 60 con mai bắt tại ảo.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa từ 30 tấn ẩm 25% xá 6 triệu dưỡi 1 tấn.",
+    "wer": 0.688,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      6000000
+     ]
+    }
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi ra xanh rại 2, 2 ngàn ký trở tới phụ dụng 18 ngàn 1 ký.",
+    "wer": 0.647,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "xài cắt chu trái từ 300 sợi tới 400 sợi khám trừng 3 tấn.",
+    "wer": 0.688,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Trành không hạt sạt, nửa tấn, bán các hôm nay 5.000.",
+    "wer": 0.417,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tùng cỡ 70 con sá chín chục nàn.\"",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      90000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "xài cắt chu loại một trường 2 3 tấn tầm ngày 29 giá 26.",
+    "wer": 0.588,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2000,
+      3000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tới lấy tại vườn nhà 10 tấn thanh long suột đỏ loại 2 xá chính ngàn dưỡi.",
+    "wer": 0.368,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      9500,
+      1000
+     ]
+    }
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "sạn lúa SC-25 trừng 5 tấn sưỡi dằm tháng ngày cặt.",
+    "wer": 0.818,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      5500,
+      5000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "bán sầu dinh loại bệy 800 ký sau ngày 55.001 ký.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      55000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Trên khóng hạt loài Mọc Hài Tân ngày 20-80 xam 14 cạn.",
+    "wer": 1.083,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "sai",
+      "2026-10-28",
+      "2026-11-20"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "tôn thể trân trắng 1 tấn 2 cỡ 4 làm con bắt liền giá 135.000 thức nhất 103.000.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      45,
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      130000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "có mấy chục thí xoài giặt bắn cho ai làm sếp.",
+    "wer": 0.364,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "bởi gia sinh loại 1 tám tạ, tuần sau sau, giá 32.",
+    "wer": 0.538,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá trà 10 tính xá 30, trở tới nhà máy.",
+    "wer": 0.615,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      10000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      30000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "2 tấn xoài cắt chụp xa 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.739,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      24000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lối dẻ 542 tấn, mai cách 62001 ký lấy tạy ruộng.",
+    "wer": 0.688,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ lại một, một tấn dữ xao tại điểm công hợp tác xa áp giá 18.000.",
+    "wer": 0.45,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "chân loại 1 bát tạ bay 14.",
+    "wer": 0.75,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      300,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "tông thể cửa 30 con sấu tạng ngày 31 tháng 10 giá 200.000.",
+    "wer": 0.778,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      30,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Sầu dinh dị 6 hàng kem, trừng 500 ký, bán liền giá 35.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Xoài các chu ba tấn mại 2 xá 15.000 rưỡi, thấp nhất 14.000.",
+    "wer": 0.562,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa từ trường 15 tấn ẩm 27% thứ tư gặt xá 6 ngàn dưỡi.",
+    "wer": 0.6,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "xã bên tui hợp tác xã không được bốn tấn tranh không hạt loại một sao tại điểm con, 13.000 dưỡi.",
+    "wer": 0.391,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "xoài cát chú loại 1 800 ký xá 25.000 đưa tới kho đồng xanh.",
+    "wer": 0.471,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "bởi gia sánh giả trường 2 tạ tại vườn 6.000.",
+    "wer": 0.727,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Công thẻ khoảng 1 tấn dưỡi, 40 con 1 khí, 1 bắt tài ảo, xá trăng dưỡi.",
+    "wer": 0.722,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá trai 20 tính cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "xoay cắt chú loại một bà tính mày dào giá hay làm thấp nhất hay bà.",
+    "wer": 0.688,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      3000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      23000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "giả tránh không hạt 2 tấn loại 1 thứ 7 xạo giá 15.000 dưới 13.000 túi hồng bán.",
+    "wer": 0.636,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-31",
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh Long Suột đỏ trừng 5 tấn chưa hái ngày 5 tháng 11 thái được loại 1.",
+    "wer": 0.444,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "bán 200 cân tranh không hạt loại 2, giá 9.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "bắn nằm yến xoài các chú loại 1 cho nhà hàng xá 26.000.",
+    "wer": 0.6,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   }
+  ]
+ },
+ "small|sach|goi_y": {
+  "wer_trung_binh": 0.4954,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.7485,
+  "gia_sai_hoac_bia": "8/50",
+  "do_tre_ms": {
+   "trung_vi": 136,
+   "p95": 156
+  },
+  "tai_mo_hinh_ms": 633,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Sạn tôi có hai tấn sữ xoài cát Chu lại một, mốt sao được lấy tại vườn xá 25.000 một ký, thấp nhất 21.000.",
+    "wer": 0.429,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      2000.0
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "Bán 30 ký chanh không hạt loại hay, mai dạo 10.000 một ký.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "Thu trừng hai tấn tồn thẻ cỡ 50 con một ký. Thứ năm nay bắt giá 102.",
+    "wer": 0.45,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      120000,
+      102000
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "Lua Eimer 18 khoảng 8 tấn, ngày 30 tháng 10 gặt, xá 6.006 lấy tại ruộm.",
+    "wer": 0.667,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "tai_ruong",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6600,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu riêng G6 ngoại A Trường Bốn Tính, đầu tháng sau mới cắt giá 75.000.",
+    "wer": 0.412,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      4000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Tôi bán bưởi da xanh rại một 500 ký, trái trường một ký dưỡi, 6 ngay, giá 30.000.",
+    "wer": 0.545,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      500,
+      501.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      32000,
+      30000
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng xạt chừng 7, 8 tạ, bán viền xá 4.000.",
+    "wer": 0.467,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      4000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Tá trang nguyên liệu 15 tấn cỡ một ký một con tuần sau sổ ạo 20 giữ một ký.",
+    "wer": 0.429,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Xoài cát Chu loay 2800 kỷ sau ngày mai, xa 10 năm nghìn.",
+    "wer": 0.923,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      15000,
+      5000
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Chanh không hạt hàng xô trừng một tấn, ai mua thì lấy tại vườn 12 ngàn.",
+    "wer": 0.176,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Sạm bữa nay tôi có bà tạ giữ xoài loại một nè.",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tu thẻ xây 40 bắt ngày 28 tháng 10 xá 140 ngàn.",
+    "wer": 0.632,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lúa đại thâm tắm trường 20 tính ngày mùng 5 tháng 11 gạt 6 ngàn tắm.",
+    "wer": 0.722,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6800,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xoài cát Chu, không biết bao nhiêu ký.",
+    "wer": 0.182,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "Có trường một tấn hai tranh không hạt loại một giá 14.000, không giới 12.000 thì tui không bán.",
+    "wer": 0.391,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "Bán theo hơi hai tạt.",
+    "wer": 0.4,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Sầu riêng mang trái 3-4 ký, trừng 2 tấn dưỡi, cắt ngày 20 tháng 11 ra 80 ngàn.",
+    "wer": 0.591,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh long ruột trắng loại một, 3 tấn thứ 6 xạo giá 18.000 bất lắm thì 16.",
+    "wer": 0.45,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thể trừng tắm tạm 60 con, mai bắt tại ảo.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa tươi 30 tấn ẩm 25% xá 6 triệu dưỡi một tấn.",
+    "wer": 0.562,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      6000000
+     ]
+    }
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi da xanh rại hay 2 ngàn ký trở tới vượt dùng 18 ngàn một ký.",
+    "wer": 0.529,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "Xài cát Chu trái từ 300 sợi tới 400 sợi khám, trừng 3 tấn.",
+    "wer": 0.625,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Chanh không hạt sạt, nửa tấn, bán các hôm nay 5.000.",
+    "wer": 0.333,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      "giao_ngay"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tùng cỡ 70 còn xáy 90 nàn.",
+    "wer": 0.786,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      90000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Xoài cát Chu loại một trường 2 3 tấn, tầm ngày 29, sáng 26.",
+    "wer": 0.529,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2000,
+      3000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tới lấy tại vườn nhà 10 tấn thanh long suột đỏ loại 2 xá chính ngàn dưới.",
+    "wer": 0.368,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      9500,
+      1000
+     ]
+    }
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "Sạn lúa SC-25 trừng 5 tấn sưỡi dằm tháng ngày cặt.",
+    "wer": 0.818,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      5500,
+      5000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "Bán xầu dinh loại bệ 800 ký sau ngày 55.000 một ký.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Chanh không hạt loài mọc hài tan ngày 20-80 xam 14 cá.",
+    "wer": 0.917,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "sai",
+      "2026-10-28",
+      "2026-11-20"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôm thẻ trân trắng một tấn 2 cỡ bốn làm con, bắt liền giá 135.000 thức nhất 130.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "co_con_kg": [
+      "sai",
+      45,
+      4
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      130000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "Có mấy chục thí xoài dạt bán cho ai làm xí.",
+    "wer": 0.182,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "Bởi da xanh loại một tám tạ, tuần sau sau, giá 32.",
+    "wer": 0.308,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá trà 10 tính xá 30, trở tới nhà máy.",
+    "wer": 0.615,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      10000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      30000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "Hai tấn xoài cát Chu xa 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.609,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      24000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lúa dẻ 542 tấn, mai cách 62001 ký lấy tại ruộng.",
+    "wer": 0.562,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ lại một, một tấn giữ xao tại điểm công hợp tác xa áp giá 18.000.",
+    "wer": 0.45,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "Chân loại một bát tạ bay 14.",
+    "wer": 0.625,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      300,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tung thẻ cửa 30 con sấu tạ ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.611,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      30,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Sầu riêng dị xáu hàng kem, trừng 500 ký, bán liền giá 35.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Xoài cát Chu 3 tấn mại 2 xá 15.000 rưỡi, thấp nhất 14.000.",
+    "wer": 0.562,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa tươi trường 15 tấn ẩm 27% thứ tư gặt xá 6 ngàn dưỡi.",
+    "wer": 0.55,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "Sạ bên tuy hợp tác xã không được bốn tấn chanh không hạt loại một sao tại điểm con, 13.000 dưỡi.",
+    "wer": 0.391,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "Xoài cát Chu loại một 800 ký xá 25.000 đưa tới kho đồng xanh.",
+    "wer": 0.353,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "Bởi da xanh xả trừng hai tạ tại vườn 6 ngàn.",
+    "wer": 0.364,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Tôm thẻ khoảng một tấn dưỡi, bốn chục còn một ký, mốt bắt tài ào, xá trăng dưỡi.",
+    "wer": 0.389,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá trài mười tính cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "Xoài cát Chu loại một bà tấn mày dào giá hay làm thấp nhất hay bà?",
+    "wer": 0.438,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      3000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      23000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "Dạ chanh không hạt, hai tấn, loại một thứ bảy xạo giá 15.000, dưới 13.000 túi hồng bán.",
+    "wer": 0.409,
+    "loi_truong": {
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh long ruột đỏ trừng 5 tấn chưa hái, ngày 5 tháng 11 hái được loại một.",
+    "wer": 0.278,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân chanh không hạt loại hay, giá chính nghìn.",
+    "wer": 0.333,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      9000,
+      1000
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "Bán nằm yến xoài cát Chu loại một cho nhà hàng xá 26.000.",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   }
+  ]
+ },
+ "small|on|khong_goi_y": {
+  "wer_trung_binh": 0.6358,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.6422,
+  "gia_sai_hoac_bia": "7/50",
+  "do_tre_ms": {
+   "trung_vi": 133,
+   "p95": 166
+  },
+  "tai_mo_hinh_ms": 633,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Dạ, tôi có 2 tấn dưỡi phải các chu loại 1, 1 sao được lấy tại vườn xá 25.000 một khí, thấp nhất 21.000.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      2000.0
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "bắn 30 ký tranh không hạt loại hay, may tạo 10.000 một ký.",
+    "wer": 0.6,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "ảo tư trường 2 tính tồn thẻ cỡ 50 con 1 ký, thế năm nay bắt 802.",
+    "wer": 0.7,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-29",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      120000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "đuôi mờ 18 khoảng 8 tính ngày 30 tháng 10 gặt sáu ngàn sáu lấy tại ruộn.",
+    "wer": 0.556,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      8000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ruong",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "sầu dinh dì 6 ngoại A Trường Bốn Tính, đầu tháng sau mới cách, giá 75.000.",
+    "wer": 0.588,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      4000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "dat_truoc_khi_hai",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Suy bán 10 giả xanh loại 1-500kg, trái trường 1-1,5kg, 6 ngay, xá 30 ngàn.",
+    "wer": 0.682,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      32000,
+      10000
+     ],
+     "gia_thap_nhat": [
+      "bia",
+      null,
+      30000
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng sạt chừng 7-8 tạ bán viền xá 4.000.",
+    "wer": 0.467,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      4000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Tá trang nguyên liệu 15 tấn cỡ 1 kí 1 con, tuần sau sổ ạo 20 xử 1 kí.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Dài cắt chú loay 2800 kỷ sau ngày mai, sạm 10 năm ghi.",
+    "wer": 1.0,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Tránh không hạt hàng số trừng một tấn, ai mua thì lấy tại vườn 12 ngàn.",
+    "wer": 0.294,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Dạ, bữa nay tôi có bà tạn giữ xoài loại bột nèp.",
+    "wer": 0.5,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tu thẻ xây 40 bắt ngày 28 tháng 10 xá 140 ngàn.",
+    "wer": 0.632,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lũ đại Thâm Tám trường 20 tỉnh ngày mùng 5 tháng 11 gạt 6 ngàn tắm.",
+    "wer": 0.778,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6800,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán phai cắt chụ, không biết bao nhiêu ký.",
+    "wer": 0.455,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "có trường 1 tính hàng tranh không hạt loại 1, 8, 14 ngàn, khâu dưới 12 ngàn thì tui không bán.",
+    "wer": 0.522,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      1200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "bắn theo hư hài tạch.",
+    "wer": 1.0,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Tầu dìm mong trái 3-4 ký, trừng 2 tấn sưỡi, cắt ngày 20 tháng 11-8-80.000.",
+    "wer": 0.727,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      80000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh lòng suột trắng lại 1, 3 tấn thứ 6 xạo xá 18.000 bất lắm thì 16.",
+    "wer": 0.7,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      18000,
+      16000
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      16000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thể trường Tám tạm 60 con mai bắt tay ảo.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa từ 30 tấn ẩm 25% xá xấu triệu dưỡi một tấn.",
+    "wer": 0.625,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      1000000
+     ]
+    }
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi ra xanh loại 2,2000 ký trở tới vợ dùng 18,001 ký.",
+    "wer": 0.706,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2000,
+      18001.0
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      18000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "vài cắt chu trái từ 3 trang sợi tới 4 trang sợi thang, trừng 3 tấn.",
+    "wer": 0.688,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Trành không hạt tạt, đựa tính, bán cất hôm nay 5.000.",
+    "wer": 0.583,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      500,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tùng cỡ 70 còn tá chín chục nằm.",
+    "wer": 0.643,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      90000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Dài cắt chu loại 1 trường 23 sấn, tầm ngày 29, sáng 26.",
+    "wer": 0.765,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tới lấy tại vườn nhà 10 tấn thanh long suột đỏ loại 2 xá chính nằm dưới.",
+    "wer": 0.421,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      9500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "tại Lúa S25 trừng 5 tấn sưỡi, tầm tháng ngày gặt.",
+    "wer": 0.636,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      5500,
+      5000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "bán sầu dinh loại bệ 800 ký, sau này 55.000 1 ký.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Trên còn hạt loài mọc Hài Tân ngày 28-10-13-14 ca",
+    "wer": 0.917,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôn thể trân trắng 1 tấn 2 cỡ 4 làm con, bắt liền xá 135.000 thấp nhất 103.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      45,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      135000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      130000,
+      103000
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "có mấy chục thí xoài dạt bắn cho ai làm sĩ.",
+    "wer": 0.273,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "bởi ra xanh ngoại 1 tám tạng phần xong xạo giá 32",
+    "wer": 0.769,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá trà 10 tính xá 30, trở tới nhà máy.",
+    "wer": 0.615,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      10000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      30000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "Thay tỉnh thoại cắt chuộc đã 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.826,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      24000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lối ngày 542 tấn mai cách 9.21 ký lấy tạy luận.",
+    "wer": 0.75,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ruong",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh Long Ruột đỏ lại một, một tấn dữ xa tại điểm con hợp tác xã áp xã 18.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      18000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "trách loại 1 bác tạm bay 14.",
+    "wer": 0.875,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      300,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tung thể cửa 30 con sấu tạng ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.722,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      30,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "dầu dinh dây 6 hàng kem, trừng 500 ký, bán liền xá 35.",
+    "wer": 0.714,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      35000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Dài các chu ba sấn mại 2 xá 15.000 rưỡi, thấp nhất 14.",
+    "wer": 0.688,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      3000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa từ trường 10 Lan Tính ẩm 27% thứ từ gặt xáu ngàn dưỡi.",
+    "wer": 0.7,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      15000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-28",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      1000
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "và bên tui hợp tác xã con được 4 tấn tranh không hạt loại 1 sao tại điểm con 13.000 giữ.",
+    "wer": 0.478,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "vài cách chú loại 1 800 ký xá 25 ngàn đưa tới kho đồng sinh.",
+    "wer": 0.588,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "bởi ra xanh sạt trường 2 tạm tại vườn 6.000.",
+    "wer": 0.727,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Công thẻ khoảng 1 tấn dưỡi, 40 còn 1 thí, 1 bắt đại ảo, tá trang dưỡi.",
+    "wer": 0.778,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá trai mười tính cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "phải cắt chú loại một bà tấn mạy dào xá hay làng thấp nhất hay bà?",
+    "wer": 0.688,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      3000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      23000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "dạy tranh không hạt 2 tấn, loại 1 thứ 7, tạo giá 15.000 tới 13.000 túi hồng bán.",
+    "wer": 0.682,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-31",
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh Long Suột đỏ chừng 5 tấn chưa hái, ngày 5 tháng 11 thái được loại một...",
+    "wer": 0.333,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân tranh không hạt loại hay, tá chiến nghìn.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      9000,
+      1000
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "bán 5 yến xoài các chú loại 1 cho nhà hàng, tá 26.000.",
+    "wer": 0.533,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   }
+  ]
+ },
+ "small|on|goi_y": {
+  "wer_trung_binh": 0.5164,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.7137,
+  "gia_sai_hoac_bia": "8/50",
+  "do_tre_ms": {
+   "trung_vi": 141,
+   "p95": 160
+  },
+  "tai_mo_hinh_ms": 633,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Dạ, tôi có hai tấn giữ xoài cát Chu lại một, một sao được lấy tại vườn xá 25.000 một khí, thấp nhất 21.000.",
+    "wer": 0.464,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      2000.0
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "Bán 30 ký, chanh không hạt loại hay. Mai tạo 10.000 một ký.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "Ao tu trường 2 tính tồn thẻ cỡ 50 con một ký. Thứ năm nay bắt 802.",
+    "wer": 0.55,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      120000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "Rùa Eimer 18 khoảng 8 tính ngày 30 tháng 10 gặt sáu ngàn xáu lấy tại ruộng.",
+    "wer": 0.556,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      8000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6600,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu riêng dì 6 ngoại A Trường Bốn Tính, đầu tháng sau mới cách, giá 75.000.",
+    "wer": 0.529,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      4000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "dat_truoc_khi_hai",
+      "dat_truoc_khi_hai"
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Suy bán bưởi da xanh loại một nằm chăm ký, trái trường một ký sưỡi, 6 ngay, xá 30 ngàn.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      500,
+      1.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      32000,
+      30000
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng xạt chừng 7, 8 tạ, bán viền xá 4 ngàn.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Tá trang nguyên liệu 15 tấn, cỡ một ký một con, tuần sau sổ ạo, hai chục xử một ký.",
+    "wer": 0.333,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Xoài cát Chu loay 2800 kỷ sau ngày mai, xa 10 năm nghìn.",
+    "wer": 0.923,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      15000,
+      5000
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Chanh không hạt hàng số trường một tấn, ai mua thì lấy tại vườn 12 ngàn.",
+    "wer": 0.235,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Dạ, bữa nay tôi có bà tạn giữ xoài loại bột nèp.",
+    "wer": 0.5,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tu thẻ xây 40 bắt ngày 28 tháng 10 xá 140 ngàn.",
+    "wer": 0.632,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lúa đại thâm tắm trường 20 tính ngày mùng 5 tháng 11 gạt 6 ngàn tắm.",
+    "wer": 0.722,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6800,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xoài cát Chu, không biết bao nhiêu ký.",
+    "wer": 0.182,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "Có trường một tấn hàng chanh không hạt loại một 814.000, khâu dưới 12.000 thì tui không bán.",
+    "wer": 0.435,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "Bán theo hư hài tạch.",
+    "wer": 0.8,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Tầu dìm mong trái 3-4 ký, trừng 2 tấn sưỡi, cắt ngày 20 tháng 11, 8-80 ngàn.",
+    "wer": 0.682,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh lang suột trắng lại một, ba tấn thứ 6 xạo xá 18 ngàn, bất lắm thì 16.",
+    "wer": 0.55,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "THANH_LONG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thể trường tám tạ 60 con, mai bắt tài ảo.",
+    "wer": 0.583,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa tươi 30 tấn ẩm 25% xá xấu triệu dưỡi một tấn.",
+    "wer": 0.562,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      1000000
+     ]
+    }
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi da xanh loại 2, 2 ngàn ký, trở tới vụ dùng 18 ngàn một ký.",
+    "wer": 0.471,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "Phải cát Chu trái từ 3 trang sợi tới 4 trang sợi thang, trừng 3 tấn.",
+    "wer": 0.625,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Chanh không hạt, tạt, đựa tính, bán các hôm nay 5.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      500,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      "giao_ngay"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tùng cỡ 70 còn tá chín chục nằm.",
+    "wer": 0.643,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      90000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Xoài cát Chu loại một trường 23 sấn, tầm ngày 29, sáng 26.",
+    "wer": 0.588,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tới lấy tại vườn nhà 10 tấn thanh long suốt đỏ loại 2 xá chính nằm dưới.",
+    "wer": 0.421,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      9500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "Tạ lúa EC25 trừng 5 tấn sưỡi, tầm tháng ngày gặt.",
+    "wer": 0.636,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "LUA_TUOI",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      5500,
+      5000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "Bán xầu riêng loại bệ 800 ký, sau này 55.000 một ký.",
+    "wer": 0.6,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Chanh còn hạt loài mọc hài tan, ngay 20, 80, 30, 14 cá.",
+    "wer": 0.833,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-28",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôm thẻ trên trắng một tấn 2 cỡ bốn làm con, bắt liền xá 135.000 thấp nhất 103.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "co_con_kg": [
+      "sai",
+      45,
+      4
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      135000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      130000,
+      103000
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "Có mấy chục thí xoài dạt bán cho ai làm xí.",
+    "wer": 0.182,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "Bởi ra xanh ngoại một tám tạ, vần sau sau, giá 32.",
+    "wer": 0.538,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      800,
+      1800.0
+     ]
+    }
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá trà 10 tính xá 30, trở tới nhà máy.",
+    "wer": 0.615,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      10000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      30000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "Thay tỉnh xoài cát Chu đã 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.696,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      24000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lúa dè 542 tấn, mai cắt 9200 ký lấy tại ruộng.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ lại một, một tấn giữ xào tại điểm con hợp tác xã xã 18.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      18000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "Chân loại một bác tạ bay 14.",
+    "wer": 0.625,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      300,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tôm thẻ cửa 30 con xấu tạ ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.556,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Sầu riêng đi 6 hàng kem, trừng 500 ký, bán liền xá 35.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      35000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Xoài cát Chu, bà sấn mại 2, xá 15.000 rưỡi, thấp nhất 14.",
+    "wer": 0.625,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      3000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa tươi trường 10 lan tính ẩm 27 phần trăm, thứ tư gặt xá 6 ngàn dưỡi.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      15000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      6500,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "Dạ bên tui hợp tác xã con được bốn tấn chanh không hạt loại một sao tại điểm con 13.000 giữ.",
+    "wer": 0.304,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "Xoài cát Chu loại một, 800 ký, xá 25 ngàn, đưa tới kho đồng xanh.",
+    "wer": 0.294,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "Bởi da xanh xạt, trường 2 tạ tại vườn 6 ngàn.",
+    "wer": 0.455,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Tôm thẻ khoảng một tấn dưỡi, bốn chục còn một khí, mốt bắt đại ảo, tá trang dưỡi.",
+    "wer": 0.444,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1500,
+      1000.0
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá trai mười tính cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      20000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "Phải cát Chu loại một bà tấn mạy xào xá hay làng thấp nhất hay bà?",
+    "wer": 0.562,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      3000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      23000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "Dạ, chanh không hạt, thay tấn, loại một thứ 7, tạo, giá 15.000, tưới 13.000 tú hồng bán.",
+    "wer": 0.545,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-31",
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh long suốt đỏ chừng 5 tấn chưa hái, ngày 5 tháng 11 thái được loại một...",
+    "wer": 0.333,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân chanh không hạt loại hay, tá chiến nghìn.",
+    "wer": 0.417,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      9000,
+      1000
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "Bán nam yến xoài cát Chu loại một cho nhà hàng, tá 26.000.",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   }
+  ]
+ },
+ "large-v3-turbo|sach|khong_goi_y": {
+  "wer_trung_binh": 0.5213,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.8143,
+  "gia_sai_hoac_bia": "2/50",
+  "do_tre_ms": {
+   "trung_vi": 177,
+   "p95": 195
+  },
+  "tai_mo_hinh_ms": 992,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Dạ tôi có 2 tấn rưỡi xoài cát chu loại 1, 1 sao được, lấy tại vườn giá 25.000 một ký, thấp nhất 21.000.",
+    "wer": 0.393,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "Bán 30kg chanh không hạt loại 2, mai rạo 10.000 1kg.",
+    "wer": 0.6,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+    "wer": 1.0,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-29",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      120000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "Lúa IM18 khoảng 8 tấn ngày 30 tháng 10 gặt giá 6.600 lấy tại ruộng.",
+    "wer": 0.444,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu dinh di sáu ngoại A chừng 4 tấn đầu tháng sau mới cắt giá 75 ngàn.",
+    "wer": 0.412,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Tôi bán bưởi ra xanh loại 1 500 ký, trái trừng 1 ký rưỡi, giáo ngay, giá 32 ngàn.",
+    "wer": 0.455,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng sạt chừng 7-8 tạ, bán viền giá 4.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Tá trang nguyên liệu 15 tấn cỡ 1 ký 1 con tuần sau sổ ảo 2 chục sữa 1 ký.",
+    "wer": 0.524,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Xay cắt chu loay 28 trăm kỳ sau ngày mai giảm 10 năm ghi.",
+    "wer": 0.923,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Chanh không hạt hàng sâu trừng 1 tấn, ai mua thì lấy tại vườn 12.000.",
+    "wer": 0.353,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Dạ bữa nay tôi có bà tạ giữa xoài loại một nẹp.",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tô thẻ xây 40, bắt ngày 28 tháng 10 giá 140 ngàn.",
+    "wer": 0.579,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lúa đài thâm tắm chừng 20 tấn ngày 5 tháng 11 gạt 6008",
+    "wer": 0.667,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      6800,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xoài cắt chu không biết bao nhiêu ký.",
+    "wer": 0.273,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "Có chừng 1 tấn ha chanh không hạt loại 1 giá 14.000, khâu dưới 12.000 thì tôi không bán.",
+    "wer": 0.478,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "Bắn theo hơi hay tạn.",
+    "wer": 0.8,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Dầu dinh mong trái 3-4 kg, chừng 2 tấn rưỡi, cắt ngày 20 tháng 11, giá 80.000.",
+    "wer": 0.636,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh long ruột trắng loại 1, 3 tấn, thứ 6 xạo giá 18.000, bớt lắm thì 16.000.",
+    "wer": 0.45,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thẻ trường 8 tạ 60 con mai bắt tại ảo.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa tươi 30 tấn, ẩm 25%, giá 6 triệu rưỡi 1 tấn.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi da xanh loại 2, 2.000 ký trở tới vựa dùng 18.000 một ký.",
+    "wer": 0.529,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "Xài cắt chu trái từ 3 trăng sợi tới 4 trăng sợi khám chừng 3 tấn.",
+    "wer": 0.625,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Chanh không hạt sạt nửa tấn, bán khớp hôm nay 5.000.",
+    "wer": 0.333,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      "giao_ngay"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tung cỡ 70 con giá 90 nàn.",
+    "wer": 0.643,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Xoài cắt chu loại 1 chừng 2-3 tấn tầm ngày 29 giá 26.",
+    "wer": 0.529,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2000,
+      3000.0
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tôi lấy tại vườn nhà 10 tấn thanh long ruột đỏ loại 2 giá 9.500.",
+    "wer": 0.368,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "Dạ lúa SC-25 chừng 5 tấn rưỡi dằm tháng này gặt.",
+    "wer": 0.364,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "Bán sầu dinh loại bể 800kg, giao ngay 55.000 1kg.",
+    "wer": 0.667,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Tranh khòng hạt loài mọt 2 tan ngày 20.8.10 ra 14 cạn.",
+    "wer": 1.0,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "sai",
+      "2026-10-28",
+      "2026-11-20"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôn thẻ chân trắng 1 tấn 2 cỡ 45 con bắt liền giá 135.000 thấp nhất trăm bạn.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      130000,
+      100000
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "Có mấy chục thí xoài giạt bán cho ai làm xấy.",
+    "wer": 0.273,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "Bởi ra xanh loại 1 tám tạ tuần sau dạo giá 32.",
+    "wer": 0.462,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá trà 10 tấn giá 30 trở tới nhà máy.",
+    "wer": 0.462,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "2 tấn xoài cắt chuộc giá 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.696,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lúa e 542 tấn, mai cắt 6.021 kg lấy tại ruộng",
+    "wer": 0.562,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ loại 1, 1 tấn rưỡi sau tại điểm con hợp tác xa áp giá 18.000.",
+    "wer": 0.45,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "Tranh loại 1 Ba Tạ, bài 14.",
+    "wer": 0.625,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tùng thẻ cỡ 30 con sấu tạ ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.556,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      30,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Sầu dinh dì sáu hàng kem, trừng 500 ký, bán liền giá 35.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Xoài các chú 3 tấn ngoại 2 giá 15.500, thấp nhất 14.000.",
+    "wer": 0.688,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa từ chừng 10 lan tấn, ẩm 27%, thứ tư gạt giá 6.500.",
+    "wer": 0.6,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      15000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "Dạ bên tôi hợp tác xã gom được 4 tấn chanh không hạt loại 1 rào tại điểm gom 13.500.",
+    "wer": 0.348,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "Xoài cát chu loại 1, 800 kg, giá 25.000 đưa tới kho đồng xanh.",
+    "wer": 0.412,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "Bởi da xanh giả trừng hai tạ tại vườn 6.000.",
+    "wer": 0.455,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Tùng thẻ khoảng 1 tấn rưỡi, 40 con 1 khí, mốt bắt tại ảo giá trăng rưỡi.",
+    "wer": 0.444,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá trà 20 tấn cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.4,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "Xoài các chu loại 1-3 tấn mày rào giá hay lăng thấp nhất 2 bạn.",
+    "wer": 0.562,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      23000,
+      2000
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "Dạ tranh không hạt 2 tấn, loại 1, thứ 7 dạo, giá 15.000, dưới 13.000 tui hồng bán.",
+    "wer": 0.545,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-31",
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh long ruột đỏ trừng 5 tấn chưa hái, ngày 5 tháng 11 hái được, loại 1.",
+    "wer": 0.333,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân chanh không hạt loại hay, giá 9.000.",
+    "wer": 0.417,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "Bán 5 yến xoay cắt chu loại 1 cho nhà hàng, giá 26.000.",
+    "wer": 0.467,
+    "loi_truong": {}
+   }
+  ]
+ },
+ "large-v3-turbo|sach|goi_y": {
+  "wer_trung_binh": 0.4229,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.8491,
+  "gia_sai_hoac_bia": "5/50",
+  "do_tre_ms": {
+   "trung_vi": 184,
+   "p95": 204
+  },
+  "tai_mo_hinh_ms": 992,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Dạ tôi có 2 tấn rưỡi xoài cát Chu loại 1, mốt sao được, lấy tại vườn giá 25.000 một ký, thấp nhất 21.000.",
+    "wer": 0.357,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "Bán 30 ký chanh không hạt loại hay, mai rạo 10 ngàn một ký.",
+    "wer": 0.333,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "ảo tu trừng 2 tấn tôm thẻ, cỡ 50 con 1 ký, thứ năm nay bắt giá 120.",
+    "wer": 0.5,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "Lúa IM-18 khoảng 8 tấn ngày 30 tháng 10 gạt giá 6.600 lấy tại ruộng.",
+    "wer": 0.556,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu dinh di sáu ngoại A chừng 4 tấn đầu tháng sau mới cắt giá 75 ngàn.",
+    "wer": 0.412,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Tôi bán bưởi da xanh loại 1 500 ký, trái chừng 1 ký rưỡi, giáo ngay, giá 32 ngàn.",
+    "wer": 0.364,
+    "loi_truong": {
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng sạt chừng 7-8 tạ, bán viền, giá 4.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Tá trang nguyên liệu 15 tấn, cỡ một ký một con, tuần sau sổ ảo, hai chục sữa một ký.",
+    "wer": 0.333,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Xoài cát Chu loay hai tám trăm kỳ sau ngày mai giảm mười năm ghi.",
+    "wer": 0.923,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Chanh không hạt hàng sâu trừng một tấn, ai mua thì lấy tại vườn 12.000.",
+    "wer": 0.294,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Dạ bữa nay tôi có bà tạ giữa xoài loại một nẹp.",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tô thẻ xây 40, bắt ngày 28 tháng 10 giá 140 ngàn.",
+    "wer": 0.579,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lúa đài thâm tắm chừng hai chục tấn ngày 5 tháng 11 gạt 6.008.",
+    "wer": 0.556,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      6800,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xoài cát Chu, không biết bao nhiêu ký.",
+    "wer": 0.182,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "Có chừng một tấn hai chanh không hạt loại một, giá 14.000, khâu dưới 12.000 thì tôi không bán.",
+    "wer": 0.348,
+    "loi_truong": {
+     "gia_thap_nhat": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "Bán theo hơi hay tạn.",
+    "wer": 0.6,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Sầu riêng mong trái 3-4 ký, chừng 2 tấn rưỡi, cắt ngày 20 tháng 11, giá 80 ngàn.",
+    "wer": 0.455,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh long ruột trắng loại 1, 3 tấn, thứ 6 xạo giá 18.000, bớt lắm thì 16.000.",
+    "wer": 0.45,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thẻ trường tám tạ 60 con, mai bắt tại ảo.",
+    "wer": 0.417,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa tươi 30 tấn ẩm 25%, giá 6 triệu rưỡi một tấn.",
+    "wer": 0.438,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi da xanh loại 2, 2 ngàn ký, trở tới vựa dùng, 18 ngàn một ký.",
+    "wer": 0.412,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "Xài cát chu trái từ 3 chằm sữa tới 4 chằm sữa khám, chừng 3 tấn.",
+    "wer": 0.562,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Chanh không hạt, sạt, nửa tấn, bán khớp hôm nay 5.000.",
+    "wer": 0.333,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      "giao_ngay"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tông, cỡ 70 con giá 90 nàn.",
+    "wer": 0.643,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Xoài cát Chu loại 1 chừng 2-3 tấn, tầm ngày 29, giá 26.",
+    "wer": 0.471,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2000,
+      3000.0
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tối lấy tại vườn nhà 10 tấn thanh long ruột đỏ loại 2, giá 9 ngàn rưỡi.",
+    "wer": 0.263,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "Dạ lúa SC-25 chừng 5,5 tấn dưỡi dằm tháng ngày gặt.",
+    "wer": 0.636,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "Bán sầu riêng loại bể tám trăm ký, giao ngay năm năm năm ngàn một ký.",
+    "wer": 0.2,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      55000,
+      105000
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Chanh không hạt loài mọt 2 tan ngày 20.8.10 ra 14 cạn.",
+    "wer": 0.917,
+    "loi_truong": {
+     "ngay_giao": [
+      "sai",
+      "2026-10-28",
+      "2026-11-20"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôn thẻ chân trắng 1 tấn 2, cỡ 45 con, bắt liền, giá 135.000, thấp nhất trăm bạn.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      130000,
+      100000
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "Có mấy chục thí xoài giạt bán cho ai làm xấy.",
+    "wer": 0.273,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "Bưởi da xanh loại một tám tạ, tuần sau dạo, giá 32.",
+    "wer": 0.231,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá tra 10 tấn giá ba chục, chở tới nhà máy.",
+    "wer": 0.154,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "Hai tấn xoài cát Chu giá 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.565,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lúa ẻ 542 tấn, mai cắt 6.021 ký, lấy tại ruộng.",
+    "wer": 0.5,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ loại 1, 1 tấn rưỡi sau tại điểm con hợp tác xa áp giá 18.000.",
+    "wer": 0.45,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "Tranh loại 1 Ba Tạ, bài 14",
+    "wer": 0.625,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tùng thẻ cỡ ba chục con sấu tạ ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.444,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      30,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Sầu dinh dì sáu hàng kem, trừng 500 ký, bán liền, giá 3 năm.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "sai",
+      35000,
+      3000
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Xoài cát Chu 3 tấn ngoại 2 giá 15.500, thấp nhất 14.000.",
+    "wer": 0.562,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa tươi trừng mười lan tấn ẩm hai bảy phần trăm, thứ tư gạt giá sáu ngàn rưỡi.",
+    "wer": 0.2,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      15000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "Dạ bên tui hợp tác xã gom được 4 tấn chanh không hạt loại 1 rào tại điểm gom 13.500.",
+    "wer": 0.304,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "Xoài cát Chu loại 1, 800 ký, giá 25 ngàn, đưa tới kho đồng xanh.",
+    "wer": 0.294,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "Bưởi da xanh xạc chừng hai tạ tại vườn sáu ngàn.",
+    "wer": 0.091,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Tùng thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ảo, giá trăng rưỡi.",
+    "wer": 0.167,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá tra 20 tấn cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.3,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "Xoài cát Chu loại 1-3 tấn mày rào giá 2 lăng thấp nhất 2 bạn.",
+    "wer": 0.5,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      25000,
+      2000
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      23000,
+      2000
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "Dạ chanh không hạt 2 tấn, loại một, thứ bảy dạo, giá 15.000, dưới 13.000 tui hồng bán.",
+    "wer": 0.409,
+    "loi_truong": {
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh long ruột đỏ trừng 5 tấn chưa hái, ngày 5 tháng 11 hái được, loại 1.",
+    "wer": 0.333,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân chanh không hạt loại hay, giá 9.000.",
+    "wer": 0.417,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "Bán 5 yến xoài cát Chu loại 1 cho nhà hàng, giá 26.000.",
+    "wer": 0.333,
+    "loi_truong": {}
+   }
+  ]
+ },
+ "large-v3-turbo|on|khong_goi_y": {
+  "wer_trung_binh": 0.5459,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.7505,
+  "gia_sai_hoac_bia": "6/50",
+  "do_tre_ms": {
+   "trung_vi": 178,
+   "p95": 199
+  },
+  "tai_mo_hinh_ms": 992,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Dạ tôi có 2 tấn rưỡi xoài các chu loại 1, 1 sao được, lấy tại vườn xá 25.000 một khí, thấp nhất 21.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "Bán 30 kg chanh không hạt loại hay, mai rạo 10.000 1 kg.",
+    "wer": 0.6,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "ảo tu trừng 2 tấn tôn thẻ cỡ 50 con 1 ký, thứ năm nay bắt 820.",
+    "wer": 0.6,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      50,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      120000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "Lúa IM-18 khoảng 8 tấn ngày 30 tháng 10 gặt xá 6.600 lấy tại ruộng.",
+    "wer": 0.556,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      6600,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu dinh di 6 ngoại A trường 4 tấn, đầu tháng sau mới cách 875 ngàn.",
+    "wer": 0.588,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "dat_truoc_khi_hai",
+      null
+     ],
+     "gia_mong_muon": [
+      "sai",
+      75000,
+      875000
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Tôi bán bưởi ra xanh loại 1 500 ký, trái chừng 1 ký rưỡi, tạo ngay giá 32 ngàn.",
+    "wer": 0.409,
+    "loi_truong": {
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng tạc chừng 7-8 tạ, bán viền, giá 4.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Đá trang nguyên liệu 15 tấn, cỡ 1 kg 1 con, tuần sau sổ ảo, 2 chục sữa 1 kg.",
+    "wer": 0.619,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Dây cắt chu loay 28 trăm kỳ, sau ngày mai, xa 10 năm ghi.",
+    "wer": 0.923,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Chanh không hạt hàng sâu trừng 1 tấn, ai mua thì lấy tại vườn 12.000.",
+    "wer": 0.353,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Dạ bữa nay tôi có bà tạ giữa xoài loại một nẹp",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tô thẻ xây 40 bắt ngày 28 tháng 10 xá 140 ngàn.",
+    "wer": 0.632,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lúa đài thâm tắm chừng 20 tấn ngày 5 tháng 11 gạch 6008",
+    "wer": 0.667,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      6800,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xoài cắt chu không biết bao nhiêu ký.",
+    "wer": 0.273,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "Có trường 1 tấn ha chanh không hạt loại 1, tá 10, 4 ngàn, khâu dưới 10, 2 ngàn thì tôi không bán.",
+    "wer": 0.478,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "sai",
+      14000,
+      4000
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      12000,
+      2000
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "Bắn theo hơi hay tạn.",
+    "wer": 0.8,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Dầu dìm mong trái 3-4 kg, chừng 2 tấn rưỡi, cắt ngày 20 tháng 11, giá 80 ngàn.",
+    "wer": 0.591,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      2500,
+      4.0
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh lòng suột trắng loại 1, 3 tấn, thứ 6 xạo giá 18 ngàn, bớt lắm thì 16.",
+    "wer": 0.5,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-30",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thẻ trường 8 tạ 60 con mai bắt tại ảo.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa tươi 30 tấn, ẩm 25%, giá 6 triệu rưỡi 1 tấn.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi da xanh loại 2, 2.000 ký trở tới vựa dùng 18.000 một ký.",
+    "wer": 0.529,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "Xài các chu trái từ 3 trăng sữa tới 4 trăng sữa cam, chừng 3 tấn.",
+    "wer": 0.625,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Tranh không hạt tạp, nửa tấn, bán cướp hôm nay 5.000.",
+    "wer": 0.417,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tung cỡ 70 con tá 90 chục nàn.",
+    "wer": 0.643,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      90000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Phải cắt chu loại 1 chừng 2-3 tấn tầm ngày 29-26.",
+    "wer": 0.647,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2000,
+      3000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tới lấy tại vườn nhà 10 tấn thanh long ruột đỏ loại 2 giá 9.500.",
+    "wer": 0.316,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "Tạ lúa SC2 15 chừng 5 tấn rưỡi, dằm tháng ngày gặt.",
+    "wer": 0.545,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "Bán sầu riêng loại bể 800 kg, giao ngay 55.000 1 kg.",
+    "wer": 0.6,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Tranh khòng hạt loài mọc hài tan, ngày 20.8.10, ra 14 cạn.",
+    "wer": 1.0,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "sai",
+      "2026-10-28",
+      "2026-11-20"
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôn thẻ chân trắng 1 tấn 2, cỡ 45 con, bắt liền tá 135.000, thấp nhất trăm bạn.",
+    "wer": 0.542,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      135000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      130000,
+      100000
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "Có mấy chục thí xoài giặt bán cho ai làm xấy.",
+    "wer": 0.273,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "Bởi ra xanh loại 1 tám tạng tuần sau rạo giá 32",
+    "wer": 0.538,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá trà 10 tính xá 30, chở tới nhà máy.",
+    "wer": 0.538,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      10000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      30000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "Hai tấn xoài cắt chuộc đã 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.696,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      24000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lúa e 542 tấn, mai cách 6.021 kg lấy tại ruộng",
+    "wer": 0.625,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ loại 1, 1 tấn rưỡi sau tại điểm công hợp tác xã 18.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      18000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "Tranh loại 1 Bà Tạ, bài 14.",
+    "wer": 0.75,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      300,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tùng thẻ cỡ 30 con sấu tạ ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.556,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      30,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Dầu dinh dây sáu hàng kem, trừng 500 ký, bán liền, giá 3 lăm.",
+    "wer": 0.571,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "sai",
+      35000,
+      3000
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Xoài các chú 3 tấn ngoại 2, tá 15.500, thấp nhất 14.000.",
+    "wer": 0.75,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa từ chừng 10 lan tấn, ẩm 27%, thứ tư gạt xá 6.500.",
+    "wer": 0.65,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      15000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "Dạ bên tôi hợp tác xã gom được 4 tấn chanh không hạt loại 1 sao tại điểm gom 13.500.",
+    "wer": 0.348,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "Xài các chu loại 1, 800 kg, xá 25.000 đưa tới kho đồng xanh.",
+    "wer": 0.588,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "Bởi ra sanh tạc chừng hai tạng tại vườn 6.000.",
+    "wer": 0.636,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "BUOI_DA_XANH",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Tùng thẻ khoảng 1 tấn rưỡi, 4 chục con 1 khí, 1 bắt tại ảo, 8 trăm rưỡi.",
+    "wer": 0.444,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-27",
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "cá tra 20 tấn cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.3,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "Phải cáp chu loại 1-3 tấn mày rào giá hay làng thấp nhất 2 bạn.",
+    "wer": 0.625,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      23000,
+      2000
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "Dạ tranh không hạt 2 tấn, loại 1, thứ 7 tạo, giá 15.000, dưới 13.000 tui hồng bán.",
+    "wer": 0.545,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-31",
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh long ruột đỏ trừng 5 tấn, chưa hái, ngày 5 tháng 11 hái được, loại 1.",
+    "wer": 0.333,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân chanh không hạt loại hay, tá 9.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      9000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "Bán 5 yến xoay các chu loại 1 cho nhà hàng, tá 26.000.",
+    "wer": 0.533,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "XOAI_CAT_CHU",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   }
+  ]
+ },
+ "large-v3-turbo|on|goi_y": {
+  "wer_trung_binh": 0.4836,
+  "cau_wer_0": 0,
+  "ty_le_o_truong_dung_sau_stt": 0.7988,
+  "gia_sai_hoac_bia": "5/50",
+  "do_tre_ms": {
+   "trung_vi": 185,
+   "p95": 212
+  },
+  "tai_mo_hinh_ms": 992,
+  "chi_tiet": [
+   {
+    "id": "CN-001",
+    "goc": "Dạ tui có hai tấn rưỡi xoài cát Chu loại một, mốt giao được, lấy tại vườn, giá hai lăm nghìn một ký, thấp nhất hai mốt ngàn",
+    "nghe": "Dạ tùi có 2 tấn rưỡi xoài cát Chu loại 1, mốt sao được, lấy tại vườn xá 25.000 một khí, thấp nhất 21.000.",
+    "wer": 0.429,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-002",
+    "goc": "Bán ba chục ký chanh không hạt loại hai, mai giao, mười ngàn một ký",
+    "nghe": "Bán 30 ký chanh không hạt loại hay, mai rạo 10.000 một ký.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-003",
+    "goc": "Ao tui chừng hai tấn tôm thẻ, cỡ năm chục con một ký, thứ năm này bắt, giá trăm hai",
+    "nghe": "Ảo tu trừng 2 tấn tôm thẻ, cỡ 50 con một ký, thứ năm nay bắt tá trăm hai.",
+    "wer": 0.4,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      120000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-004",
+    "goc": "Lúa OM18 khoảng tám tấn, ngày ba mươi tháng mười gặt, giá sáu ngàn sáu, lấy tại ruộng",
+    "nghe": "Lúa IM-18 khoảng 8 tấn ngày 30 tháng 10 gạt xá 6.006 lấy tại ruộng.",
+    "wer": 0.611,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      6600,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-005",
+    "goc": "Sầu riêng Ri6 loại A chừng bốn tấn, đầu tháng sau mới cắt, giá bảy lăm ngàn",
+    "nghe": "Sầu dinh di sáu ngoại A trường 4 tấn đầu tháng sau mới cách giá 75.000.",
+    "wer": 0.588,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "A",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "dat_truoc_khi_hai",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-006",
+    "goc": "Tui bán bưởi da xanh loại 1 năm trăm ký, trái chừng một ký rưỡi, giao ngay, giá ba mươi hai ngàn",
+    "nghe": "Tôi bán bưởi da xanh loại một năm trăm ký, trái chừng một ký rưỡi, tạo ngay, giá 32.000.",
+    "wer": 0.318,
+    "loi_truong": {
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-007",
+    "goc": "Thanh long ruột đỏ hàng dạt chừng bảy tám tạ, bán liền, giá bốn ngàn",
+    "nghe": "Thanh long ruột đỏ hàng tạ chừng 7-8 tạ, bán viền, giá 4.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "sai",
+      700,
+      800.0
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-008",
+    "goc": "Cá tra nguyên liệu mười lăm tấn, cỡ một ký một con, tuần sau xổ ao, hai chục rưỡi một ký",
+    "nghe": "Đá trang nguyên liệu 15 tấn, cỡ một ký một con, tuần sau sổ ảo, hai chục sữa một ký.",
+    "wer": 0.333,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CA_TRA",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-009",
+    "goc": "xoai cat chu loai hai 800 ky, giao ngay mai, gia 15 nghin",
+    "nghe": "Dây cát Chu loay hai tám trăm kỳ, sau ngày mai, xa mười năm ghi.",
+    "wer": 0.923,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      800,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-010",
+    "goc": "Chanh không hạt hàng xô chừng một tấn, ai mua thì lấy tại vườn, mười hai ngàn",
+    "nghe": "Chanh không hạt hàng sâu trừng 1 tấn, ai mua thì lấy tại vườn 12.000.",
+    "wer": 0.353,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "XO",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      12000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-011",
+    "goc": "Dạ bữa nay tui có ba tạ rưỡi xoài loại một nè",
+    "nghe": "Dạ bữa nay tôi có bà tạ giữa xoài loại một nẹp.",
+    "wer": 0.333,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      350,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-012",
+    "goc": "Năm trăm ký tôm thẻ size 40, bắt ngày hai tám tháng mười, giá một trăm bốn chục ngàn",
+    "nghe": "500 ký tôm thẻ xây 40, bắt ngày 28 tháng 10, xá 140 ngàn.",
+    "wer": 0.579,
+    "loi_truong": {
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-013",
+    "goc": "Lúa Đài Thơm 8 chừng hai chục tấn, ngày mùng năm tháng mười một gặt, sáu ngàn tám",
+    "nghe": "Lúa đài thâm tắm chừng hai chục tấn ngày 5 tháng 11 gạch sáu ngàn tắm.",
+    "wer": 0.444,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "sai",
+      6800,
+      6000
+     ]
+    }
+   },
+   {
+    "id": "CN-014",
+    "goc": "Tui muốn bán xoài cát chu, hổng biết bao nhiêu ký",
+    "nghe": "Tôi muốn bán xoài cát Chu, không biết bao nhiêu ký.",
+    "wer": 0.182,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-015",
+    "goc": "Có chừng một tấn hai chanh không hạt loại một, giá mười bốn ngàn, không dưới mười hai ngàn thì tui không bán",
+    "nghe": "Có chừng một tấn ha chanh không hạt loại 1, tá, mười, bốn ngàn, câu dưới mười, hai ngàn thì tôi không bán.",
+    "wer": 0.217,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "gia_mong_muon": [
+      "sai",
+      14000,
+      4000
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      12000,
+      2000
+     ]
+    }
+   },
+   {
+    "id": "CN-016",
+    "goc": "Bán heo hơi hai tạ",
+    "nghe": "Bán theo hơi hay tạng.",
+    "wer": 0.6,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      200,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-017",
+    "goc": "Sầu riêng Monthong trái ba bốn ký, chừng hai tấn rưỡi, cắt ngày hai mươi tháng mười một, giá tám mươi ngàn",
+    "nghe": "Sầu riêng mong trái ba bốn ký, chừng hai tấn sưỡi, cắt ngày 20 tháng 11, tá tám mươi ngàn.",
+    "wer": 0.318,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2500,
+      2000.0
+     ]
+    }
+   },
+   {
+    "id": "CN-018",
+    "goc": "Thanh long ruột trắng loại một, ba tấn, thứ sáu giao, giá mười tám ngàn, bớt lắm thì mười sáu",
+    "nghe": "Thanh long suột trắng loại một, ba tấn, thứ sáu xạo giá mười tám ngàn, bớt lắm thì mười sáu.",
+    "wer": 0.1,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-019",
+    "goc": "Tôm thẻ chừng tám tạ, sáu chục con, mai bắt, tại ao",
+    "nghe": "Tô thẻ trường 8 tạ 60 con mai bắt tại ảo.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      60,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-020",
+    "goc": "Lúa tươi ba mươi tấn, ẩm hai lăm phần trăm, giá sáu triệu rưỡi một tấn",
+    "nghe": "Lúa tươi 30 tấn, ẩm 25%, giá 6 triệu rưỡi một tấn.",
+    "wer": 0.438,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-021",
+    "goc": "Bưởi da xanh loại hai, hai ngàn ký, chở tới vựa giùm, mười tám ngàn một ký",
+    "nghe": "Bởi da xanh loại 2, 2.000 ký, trở tới vựa dùng 18.000 một ký.",
+    "wer": 0.529,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "giao_toi_kho",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-022",
+    "goc": "Xoài cát chu trái từ ba trăm rưỡi tới bốn trăm rưỡi gam, chừng ba tấn",
+    "nghe": "Xài cát chu trái từ 3 trăng sưỡi tới 4 trăng sưỡi cam, chừng 3 tấn.",
+    "wer": 0.562,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-023",
+    "goc": "Chanh không hạt dạt, nửa tấn, bán gấp hôm nay, năm ngàn",
+    "nghe": "Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+    "wer": 1.25,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      500,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-25",
+      null
+     ],
+     "hinh_thuc": [
+      "bo_sot",
+      "giao_ngay",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      5000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-024",
+    "goc": "Tui có ba trăm ký tôm, cỡ bảy chục con, giá chín chục ngàn",
+    "nghe": "Tôi có 300 ký tung, cỡ 70 con, tá 90 chục nàn.",
+    "wer": 0.643,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      70,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      90000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-025",
+    "goc": "Xoài cát Chu loại một chừng hai ba tấn, tầm ngày hai chín, giá hai mươi sáu",
+    "nghe": "Tây bán xoài cát Chu loại 1 chừng 2-3 tấn tầm ngày 29-26.",
+    "wer": 0.647,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      2000,
+      3000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-026",
+    "goc": "Mấy ổng tới lấy tại vườn nha, mười tấn thanh long ruột đỏ loại hai, giá chín ngàn rưỡi",
+    "nghe": "Mấy ổng tới lấy tại vườn nhà 10 tấn thanh long ruột đỏ loại 2, giá 9.500.",
+    "wer": 0.316,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-027",
+    "goc": "Dạ lúa ST25 chừng năm tấn rưỡi, rằm tháng này gặt",
+    "nghe": "Tạ lúa SC-25 chừng 5,5 tấn rưỡi, dằm tháng ngày gặt.",
+    "wer": 0.636,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      5500,
+      6000.0
+     ]
+    }
+   },
+   {
+    "id": "CN-028",
+    "goc": "Bán sầu riêng loại B, tám trăm ký, giao ngay, năm lăm ngàn một ký",
+    "nghe": "Bán sầu riêng loại bể 800 ký, giao ngay 55.000 một ký.",
+    "wer": 0.4,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "B",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-029",
+    "goc": "chanh khong hat loai mot hai tan, ngay 28/10, gia 14k",
+    "nghe": "Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn",
+    "wer": 1.25,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      2000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-28",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-030",
+    "goc": "Tôm thẻ chân trắng một tấn hai, cỡ bốn lăm con, bắt liền, giá một trăm ba mươi lăm nghìn, thấp nhất trăm ba",
+    "nghe": "Tôn thẻ chân trắng 1 tấn 2, cỡ 45 con, bắt liền tá 135.000, thấp nhất trăm bạn.",
+    "wer": 0.542,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      1200,
+      1000.0
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      135000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      130000,
+      100000
+     ]
+    }
+   },
+   {
+    "id": "CN-031",
+    "goc": "Có mấy chục ký xoài dạt bán cho ai làm sấy",
+    "nghe": "Có mấy chục thí xoài giặt bán cho ai làm xấy.",
+    "wer": 0.273,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-032",
+    "goc": "Bưởi da xanh loại một tám tạ, tuần sau giao, giá ba hai",
+    "nghe": "Bưởi da xanh loại một tám tạ, tuần sau dạo, giá 32.",
+    "wer": 0.231,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-033",
+    "goc": "Tui bán cá tra mười tấn, giá ba chục, chở tới nhà máy",
+    "nghe": "Tôi bán cá tra 10 tính xá Ba Chu, chở tới nhà máy.",
+    "wer": 0.385,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      10000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      30000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-034",
+    "goc": "Hai tấn xoài cát chu, giá hai mươi bốn nghìn, thấp nhất hai mươi mốt nghìn năm trăm, ngày hai tám tháng mười",
+    "nghe": "Hai tấn xoài cát Chu đã 24.000, thấp nhất 21.500 ngày 28 tháng 10.",
+    "wer": 0.609,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      24000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-035",
+    "goc": "Lúa IR 504 mười hai tấn, mai cắt, sáu ngàn hai một ký, lấy tại ruộng",
+    "nghe": "Lúa ẻ 542 tấn, mài cách 6.021 ký, lấy tại ruộng.",
+    "wer": 0.625,
+    "loi_truong": {
+     "luong_kg": [
+      "sai",
+      12000,
+      542000.0
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6200,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-036",
+    "goc": "Thanh long ruột đỏ loại một, một tấn rưỡi, giao tại điểm gom hợp tác xã, giá mười tám ngàn",
+    "nghe": "Thanh long ruột đỏ loại 1, 1 tấn rưỡi sau tại điểm công hợp tác xã 18.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "noi_giao": [
+      "bo_sot",
+      "diem_gom",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      18000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-037",
+    "goc": "Chanh loại một ba tạ, mai, mười bốn",
+    "nghe": "Tranh loại 1 bạc tạ, bài 14.",
+    "wer": 0.75,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "CHANH_KHONG_HAT",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "L1",
+      null
+     ],
+     "luong_kg": [
+      "bo_sot",
+      300,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ],
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      14000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-038",
+    "goc": "Tôm thẻ cỡ ba chục con, sáu tạ, ngày ba mươi mốt tháng mười, giá hai trăm ngàn",
+    "nghe": "Tôm thẻ cỡ ba chục con sấu tạ ngày 31 tháng 10 giá 200 ngàn.",
+    "wer": 0.389,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      600,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      false,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-039",
+    "goc": "Sầu riêng Ri6 hàng kem, chừng năm trăm ký, bán liền, giá ba lăm",
+    "nghe": "Sầu riêng dì sáu hàng kem, trừng 500 ký, bán liền, giá 35 ký.",
+    "wer": 0.5,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "SAU_RIENG",
+      null
+     ],
+     "loai": [
+      "bo_sot",
+      "C",
+      null
+     ],
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      35000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-040",
+    "goc": "xoài cát chu ba tấn loại hai, giá mười lăm ngàn rưỡi, thấp nhất mười bốn",
+    "nghe": "Tây bán xoài cát Chu, ba tấn ngoại 2, tá 15.500, thấp nhất 14.000.",
+    "wer": 0.688,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      15500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-041",
+    "goc": "Tui có lúa tươi chừng mười lăm tấn, ẩm hai bảy phần trăm, thứ tư gặt, giá sáu ngàn rưỡi",
+    "nghe": "Tôi có lúa tươi trừng 10 lan tấn, ẩm 27%, thứ tư gạt xá 6.500.",
+    "wer": 0.65,
+    "loi_truong": {
+     "luong_kg": [
+      "bo_sot",
+      15000,
+      null
+     ],
+     "uoc_tinh": [
+      "bo_sot",
+      true,
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-042",
+    "goc": "Dạ bên tui hợp tác xã gom được bốn tấn chanh không hạt loại một, giao tại điểm gom, mười ba ngàn rưỡi",
+    "nghe": "Dạ bên tui hợp tác xã gom được 4 tấn chanh không hạt loại 1 sao tại điểm gom 13.500.",
+    "wer": 0.304,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      13500,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-043",
+    "goc": "Xoài cát chu loại một, tám trăm ký, giá hai lăm ngàn, đưa tới kho Đồng Xanh",
+    "nghe": "Tây bán xoài cát Chu loại 1, 800 ký, xá 25 ngàn đưa tới kho đồng xanh.",
+    "wer": 0.471,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-044",
+    "goc": "Bán gà ta năm chục con",
+    "nghe": "Bán cả ta 50 con.",
+    "wer": 0.5,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-045",
+    "goc": "Bưởi da xanh dạt chừng hai tạ, tại vườn, sáu ngàn",
+    "nghe": "Bưởi da xanh tạc chừng hai tạ tại vườn 6.000.",
+    "wer": 0.273,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L3",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      6000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-046",
+    "goc": "Tôm thẻ khoảng một tấn rưỡi, bốn chục con một ký, mốt bắt tại ao, giá trăm rưỡi",
+    "nghe": "Tùng thẻ khoảng một tấn rưỡi, bốn chục con một khí, mốt bắt tại ảo, tá trăng rưỡi.",
+    "wer": 0.278,
+    "loi_truong": {
+     "mat_hang": [
+      "bo_sot",
+      "TOM_THE",
+      null
+     ],
+     "co_con_kg": [
+      "bo_sot",
+      40,
+      null
+     ],
+     "noi_giao": [
+      "bo_sot",
+      "tai_ao",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      150000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-047",
+    "goc": "cá tra hai mươi tấn cỡ chuẩn, cuối tháng xổ",
+    "nghe": "Cá tra 20 tấn cỡ chuẩn cuối tháng sổ.",
+    "wer": 0.3,
+    "loi_truong": {}
+   },
+   {
+    "id": "CN-048",
+    "goc": "Xoài cát chu loại một ba tấn mai giao giá hai lăm thấp nhất hai ba",
+    "nghe": "Phải cát Chu loại 1-3 tấn mày rào giá hay làng thấp nhất hai bạn.",
+    "wer": 0.5,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-26",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      25000,
+      null
+     ],
+     "gia_thap_nhat": [
+      "sai",
+      23000,
+      2000
+     ]
+    }
+   },
+   {
+    "id": "CN-049",
+    "goc": "Dạ chanh không hạt hai tấn, loại một, thứ bảy giao, giá mười lăm nghìn, dưới mười ba nghìn tui hổng bán",
+    "nghe": "Dạ chanh không hạt 2 tấn, loại 1, thứ 7 tạo, giá 15.000, tưới 13.000 tui hồng bán.",
+    "wer": 0.545,
+    "loi_truong": {
+     "ngay_giao": [
+      "bo_sot",
+      "2026-10-31",
+      null
+     ],
+     "gia_thap_nhat": [
+      "bo_sot",
+      13000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-050",
+    "goc": "Thanh long ruột đỏ chừng năm tấn, chưa hái, ngày năm tháng mười một hái được, loại một",
+    "nghe": "Thanh long ruột đỏ trừng 5 tấn, chưa hái, ngày 5 tháng 11 hái được, loại 1.",
+    "wer": 0.333,
+    "loi_truong": {
+     "uoc_tinh": [
+      "sai",
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "id": "CN-051",
+    "goc": "Bán hai trăm cân chanh không hạt loại hai, giá chín nghìn",
+    "nghe": "Bán 200 cân chanh không hạt loại hay, tá 9.000.",
+    "wer": 0.5,
+    "loi_truong": {
+     "loai": [
+      "bo_sot",
+      "L2",
+      null
+     ],
+     "gia_mong_muon": [
+      "bo_sot",
+      9000,
+      null
+     ]
+    }
+   },
+   {
+    "id": "CN-052",
+    "goc": "Bán năm yến xoài cát chu loại một cho nhà hàng, giá hai sáu nghìn",
+    "nghe": "Bán 5 yến xoài cát Chu loại 1 cho nhà hàng, tá 26.000.",
+    "wer": 0.4,
+    "loi_truong": {
+     "gia_mong_muon": [
+      "bo_sot",
+      26000,
+      null
+     ]
+    }
+   }
+  ]
+ },
+ "_ghi_chu": "Âm thanh tổng hợp Piper vi_VN-vais1000-medium; GPU RTX 4080 Laptop, float16; đo 2026-10-25T16:41:27"
+}

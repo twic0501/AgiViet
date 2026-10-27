@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://agiviet-23a94.web.app/ban/js/cau-hinh.js",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/ban/js/dong-co.js",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/ban/js/man/hang.js",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/mua/js/cau-hinh.js",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/mua/js/dong-co.js",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/mua/js/man/don-hang.js",
+    "error": "HTTP Error 404: Not Found"
+  }
+]

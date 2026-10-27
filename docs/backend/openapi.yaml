@@ -1,0 +1,4226 @@
+openapi: 3.1.0
+info:
+  title: AgiViet production v2 · Backend API
+  version: 0.1.1
+  description: "API dùng chung cho app bán và app mua. Tiếng Việt cho câu lỗi; tên API tiếng Anh.\n\nQuy ước:\n- Tiền là số nguyên đồng, lượng là số nguyên GAM. Trong phản hồi, mọi trường `*_vnd`, `*_g`\
+    \ là CHUỖI chữ số\n  (tránh mất chính xác số lớn). Đầu vào nhận số nguyên hoặc chuỗi chữ số.\n- Thời gian ISO 8601 UTC (hiển thị giờ Việt Nam ở giao diện).\n- Lệnh (POST đổi dữ liệu) bắt buộc `idempotency_key`\
+    \ (8–128 ký tự, client tự sinh, giữ nguyên khi gửi lại).\n  Gửi lại cùng khóa + cùng thân trả đúng kết quả cũ (`replayed: true`); cùng khóa khác thân → 409 `IDEMPOTENCY_XUNG_DOT`.\n  Có thể kèm `expected_revision`\
+    \ (số `revision` đã đọc); lệch → 409 `REVISION_XUNG_DOT`.\n- Phản hồi lệnh: `{id, revision, status, events[], errors[], data}`. Lỗi: `{errors:[{code,message,fix,details}], request_id}`.\n- Mọi phản\
+    \ hồi có header `x-request-id` (gửi kèm khi bấm \"Cần hỗ trợ\").\n- Xác thực: `Authorization: Bearer <token>` lấy từ `/v1/auth/otp/verify`. Header tùy chọn `x-device-id`.\n- Đường dẫn `/v1/test/*` và\
+    \ `/v1/sim/*` CHỈ có ở môi trường thử (production trả 404 `CHI_MOI_TRUONG_THU`).\n"
+servers:
+- url: http://127.0.0.1:8080
+security:
+- bearer: []
+tags:
+- name: auth
+  description: Đăng nhập OTP
+  phiên: null
+- name: catalog
+  description: Mặt hàng
+  giá tham khảo: null
+- name: lots
+  description: Lô (người bán)
+- name: demands
+  description: Nhu cầu mua (bên mua)
+- name: offers
+  description: Lời chào
+  báo giá: null
+  giữ lượng: null
+- name: orders
+  description: Đơn / hợp đồng
+- name: money
+  description: Cọc
+  khoản trả thẳng: null
+  lệnh ngân hàng: null
+- name: deliveries
+  description: Giao nhận
+  QR: null
+  nghiệm thu: null
+- name: cancel
+  description: Hủy
+- name: documents
+  description: Tài liệu PDF
+  xác minh: null
+- name: ops
+  description: Trang vận hành
+- name: webhooks
+  description: Webhook đối tác
+- name: test
+  description: Chỉ môi trường thử
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+  schemas:
+    Int:
+      oneOf:
+      - type: integer
+        minimum: 0
+      - type: string
+        pattern: ^\d{1,15}$
+    Money:
+      type: string
+      pattern: ^-?\d+$
+      description: Số nguyên đồng dạng chuỗi
+    Grams:
+      type: string
+      pattern: ^\d+$
+      description: Số nguyên gam dạng chuỗi
+    CommandBase:
+      type: object
+      required:
+      - idempotency_key
+      properties:
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 128
+        expected_revision:
+          type: integer
+    CommandResult:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        revision:
+          type:
+          - integer
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        events:
+          type: array
+          items:
+            type: string
+          description: Sự kiện nghiệp vụ phát trong giao dịch (03 mục 15), ví dụ don.ben_mua_ky
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        data:
+          type: object
+          description: Kết quả chi tiết của lệnh
+        replayed:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Mã ổn định (12 mục A8), ví dụ KHONG_CO_QUYEN, OTP_SAI, CHUA_DU_TIEN_TRUOC_BOC
+        message:
+          type: string
+          description: Câu tiếng Việt cho người dùng
+        fix:
+          type: string
+          description: Cách khắc phục
+        details: {}
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        request_id:
+          type: string
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone_masked:
+          type: string
+        is_staff:
+          type: boolean
+        staff_roles:
+          type: array
+          items:
+            type: string
+        org:
+          type: object
+          properties:
+            id:
+              type: string
+            code:
+              type: string
+            name:
+              type: string
+            kind:
+              type: string
+            can_sell:
+              type: boolean
+            can_buy:
+              type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+          description: owner, purchaser, accountant, warehouse, site_receiver, coop_board, collection_staff, coop_member, helper
+        approval_limit_vnd:
+          $ref: '#/components/schemas/Money'
+        helper_of:
+          type:
+          - object
+          - 'null'
+        orgs:
+          type: array
+          items:
+            type: object
+        actions:
+          type: array
+          items:
+            type: string
+          description: Hành động được phép (quyền theo hành động, A6). Dùng để ẩn/hiện nút.
+    DisplayStatus:
+      type: object
+      properties:
+        ten:
+          type: string
+          description: Dòng trạng thái hiển thị (03 mục 14)
+        chang:
+          type:
+          - string
+          - 'null'
+          enum:
+          - Ký
+          - Cọc
+          - Giao nhận
+          - Thanh toán
+          - Xong
+          - null
+        toi_luot:
+          type:
+          - object
+          - 'null'
+          properties:
+            phia:
+              type: string
+            viec:
+              type: string
+    ReadinessLine:
+      type: object
+      properties:
+        ma:
+          type: string
+          enum:
+          - hang
+          - tien
+          - nguoi_nhan
+          - xe
+          - ho_so
+          - de_nghi
+        ten:
+          type: string
+        ok:
+          type: boolean
+        ly_do:
+          type: string
+    LotQty:
+      type: object
+      properties:
+        available: &id001
+          $ref: '#/components/schemas/Grams'
+        held: *id001
+        committed: *id001
+        in_transit: *id001
+        delivered: *id001
+        returned_pending: *id001
+        moved_to_child: *id001
+        loss: *id001
+    Lot:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        product_code:
+          type: string
+        product_name:
+          type: string
+        grade_code:
+          type: string
+        qty_basis:
+          type: string
+          enum:
+          - estimated
+          - weighed
+        declared_qty_g: *id001
+        available_from:
+          type:
+          - string
+          - 'null'
+        harvest_on:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+        revision:
+          type: integer
+        is_substandard:
+          type: boolean
+        safety_locked:
+          type: boolean
+        province_code:
+          type:
+          - string
+          - 'null'
+        seller_name:
+          type: string
+        qty:
+          $ref: '#/components/schemas/LotQty'
+        photos:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              code:
+                type: string
+              captured_in_app:
+                type: boolean
+              created_at:
+                type: string
+                format: date-time
+        ask_price_vnd:
+          $ref: '#/components/schemas/Money'
+          description: Chỉ chủ lô
+        floor_price_vnd:
+          $ref: '#/components/schemas/Money'
+          description: KÍN, chỉ chủ lô
+        ref_price_at_set_vnd: &id002
+          $ref: '#/components/schemas/Money'
+        urgent_sale_until:
+          type:
+          - string
+          - 'null'
+        spray_clear_on:
+          type:
+          - string
+          - 'null'
+        last_confirmed_at:
+          type:
+          - string
+          - 'null'
+    LotListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        product_code:
+          type: string
+        grade_code:
+          type: string
+        qty_basis:
+          type: string
+        status:
+          type: string
+        revision:
+          type: integer
+        declared_qty_g: *id001
+        available_g: *id001
+        province_code:
+          type:
+          - string
+          - 'null'
+        available_from:
+          type:
+          - string
+          - 'null'
+    Demand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        buyer_name:
+          type: string
+        product_code:
+          type: string
+        segment_code:
+          type: string
+        status:
+          type: string
+        revision:
+          type: integer
+        needed_from:
+          type: string
+        needed_to:
+          type: string
+        delivery_mode:
+          type: string
+        required_docs:
+          type: array
+          items:
+            type: string
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              grade_code:
+                type: string
+              qty_g: *id001
+              min_source_qty_g: *id001
+              max_price_vnd:
+                $ref: '#/components/schemas/Money'
+                description: KÍN, chỉ tổ chức mua
+    MatchCard:
+      type: object
+      properties:
+        lot_id:
+          type: string
+          format: uuid
+        lot_code:
+          type: string
+        seller_name:
+          type: string
+        province_code:
+          type:
+          - string
+          - 'null'
+        kha_dung_cam_ket_g: *id001
+        diem:
+          type: number
+        khoang_cach_km:
+          type:
+          - number
+          - 'null'
+        ly_do_khop:
+          type: array
+          items:
+            type: string
+        thieu:
+          type: array
+          items:
+            type: string
+        ghi_chu:
+          type: array
+          items:
+            type: string
+    Matches:
+      type: object
+      properties:
+        demand_id:
+          type: string
+          format: uuid
+        nguon:
+          type: string
+          description: ai | luat_backend | luat_backend (AI lỗi, dự phòng)
+        loi_ai:
+          type: array
+          items:
+            type: string
+        chi_goi_y:
+          type: boolean
+        dong:
+          type: array
+          items:
+            type: object
+            properties:
+              demand_line_id:
+                type: string
+                format: uuid
+              grade_code:
+                type: string
+              qty_g: *id001
+              khop_du:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchCard'
+              khop_mot_phan:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchCard'
+              gan_khop_gia:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchCard'
+              goi_y_gom:
+                type:
+                - object
+                - 'null'
+    Offer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        direction:
+          type: string
+        lot_id:
+          type: string
+          format: uuid
+        lot_code:
+          type: string
+        demand_line_id:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+        revision:
+          type: integer
+        rounds:
+          type: array
+          items:
+            type: object
+            properties:
+              round_no:
+                type: integer
+              from_side:
+                type: string
+              price_vnd: *id002
+              qty_g: *id001
+              expires_at:
+                type: string
+                format: date-time
+        hold:
+          type:
+          - object
+          - 'null'
+        toi_luot:
+          type:
+          - string
+          - 'null'
+        toi_luot_toi:
+          type: boolean
+        luot_tra_gia_con:
+          type: integer
+    SignState:
+      type: object
+      properties:
+        duoc_ky:
+          type: boolean
+        can_duyet_noi_bo:
+          type: boolean
+        da_duyet:
+          type:
+          - boolean
+          - 'null'
+        han_muc_vnd: *id002
+        gia_tri_vnd: *id002
+        ly_do:
+          type:
+          - string
+          - 'null'
+      description: Người đang xem có ký được không; giải thích trước khi gửi OTP
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        status:
+          type: string
+        revision:
+          type: integer
+        close_reason:
+          type:
+          - string
+          - 'null'
+        phia_cua_ban:
+          type: string
+          enum:
+          - buyer
+          - seller
+        hien_thi:
+          $ref: '#/components/schemas/DisplayStatus'
+        buyer:
+          type: object
+          properties:
+            code:
+              type: string
+            display_name:
+              type: string
+        seller:
+          type: object
+          properties:
+            code:
+              type: string
+            display_name:
+              type: string
+        effective_version_no:
+          type:
+          - integer
+          - 'null'
+        co:
+          type: object
+          properties:
+            gia_bat_thuong:
+              type: boolean
+            vi_pham_thanh_toan:
+              type: boolean
+            de_nghi_mo:
+              type: boolean
+            dang_xin_huy:
+              type: boolean
+        dieu_khoan:
+          type: object
+          properties:
+            version_no:
+              type: integer
+            qty_g: *id001
+            unit_price_vnd: *id002
+            downgrade_price_vnd: *id002
+            ref_price_vnd: *id002
+            deposit_price_vnd: *id002
+            contract_value_vnd: *id002
+            deposit_vnd: *id002
+            fee_vnd: *id002
+            payment_timing:
+              type: string
+            pay_after_days:
+              type:
+              - integer
+              - 'null'
+            delivery_mode:
+              type: string
+            acceptance_point:
+              type: string
+            transport_by:
+              type: string
+            seller_account:
+              type: object
+              properties:
+                bank_code:
+                  type: string
+                masked:
+                  type: string
+                holder:
+                  type: string
+            designated_receiver_user_id:
+              type:
+              - string
+              - 'null'
+            silent_accept_hours:
+              type:
+              - integer
+              - 'null'
+            reject_allowance_bps:
+              type: integer
+        lien_lac:
+          type: string
+          enum:
+          - chua_mo
+          - relay
+          - full
+        dot_giao:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              code:
+                type: string
+              batch_no:
+                type: integer
+              planned_qty_g: *id001
+              status:
+                type: string
+              revision:
+                type: integer
+              receiver_user_id:
+                type:
+                - string
+                - 'null'
+              window_from:
+                type: string
+                format: date-time
+              window_to:
+                type: string
+                format: date-time
+        han:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              kind:
+                type: string
+              entity:
+                type: string
+              due_at:
+                type: string
+                format: date-time
+              status:
+                type: string
+        lich_su:
+          type: array
+          items:
+            type: object
+            properties:
+              entity:
+                type: string
+              from_status:
+                type:
+                - string
+                - 'null'
+              to_status:
+                type: string
+              actor_kind:
+                type: string
+              command:
+                type:
+                - string
+                - 'null'
+              reason:
+                type:
+                - string
+                - 'null'
+              at:
+                type: string
+                format: date-time
+        tai_lieu:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              code:
+                type: string
+              doc_type:
+                type: string
+              version_no:
+                type: integer
+              status:
+                type: string
+              content_sha256:
+                type: string
+              file_sha256:
+                type: string
+              created_at:
+                type: string
+                format: date-time
+        ky:
+          $ref: '#/components/schemas/SignState'
+        hanh_dong:
+          type: array
+          items:
+            type: string
+    OrderListItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        status:
+          type: string
+        revision:
+          type: integer
+        buyer_name:
+          type: string
+        seller_name:
+          type: string
+        contract_value_vnd: *id002
+        phia_cua_ban:
+          type: string
+        hien_thi:
+          $ref: '#/components/schemas/DisplayStatus'
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        kind:
+          type: string
+        direction:
+          type: string
+          enum:
+          - buyer_to_seller
+          - seller_to_buyer
+        amount_due_vnd: *id002
+        status:
+          type: string
+        due_at:
+          type:
+          - string
+          - 'null'
+        blocks_loading:
+          type: boolean
+        payee_bank_code:
+          type:
+          - string
+          - 'null'
+        payee_account_masked:
+          type:
+          - string
+          - 'null'
+        payee_account_holder:
+          type:
+          - string
+          - 'null'
+        reported_vnd: *id002
+        confirmed_vnd: *id002
+    PaymentInstruction:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        direction:
+          type: string
+        status:
+          type: string
+        so_tien_con_vnd: *id002
+        due_at:
+          type:
+          - string
+          - 'null'
+        noi_dung:
+          type: string
+        tai_khoan:
+          type:
+          - object
+          - 'null'
+          properties:
+            ngan_hang:
+              type: string
+            so_tai_khoan:
+              type: string
+            so_che:
+              type: string
+            chu_tai_khoan:
+              type: string
+            ghi_chu:
+              type: string
+        vietqr:
+          type:
+          - string
+          - 'null'
+        canh_bao:
+          type:
+          - string
+          - 'null'
+        cau:
+          type: string
+    OrderMoney:
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        coc:
+          type:
+          - object
+          - 'null'
+        phi:
+          type:
+          - object
+          - 'null'
+        khoan_tra_thang:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+        lenh_ngan_hang:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              code:
+                type: string
+              kind:
+                type: string
+              amount_vnd: *id002
+              status:
+                type: string
+              target_bank_code:
+                type: string
+              target_account_masked:
+                type: string
+              target_account_holder:
+                type: string
+              callback_required:
+                type: boolean
+        quyet_toan:
+          type: array
+          items:
+            type: object
+        so_cai:
+          type: array
+          items:
+            type: object
+            properties:
+              account_type:
+                type: string
+              balance_vnd: *id002
+    CancellationRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        reason_kind:
+          type: string
+        reason_text:
+          type:
+          - string
+          - 'null'
+        outcome:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+        requested_by_side:
+          type: string
+        requested_by_name:
+          type: string
+        reply_due_at:
+          type:
+          - string
+          - 'null'
+        la_cua_toi:
+          type: boolean
+        hanh_dong:
+          type: array
+          items:
+            type: string
+            enum:
+            - accept
+            - reject
+    Dispute:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        reason:
+          type: string
+        claim_kind:
+          type: string
+        disputed_qty_g: *id001
+        created_at:
+          type: string
+          format: date-time
+        opened_by_side:
+          type: string
+        line_no:
+          type: integer
+        line_kind:
+          type: string
+        delivery_id:
+          type: string
+          format: uuid
+        delivery_code:
+          type: string
+        inspections:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              fee_vnd: *id002
+              due_at:
+                type: string
+                format: date-time
+              prepaid_by_side:
+                type: string
+              result:
+                type:
+                - string
+                - 'null'
+        next_due_at:
+          type:
+          - string
+          - 'null'
+        hanh_dong:
+          type: array
+          items:
+            type: string
+    Member:
+      type: object
+      properties:
+        membership_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone_masked:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+        approval_limit_vnd: *id002
+        roles_effective:
+          type: array
+          items:
+            type: string
+        role_grants:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+              effective_at:
+                type: string
+                format: date-time
+    PayoutAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bank_code:
+          type: string
+        account_masked:
+          type: string
+        holder_name:
+          type: string
+        name_match:
+          type: boolean
+        status:
+          type: string
+        cooldown_until:
+          type:
+          - string
+          - 'null'
+        activated_at:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+    Notification:
+      type: object
+      properties:
+        seq:
+          type: integer
+        id:
+          type: string
+          format: uuid
+        event_type:
+          type: string
+        aggregate_type:
+          type: string
+        aggregate_id:
+          type: string
+          format: uuid
+        order_id:
+          type:
+          - string
+          - 'null'
+        occurred_at:
+          type: string
+          format: date-time
+        payload:
+          type: object
+    MoneySummary:
+      type: object
+      properties:
+        ky:
+          type: object
+        tong:
+          type: object
+          properties:
+            coc_dang_giu: *id002
+            tien_treo: *id002
+            da_nhan_truc_tiep: *id002
+            da_tra_truc_tiep_duoc_xac_nhan: *id002
+            ngan_hang_da_chuyen_den: *id002
+            con_phai_nhan: *id002
+            con_phai_tra: *id002
+            phi_da_thu_chua_chot: *id002
+        theo_don:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              code:
+                type: string
+              status:
+                type: string
+              la_mua:
+                type: boolean
+              coc_trang_thai:
+                type:
+                - string
+                - 'null'
+              coc_dang_giu_vnd: *id002
+              phi_vnd: *id002
+              phi_trang_thai:
+                type: string
+                enum:
+                - chua_thu
+                - da_thu_cho_ket_qua
+                - khong_hoan
+                - theo_bang_hoan
+        ghi_chu:
+          type: string
+    Plan:
+      type: object
+      properties:
+        code:
+          type: string
+        label_vi:
+          type: string
+        monthly_price_vnd: *id002
+        first_order_fee_bps:
+          type: integer
+        repeat_fee_bps:
+          type: integer
+        fee_floor_vnd: *id002
+        fee_cap_vnd: *id002
+        max_members:
+          type: integer
+        la_gia_thu:
+          type: boolean
+        ghi_chu:
+          type: string
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        plan_code:
+          type: string
+        label_vi:
+          type: string
+        tu:
+          type: string
+          format: date-time
+        den:
+          type: string
+          format: date-time
+        so_thanh_vien:
+          type: integer
+        max_members:
+          type: integer
+    SupportTicket:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        status:
+          type: string
+        trigger_reason:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        response_due_at:
+          type: string
+          format: date-time
+        next_update_at:
+          type: string
+          format: date-time
+        nguoi_phu_trach:
+          type:
+          - string
+          - 'null'
+    SourceProfile:
+      type: object
+      properties:
+        lot_id:
+          type: string
+          format: uuid
+        lot_code:
+          type: string
+        nguoi_ban:
+          type: object
+          properties:
+            ten:
+              type: string
+            loai:
+              type: string
+            muc_xac_minh:
+              type: integer
+            tinh:
+              type:
+              - string
+              - 'null'
+        vi_tri:
+          type:
+          - object
+          - 'null'
+        giay_to:
+          type: array
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+              label_vi:
+                type: string
+              market:
+                type:
+                - string
+                - 'null'
+              tu:
+                type:
+                - string
+                - 'null'
+              den:
+                type:
+                - string
+                - 'null'
+              trang_thai:
+                type: string
+                enum:
+                - da_xac_minh
+                - tu_khai
+                - het_hieu_luc
+        anh:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              nhan:
+                type: string
+                enum:
+                - chup_trong_app
+                - anh_tai_len
+              captured_at:
+                type:
+                - string
+                - 'null'
+        don_hoan_tat_tren_app:
+          type: integer
+        uy_tin:
+          type: 'null'
+        ghi_chu_uy_tin:
+          type: string
+    Amendment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+        status:
+          type: string
+        payload:
+          type: object
+        resulting_version_no:
+          type:
+          - integer
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        la_cua_toi:
+          type: boolean
+        annex_document_id:
+          type:
+          - string
+          - 'null'
+        han:
+          type:
+          - string
+          - 'null'
+    Delivery:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        order_id:
+          type: string
+          format: uuid
+        order_code:
+          type: string
+        status:
+          type: string
+        revision:
+          type: integer
+        batch_no:
+          type: integer
+        planned_qty_g: *id001
+        receiver_user_id:
+          type:
+          - string
+          - 'null'
+        acceptance_point:
+          type: string
+        window_from:
+          type: string
+          format: date-time
+        window_to:
+          type: string
+          format: date-time
+        the_san_sang:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReadinessLine'
+        ket_qua:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              version_no:
+                type: integer
+              weighed_g: *id001
+              document_id:
+                type: string
+                format: uuid
+              content_sha256:
+                type: string
+              lines:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    line_no:
+                      type: integer
+                    kind:
+                      type: string
+                    qty_g: *id001
+                    unit_price_vnd: *id002
+                    value_vnd: *id002
+                    reason_code:
+                      type:
+                      - string
+                      - 'null'
+                    status:
+                      type: string
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        kind:
+          type: string
+        priority:
+          type: string
+        entity:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        order_id:
+          type:
+          - string
+          - 'null'
+        order_code:
+          type:
+          - string
+          - 'null'
+        required_role:
+          type: string
+        trigger_reason:
+          type: string
+        status:
+          type: string
+        assigned_to:
+          type:
+          - string
+          - 'null'
+        assigned_name:
+          type:
+          - string
+          - 'null'
+        response_due_at:
+          type: string
+          format: date-time
+        resolution_due_at:
+          type: string
+          format: date-time
+        next_update_at:
+          type: string
+          format: date-time
+        result_code:
+          type:
+          - string
+          - 'null'
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    CommandUnavailable:
+      description: 501 CHUA_HO_TRO. Chưa có command DB phù hợp hoặc command hiện chưa thực hiện an toàn được nhánh này; không có đường dự phòng owner. Xem docs/backend/danh-gia-thanh-that.md.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      const: CHUA_HO_TRO
+                    message:
+                      type: string
+              request_id:
+                type: string
+    Cmd:
+      description: Kết quả lệnh
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommandResult'
+    Err:
+      description: Lỗi nghiệp vụ
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+paths:
+  /health:
+    get:
+      tags:
+      - ops
+      security: []
+      summary: Sức khỏe (số migration, giờ hệ thống)
+      responses:
+        '200':
+          description: OK
+  /health/ready:
+    get:
+      tags:
+      - ops
+      security: []
+      summary: Sẵn sàng (truy vấn DB)
+      responses:
+        '200':
+          description: OK
+  /v1/auth/otp/send:
+    post:
+      tags:
+      - auth
+      security: []
+      summary: Gửi OTP đăng nhập (SMS mô phỏng). Môi trường thử trả ma_thu = 123456.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - phone
+              properties:
+                phone:
+                  type: string
+                  example: 0918000421
+      responses:
+        '200':
+          description: '{challenge_id, het_han_giay, ma_thu?}'
+        '429':
+          $ref: '#/components/responses/Err'
+  /v1/auth/otp/verify:
+    post:
+      tags:
+      - auth
+      security: []
+      summary: Xác nhận OTP, tạo phiên. org_code để chọn tổ chức khi thuộc nhiều tổ chức.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - challenge_id
+              - phone
+              - code
+              properties:
+                challenge_id:
+                  type: string
+                phone:
+                  type: string
+                code:
+                  type: string
+                org_code:
+                  type: string
+                device_id:
+                  type: string
+      responses:
+        '200':
+          description: '{token, user}'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/Err'
+  /v1/auth/session:
+    get:
+      tags:
+      - auth
+      summary: Hồ sơ phiên hiện tại (vai, hành động được phép)
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /v1/auth/switch-org:
+    post:
+      tags:
+      - auth
+      summary: Đổi tổ chức đang thao tác
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                org_code:
+                  type: string
+      responses:
+        '200':
+          description: User
+  /v1/auth/logout:
+    post:
+      tags:
+      - auth
+      summary: Đăng xuất
+      responses:
+        '200':
+          description: OK
+  /v1/otp/challenges:
+    post:
+      tags:
+      - auth
+      summary: Tạo OTP cho hành động (ký hợp đồng/phụ lục, xác nhận đã nhận tiền). Không cần idempotency_key.
+      description: 'Binding do server dựng lại từ DB: ký = mã đơn + mã tài liệu + SHA-256 nội dung + giá trị hợp đồng; nhận tiền = mã khoản + số tiền + phiên bản hợp đồng.
+
+        Người giúp không bao giờ nhận được OTP ký/tiền (KHONG_CO_QUYEN). Mã hết hạn 5 phút, tối đa 5 lần sai.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - purpose
+              properties:
+                purpose:
+                  type: string
+                  enum:
+                  - contract_sign
+                  - amendment_sign
+                  - money_received
+                document_id:
+                  type: string
+                  format: uuid
+                payment_id:
+                  type: string
+                  format: uuid
+                amount_vnd:
+                  $ref: '#/components/schemas/Int'
+      responses:
+        '200':
+          description: '{challenge_id, purpose, het_han_giay, binding, ma_thu?}'
+  /v1/products:
+    get:
+      tags:
+      - catalog
+      summary: Danh mục mặt hàng và bảng loại
+      responses:
+        '200':
+          description: OK
+  /v1/products/{code}/profile:
+    get:
+      tags:
+      - catalog
+      summary: Hồ sơ ngành hàng hiện hành + danh mục lý do trả lại
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /v1/reference-prices:
+    get:
+      tags:
+      - catalog
+      summary: Giá tham khảo (≥ 3 đơn từ ≥ 2 cặp), hoặc chua_du_du_lieu
+      parameters:
+      - name: product
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: grade
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: region
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '{status, price_vnd, order_count, pair_count, scope, as_of}'
+  /v1/files:
+    post:
+      tags:
+      - documents
+      summary: Tải ảnh/chứng từ (base64, ≤ 8 MB). Ảnh chỉ là đầu mối, không phải bằng chứng tiền.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - mime
+                - data_base64
+                - entity
+                - entity_id
+                - captured_in_app
+                properties:
+                  mime:
+                    type: string
+                    enum:
+                    - image/jpeg
+                    - image/png
+                    - image/webp
+                    - application/pdf
+                  data_base64:
+                    type: string
+                  entity:
+                    type: string
+                    enum:
+                    - lot
+                    - order
+                    - delivery
+                    - acceptance
+                    - payment
+                    - dispute
+                    - organization
+                    - production_site
+                    description: 'organization: chứng cứ xác minh tổ chức (giấy phép, CCCD) - chủ tổ chức đó hoặc nhân viên field/risk/supervisor/support.'
+                  entity_id:
+                    type: string
+                    format: uuid
+                  captured_in_app:
+                    type: boolean
+                  lat:
+                    type: number
+                  lng:
+                    type: number
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/lots:
+    get:
+      tags:
+      - lots
+      summary: 'mine=true: lô của tôi (có khả dụng). Không mine: tìm nguồn cho bên mua (KHÔNG có giá).'
+      parameters:
+      - name: mine
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+      - name: product
+        in: query
+        schema:
+          type: string
+      - name: grade
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LotListItem'
+      description: Tìm nguồn ẩn lô quá 14 ngày (CHINH_SACH.han.hienThiLoNgay) chưa xác nhận còn hàng. mine=true trả thêm last_confirmed_at, an_tu_dong, an_ly_do; POST /v1/lots/{id}/confirm-available để
+        hiện lại.
+    post:
+      tags:
+      - lots
+      summary: 'tao_lo: tạo lô nháp (NB, người giúp lot.draft). Chặn ngày hái trước hết cách ly (CHUA_HET_CACH_LY). Trả cảnh báo giá.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - product_code
+                - grade_code
+                - qty_basis
+                - qty_g
+                - ask_price_vnd
+                - floor_price_vnd
+                properties:
+                  product_code:
+                    type: string
+                  grade_code:
+                    type: string
+                  qty_basis:
+                    type: string
+                    enum:
+                    - estimated
+                    - weighed
+                  qty_g:
+                    $ref: '#/components/schemas/Int'
+                  available_from:
+                    type: string
+                    format: date
+                  harvest_on:
+                    type: string
+                    format: date
+                  spray_clear_on:
+                    type: string
+                    format: date
+                  site_id:
+                    type: string
+                    format: uuid
+                  ask_price_vnd:
+                    $ref: '#/components/schemas/Int'
+                  floor_price_vnd:
+                    $ref: '#/components/schemas/Int'
+                    description: 'Giá thấp nhất KÍN: chỉ chủ lô thấy'
+                  variety:
+                    type: string
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          $ref: '#/components/responses/Cmd'
+        '422':
+          description: MAT_HANG_CHUA_XAC_MINH khi tổ chức × vườn × mặt hàng × loại chưa có hồ sơ xác minh hiệu lực; CHUA_HET_CACH_LY theo nhật ký
+  /v1/lots/{id}:
+    get:
+      tags:
+      - lots
+      summary: Xem lô; chủ lô thấy ask/floor price, bên khác không
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lot'
+  /v1/lots/{id}/qty:
+    get:
+      tags:
+      - lots
+      summary: Sổ lượng theo ngăn (available, held, committed, in_transit, delivered, returned_pending, moved_to_child, loss), gam
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LotQty'
+  /v1/lots/{id}/publish:
+    post:
+      tags:
+      - lots
+      summary: 'dang_lo: cần ≥ 1 ảnh chụp trong app; sang on_sale hoặc upcoming'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommandBase'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/lots/{id}/confirm-available:
+    post:
+      tags:
+      - lots
+      summary: xac_nhan_con_hang
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/lots/{id}/price:
+    post:
+      tags:
+      - lots
+      summary: 'sua_gia (1 lần / 24 giờ trừ bán gấp): {ask_price_vnd, floor_price_vnd}'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/lots/{id}/close:
+    post:
+      tags:
+      - lots
+      summary: dong_lo (không còn giữ/cam kết)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/demands:
+    get:
+      tags:
+      - demands
+      summary: 'mine=true: phiếu của tôi; không mine: phiếu đang mở cho người bán (không giá tối đa)'
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - demands
+      summary: tao_nhu_cau (BM mua hàng/quản lý; tổ chức có MST)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - product_code
+                - segment_code
+                - needed_from
+                - needed_to
+                - delivery_mode
+                - lines
+                properties:
+                  product_code:
+                    type: string
+                  segment_code:
+                    type: string
+                    enum:
+                    - export
+                    - processor
+                    - horeca
+                    - wholesaler
+                  needed_from:
+                    type: string
+                    format: date
+                  needed_to:
+                    type: string
+                    format: date
+                  delivery_mode:
+                    type: string
+                    enum:
+                    - self_pickup
+                    - delivered
+                  required_docs:
+                    type: array
+                    items:
+                      type: string
+                  lines:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - grade_code
+                      - qty_g
+                      - max_price_vnd
+                      - min_source_qty_g
+                      properties:
+                        grade_code:
+                          type: string
+                        qty_g:
+                          type: string
+                          pattern: ^[1-9][0-9]*$
+                          description: Số nguyên dương (chuỗi thập phân). Thiếu hoặc 0 trả 422 DU_LIEU_KHONG_HOP_LE.
+                        max_price_vnd:
+                          type: string
+                          pattern: ^[1-9][0-9]*$
+                          description: KÍN. Số nguyên dương, đồng/kg.
+                        min_source_qty_g:
+                          type: string
+                          pattern: ^[1-9][0-9]*$
+                          description: Lượng tối thiểu mỗi nguồn (gam), bắt buộc, >0 và không lớn hơn qty_g. Thiếu/0 trả 422.
+                      minItems: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+        '422':
+          description: Thiếu trường hoặc sai giá trị dòng nhu cầu (DU_LIEU_KHONG_HOP_LE, có hướng sửa).
+  /v1/demands/{id}:
+    get:
+      tags:
+      - demands
+      summary: Xem phiếu (chủ phiếu thấy max_price_vnd)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Demand'
+  /v1/demands/{id}/publish:
+    post:
+      tags:
+      - demands
+      summary: dang_nhu_cau
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/demands/{id}/lines/{lineId}/max-price:
+    post:
+      tags:
+      - demands
+      summary: 'sua_nhu_cau: giá tối đa chỉ tăng (GIA_KHONG_DUOC_GIAM)'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      - name: lineId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/demands/{id}/close:
+    post:
+      tags:
+      - demands
+      summary: dong_nhu_cau (lời chào đang mở hết hiệu lực)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/demands/{id}/matches:
+    get:
+      tags:
+      - demands
+      summary: Kết quả ghép 3 nhóm (khop_du, khop_mot_phan, gan_khop_gia) + gợi ý gom; không số giá; xếp theo điểm
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Matches'
+  /v1/offers:
+    get:
+      tags:
+      - offers
+      summary: Lời chào của tổ chức tôi (vòng cuối)
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - offers
+      summary: 'gui_loi_chao: buyer_bid (bên mua chào lô) hoặc seller_quote (người bán báo giá cho dòng nhu cầu)'
+      description: 'Dưới 60% tham khảo: 422 DUOI_60_THAM_KHAO. Dưới giá kín của lô: status auto_rejected + thong_bao "Chưa tới mức người bán chấp nhận." (không số). Q12 CHAO_VUOT_LUONG.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - direction
+                - lot_id
+                - qty_g
+                - price_vnd
+                properties:
+                  direction:
+                    type: string
+                    enum:
+                    - buyer_bid
+                    - seller_quote
+                  lot_id:
+                    type: string
+                    format: uuid
+                  demand_line_id:
+                    type: string
+                    format: uuid
+                  qty_g:
+                    $ref: '#/components/schemas/Int'
+                  price_vnd:
+                    $ref: '#/components/schemas/Int'
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/offers/{id}:
+    get:
+      tags:
+      - offers
+      summary: 'Xem lời chào: rounds, hold, toi_luot, toi_luot_toi, luot_tra_gia_con'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+  /v1/offers/{id}/accept:
+    post:
+      tags:
+      - offers
+      summary: dong_y (bên nhận) → giữ lượng 24 giờ. data.thong_bao bắt đầu "Đây chưa phải hợp đồng."
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/offers/{id}/counter:
+    post:
+      tags:
+      - offers
+      summary: 'tra_gia {price_vnd, qty_g?}: tối đa 2 lượt mỗi bên (HET_LUOT_TRA_GIA)'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/offers/{id}/reject:
+    post:
+      tags:
+      - offers
+      summary: tu_choi (bên nhận)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/offers/{id}/withdraw:
+    post:
+      tags:
+      - offers
+      summary: rut (bên gửi, chưa có trả lời; 2 lần mỗi phiếu)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders:
+    get:
+      tags:
+      - orders
+      summary: Đơn của tổ chức tôi kèm trạng thái hiển thị
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderListItem'
+    post:
+      tags:
+      - orders
+      summary: lap_don từ lời chào đã đồng ý (giữ lượng còn hạn). Tính P_coc, C, F, trả thẳng; sinh PDF HD v1.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - offer_id
+                - delivery_mode
+                - transport_by
+                - delivery_from
+                - delivery_to
+                - payment_timing
+                properties:
+                  offer_id:
+                    type: string
+                    format: uuid
+                  downgrade_price_vnd:
+                    $ref: '#/components/schemas/Int'
+                  delivery_mode:
+                    type: string
+                    enum:
+                    - at_farm
+                    - at_buyer_warehouse
+                    - at_collection_point
+                  site_kind:
+                    type: string
+                    enum:
+                    - tai_vuon
+                    - tai_ao
+                    - tai_ruong
+                  transport_by:
+                    type: string
+                    enum:
+                    - buyer
+                    - seller
+                    - partner_for_buyer
+                    - partner_for_seller
+                  delivery_from:
+                    type: string
+                    format: date-time
+                  delivery_to:
+                    type: string
+                    format: date-time
+                  payment_timing:
+                    type: string
+                    enum:
+                    - before_loading
+                    - inspect_then_before_loading
+                    - on_receipt
+                    - after_days
+                  pay_after_days:
+                    type: integer
+                  designated_receiver_user_id:
+                    type: string
+                    format: uuid
+                  silent_accept_hours:
+                    type:
+                    - integer
+                    - 'null'
+                  seal_sample_required:
+                    type: boolean
+                  inspection_before_loading:
+                    type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders/{id}:
+    get:
+      tags:
+      - orders
+      summary: 'Chi tiết đơn: status, hien_thi (dòng trạng thái, chặng, tới lượt), dieu_khoan, co (cờ), lien_lac (chua_mo|relay|full), dot_giao, han, lich_su, tai_lieu, hanh_dong'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+      description: Thêm ly_do_dong (lời giải thích cụ thể khi đơn đóng trước cọc/từ chối; close_reason vẫn là mã) và dot_hien_hanh_id (đợt chưa kết thúc sớm nhất; UI dùng thay vì dot_giao[0]).
+  /v1/orders/{id}/terms:
+    get:
+      tags:
+      - orders
+      summary: 8 thẻ tóm tắt điều khoản từ nội dung đã băm
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+      description: 'Có nguon_noi_dung: hop_dong_da_bam | phien_ban_dieu_khoan_db. Khi tài liệu chưa có nội dung chuẩn hóa đủ (dự thảo/demo) thẻ dựng từ điều khoản trong DB kèm canh_bao; không còn 500.'
+  /v1/orders/{id}/money:
+    get:
+      tags:
+      - money
+      summary: 'Bảng tiền: cọc, phí (trạng thái), khoản trả thẳng, lệnh ngân hàng, quyết toán, số dư sổ cái theo ngăn'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderMoney'
+  /v1/orders/{id}/payments:
+    get:
+      tags:
+      - money
+      summary: Khoản trả thẳng / nghĩa vụ (reported_vnd, confirmed_vnd)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+  /v1/orders/{id}/deposit-instruction:
+    get:
+      tags:
+      - money
+      summary: 'Hướng dẫn chuyển cọc: VietQR, nội dung AGV <ma> COC, tổng C+F, đã nhận, hạn (BM chủ/kế toán)'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+  /v1/orders/{id}/submit-approval:
+    post:
+      tags:
+      - orders
+      summary: gui_duyet (vượt hạn mức người lập)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders/{id}/approve:
+    post:
+      tags:
+      - orders
+      summary: duyet (BM quản lý khác người lập; NGUOI_LAP_KHONG_DUOC_DUYET)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders/{id}/reject-approval:
+    post:
+      tags:
+      - orders
+      summary: tu_choi_duyet {reason}
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders/{id}/sign:
+    post:
+      tags:
+      - orders
+      summary: ky_va_gui (bên mua) / ky (người bán). Trước đó gọi /v1/otp/challenges purpose=contract_sign với document_id của HD.
+      description: 'Người bán: commitment_ack bắt buộc; đơn gia_bat_thuong cần abnormal_price_ack (CAN_XAC_NHAN_GIA_BAT_THUONG). Bên mua vượt hạn mức chưa duyệt: CAN_DUYET_NOI_BO.'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - challenge_id
+                - code
+                properties:
+                  challenge_id:
+                    type: string
+                  code:
+                    type: string
+                  commitment_ack:
+                    type: boolean
+                  abnormal_price_ack:
+                    type: boolean
+                  device_id:
+                    type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+        '422':
+          $ref: '#/components/responses/Err'
+  /v1/orders/{id}/decline:
+    post:
+      tags:
+      - orders
+      summary: tu_choi_ky (người bán)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          $ref: '#/components/responses/Cmd'
+      description: 'Body {reason}: lý do cụ thể được giữ và trả lại ở GET /v1/orders/{id}.ly_do_dong.'
+  /v1/orders/{id}/withdraw:
+    post:
+      tags:
+      - orders
+      summary: rut_don (bên mua, trước cọc)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders/{id}/cancel:
+    post:
+      tags:
+      - cancel
+      summary: huy_truoc_coc (đơn chờ cọc, bất kỳ bên)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/orders/{id}/cancellation-preview:
+    get:
+      tags:
+      - cancel
+      summary: 'Màn hệ quả hủy: hàng, cọc về ai, phí hoàn không, trả thẳng; query reason_kind'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+  /v1/orders/{id}/cancellation-requests:
+    post:
+      tags:
+      - cancel
+      summary: 'xin_huy sau cọc {reason_kind: buyer_request|seller_request|force_majeure, reason_text}'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+      description: reason_kind=force_majeure cần chứng cứ của bên xin đã gắn vào đơn (POST /v1/files entity=order); thiếu trả 422.
+    get:
+      tags:
+      - cancel
+      summary: Yêu cầu hủy của đơn (mới nhất trước) với hanh_dong cho người đang xem
+      parameters: &id003
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CancellationRequest'
+  /v1/cancellation-requests/{id}/accept:
+    post:
+      tags:
+      - cancel
+      summary: dong_y_huy (bên kia) → lệnh ngân hàng, nghĩa vụ hoàn, BBHUY
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/cancellation-requests/{id}/reject:
+    post:
+      tags:
+      - cancel
+      summary: khong_dong_y
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/payments/{id}/report:
+    post:
+      tags:
+      - money
+      summary: 'bao_da_tra (bên trả): {amount_vnd, method: bank_transfer|cash, evidence_document_id} — KHÔNG cộng "đã nhận"'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/payments/{id}/confirm:
+    post:
+      tags:
+      - money
+      summary: xac_nhan_nhan (bên nhận, OTP money_received gắn số tiền + mã khoản). Chuyển khoản bắt buộc bank_txn_ref (MA_GIAO_DICH_TRUNG nếu trùng trong đơn); tiền mặt cần receipt_document_id.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - challenge_id
+                - code
+                - amount_vnd
+                - result
+                properties:
+                  challenge_id:
+                    type: string
+                  code:
+                    type: string
+                  amount_vnd:
+                    $ref: '#/components/schemas/Int'
+                  result:
+                    type: string
+                    enum:
+                    - full
+                    - partial
+                  bank_txn_ref:
+                    type: string
+                  method:
+                    type: string
+                    enum:
+                    - bank_transfer
+                    - cash
+                  receipt_document_id:
+                    type: string
+                    format: uuid
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+        '409':
+          $ref: '#/components/responses/Err'
+  /v1/payments/{id}/not-received:
+    post:
+      tags:
+      - money
+      summary: Giữ URL cũ; trả 501 vì DB chưa có command người nhận báo chưa nhận. Không ghi mismatch trực tiếp.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          $ref: '#/components/responses/Cmd'
+      description: 'Bên nhận báo chưa thấy tiền (cmd.report_payment_not_received): khoản sang mismatch, tạo việc V08 cho finance. Không cộng tiền.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - &id007
+                $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  reason:
+                    type: string
+  /v1/deliveries/{id}:
+    get:
+      tags:
+      - deliveries
+      summary: 'Đợt giao: trạng thái, thẻ sẵn sàng (khi chuẩn bị), các phiên bản kết quả nghiệm thu'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+      description: 'Trả thêm phia (buyer|seller), hanh_dong[] theo phía và trạng thái: seller: start_check (đợt ready tại nguồn, quyền delivery.record), dispatch, agree_acceptance, dispute_line; buyer (người
+        nhận chỉ định): show_receipt_code, submit_acceptance, arrival. ket_qua[] mỗi bản có seller_agreed_at, buyer_agreed_at (thời điểm ký biên bản, null nếu chưa), seller_agreed, buyer_agreed.'
+  /v1/deliveries/{id}/readiness:
+    get:
+      tags:
+      - deliveries
+      summary: Thẻ "Sẵn sàng giao" 6 dòng đọc từ dữ liệu
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadinessLine'
+  /v1/deliveries/{id}/receiver:
+    post:
+      tags:
+      - deliveries
+      summary: chi_dinh_nguoi_nhan {user_id} (vai owner/warehouse/site_receiver) → phát QR nhận hàng
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/deliveries/{id}/trip:
+    post:
+      tags:
+      - deliveries
+      summary: dat_xe {plate_no, freight_vnd} (bên lo xe); nhà xe mô phỏng nhận ngay; trả the_chuyen_token
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/deliveries/{id}/receipt-qr:
+    post:
+      tags:
+      - deliveries
+      summary: 'Người nhận được chỉ định mở QR-02: {qr_token (Ed25519, một lần), ma_6_so, het_han, lam_moi_sau_giay}'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/deliveries/{id}/start-check:
+    post:
+      tags:
+      - deliveries
+      summary: 'bat_dau_nghiem_thu: người bán quét QR nhận hàng trên máy người nhận (hoặc nhập mã 6 số; 3 lần sai khóa 15 phút) + biển số'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  qr_token:
+                    type: string
+                  ma_6_so:
+                    type: string
+                  plate_no:
+                    type: string
+                  device_id:
+                    type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+        '422':
+          $ref: '#/components/responses/Err'
+  /v1/deliveries/{id}/acceptance:
+    post:
+      tags:
+      - deliveries
+      summary: Gửi và ký BBNT bằng PIN xác minh tại auth worker; cmd.submit_acceptance + sign_record + send_acceptance. Phần vượt trong dung sai và withdrawn_g chưa hỗ trợ an toàn bằng command, trả 501.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - weighed_g
+                - lines
+                - pin
+                properties:
+                  pin:
+                    type: string
+                    description: PIN nhập ngay trước khi ký; môi trường thử 2468.
+                  weighed_g:
+                    $ref: '#/components/schemas/Int'
+                  seal_code:
+                    type: string
+                  lines:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - kind
+                      - qty_g
+                      properties:
+                        kind:
+                          type: string
+                          enum:
+                          - accepted
+                          - downgraded
+                          - rejected
+                          - transit_damage
+                        qty_g:
+                          $ref: '#/components/schemas/Int'
+                        reason_code:
+                          type: string
+                        evidence_document_id:
+                          type: string
+                          format: uuid
+                  accept_overage:
+                    type: boolean
+                  withdrawn_g:
+                    $ref: '#/components/schemas/Int'
+                  evidence_document_id:
+                    type: string
+                    format: uuid
+                    description: Chứng cứ cân lại mới khi chia lại sau phản đối
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          $ref: '#/components/responses/Cmd'
+      description: 'Sau phản đối chia_lai: cần chứng cứ cân lại mới (evidence_document_id hoặc tệp entity=order tải sau phản đối), dòng không tranh chấp giữ nguyên; phản hồi chia_lai=true.'
+  /v1/deliveries/{id}/acceptance/agree:
+    post:
+      tags:
+      - deliveries
+      summary: 'dong_y_ket_qua (người bán, PIN app ngay trước khi ký; thử 2468): chốt dòng, lượng, lô con phần trả lại, chuyển rủi ro, khoản trả theo kết quả'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  pin:
+                    type: string
+                  expected_sha256:
+                    type: string
+                  shortfall:
+                    type: object
+                    properties:
+                      choice:
+                        type: string
+                        enum:
+                        - backfill
+                        - end
+                        - force_majeure
+                      notice:
+                        type: string
+                        enum:
+                        - none
+                        - lt3d
+                        - ge3d
+                      evidence_document_id:
+                        type: string
+                        format: uuid
+                        description: Bằng chứng đúng đơn cho force_majeure.
+                      backfill_from:
+                        type: string
+                        format: date-time
+                      backfill_to:
+                        type: string
+                        format: date-time
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/deliveries/{id}/acceptance/dispute:
+    post:
+      tags:
+      - deliveries
+      summary: Mở tranh chấp đúng dòng qua cmd.open_dispute; không tự chốt các dòng khác. Rút phần cần chữ ký người bán và command withdraw_dispute; API cũ chưa tự gửi lại khi đang tranh chấp.
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  line_no:
+                    type: integer
+                  reason:
+                    type: string
+                  option:
+                    type: string
+                    enum:
+                    - chia_lai
+                    - rut_phan
+                    - kiem_dinh
+                required:
+                - line_no
+                - reason
+      responses:
+        '200': &id004
+          $ref: '#/components/responses/Cmd'
+        '501':
+          $ref: '#/components/responses/Err'
+      description: 'option=rut_phan: người bán lập biên bản rút đúng phần tranh chấp và ký bằng PIN ngay (cần pin). Bên mua gửi lại kết quả với withdrawn_g = lượng tranh chấp, các dòng còn lại giữ nguyên;
+        DB lập bản nghiệm thu mới (revise_acceptance_after_withdrawal).'
+  /v1/deliveries/{id}/arrival:
+    post:
+      tags:
+      - deliveries
+      summary: 'ky_nhan_tai_noi_den {weighed_g}: tính hao hụt; vượt mức → sự cố vận chuyển'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/deliveries/{id}/arrival/confirm:
+    post:
+      tags:
+      - deliveries
+      summary: 'xac_nhan_den_dat → đợt chốt; nếu mọi đợt xong: quyết toán (data.quyet_toan)'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/deliveries/{id}/arrival/complaint:
+    post:
+      tags:
+      - deliveries
+      summary: 'khieu_nai_khac_mau (BM, trong 2 giờ kiểm đến): mở tranh chấp, đặt kiểm định (phí bên mua ứng), quyết toán tạm có G_them (N-08)'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - line_no
+                - qty_g
+                - reason
+                properties:
+                  line_no:
+                    type: integer
+                  qty_g:
+                    $ref: '#/components/schemas/Int'
+                  reason:
+                    type: string
+                  reason_code:
+                    type: string
+                  seal_code:
+                    type: string
+                  inspection_fee_vnd:
+                    $ref: '#/components/schemas/Int'
+                  evidence_document_id:
+                    type: string
+                    format: uuid
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+        '409':
+          $ref: '#/components/responses/Err'
+  /v1/disputes/{id}:
+    get:
+      tags:
+      - deliveries
+      summary: 'Tranh chấp: trạng thái, lượng, kiểm định (phí, hạn, kết quả)'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+  /v1/documents/{id}:
+    get:
+      tags:
+      - documents
+      summary: Metadata tài liệu (SHA-256 nội dung, SHA-256 tệp, chữ ký, nội dung chuẩn hóa) — chỉ hai bên của đơn
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: OK
+  /v1/documents/{id}/file:
+    get:
+      tags:
+      - documents
+      summary: Tải PDF (theo quyền)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: application/pdf
+      description: Ảnh bằng chứng (image/*) của lô đang on_sale/upcoming/sold_out đọc được bởi mọi phiên đăng nhập; chứng từ đơn theo phía đơn, chứng cứ riêng theo tổ chức sở hữu (404 nếu không được xem).
+        Tên tệp theo mime (.pdf/.jpg/.png/.webp).
+  /v1/verify/{code}:
+    get:
+      tags:
+      - documents
+      security: []
+      summary: 'Trang xác minh công khai (QR-06): mã, phiên bản, mã băm, chữ ký — KHÔNG trả bản gốc'
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /v1/verify/{code}/file:
+    post:
+      tags:
+      - documents
+      security: []
+      summary: So tệp tải lên với mã băm gốc {data_base64} → {khop}
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /v1/webhooks/bank:
+    post:
+      tags:
+      - webhooks
+      security: []
+      summary: 'Webhook ngân hàng: HMAC-SHA256 + timestamp + nonce (x-agv-key-id, x-agv-timestamp, x-agv-nonce, x-agv-signature). Luôn tra lại API ngân hàng trước khi ghi tiền.'
+      responses:
+        '200':
+          description: '{ket_qua: held|partially_received|applied|duplicate_ignored|unmatched|requery_rejected|late_after_closed|late_after_reconciled}'
+        '401':
+          $ref: '#/components/responses/Err'
+  /v1/webhooks/inspection:
+    post:
+      tags:
+      - webhooks
+      security: []
+      summary: 'Kết quả kiểm định qua kênh có chữ ký HMAC của đối tác (N-11): {event_id, inspection_id, result: passed|failed|inconclusive, sample_code, measurements}'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/Err'
+  /v1/ops/tasks:
+    get:
+      tags:
+      - ops
+      summary: Hàng việc (status?, kind?) theo ưu tiên P0–P3 và hạn SLA (ref.sla_policies)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+  /v1/ops/tasks/{id}/claim:
+    post:
+      tags:
+      - ops
+      summary: Nhận việc (đúng vai)
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/ops/tasks/{id}/resolve:
+    post:
+      tags:
+      - ops
+      summary: Xong việc {result_code, note}
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/ops/instructions/{id}/callback:
+    post:
+      tags:
+      - ops
+      summary: 'Gọi lại chủ tài khoản trước khi nhả lệnh chi ≥ 20 triệu tới tài khoản kích hoạt < 72 giờ (finance/risk): {duration_seconds, summary}'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/ops/reconcile:
+    post:
+      tags:
+      - ops
+      summary: 'Đối soát sao kê ngân hàng (finance/supervisor): succeeded → reconciled; đơn hoàn tất/còn công nợ/đóng hủy'
+      responses:
+        '200':
+          $ref: '#/components/responses/Cmd'
+  /v1/test/reset:
+    post:
+      tags:
+      - test
+      security: []
+      summary: Nạp lại dữ liệu nền sạch + đồng hồ về T0 02/11/2026 08:00 (+07)
+      responses:
+        '200':
+          description: OK
+  /v1/test/clock:
+    get:
+      tags:
+      - test
+      security: []
+      summary: Giờ đồng hồ thử
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - test
+      security: []
+      summary: 'Tua {advance_minutes} hoặc đặt {set: ISO}; chạy hẹn giờ ngay'
+      responses:
+        '200':
+          description: '{now, hen_gio[]}'
+  /v1/test/timers/run:
+    post:
+      tags:
+      - test
+      security: []
+      summary: Chạy bộ hẹn giờ ngay
+      responses:
+        '200':
+          description: OK
+  /v1/test/impersonate:
+    post:
+      tags:
+      - test
+      security: []
+      summary: 'Đóng vai bên kia: {phone | user_id, org_code?} → token (không cần OTP)'
+      responses:
+        '200':
+          description: OK
+  /v1/test/accounts:
+    get:
+      tags:
+      - test
+      security: []
+      summary: Danh sách tài khoản ảo (số điện thoại, tổ chức, vai)
+      responses:
+        '200':
+          description: OK
+  /v1/test/sms/{phone}:
+    get:
+      tags:
+      - test
+      security: []
+      summary: Hộp thư SMS mô phỏng (20 tin cuối)
+      parameters:
+      - name: phone
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+  /v1/sim/bank/transfers:
+    post:
+      tags:
+      - test
+      security: []
+      summary: Bên mua chuyển khoản mô phỏng {payment_ref, amount_vnd, payer?} → xếp webhook
+      responses:
+        '200':
+          description: OK
+  /v1/sim/bank/deliver:
+    post:
+      tags:
+      - test
+      security: []
+      summary: 'Giao webhook đang chờ {mode: all|reverse|duplicate|first, hold_last, bad_signature}'
+      responses:
+        '200':
+          description: OK
+  /v1/sim/bank/process-instructions:
+    post:
+      tags:
+      - test
+      security: []
+      summary: 'Ngân hàng xử lý lệnh đã nhận {outcome: succeeded|failed, code?} → xếp webhook'
+      responses:
+        '200':
+          description: OK
+  /v1/sim/bank/requery-failure:
+    post:
+      tags:
+      - test
+      security: []
+      summary: 'Giả lập API tra lại lỗi {on: true|false}'
+      responses:
+        '200':
+          description: OK
+  /v1/sim/inspection/result:
+    post:
+      tags:
+      - test
+      security: []
+      summary: Đối tác kiểm định mô phỏng ký và gửi kết quả {inspection_id, result, sample_code, bad_signature?}
+      responses:
+        '200':
+          description: OK
+  /v1/sim/bank/state:
+    get:
+      tags:
+      - test
+      security: []
+      summary: Sổ giao dịch, lệnh, hàng đợi của ngân hàng mô phỏng
+      responses:
+        '200':
+          description: OK
+  /v1/orders/{id}/disputes:
+    get:
+      tags:
+      - deliveries
+      summary: Tranh chấp của đơn với hành động từng hồ sơ
+      parameters: *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dispute'
+  /v1/payments/{id}/instruction:
+    get:
+      tags:
+      - money
+      summary: 'Hướng dẫn trả thẳng: số tài khoản đầy đủ trong hợp đồng + VietQR (chỉ bên trả có quyền tiền; người khác 404/403)'
+      parameters: *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInstruction'
+  /v1/org/members:
+    get:
+      tags:
+      - auth
+      summary: Thành viên tổ chức đang thao tác
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+  /v1/org/members/invitations:
+    post:
+      tags:
+      - auth
+      summary: 'Mời thành viên (chủ tổ chức): gắn số điện thoại; vai đặc quyền hiệu lực sau 24 giờ; vượt gói → GOI_HET_THANH_VIEN. Trả invitation_token (QR-09)'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  phone:
+                    type: string
+                  name:
+                    type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
+                  approval_limit_vnd:
+                    $ref: '#/components/schemas/Int'
+                required:
+                - phone
+                - name
+                - roles
+      responses:
+        '200': *id004
+  /v1/org/members/{id}/roles:
+    post:
+      tags:
+      - auth
+      summary: Đổi vai/hạn mức thành viên (chủ tổ chức); id = membership_id
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  add:
+                    type: array
+                    items:
+                      type: string
+                  remove:
+                    type: array
+                    items:
+                      type: string
+                  approval_limit_vnd:
+                    oneOf:
+                    - $ref: '#/components/schemas/Int'
+                    - type: 'null'
+      responses:
+        '200': *id004
+  /v1/invitations/accept:
+    post:
+      tags:
+      - auth
+      security: []
+      summary: 'Nhận lời mời: OTP (gửi bằng /v1/auth/otp/send) tới đúng số được mời → thành viên active, trả token phiên'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                phone:
+                  type: string
+                challenge_id:
+                  type: string
+                code:
+                  type: string
+              required:
+              - token
+              - phone
+              - challenge_id
+              - code
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user_id:
+                    type: string
+                    format: uuid
+                  org_code:
+                    type: string
+                  membership_id:
+                    type: string
+                    format: uuid
+                  user_roles_effective:
+                    type: array
+                    items:
+                      type: string
+  /v1/auth/register:
+    post:
+      tags:
+      - auth
+      security: []
+      summary: Giữ URL và payload cũ; trả 501 vì DB chưa có command đăng ký tổ chức.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                challenge_id:
+                  type: string
+                phone:
+                  type: string
+                code:
+                  type: string
+                name:
+                  type: string
+                org:
+                  type: object
+                  properties:
+                    side:
+                      type: string
+                      enum:
+                      - sell
+                      - buy
+                      - both
+                    kind:
+                      type: string
+                    display_name:
+                      type: string
+                    tax_code:
+                      type: string
+                    province_code:
+                      type: string
+                    segment_code:
+                      type: string
+                    plan_code:
+                      type: string
+                  required:
+                  - side
+                  - kind
+                  - display_name
+              required:
+              - challenge_id
+              - phone
+              - code
+              - name
+              - org
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user_id:
+                    type: string
+                    format: uuid
+                  org_id:
+                    type: string
+                    format: uuid
+                  org_code:
+                    type: string
+                  org_status:
+                    type: string
+                  ghi_chu:
+                    type: string
+      description: 'OTP thật → auth worker ghi receipt (record_registration) → điều phối lập user/tổ chức pending (register_organization) + việc V01. Chưa có vai: chủ đầu tiên qua xác minh hai người. data:
+        {user_id, org_id, org_status: pending}.'
+  /v1/payout-accounts:
+    get:
+      tags:
+      - money
+      summary: Tài khoản nhận tiền của tổ chức
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PayoutAccount'
+    post:
+      tags:
+      - money
+      summary: Yêu cầu đổi tài khoản nhận tiền (chủ; OTP tới số chủ qua /v1/auth/otp/send). Khớp tên → chờ 24 giờ
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  bank_code:
+                    type: string
+                  account_no:
+                    type: string
+                  holder_name:
+                    type: string
+                  challenge_id:
+                    type: string
+                  code:
+                    type: string
+                required:
+                - bank_code
+                - account_no
+                - holder_name
+                - challenge_id
+                - code
+      responses:
+        '200': *id004
+  /v1/payout-accounts/{id}/activate:
+    post:
+      tags:
+      - money
+      summary: Kích hoạt sau thời gian chờ (TAI_KHOAN_DANG_CHO nếu sớm); tài khoản cũ → replaced
+      parameters: *id003
+      responses:
+        '200': *id004
+  /v1/payout-accounts/{id}/not-me:
+    post:
+      tags:
+      - money
+      summary: '"Không phải tôi": khóa ngay, việc V05 P0'
+      parameters: *id003
+      responses:
+        '200': *id004
+  /v1/ops/orgs/{id}/verify:
+    post:
+      tags:
+      - ops
+      summary: '(Cũ) Xác minh một người: trả 501 CHUA_HO_TRO'
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  verification_level:
+                    type: integer
+                  note:
+                    type: string
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200': *id004
+      description: DB chỉ mở tổ chức mới qua quyết định hai người. Dùng /v1/ops/orgs/{id}/owner-verifications rồi /v1/ops/owner-verifications/{id}/approve.
+  /v1/orders/{id}/amendments:
+    get:
+      tags:
+      - orders
+      summary: Đề nghị sửa của đơn
+      parameters: *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Amendment'
+    post:
+      tags:
+      - orders
+      summary: 'gui_de_nghi: một mục mỗi đề nghị (change_date {delivery_from,delivery_to}, increase_qty/decrease_qty/force_majeure_reduction {qty_g}, change_price {unit_price_vnd}, change_receiver {receiver_user_id});
+        bất khả kháng cần evidence_document_ids'
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  kind:
+                    type: string
+                    enum:
+                    - change_date
+                    - increase_qty
+                    - decrease_qty
+                    - force_majeure_reduction
+                    - change_price
+                    - change_receiver
+                  payload:
+                    type: object
+                  reason:
+                    type: string
+                  evidence_document_ids:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                  notice_days_before_delivery:
+                    type: integer
+                required:
+                - kind
+                - payload
+      responses:
+        '200': *id004
+  /v1/amendments/{id}/accept:
+    post:
+      tags:
+      - orders
+      summary: 'Bên kia đồng ý → phiên bản mới + phụ lục PDF (data.annex_document_id, data.tinh: cọc/phí mới, chênh)'
+      parameters: *id003
+      responses:
+        '200': *id004
+  /v1/amendments/{id}/reject:
+    post:
+      tags:
+      - orders
+      summary: Không đồng ý (im lặng 24 giờ cũng = không đồng ý)
+      parameters: *id003
+      responses:
+        '200': *id004
+  /v1/amendments/{id}/withdraw:
+    post:
+      tags:
+      - orders
+      summary: Bên gửi rút
+      parameters: *id003
+      responses:
+        '200': *id004
+  /v1/amendments/{id}/sign:
+    post:
+      tags:
+      - orders
+      summary: 'Ký phụ lục: OTP purpose=amendment_sign với annex_document_id. Đủ hai bên → phiên bản hiệu lực mới; data.he_qua (hoàn phí, cọc bổ sung + mã nội dung COCBS, khoản trả thẳng mới, phạt)'
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  challenge_id:
+                    type: string
+                  code:
+                    type: string
+                required:
+                - challenge_id
+                - code
+      responses:
+        '200': *id004
+  /v1/deliveries/{id}/ship:
+    post:
+      tags:
+      - deliveries
+      summary: 'xuat_hang (giao tại kho, người bán): {loaded_g, ma_6_so|qr_token của người nhận, seal_code}'
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  loaded_g:
+                    $ref: '#/components/schemas/Int'
+                  qr_token:
+                    type: string
+                  ma_6_so:
+                    type: string
+                  plate_no:
+                    type: string
+                  seal_code:
+                    type: string
+                required:
+                - loaded_g
+      responses:
+        '200': *id004
+  /v1/deliveries/{id}/receive:
+    post:
+      tags:
+      - deliveries
+      summary: 'ky_nhan_tai_kho (bên mua): đối chiếu biển số; đang giao → đang nghiệm thu'
+      parameters: *id003
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  plate_no:
+                    type: string
+      responses:
+        '200': *id004
+  /v1/money/summary:
+    get:
+      tags:
+      - money
+      summary: Sổ tiền của tổ chức theo kỳ (from, to ISO)
+      parameters:
+      - name: from
+        in: query
+        schema:
+          type: string
+      - name: to
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoneySummary'
+  /v1/demands/{id}/offer-comparison:
+    get:
+      tags:
+      - demands
+      summary: So lời chào đã trả lời; gia_tai_kho_vnd = null khi thiếu thành phần (không tự cộng)
+      parameters: *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /v1/plans:
+    get:
+      tags:
+      - catalog
+      security: []
+      summary: Danh mục gói (giá thử)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+  /v1/org/subscription:
+    get:
+      tags:
+      - auth
+      summary: Gói hiện hành
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Subscription'
+                - type: 'null'
+    post:
+      tags:
+      - auth
+      summary: Giữ URL và payload cũ; đổi gói trả 501 khi DB chưa có command subscription.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  plan_code:
+                    type: string
+                required:
+                - plan_code
+      responses:
+        '501':
+          $ref: '#/components/responses/CommandUnavailable'
+        '200': *id004
+      description: 'cmd.change_subscription dưới điều phối; gói có phí cần biên nhận billing (môi trường thử: billing mô phỏng ghi đúng giá tháng). Vượt số thành viên trả GOI_HET_THANH_VIEN. data: {id,
+        plan_code, tien_thang_dau_vnd (theo ngày còn lại, hiển thị), gia_thang_vnd, bien_nhan_mo_phong}.'
+  /v1/support:
+    get:
+      tags:
+      - ops
+      summary: Yêu cầu hỗ trợ của tổ chức
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupportTicket'
+    post:
+      tags:
+      - ops
+      summary: Tạo yêu cầu hỗ trợ (việc V23) kèm mã lỗi, request_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CommandBase'
+              - type: object
+                properties:
+                  message:
+                    type: string
+                  error_code:
+                    type: string
+                  request_id:
+                    type: string
+                  order_id:
+                    type: string
+                    format: uuid
+                required:
+                - message
+      responses:
+        '200': *id004
+  /v1/lots/{id}/source-profile:
+    get:
+      tags:
+      - lots
+      summary: 'Hồ sơ nguồn: giấy tờ (trạng thái xác minh thật), ảnh có nhãn, số đơn hoàn tất; uy_tin = null (chưa tính)'
+      parameters: *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceProfile'
+  /v1/notifications:
+    get:
+      tags:
+      - auth
+      summary: Thông báo trong app (sự kiện notify đã được worker outbox gửi) của tổ chức
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+      - name: after_seq
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+  /v1/test/outbox/run:
+    post:
+      tags:
+      - test
+      security: []
+      summary: Chạy worker outbox tới khi hết hàng đợi
+      responses:
+        '200':
+          description: '{claimed,sent,failed,dead}'
+  /v1/test/ai:
+    post:
+      tags:
+      - test
+      security: []
+      summary: Đặt địa chỉ dịch vụ AI {url|null} để thử dự phòng
+      responses:
+        '200':
+          description: OK
+  /v1/ops/orgs/{id}/owner-verifications:
+    post:
+      tags:
+      - ops
+      summary: 'Bước 1 chủ đầu tiên: nhân viên lập đề xuất xác minh (cmd.propose_owner_verification)'
+      description: Nhân viên field/risk/supervisor/support. Tổ chức phải pending, chưa từng có chủ; chứng cứ tải qua POST /v1/files với entity=organization. user_id mặc định là người đăng ký.
+      parameters: &id005
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - &id006
+                $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - evidence_document_id
+                - reason
+                properties:
+                  evidence_document_id:
+                    type: string
+                    format: uuid
+                  reason:
+                    type: string
+                    minLength: 5
+                  user_id:
+                    type: string
+                    format: uuid
+      responses:
+        '200':
+          description: 'data: {id (verification), status: proposed, org_id, user_id}'
+        '422':
+          description: Thiếu chứng cứ/lý do
+        '403':
+          description: Không phải nhân viên xác minh
+  /v1/ops/owner-verifications/{id}/approve:
+    post:
+      tags:
+      - ops
+      summary: 'Bước 2+3: người duyệt độc lập duyệt và cấp vai chủ (approve_owner_verification + bootstrap_owner)'
+      description: Chỉ risk/supervisor, khác người lập. Tổ chức chuyển active (verification_level=2); vai chủ hiệu lực sau 24 giờ (owner_effective_at). Gọi lại sau khi đã cấp bị chặn.
+      parameters: *id005
+      requestBody:
+        content:
+          application/json:
+            schema: *id006
+      responses:
+        '200':
+          description: 'data: {id (org), status: active, decision_id, owner_grant_id, owner_effective_at, user_id}'
+        '403':
+          description: Người lập tự duyệt hoặc thiếu vai
+  /v1/ops/owner-verifications:
+    get:
+      tags:
+      - ops
+      summary: Danh sách đề xuất chủ đầu tiên (200 gần nhất)
+      responses:
+        '200':
+          description: Mảng {id, org_id, org_name, org_status, user_id, proposed_by, evidence_document_id, reason, created_at, decision_id|null}
+  /v1/org/delegations:
+    get:
+      tags:
+      - org
+      summary: Danh sách ủy quyền người giúp của tổ chức
+      responses:
+        '200':
+          description: Mảng {id, helper_user_id, helper_name, actions, valid_from, valid_to, revoked_at}
+    post:
+      tags:
+      - org
+      summary: Chủ/coop_board ủy quyền người giúp (cmd.delegate_helper)
+      description: 'actions: view, lot.draft (tạo lô nháp), lot.update (đặt giá, đăng, sửa lô), message.send, delivery.record. Ủy quyền đang hiệu lực của cùng người giúp bị thu hồi rồi cấp mới trong cùng
+        giao dịch (DB cấm chồng thời gian). valid_from mặc định là bây giờ.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - *id007
+              - type: object
+                required:
+                - helper_user_id
+                - actions
+                - valid_to
+                properties:
+                  helper_user_id:
+                    type: string
+                    format: uuid
+                  actions:
+                    type: array
+                    minItems: 1
+                    items:
+                      type: string
+                      enum:
+                      - view
+                      - lot.draft
+                      - lot.update
+                      - message.send
+                      - delivery.record
+                  valid_from:
+                    type: string
+                    format: date-time
+                  valid_to:
+                    type: string
+                    format: date-time
+                  evidence_document_id:
+                    type: string
+                    format: uuid
+      responses:
+        '200':
+          description: 'data: {id, status: active, replaced: [id cũ]}'
+        '403':
+          description: Không phải chủ/coop_board
+        '409':
+          description: Sai thời hạn/chứng cứ
+  /v1/org/delegations/{id}/revoke:
+    post:
+      tags:
+      - org
+      summary: Thu hồi ủy quyền (cmd.revoke_delegation)
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema: *id007
+      responses:
+        '200':
+          description: 'data: {id, status: revoked}'
+  /v1/weather:
+    get:
+      tags:
+      - tien-ich
+      summary: Thời tiết 7 ngày cho nhà vườn (Open-Meteo, bộ đệm 1 giờ)
+      parameters:
+      - name: province
+        in: query
+        schema:
+          type: string
+          enum:
+          - DT
+          - CT
+          - VL
+          - AG
+          - CM
+          - TN
+          - HCM
+        description: Mặc định tỉnh của tổ chức
+      responses:
+        '200':
+          description: '{tinh:{ma,ten,vi_do,kinh_do}, ngay:[{ngay,nhiet_do_cao_c,nhiet_do_thap_c,mua_mm,kha_nang_mua_phan_tram,gio_manh_nhat_kmh,loi_khuyen[]}], canh_bao[], nguon, lay_luc, tu_bo_dem?}'
+        '422':
+          description: Tỉnh chưa có tọa độ
+        '503': &id008
+          description: 503 DICH_VU_NGOAI_LOI khi nguồn ngoài lỗi (không bịa dữ liệu)
+  /v1/news:
+    get:
+      tags:
+      - tien-ich
+      summary: Tin nông nghiệp từ RSS báo chính thống, chỉ tiêu đề/nguồn/ngày/link (bộ đệm 1 giờ)
+      parameters:
+      - name: product
+        in: query
+        schema:
+          type: string
+        description: Mã mặt hàng, lọc theo tên (vd XOAI_CAT_CHU → xoài)
+      - name: province
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: '{mat_hang, tinh, tu_khoa[], tin:[{tieu_de,nguon,ngay,link,theo_tinh}], nguon[], nguon_doc_duoc[], nguon_loi[], lay_luc, ghi_chu}'
+        '422':
+          description: Mặt hàng lạ
+        '503': *id008
+  /v1/seller/history:
+    get:
+      tags:
+      - tien-ich
+      summary: Dòng thời gian hoạt động của người bán (lô, lời chào, đơn, tiền về, chi cọc, tranh chấp, hủy)
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 50
+      - name: before
+        in: query
+        schema:
+          type: string
+          format: date-time
+        description: 'Phân trang: lấy mục trước thời điểm này'
+      responses:
+        '200':
+          description: 'Mảng {loai: lot|offer|order|money_in|payout|dispute|cancellation, id, ma, luc, tieu_de, trang_thai, so_tien_vnd, order_id}, mới nhất trước'
+        '403':
+          description: Tổ chức không bán
+  /v1/seller/verified-products:
+    get:
+      tags:
+      - nha-vuon
+      summary: Mặt hàng đã xác minh còn hiệu lực của tổ chức bán
+      parameters:
+      - name: all
+        in: query
+        schema:
+          type: boolean
+        description: 'true: cả chờ duyệt/hết hạn/thu hồi'
+      responses:
+        '200':
+          description: 'Mảng {id, site_id, site_name, site_kind, product_code, product_name, grade_code, grade_label, criteria, inspection_source, valid_from, valid_to (ngày cuối còn hiệu lực), approved_at,
+            revoked_at, revoke_reason, trang_thai: hieu_luc|cho_duyet|het_han|da_thu_hoi}'
+        '403':
+          description: Không phải tổ chức bán
+  /v1/production-sites:
+    get:
+      tags:
+      - nha-vuon
+      summary: Cơ sở sản xuất (vườn/ao/ruộng) của tổ chức
+      responses:
+        '200':
+          description: Mảng {id, kind, name, commune_code, area_m2, created_at, clear_on}
+    post:
+      tags:
+      - nha-vuon
+      summary: Tạo cơ sở (cmd.create_production_site)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - &id010
+                $ref: '#/components/schemas/CommandBase'
+              - type: object
+                required:
+                - kind
+                - name
+                properties:
+                  kind:
+                    type: string
+                    enum:
+                    - orchard
+                    - pond
+                    - field
+                  name: &id009
+                    type: string
+                  commune_code: *id009
+                  lat:
+                    type: number
+                  lng:
+                    type: number
+                  area_m2:
+                    type: integer
+                  address_detail: *id009
+      responses:
+        '200':
+          description: 'data: {id, status: active}'
+  /v1/farm-diary:
+    get:
+      tags:
+      - nha-vuon
+      summary: Nhật ký canh tác theo vụ
+      parameters:
+      - name: site_id
+        in: query
+        schema: *id009
+      - name: from
+        in: query
+        schema: *id009
+      - name: to
+        in: query
+        schema: *id009
+      - name: include_history
+        in: query
+        schema: *id009
+      responses:
+        '200':
+          description: '{hom_nay, co_so:[{id,name,kind,clear_on,con_cach_ly,ngay_het_cach_ly_gan_nhat}], theo_vu:[{khoa,seasonal_order_id,viec[]}], viec:[{id,site_id,occurred_on,activity,ten_viec,note,medicine_name,withdrawal_days,clear_on,harvested_qty_g,delivery_id,shortfall_reason,photo_document_ids,source,nhan
+            (Tự ghi|Nhân viên AgiViet xác nhận),supersedes_id,correction_reason,recorded_at,recorded_by_name,da_sua,seasonal_order_id}], ghi_chu}'
+    post:
+      tags:
+      - nha-vuon
+      summary: Ghi một việc (cmd.record_cultivation, chỉ thêm; sửa bằng supersedes_id)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - *id010
+              - type: object
+                required:
+                - site_id
+                - occurred_on
+                - activity
+                - note
+                - request_key
+                properties:
+                  site_id: &id011
+                    type: string
+                    format: uuid
+                  occurred_on:
+                    type: string
+                    format: date
+                  activity:
+                    type: string
+                    enum:
+                    - fertilize
+                    - spray
+                    - water
+                    - flower
+                    - fruit_set
+                    - harvest
+                    - weather_incident
+                    - pest_incident
+                    - care
+                  note: *id009
+                  medicine_name:
+                    type: string
+                    description: bắt buộc khi spray
+                  withdrawal_days:
+                    type: integer
+                    minimum: 0
+                    maximum: 365
+                    description: bắt buộc khi spray
+                  harvested_qty_g: &id012
+                    type: string
+                    pattern: ^[0-9]+$
+                  delivery_id: *id011
+                  shortfall_reason: *id009
+                  photo_document_ids:
+                    type: array
+                    items: *id011
+                    description: ảnh tải qua POST /v1/files entity=production_site
+                  supersedes_id: *id011
+                  correction_reason: *id009
+                  request_key:
+                    type: string
+                    description: khóa chống gửi lặp; gửi lại cùng khóa + cùng nội dung trả cùng id
+      responses:
+        '200':
+          description: 'data: {id, status: recorded, source, nhan, clear_on, ngay_het_cach_ly_gan_nhat}'
+        '403':
+          description: Người giúp thiếu ủy quyền diary.write / bên mua
+        '422':
+          description: Thiếu trường
+  /v1/lots/{id}/urgent-sale:
+    post:
+      tags:
+      - nha-vuon
+      summary: Bật/tắt bán gấp (cmd.set_urgent_sale)
+      parameters: &id013
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - *id010
+              - type: object
+                required: []
+                properties:
+                  until:
+                    type: string
+                    format: date-time
+                    description: 'bật: thời điểm kết thúc (bắt đầu = bây giờ)'
+                  reason: *id009
+                  'on':
+                    type: boolean
+                    description: false = tắt
+      responses:
+        '200':
+          description: 'data: {id, status, revision, ban_gap: {tu, den, ly_do} | null}. GET /v1/lots (bên mua) có ban_gap, ban_gap_den, ban_gap_ly_do và xếp lô bán gấp lên đầu.'
+  /v1/seasonal-orders:
+    get:
+      tags:
+      - hop-dong-vu
+      summary: Hợp đồng đặt trước/bao tiêu của tổ chức (bán hoặc mua)
+      parameters:
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - pre_harvest
+          - offtake
+      responses:
+        '200':
+          description: Mảng {id, code, contract_type, order_status, seasonal_status, product_name, seller_name, buyer_name, qty_min_g, qty_max_g, price_mode, unit_price_vnd, deposit_vnd, harvest_from, harvest_to,
+            site_name, so_dot, phia}
+    post:
+      tags:
+      - hop-dong-vu
+      summary: Bên mua lập hợp đồng vụ từ lời chào đã đồng ý (cmd.create_seasonal_order)
+      description: Như POST /v1/orders, thêm vu. Ký/cọc tiếp tục bằng /v1/orders/{id}/sign và deposit-instruction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - *id010
+              - type: object
+                required:
+                - offer_id
+                - vu
+                properties:
+                  offer_id: *id011
+                  delivery_mode: *id009
+                  transport_by: *id009
+                  payment_timing: *id009
+                  pay_after_days:
+                    type: integer
+                  designated_receiver_user_id: *id011
+                  vu:
+                    type: object
+                    required:
+                    - loai
+                    - harvest_from
+                    - harvest_to
+                    - batches
+                    properties:
+                      loai:
+                        type: string
+                        enum:
+                        - pre_harvest
+                        - offtake
+                      qty_max_g: *id012
+                      price_formula:
+                        type: object
+                      harvest_from:
+                        type: string
+                        format: date
+                      harvest_to:
+                        type: string
+                        format: date
+                      materials_advance_vnd: *id012
+                      deposit_vnd:
+                        type: string
+                        description: 'bao tiêu: cọc vụ'
+                      batches:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            qty_g: *id012
+                            from:
+                              type: string
+                              format: date-time
+                            to:
+                              type: string
+                              format: date-time
+                            materials_offset_vnd: *id012
+      responses:
+        '200':
+          description: 'Như POST /v1/orders: data {code, document_id, tinh{coc_vnd,...}}'
+  /v1/seasonal-orders/{id}:
+    get:
+      tags:
+      - hop-dong-vu
+      summary: Chi tiết hợp đồng vụ
+      parameters: *id013
+      responses:
+        '200':
+          description: '{id, code, contract_type, order_status, seasonal_status, phia, harvest_from, harvest_to, materials_advance_vnd, site_id, dieu_khoan{version_no,qty_min_g,qty_max_g,price_mode,price_formula,unit_price_vnd,deposit_rule,deposit_bps,deposit_vnd,fee_vnd,payment_timing,pay_after_days,window_from,window_to},
+            lich_ban_dau[{batch_no,committed_qty_g,tu,den,materials_offset_vnd}], dot_giao[{id,code,batch_no,status,planned_qty_g,tu,den,gia_dot_vnd,gia_chot_luc,gia_tri_vnd,tru_vat_tu_vnd,payment_id}],
+            cap_nhat_san_luong[], de_nghi[], han_anh_tiep_theo, hanh_dong[production_update|force_majeure_reduction|propose_harvest_fix|answer_amendment]}'
+  /v1/seasonal-orders/{id}/production-updates:
+    post:
+      tags:
+      - hop-dong-vu
+      summary: Người bán cập nhật sản lượng ước (không đổi hợp đồng)
+      parameters: *id013
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - *id010
+              - type: object
+                required:
+                - qty_min_g
+                - qty_max_g
+                - harvest_from
+                - harvest_to
+                - note
+                - request_key
+                properties:
+                  qty_min_g: *id012
+                  qty_max_g: *id012
+                  harvest_from:
+                    type: string
+                    format: date
+                  harvest_to:
+                    type: string
+                    format: date
+                  note: *id009
+                  photo_document_ids:
+                    type: array
+                    items: *id011
+                  request_key: *id009
+      responses:
+        '200':
+          description: 'data: {id, status: recorded}'
+        '403':
+          description: Bên mua
+  /v1/seasonal-orders/{id}/harvest-fix:
+    post:
+      tags:
+      - hop-dong-vu
+      summary: Đề nghị chốt lượng/giá đặt trước (cmd.propose_harvest_fix)
+      parameters: *id013
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - *id010
+              - type: object
+                required:
+                - qty_g
+                properties:
+                  qty_g: *id012
+      responses:
+        '200':
+          description: 'data: {id (amendment), status, kind: fix_qty_price, payload{qty_g,unit_price_vnd,reference_*}}. Bên kia POST /v1/amendments/{id}/accept|reject, hai bên ký /sign. Mất mùa: POST /v1/orders/{id}/amendments
+            kind=force_majeure_reduction kèm evidence_document_ids.'
+  /v1/deliveries/{id}/batch-price:
+    post:
+      tags:
+      - hop-dong-vu
+      summary: Chốt giá đợt bao tiêu (cmd.fix_seasonal_batch_price)
+      parameters: *id013
+      requestBody:
+        content:
+          application/json:
+            schema: *id010
+      responses:
+        '200':
+          description: 'data: {id, status: price_fixed, gia_dot_vnd}'

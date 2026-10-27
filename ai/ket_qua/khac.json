@@ -1,0 +1,66 @@
+{
+ "gia_tham_khao_xoai_L1": {
+  "gia_vnd_kg": 25000,
+  "khoang_vnd_kg": [
+   24500,
+   25500
+  ],
+  "so_don": 14,
+  "so_cap": 4,
+  "do_tin_cay": "thap",
+  "trang_thai": "co_du_lieu"
+ },
+ "gia_tham_khao_dung_dac_ta": true,
+ "keo_gia_5_don_re_mot_cap": {
+  "gia": 24500,
+  "so_don": 19
+ },
+ "keo_gia_khi_da_gan_co": 25000,
+ "thieu_du_lieu_L2": "chua_du_du_lieu",
+ "bat_thuong_ma": [
+  "KT-02",
+  "KT-03",
+  "KT-04",
+  "KT-06"
+ ],
+ "bat_thuong_khong_tu_khoa": true,
+ "quet_lien_lac": {
+  "dung": "12/12",
+  "sai": []
+ },
+ "tom_tat_so_khong_co_trong_dau_vao": [
+  "2.000",
+  "02/11/2026."
+ ],
+ "tom_tat_mau": [
+  "Giao hai tấn Xoài cát Chu, loại L1. Giá hai mươi ba nghìn đồng một ký.",
+  "Cọc mười lăm triệu đồng, chuyển qua ngân hàng, hạn hai mươi giờ ngày hai tháng mười một.",
+  "Giao ngày bốn tháng mười một, chia loại và cân tại vườn chị Năm, Mỹ Xương.",
+  "Phần còn lại: trả thẳng trước khi bốc",
+  "Hạ cấp: loại 2 giá 15.000 đồng một ký",
+  "Im lặng không bao giờ là đã nhận tiền. Muốn ký hoặc xác nhận tiền phải dùng bước riêng, đúng quyền của anh chị."
+ ],
+ "http_match": {
+  "status": 200,
+  "trung_vi_ms": 2.97,
+  "khop_du": [
+   "L-0414",
+   "L-0412"
+  ],
+  "khong_lo_gia": true
+ },
+ "http_voice_luat": {
+  "status": 200,
+  "trung_vi_ms": 1.64,
+  "gia": 25000
+ },
+ "http_voice_llm_qua_han_roi_ve_luat": {
+  "status": 200,
+  "che_do": "luat(llm_loi)",
+  "ms": 79.7
+ },
+ "http_dau_vao_sai_khong_lo_du_lieu": {
+  "status": 422,
+  "co_gia_trong_loi": false
+ }
+}

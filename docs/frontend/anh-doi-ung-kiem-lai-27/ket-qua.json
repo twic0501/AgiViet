@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-27T01:38:39.276Z",
+  "origin": "http://127.0.0.1:40889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "late",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Chậm trả → báo trả có chứng từ → OTP xác nhận đủ",
+      "seed": "thu-0",
+      "log": "Đối ứng báo trả tiền ảo kèm chứng từ giả"
+    },
+    {
+      "profile": "shortfall",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ghi cân nơi đếnĐối ứng xác nhận nơi đếnNgân hàng ảo xử lý và giao webhook QT-d3359472-9dcf-44d2-be08-69cef6a90043-CHINgân hàng ảo xử lý và giao webhook REF-b11ce54f-5568-457e-9220-224e7b5b7c72Tài chính thử đối soát sau webhook ngân hàng ảo"
+    }
+  ],
+  "errors": [],
+  "shots": [
+    "late-seller-mo-ho-so.png",
+    "late-seller-dat-dich.png",
+    "shortfall-seller-mo-ho-so.png",
+    "shortfall-seller-dat-dich.png"
+  ]
+}

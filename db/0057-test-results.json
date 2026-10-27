@@ -1,0 +1,3080 @@
+{
+  "checked_at": "2026-10-26T22:37:16.662Z",
+  "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "migrations": [
+    "0001_nen_tang.sql",
+    "0002_to_chuc_nguoi_dung.sql",
+    "0003_danh_muc_dia_diem.sql",
+    "0004_lo_nhu_cau_loi_chao.sql",
+    "0005_don_hop_dong.sql",
+    "0006_tien_nghiep_vu.sql",
+    "0007_so_cai_tien.sql",
+    "0008_so_luong.sql",
+    "0009_giao_nhan_van_hanh.sql",
+    "0010_ghi_so_tu_dong.sql",
+    "0011_cung_co_bat_bien.sql",
+    "0012_thi_truong_su_kien.sql",
+    "0013_kiem_tra_nghiep_vu.sql",
+    "0014_quyen_va_giu_luong.sql",
+    "0015_khung_dich_vu_va_chu_thich.sql",
+    "0016_kiem_soat_chot_va_phan_bo.sql",
+    "0017_ke_hoach_bao_tieu_nhap.sql",
+    "0018_dieu_kien_san_sang.sql",
+    "0019_chi_muc_va_kiem_toan.sql",
+    "0020_lan_goi_nhieu_mat_hang.sql",
+    "0021_quyet_toan_phien_ban.sql",
+    "0022_chu_ky_quyet_dinh_van_hanh.sql",
+    "0023_nguon_gia_tinh_coc.sql",
+    "0024_bao_ve_so_cai_va_lenh.sql",
+    "0025_lenh_ngan_hang_han_quyen.sql",
+    "0026_otp_va_lenh_nguoi_dung.sql",
+    "0027_nhat_ky_chuoi_bam.sql",
+    "0028_ngan_gia_danh_phien.sql",
+    "0029_cung_co_bang_chung_hoan_tien.sql",
+    "0030_tien_treo_va_giu_them_tranh_chap.sql",
+    "0031_kiem_soat_chinh_sach_qr_va_chi_tien.sql",
+    "0032_hoan_tien_treo_ve_nguon.sql",
+    "0033_chu_dau_tien_va_hoan_coc_chenh.sql",
+    "0034_lenh_danh_tinh_va_chu_ky.sql",
+    "0035_lenh_lo_don_va_giao_nhan.sql",
+    "0036_lenh_dieu_phoi_tien_va_thoi_han.sql",
+    "0037_chot_giao_nhan_va_cung_co_command.sql",
+    "0038_lenh_bo_sung_thi_truong_va_quan_tri.sql",
+    "0039_lenh_thanh_vien_tai_khoan_va_worker.sql",
+    "0040_lenh_huy_va_hach_toan.sql",
+    "0041_lenh_de_nghi_va_phu_luc.sql",
+    "0042_lenh_tranh_chap_va_kiem_dinh.sql",
+    "0043_lenh_khung_va_nhom.sql",
+    "0044_chot_command_va_ket_qua_het_han.sql",
+    "0045_lenh_giao_nhan_bo_sung_va_dong_khung.sql",
+    "0046_hoan_thien_cac_nhanh_command.sql",
+    "0047_khep_kin_dieu_phoi_backend.sql",
+    "0048_sua_nhanh_tich_hop_command.sql",
+    "0049_lenh_dang_ky_goi_va_tai_lieu_he_thong.sql",
+    "0050_lenh_luong_vuot_rut_hang_va_im_lang.sql",
+    "0051_phi_giam_gia_va_ma_coc_ngan.sql",
+    "0052_chia_lai_sau_phan_doi.sql",
+    "0053_dong_ho_nghiep_vu_tranh_chap.sql",
+    "0054_danh_tinh_qua_cong_tin_cay.sql",
+    "0055_phien_ben_cho_dang_ky_va_nguoi_giup.sql",
+    "0056_nhat_ky_xac_minh_mat_hang_va_ban_gap.sql",
+    "0057_dat_truoc_va_bao_tieu_theo_vu.sql"
+  ],
+  "tables": 157,
+  "migration_seed_replay": true,
+  "checks": 602,
+  "passed": 602,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Nạp đủ 50 người dùng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Nạp đủ 8 mặt hàng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Nạp đủ 20 lô",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Nạp đủ 8 nhu cầu, 9 dòng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "15 đơn nền tách khỏi sổ tiền",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Giá tham khảo xoài 25000 từ 14 đơn, 4 cặp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Khung Bếp Sen: còn 80000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Thu mua tối đa 5 thành viên",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Lượng toàn bộ dùng gam",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Phân bổ dư về phần lớn nhất",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Phân bổ cước TH050",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Không sửa nguồn seed",
+      "passed": true,
+      "detail": "bị chặn: Bảng ops.seed_sources là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "Không sửa hồ sơ ngành hàng",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.product_profiles là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "Không tự đi từ on_sale sang draft",
+      "passed": true,
+      "detail": "bị chặn: Chuyển trạng thái sai: lot on_sale -> draft"
+    },
+    {
+      "name": "Không bỏ qua 24 giờ sửa giá",
+      "passed": true,
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-11-02 08:00:00+07)"
+    },
+    {
+      "name": "Giá tối đa chỉ tăng",
+      "passed": true,
+      "detail": "bị chặn: Giá tối đa của phiếu chỉ được tăng (1000 < 24000)"
+    },
+    {
+      "name": "Chặn lượng âm",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"qty_movements\" violates check constraint \"ck_qty_move_positive\""
+    },
+    {
+      "name": "Không khai nguồn lô lần hai",
+      "passed": true,
+      "detail": "bị chặn: Lô đã khai nguồn"
+    },
+    {
+      "name": "Chặn lấy vượt lượng có",
+      "passed": true,
+      "detail": "bị chặn: Lô không đủ lượng ngăn available"
+    },
+    {
+      "name": "Trừ lượng hợp lệ thực chạy",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Tách lô phải đủ hai vế",
+      "passed": true,
+      "detail": "bị chặn: Tách lô thiếu vế đối ứng"
+    },
+    {
+      "name": "Chặn thêm dòng vào giao dịch đã COMMIT",
+      "passed": true,
+      "detail": "bị chặn: Giao dịch đã chốt, phải đảo bằng giao dịch mới"
+    },
+    {
+      "name": "Chặn giao dịch tiền rỗng ở cuối transaction",
+      "passed": true,
+      "detail": "bị chặn: Điều chỉnh cần quyết định tài chính, người lập và duyệt khác nhau"
+    },
+    {
+      "name": "Chặn giao dịch không cân",
+      "passed": true,
+      "detail": "bị chặn: Giao dịch tiền rỗng hoặc không cân"
+    },
+    {
+      "name": "Không sửa sổ tiền",
+      "passed": true,
+      "detail": "bị chặn: Bảng ledger.entries là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "Không xóa tài khoản sổ cái",
+      "passed": true,
+      "detail": "bị chặn: Bảng ledger.accounts là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "Không xóa tài liệu đã lưu",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.documents là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "Bao tiêu nguồn: 1 kế hoạch, 3 đợt, đủ 9000kg",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Snapshot giữ đủ 13 mục nguồn kể cả chính sách và bao tiêu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Giữ được 3000 kg trước khi có đơn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Lô ước tính chặn vượt 80 phần trăm",
+      "passed": true,
+      "detail": "bị chặn: Lô ước tính chỉ được hứa tối đa 8000 phần vạn (3300000 / 4000000)"
+    },
+    {
+      "name": "Hết hạn trả đủ lượng khả dụng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Không sửa lượng giữ",
+      "passed": true,
+      "detail": "bị chặn: Giữ lượng bất biến"
+    },
+    {
+      "name": "QR công khai quét lại được",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "QR dùng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "QR đúng người được chỉ định",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "QR lạ có nhật ký",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Người giúp không được đổi tài khoản",
+      "passed": true,
+      "detail": "bị chặn: Người giúp không đổi tài khoản"
+    },
+    {
+      "name": "Khung kế toán không được cho nợ thêm",
+      "passed": true,
+      "detail": "bị chặn: Chỉ chủ hoặc ban điều hành cấp cho nợ thêm"
+    },
+    {
+      "name": "Khung ban điều hành được cho nợ thêm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Xe không nhận hai chuyến chồng giờ",
+      "passed": true,
+      "detail": "bị chặn: conflicting key value violates exclusion constraint \"trips_vehicle_id_scheduled_during_excl\""
+    },
+    {
+      "name": "Khóa idempotency trả lại cùng hàng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Idempotency khác thân bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Khóa đã dùng với thân khác"
+    },
+    {
+      "name": "Khóa webhook không cho ghi lặp",
+      "passed": true,
+      "detail": "bị chặn: duplicate key value violates unique constraint \"uq_inbound_webhook\""
+    },
+    {
+      "name": "Phiên bản chưa ký không được hiệu lực",
+      "passed": true,
+      "detail": "bị chặn: Chưa có điều khoản được hai bên ký"
+    },
+    {
+      "name": "Ký sai băm bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Chữ ký không khớp mã băm nội dung tài liệu TEST-HD2001-PDF (PHIEN_BAN_DA_DOI)"
+    },
+    {
+      "name": "Người giúp không ký được",
+      "passed": true,
+      "detail": "bị chặn: Người giúp không được ký"
+    },
+    {
+      "name": "Không sửa byte metadata tài liệu",
+      "passed": true,
+      "detail": "bị chặn: Tài liệu bất biến"
+    },
+    {
+      "name": "Không vào hiệu lực khi chưa có cọc",
+      "passed": true,
+      "detail": "bị chặn: Chưa có cọc ngân hàng"
+    },
+    {
+      "name": "Webhook sai chữ ký không làm tăng cọc",
+      "passed": true,
+      "detail": "bị chặn: Webhook không xác thực"
+    },
+    {
+      "name": "Cọc thiếu giữ đơn chờ cọc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Cọc đủ tách đúng phí",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Sự kiện ngân hàng lặp không áp lại",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Liên lạc mở sau cọc đủ, đơn trên 3 triệu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Gọi lại chuyển lượng cùng khóa trả kết quả cũ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Chuyển lượng cùng khóa khác số bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Khóa lượng đã dùng với nội dung khác"
+    },
+    {
+      "name": "Không tự đánh dấu nhận đủ tiền",
+      "passed": true,
+      "detail": "bị chặn: Trạng thái nhận tiền phải có xác nhận đủ số"
+    },
+    {
+      "name": "Bên trả chỉ báo không sinh tiền",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bên trả không tự xác nhận bên nhận",
+      "passed": true,
+      "detail": "bị chặn: Không có quyền tiền của tổ chức"
+    },
+    {
+      "name": "Người giúp không xác nhận tiền",
+      "passed": true,
+      "detail": "bị chặn: Không có quyền tiền của tổ chức"
+    },
+    {
+      "name": "Nhận một phần trạng thái đúng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mã giao dịch không được dùng hai lần",
+      "passed": true,
+      "detail": "bị chặn: duplicate key value violates unique constraint \"uq_dpc_bank_ref\""
+    },
+    {
+      "name": "Đã nhận đủ đúng 32200000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Không sẵn sàng khi thiếu QR và xe",
+      "passed": true,
+      "detail": "bị chặn: Chưa phát QR nhận hàng"
+    },
+    {
+      "name": "TH006 quyết toán đúng 44350000 và chia cọc đúng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Chặn hoàn tất khi tiền còn giữ",
+      "passed": true,
+      "detail": "bị chặn: Sổ còn dư tiền giữ hoặc quyền đòi"
+    },
+    {
+      "name": "Không đổi tài khoản đích lệnh đang chạy",
+      "passed": true,
+      "detail": "bị chặn: Lệnh ngân hàng TEST-RELEASE đã tạo: không được đổi số tiền, đích, căn cứ"
+    },
+    {
+      "name": "Không hủy lệnh đang chạy",
+      "passed": true,
+      "detail": "bị chặn: Vai không được chuyển"
+    },
+    {
+      "name": "Webhook muộn không đảo lệnh đã đối soát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH006 đơn hoàn tất sau đối soát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH006 người bán thực nhận 44350000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH006 cọc hết, phí doanh thu 138000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Không đọc liên lạc của đơn không tồn tại",
+      "passed": true,
+      "detail": "bị chặn: Liên lạc chưa mở"
+    },
+    {
+      "name": "Liên hệ sau cọc được đọc và kiểm toán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "RLS thực chạy: mua không thấy giá kín bán, thấy đúng nhu cầu của mình",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Vai app không đọc PII trực tiếp",
+      "passed": true,
+      "detail": "bị chặn: permission denied for schema pii"
+    },
+    {
+      "name": "Vai app không gọi hàm ghi tiền",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function reverse"
+    },
+    {
+      "name": "Vai app không tự chỉnh số dư",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table account_balances"
+    },
+    {
+      "name": "Vai app không TRUNCATE bút toán",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table entries"
+    },
+    {
+      "name": "RLS thực chạy: người bán khác không thấy đơn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Vai app không tạo đơn bằng SQL trực tiếp",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table orders"
+    },
+    {
+      "name": "Ghi tiền cùng khóa không ghi trùng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Tiền cùng khóa khác thân bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Khóa tiền khác nội dung"
+    },
+    {
+      "name": "Bút toán đảo đối ứng đúng tài khoản",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Tài khoản giữ hộ không được âm",
+      "passed": true,
+      "detail": "bị chặn: Tài khoản 51b4643d-5e13-4f3d-bb70-7411ea35780d (deposit_escrow) sẽ âm: -1"
+    },
+    {
+      "name": "Nghiệm thu không thêm dòng sau COMMIT",
+      "passed": true,
+      "detail": "bị chặn: Phiên bản nghiệm thu đã đóng"
+    },
+    {
+      "name": "Tài liệu đã ký không đổi nội dung",
+      "passed": true,
+      "detail": "bị chặn: Tài liệu bất biến"
+    },
+    {
+      "name": "Không ký lại bản đã kết thúc",
+      "passed": true,
+      "detail": "bị chặn: Không ký bản cũ hoặc đã kết thúc"
+    },
+    {
+      "name": "Mọi giao dịch >=2 dòng và tổng bằng 0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bộ đệm tiền khớp tổng bút toán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Ngăn lượng thật không âm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mỗi lô bảo toàn tổng lượng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Lô chính không trừ hai lần: 2000 khả dụng, 1970 giao, 30 chuyển con",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Bộ đệm lượng khớp từng chuyển động",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mỗi lịch sử mới đều có event/outbox",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mỗi bảng nghiệp vụ có COMMENT",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mỗi cột nghiệp vụ có COMMENT",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH024 trả lại nhiều: người bán hoàn 3100000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH025 trả lại hết: hoàn 32200000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH037 trong dung sai: hoàn cọc 920000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH037 vượt lượng: mua trả thêm 2300000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH038 thiếu không báo: chia đúng 9315000 và 4485000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH029 người bán sai: hoàn 4230000, không hoàn ngoài app",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH029 người bán đúng: chi thêm 2580000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH055 vật tư: ròng đợt 47960000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH058 tôm: 1480kg x 105000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "TH059 lúa: quy đổi 30000kg ẩm27 về ẩm25",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Tập xác định 500 phép quyết toán đều bảo toàn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Không sửa mẫu nguồn sự kiện webhook",
+      "passed": true,
+      "detail": "bị chặn: Webhook bất biến"
+    },
+    {
+      "name": "Không đảo bút toán đảo",
+      "passed": true,
+      "detail": "bị chặn: Không đảo một bút toán đảo; lập giao dịch mới"
+    },
+    {
+      "name": "Không xóa xác nhận tiền",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.direct_payment_confirmations là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "Không xóa lịch sử trạng thái",
+      "passed": true,
+      "detail": "bị chặn: Bảng evt.state_history là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "N08 TH029 chi tạm 9570000 giữ 4230000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 TH031 chia 50/50: chi 1290000 hoàn 2940000 không ngoài app",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 khoản giữ lớn hơn quyền chi tạm không làm chi âm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 lần tạm sau trừ phần đã chi, không trừ G hai lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Khung nhiều món: 780000 + 380000 = 1160000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Khung thiếu một món không khớp tổng hợp đồng",
+      "passed": true,
+      "detail": "bị chặn: Tổng dòng không khớp phiên bản gọi hàng"
+    },
+    {
+      "name": "Không thêm dòng hàng sau khi phiên bản đã COMMIT",
+      "passed": true,
+      "detail": "bị chặn: Phiên bản đã đóng cấu trúc dòng"
+    },
+    {
+      "name": "LS1 không được bỏ liên kết bản trước",
+      "passed": true,
+      "detail": "bị chặn: Phải nối phiên bản hiệu lực ngay trước của cùng đơn"
+    },
+    {
+      "name": "LS1 không được nối quyết toán đơn khác",
+      "passed": true,
+      "detail": "bị chặn: Phải nối phiên bản hiệu lực ngay trước của cùng đơn"
+    },
+    {
+      "name": "LS1 chặn chênh tiền sai và rollback cờ hiệu lực",
+      "passed": true,
+      "detail": "bị chặn: Nghĩa vụ điều chỉnh phải bằng chênh N giữa hai phiên bản"
+    },
+    {
+      "name": "LS1 bản cũ vẫn hiệu lực sau insert bị chặn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 TH047 hai bản cuối, duy nhất v2 hiệu lực",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 TH047 tự tạo T_bm 800000, không chia lại cọc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 bút toán chênh 800000 cân hai vế",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 lệnh đang xử lý và bút toán cũ giữ nguyên",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 chặn lặp phiên bản",
+      "passed": true,
+      "detail": "bị chặn: Phải nối phiên bản hiệu lực ngay trước của cùng đơn"
+    },
+    {
+      "name": "LS1 không tự tắt cờ hiệu lực",
+      "passed": true,
+      "detail": "bị chặn: Quyết toán bất biến; tạo phiên bản kế tiếp"
+    },
+    {
+      "name": "LS1 không sửa quyết toán cũ",
+      "passed": true,
+      "detail": "bị chặn: Quyết toán bất biến; tạo phiên bản kế tiếp"
+    },
+    {
+      "name": "LS1 không phát lệnh từ bản đã thay",
+      "passed": true,
+      "detail": "bị chặn: Không phát lệnh mới từ bản hết hiệu lực hoặc bản điều chỉnh"
+    },
+    {
+      "name": "LS1 còn T_bm thì chưa hoàn tất",
+      "passed": true,
+      "detail": "bị chặn: Còn công nợ"
+    },
+    {
+      "name": "LS1 TH047 hoàn tất, người bán nhận 45150000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 chênh âm thành T_nb, mở lại nhãn công nợ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS1 không hủy nghĩa vụ điều chỉnh",
+      "passed": true,
+      "detail": "bị chặn: Không hủy/đổi căn cứ nghĩa vụ điều chỉnh; lập phiên bản kế tiếp"
+    },
+    {
+      "name": "LS1 chênh 0 không tạo tiền hoặc nghĩa vụ mới",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS2 seed BT2005 không tự có đơn/cọc/bút toán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS2 KH2003 số dư đầu kỳ có nhãn nhập khẩu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS2 chưa ngân hàng xác nhận thì không active",
+      "passed": true,
+      "detail": "bị chặn: Chưa có cọc ngân hàng"
+    },
+    {
+      "name": "LS2 ngân hàng xác nhận cọc vụ đúng 9 triệu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS2 chốt đợt1 3000kg, nhận 49 triệu, giữ nguyên cọc vụ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS2 mọi bút toán đợt1 cân, không tự dựng quyết toán cuối",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS3 không ký vận hành vào hợp đồng thường",
+      "passed": true,
+      "detail": "bị chặn: Chỉ ký thay TH-040b giảm lượng bất khả kháng, im lặng 24 giờ, quyết định hai người và ghi rõ mã"
+    },
+    {
+      "name": "LS3 bên mua đã phản hồi không được ký thay",
+      "passed": true,
+      "detail": "bị chặn: Chỉ ký thay TH-040b giảm lượng bất khả kháng, im lặng 24 giờ, quyết định hai người và ghi rõ mã"
+    },
+    {
+      "name": "LS3 chưa hết hạn 24 giờ không được ký thay",
+      "passed": true,
+      "detail": "bị chặn: Chỉ ký thay TH-040b giảm lượng bất khả kháng, im lặng 24 giờ, quyết định hai người và ghi rõ mã"
+    },
+    {
+      "name": "LS3 không áp dụng cho phụ lục đổi giá",
+      "passed": true,
+      "detail": "bị chặn: Chỉ ký thay TH-040b giảm lượng bất khả kháng, im lặng 24 giờ, quyết định hai người và ghi rõ mã"
+    },
+    {
+      "name": "LS3 thiếu chứng cứ quyết định không được ký thay",
+      "passed": true,
+      "detail": "bị chặn: Chỉ ký thay TH-040b giảm lượng bất khả kháng, im lặng 24 giờ, quyết định hai người và ghi rõ mã"
+    },
+    {
+      "name": "LS3 mảng chứng cứ NULL không vượt kiểm tra",
+      "passed": true,
+      "detail": "bị chặn: Quyết định vận hành phải có chứng cứ thực trong đề nghị"
+    },
+    {
+      "name": "LS3 TH040b hai người, chữ ký AgiViet thay buyer có thông báo",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS3 phụ lục đã ký vận hành không thể đổi loại",
+      "passed": true,
+      "detail": "bị chặn: Đề nghị đã được ký thay bằng quyết định vận hành là bất biến"
+    },
+    {
+      "name": "LS3 phiên bản giảm lượng đã đủ hai phía và hiệu lực",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS4 giá ngoài 100000 không nâng cọc, P_coc vẫn 23000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "LS4 chặn lấy 70% giá ngoài để tính cọc",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"order_versions\" violates check constraint \"ck_ov_deposit_price\""
+    },
+    {
+      "name": "LS4 không tự nhận giá ngoài là giao dịch đủ mẫu",
+      "passed": true,
+      "detail": "bị chặn: Giá tính cọc phải từ view giao dịch đủ mẫu, đúng hàng, loại, vùng và snapshot"
+    },
+    {
+      "name": "LS4 view tham khảo chỉ lấy mẫu giao dịch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 owner tự đặt actor bank cũng không áp sự kiện",
+      "passed": true,
+      "detail": "bị chặn: Chỉ login/role bank worker được áp ngân hàng"
+    },
+    {
+      "name": "D01 app không gọi nội bộ apply bank",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function apply_bank_event_internal"
+    },
+    {
+      "name": "D01 app không ghi OTP receipt",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function otp_verification"
+    },
+    {
+      "name": "D01 app không tự ánh xạ login",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table login_principals"
+    },
+    {
+      "name": "D01 danh tính app bỏ qua actor và user GUC giả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D03 đủ quyết định vẫn chặn cọc khác đơn",
+      "passed": true,
+      "detail": "bị chặn: Bút toán chạm cọc hoặc tổ chức ngoài đơn"
+    },
+    {
+      "name": "D03 đủ quyết định vẫn chặn external ngoài đơn",
+      "passed": true,
+      "detail": "bị chặn: Bút toán chạm cọc hoặc tổ chức ngoài đơn"
+    },
+    {
+      "name": "D04 điều chỉnh thiếu duyệt bị chặn trước ghi tiền",
+      "passed": true,
+      "detail": "bị chặn: Điều chỉnh cần quyết định tài chính, người lập và duyệt khác nhau"
+    },
+    {
+      "name": "D04 điều chỉnh có quyết định hai tài chính vẫn qua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D07 lệnh chi thiếu tài khoản bản ký bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Đích chi phải là tài khoản trong phiên bản đã ký"
+    },
+    {
+      "name": "D09 webhook sai chữ ký không thể INSERT đã áp dụng",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"inbound_webhooks\" violates check constraint \"ck_webhook_applied_signature\""
+    },
+    {
+      "name": "D08 tiền muộn vào suspense có việc hoàn, cọc không tăng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D09 bank worker thiếu tra lại API vẫn bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Phải tra lại API ngân hàng và xác nhận trước ghi tiền"
+    },
+    {
+      "name": "D09 không chèn bank event đã áp dụng thiếu API",
+      "passed": true,
+      "detail": "bị chặn: Không đánh dấu đã áp dụng khi chưa xác thực/tra lại API"
+    },
+    {
+      "name": "D10 OTP đúng nhưng chuyển khoản thiếu mã vẫn bị chặn",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"direct_payment_confirmations\" violates check constraint \"ck_confirmation_evidence\""
+    },
+    {
+      "name": "D10 tiền mặt OTP đúng nhưng thiếu biên nhận vẫn bị chặn",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"direct_payment_confirmations\" violates check constraint \"ck_confirmation_evidence\""
+    },
+    {
+      "name": "D10 tiền mặt có biên nhận và OTP nhận tiền qua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D10 biên nhận tiền mặt đơn khác không được dùng",
+      "passed": true,
+      "detail": "bị chặn: Biên nhận tiền mặt phải thuộc đúng đơn/khung"
+    },
+    {
+      "name": "D15 OTP bịa cho xác nhận tiền bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP tiền khác số tiền bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP tiền người khác bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP nhận tiền tiêu thụ một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D15 thử dùng lại OTP bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP chữ ký bịa bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP chưa xác minh bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP hợp đồng phiên bản khác bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP hết hạn bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 OTP quá 5 lần sai bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "D15 chữ ký dùng OTP thật đã xác minh có FK",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D14 người giúp không kiêm chủ cùng hộ",
+      "passed": true,
+      "detail": "bị chặn: Người giúp không kiêm vai tiền/chữ ký"
+    },
+    {
+      "name": "D19 mọi audit có chain và hash khớp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D19 chuỗi liên tục",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D19 app không TRUNCATE audit/chain",
+      "passed": true,
+      "detail": "bị chặn: permission denied for schema evt"
+    },
+    {
+      "name": "D17 sự kiện ghi riêng 1 triệu nộp thừa",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D17 D18 hoàn thừa có căn cứ thật và đúng nguồn vẫn qua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D17 căn cứ thừa bịa bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Không có tiền thừa đủ cho căn cứ hoàn"
+    },
+    {
+      "name": "D17 thừa 1 triệu không hoàn 1000001",
+      "passed": true,
+      "detail": "bị chặn: Không có tiền thừa đủ cho căn cứ hoàn"
+    },
+    {
+      "name": "D18 hoàn về hash tài khoản khác bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Hoàn tiền phải về tài khoản nguồn đã xác nhận"
+    },
+    {
+      "name": "D18 hoàn về ngân hàng khác bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Sai ngân hàng nguồn hoàn"
+    },
+    {
+      "name": "D17 hoàn phí không có căn cứ bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Hoàn phí thiếu căn cứ/vượt quyền"
+    },
+    {
+      "name": "D17 hoàn phí Q06 người bán xin hủy có căn cứ qua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D17 người mua xin hủy không được hoàn phí",
+      "passed": true,
+      "detail": "bị chặn: Hoàn phí thiếu căn cứ/vượt quyền"
+    },
+    {
+      "name": "D17 hoàn phí không vượt phần được hoàn",
+      "passed": true,
+      "detail": "bị chặn: Hoàn phí thiếu căn cứ/vượt quyền"
+    },
+    {
+      "name": "D14 không cấp ủy quyền giúp cho chủ hiện hành",
+      "passed": true,
+      "detail": "bị chặn: Vai chủ và người giúp không được chồng nhau"
+    },
+    {
+      "name": "D14 vai tiền mới chưa được dùng trong 24 giờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D14 cấp vai có thông báo backup qua outbox",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 command ghi chạy qua login app không owner, không tin GUC",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D11 đủ duyệt nhưng ghi năm2020 không có ngoại lệ bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Ngày hiệu lực ngoài cửa sổ 7 ngày cần quyết định"
+    },
+    {
+      "name": "D11 ngoại lệ ngày cũ có quyết định hai người vẫn qua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 bank worker gọi command nhận và áp sự kiện hợp lệ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D19 xuất hash ổn định khi đổi timezone",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 đủ C nhưng thiếu F vẫn treo, chưa là cọc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 tiền treo không mở liên lạc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 không ép tiền treo thành held",
+      "passed": true,
+      "detail": "bị chặn: Chưa đủ C và F trong sổ riêng; tiền treo chưa là cọc"
+    },
+    {
+      "name": "N01 tiền treo không kích hoạt đơn",
+      "passed": true,
+      "detail": "bị chặn: Chưa có cọc ngân hàng"
+    },
+    {
+      "name": "N01 đủ C+F mới chuyển ngăn một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 báo có lặp không phân bổ thêm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N13 F và thừa nằm ngoài C của SEC-EXCESS",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N13 lệnh hoàn thừa không đi vào coc_trong_lenh",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N13 BT-T1 mọi cọc đã đủ cân trên C, không F",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 tiền muộn treo đúng đơn, snapshot hoàn nguồn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 không đánh dấu đã hoàn khi chưa có API",
+      "passed": true,
+      "detail": "bị chặn: Hoàn treo phải được API xác nhận đúng số tiền và tài khoản nguồn"
+    },
+    {
+      "name": "N01 không đổi nguồn hoàn treo",
+      "passed": true,
+      "detail": "bị chặn: Task hoàn và nguồn tiền bất biến"
+    },
+    {
+      "name": "N01 API hoàn sai tài khoản bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Hoàn treo phải được API xác nhận đúng số tiền và tài khoản nguồn"
+    },
+    {
+      "name": "N01 API hoàn sai chiều bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Hoàn treo phải được API xác nhận đúng số tiền và tài khoản nguồn"
+    },
+    {
+      "name": "N01 hoàn treo qua bank worker ghi sổ và đơn vẫn đóng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 replay tiền muộn không mở lại task",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 hoàn cùng nguồn lần hai bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Không có task hoàn đang chờ"
+    },
+    {
+      "name": "N01 đóng đơn nộp thiếu tự xếp task hoàn nguồn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 tiền thiếu hết hạn hoàn đủ, không thành cọc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N01 app không được gọi command hoàn nguồn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N09 không có quyết định không được công bố",
+      "passed": true,
+      "detail": "bị chặn: Chính sách cần quyết định hai người khớp nội dung và chờ 24 giờ"
+    },
+    {
+      "name": "N09 người lập không tự duyệt",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"decisions\" violates check constraint \"decisions_check\""
+    },
+    {
+      "name": "N09 chưa đủ 24h bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Chính sách cần quyết định hai người khớp nội dung và chờ 24 giờ"
+    },
+    {
+      "name": "N09 không thay nội dung sau khi được duyệt",
+      "passed": true,
+      "detail": "bị chặn: Chính sách cần quyết định hai người khớp nội dung và chờ 24 giờ"
+    },
+    {
+      "name": "N09 hai người duyệt, đúng 24h được lập lịch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N09 đơn không dùng chính sách chưa hiệu lực",
+      "passed": true,
+      "detail": "bị chặn: Chính sách chưa hiệu lực"
+    },
+    {
+      "name": "N09 giới hạn lượng dùng chính sách đang hiệu lực",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N12 lời mời lưu hash số đã xác minh",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N12 scan lời mời không OTP không được nhận",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "N12 OTP purpose nhận tiền không nhận lời mời",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "N12 OTP lời mời khác jti không dùng được",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "N12 không đổi hash số người được mời",
+      "passed": true,
+      "detail": "bị chặn: Danh tính QR và trạng thái đã dùng bất biến"
+    },
+    {
+      "name": "N12 không phát lời mời thiếu số điện thoại",
+      "passed": true,
+      "detail": "bị chặn: Lời mời thiếu số điện thoại đích"
+    },
+    {
+      "name": "N12 đúng người đúng OTP nhận lời mời một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N04 không đặt lại used_at",
+      "passed": true,
+      "detail": "bị chặn: Danh tính QR và trạng thái đã dùng bất biến"
+    },
+    {
+      "name": "N04 QR biên bản jti chỉ dùng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N04 QR nhận hàng không được tắt single_use",
+      "passed": true,
+      "detail": "bị chặn: QR nhận hàng, biên bản và lời mời dùng một lần"
+    },
+    {
+      "name": "N04 không sửa danh tính jti của QR",
+      "passed": true,
+      "detail": "bị chặn: Danh tính QR và trạng thái đã dùng bất biến"
+    },
+    {
+      "name": "N02 có OTP nhưng biên nhận chưa hai bên ký bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Biên nhận tiền mặt cần hai bên ký có xác thực"
+    },
+    {
+      "name": "N14 tiền mặt 19999999 không gắn cờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N14 tiền mặt đúng 20 triệu vẫn ghi nhận và gắn cờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N14 TH059 33320000 không có trần cứng, cảnh báo qua outbox",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N02 OTP khoản khác cùng số tiền bị chặn",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "N02 OTP và chuyển khoản đúng nhưng thiếu mã bị chặn",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"direct_payment_confirmations\" violates check constraint \"ck_confirmation_evidence\""
+    },
+    {
+      "name": "N15 tổ hợp tác không có tài khoản nhận tiền",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N15 HTX pháp nhân vẫn có tài khoản",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N15 không chuyển tổ hợp tác thành HTX để lách",
+      "passed": true,
+      "detail": "bị chặn: Loại pháp lý tổ chức bất biến; lập tổ chức mới"
+    },
+    {
+      "name": "N15 không cho tổ hợp tác đứng bán nhận tiền chung",
+      "passed": true,
+      "detail": "bị chặn: Tổ hợp tác phải dùng đơn con và tài khoản từng hộ"
+    },
+    {
+      "name": "N15 không lập khoản trả thẳng cho tổ hợp tác",
+      "passed": true,
+      "detail": "bị chặn: Tổ hợp tác phải dùng đơn con và tài khoản từng hộ"
+    },
+    {
+      "name": "N15 không đi vòng sổ cái nhận tiền chung",
+      "passed": true,
+      "detail": "bị chặn: Không ghi nhận tiền chung cho tổ hợp tác"
+    },
+    {
+      "name": "N08 G_them từ phí buyer ứng, chất lượng không phạt thiếu lượng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 phạt tối đa Q04 chỉ trên lượng tranh chấp thiếu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 công thức chi tạm cũ bị CHECK chặn",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"settlements\" violates check constraint \"ck_st_interim\""
+    },
+    {
+      "name": "N08 DB tự giữ 280000 kể cả người gọi khai 0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 snapshot khoản giữ thêm bất biến",
+      "passed": true,
+      "detail": "bị chặn: Quyết toán bất biến; tạo phiên bản kế tiếp"
+    },
+    {
+      "name": "D18 không cho tự khai lùi thời điểm kích hoạt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D18 không sửa giờ kích hoạt để bỏ giữ lệnh",
+      "passed": true,
+      "detail": "bị chặn: Không đổi thời điểm kích hoạt tài khoản"
+    },
+    {
+      "name": "D07 không dùng tài khoản cũ ngoài phiên bản hợp đồng",
+      "passed": true,
+      "detail": "bị chặn: Đích chi phải là tài khoản trong phiên bản đã ký"
+    },
+    {
+      "name": "D18 lệnh 20 triệu tài khoản mới giữ ở created và có việc gọi lại",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D18 chưa gọi lại không được gửi lệnh",
+      "passed": true,
+      "detail": "bị chặn: Lệnh tài khoản mới đang chờ gọi lại"
+    },
+    {
+      "name": "D18 biên dưới 20 triệu không giữ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D18 đúng 72 giờ không còn thuộc diện tài khoản mới",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D18 tài khoản lịch sử không rõ giờ giữ thận trọng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D18 không gọi lại người khác chủ tài khoản",
+      "passed": true,
+      "detail": "bị chặn: Gọi lại cần finance/risk và cuộc gọi đúng chủ, số đã xác minh, đúng lệnh"
+    },
+    {
+      "name": "D18 VH-QL không nhả lệnh tiền",
+      "passed": true,
+      "detail": "bị chặn: Gọi lại cần finance/risk và cuộc gọi đúng chủ, số đã xác minh, đúng lệnh"
+    },
+    {
+      "name": "D18 có cuộc gọi tài chính hợp lệ mới được gửi",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D18 không xóa chứng cứ nhả lệnh",
+      "passed": true,
+      "detail": "bị chặn: Bảng ops.payout_callbacks là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "D18 không sửa cờ giữ lệnh",
+      "passed": true,
+      "detail": "bị chặn: Không sửa điều kiện giữ lệnh"
+    },
+    {
+      "name": "N02 biên nhận hai bên ký của khoản khác không dùng được",
+      "passed": true,
+      "detail": "bị chặn: Biên nhận không khớp khoản và số tiền"
+    },
+    {
+      "name": "N02 N06 quyết định hai người thiếu API không thay OTP",
+      "passed": true,
+      "detail": "bị chặn: Đối soát nhận tiền phải có bằng chứng API khớp khoản và người nhận"
+    },
+    {
+      "name": "N02 N06 đối soát có API đúng binding mới ghi nhận",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 snapshot mới dùng công thức phiên bản 2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "N08 không mở lượng tranh chấp vượt lượng dòng",
+      "passed": true,
+      "detail": "bị chặn: Tranh chấp phải đúng đơn và không vượt lượng dòng"
+    },
+    {
+      "name": "N08 không gắn kiểm định đơn khác để giảm giữ phí",
+      "passed": true,
+      "detail": "bị chặn: Kiểm định phải thuộc đúng đợt tranh chấp"
+    },
+    {
+      "name": "N08 phí kiểm định đã khai ứng không sửa giảm",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.inspections là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "N08 sau chi tạm trở lại held chỉ còn 4230000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 orchestrator NOLOGIN, không BYPASSRLS",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 helper không cấp cho app/orchestrator",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 orchestrator không ghi bảng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 app giả actor system không gọi điều phối",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function activate_order_after_deposit"
+    },
+    {
+      "name": "D01 app không đổi danh tính login",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table login_principals"
+    },
+    {
+      "name": "D01 app không ghi lệnh ngân hàng",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table bank_instructions"
+    },
+    {
+      "name": "D01 buyer không tạo lô bằng payload seller",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "D01 payload không mở status tùy ý",
+      "passed": true,
+      "detail": "bị chặn: Trường không thuộc hợp đồng command"
+    },
+    {
+      "name": "D01 tạo lô ghim chủ từ login",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 đăng lô chỉ khai lượng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 đăng lại không nhân tồn",
+      "passed": true,
+      "detail": "bị chặn: Lô chưa thể đăng"
+    },
+    {
+      "name": "D01 người gửi không tự nhận lời chào",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "D01 nhận lời chào tạo giữ và trừ khả dụng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 không nhận hai lần một lời chào",
+      "passed": true,
+      "detail": "bị chặn: Lời chào hết hiệu lực"
+    },
+    {
+      "name": "M09 thiếu quyết định không cấp chủ",
+      "passed": true,
+      "detail": "bị chặn: Thiếu quyết định chủ đầu tiên"
+    },
+    {
+      "name": "M09 người xác minh không tự duyệt",
+      "passed": true,
+      "detail": "bị chặn: Người duyệt phải khác người xác minh, tổ chức còn pending"
+    },
+    {
+      "name": "M09 chủ đầu tiên phải chờ 24 giờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M09 không dùng lại quyết định tạo chủ thứ hai",
+      "passed": true,
+      "detail": "bị chặn: Chủ đầu tiên cần xác minh tổ chức và quyết định hai người đúng đối tượng"
+    },
+    {
+      "name": "M09 qua đồng hồ thử chủ có hiệu lực",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M12 không xóa lịch sử cấp vai",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.membership_role_grants là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "M11 chưa hết 24 giờ không kích hoạt",
+      "passed": true,
+      "detail": "bị chặn: Chưa hết thời gian chờ hoặc tên không khớp"
+    },
+    {
+      "name": "M11 tua đúng 24 giờ kích hoạt bằng login system",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M11 runtime không nhận app.test_time",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 command không nhận cọc 0 trái chính sách",
+      "passed": true,
+      "detail": "bị chặn: Sai chính sách cọc/phí"
+    },
+    {
+      "name": "D01 tạo nguyên tử đơn + phiên bản + tài liệu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M02 giá bất thường cần statements",
+      "passed": true,
+      "detail": "bị chặn: Cần xác nhận giá bất thường"
+    },
+    {
+      "name": "D01 chưa có tiền không active đơn",
+      "passed": true,
+      "detail": "bị chặn: Chưa có cọc ngân hàng"
+    },
+    {
+      "name": "D01 active đơn đi cùng cam kết lượng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M08 xuất hàng giao tại kho không bắt QR người nhận từ xa",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M08 tới kho chưa quét QR không nghiệm thu",
+      "passed": true,
+      "detail": "bị chặn: Chưa xác thực QR nhận hàng"
+    },
+    {
+      "name": "M03 receipt khác thiết bị bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Receipt tái xác thực sai người/biên bản/thiết bị, hết hạn hoặc đã dùng"
+    },
+    {
+      "name": "D01 BBNT PIN hai bên và chốt lượng tại kho",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 báo trả chỉ đổi trạng thái, chưa sinh tiền đã nhận",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 khóa quyết toán khác nội dung bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Khóa lặp khác nội dung"
+    },
+    {
+      "name": "D01 quyết toán tự tính và tạo lệnh đúng 6900000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 gửi lệnh dùng outbox, retry không nhân sự kiện",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 không đối soát bằng chứng bịa",
+      "passed": true,
+      "detail": "bị chặn: Thiếu sao kê đúng lệnh/số tiền/đích"
+    },
+    {
+      "name": "D01 đơn hoàn tất sau sao kê, cọc fully_processed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M10 hoàn cọc giảm lượng đúng 3450000 và phí 34500",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M10 retry không nhân adjustment",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M10 không hoàn thêm vượt delta đã giữ",
+      "passed": true,
+      "detail": "bị chặn: Hoàn chênh phải đúng delta cọc phụ lục đã ký, đúng đơn và không vượt phần chênh"
+    },
+    {
+      "name": "M10 sai căn cứ phụ lục bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Hoàn chênh phải đúng delta cọc phụ lục đã ký, đúng đơn và không vượt phần chênh"
+    },
+    {
+      "name": "M10 không nhân quyền hoàn bằng adjustment thứ hai",
+      "passed": true,
+      "detail": "bị chặn: duplicate key value violates unique constraint \"deposit_adjustments_deposit_id_order_version_no_key\""
+    },
+    {
+      "name": "M12 tổ chức khác không thu hồi vai",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "M12 không thu hồi chủ cuối cùng",
+      "passed": true,
+      "detail": "bị chặn: Không thu hồi chủ cuối cùng"
+    },
+    {
+      "name": "M12 thu hồi giữ lịch sử và loại khỏi vai hiệu lực",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 không hết hạn sớm bằng tham số client",
+      "passed": true,
+      "detail": "bị chặn: Hạn chưa đến"
+    },
+    {
+      "name": "D01 hết hạn lô qua clock thử và retry không lặp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 người xin hủy không tự chấp nhận",
+      "passed": true,
+      "detail": "bị chặn: Chỉ bên kia trả lời"
+    },
+    {
+      "name": "D01 đối tác từ chối hủy không động vào tiền",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M03 app không tự cấp receipt PIN/auth session",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M05 phiên đăng nhập bền vững dùng hash và OTP đã tiêu thụ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "M05 token thu hồi không dùng lại được",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 mọi entry point mới SECURITY DEFINER, search_path cố định",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D01 nhu cầu mở cùng dòng và giá kín",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C38 mọi command runtime SECURITY DEFINER + search_path cố định",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C38 không có helper mới hoặc DML cấp runtime",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C38 không chọn actor qua payload",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C38 buyer không tạo người được mời khi không phải chủ",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C39 lời mời ghim danh tính login và số đích",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C39 invited chưa được dùng command thị trường",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C39 login khác không nhận lời mời",
+      "passed": true,
+      "detail": "bị chặn: Sai danh tính lời mời"
+    },
+    {
+      "name": "C39 OTP lời mời được tiêu thụ, membership active",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C39 không replay lời mời",
+      "passed": true,
+      "detail": "bị chặn: Lời mời không còn chờ"
+    },
+    {
+      "name": "C39 suspended không dùng lại login",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C39 không khóa chủ cuối cùng",
+      "passed": true,
+      "detail": "bị chặn: Không bỏ chủ cuối cùng"
+    },
+    {
+      "name": "C39 đổi tài khoản cần OTP",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "C39 app không tự tra tên ngân hàng",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function verify_bank_account"
+    },
+    {
+      "name": "C39 không bỏ qua 24h tài khoản",
+      "passed": true,
+      "detail": "bị chặn: Chưa hết thời gian chờ hoặc tên không khớp"
+    },
+    {
+      "name": "C39 khóa ngay và xếp việc P0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C39 không cướp việc người khác",
+      "passed": true,
+      "detail": "bị chặn: Việc thuộc nhân viên khác"
+    },
+    {
+      "name": "C39 kết thúc việc có audit hành động và giờ công",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C39 lease outbox khác attempt bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Lease outbox đã đổi/hết hạn"
+    },
+    {
+      "name": "C39 outbox sent có timestamp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C38 sync draft chỉ mở ký, không fully_signed",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 app không tự hạch toán hủy",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function process_cancellation"
+    },
+    {
+      "name": "C40 hủy bên mua: ghi N bằng cọc, chi đúng cọc và hoàn toàn bộ D",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 hạch toán quyền đòi đủ, lượng cam kết đã nhả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 retry không nhân bút toán hoặc lệnh",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 retry hủy khác chứng từ bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Thử lại hủy khác chứng từ"
+    },
+    {
+      "name": "C40 chưa có callback/hoàn D chưa đóng hủy",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 chỉ đóng sau đối soát + nhận D; sổ quyền đòi và cọc bằng 0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 hủy bên bán hoàn đủ cọc và phí, về đúng nguồn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C40 accounting hủy bất biến",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.cancellation_accountings là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "C41 bên gửi không tự đồng ý",
+      "passed": true,
+      "detail": "bị chặn: Bên gửi không tự trả lời"
+    },
+    {
+      "name": "C41 chưa ký không áp phụ lục",
+      "passed": true,
+      "detail": "bị chặn: Chưa có điều khoản được hai bên ký"
+    },
+    {
+      "name": "C41 phụ lục giảm: lượng đúng một lần, cọc/phí hoàn ngay",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C41 retry không nhân lượng/phạt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C42 không mở tranh chấp lặp/vượt lượng",
+      "passed": true,
+      "detail": "bị chặn: Dòng/trạng thái tranh chấp không hợp lệ"
+    },
+    {
+      "name": "C42 phản đối ghim người mở và trạng thái đợt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C42 buyer không giả kết luận kiểm định",
+      "passed": true,
+      "detail": "bị chặn: Sai đối tác kiểm định"
+    },
+    {
+      "name": "C42 event kiểm định khác kết quả bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Event kiểm định khác nội dung"
+    },
+    {
+      "name": "C42 kết luận bất biến, phí bên sai ghi đúng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C42 đóng theo kết luận chuyển đúng 1500kg đạt/500kg trả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C42 quyết toán dùng bản theo kiểm định và phí đã ứng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C43 cọc khung phải đủ một kỳ lịch",
+      "passed": true,
+      "detail": "bị chặn: Cọc khung ít nhất một kỳ lịch"
+    },
+    {
+      "name": "C43 khung chưa nhận cọc không chạy",
+      "passed": true,
+      "detail": "bị chặn: Chưa đủ cọc khung đã xác minh"
+    },
+    {
+      "name": "C43 khung running từ hai chữ ký và bank receipt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C43 gọi hàng active không tạo cọc riêng, giá theo dòng lịch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C43 khung vượt mức không cam kết lô",
+      "passed": true,
+      "detail": "bị chặn: Khung vượt mức bảo đảm"
+    },
+    {
+      "name": "C43 gọi hàng thất bại không nhân cam kết",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C43 chỉ người bán cấp nợ thêm có lịch sử",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C43 không đóng khung còn đợt/đơn",
+      "passed": true,
+      "detail": "bị chặn: Khung còn giao nhận/công nợ"
+    },
+    {
+      "name": "C43 phí nhóm bằng tổng phân bổ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C43 không chốt nhóm trước giờ",
+      "passed": true,
+      "detail": "bị chặn: Chưa đến giờ chốt nhóm"
+    },
+    {
+      "name": "C43 chốt nhóm đồng thời cho các phần chờ cọc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C44 hết hạn trả action ổn định và không nhân task",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C46 người lập không tự duyệt quyết định",
+      "passed": true,
+      "detail": "bị chặn: Thiếu người lập độc lập còn quyền"
+    },
+    {
+      "name": "C46 supervisor thiếu finance/risk không duyệt đối soát",
+      "passed": true,
+      "detail": "bị chặn: Thiếu vai vận hành"
+    },
+    {
+      "name": "C46 không đổi số tiền sau duyệt",
+      "passed": true,
+      "detail": "bị chặn: Quyết định phải duyệt đúng khoản/số/kết quả/bằng chứng"
+    },
+    {
+      "name": "C46 hai người + API ghi tiền đúng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C46 khách không phát lệnh tiền vận hành",
+      "passed": true,
+      "detail": "bị chặn: Thiếu vai vận hành"
+    },
+    {
+      "name": "C46 lệnh thủ công giữ đúng nguồn và người lập duyệt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C46 chỉ người duyệt được ký quyết định thay",
+      "passed": true,
+      "detail": "bị chặn: Chỉ ngoại lệ bất khả kháng im lặng có hai người và ghi rõ quyết định"
+    },
+    {
+      "name": "C46 ký thay có ghi rõ quyết định và không giả OTP buyer",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C46 bất khả kháng giảm lượng không phạt, hoàn chênh đúng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 người bán không sửa giá kín nhu cầu",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C47 giá nhu cầu không giảm",
+      "passed": true,
+      "detail": "bị chặn: Giá tối đa của phiếu chỉ được tăng (1 < 31000)"
+    },
+    {
+      "name": "C47 giá mới ghim người mua từ login",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 app không tự đóng hủy trước cọc",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function process_unsigned_cancellation"
+    },
+    {
+      "name": "C47 hủy trước ký đóng đơn và chứng từ, accounting rỗng đúng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 tiền thiếu còn chờ hoàn nguồn, không đánh dấu hủy xong",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 hủy nộp thiếu chỉ xong sau bằng chứng hoàn nguồn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 không áp kết luận cả dòng cho lượng tranh chấp con",
+      "passed": true,
+      "detail": "bị chặn: Dòng/trạng thái tranh chấp không hợp lệ"
+    },
+    {
+      "name": "C47 người mua không rút thay người bán",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C47 rút phần cần ký BBNT trước",
+      "passed": true,
+      "detail": "bị chặn: Cần phần trả lại hiện hành đã ký, chưa kiểm định"
+    },
+    {
+      "name": "C47 rút tranh chấp tạo lô con, không khai trùng lượng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 không chuyển cơ chế khác trước 14 ngày",
+      "passed": true,
+      "detail": "bị chặn: Hạn chưa đến"
+    },
+    {
+      "name": "C47 không kết luận 14 ngày giữ nguyên tiền và tạo việc risk",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 người lập không thay người duyệt phân xử",
+      "passed": true,
+      "detail": "bị chặn: Cần quyết định hai người đúng tranh chấp"
+    },
+    {
+      "name": "C47 kết luận dòng 1 vẫn giữ dòng 2 tranh chấp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 không đóng đợt còn dòng tranh chấp",
+      "passed": true,
+      "detail": "bị chặn: Chưa kết luận hết tranh chấp"
+    },
+    {
+      "name": "C47 hai kết luận nối phiên bản, bảo toàn 1000kg đạt + 1000kg trả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 quyết toán chỉ lấy bản cuối 23 triệu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 gọi hàng quyết toán 230000 không tạo nghĩa vụ riêng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 kỳ khung chỉ một hóa đơn, nhận tiền xóa công nợ khung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 đóng khung phát hoàn cọc và chờ đối soát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C47 khung ended chỉ sau hoàn nguồn đối soát, sổ cọc bằng 0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 không nhả hold đã có đơn",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C48 đóng đơn thật nhả hold cancelled và hoàn lượng đúng một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 hủy chưa ký có hold thật đóng và trả đủ lượng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 cọc hàng tươi 12h và gia hạn hold cùng mốc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 dưới sàn tạo auto_rejected không sent/không deadline",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 không nhận lời chào tự từ chối",
+      "passed": true,
+      "detail": "bị chặn: Lời chào hết hiệu lực"
+    },
+    {
+      "name": "C48 trả giá dưới sàn chốt rejected và không mở hạn tiếp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 helper vẫn chịu hạn đổi giá 24h",
+      "passed": true,
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-27 05:37:14.492+07)"
+    },
+    {
+      "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C48 helper không cấp vai chủ",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C48 ủy quyền thu hồi không tiếp tục sửa",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C48 người trả không báo chưa nhận thay người nhận",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C48 báo chưa nhận chỉ mismatch và một task đối soát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 app không tự chứng nhận OTP đăng ký",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function record_registration"
+    },
+    {
+      "name": "C49 đăng ký nguyên tử pending, số xác minh, gói free, chưa tự có chủ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 không đăng ký bằng receipt không tồn tại",
+      "passed": true,
+      "detail": "bị chặn: Thiếu receipt đăng ký còn hạn"
+    },
+    {
+      "name": "C49 đăng ký nối bootstrap giữ thời gian chờ chủ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 người xác minh không tự duyệt",
+      "passed": true,
+      "detail": "bị chặn: Thiếu người lập độc lập còn quyền"
+    },
+    {
+      "name": "C49 xác minh tổng quát có quyết định đúng tổ chức",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 app không tự nâng gói",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function change_subscription"
+    },
+    {
+      "name": "C49 gói trả phí phải có chứng từ billing",
+      "passed": true,
+      "detail": "bị chặn: Thiếu chứng từ thu gói của billing adapter"
+    },
+    {
+      "name": "C49 khóa đổi gói khác nội dung bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Khóa gói khác nội dung"
+    },
+    {
+      "name": "C49 đổi gói lưu lịch sử không chồng lấn, retry một lần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 app không đăng bảng quyết toán hệ thống",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function attach_system_document"
+    },
+    {
+      "name": "C49 chặn PDF quyết toán khác snapshot",
+      "passed": true,
+      "detail": "bị chặn: Nội dung khác căn cứ đã chốt"
+    },
+    {
+      "name": "C49 PDF hệ thống ghim căn cứ không giả chữ ký",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 app không ghi cache AI",
+      "passed": true,
+      "detail": "bị chặn: permission denied for function cache_match_candidates"
+    },
+    {
+      "name": "C49 cache sai hash bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Sai snapshot/hash/hạn cache"
+    },
+    {
+      "name": "C49 cache có hash/expiry, chỉ lý do chuẩn và một batch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 helper mới không cấp EXECUTE cho runtime",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C49 cả auth/app/system entry point đều SECURITY DEFINER và search_path cố định",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 nhận vượt phải đồng ý rõ",
+      "passed": true,
+      "detail": "bị chặn: Lượng vượt cần đồng ý rõ và trong dung sai đã ký"
+    },
+    {
+      "name": "C50 vượt quá dung sai bị chặn dù đồng ý",
+      "passed": true,
+      "detail": "bị chặn: Lượng vượt cần đồng ý rõ và trong dung sai đã ký"
+    },
+    {
+      "name": "C50 chưa ký seller không cam kết phần vượt",
+      "passed": true,
+      "detail": "bị chặn: Cần bản hiện hành hai chữ ký, không tranh chấp"
+    },
+    {
+      "name": "C50 phần vượt lấy nguồn available, không âm và không nhân khi retry",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 rủi ro chuyển tại nguồn đúng BBNT và lượng vượt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 im lặng không chốt sớm",
+      "passed": true,
+      "detail": "bị chặn: Hạn chưa đến"
+    },
+    {
+      "name": "C50 điều khoản im lặng đóng đợt, trả action và không chuyển lượng lần hai",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 tách 100kg trả tại nguồn trước bốc, giữ 900kg đạt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 rút hàng cần hai chữ ký biên bản trả",
+      "passed": true,
+      "detail": "bị chặn: Cần biên bản rút hàng hai bên đã ký đúng bản hiện hành"
+    },
+    {
+      "name": "C50 rút dòng sinh phiên bản mới, không giả ký, không tính thiếu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 bản gửi lại chốt 900kg và bảo toàn 100kg hàng rút",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 không đóng trước cọc khi ngân hàng đã nhận đủ",
+      "passed": true,
+      "detail": "bị chặn: Cọc đủ: kích hoạt rồi hạch toán hủy sau cọc"
+    },
+    {
+      "name": "C50 hạn muộn kích hoạt đơn đã đủ tiền, không nhả hold hay hoàn sai",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C50 khiếu nại sau tách nguồn chỉ trả delta 50kg, không nhân 100kg đã về lô con",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 giảm giá ký/áp thành công, giữ phí Q06",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 chỉ hoàn 1800000 cọc về nguồn, không hoàn phí",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 retry áp giảm giá không nhân lệnh",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 giảm lượng sau giảm giá phân phí cũ theo lượng, áp sàn/trần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 cơ sở phí phụ lục bất biến",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.order_version_fee_bases là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "C51 mã bổ sung cọc 14 ký tự MOD97, phí đổi giá giữ nguyên",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 callback mã ngắn khớp đúng cọc",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 runtime không được cấp sequence hay helper mã",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 tạo danh tính mời idempotent theo số, không ghi đè",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C51 danh tính mới mời được, chưa tự kích hoạt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 buyer khác người nhận không cân lại",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C52 thiếu chứng cứ mới bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Cần chứng cứ cân lại mới đúng đơn"
+    },
+    {
+      "name": "C52 bỏ mất phần tranh chấp bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Phải thay đúng và đủ lượng từng dòng tranh chấp"
+    },
+    {
+      "name": "C52 không tự đổi giá khi cân lại",
+      "passed": true,
+      "detail": "bị chặn: Không được sửa giá khi giao"
+    },
+    {
+      "name": "C52 bản mới 940/40/20, giữ dòng chốt và lịch sử",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 retry khác tài liệu xung đột",
+      "passed": true,
+      "detail": "bị chặn: Bản gửi lại khác nội dung"
+    },
+    {
+      "name": "C52 chưa seller đồng ý không tăng V_kt theo bản chia lại",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 chưa ký seller không đóng tranh chấp",
+      "passed": true,
+      "detail": "bị chặn: Cần gửi và ký bản chia lại hiện hành"
+    },
+    {
+      "name": "C52 seller đồng ý đóng tranh chấp, V đúng, không nhân lượng",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 không mở quyền helper nội bộ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 chưa thống nhất chia lại vẫn đặt được kiểm định",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 kiểm định xử lý đủ cả hai phần 40kg, giữ nguyên dòng khác",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 đúng mốc 24h không chia lại",
+      "passed": true,
+      "detail": "bị chặn: Chỉ chia lại phản đối của người bán trong 24 giờ, trước kiểm định/chốt lượng"
+    },
+    {
+      "name": "C52 đã yêu cầu kiểm định không quay lại chia lại",
+      "passed": true,
+      "detail": "bị chặn: Chỉ chia lại phản đối của người bán trong 24 giờ, trước kiểm định/chốt lượng"
+    },
+    {
+      "name": "C52 nhiều tranh chấp không được bỏ sót một dòng",
+      "passed": true,
+      "detail": "bị chặn: Phải thay đúng và đủ lượng từng dòng tranh chấp"
+    },
+    {
+      "name": "C52 kết luận một dòng giữ phần tranh chấp khác đang mở",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C52 kết luận nối sau chia lại giữ đúng ánh xạ từng phần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 production clock rỗng lấy giờ thật",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 mở phản đối và chứng cứ cùng clock tương lai",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 lời chào và giữ lượng có gốc/hạn cùng clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 audit trạng thái và chữ ký vẫn theo giờ thật",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 chặn chứng cứ tạo trước phản đối theo clock",
+      "passed": true,
+      "detail": "bị chặn: Chứng cứ phải được tạo sau phản đối"
+    },
+    {
+      "name": "C53 đúng 24h của clock thử bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Chỉ chia lại phản đối của người bán trong 24 giờ, trước kiểm định/chốt lượng"
+    },
+    {
+      "name": "C53 quá 24h của clock thử bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Chỉ chia lại phản đối của người bán trong 24 giờ, trước kiểm định/chốt lượng"
+    },
+    {
+      "name": "C53 từ chối quá hạn không ghi bản chia lại",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 trước 24h một microsecond chia lại thành công và đóng dấu clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 retry sau hạn vẫn trả cùng bản không nhân ghi",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 hai bên ký bản chia lại đóng tranh chấp khi clock tua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 kiểm định tạo/hạn 48h cùng clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 kết quả và hạn thương lượng 14 ngày cùng clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 QR tua lùi vẫn thỏa expires_at lớn hơn created_at",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 cap thành viên nhận gói đã kích hoạt theo clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C53 trước giờ nâng gói vẫn giữ cap miễn phí",
+      "passed": true,
+      "detail": "bị chặn: Gói hết số thành viên"
+    },
+    {
+      "name": "C53 xóa clock thử trở về giờ thật",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 cấu hình cổng không cho app/auth/system sửa",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 cổng không kế thừa quyền command, bảng hay broker",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 cổng chưa SET ROLE không gọi command",
+      "passed": true,
+      "detail": "bị chặn: permission denied for schema cmd"
+    },
+    {
+      "name": "C54 kể cả qua SECURITY DEFINER cổng trần không có principal",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C54 MEMBER bắc cầu không cấp quyền worker cho cổng trần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 SET ROLE thay current_user, giữ nguyên session_user",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 context qua SECURITY DEFINER không nhận GUC giả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 seller không hưởng quyền worker từ membership của gateway",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 chuyển buyer trong giao dịch không giữ danh tính seller",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 buyer không dùng payload seller",
+      "passed": true,
+      "detail": "bị chặn: Sai tổ chức hoặc thiếu vai nghiệp vụ"
+    },
+    {
+      "name": "C54 điều phối chọn đúng vai trong phiên gateway",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 bank adapter qua gateway vào đúng nhánh ngân hàng",
+      "passed": true,
+      "detail": "bị chặn: Không có sự kiện"
+    },
+    {
+      "name": "C54 complete_bank_return qua gateway vào đúng nhánh",
+      "passed": true,
+      "detail": "bị chặn: Không có task hoàn đang chờ"
+    },
+    {
+      "name": "C54 verify_bank_account qua gateway vào đúng nhánh",
+      "passed": true,
+      "detail": "bị chặn: Thiếu tra tên đúng tài khoản"
+    },
+    {
+      "name": "C54 vai app chưa ánh xạ không tự trở thành actor",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C54 RESET ROLE không giữ quyền nghiệp vụ trước đó",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C54 command ghi đúng user/org và auth receipt qua gateway",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 login thường SET ROLE principal khác bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Login thường không được chuyển danh tính"
+    },
+    {
+      "name": "C54 login thường không đổi danh tính đọc bằng SET ROLE",
+      "passed": true,
+      "detail": "bị chặn: Login thường không được chuyển danh tính"
+    },
+    {
+      "name": "C54 tự khai gateway bằng GUC không đổi principal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 login thường không tự đăng ký cổng",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table trusted_gateways"
+    },
+    {
+      "name": "C54 login thường không bật/sửa cấu hình cổng",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table trusted_gateways"
+    },
+    {
+      "name": "C54 cấu hình sai gateway INHERIT phải fail closed",
+      "passed": true,
+      "detail": "bị chặn: Cổng phải là LOGIN NOINHERIT không đặc quyền"
+    },
+    {
+      "name": "C54 nhận lời mời qua gateway tiêu thụ OTP và kích hoạt membership",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C54 không còn định nghĩa cũ kiểm identity theo session_user",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 phiên pending bền qua API lookup sau bỏ context/cache",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 OTP login không dùng lại để tạo token thứ hai",
+      "passed": true,
+      "detail": "bị chặn: OTP chưa xác minh, hết hạn, đã dùng hoặc sai binding tiền/phiên bản"
+    },
+    {
+      "name": "C55 phiên pending không mở quyền nghiệp vụ",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C55 khóa người đăng ký vô hiệu phiên pending",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 phiên pending bị thu hồi không lookup lại",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 người giúp không membership có phiên bền đúng ủy quyền",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 không cấp phiên người giúp cho tổ chức khác",
+      "passed": true,
+      "detail": "bị chặn: Không có quyền đăng nhập"
+    },
+    {
+      "name": "C55 phiên helper không cho ký thay principal",
+      "passed": true,
+      "detail": "bị chặn: Không có quyền ký phía này"
+    },
+    {
+      "name": "C55 khóa principal vô hiệu phiên helper",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 hết hạn delegation vô hiệu phiên helper",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 thu hồi delegation vô hiệu phiên helper",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C55 delegation thu hồi không cấp lại phiên",
+      "passed": true,
+      "detail": "bị chặn: Không có quyền đăng nhập"
+    },
+    {
+      "name": "C55 scope và delegation chỉ auth adapter dùng, app không sửa phiên",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 seed chị Năm đúng số, 15 nhật ký, mặt hàng có hai người duyệt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 bốn xe ảo và hai dự thảo vụ chưa tạo tiền/chữ ký giả",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 bên mua không ghi nhật ký vườn bán",
+      "passed": true,
+      "detail": "bị chặn: Chỉ chủ/người giúp nhật ký"
+    },
+    {
+      "name": "C56 retry nhật ký trả đúng ID",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 khóa retry khác nội dung bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Khóa nhật ký đã dùng với nội dung khác"
+    },
+    {
+      "name": "C56 không tự gắn nhãn nhân viên",
+      "passed": true,
+      "detail": "bị chặn: Payload không thuộc hợp đồng command"
+    },
+    {
+      "name": "C56 nhật ký không sửa tại chỗ",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.cultivation_entries là append-only: không được UPDATE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "C56 nhật ký không xóa",
+      "passed": true,
+      "detail": "bị chặn: Bảng core.cultivation_entries là append-only: không được DELETE (sửa bằng bản ghi điều chỉnh)"
+    },
+    {
+      "name": "C56 không rẽ nhánh bản sửa",
+      "passed": true,
+      "detail": "bị chặn: Chỉ sửa bản hiện hành cùng cơ sở; không hạ nhãn xác nhận"
+    },
+    {
+      "name": "C56 người giúp giữ user thật, nguồn tự ghi",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 helper đọc được nhật ký trong ủy quyền",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 helper thu hồi không ghi tiếp",
+      "passed": true,
+      "detail": "bị chặn: Login chưa được ánh xạ danh tính/quyền hoạt động"
+    },
+    {
+      "name": "C56 RLS bên mua không đọc nhật ký/xác minh tổ chức bán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 cơ sở mới chưa duyệt không đăng lô",
+      "passed": true,
+      "detail": "bị chặn: Mặt hàng/cơ sở/loại chưa xác minh hoặc hết hiệu lực"
+    },
+    {
+      "name": "C56 người lập không tự duyệt",
+      "passed": true,
+      "detail": "bị chặn: Cần người duyệt độc lập đang có phân công"
+    },
+    {
+      "name": "C56 duyệt hai người mới đăng thành công",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 nhật ký chặn đăng dù client khai hết cách ly",
+      "passed": true,
+      "detail": "bị chặn: Nhật ký còn ngày cách ly"
+    },
+    {
+      "name": "C56 hết cách ly đăng được, mốc lấy từ nhật ký",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 thu hồi chặn đăng/xác nhận lại",
+      "passed": true,
+      "detail": "bị chặn: Mặt hàng/cơ sở/loại chưa xác minh hoặc hết hiệu lực"
+    },
+    {
+      "name": "C56 bán gấp có từ/đến/lý do và hạn worker",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C56 app không có DML nhật ký/xác minh, helper nội bộ không public",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 đặt trước giữ khoảng lượng, cọc 30 phần trăm theo min và chờ chốt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 chưa chốt không sẵn sàng giao",
+      "passed": true,
+      "detail": "bị chặn: Đặt trước còn chờ chốt lượng/giá bằng phụ lục đã ký"
+    },
+    {
+      "name": "C57 chốt ngoài khoảng bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Chưa thể chốt lượng/ngoài khoảng hợp đồng"
+    },
+    {
+      "name": "C57 bên mua đọc dự báo, lượng ký không tự giảm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 đồng ý mới tạo phụ lục, chưa tự áp trước chữ ký",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 phụ lục chốt lượng tạo chênh cọc 24h và giữ nguyên bản đầu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 công thức sàn và chia lợi",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 công thức thiếu/âm bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Công thức cần sàn và ref_bps hoặc share_bps; trần không dưới sàn"
+    },
+    {
+      "name": "C57 bao tiêu tạo hai đợt từ lịch và chỉ một cọc vụ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 chưa hết vụ không quyết toán nhả cọc",
+      "passed": true,
+      "detail": "bị chặn: Giữ cọc suốt vụ; chỉ quyết toán cuối vụ hoặc đi luồng hủy"
+    },
+    {
+      "name": "C57 giá đợt retry một snapshot",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 bao tiêu chưa ghi thu hoạch không nghiệm thu",
+      "passed": true,
+      "detail": "bị chặn: Bao tiêu cần nhật ký thu hoạch và giá đợt"
+    },
+    {
+      "name": "C57 đợt trả trong 7 ngày: 23 triệu trừ 1 triệu vật tư, giữ nguyên 2 triệu cọc vụ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 dưới 80 phần trăm nhật ký không lý do tạo đúng một P2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 chuyến gộp còn một đợt chưa xong vẫn giữ lịch xe",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 xe đang phục vụ vẫn chặn lịch trùng",
+      "passed": true,
+      "detail": "bị chặn: conflicting key value violates exclusion constraint \"trips_vehicle_id_scheduled_during_excl\""
+    },
+    {
+      "name": "C57 mọi đợt xong tự kết thúc chuyến và có mốc nghiệp vụ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C57 xe đã xong đặt lại cùng khoảng không kẹt exclusion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 nguồn nhân viên được DB gắn theo vai, không do payload",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 chủ không sửa bản xác nhận thành tự ghi",
+      "passed": true,
+      "detail": "bị chặn: Chỉ sửa bản hiện hành cùng cơ sở; không hạ nhãn xác nhận"
+    },
+    {
+      "name": "C58 ảnh nhật ký là tham chiếu tài liệu đúng tổ chức",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 24h không ai hỏi tạo một gợi ý riêng cho chủ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 hết hạn bán gấp tự tắt cờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 bên mua không đọc gợi ý khẩn cấp của người bán",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 đối tác có lời chào bao tiêu hàng dạt theo mùa",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 rút lời chào không xóa lịch sử",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 view giá cũ không thay cho giá ngày chốt",
+      "passed": true,
+      "detail": "bị chặn: Chưa có giá giao dịch đủ mẫu tại ngày chốt; không dùng giá ngoài"
+    },
+    {
+      "name": "C58 giá chốt công thức lưu nguồn tham khảo và nằm sàn/trần",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 giảm mất mùa không chứng cứ bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Bất khả kháng cần người bán/chứng cứ"
+    },
+    {
+      "name": "C58 đề nghị giảm lượng chưa tự đổi cam kết",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C58 mất mùa: hai chữ ký rồi mới giảm đợt chưa giao, hoàn cọc chênh không phạt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D19 exporter kiểm hash và checkpoint ngoài SQL",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "D19 exporter phát hiện nội dung hoặc checkpoint bị đổi",
+      "passed": true,
+      "detail": null
+    }
+  ]
+}

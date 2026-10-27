@@ -1,0 +1,432 @@
+{
+  "at": "2026-10-27T02:28:19.434Z",
+  "origin": "http://127.0.0.1:18889",
+  "adminAuth": "test/impersonate",
+  "results": [
+    {
+      "template": "offer",
+      "pass": true,
+      "record": {
+        "id": "4784e388-d479-4f66-bafb-999f5b1aef69",
+        "createdAt": "2026-10-27T02:24:57.710Z",
+        "seed": "agiviet-27",
+        "template": "offer",
+        "seller": {
+          "display_name": "Nguyễn Thị Năm",
+          "phone": "0918000421",
+          "org_code": "TC-B01",
+          "org_name": "Hộ Nguyễn Thị Năm",
+          "org_kind": "household",
+          "can_sell": true,
+          "can_buy": false,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "buyer": {
+          "display_name": "Nguyễn Đức Thịnh",
+          "phone": "0909000213",
+          "org_code": "TC-M01",
+          "org_name": "Nhà máy sấy Đồng Xanh",
+          "org_kind": "enterprise",
+          "can_sell": false,
+          "can_buy": true,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "product": "XOAI_CAT_CHU",
+        "grade": "L1",
+        "qty": "1200",
+        "price": "23000",
+        "plate": "66C-123.45",
+        "qty_g": "1200000",
+        "phase": "ready",
+        "provenance": "Tình huống hư cấu để thử quy trình. Tên hộ, HTX, doanh nghiệp, vùng trồng, nhật ký và giấy tờ trong môi trường này là dữ liệu giả; không chứng minh đã khảo sát hay chứng nhận hàng thật. Giá và lượng là giả định cho vụ ĐBSCL, không phải báo giá trực tiếp.",
+        "steps": [
+          {
+            "name": "Đồng bộ đồng hồ thử PostgreSQL về giờ máy operator",
+            "at": "2026-10-27T02:24:57.723Z"
+          },
+          {
+            "name": "Đóng vai người bán",
+            "at": "2026-10-27T02:24:57.735Z"
+          },
+          {
+            "name": "Đóng vai bên mua",
+            "at": "2026-10-27T02:24:57.744Z"
+          },
+          {
+            "name": "Tạo lô dữ liệu thử",
+            "at": "2026-10-27T02:24:57.796Z"
+          },
+          {
+            "name": "Gắn ảnh giả có nhãn dữ liệu thử",
+            "at": "2026-10-27T02:24:57.820Z"
+          },
+          {
+            "name": "Đăng lô thử",
+            "at": "2026-10-27T02:24:57.852Z"
+          },
+          {
+            "name": "Gửi lời chào mua",
+            "at": "2026-10-27T02:24:57.869Z"
+          },
+          {
+            "name": "Đọc lại và kiểm tra trạng thái đích",
+            "at": "2026-10-27T02:24:57.878Z"
+          }
+        ],
+        "step": "Đã kiểm trạng thái qua API",
+        "lotId": "27a20daf-9e70-4eb9-a4f5-975f32b18ef3",
+        "offerId": "d55b45c6-7b48-42c6-94d6-1434efea0012",
+        "actualStatus": "sent"
+      },
+      "opened": [
+        {
+          "app": "ban",
+          "status": "sent",
+          "phone": "0918000421"
+        },
+        {
+          "app": "mua",
+          "status": "sent",
+          "phone": "0909000213"
+        }
+      ]
+    },
+    {
+      "template": "sign",
+      "pass": true,
+      "record": {
+        "id": "c98fbf23-c70d-4891-bb97-6f8dad82e911",
+        "createdAt": "2026-10-27T02:26:04.008Z",
+        "seed": "agiviet-27",
+        "template": "sign",
+        "seller": {
+          "display_name": "Nguyễn Thị Năm",
+          "phone": "0918000421",
+          "org_code": "TC-B01",
+          "org_name": "Hộ Nguyễn Thị Năm",
+          "org_kind": "household",
+          "can_sell": true,
+          "can_buy": false,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "buyer": {
+          "display_name": "Nguyễn Đức Thịnh",
+          "phone": "0909000213",
+          "org_code": "TC-M01",
+          "org_name": "Nhà máy sấy Đồng Xanh",
+          "org_kind": "enterprise",
+          "can_sell": false,
+          "can_buy": true,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "product": "XOAI_CAT_CHU",
+        "grade": "L1",
+        "qty": "1200",
+        "price": "23000",
+        "plate": "66C-123.45",
+        "qty_g": "1200000",
+        "phase": "ready",
+        "provenance": "Tình huống hư cấu để thử quy trình. Tên hộ, HTX, doanh nghiệp, vùng trồng, nhật ký và giấy tờ trong môi trường này là dữ liệu giả; không chứng minh đã khảo sát hay chứng nhận hàng thật. Giá và lượng là giả định cho vụ ĐBSCL, không phải báo giá trực tiếp.",
+        "steps": [
+          {
+            "name": "Đóng vai người bán",
+            "at": "2026-10-27T02:26:04.019Z"
+          },
+          {
+            "name": "Đóng vai bên mua",
+            "at": "2026-10-27T02:26:04.027Z"
+          },
+          {
+            "name": "Tạo lô dữ liệu thử",
+            "at": "2026-10-27T02:26:04.044Z"
+          },
+          {
+            "name": "Gắn ảnh giả có nhãn dữ liệu thử",
+            "at": "2026-10-27T02:26:04.060Z"
+          },
+          {
+            "name": "Đăng lô thử",
+            "at": "2026-10-27T02:26:04.078Z"
+          },
+          {
+            "name": "Gửi lời chào mua",
+            "at": "2026-10-27T02:26:04.087Z"
+          },
+          {
+            "name": "Người bán đồng ý giá",
+            "at": "2026-10-27T02:26:04.114Z"
+          },
+          {
+            "name": "Lập hợp đồng",
+            "at": "2026-10-27T02:26:04.258Z"
+          },
+          {
+            "name": "Đọc lại và kiểm tra trạng thái đích",
+            "at": "2026-10-27T02:26:04.272Z"
+          }
+        ],
+        "step": "Đã kiểm trạng thái qua API",
+        "lotId": "7aa6f8b8-d2c3-46b0-b92a-4f5a5582d1f8",
+        "offerId": "c3b9520b-b797-4bf3-aa4b-a8c9cab68908",
+        "orderId": "4047bc1d-b67f-46ef-95e8-e211ca624a64",
+        "actualStatus": "drafting"
+      },
+      "opened": [
+        {
+          "app": "ban",
+          "status": "drafting",
+          "phone": "0918000421"
+        },
+        {
+          "app": "mua",
+          "status": "drafting",
+          "phone": "0909000213"
+        }
+      ]
+    },
+    {
+      "template": "deposit",
+      "pass": true,
+      "record": {
+        "id": "d8e3ce1c-3e78-4206-9cd0-fa3128c1f992",
+        "createdAt": "2026-10-27T02:27:10.438Z",
+        "seed": "agiviet-27",
+        "template": "deposit",
+        "seller": {
+          "display_name": "Nguyễn Thị Năm",
+          "phone": "0918000421",
+          "org_code": "TC-B01",
+          "org_name": "Hộ Nguyễn Thị Năm",
+          "org_kind": "household",
+          "can_sell": true,
+          "can_buy": false,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "buyer": {
+          "display_name": "Nguyễn Đức Thịnh",
+          "phone": "0909000213",
+          "org_code": "TC-M01",
+          "org_name": "Nhà máy sấy Đồng Xanh",
+          "org_kind": "enterprise",
+          "can_sell": false,
+          "can_buy": true,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "product": "XOAI_CAT_CHU",
+        "grade": "L1",
+        "qty": "1200",
+        "price": "23000",
+        "plate": "66C-123.45",
+        "qty_g": "1200000",
+        "phase": "ready",
+        "provenance": "Tình huống hư cấu để thử quy trình. Tên hộ, HTX, doanh nghiệp, vùng trồng, nhật ký và giấy tờ trong môi trường này là dữ liệu giả; không chứng minh đã khảo sát hay chứng nhận hàng thật. Giá và lượng là giả định cho vụ ĐBSCL, không phải báo giá trực tiếp.",
+        "steps": [
+          {
+            "name": "Đóng vai người bán",
+            "at": "2026-10-27T02:27:10.446Z"
+          },
+          {
+            "name": "Đóng vai bên mua",
+            "at": "2026-10-27T02:27:10.451Z"
+          },
+          {
+            "name": "Tạo lô dữ liệu thử",
+            "at": "2026-10-27T02:27:10.467Z"
+          },
+          {
+            "name": "Gắn ảnh giả có nhãn dữ liệu thử",
+            "at": "2026-10-27T02:27:10.481Z"
+          },
+          {
+            "name": "Đăng lô thử",
+            "at": "2026-10-27T02:27:10.500Z"
+          },
+          {
+            "name": "Gửi lời chào mua",
+            "at": "2026-10-27T02:27:10.511Z"
+          },
+          {
+            "name": "Người bán đồng ý giá",
+            "at": "2026-10-27T02:27:10.532Z"
+          },
+          {
+            "name": "Lập hợp đồng",
+            "at": "2026-10-27T02:27:10.611Z"
+          },
+          {
+            "name": "Bên mua ký OTP thử",
+            "at": "2026-10-27T02:27:10.672Z"
+          },
+          {
+            "name": "Người bán ký OTP thử",
+            "at": "2026-10-27T02:27:10.718Z"
+          },
+          {
+            "name": "Đọc lại và kiểm tra trạng thái đích",
+            "at": "2026-10-27T02:27:10.735Z"
+          }
+        ],
+        "step": "Đã kiểm trạng thái qua API",
+        "lotId": "9d963e7f-56ff-4af6-865e-bad642ea2759",
+        "offerId": "7b598440-dcfa-4a9b-a165-033415d3aa4b",
+        "orderId": "bcd3b5ae-47e5-412a-97c7-999ff699229b",
+        "actualStatus": "awaiting_deposit"
+      },
+      "opened": [
+        {
+          "app": "ban",
+          "status": "awaiting_deposit",
+          "phone": "0918000421"
+        },
+        {
+          "app": "mua",
+          "status": "awaiting_deposit",
+          "phone": "0909000213"
+        }
+      ]
+    },
+    {
+      "template": "active",
+      "pass": true,
+      "record": {
+        "id": "5715ac6b-ee47-408e-90b6-bef4c5a25582",
+        "createdAt": "2026-10-27T02:28:16.867Z",
+        "seed": "agiviet-27",
+        "template": "active",
+        "seller": {
+          "display_name": "Nguyễn Thị Năm",
+          "phone": "0918000421",
+          "org_code": "TC-B01",
+          "org_name": "Hộ Nguyễn Thị Năm",
+          "org_kind": "household",
+          "can_sell": true,
+          "can_buy": false,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "buyer": {
+          "display_name": "Nguyễn Đức Thịnh",
+          "phone": "0909000213",
+          "org_code": "TC-M01",
+          "org_name": "Nhà máy sấy Đồng Xanh",
+          "org_kind": "enterprise",
+          "can_sell": false,
+          "can_buy": true,
+          "roles": "owner",
+          "approval_limit_vnd": null,
+          "staff_roles": null
+        },
+        "product": "XOAI_CAT_CHU",
+        "grade": "L1",
+        "qty": "1200",
+        "price": "23000",
+        "plate": "66C-123.45",
+        "qty_g": "1200000",
+        "phase": "ready",
+        "provenance": "Tình huống hư cấu để thử quy trình. Tên hộ, HTX, doanh nghiệp, vùng trồng, nhật ký và giấy tờ trong môi trường này là dữ liệu giả; không chứng minh đã khảo sát hay chứng nhận hàng thật. Giá và lượng là giả định cho vụ ĐBSCL, không phải báo giá trực tiếp.",
+        "steps": [
+          {
+            "name": "Đóng vai người bán",
+            "at": "2026-10-27T02:28:16.874Z"
+          },
+          {
+            "name": "Đóng vai bên mua",
+            "at": "2026-10-27T02:28:16.878Z"
+          },
+          {
+            "name": "Tạo lô dữ liệu thử",
+            "at": "2026-10-27T02:28:16.899Z"
+          },
+          {
+            "name": "Gắn ảnh giả có nhãn dữ liệu thử",
+            "at": "2026-10-27T02:28:16.915Z"
+          },
+          {
+            "name": "Đăng lô thử",
+            "at": "2026-10-27T02:28:16.939Z"
+          },
+          {
+            "name": "Gửi lời chào mua",
+            "at": "2026-10-27T02:28:16.950Z"
+          },
+          {
+            "name": "Người bán đồng ý giá",
+            "at": "2026-10-27T02:28:16.968Z"
+          },
+          {
+            "name": "Lập hợp đồng",
+            "at": "2026-10-27T02:28:17.053Z"
+          },
+          {
+            "name": "Bên mua ký OTP thử",
+            "at": "2026-10-27T02:28:17.088Z"
+          },
+          {
+            "name": "Người bán ký OTP thử",
+            "at": "2026-10-27T02:28:17.120Z"
+          },
+          {
+            "name": "Ngân hàng ảo nhận cọc",
+            "at": "2026-10-27T02:28:17.128Z"
+          },
+          {
+            "name": "Giao webhook cọc",
+            "at": "2026-10-27T02:28:17.163Z"
+          },
+          {
+            "name": "Đọc lại và kiểm tra trạng thái đích",
+            "at": "2026-10-27T02:28:17.172Z"
+          }
+        ],
+        "step": "Đã kiểm trạng thái qua API",
+        "lotId": "f64919ab-c013-45ff-9b4e-4e968a4848c2",
+        "offerId": "9efbf35e-63ed-4781-9fc1-798723edfccd",
+        "orderId": "2cc021e5-3a56-496a-aa7f-e98cbdfee416",
+        "actualStatus": "active"
+      },
+      "opened": [
+        {
+          "app": "ban",
+          "status": "active",
+          "phone": "0918000421"
+        },
+        {
+          "app": "mua",
+          "status": "active",
+          "phone": "0909000213"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "admin-offer.png",
+    "ban-offer.png",
+    "mua-offer.png",
+    "admin-sign.png",
+    "ban-sign.png",
+    "mua-sign.png",
+    "admin-deposit.png",
+    "ban-deposit.png",
+    "mua-deposit.png",
+    "admin-active.png",
+    "ban-active.png",
+    "mua-active.png",
+    "ngan-hang-ao.png",
+    "reset-xac-nhan-hai-lan.png"
+  ]
+}

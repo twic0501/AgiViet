@@ -1,0 +1,44 @@
+{
+  "baseline": {
+    "source": "Mốc người giao việc: trước 0033-0034",
+    "migrations": 32,
+    "passed": 285,
+    "checks": 285
+  },
+  "initial_resume": {
+    "migrations": 34,
+    "setup_failed_test": "130_chi_tam_va_goi_lai.sql",
+    "reason": "0033 ghi đè created_at fixture; activation timestamp kỳ vọng chưa cùng đồng hồ nghiệp vụ"
+  },
+  "after": {
+    "migrations": 37,
+    "passed": 340,
+    "checks": 340,
+    "failed": 0,
+    "migration_seed_replay": true,
+    "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit"
+  },
+  "original_security": {
+    "command": "node security/tests/db/kiem-tra-db.mjs --chi-tiet",
+    "exit_code": 2,
+    "setup_failed": true,
+    "reason": "SEC-OTP-B trong fixture chưa có challenge verified",
+    "cases_run": 0,
+    "log": "backend-proposal-security-original.log"
+  },
+  "compatible_security": {
+    "command": "node db/tools/kiem-tra-bao-mat-tuong-thich.mjs --chi-tiet",
+    "passed": 45,
+    "cases": 45,
+    "must_block": 41,
+    "must_pass": 4,
+    "holes": 0,
+    "false_blocks": 0,
+    "invariant_violations": 0,
+    "log": "backend-proposal-security-compatible.log"
+  },
+  "security_source_sha256": {
+    "security/tests/db/kiem-tra-db.mjs": "95bec25e97d76117592f511909bde4f75aae494b407a8801e908d597b9d49a5a",
+    "security/sql/fixture.sql": "eeeaa54f715a9be7ecd769c27c6db2f85028b3608cc1374286f79db625cac22d"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-27T02:32:22.793Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "arrival",
+      "side": "seller",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'disputed'\n- 'arrival_check'\n\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:63:16"
+    },
+    {
+      "profile": "arrival",
+      "side": "buyer",
+      "pass": false,
+      "error": "Error: Chưa tới đích · Tài chính thử đối soát sau webhook ngân hàng ảo\n    at wait (file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:43:240)\n    at async file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:78:9"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "arrival-seller-mo-ho-so.png",
+    "arrival-seller-LOI.png",
+    "arrival-buyer-mo-ho-so.png",
+    "arrival-buyer-LOI.png"
+  ]
+}

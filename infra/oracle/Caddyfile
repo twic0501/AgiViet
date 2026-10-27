@@ -1,0 +1,82 @@
+{
+	email {$ACME_EMAIL}
+	acme_ca {$ACME_CA}
+	servers {
+		protocols h1 h2
+		timeouts {
+			read_header 10s
+			read_body 60s
+			idle 2m
+		}
+	}
+}
+{$DOMAIN:agiviet.id.vn} {
+	# Khớp Fastify bodyLimit: 12 * 1024 * 1024 byte, cả JSON/base64.
+	request_body {
+		max_size 12582912
+	}
+	# Caddy là ingress trực tiếp. Không lấy khóa từ X-Forwarded-For do client gửi.
+	rate_limit {
+		sweep_interval 1m
+		disable_metrics
+		zone auth_ip {
+			match {
+				path /v1/auth*
+			}
+			key {remote_host}
+			ipv6_prefix 64
+			events 10
+			window 1m
+		}
+		zone auth_hour {
+			match {
+				path /v1/auth*
+			}
+			key {remote_host}
+			ipv6_prefix 64
+			events 60
+			window 1h
+		}
+		zone auth_total {
+			match {
+				path /v1/auth*
+			}
+			key all
+			events 120
+			window 1m
+		}
+		zone api_ip {
+			match {
+				path /v1 /v1/*
+			}
+			key {remote_host}
+			ipv6_prefix 64
+			events 120
+			window 1m
+		}
+		zone api_total {
+			match {
+				path /v1 /v1/*
+			}
+			key all
+			events 1200
+			window 1m
+		}
+	}
+	# Không đưa cổng mô phỏng/reset ra public, kể cả khi operator chọn thu.
+	@private path /v1/test /v1/test/* /v1/sim /v1/sim/*
+	handle @private {
+		respond 404
+	}
+	@api path /v1 /v1/* /health /health/*
+	handle @api {
+		# API dùng Bearer của backend; Basic ở đây sẽ xung đột cùng Authorization.
+		reverse_proxy 127.0.0.1:8080
+	}
+	handle {
+		basic_auth {
+			pilot {$CADDY_PASSWORD_HASH}
+		}
+		reverse_proxy 127.0.0.1:8090
+	}
+}

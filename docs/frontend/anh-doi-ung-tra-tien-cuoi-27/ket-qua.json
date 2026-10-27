@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-27T01:48:25.897Z",
+  "origin": "http://127.0.0.1:58889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "late",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Chậm trả → báo trả có chứng từ → OTP xác nhận đủ",
+      "seed": "thu-0",
+      "log": "Đối ứng xác nhận tiền ảo bằng OTP thử"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "late-buyer-mo-ho-so.png",
+    "late-buyer-dat-dich.png"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "checked_at_utc": "2026-10-26T11:07:15.078357+00:00",
+  "method": "docker manifest inspect; no daemon; not a build/runtime test",
+  "images": [
+    {
+      "image": "postgres:17-bookworm",
+      "arm64_manifests": [
+        {
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 3643,
+          "digest": "sha256:f97ca6038b7641359fef23126949d824ac68edd8a7081b424d6a78e1f7076f8e",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          }
+        }
+      ]
+    },
+    {
+      "image": "node:24.18.0-bookworm-slim",
+      "arm64_manifests": [
+        {
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 1931,
+          "digest": "sha256:af01d58b748ec92b1d6e8e11429aad424fd1e68c848185399dca0596a1ab8f5c",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          }
+        }
+      ]
+    },
+    {
+      "image": "python:3.11-slim-bookworm",
+      "arm64_manifests": [
+        {
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 1754,
+          "digest": "sha256:8f51ccb8569b75cf967ffe3e1638b9953042bf36142d7032cbb6f0696c9cd2c6",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          }
+        }
+      ]
+    },
+    {
+      "image": "caddy:2.10.2-alpine",
+      "arm64_manifests": [
+        {
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 1919,
+          "digest": "sha256:8dbca3525dd8dce671e495665a0eb297a83ec87ee30f373947d0ea93115949db",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          }
+        }
+      ]
+    },
+    {
+      "image": "caddy:2.10.2-builder",
+      "checked_at_utc": "2026-10-26T12:52:41.555267+00:00",
+      "arm64_manifests": [
+        {
+          "mediaType": "application/vnd.oci.image.manifest.v1+json",
+          "size": 2696,
+          "digest": "sha256:c4b36a686ae5179ea5d2e06148f848f9783f7e6ed7b1b5d4db2cde5ee50b8bf7",
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux",
+            "variant": "v8"
+          }
+        }
+      ]
+    }
+  ]
+}

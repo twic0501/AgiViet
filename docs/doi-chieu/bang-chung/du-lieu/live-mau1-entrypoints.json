@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/ban/bat-dau.html",
+    "status": 200,
+    "scripts": [
+      "js/app.js",
+      "js/he-thong.js",
+      "js/kho-mau.js",
+      "js/mo-phong.js",
+      "js/tour.js",
+      "js/danh-muc.js",
+      "js/chon-hang.js"
+    ],
+    "sha256": "8a88cd4d60faf9895d1ef980c2a82a1b736e449f0817425810520c72d94709b5"
+  },
+  {
+    "path": "/mua/dang-nhap.html",
+    "status": 200,
+    "scripts": [],
+    "sha256": "dc8d0a12a09263ecbf14e36438aab0e3ef0fb190d5522d3caa01dee3fd354992"
+  }
+]

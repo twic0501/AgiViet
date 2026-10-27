@@ -1,0 +1,38 @@
+{
+  "results": [
+    {
+      "app": "ban",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "app": "ban",
+      "status": 404,
+      "pass": true
+    },
+    {
+      "app": "mua",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "app": "mua",
+      "status": 404,
+      "pass": true
+    },
+    {
+      "app": "quan-tri",
+      "status": 403,
+      "pass": true
+    },
+    {
+      "app": "quan-tri",
+      "status": 404,
+      "pass": true
+    },
+    {
+      "name": "App bán chặn đăng ký kể cả deep link cũ",
+      "pass": true
+    }
+  ]
+}

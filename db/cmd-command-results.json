@@ -1,0 +1,90 @@
+{
+  "checked_at": "2026-10-26T04:46:13.817752+00:00",
+  "before": {
+    "migrations": 37,
+    "passed": 340,
+    "checks": 340,
+    "source": "user handoff and docs/database/08"
+  },
+  "after": {
+    "migrations": 47,
+    "passed": 423,
+    "checks": 423,
+    "tables": 136,
+    "migration_seed_replay": true
+  },
+  "original_security": {
+    "command": "node security/tests/db/kiem-tra-db.mjs --chi-tiet",
+    "exit_code": 2,
+    "cases_executed": 0,
+    "blocker": "fixture SEC-OTP-B has no verified OTP receipt"
+  },
+  "compatible_security": {
+    "exit_code": 0,
+    "passed": 45,
+    "checks": 45,
+    "attacks_blocked": 41,
+    "valid_passed": 4,
+    "invariants": 21,
+    "violations": 0,
+    "skipped": 0
+  },
+  "security_source_sha256": {
+    "security/tests/db/kiem-tra-db.mjs": "95bec25e97d76117592f511909bde4f75aae494b407a8801e908d597b9d49a5a",
+    "security/sql/fixture.sql": "eeeaa54f715a9be7ecd769c27c6db2f85028b3608cc1374286f79db625cac22d"
+  },
+  "migration_sha256": {
+    "db/migrations/0001_nen_tang.sql": "b20fdc023d849c47f73ce6e3e33084ef4d0a3e72f460bbae35373bdbc2aed8b2",
+    "db/migrations/0002_to_chuc_nguoi_dung.sql": "a92066a7e9cb9e062acfb88f0c85144042a16e68fa2236894724164f9335a02a",
+    "db/migrations/0003_danh_muc_dia_diem.sql": "f95f096739e094629cb5c1525f027cf172062d32c432465d5c07f1665e6c5df6",
+    "db/migrations/0004_lo_nhu_cau_loi_chao.sql": "972cf71f8435622cd777941c31167837dcdf3f5323f7aeca772fa91107c126ae",
+    "db/migrations/0005_don_hop_dong.sql": "7b07ddd133b5ca5ce86ed88fa20b1ebdf08b3c6d0c962e2715860efb2a63822d",
+    "db/migrations/0006_tien_nghiep_vu.sql": "187bc73164a049762a0ccd0a3fd39871c25566f44f861760439e556918035450",
+    "db/migrations/0007_so_cai_tien.sql": "16be87434fb99b2233a93d2899e721d4fc13989413316bce1a114756690241a7",
+    "db/migrations/0008_so_luong.sql": "9b4d1c3287ab5f9b30b757d8180b57a510af02cf83b7179f085e12bc0b11c67b",
+    "db/migrations/0009_giao_nhan_van_hanh.sql": "1fe3fa6457dc28179dbf7b8736da1e57a1b03ad57c11490846d2186101b3a05e",
+    "db/migrations/0010_ghi_so_tu_dong.sql": "97b1910cf2271d369c49bc31ba46ca537219e7bdc1e6a1ce2b1f50e3b7699ef0",
+    "db/migrations/0011_cung_co_bat_bien.sql": "e3dbd2469b1f0fa49c7ad92820027695839eb30e033649c7cff87ab1643e7252",
+    "db/migrations/0012_thi_truong_su_kien.sql": "c8bea5a515a113c97f94e9f3d0064ed920298a40fa6ac90568c0039e99e748ad",
+    "db/migrations/0013_kiem_tra_nghiep_vu.sql": "2858534622b04e0c8577204d24cb96a31999512f95fdc85afd9ad8f810be3a62",
+    "db/migrations/0014_quyen_va_giu_luong.sql": "577212b8ced96a6afd59314521dd86759979a9047f3d82f9909f165509cf00a8",
+    "db/migrations/0015_khung_dich_vu_va_chu_thich.sql": "9f465af264a7d77e07aaf20dad17aba64c08386f4ac2abfdb8718d26dc825293",
+    "db/migrations/0016_kiem_soat_chot_va_phan_bo.sql": "10d1479b225d535fbd6ef0260d7f723cd48aed1af84f1ad93986a6519acdd643",
+    "db/migrations/0017_ke_hoach_bao_tieu_nhap.sql": "6813ba96bfb3abfc167ec1fa58fd310d3dcb28ba83cac0aaaab59dbb9249bc8a",
+    "db/migrations/0018_dieu_kien_san_sang.sql": "9712c4ab7200d7da067f8f7e6394d547c9d0d319c8a3edc792035310aff78be9",
+    "db/migrations/0019_chi_muc_va_kiem_toan.sql": "24b7507c9e85d5d744ccacee6377d423e70b6a9fa9e29bc55bcf7287e1378bfc",
+    "db/migrations/0020_lan_goi_nhieu_mat_hang.sql": "8c14854011fb12e8c609a1940dab949dace9adaee831c25975c4bc85fe1e2a29",
+    "db/migrations/0021_quyet_toan_phien_ban.sql": "d56d9da46d8a49245329d895ad2a64b71e71355a782456997bea5eb667d7394e",
+    "db/migrations/0022_chu_ky_quyet_dinh_van_hanh.sql": "45853f3856bce9720e289938213df2b0de40f9aea19808133e9f7ae89bc10e8f",
+    "db/migrations/0023_nguon_gia_tinh_coc.sql": "2b63f974610e43aa9d90fd7ba17743fddaf1c6906f5d884d273704542ea0954d",
+    "db/migrations/0024_bao_ve_so_cai_va_lenh.sql": "6bc31551c05968819a7f3ce55269396bddf8b88c83a54f44fb3f4516f955d5bb",
+    "db/migrations/0025_lenh_ngan_hang_han_quyen.sql": "3961a8ae8d54ca024afbcca10a2a18c94d0da25fadf0d81da6e22259d8546b15",
+    "db/migrations/0026_otp_va_lenh_nguoi_dung.sql": "8783fa53b095acf7b93022714a6f414c4e83598386e829215e924e3b99669392",
+    "db/migrations/0027_nhat_ky_chuoi_bam.sql": "6bc3ae186ac075b9b0a290cd61e4fca8af2d8e1b9fc215ccdf682fe1f813855b",
+    "db/migrations/0028_ngan_gia_danh_phien.sql": "3685f62737648c5dcaa51be69d3d349bb0dad78fb186f562ab21926f1ce28170",
+    "db/migrations/0029_cung_co_bang_chung_hoan_tien.sql": "237d2cd004dcb366ff12f5157f5c4bae1a2ed3378f2573c8b4d80e9cc1c241f6",
+    "db/migrations/0030_tien_treo_va_giu_them_tranh_chap.sql": "7f5badaa44cdc9773a7b2b7d4b95525e21abeb4203ba9223a3bc9d1a94a2b400",
+    "db/migrations/0031_kiem_soat_chinh_sach_qr_va_chi_tien.sql": "d0143fb7dcc82f31457f106eea970c15a646ccbd223b558e479bcbb538d305a3",
+    "db/migrations/0032_hoan_tien_treo_ve_nguon.sql": "d47fbcc15aa603bd100174b51370c38d284cd6b103d1b1be11ac26f1a09ea74c",
+    "db/migrations/0033_chu_dau_tien_va_hoan_coc_chenh.sql": "17dc2c20b280fccad854055792511f1d596c436fe46b90dccc57507763b0a6f1",
+    "db/migrations/0034_lenh_danh_tinh_va_chu_ky.sql": "bffd2de5216261e9f8be7bfc2dd100632a4cddb03db13a1a2b26fad90bd335b0",
+    "db/migrations/0035_lenh_lo_don_va_giao_nhan.sql": "20e39dd2b60d88ba458ac46687c78bc657d09e99da30167d39c534e8568f451e",
+    "db/migrations/0036_lenh_dieu_phoi_tien_va_thoi_han.sql": "cd6044790aef210d6583140a12a6d6a294b1569fcc80fdf10363ce5f643108f9",
+    "db/migrations/0037_chot_giao_nhan_va_cung_co_command.sql": "0d22a0b02fc8fa386010f8c584a5514639463d92ba5bf1a8254e9d54830f841f",
+    "db/migrations/0038_lenh_bo_sung_thi_truong_va_quan_tri.sql": "c7180eac8862c1171a90238cdab0457741038968137c3d0f64d39427331841f1",
+    "db/migrations/0039_lenh_thanh_vien_tai_khoan_va_worker.sql": "4faed3ada7e77429a9404b24cf3c57afb91b1a15b17f552bacdcda102d24148d",
+    "db/migrations/0040_lenh_huy_va_hach_toan.sql": "c88e6c840cc7d1b8d6cffcd3ae9654bf8dd52d0230a11c0879759ccd7127dd7b",
+    "db/migrations/0041_lenh_de_nghi_va_phu_luc.sql": "fda4505cbff5ef5ed0a37a5b43faf6d83f5e75b35fbb574c23c3287a6874432d",
+    "db/migrations/0042_lenh_tranh_chap_va_kiem_dinh.sql": "3cebbaa421e3449ee65c77da57b328ed62b0cf703df6492399098eba7f5a8f6a",
+    "db/migrations/0043_lenh_khung_va_nhom.sql": "60353e2cc62ce1e8402608c460bcf32069720ff1eb0c045f5809979208fbbe2e",
+    "db/migrations/0044_chot_command_va_ket_qua_het_han.sql": "c80aef704b2a0bb31a38b6bd63ebcb0f40026748f82c82a0e31f4eaa7055faaa",
+    "db/migrations/0045_lenh_giao_nhan_bo_sung_va_dong_khung.sql": "22495ed9c1a2fc904443734cb90d8882106e5a961de941ff74b3a3aab02cc827",
+    "db/migrations/0046_hoan_thien_cac_nhanh_command.sql": "04af9dedaa9650acfd240f91fc8b8bc33599e0c4d39b07eca7335e3f793ae50b",
+    "db/migrations/0047_khep_kin_dieu_phoi_backend.sql": "c639b79ae5f8d4947b7ba659c4b196019734a5ebdab10fc883d0b136ccb88667"
+  },
+  "source_changes_scope": [
+    "db/",
+    "docs/database/"
+  ],
+  "deployed": false
+}

@@ -1,0 +1,824 @@
+{
+ "luat": {
+  "che_do": "luat",
+  "so_cau": 25,
+  "so_o_truong": 250,
+  "ty_le_dung": 0.968,
+  "dem_tong": {
+   "dung": 242,
+   "bo_sot": 4,
+   "sai": 4
+  },
+  "theo_truong": {
+   "mat_hang": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "loai": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "luong_kg": {
+    "dung": 23,
+    "bo_sot": 1,
+    "sai": 1,
+    "ty_le_dung": 0.92
+   },
+   "uoc_tinh": {
+    "dung": 22,
+    "sai": 3,
+    "ty_le_dung": 0.88
+   },
+   "co_con_kg": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "ngay_giao": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "hinh_thuc": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "noi_giao": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "gia_mong_muon": {
+    "dung": 23,
+    "bo_sot": 2,
+    "ty_le_dung": 0.92
+   },
+   "gia_thap_nhat": {
+    "dung": 24,
+    "bo_sot": 1,
+    "ty_le_dung": 0.96
+   }
+  },
+  "cau_dung_het": 20,
+  "tien_sai_hoac_bia": 0,
+  "tien_sai_khong_bat_xac_nhan": 0,
+  "do_tre_ms": {
+   "trung_vi": 0.2,
+   "p95": 0.4,
+   "lon_nhat": 4.5
+  },
+  "loi_mo_hinh": 0,
+  "chi_tiet_loi": [
+   {
+    "id": "DL-012",
+    "van_ban": "Có một tấn tôm thẻ size năm mươi, bắt liền, trăm mốt một ký",
+    "loi": {
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 110000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-013",
+    "van_ban": "Sầu riêng Ri6 hàng A, ba tấn, đặt trước, ngày mười lăm tháng mười một cắt, giá bảy mươi hai ngàn",
+    "loi": {
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-015",
+    "van_ban": "Thanh long ruột đỏ loại một ba tấn rưỡi, giao tại vườn, giá mười chín ngàn, dưới mười bảy là không bán",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 3500,
+      "he_thong": null,
+      "nguon": null
+     },
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 19000,
+      "he_thong": null,
+      "nguon": null
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bo_sot",
+      "dung": 17000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ thanh long anh chị có khoảng bao nhiêu ký, hay bao nhiêu tấn ạ?",
+    "canh_bao": [
+     "Có lời sửa thông tin: hỏi riêng từng số, không lấy số đầu câu"
+    ]
+   },
+   {
+    "id": "DL-016",
+    "van_ban": "Chanh không hạt dạt hai tấn, ai lấy làm nước cốt thì năm ngàn",
+    "loi": {
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-022",
+    "van_ban": "Cá tra cỡ một ký hai một con, ba mươi tấn, giá hai chín ngàn rưỡi, giao tại bè",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 30000,
+      "he_thong": 1.0,
+      "nguon": "luat"
+     },
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   }
+  ]
+ },
+ "ket_hop": {
+  "che_do": "ket_hop",
+  "so_cau": 25,
+  "so_o_truong": 250,
+  "ty_le_dung": 0.972,
+  "dem_tong": {
+   "dung": 243,
+   "bo_sot": 3,
+   "sai": 4
+  },
+  "theo_truong": {
+   "mat_hang": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "loai": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "luong_kg": {
+    "dung": 23,
+    "bo_sot": 1,
+    "sai": 1,
+    "ty_le_dung": 0.92
+   },
+   "uoc_tinh": {
+    "dung": 22,
+    "sai": 3,
+    "ty_le_dung": 0.88
+   },
+   "co_con_kg": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "ngay_giao": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "hinh_thuc": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "noi_giao": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "gia_mong_muon": {
+    "dung": 24,
+    "bo_sot": 1,
+    "ty_le_dung": 0.96
+   },
+   "gia_thap_nhat": {
+    "dung": 24,
+    "bo_sot": 1,
+    "ty_le_dung": 0.96
+   }
+  },
+  "cau_dung_het": 20,
+  "tien_sai_hoac_bia": 0,
+  "tien_sai_khong_bat_xac_nhan": 0,
+  "do_tre_ms": {
+   "trung_vi": 3306.1,
+   "p95": 3528.7,
+   "lon_nhat": 8767.2
+  },
+  "loi_mo_hinh": 2,
+  "chi_tiet_loi": [
+   {
+    "id": "DL-012",
+    "van_ban": "Có một tấn tôm thẻ size năm mươi, bắt liền, trăm mốt một ký",
+    "loi": {
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 110000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-013",
+    "van_ban": "Sầu riêng Ri6 hàng A, ba tấn, đặt trước, ngày mười lăm tháng mười một cắt, giá bảy mươi hai ngàn",
+    "loi": {
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-015",
+    "van_ban": "Thanh long ruột đỏ loại một ba tấn rưỡi, giao tại vườn, giá mười chín ngàn, dưới mười bảy là không bán",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 3500,
+      "he_thong": null,
+      "nguon": null
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bo_sot",
+      "dung": 17000,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ thanh long anh chị có khoảng bao nhiêu ký, hay bao nhiêu tấn ạ?",
+    "canh_bao": [
+     "Có lời sửa thông tin: hỏi riêng từng số, không lấy số đầu câu"
+    ]
+   },
+   {
+    "id": "DL-016",
+    "van_ban": "Chanh không hạt dạt hai tấn, ai lấy làm nước cốt thì năm ngàn",
+    "loi": {
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-022",
+    "van_ban": "Cá tra cỡ một ký hai một con, ba mươi tấn, giá hai chín ngàn rưỡi, giao tại bè",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 30000,
+      "he_thong": 1.0,
+      "nguon": "luat"
+     },
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "luat"
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   }
+  ]
+ },
+ "llm": {
+  "che_do": "llm",
+  "so_cau": 25,
+  "so_o_truong": 250,
+  "ty_le_dung": 0.816,
+  "dem_tong": {
+   "dung": 204,
+   "bo_sot": 10,
+   "sai": 14,
+   "bia": 22
+  },
+  "theo_truong": {
+   "mat_hang": {
+    "dung": 25,
+    "ty_le_dung": 1.0
+   },
+   "loai": {
+    "dung": 23,
+    "bo_sot": 2,
+    "ty_le_dung": 0.92
+   },
+   "luong_kg": {
+    "dung": 18,
+    "sai": 2,
+    "bo_sot": 5,
+    "ty_le_dung": 0.72
+   },
+   "uoc_tinh": {
+    "sai": 3,
+    "dung": 22,
+    "ty_le_dung": 0.88
+   },
+   "co_con_kg": {
+    "dung": 24,
+    "bia": 1,
+    "ty_le_dung": 0.96
+   },
+   "ngay_giao": {
+    "sai": 4,
+    "dung": 19,
+    "bia": 2,
+    "ty_le_dung": 0.76
+   },
+   "hinh_thuc": {
+    "bia": 16,
+    "dung": 7,
+    "sai": 2,
+    "ty_le_dung": 0.28
+   },
+   "noi_giao": {
+    "dung": 22,
+    "bia": 2,
+    "bo_sot": 1,
+    "ty_le_dung": 0.88
+   },
+   "gia_mong_muon": {
+    "sai": 3,
+    "dung": 20,
+    "bo_sot": 2,
+    "ty_le_dung": 0.8
+   },
+   "gia_thap_nhat": {
+    "dung": 24,
+    "bia": 1,
+    "ty_le_dung": 0.96
+   }
+  },
+  "cau_dung_het": 6,
+  "tien_sai_hoac_bia": 4,
+  "tien_sai_khong_bat_xac_nhan": 0,
+  "do_tre_ms": {
+   "trung_vi": 3291.1,
+   "p95": 3523.9,
+   "lon_nhat": 3617.1
+  },
+  "loi_mo_hinh": 2,
+  "chi_tiet_loi": [
+   {
+    "id": "DL-001",
+    "van_ban": "Nhà tui còn chừng sáu tạ chanh không hạt loại một, thứ hai tuần sau giao được, mười ba ngàn rưỡi",
+    "loi": {
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": true,
+      "he_thong": false,
+      "nguon": "llm"
+     },
+     "ngay_giao": {
+      "loai_loi": "sai",
+      "dung": "UOC:2026-10-26..2026-11-02",
+      "he_thong": "2026-11-03",
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     },
+     "gia_mong_muon": {
+      "loai_loi": "sai",
+      "dung": 13500,
+      "he_thong": 25000.0,
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-003",
+    "van_ban": "bán bốn tấn rưỡi lúa tươi đài thơm tám, ngày ba mốt tháng mười gặt, giá sáu ngàn chín",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 4500,
+      "he_thong": 2500.0,
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-004",
+    "van_ban": "Sầu riêng Monthong loại B chừng một tấn hai, có sẵn, giá sáu mươi ngàn, thấp nhất năm lăm",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 1200,
+      "he_thong": null,
+      "nguon": null
+     },
+     "ngay_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "2026-10-25",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-005",
+    "van_ban": "Xoài cát Chu hàng dạt bán gấp ba tạ, ba ngàn rưỡi một ký",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "sai",
+      "dung": "giao_ngay",
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-006",
+    "van_ban": "Thanh long ruột trắng loại hai tám tấn, cuối tuần giao, giá tám ngàn",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 8000,
+      "he_thong": null,
+      "nguon": null
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-008",
+    "van_ban": "Bưởi da xanh loại một, trái chừng một ký tư, một tấn rưỡi, giá ba lăm ngàn, chở tới chợ đầu mối",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-009",
+    "van_ban": "Dạ chanh không hạt loại hai năm trăm ký mai giao chín ngàn",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "sai",
+      "dung": "2026-10-26",
+      "he_thong": "2026-10-27",
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-010",
+    "van_ban": "Tui bán ba tấn xoài cát chu loại một giá hai bốn thấp nhất hai hai ngày hai chín giao",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "sai",
+      "dung": "2026-10-29",
+      "he_thong": "2026-10-27",
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-012",
+    "van_ban": "Có một tấn tôm thẻ size năm mươi, bắt liền, trăm mốt một ký",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "2026-10-27",
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "sai",
+      "dung": "giao_ngay",
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     },
+     "noi_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "tai_ao",
+      "nguon": "llm"
+     },
+     "gia_mong_muon": {
+      "loai_loi": "sai",
+      "dung": 110000,
+      "he_thong": 11000.0,
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": [
+     "gia_mong_muon 11.000 đ/kg lệch xa mặt bằng: có thể nghe nhầm số"
+    ]
+   },
+   {
+    "id": "DL-014",
+    "van_ban": "Bán năm chục ký bưởi da xanh loại hai cho quán, giá hai mươi ngàn",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     },
+     "noi_giao": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "tai_vuon",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-015",
+    "van_ban": "Thanh long ruột đỏ loại một ba tấn rưỡi, giao tại vườn, giá mười chín ngàn, dưới mười bảy là không bán",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 3500,
+      "he_thong": null,
+      "nguon": null
+     },
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-016",
+    "van_ban": "Chanh không hạt dạt hai tấn, ai lấy làm nước cốt thì năm ngàn",
+    "loi": {
+     "loai": {
+      "loai_loi": "bo_sot",
+      "dung": "L3",
+      "he_thong": null,
+      "nguon": null
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     },
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 5000,
+      "he_thong": null,
+      "nguon": null
+     },
+     "gia_thap_nhat": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": 5000.0,
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-018",
+    "van_ban": "Xoài cát chu loại hai, một tấn tám, giá mười bốn ngàn, chở tới kho nhà máy",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 1800,
+      "he_thong": null,
+      "nguon": null
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-020",
+    "van_ban": "Bưởi da xanh loại một ba tạ, giao hôm nay, giá ba mươi mốt ngàn rưỡi",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-021",
+    "van_ban": "Lúa tươi IR 504 hai mươi lăm tấn, mốt gặt, giá sáu ngàn ba",
+    "loi": {
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     },
+     "gia_mong_muon": {
+      "loai_loi": "sai",
+      "dung": 6300,
+      "he_thong": 3150.0,
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-022",
+    "van_ban": "Cá tra cỡ một ký hai một con, ba mươi tấn, giá hai chín ngàn rưỡi, giao tại bè",
+    "loi": {
+     "co_con_kg": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": 12.5,
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "llm"
+     },
+     "noi_giao": {
+      "loai_loi": "bo_sot",
+      "dung": "tai_ao",
+      "he_thong": null,
+      "nguon": null
+     },
+     "gia_mong_muon": {
+      "loai_loi": "bo_sot",
+      "dung": 29500,
+      "he_thong": null,
+      "nguon": null
+     }
+    },
+    "cau_hoi_tiep": "Dạ ngày nào anh chị giao được ạ?",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-023",
+    "van_ban": "chanh khong hat loai mot ba tan rưỡi mai giao gia mười hai nghìn",
+    "loi": {
+     "loai": {
+      "loai_loi": "bo_sot",
+      "dung": "L1",
+      "he_thong": null,
+      "nguon": null
+     },
+     "luong_kg": {
+      "loai_loi": "sai",
+      "dung": 3500,
+      "he_thong": 350.0,
+      "nguon": "llm"
+     },
+     "uoc_tinh": {
+      "loai_loi": "sai",
+      "dung": false,
+      "he_thong": true,
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-024",
+    "van_ban": "Dạ em là người nhà, bán giùm má em tám tạ xoài cát chu loại một, giá hai sáu ngàn, ngày ba tháng mười một",
+    "loi": {
+     "ngay_giao": {
+      "loai_loi": "sai",
+      "dung": "2026-11-03",
+      "he_thong": "2026-10-31",
+      "nguon": "llm"
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "giao_ngay",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   },
+   {
+    "id": "DL-025",
+    "van_ban": "Thanh long đỏ hàng xô năm tấn, tại vườn, bảy ngàn",
+    "loi": {
+     "luong_kg": {
+      "loai_loi": "bo_sot",
+      "dung": 5000,
+      "he_thong": null,
+      "nguon": null
+     },
+     "hinh_thuc": {
+      "loai_loi": "bia",
+      "dung": null,
+      "he_thong": "dat_truoc_khi_hai",
+      "nguon": "llm"
+     }
+    },
+    "cau_hoi_tiep": "Dạ anh chị nói lại riêng số tiền một ký để em xác nhận nhé.",
+    "canh_bao": []
+   }
+  ]
+ },
+ "_do_luc": "2026-10-25T16:49:02"
+}

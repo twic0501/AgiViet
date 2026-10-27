@@ -1,0 +1,53 @@
+{
+  "id": "83f0ea79-0139-4e20-a2a5-f3662d292ced",
+  "code": "HD-3001-D1",
+  "order_id": "652e370c-4e0e-40bf-9c8f-4fabaea3b8d9",
+  "order_code": "HD-3001",
+  "status": "in_transit",
+  "revision": 6,
+  "batch_no": 1,
+  "planned_qty_g": "1000000",
+  "receiver_user_id": "50f841d1-2e92-5405-94e2-495e98a46908",
+  "acceptance_point": "tai_vuon",
+  "window_from": "2026-11-03T23:00:00.000Z",
+  "window_to": "2026-11-04T05:00:00.000Z",
+  "the_san_sang": null,
+  "ket_qua": [
+    {
+      "id": "6f2c5601-34d1-4511-8c1c-31af2e6cc3a7",
+      "version_no": 1,
+      "weighed_g": "1000000",
+      "document_id": "1cf54802-2f96-4074-8fd7-ae75a3e38a35",
+      "content_sha256": "e132234ff0fc04b36570bfa3f51351575fde12e233cd0b0a07a765f7318a6e1a",
+      "lines": [
+        {
+          "line_no": 1,
+          "kind": "accepted",
+          "qty_g": "850000",
+          "unit_price_vnd": "25000",
+          "value_vnd": "21250000",
+          "reason_code": null,
+          "status": "closed"
+        },
+        {
+          "line_no": 2,
+          "kind": "downgraded",
+          "qty_g": "50000",
+          "unit_price_vnd": "15000",
+          "value_vnd": "750000",
+          "reason_code": "TRAY_VO",
+          "status": "closed"
+        },
+        {
+          "line_no": 3,
+          "kind": "rejected",
+          "qty_g": "100000",
+          "unit_price_vnd": "0",
+          "value_vnd": "0",
+          "reason_code": "DAP",
+          "status": "closed"
+        }
+      ]
+    }
+  ]
+}

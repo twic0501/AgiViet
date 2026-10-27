@@ -1,0 +1,768 @@
+{
+  "date": "2026-10-27T02:26:06.547Z",
+  "setup": "Mỗi nhóm reset; chuẩn bị hợp đồng/ký/cọc và một số tiền/giao nhận bằng API thật; các hành động được nêu UI thao tác qua app.",
+  "results": [
+    {
+      "name": "Hủy hai bên: bên mua xin, bên bán từ chối; bên bán xin, bên mua đồng ý (UI)",
+      "pass": true
+    },
+    {
+      "name": "Tranh chấp: phản đối, tải lại danh sách, cân lại, ký kết quả mới và đóng hồ sơ (UI)",
+      "pass": true
+    },
+    {
+      "name": "Phụ lục: đề nghị đổi ngày, đồng ý, PDF và OTP hai bên có hiệu lực (UI)",
+      "pass": true
+    },
+    {
+      "name": "Giao tại kho thiếu lượng: chuẩn bị xe/xuất bằng API; nhận kho, cân và chọn giao bù qua UI",
+      "pass": true
+    },
+    {
+      "name": "Mời thành viên, nhận OTP đúng số, đổi vai và phân biệt vai chờ hiệu lực (UI)",
+      "pass": true
+    },
+    {
+      "name": "VietQR trả thẳng và sổ tiền theo kỳ đọc số xác nhận từ API",
+      "pass": true
+    },
+    {
+      "name": "Đổi gói, tạo/theo dõi hỗ trợ và đọc thông báo sau worker (UI + API)",
+      "pass": true
+    },
+    {
+      "name": "Tài khoản nhận tiền: OTP yêu cầu đổi, chờ 24 giờ, Không phải tôi khóa thật (UI)",
+      "pass": true
+    },
+    {
+      "name": "Hồ sơ nguồn, so lời chào theo nhu cầu, ảnh thẻ và đăng ký chờ cấp quyền",
+      "pass": true
+    },
+    {
+      "name": "422 nhu cầu thật: đúng ô, giữ nội dung, sửa rồi tạo thành công (UI)",
+      "pass": true
+    },
+    {
+      "name": "Phụ lục giảm giá 2000 kg: hoàn cọc chênh ngay, xem lại lệnh sau reload (UI + API)",
+      "pass": true
+    },
+    {
+      "name": "Phụ lục giảm giá 50 kg: hoàn cọc chênh ngay, xem lại lệnh sau reload (UI + API)",
+      "pass": true
+    },
+    {
+      "name": "Phụ lục tăng giá: hiện mã TP nguyên văn và sao chép cọc bổ sung (UI + API)",
+      "pass": true
+    },
+    {
+      "name": "Không lỗi JavaScript, console hoặc HTTP trong bộ mới",
+      "pass": true
+    }
+  ],
+  "shots": [
+    {
+      "file": "mua-01-ben-kia-tra-loi-huy.png",
+      "name": "ben-kia-tra-loi-huy",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-02-da-dong-y-huy.png",
+      "name": "da-dong-y-huy",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-03-danh-sach-tranh-chap.png",
+      "name": "danh-sach-tranh-chap",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-04-can-lai-da-tai-chung-cu.png",
+      "name": "can-lai-da-tai-chung-cu",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-05-tranh-chap-da-giai-quyet.png",
+      "name": "tranh-chap-da-giai-quyet",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-06-phu-luc-pdf.png",
+      "name": "phu-luc-pdf",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-07-phu-luc-hieu-luc.png",
+      "name": "phu-luc-hieu-luc",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-08-thieu-luong-chon-giao-bu.png",
+      "name": "thieu-luong-chon-giao-bu",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-09-dot-giao-bu.png",
+      "name": "dot-giao-bu",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-10-moi-thanh-vien.png",
+      "name": "moi-thanh-vien",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-11-thanh-vien-da-nhan-loi.png",
+      "name": "thanh-vien-da-nhan-loi",
+      "role": "mua",
+      "width": 390
+    },
+    {
+      "file": "mua-12-vai-moi-dang-cho.png",
+      "name": "vai-moi-dang-cho",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-13-vietqr-tra-thang.png",
+      "name": "vietqr-tra-thang",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-14-so-tien-app-ban-moi.png",
+      "name": "so-tien-app-ban-moi",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-15-so-tien-theo-ky.png",
+      "name": "so-tien-theo-ky",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-16-goi-da-doi.png",
+      "name": "goi-da-doi",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-17-ho-tro-chua-nguoi-nhan.png",
+      "name": "ho-tro-chua-nguoi-nhan",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-18-thong-bao.png",
+      "name": "thong-bao",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-19-doi-tai-khoan-dang-cho.png",
+      "name": "doi-tai-khoan-dang-cho",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-20-khong-phai-toi-da-khoa.png",
+      "name": "khong-phai-toi-da-khoa",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-21-nguon-hang-co-anh.png",
+      "name": "nguon-hang-co-anh",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-22-ho-so-nguon.png",
+      "name": "ho-so-nguon",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-23-so-chao-theo-nhu-cau.png",
+      "name": "so-chao-theo-nhu-cau",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-24-dang-ky-bien-nhan-chua-co-phien.png",
+      "name": "dang-ky-bien-nhan-chua-co-phien",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-25-dang-ky-cho-xac-minh.png",
+      "name": "dang-ky-cho-xac-minh",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-26-422-dung-o-min-0.png",
+      "name": "422-dung-o-min-0",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-27-422-dung-o-min-1.png",
+      "name": "422-dung-o-min-1",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-28-422-dung-o-qty-2.png",
+      "name": "422-dung-o-qty-2",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-29-422-dung-o-max-3.png",
+      "name": "422-dung-o-max-3",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-30-422-dung-o-to-4.png",
+      "name": "422-dung-o-to-4",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-31-422-dung-o-grade-5.png",
+      "name": "422-dung-o-grade-5",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-32-nhu-cau-sua-loi-da-dang.png",
+      "name": "nhu-cau-sua-loi-da-dang",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-33-phu-luc-hoan-chenh-vua-ky-2000000.png",
+      "name": "phu-luc-hoan-chenh-vua-ky-2000000",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-34-phu-luc-lenh-hoan-sau-reload-2000000.png",
+      "name": "phu-luc-lenh-hoan-sau-reload-2000000",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-35-phu-luc-lenh-hoan-sau-reload-2000000.png",
+      "name": "phu-luc-lenh-hoan-sau-reload-2000000",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-36-phu-luc-ngan-hang-da-hoan.png",
+      "name": "phu-luc-ngan-hang-da-hoan",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-37-phu-luc-hoan-chenh-vua-ky-50000.png",
+      "name": "phu-luc-hoan-chenh-vua-ky-50000",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-38-phu-luc-lenh-hoan-sau-reload-50000.png",
+      "name": "phu-luc-lenh-hoan-sau-reload-50000",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "ban-39-phu-luc-lenh-hoan-sau-reload-50000.png",
+      "name": "phu-luc-lenh-hoan-sau-reload-50000",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-40-phu-luc-ngan-hang-da-hoan.png",
+      "name": "phu-luc-ngan-hang-da-hoan",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-41-coc-bo-sung-ma-TP.png",
+      "name": "coc-bo-sung-ma-TP",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-42-coc-bo-sung-chua-co-ma-sau-reload.png",
+      "name": "coc-bo-sung-chua-co-ma-sau-reload",
+      "role": "mua",
+      "width": 1280
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)"
+  ],
+  "pageErrors": [],
+  "deniedImages": [
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: min_source_qty_g không lớn hơn qty_g.",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-2bd96c2db473a020"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: min_source_qty_g bắt buộc, là số nguyên dương (gửi chuỗi thập phân).",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-503cc3385cd77e22"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: qty_g bắt buộc, là số nguyên dương (gửi chuỗi thập phân).",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-4e5545fd37191d15"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: max_price_vnd bắt buộc, là số nguyên dương (gửi chuỗi thập phân).",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-658e2da03f5cf909"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Ngày cần không hợp lệ.",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-ac5c71a13a028e92"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: thiếu grade_code.",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-da1a25a3c86f105e"
+      }
+    }
+  ],
+  "expectedValidation": [
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: min_source_qty_g không lớn hơn qty_g.",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-2bd96c2db473a020"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: min_source_qty_g bắt buộc, là số nguyên dương (gửi chuỗi thập phân).",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-503cc3385cd77e22"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: qty_g bắt buộc, là số nguyên dương (gửi chuỗi thập phân).",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-4e5545fd37191d15"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: max_price_vnd bắt buộc, là số nguyên dương (gửi chuỗi thập phân).",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-658e2da03f5cf909"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Ngày cần không hợp lệ.",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-ac5c71a13a028e92"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8090/v1/demands",
+      "status": 422,
+      "payload": {
+        "errors": [
+          {
+            "code": "DU_LIEU_KHONG_HOP_LE",
+            "message": "Dòng 1: thiếu grade_code.",
+            "fix": "Sửa các trường được chỉ ra rồi gửi lại.",
+            "details": null
+          }
+        ],
+        "request_id": "req-da1a25a3c86f105e"
+      }
+    }
+  ],
+  "orderEvidence": [
+    {
+      "test": 1,
+      "order": "080a47a1-44a8-4f6f-a9e2-6499da30b5c0",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 2,
+      "order": "f087aa4e-fb4e-4d1b-894a-4468afcde1c1",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": "can-lai",
+      "order": "f087aa4e-fb4e-4d1b-894a-4468afcde1c1",
+      "disputes": [
+        {
+          "id": "742f9e64-dcc5-4bab-8351-8bfe1ef25361",
+          "status": "open",
+          "reason": "Đề nghị cân lại số lượng thực tế.",
+          "claim_kind": "quality",
+          "disputed_qty_g": "1900000",
+          "created_at": "2026-11-05T00:00:01.878Z",
+          "opened_by_side": "seller",
+          "line_no": 1,
+          "line_kind": "accepted",
+          "delivery_id": "0e01ecfb-16db-4783-8e0b-0adda8bd0a6c",
+          "delivery_code": "HD-3001-D1",
+          "inspections": [],
+          "next_due_at": null,
+          "hanh_dong": [
+            "resubmit_acceptance"
+          ]
+        }
+      ]
+    },
+    {
+      "test": "giu-dong-khong-tranh-chap",
+      "order": "f087aa4e-fb4e-4d1b-894a-4468afcde1c1",
+      "originalFixed": {
+        "line_no": 2,
+        "kind": "downgraded",
+        "qty_g": "100000",
+        "unit_price_vnd": "15000",
+        "value_vnd": "1500000",
+        "reason_code": "DAP",
+        "status": "proposed"
+      },
+      "newResult": {
+        "id": "62761088-8ac9-4614-8adb-ecd636225bbf",
+        "version_no": 2,
+        "weighed_g": "2000000",
+        "document_id": "15d6b621-e115-4f51-a9e5-3007ab6f53c8",
+        "content_sha256": "0e96a357046b7fe684ac076d485eec3bd71a7c8e0e8d3a036979fdba522810da",
+        "lines": [
+          {
+            "line_no": 1,
+            "kind": "accepted",
+            "qty_g": "1850000",
+            "unit_price_vnd": "23000",
+            "value_vnd": "42550000",
+            "reason_code": null,
+            "status": "disputed"
+          },
+          {
+            "line_no": 2,
+            "kind": "downgraded",
+            "qty_g": "50000",
+            "unit_price_vnd": "15000",
+            "value_vnd": "750000",
+            "reason_code": "DAP",
+            "status": "disputed"
+          },
+          {
+            "line_no": 3,
+            "kind": "downgraded",
+            "qty_g": "100000",
+            "unit_price_vnd": "15000",
+            "value_vnd": "1500000",
+            "reason_code": "DAP",
+            "status": "proposed"
+          }
+        ]
+      }
+    },
+    {
+      "test": 3,
+      "order": "b89e4a6f-ff65-4550-b01d-24974496c887",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 4,
+      "order": "4406728c-2943-443f-aeb0-d80a1061bd44",
+      "code": "HD-3001",
+      "mode": "at_buyer_warehouse"
+    },
+    {
+      "test": 5,
+      "order": "6d7242b4-bead-459e-b922-1584f4dd4005",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 6,
+      "order": "8d891a17-691f-4528-8acc-174c96925156",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 7,
+      "order": "73213221-ecf4-46c7-bc16-6da59005c977",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": "doi-goi",
+      "before": {
+        "id": "9e65f320-2534-4a38-b816-917118a48bb6",
+        "plan_code": "procurement",
+        "label_vi": "Thu mua",
+        "tu": "2026-09-30T17:00:00.000Z",
+        "den": "2026-12-31T17:00:00.000Z",
+        "so_thanh_vien": 4,
+        "max_members": 5
+      },
+      "requested": "enterprise",
+      "status": 200,
+      "receipt": {
+        "id": "c44ba116-9d7b-4b2b-8107-9bb0acc2d71d",
+        "revision": null,
+        "status": "active",
+        "events": [
+          "document.awaiting_signature"
+        ],
+        "errors": [],
+        "data": {
+          "id": "c44ba116-9d7b-4b2b-8107-9bb0acc2d71d",
+          "status": "active",
+          "plan_code": "enterprise",
+          "tien_thang_dau_vnd": "3866667",
+          "gia_thang_vnd": "4000000",
+          "bien_nhan_mo_phong": "ea88b5ab-13e4-417a-9bea-1e994fa6ca9a",
+          "thong_bao": "Billing là mô phỏng; chưa thu tiền thật."
+        }
+      },
+      "after": {
+        "id": "c44ba116-9d7b-4b2b-8107-9bb0acc2d71d",
+        "plan_code": "enterprise",
+        "label_vi": "Doanh nghiệp",
+        "tu": "2026-11-02T01:00:00.799Z",
+        "den": null,
+        "so_thanh_vien": 4,
+        "max_members": 10
+      }
+    },
+    {
+      "test": 8,
+      "order": "a23324ed-f6d5-451f-8167-7bd6ee8cb9a4",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 9,
+      "order": "af9e78ef-1704-4d78-8092-3a1d0cc5e96e",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 10,
+      "order": "116ec717-9960-448a-aba2-a05c7dca975c",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": 11,
+      "order": "27bb0079-1e4e-4723-bf95-6c34f53d99f8",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": "hoan-chenh",
+      "order": "27bb0079-1e4e-4723-bf95-6c34f53d99f8",
+      "effect": {
+        "chenh_coc_vnd": "-1800000",
+        "chenh_phi_vnd": "0",
+        "bo_sung_coc_ref": null,
+        "hoan_coc_vnd": "1800000",
+        "hoan_phi_vnd": "0",
+        "lenh_hoan": "REF-9eca5956-8233-44d5-af46-fbef4661bc2d",
+        "tra_thang_moi_vnd": "28000000"
+      },
+      "refunds": [
+        {
+          "id": "87946d56-1d5c-45f8-aa3b-e746ef543252",
+          "code": "REF-9eca5956-8233-44d5-af46-fbef4661bc2d",
+          "kind": "refund_deposit_to_buyer",
+          "amount_vnd": "1800000",
+          "status": "succeeded",
+          "target_bank_code": "TEST",
+          "target_account_masked": "****0001",
+          "target_account_holder": "BEN MUA THU",
+          "callback_required": false
+        }
+      ]
+    },
+    {
+      "test": 12,
+      "order": "2ec13501-c3ad-493d-8f9b-036712648c18",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": "hoan-chenh",
+      "order": "2ec13501-c3ad-493d-8f9b-036712648c18",
+      "effect": {
+        "chenh_coc_vnd": "-45000",
+        "chenh_phi_vnd": "0",
+        "bo_sung_coc_ref": null,
+        "hoan_coc_vnd": "45000",
+        "hoan_phi_vnd": "0",
+        "lenh_hoan": "REF-190a4b47-73d9-49ed-8a3f-089c57b1d941",
+        "tra_thang_moi_vnd": "700000"
+      },
+      "refunds": [
+        {
+          "id": "6ef59374-188b-4831-9e32-d8466f62918c",
+          "code": "REF-190a4b47-73d9-49ed-8a3f-089c57b1d941",
+          "kind": "refund_deposit_to_buyer",
+          "amount_vnd": "45000",
+          "status": "succeeded",
+          "target_bank_code": "TEST",
+          "target_account_masked": "****0001",
+          "target_account_holder": "BEN MUA THU",
+          "callback_required": false
+        }
+      ]
+    },
+    {
+      "test": 13,
+      "order": "0963d42e-f22f-45a9-88db-567e6d19ba3f",
+      "code": "HD-3001",
+      "mode": "at_farm"
+    },
+    {
+      "test": "coc-bo-sung",
+      "order": "0963d42e-f22f-45a9-88db-567e6d19ba3f",
+      "effect": {
+        "chenh_coc_vnd": "1200000",
+        "chenh_phi_vnd": "0",
+        "bo_sung_coc_ref": "TP000000000195",
+        "hoan_coc_vnd": "0",
+        "hoan_phi_vnd": "0",
+        "lenh_hoan": "",
+        "tra_thang_moi_vnd": "35000000"
+      }
+    }
+  ]
+}

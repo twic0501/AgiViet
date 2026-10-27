@@ -1,0 +1,587 @@
+[
+  {
+    "file": "AgiViet_app_ban.html",
+    "filename": "mau2-AgiViet_app_ban.png",
+    "errors": [],
+    "title": "AgiViet · Nhà sản xuất",
+    "text": "Mô phỏng\nGiả lập bên mua\nPhòng thử\n‹\nChào mừng\nAgiViet\n\nTìm đúng mối, chốt đúng giá\n\nSổ làm vườn trong điện thoại. Tới mùa, đăng bán cho nhà máy, doanh nghiệp; tiền đi qua tài khoản đảm bảo của ngân hàng.\n\nNgười bán dùng miễn phí. Số điện thoại của bạn chỉ hiện cho bên mua khi họ đã đặt cọc.\nBắt đầu\nTôi đã có tài khoản",
+    "buttons": [
+      {
+        "text": "‹",
+        "title": "",
+        "aria": "Quay lại"
+      },
+      {
+        "text": "Bắt đầu",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Tôi đã có tài khoản",
+        "title": "",
+        "aria": null
+      }
+    ],
+    "links": [
+      {
+        "text": "Giả lập bên mua",
+        "href": "#/gia-lap"
+      },
+      {
+        "text": "Phòng thử",
+        "href": "#/phong-thu"
+      }
+    ],
+    "headings": [
+      "Chào mừng",
+      "AgiViet"
+    ]
+  },
+  {
+    "file": "AgiViet_app_mo_phong.html",
+    "filename": "mau2-AgiViet_app_mo_phong.png",
+    "errors": [],
+    "title": "AgiViet · App mô phỏng",
+    "text": "AgiViet · bản mô phỏng · dữ liệu chỉ nằm trong trình duyệt này\nChọn vai để vào app\n\nMở hai vai ở hai tab để chạy một giao dịch từ hai phía. Bản này chưa có dữ liệu mẫu: lô, lời mời, đơn đều do bạn tạo.\n\nNhà sản xuất\n\nNhà vườn, ao nuôi, hợp tác xã. Đăng lô, nhận đơn, theo dõi tiền về. Giao diện điện thoại.\n\nTên hiển thị\nVào app Nhà sản xuất\nThu mua\n\nNhà máy, doanh nghiệp, vựa. Tìm nguồn, đặt cọc, nghiệm thu, trả tiền. Giao diện máy tính.\n\nTên hiển thị\nVào app Thu mua\nDanh mục 129 màn\nXóa dữ liệu mô phỏng",
+    "buttons": [
+      {
+        "text": "Vào app Nhà sản xuất",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Vào app Thu mua",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Xóa dữ liệu mô phỏng",
+        "title": "",
+        "aria": null
+      }
+    ],
+    "links": [
+      {
+        "text": "Danh mục 129 màn",
+        "href": "#/danh-muc"
+      }
+    ],
+    "headings": [
+      "Chọn vai để vào app",
+      "Nhà sản xuất",
+      "Thu mua"
+    ]
+  },
+  {
+    "file": "bo-cuc-app-ban/index.html",
+    "filename": "mau2-bo-cuc-app-ban_index.png",
+    "errors": [],
+    "title": "App bán AgiViet, quy trình chuẩn",
+    "text": "App bán\nApp mua\nHai bên đặt cạnh nhau\nHủy, sai lệch\nNăm loại hợp đồng\nApp bán AgiViet, quy trình chuẩn\n\nMười một màn của chị Năm theo quy trình chuẩn 7 bước, cùng đơn HĐ-0018 với app mua. Mỗi màn gắn mã bước để đối chiếu với màn cùng bước bên app mua.\n\nQuy trình chuẩn dùng chung hai app\n\nHai app dùng chung một quy trình 7 bước, một bộ trạng thái đơn, một thanh tiến độ 5 chặng, cùng chữ trên nút và cùng hạn giờ. Mỗi màn bên dưới gắn mã bước. Màn cùng mã bước ở app bán và app mua là hai mặt của cùng một việc.\n\nBước\tBên bán làm\tBên mua làm\tTrạng thái đơn (giống nhau hai app)\tĐiều kiện đi tiếp · hạn\nB1 Đăng\tĐăng lô: giá mong muốn + giá thấp nhất (kín, tự từ chối lời chào thấp hơn)\tTạo phiếu nhu cầu: giá tối đa (kín)\tChưa có đơn\tTin lô tự ẩn sau 14 ngày\nB2 Ghép\tThấy \"bên mua đang cần hàng của chị\"\tThấy hàng khớp theo 3 nhóm, không thấy giá\tChưa có đơn\tKhông có\nB3 Chào giá\tĐồng ý · Trả giá · Không bán; thấy tiền ròng thực nhận\tChào giá; có thể gửi chung cho nhóm hộ cùng điều kiện; chưa ai trả lời thì rút, sửa được\tChưa có đơn\tGiá tham khảo chỉ cảnh báo. 24 giờ mỗi lượt, tối đa 2 lượt trả giá\nB4 Ký\tĐọc từng điều, ký bằng mã\tLập hợp đồng (loại, cách chở, cách trả, phí áp dụng), ký bằng mã\tChờ người bán ký\tHai bên ký cùng một phiên bản; lượng được giữ trong lô. 24 giờ; quá hạn đơn tự rút\nB5 Cọc\tThấy cọc ngân hàng đang giữ\tChuyển cọc 30% + phí qua app\tChờ cọc → Đã cọc, chờ giao\tNgân hàng xác nhận nhận đúng tiền cho đúng đơn. 48 giờ (hàng tươi 12); quá hạn đơn đóng\nB6 Giao nhận\tThẻ Sẵn sàng giao; bấm \"Đã nhận [số tiền]\" (nếu trả trước khi bốc); quét mã, bốc; Đúng / Không đúng số cân\tThẻ Sẵn sàng giao; trả phần còn lại theo hợp đồng, \"Ghi đã trả\"; đưa mã; nhận, nghiệm thu 3 phần\tSẵn sàng giao → Đang giao → Chờ nghiệm thu → Chờ xác nhận số cân\tĐủ thẻ Sẵn sàng giao mới bốc. Nhận hàng giao xa 2 giờ tính từ lúc người được chỉ định ký nhận (không từ giờ xe tới); chưa kiểm được thì bấm \"Chưa kiểm được\" để gia hạn một lần; quá hạn theo điều khoản nghiệm thu. Xác nhận số cân 24 giờ, quá hạn thì nhắc rồi người vận hành đối chiếu; cọc vẫn giữ\nB7 Xong\tThấy quyết toán; nhận phần cọc; đánh giá\tThấy quyết toán; nhận phần hoàn; tải chứng từ; đánh giá\tChờ thanh toán → Quyết toán → Đã gửi lệnh cọc → Hoàn tất (còn nghĩa vụ: Đã giao xong · còn công nợ)\tCọc chỉ xử lý khi: nghiệm thu đã chốt, khoản trả thẳng đến hạn đã xác minh, không tranh chấp, ngân hàng đủ điều kiện. \"Cọc đã về\" chỉ hiện khi ngân hàng xác nhận\n\nThanh tiến độ đơn (5 chặng, hai app như nhau): Ký · Cọc · Giao nhận · Thanh toán · Xong. Chặng Thanh toán (khoản trả thẳng) có thể xong trước Giao nhận khi hợp đồng ghi \"trả trước khi bốc\"; dù vậy cọc vẫn chờ nghiệm thu.\n\nBa sự kiện trước khi xử lý cọc: (1) người bán xác nhận đã nhận đúng số tiền trả thẳng; (2) bàn giao đúng người, đúng lượng (quét mã chỉ chứng minh giao đúng người; rủi ro chuyển theo điều khoản hợp đồng); (3) hai bên chốt nghiệm thu. Im lặng và ảnh ủy nhiệm chi không phải bằng chứng tiền đã về. Bảng điều kiện đầy đủ cho từng biến thể: tài liệu tổng hợp, mục C13.\n\nTrạng thái cuối (giống nhau hai app): Đã từ chối · Quá hạn cọc · Đã hủy · Hoàn tất. Trạng thái trung gian khi còn nghĩa vụ: Đã giao xong · còn công nợ (ghi ai nợ ai, bao nhiêu) · Đã chốt phần không tranh chấp · đang kiểm định phần còn lại. Chỉ gọi Hoàn tất khi mọi nghĩa vụ đã xử lý.\n\nMàu trạng thái:\n\nTới lượt bạn\nChờ bên kia\nCó vấn đề\nXong\nĐã đóng\n\nChữ trên nút (dùng đúng chữ này ở cả hai app): Ký bằng mã · Chuyển cọc · Ghi đã trả (bên mua) · Đã nhận [số tiền] / Chưa nhận (bên bán) · Đạt khi bốc (bên mua) · Gửi kết quả (bên mua) · Đúng / Không đúng (bên bán) · Gửi đề nghị · Đồng ý / Không đồng ý · Xin hủy.\n\nBản đồ app: 5 mục, cùng vị trí ở hai app\n\nMục 1 trang chủ · mục 2 giao dịch · mục 3 nút đăng ở giữa · mục 4 tin nhắn · mục 5 tiền. Hồ sơ, cài đặt mở từ ảnh đại diện.\n\nTrang chủ\nHôm nay tôi có gì?\nVí ngắn\nViệc cần làm theo bước\nĐáng chú ý\nLưới 6 ô\nBán hàng\nB2–B6: giao dịch\nChào giá\nĐơn theo trạng thái chuẩn\nHàng của tôi\nĐăng\nB1: nút giữa\nNói, chụp, gõ\nHai mức giá\nGhi nhật ký vườn\nTin nhắn\nSuốt quy trình\nThông báo có mã bước\nTrò chuyện che số\nVí\nB7: tiền\nĐã nhận\nCọc đang giữ\nBên mua còn phải trả\nỨng tiền\nHai app đối xứng theo từng bước\n\nCùng mã bước, cùng số màn ở hai trang là hai mặt của cùng một việc trong đơn HĐ-0018.\n\nBước\tApp bán\tApp mua\nTổng quan\tMàn 1 · Trang chủ\tMàn 1 · Trang chủ\nB1 Đăng\tMàn 2–3 · Chọn mặt hàng, điền lô\tMàn 2 · Phiếu nhu cầu\nB2 Ghép\tMàn 4 · Bên mua đang cần\tMàn 3 · Hàng khớp\nB3 Chào giá\tMàn 5 · Nhận lời chào giá\tMàn 4 · Chào giá\nB4 Ký\tMàn 6 · Ký hợp đồng\tMàn 5 · Lập hợp đồng\nB5 Cọc\tMàn 7 · Chi tiết đơn: cọc đang giữ\tMàn 6 · Chuyển cọc\nB6 Giao nhận\tMàn 8 · Bốc hàng; Màn 9 · Xác nhận số cân\tMàn 7 · Ghi đã trả, mã nhận hàng; Màn 8 · Nhận hàng; Màn 9 · Chi tiết đơn\nB7 Xong\tMàn 10 · Ví\tMàn 10 · Tiền\nSuốt quy trình\tMàn 11 · Tin nhắn\tMàn 11 · Tin nhắn\nN1 Đồng ý giá → ký\tN1.1 Hàng được giữ · N1.2 Xem lại thỏa thuận · N1.3 Đề nghị sửa một mục\tN1.1 Xử lý lời chào còn lại · N1.2 Xem lại thỏa thuận · N1.3 Trả lời đề nghị\nN2 Nhận hàng → chốt\tN2.1 Đồng ý kết quả · N2.2 Phản đối đúng dòng\tN2.1 Nhận đủ (đường ngắn) · N2.2 Nhập chênh lệch\nN3 Tiền → hoàn tất\tN3.1 Xác nhận đúng số · N3.2 Chị cần hoàn · N3.3 Cọc từ lệnh tới hoàn tất · N3.4 Bên mua xin hủy\tN3.1 Còn thiếu · N3.2 Xác nhận đã nhận lại · N3.3 Xin hủy\nMười một màn theo quy trình chuẩn\n\nMỗi màn gắn mã bước. Cả hai trang đi theo cùng đơn HĐ-0018: xoài loại 1, 2 tấn, 23.000 đ/kg, cọc 30% = 13.800.000 đ, phần còn lại 32.200.000 đ chuyển khoản trước khi bốc, giao tại vườn 28/10, bên mua tự lo xe.\n\n7:12\n●●●\nN\nChào chị Năm\nNghe\nĐã về\n18,4 tr\nCọc giữ\n7,2 tr\nCòn phải nhận\n28 tr\nViệc cần làm · B3 Chào giá\n1 trong 2\nTrả lời lời chào giá xoài\n\nNhà máy Đồng Xanh chào 23.000 đ/kg cho 2 tấn. Hết hạn 14:00 mai.\n\nXem lời chào giá\nĐáng chú ý\nMai mưa 12 mm\nĐừng phun thuốc, che xoài đã hái\n3 ngày chưa ghi nhật ký vườn xoài\nGhi để giữ hồ sơ nguồn gốc\nNhật ký vườn\nGiá hôm nay\nTin vụ mùa\nHọc kỹ thuật\nVườn, mùa vụ\nHỗ trợ\nTrang chủ\nBán hàng\n1\nĐăng\nTin nhắn\n3\nVí\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nTổng quanMàn 1 · mở app buổi sáng\nTrang chủ: ví, việc hôm nay, đáng chú ý, lưới ô\n\nMọi việc trong quy trình 7 bước đổ về thẻ \"Việc cần làm hôm nay\", xếp theo hạn giờ.\n\nVí ngắn: đã về, cọc ngân hàng đang giữ, bên mua còn phải trả.\nViệc cần làm: lấy từ bước đang tới lượt chị (B3 trả lời chào giá, B4 ký, B6 xác nhận số cân…).\nĐáng chú ý tối đa hai thẻ; lưới 6 ô cho phần ngoài bán hàng.\n9:40\n●●●\nChị bán gì?\nBấm và nói\nVí dụ: \"Xoài cát Chu 8 tấn, 24 nghìn\"\nHàng của chị\nXoài cát Chu\nThanh long ruột đỏ\nChanh dây\nTìm mặt hàng khác\nTrái cây\nRau củ\nLúa gạo\nThủy sản\nSầu riêng\nBưởi\nNhãn\nLúa\nB1 ĐăngMàn 2 · chọn mặt hàng\nChọn mặt hàng: nói trước, ảnh sau, không có danh sách\n\nThứ tự trên màn đi từ cách nhanh nhất tới cách chậm nhất.\n\nMicro to ở trên cùng. Nói một câu là app hiểu mặt hàng, lượng và giá, rồi bỏ qua bước này.\nHàng của chị: ba ảnh lớn của mặt hàng đã khai. Phần lớn lần đăng chỉ cần một lần bấm ở đây.\nMặt hàng khác: ô tìm, rồi nhóm (trái cây, rau củ, lúa gạo, thủy sản…), mỗi nhóm hiện mặt hàng phổ biến trong vùng trước.\nChụp ảnh nằm ở nút Đăng bên ngoài (nói, chụp hoặc gõ), app tự nhận mặt hàng từ ảnh.\n\nBỏ: danh sách 78 mặt hàng cuộn dài. Người bán chỉ thật sự bán 1 đến 3 thứ.\n\n9:41\n●●●\nXoài cát Chu\nLoại hàng\nLoại 1\nLoại 2\nLoại 3\nDạt\nLượng\n−\n8 tấn\n+\nƯớc tính\nĐã cân\nGiá chị muốn bán · gợi ý 23.000–27.000\n−\n24.000 đ/kg\n+\nTham khảo 25.000\nNgang mặt bằng, 96% giá tham khảo\nGiá thấp nhất chị chịu bán\n21.500 đ/kg\nKín\nKhông ai thấy mức này. Bên mua chào thấp hơn thì app tự từ chối giúp chị.\nVườn còn cách ly tới 23/10, ngày hái sớm nhất là 23/10.\nXem lại tin\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB1 ĐăngMàn 3 · điền lô, đặt hai mức giá\nForm tự đổi theo mặt hàng, giá có thước so\n\nMỗi mặt hàng có hồ sơ riêng. Xoài hỏi loại và tấn. Tôm sẽ hỏi size (con/kg). Sầu riêng hỏi ngày đậu trái. Không có ô thừa.\n\nSố to kèm nút trừ, cộng thay cho bàn phím. Nút \"Ước tính / Đã cân\" đặt ngay dưới lượng.\nThước giá: đỏ là thấp bất thường (app hỏi lại, không chặn), vàng là thấp hơn mặt bằng, xanh là trong mặt bằng; app ghi nền so sánh. Chấm tròn là giá của chị, vạch là giá tham khảo. Nhìn là biết đắt hay rẻ, không cần đọc số.\nHai mức giá: giá mong muốn (app gợi ý khoảng theo đúng loại) và giá thấp nhất chịu bán, để kín. Bên mua không thấy mức kín; lời chào thấp hơn thì app tự từ chối, chị không phải đôi co.\nCách ly thuốc chặn ngày hái sớm, không chỉ nhắc.\nMột nút chính ở đáy. Thanh tiến độ trên cùng cho biết còn mấy bước.\n10:05\n●●●\nN\nBán hàng\nNghe\nChào giá · 1\nĐơn · 2\nHàng của tôi\nBên mua đang cần hàng của chị\n2 tấn xoài loại 1\nNhà máy sấy Đồng Xanh · cần trước 28/10\nLô của chị khớp tin này\nLời chào giá · Đồng Xanh\nXoài loại 1 · 2 tấn\n23.000\nđ/kg · 92% giá tham khảo\nTới lượt chị · còn 1 lần trả giá\nHết hạn 14:00 mai\nTrả lời\nTrang chủ\nBán hàng\nĐăng\nTin nhắn\n3\nVí\nB2 GhépMàn 4 · có bên mua cần\nBán hàng: bên mua đang cần hàng của chị\n\nMục Bán hàng gom mọi việc giao dịch: ghép, chào giá, đơn, hàng đang bán. Đối xứng với mục Mua hàng của app mua.\n\nNgăn Chào giá: phiếu nhu cầu khớp lô của chị và lời chào đã tới.\nNgăn Đơn: đơn theo \"tới lượt ai\", cùng trạng thái với app mua.\nNgăn Hàng của tôi: các lô, bán gấp, tách loại.\n10:07\n●●●\nLời chào giá\nNhà máy sấy Đồng Xanh muốn mua 2 tấn xoài loại 1 của chị\n23.000\nđ/kg\nTham khảo 25.000\nGiá chị muốn\n24.000 đ\nGiá vốn vụ này\n9.500 đ\nThành tiền\n46.000.000 đ\nBên mua chào cùng một giá cho các hộ cùng điều kiện. Giá đã được chị đồng ý thì chỉ đổi khi chị đồng ý đề nghị.\nĐX\nUy tín rất tốt · 32 đơn xong\nÍt khi chào thấp · trả tiền đúng hạn 100%\nCòn 1 lần trả giá\nHết hạn 14:00 mai\nKhông bán\nTrả giá\nĐồng ý\nB3 Chào giáMàn 5 · nhận lời chào giá\nLời chào giá: một con số, so sẵn, ba lựa chọn\n\nĐây là chỗ chống ép giá. Bên mua không thấy giá từng hộ để so, các hộ không thấy giá của nhau, và giá chỉ chốt qua nút ở màn này.\n\nMột con số to là giá chào. Ngay dưới là thước giá và ba dòng so sẵn: giá chị muốn, giá vốn, thành tiền. Không cần tự tính.\nKhối xanh nói luật bảo vệ: giá thấp nhất chị tự đặt thì app tự từ chối hộ; chị thấy tiền ròng thực nhận; giá đã đồng ý chỉ đổi khi chị đồng ý.\nUy tín bên mua có chỉ số \"hay chào thấp\". Bên hay ép giá sẽ hiện cảnh báo ở đây.\nBa nút: Không bán, Trả giá (còn 1 lần), Đồng ý. Có hạn giờ, không kéo dài để làm người bán sốt ruột.\nLời chào thấp hơn giá kín của chị đã bị app tự từ chối từ trước, nên những gì tới được màn này đều đáng cân nhắc.\n14:02\n●●●\nKý đơn HĐ-0018\nNăm điều chính. Bấm loa để nghe từng điều.\nHàng và giá\n2 tấn xoài loại 1, 23.000 đ/kg\nTiền\nCọc 13.800.000 đ qua app. Phần còn lại 32.200.000 đ chuyển khoản trước khi bốc.\nGiao và rủi ro\nTại vườn 28/10, bên mua tự lo xe. Lên xe là bên mua chịu.\nNghiệm thu\nĐạt, hạ cấp 15.000 đ, trả lại. Trả quá 5% phải có ảnh.\nThiếu hàng\nBáo trước 3 ngày: phạt nhẹ. Thiên tai có bằng chứng: không phạt.\nTôi chắc chắn giao được 2 tấn ngày 28/10\nKý bằng mã\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB4 KýMàn 6 · chị đồng ý giá\nKý hợp đồng HĐ-0018: đọc từng điều, ký bằng mã\n\nCùng hợp đồng bên mua vừa lập ở màn 5 của app mua.\n\nNăm điều tóm tắt bằng số thật của đơn, mỗi điều có nút nghe.\nĐiều \"Tiền\" nói rõ: app chỉ giữ cọc; phần còn lại bên mua chuyển thẳng cho chị trước khi bốc.\nĐiều \"Giao\" nói rõ cách chở và ai chịu rủi ro trên đường.\nTrạng thái đơn lúc này: Chờ người bán ký (hạn 24 giờ).\n15:10\n●●●\nĐơn HĐ-0018\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nChờ bên kia · B6 Giao nhận\ntrước 5:30 ngày 28/10\nĐồng Xanh chuyển 32.200.000 đ cho chị trước khi bốc\n\nChưa nhận đủ thì chị chưa cần cho bốc.\n\nNgân hàng đang giữ cọc 13.800.000 đ\nXử lý khi chốt số cân và quyết toán.\nLượng × giá\n2 tấn × 23.000 đ\nGiao\nTại vườn · 28/10 · bên mua lo xe\nBên mua\nĐồng Xanh · 0277 386 210\nHợp đồng\nGọi\nHỗ trợ\nB5 CọcMàn 7 · bên mua đã cọc\nChi tiết đơn: ngân hàng giữ cọc, chờ bên mua trả phần còn lại\n\nMàn chi tiết đơn có cùng bố cục ở hai app: thanh 5 chặng, thẻ việc tiếp theo, khối tiền, thông tin, ba nút phụ.\n\nThanh 5 chặng: Ký, Cọc xong; đang ở Giao nhận.\nThẻ việc tiếp theo nói rõ đang chờ bên kia làm gì và hạn.\nKhối khiên: cọc ngân hàng đang giữ. App không giữ phần còn lại.\nTrạng thái: Đã cọc, chờ giao. Liên lạc đã mở.\n5:30\n●●●\nBốc hàng HĐ-0018\nGiao xa 180 km · bên mua lo xe\nBên mua kiểm qua video lúc bốc\nSẵn sàng giao\nĐã nhận 32.200.000 đ\nChị xác nhận lúc 5:10 · cọc đã có ở ngân hàng\nNgười nhận, xe\nAnh Lộc · 66C-123.45 · quét mã khớp\nẢnh, cân\n4 ảnh · 2.000 kg · 80 thùng\nNiêm phong mẫu đối chứng\nMã M-2291\n5\nBên mua bấm \"Đạt khi bốc\"\nĐang xem video…\nChờ\nCọc 13.800.000 đ vẫn ở ngân hàng; xử lý khi hai bên chốt số cân và quyết toán.\nChờ bên mua xác nhận\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB6 Giao nhậnMàn 8 · sáng ngày giao\nSẵn sàng giao, rồi bốc hàng\n\nCùng lúc với màn 7 của app mua (bên mua chuyển tiền, đưa mã).\n\nThẻ Sẵn sàng giao: hàng, tiền, người nhận, xe, hồ sơ. Chị chỉ bấm dòng của chị.\nChị bấm Đã nhận 32.200.000 đ (đơn này trả trước khi bốc). Cọc chưa về: còn chờ nghiệm thu.\nQuét mã chứng minh giao đúng người. Rủi ro đường chuyển theo điều khoản: giao tại vườn, bên mua lo xe.\nTrạng thái: Đang giao.\n11:30\n●●●\nSố cân HĐ-0018\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nĐạt\n1.850\nHạ cấp\n120\nTrả lại\n30\nTiền hàng thực nhận\n44.350.000 đ\nChị đã nhận\n32.200.000 đ\nCọc chuyển chị\n12.150.000 đ\nHoàn bên mua từ cọc\n1.650.000 đ\nBấm Đúng thì app gửi lệnh chuyển cọc. Chưa bấm thì cọc vẫn giữ.\nKhông đúng\nĐúng\nB6 Giao nhậnMàn 9 · bên mua đã cân\nXác nhận số cân: Đúng hoặc Không đúng, cọc bù phần chênh\n\nCùng kết quả bên mua gửi ở màn 8 của app mua.\n\nBa ô số: đạt, hạ cấp, trả lại.\nTiền tính sẵn: tiền hàng thực nhận, chị đã nhận, cọc chuyển chị, phần hoàn bên mua.\nHạn 24 giờ; quá hạn thì app nhắc rồi người vận hành đối chiếu biên bản; cọc vẫn giữ. \"Không đúng\" mở nhánh cân lại, kiểm định.\nBấm Đúng xong: app gửi lệnh cọc; \"Cọc đã về\" chỉ hiện khi ngân hàng xác nhận.\nTrạng thái: Chờ xác nhận số cân.\n20:15\n●●●\nN\nVí\nNghe\nĐã nhận tháng 10\n62.750.000 đ\nAgribank •••• 2186\nCọc ngân hàng đang giữ (1 đơn)\n7.200.000 đ\nBên mua còn phải trả\n28.000.000 đ\nLời vụ xoài (ước)\n+ 186 tr\nHĐ-0018 · Hoàn tất\nCọc đã về\nNgân hàng xác nhận · đã đối soát\n+12,15 tr\nĐồng Xanh chuyển thẳng\nChị xác nhận · trước khi bốc 28/10\n+32,2 tr\nĐánh giá Đồng Xanh\nTrang chủ\nBán hàng\n1\nĐăng\nTin nhắn\n3\nVí\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB7 XongMàn 10 · cuối ngày\nVí: cọc về, lịch sử tiền theo đơn\n\nMục cuối của thanh dưới là tiền, đối xứng với mục Tiền của app mua.\n\nCon số lớn là tiền đã thật sự nhận.\nLịch sử ghi rõ khoản bên mua tự chuyển và khoản cọc ngân hàng chuyển.\nCọc đang giữ và tiền bên mua còn phải trả của các đơn khác.\nTrạng thái HĐ-0018: Hoàn tất (không còn nghĩa vụ). Hai bên đánh giá nhau.\n12:30\n●●●\nN\nTin nhắn\nNghe\nThông báo · 3\nTin nhắn · 1\nB7 · Cọc 12.150.000 đ đã về HĐ-0018\nĐơn xong. Đánh giá Đồng Xanh?\n12:10\nB6 · Đồng Xanh gửi số cân HĐ-0018\nXác nhận trong 24 giờ\n11:20\nB5 · Đồng Xanh đã cọc HĐ-0018\nNgân hàng giữ 13.800.000 đ; liên lạc đã mở\nHôm qua\nĐang trò chuyện\nĐX\nĐồng Xanh\n\"Lô sau chị để dành 2 tấn cho em nha\"\n1\nTrang chủ\nBán hàng\n1\nĐăng\nTin nhắn\nVí\nSuốt quy trìnhMàn 11 · trong ngày\nTin nhắn: thông báo đi theo từng bước của đơn\n\nMỗi thông báo ghi mã bước để người bán biết đơn đang ở đâu.\n\nThông báo theo đơn: ai vừa làm gì, việc tiếp theo của chị.\nTrò chuyện che số tới khi cọc; số tiền trong tin nhắn không có giá trị, phải dùng nút.\nBa đường nối của một lượt giao dịch\n\nCác màn nối giữa những màn chính ở trên, để đi từ đồng ý giá tới hoàn tất mà không phải tự tưởng tượng bước giữa. Mã N1 là từ đồng ý giá tới ký, N2 là nhận hàng và chốt kết quả, N3 là đối soát tiền và kết thúc. Màn cùng mã ở trang app mua là phía bên kia.\n\n14:05\n●●●\nĐã đồng ý giá\nChị đồng ý 23.000 đ/kg cho 2 tấn xoài loại 1 với Đồng Xanh.\nLô xoài L-0412 · 4 tấn\nĐang giữ cho Đồng Xanh\n2 tấn\nGiữ tới\n14:05 ngày 23/10\nCòn bán được\n2 tấn\nĐây chưa phải hợp đồng. Hết 24 giờ mà Đồng Xanh chưa gửi thỏa thuận thì 2 tấn tự trả về lô, không ai bị ghi gì.\nChờ bên mua gửi thỏa thuận\nB3 → B4Màn N1.1 · vừa đồng ý giá\nĐồng ý giá thì hàng được giữ 24 giờ\n\nĐồng ý giá chưa phải là hợp đồng. App giữ đúng phần hàng để bên mua kịp lập thỏa thuận.\n\nĐang ở: Đã chốt giá, chưa có hợp đồng.\nAi làm: Bên mua lập thỏa thuận; chị chỉ chờ.\nBấm: Không cần bấm. Muốn bán phần còn lại vẫn đăng bình thường.\nTiếp theo: Bên mua gửi thỏa thuận thì chị nhận thông báo \"Xem lại thỏa thuận\". Hết 24 giờ chưa có thì 2 tấn tự về lô.\n15:20\n●●●\nXem lại thỏa thuận\nHĐ-0018 · bản 1 · Đồng Xanh gửi 15:10\nHàng\n2.000 kg xoài loại 1\ntừ lô L-0412\nĐã thống nhất\nChuẩn\nMẫu chia loại; trả lại tới 5% không cần ảnh\nĐã thống nhất\nGiá\n23.000 đ · hạ cấp 15.000 đ\nĐã thống nhất\nChị nhận\n46.000.000 đ (người bán không trả phí)\nĐã thống nhất\nNgày, nơi giao\n5:30 ngày 28/10 tại vườn\nĐã thống nhất\nAi làm\nChị hái, bốc · bên mua lo xe, kiểm qua video\nĐã thống nhất\nKý, nhận hàng\nChị Năm ký · anh Lộc nhận\nĐã thống nhất\nCách trả\nCọc 13,8 tr qua app · 32,2 tr chuyển khoản trước khi bốc\nĐã thống nhất\nĐề nghị sửa\nKý bằng mã\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB4 KýMàn N1.2 · bên mua gửi thỏa thuận\nXem lại thỏa thuận trước khi ký\n\nMột màn gom đủ: phần hàng nào, ai làm gì, chị nhận khoản nào lúc nào. Mỗi mục có nhãn đã thống nhất hay đang đề nghị.\n\nĐang ở: Thỏa thuận bản 1, chờ chị xem.\nAi làm: Chị.\nBấm: Ký bằng mã nếu đúng hết; \"Đề nghị sửa\" ở đúng mục muốn đổi.\nTiếp theo: Ký thì sang màn ký (màn 6). Đề nghị sửa thì chỉ mục đó chuyển sang \"đang đề nghị\", bên mua phải đồng ý lại mục đó.\n15:32\n●●●\nXem lại thỏa thuận\nHĐ-0018 · bản 1 · có 1 đề nghị\nHàng, giá, tiền\nNhư bản 1\nĐã thống nhất\nNgày giao\n28/10 → 29/10\nLý do: mưa, xoài chưa ráo\nĐang đề nghị · chờ bên mua\nAi làm, cách trả\nNhư bản 1\nĐã thống nhất\nCòn 1 mục đang đề nghị nên chưa ký được. Đồng Xanh trả lời trước 15:32 mai.\nRút đề nghị\nKý bằng mã\nB4 KýMàn N1.3 · chị đề nghị đổi ngày\nĐề nghị sửa một mục: bên kia đồng ý lại đúng mục đó\n\nSửa trên màn xem lại không âm thầm thay vào hợp đồng; nó thành một đề nghị có hạn.\n\nĐang ở: Thỏa thuận có 1 mục đang đề nghị.\nAi làm: Bên mua trả lời trong 24 giờ.\nBấm: Chị không cần bấm; có thể rút đề nghị.\nTiếp theo: Bên mua đồng ý thì thành bản 2, chị ký. Không đồng ý hoặc quá hạn thì giữ ngày cũ, chị vẫn ký được bản 1.\n11:30\n●●●\nKết quả nhận hàng\nHĐ-0018 · Đồng Xanh gửi 11:20 Giao 2.000 kg → đạt 1.850 kg, hạ cấp 120 kg, trả lại 30 kg → 44.350.000 đ\nĐạt 1.850 kg × 23.000\n42.550.000 đ\nHạ cấp 120 kg × 15.000\n1.800.000 đ · trầy vỏ · 3 ảnh\nXem ảnh\nTrả lại 30 kg\n0 đ · dập · 2 ảnh · 1,5% (dưới 5%)\nXem ảnh\nĐồng ý thì cọc được tính: chị nhận thêm 12.150.000 đ.\nCó phần không đúng\nĐồng ý kết quả\nB6 Giao nhậnMàn N2.1 · bên mua gửi kết quả\nXác nhận kết quả: một dòng tóm tắt, rồi từng phần\n\nChị thấy chính xác phần cần xác nhận: giao bao nhiêu, mỗi phần bao nhiêu, kèm ảnh, ra bao nhiêu tiền.\n\nĐang ở: Chờ xác nhận số cân.\nAi làm: Chị, trong 24 giờ.\nBấm: \"Đồng ý kết quả\" hoặc \"Có phần không đúng\".\nTiếp theo: Đồng ý thì sang quyết toán (N3). Có phần không đúng thì chọn đúng dòng bất đồng (N2.2).\n11:45\n●●●\nCó phần không đúng\nĐạt 1.850 kg\nĐồng ý\n!\nHạ cấp 120 kg\nKhông đồng ý\nĐã chọn\nTrả lại 30 kg\nĐồng ý\nChị thấy đúng là\n60 kg hạ cấp\nChứng cứ\nẢnh lúc bốc (4)\nMẫu M-2291\nVideo bốc\nThêm ảnh\nGửi phản đối dòng này\nB6 Giao nhậnMàn N2.2 · chị thấy dòng hạ cấp không đúng\nPhản đối đúng dòng, các dòng khác vẫn chốt\n\nKhông phản đối cả kết quả. Chị chọn dòng bất đồng, nói lý do, đưa chứng cứ.\n\nĐang ở: Đã chốt phần không tranh chấp · đang xử lý dòng hạ cấp.\nAi làm: Bên mua cân lại dòng này trong 24 giờ; vẫn lệch thì kiểm định.\nBấm: \"Gửi phản đối dòng này\".\nTiếp theo: Hai dòng đạt và trả lại đã chốt. Cọc giữ tới khi dòng hạ cấp có kết quả; bên sai chịu phí kiểm định.\n5:05\n●●●\nXác nhận tiền HĐ-0018\nĐồng Xanh báo đã chuyển\n32.200.000 đ\nỦy nhiệm chi 4:50 · ảnh chưa phải bằng chứng tiền về\nChị thấy trong tài khoản\nĐã nhận đủ 32.200.000 đ\nNhận một phần\nChưa nhận\nSố đã nhận\n20.000.000 đ\nPhải nhận trước khi bốc\n32.200.000 đ\nĐã xác nhận\n20.000.000 đ\nCòn thiếu\n12.200.000 đ\nGhi nhận 20.000.000 đ\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB6 Giao nhậnMàn N3.1 · bên mua báo đã trả\nXác nhận đúng số tiền đã thấy trong tài khoản\n\nChị không bấm \"đã nhận đủ\" chung chung; chị chọn đủ, một phần hay chưa nhận, và ghi đúng số.\n\nĐang ở: Chờ chị xác nhận khoản trả trước khi bốc.\nAi làm: Chị kiểm tài khoản rồi chọn.\nBấm: \"Đã nhận đủ\", \"Nhận một phần\" (nhập số) hoặc \"Chưa nhận\".\nTiếp theo: Đủ thì dòng tiền trong thẻ Sẵn sàng giao xanh. Một phần thì ghi nhận số đó, còn thiếu báo bên mua, chưa cho bốc. Chưa nhận thì bên mua có 48 giờ gửi chứng từ.\n14:00\n●●●\nTiền HĐ-0018\nChị đã nhận (trả thẳng)\n32.200.000 đ\nGiá trị hàng được chấp nhận\n29.100.000 đ\nCọc ngân hàng hoàn bên mua\n13.800.000 đ\nChị phải hoàn\n3.100.000 đ\nĐã hoàn (bên mua xác nhận)\n0 đ\nChuyển cho Đồng Xanh, nội dung \"HĐ-0018 hoàn\", rồi bấm nút và đính kèm ảnh chuyển khoản.\nĐã hoàn 3.100.000 đ\nB7 XongMàn N3.2 · trả lại nhiều, chị phải hoàn\nChị cần hoàn: bốn số tách riêng\n\nCa trả lại nhiều (nghiệm thu 29,1 tr nhưng đã nhận 32,2 tr). Cọc đã hoàn hết cho bên mua mà vẫn thiếu; phần thiếu chị trả lại ngoài app.\n\nĐang ở: Đã giao xong · còn công nợ: chị còn phải hoàn 3.100.000 đ.\nAi làm: Chị chuyển, rồi bên mua xác nhận.\nBấm: \"Đã hoàn 3.100.000 đ\" kèm chứng từ.\nTiếp theo: Bên mua bấm \"Đã nhận lại\" thì công nợ hết, đơn Hoàn tất. Bên mua bấm \"Chưa nhận\" thì người vận hành đối soát.\n12:10\n●●●\nCọc HĐ-0018\nQuyết toán đã chốt\n11:40 · chị bấm Đúng\nĐã gửi lệnh\n11:41 · 12.150.000 đ cho chị, 1.650.000 đ hoàn bên mua\nNgân hàng đã xác nhận\n12:05 · tiền vào Agribank •••• 2186\n4\nĐối soát\nĐang khớp số\nĐang làm\nCọc đã về 12.150.000 đ. Đối soát xong thì đơn Hoàn tất.\nChờ đối soát\nB7 XongMàn N3.3 · sau khi chị bấm Đúng\nCọc: từ gửi lệnh tới hoàn tất\n\nMỗi chặng tiền có giờ và người xác nhận. \"Cọc đã về\" chỉ hiện khi ngân hàng báo thành công.\n\nĐang ở: Quyết toán đã chốt, lệnh đang chạy.\nAi làm: Ngân hàng; chị chỉ xem.\nBấm: Không cần bấm.\nTiếp theo: Ngân hàng xác nhận và đối soát khớp thì đơn Hoàn tất, chị đánh giá bên mua.\n9:41\n●●●\nBên mua xin hủy\nĐồng Xanh xin hủy HĐ-0018. Lý do: máy sấy hỏng.\nHàng\n2 tấn trả về lô của chị\nCọc 13.800.000 đ\nVề chị\nPhí giới thiệu\nBên mua trả, không hoàn (đề xuất)\nĐã trả thẳng\nChưa có\nTrả lời trước 9:41 mai. Không trả lời là không đồng ý.\nKhông đồng ý\nĐồng ý hủy\nNhánh hủyMàn N3.4 · bên mua xin hủy sau cọc\nHủy: thấy hết ảnh hưởng rồi mới đồng ý\n\nMàn xác nhận ghi rõ hàng, cọc, phí, khoản đã trả. Đề xuất, chờ chốt: hủy trước cọc chưa thu phí; sau cọc, người bán không giao, người bán xin hủy hoặc bất khả kháng thì hoàn đủ phí; bên mua xin hủy hoặc không nhận hàng thì không hoàn phí.\n\nĐang ở: Bên mua xin hủy, chờ chị trả lời trong 24 giờ (im lặng là không đồng ý).\nAi làm: Chị.\nBấm: \"Đồng ý hủy\" hoặc \"Không đồng ý\".\nTiếp theo: Đồng ý thì cọc về chị, 2 tấn trả về lô. Không đồng ý thì đơn giữ nguyên, bên mua vẫn phải nhận hàng.\nNhánh gần luồng chính và quay lại đơn đang dở\n\nĐặt trước, đơn nhóm, hợp đồng khung, bao tiêu dùng cùng khung bước nhưng có thêm một màn quyết định riêng. Màn cuối là danh sách đơn: thoát ra rồi vào lại vẫn thấy ngay tới lượt ai, việc gì, hạn nào.\n\n8:20\n●●●\nChốt lượng HĐ-0024\nLượng trong hợp đồng\n1,8 – 2,2 tấn\nGiá\nTheo giá tham khảo ngày giao\nSàn · trần\n20.000 · 26.000 đ\nLượng thật chị ước (ảnh vườn hôm nay)\n−\n2,1 tấn\n+\nGiá ngày giao 30/10\n24.000 đ/kg\nGiá trị\n50.400.000 đ\nCọc mới 30%\n15.120.000 đ\nBên mua bổ sung\n1.320.000 đ\nGửi đề nghị chốt 2,1 tấn\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nĐặt trướcMàn N4.1 · gần ngày hái\nĐặt trước khi hái: chốt lượng thật, giá theo công thức, cọc chênh\n\nHợp đồng ký khi trái còn trên cây với lượng theo khoảng và giá theo công thức. Gần ngày hái chị gửi lượng thật; app tính giá và cọc mới.\n\nĐang ở: Chờ chốt lượng, giá (HĐ-0024).\nAi làm: Chị gửi; bên mua đồng ý trong 24 giờ.\nBấm: \"Gửi đề nghị chốt 2,1 tấn\".\nTiếp theo: Bên mua đồng ý và bổ sung cọc 1.320.000 đ trong 24 giờ (một dòng của thẻ Sẵn sàng giao), rồi chạy như giao ngay.\n10:15\n●●●\nĐơn nhóm ĐN-0007\nPha gom · chốt nhóm 18:00 hôm nay\nĐã gom 160 / 200 kg · bên mua chọn \"chỉ thực hiện khi đủ\"\nPhần của chị\n100 kg × 23.000 đ\nNgân hàng giữ cọc phần chị\n690.000 đ\nGiao tại\nĐiểm gom HTX Mỹ Xương\nNgày\n29/10, trước 7:00\nHộ khác giao thiếu không ảnh hưởng phần của chị. Chị được trả và nhận cọc riêng.\nXin rút phần của tôi\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nĐơn nhómMàn N4.2 · chị góp một phần\nĐơn nhóm: phần của chị, pha gom và pha thực hiện\n\nChị chỉ chịu phần của mình. Trước giờ chốt nhóm chưa phần nào được giao; sau giờ chốt, phần của chị là một hợp đồng độc lập.\n\nĐang ở: Pha gom: đã gom 160/200 kg, chốt nhóm 18:00 (ĐN-0007).\nAi làm: Bên mua và các hộ khác; chị đã ký và bên mua đã cọc phần của chị.\nBấm: Không cần bấm. Muốn rút trước giờ chốt thì \"Xin rút phần của tôi\".\nTiếp theo: Đủ nhóm thì sang pha thực hiện: chị mang 100 kg tới điểm gom 29/10. Hết giờ chưa đủ mà bên mua chọn \"chỉ khi đủ\" thì đóng nhóm, hoàn cọc, chị không bị ghi gì.\n16:00\n●●●\nBếp Sen · khung tuần\nCọc khung khả dụng\n1.160.000 đ\nHTX cho nợ thêm\n1.500.000 đ\nMức được phép\n2.660.000 đ\nĐã giao chưa trả (thứ 2)\n1.160.000 đ\nĐã chốt sắp giao (thứ 5)\n1.420.000 đ\nCòn trong mức\n80.000 đ\nXin thêm 10 kg xoài thứ 5: 260.000 đ, vượt 180.000 đ. Lịch dự báo tuần sau không tính vào đây.\nChờ bổ sung cọc\nCho nợ thêm\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nHợp đồng khungMàn N4.3 · bên mua gọi thêm hàng\nHợp đồng khung: lần gọi hàng vượt mức được phép\n\nVai HTX đầu mối. Cọc khung giữ suốt hợp đồng; người bán tự quyết cho nợ thêm ngoài khoản bảo đảm (mặc định 0 đ). Vượt mức thì chỉ lần gọi mới bị dừng.\n\nĐang ở: Bếp Sen xin thêm 10 kg xoài thứ 5 (260.000 đ), vượt mức 180.000 đ.\nAi làm: Người có quyền chấp thuận của HTX (ban điều hành).\nBấm: \"Cho nợ thêm\" (nhập số tiền, thời hạn) hoặc \"Chờ bên mua bổ sung cọc\".\nTiếp theo: Trong mức thì lần gọi được chốt và vào lịch giao. Không thì lần gọi chờ; các lần đã chốt vẫn giao bình thường.\n9:00\n●●●\nBao tiêu xoài · đợt 2\nNghiệm thu đợt 2\n2.800 kg × 18.000 đ\nTiền hàng đợt\n50.400.000 đ\nVật tư đối trừ đợt này\n− 5.000.000 đ\nBên mua phải chuyển\n45.400.000 đ\nHạn 6/11 · đã nhận 0 đ\nVật tư đã ứng cả vụ\n15.000.000 đ\nĐã đối trừ (2 đợt)\n10.000.000 đ\nCọc vụ ngân hàng giữ\n10.000.000 đ\nChưa nhận\nĐã nhận 45,4 tr\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nBao tiêuMàn N4.4 · giao đợt 2\nBao tiêu: mỗi đợt thấy tiền hàng, vật tư đối trừ, số thực nhận\n\nVật tư bên mua ứng đầu vụ được đối trừ dần, đứng riêng, không cộng vào tiền chuyển khoản. Tiền mỗi đợt trả theo hạn của đợt.\n\nĐang ở: Đợt 2 đã nghiệm thu, chờ bên mua trả (BT-0003).\nAi làm: Bên mua chuyển; chị xác nhận đúng số.\nBấm: \"Đã nhận 45.400.000 đ\", \"Nhận một phần\" hoặc \"Chưa nhận\".\nTiếp theo: Xác nhận đủ thì đợt 2 xong. Cọc vụ 10.000.000 đ xử lý ở đợt cuối; quyết toán vụ chỉ xử lý phần chênh.\n7:15\n●●●\nN\nBán hàng\nNghe\nChào giá · 1\nĐơn · 5\nHàng của tôi\nTới lượt chị · 2\nHĐ-0018 · Đồng Xanh\nXác nhận số cân · còn 23 giờ\nTới lượt chị\nBT-0003 · Đồng Xanh\nXác nhận tiền đợt 2 · hạn 6/11\nTới lượt chị\nChờ bên kia · 2\nHĐ-0024 · Đồng Xanh\nChờ đồng ý chốt 2,1 tấn · 8:20 mai\nChờ bên kia\nĐN-0007 · nhóm 200 kg\nChờ đủ nhóm · 18:00 hôm nay\nChờ bên kia\nCó vấn đề · 1\nHĐ-0015 · Vựa Tư Hùng\nCòn công nợ: bên mua thiếu 12.200.000 đ\nCó vấn đề\nHoàn tất · 12 đơn · Đã đóng · 3 đơn\nTrang chủ\nBán hàng\nĐăng\nTin nhắn\n3\nVí\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nQuay lạiMàn N4.5 · mở lại app\nDanh sách đơn: tới lượt ai, việc gì, hạn nào\n\nNgăn Đơn trong mục Bán hàng. Vào từ trang chủ, từ thông báo hay từ đây đều mở đúng đơn ở đúng bước đang dở.\n\nĐang ở: Ngăn Đơn, xếp theo \"tới lượt ai\" rồi theo hạn gần nhất.\nAi làm: Chị chọn đơn.\nBấm: Bấm một dòng để mở đơn ở đúng việc đang chờ.\nTiếp theo: Đơn \"Tới lượt chị\" mở thẳng màn cần bấm; đơn \"Chờ bên kia\" mở chi tiết đơn có thẻ chờ; \"Có vấn đề\" mở màn đối soát.",
+    "buttons": [
+      {
+        "text": "Xem lời chào giá",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Xem lại tin",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Trả lời",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Không bán",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Trả giá",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đồng ý",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Ký bằng mã",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Hợp đồng",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gọi",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Hỗ trợ",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chờ bên mua xác nhận",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Không đúng",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đúng",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đánh giá Đồng Xanh",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chờ bên mua gửi thỏa thuận",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đề nghị sửa",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Ký bằng mã",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Rút đề nghị",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Ký bằng mã",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Có phần không đúng",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đồng ý kết quả",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi phản đối dòng này",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Ghi nhận 20.000.000 đ",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đã hoàn 3.100.000 đ",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chờ đối soát",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Không đồng ý",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đồng ý hủy",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi đề nghị chốt 2,1 tấn",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Xin rút phần của tôi",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chờ bổ sung cọc",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Cho nợ thêm",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chưa nhận",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đã nhận 45,4 tr",
+        "title": "",
+        "aria": null
+      }
+    ],
+    "links": [
+      {
+        "text": "App bán",
+        "href": "../bo-cuc-app-ban/index.html"
+      },
+      {
+        "text": "App mua",
+        "href": "../bo-cuc-app-mua/index.html"
+      },
+      {
+        "text": "Hai bên đặt cạnh nhau",
+        "href": "../tai-lieu-tong-hop/index.html#tt"
+      },
+      {
+        "text": "Hủy, sai lệch",
+        "href": "../tai-lieu-tong-hop/index.html#nhanh"
+      },
+      {
+        "text": "Năm loại hợp đồng",
+        "href": "../tai-lieu-tong-hop/index.html#loai-hd"
+      }
+    ],
+    "headings": [
+      "App bán AgiViet, quy trình chuẩn",
+      "Quy trình chuẩn dùng chung hai app",
+      "Bản đồ app: 5 mục, cùng vị trí ở hai app",
+      "Trang chủ",
+      "Bán hàng",
+      "Đăng",
+      "Tin nhắn",
+      "Ví",
+      "Hai app đối xứng theo từng bước",
+      "Mười một màn theo quy trình chuẩn",
+      "Trang chủ: ví, việc hôm nay, đáng chú ý, lưới ô",
+      "Chọn mặt hàng: nói trước, ảnh sau, không có danh sách",
+      "Form tự đổi theo mặt hàng, giá có thước so",
+      "Bán hàng: bên mua đang cần hàng của chị",
+      "Lời chào giá: một con số, so sẵn, ba lựa chọn",
+      "Ký hợp đồng HĐ-0018: đọc từng điều, ký bằng mã",
+      "Chi tiết đơn: ngân hàng giữ cọc, chờ bên mua trả phần còn lại",
+      "Sẵn sàng giao, rồi bốc hàng",
+      "Xác nhận số cân: Đúng hoặc Không đúng, cọc bù phần chênh",
+      "Ví: cọc về, lịch sử tiền theo đơn",
+      "Tin nhắn: thông báo đi theo từng bước của đơn",
+      "Ba đường nối của một lượt giao dịch",
+      "Đồng ý giá thì hàng được giữ 24 giờ",
+      "Xem lại thỏa thuận trước khi ký",
+      "Đề nghị sửa một mục: bên kia đồng ý lại đúng mục đó",
+      "Xác nhận kết quả: một dòng tóm tắt, rồi từng phần",
+      "Phản đối đúng dòng, các dòng khác vẫn chốt",
+      "Xác nhận đúng số tiền đã thấy trong tài khoản",
+      "Chị cần hoàn: bốn số tách riêng",
+      "Cọc: từ gửi lệnh tới hoàn tất",
+      "Hủy: thấy hết ảnh hưởng rồi mới đồng ý",
+      "Nhánh gần luồng chính và quay lại đơn đang dở",
+      "Đặt trước khi hái: chốt lượng thật, giá theo công thức, cọc chênh",
+      "Đơn nhóm: phần của chị, pha gom và pha thực hiện",
+      "Hợp đồng khung: lần gọi hàng vượt mức được phép",
+      "Bao tiêu: mỗi đợt thấy tiền hàng, vật tư đối trừ, số thực nhận",
+      "Danh sách đơn: tới lượt ai, việc gì, hạn nào"
+    ]
+  },
+  {
+    "file": "bo-cuc-app-mua/index.html",
+    "filename": "mau2-bo-cuc-app-mua_index.png",
+    "errors": [],
+    "title": "App mua AgiViet, quy trình chuẩn",
+    "text": "App bán\nApp mua\nHai bên đặt cạnh nhau\nHủy, sai lệch\nNăm loại hợp đồng\nApp mua AgiViet, quy trình chuẩn\n\nMười một màn của chị Thu Hà (Nhà máy sấy Đồng Xanh) theo quy trình chuẩn 7 bước, cùng đơn HĐ-0018 với app bán. Màu nhấn xanh sông để phân biệt với app bán.\n\nQuy trình chuẩn dùng chung hai app\n\nHai app dùng chung một quy trình 7 bước, một bộ trạng thái đơn, một thanh tiến độ 5 chặng, cùng chữ trên nút và cùng hạn giờ. Mỗi màn bên dưới gắn mã bước. Màn cùng mã bước ở app bán và app mua là hai mặt của cùng một việc.\n\nBước\tBên bán làm\tBên mua làm\tTrạng thái đơn (giống nhau hai app)\tĐiều kiện đi tiếp · hạn\nB1 Đăng\tĐăng lô: giá mong muốn + giá thấp nhất (kín, tự từ chối lời chào thấp hơn)\tTạo phiếu nhu cầu: giá tối đa (kín)\tChưa có đơn\tTin lô tự ẩn sau 14 ngày\nB2 Ghép\tThấy \"bên mua đang cần hàng của chị\"\tThấy hàng khớp theo 3 nhóm, không thấy giá\tChưa có đơn\tKhông có\nB3 Chào giá\tĐồng ý · Trả giá · Không bán; thấy tiền ròng thực nhận\tChào giá; có thể gửi chung cho nhóm hộ cùng điều kiện; chưa ai trả lời thì rút, sửa được\tChưa có đơn\tGiá tham khảo chỉ cảnh báo. 24 giờ mỗi lượt, tối đa 2 lượt trả giá\nB4 Ký\tĐọc từng điều, ký bằng mã\tLập hợp đồng (loại, cách chở, cách trả, phí áp dụng), ký bằng mã\tChờ người bán ký\tHai bên ký cùng một phiên bản; lượng được giữ trong lô. 24 giờ; quá hạn đơn tự rút\nB5 Cọc\tThấy cọc ngân hàng đang giữ\tChuyển cọc 30% + phí qua app\tChờ cọc → Đã cọc, chờ giao\tNgân hàng xác nhận nhận đúng tiền cho đúng đơn. 48 giờ (hàng tươi 12); quá hạn đơn đóng\nB6 Giao nhận\tThẻ Sẵn sàng giao; bấm \"Đã nhận [số tiền]\" (nếu trả trước khi bốc); quét mã, bốc; Đúng / Không đúng số cân\tThẻ Sẵn sàng giao; trả phần còn lại theo hợp đồng, \"Ghi đã trả\"; đưa mã; nhận, nghiệm thu 3 phần\tSẵn sàng giao → Đang giao → Chờ nghiệm thu → Chờ xác nhận số cân\tĐủ thẻ Sẵn sàng giao mới bốc. Nhận hàng giao xa 2 giờ tính từ lúc người được chỉ định ký nhận (không từ giờ xe tới); chưa kiểm được thì bấm \"Chưa kiểm được\" để gia hạn một lần; quá hạn theo điều khoản nghiệm thu. Xác nhận số cân 24 giờ, quá hạn thì nhắc rồi người vận hành đối chiếu; cọc vẫn giữ\nB7 Xong\tThấy quyết toán; nhận phần cọc; đánh giá\tThấy quyết toán; nhận phần hoàn; tải chứng từ; đánh giá\tChờ thanh toán → Quyết toán → Đã gửi lệnh cọc → Hoàn tất (còn nghĩa vụ: Đã giao xong · còn công nợ)\tCọc chỉ xử lý khi: nghiệm thu đã chốt, khoản trả thẳng đến hạn đã xác minh, không tranh chấp, ngân hàng đủ điều kiện. \"Cọc đã về\" chỉ hiện khi ngân hàng xác nhận\n\nThanh tiến độ đơn (5 chặng, hai app như nhau): Ký · Cọc · Giao nhận · Thanh toán · Xong. Chặng Thanh toán (khoản trả thẳng) có thể xong trước Giao nhận khi hợp đồng ghi \"trả trước khi bốc\"; dù vậy cọc vẫn chờ nghiệm thu.\n\nBa sự kiện trước khi xử lý cọc: (1) người bán xác nhận đã nhận đúng số tiền trả thẳng; (2) bàn giao đúng người, đúng lượng (quét mã chỉ chứng minh giao đúng người; rủi ro chuyển theo điều khoản hợp đồng); (3) hai bên chốt nghiệm thu. Im lặng và ảnh ủy nhiệm chi không phải bằng chứng tiền đã về. Bảng điều kiện đầy đủ cho từng biến thể: tài liệu tổng hợp, mục C13.\n\nTrạng thái cuối (giống nhau hai app): Đã từ chối · Quá hạn cọc · Đã hủy · Hoàn tất. Trạng thái trung gian khi còn nghĩa vụ: Đã giao xong · còn công nợ (ghi ai nợ ai, bao nhiêu) · Đã chốt phần không tranh chấp · đang kiểm định phần còn lại. Chỉ gọi Hoàn tất khi mọi nghĩa vụ đã xử lý.\n\nMàu trạng thái:\n\nTới lượt bạn\nChờ bên kia\nCó vấn đề\nXong\nĐã đóng\n\nChữ trên nút (dùng đúng chữ này ở cả hai app): Ký bằng mã · Chuyển cọc · Ghi đã trả (bên mua) · Đã nhận [số tiền] / Chưa nhận (bên bán) · Đạt khi bốc (bên mua) · Gửi kết quả (bên mua) · Đúng / Không đúng (bên bán) · Gửi đề nghị · Đồng ý / Không đồng ý · Xin hủy.\n\nBản đồ app: 5 mục, cùng vị trí ở hai app\n\nMục 1 trang chủ · mục 2 giao dịch · mục 3 nút đăng ở giữa · mục 4 tin nhắn · mục 5 tiền. Hồ sơ, cài đặt mở từ ảnh đại diện.\n\nTrang chủ\nHôm nay phải lo gì?\nThẻ tiền\nViệc cần làm theo bước\nPhiếu đang mở\nLưới 6 ô\nMua hàng\nB2–B6: giao dịch\nHàng khớp\nChào giá\nĐơn theo trạng thái chuẩn\nHàng kém loại\nCần mua\nB1: nút giữa\nPhiếu nhu cầu\nGiá tối đa kín\nTin nhắn\nSuốt quy trình\nThông báo có mã bước\nTrò chuyện che số\nTiền\nB7: tiền\nCọc đang giữ\nCòn phải trả\nChứng từ, bảng kê\nHai app đối xứng theo từng bước\n\nCùng mã bước, cùng số màn ở hai trang là hai mặt của cùng một việc trong đơn HĐ-0018.\n\nBước\tApp bán\tApp mua\nTổng quan\tMàn 1 · Trang chủ\tMàn 1 · Trang chủ\nB1 Đăng\tMàn 2–3 · Chọn mặt hàng, điền lô\tMàn 2 · Phiếu nhu cầu\nB2 Ghép\tMàn 4 · Bên mua đang cần\tMàn 3 · Hàng khớp\nB3 Chào giá\tMàn 5 · Nhận lời chào giá\tMàn 4 · Chào giá\nB4 Ký\tMàn 6 · Ký hợp đồng\tMàn 5 · Lập hợp đồng\nB5 Cọc\tMàn 7 · Chi tiết đơn: cọc đang giữ\tMàn 6 · Chuyển cọc\nB6 Giao nhận\tMàn 8 · Bốc hàng; Màn 9 · Xác nhận số cân\tMàn 7 · Ghi đã trả, mã nhận hàng; Màn 8 · Nhận hàng; Màn 9 · Chi tiết đơn\nB7 Xong\tMàn 10 · Ví\tMàn 10 · Tiền\nSuốt quy trình\tMàn 11 · Tin nhắn\tMàn 11 · Tin nhắn\nN1 Đồng ý giá → ký\tN1.1 Hàng được giữ · N1.2 Xem lại thỏa thuận · N1.3 Đề nghị sửa một mục\tN1.1 Xử lý lời chào còn lại · N1.2 Xem lại thỏa thuận · N1.3 Trả lời đề nghị\nN2 Nhận hàng → chốt\tN2.1 Đồng ý kết quả · N2.2 Phản đối đúng dòng\tN2.1 Nhận đủ (đường ngắn) · N2.2 Nhập chênh lệch\nN3 Tiền → hoàn tất\tN3.1 Xác nhận đúng số · N3.2 Chị cần hoàn · N3.3 Cọc từ lệnh tới hoàn tất · N3.4 Bên mua xin hủy\tN3.1 Còn thiếu · N3.2 Xác nhận đã nhận lại · N3.3 Xin hủy\nMười một màn theo quy trình chuẩn\n\nMỗi màn gắn mã bước. Cả hai trang đi theo cùng đơn HĐ-0018: xoài loại 1, 2 tấn, 23.000 đ/kg, cọc 30% = 13.800.000 đ, phần còn lại 32.200.000 đ chuyển khoản trước khi bốc, giao tại vườn 28/10, bên mua tự lo xe.\n\n7:45\n●●●\nTH\nChào chị Thu Hà\nNghe\nNhà máy sấy Đồng Xanh · gói Thu mua\nCọc giữ\n13,8 tr\nPhải trả\n32,2 tr\nHạn gần\n28/10\nViệc cần làm · B6 Giao nhận\n1 trong 3\nTrả phần còn lại HĐ-0018\n\nChuyển khoản 32.200.000 đ cho chị Năm trước khi bốc lúc 5:30 ngày 28/10.\n\nGhi đã trả\nPhiếu đang mở\nXoài loại 1 · 2 tấn\n6 lô khớp · 2 hộ đã trả lời chào giá\n2 mới\nKế hoạch xoài tháng 10\n18,5 / 30 tấn\nKho\nNhà cung cấp\nKế hoạch\nThuế, bảng kê\nXe, kiểm định\nHỗ trợ\nTrang chủ\nMua hàng\n2\nCần mua\nTin nhắn\n3\nTiền\n1\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nTổng quanMàn 1 · mở app đầu giờ\nTrang chủ: tiền phải lo, việc tới hạn, phiếu đang mở\n\nMọi việc trong quy trình 7 bước đổ về thẻ \"Việc cần làm hôm nay\", xếp theo hạn giờ.\n\nThẻ tiền: cọc đang giữ, còn phải trả người bán, hạn gần nhất.\nViệc cần làm: lấy từ bước đang tới lượt bạn (B5 cọc, B6 trả phần còn lại, nhận hàng…).\nPhiếu đang mở, kế hoạch tháng, lưới 6 ô.\n8:10\n●●●\nCần mua\nXoài cát Chu\nĐổi mặt hàng\nLoại nhận\nLoại 1\nLoại 2\nLoại 3\nDạt\nLượng\n−\n2 tấn\n+\nMột lần\nĐều đặn\nCần trước\n28/10\nNhận ở\nTự lo xe tới vườn\nGiấy tờ cần\nVietGAP\nMã vùng trồng\nBảng kê thuế\nKiểm nghiệm\nGiá tối đa bạn chấp nhận\n25.000 đ/kg\nKín\nGiá tham khảo loại 1: 25.000 đ (14 đơn trong 30 ngày)\nApp nhận ra:\nLô một lần\n. Khoảng 6 lô khớp.\nĐăng phiếu, tìm hàng\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB1 ĐăngMàn 2 · cần mua hàng\nPhiếu nhu cầu: nói cần gì, giá tối đa để kín\n\nĐối xứng với màn 2–3 của app bán (đăng lô, giá thấp nhất kín).\n\nHỏi dần: mặt hàng, loại, lượng, một lần hay đều đặn, ngày, nơi nhận, giấy tờ, giá tối đa.\nGiấy tờ là bộ lọc cứng; app báo dạng nhu cầu nó nhận ra.\n8:12\n●●●\nHàng khớp phiếu\nXoài loại 1 · 2 tấn · cần trước 28/10\nKhớp đủ · 3\nChị Năm · Cao Lãnh\n4 tấn · VietGAP · uy tín rất tốt · 18 km\nGiá trong khoảng bạn chấp nhận\nĐã chọn\nKhớp một phần · 2\nAnh Sáu · Mỹ Hiệp\n1,2 tấn · thiếu 800 kg\nGom với 1 hộ gần đó cho đủ\nGần khớp giá · 1\nCô Hai · Cái Bè\n3 tấn · VietGAP\nThương lượng\nChào giá 3 hộ đã chọn\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB2 GhépMàn 3 · xem hàng khớp\nHàng khớp: thấy hàng hợp, không thấy giá từng hộ\n\nĐối xứng với màn 4 của app bán (người bán thấy \"bên mua đang cần\").\n\nBa nhóm: khớp đủ, khớp một phần (ghi thiếu gì), gần khớp giá.\nKhông có con số giá; chọn theo độ khớp, uy tín; chào giá nhiều hộ một lần.\n8:15\n●●●\nChào giá\nGiá chào chung cho 3 hộ cùng điều kiện\n−\n23.000 đ/kg\n+\nTham khảo 25.000\n92% giá tham khảo · 14 đơn, Đồng Tháp, 30 ngày\nCùng loại, nơi giao, lúc trả nên gửi chung.\nChị Năm\nĐang xem · hết hạn 14:00 mai\nChờ bên kia\nAnh Sáu\nChưa tới mức người bán chấp nhận\nCó vấn đề\nCô Hai\nTrả giá 24.500 đ · còn 1 lượt\nTới lượt bạn\nRút lời chào\nSửa giá\nB3 Chào giáMàn 4 · chào giá\nChào giá: gửi chung cho nhóm hộ cùng điều kiện\n\nĐối xứng với màn 5 của app bán (người bán nhận lời chào).\n\nGửi chung một giá là cách tiện khi các hộ cùng điều kiện; hộ khác điều kiện thì chào riêng.\nChưa ai trả lời thì rút, sửa được (tối đa 2 lần rút). Giá tham khảo chỉ cảnh báo, kèm nền so sánh.\nTrạng thái từng hộ bằng chữ, không lộ giá kín. 24 giờ mỗi lượt, tối đa 2 lượt trả giá.\n9:02\n●●●\nLập hợp đồng\nLoại hợp đồng\nGiao ngay\nĐặt trước\nKhung\nĐơn nhóm\nVận chuyển\nXe qua app (gợi ý)\nTôi tự lo xe\nNgười bán chở\nĐiểm gom\nTự lo xe: hàng lên xe rồi thì rủi ro thuộc bạn.\nTrả phần còn lại\nChuyển khoản trước khi bốc\nKhi nhận hàng\nSau 7 ngày\nTiền mặt tại vườn\nGiá chốt · hạ cấp\n23.000 · 15.000 đ\nTrả lại không cần ảnh\ntới 5%\nCọc 30% qua app\n13.800.000 đ\nPhí giới thiệu (Thu mua 0,3%)\n138.000 đ\nKý bằng mã và gửi\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB4 KýMàn 5 · chị Năm đồng ý\nLập hợp đồng: loại, cách chở, cách trả phần còn lại\n\nĐối xứng với màn 6 của app bán (người bán đọc và ký cùng hợp đồng này).\n\nLoại hợp đồng; vận chuyển 4 cách, mỗi cách nói ai chịu rủi ro; cách trả phần còn lại và ai đang chịu rủi ro tiền.\nMức phí áp dụng lưu vào hợp đồng lúc ký: gói Thu mua 0,3%, đơn đầu với chị Năm. HĐ-0018 hoàn tất hợp lệ thì từ đơn sau cặp này là mối quen, phí 0% (không kèm cho nợ, không bỏ kiểm hàng).\nTrạng thái sau khi gửi: Chờ người bán ký (hạn 24 giờ).\n9:30\n●●●\nChuyển cọc HĐ-0018\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nChuyển qua app\nCọc 30%\n13.800.000 đ\nPhí giới thiệu (Thu mua 0,3%)\n138.000 đ\nTổng\n13.938.000 đ\nHạn 9:30 ngày 24/10 (48 giờ)\nCọc nằm ở ngân hàng; không bên nào rút được; xử lý khi nghiệm thu và quyết toán xong.\nTrả thẳng cho người bán (ngoài app)\n32.200.000 đ\nChuyển khoản trước khi bốc 5:30 ngày 28/10\nChuyển cọc\nB5 CọcMàn 6 · người bán đã ký\nChuyển cọc: tiền qua app tách rõ với tiền trả thẳng\n\nĐối xứng với màn 7 của app bán (người bán thấy ngân hàng giữ cọc).\n\nQua app: cọc 30% + phí giới thiệu theo mức đã lưu trong hợp đồng, hạn 48 giờ.\nCọc là khoản bảo đảm, không bảo vệ toàn bộ tiền hàng: phần trả thẳng trước khi bốc do bạn chịu rủi ro.\nNgoài app: phần còn lại trả thẳng người bán theo hợp đồng.\nTrạng thái: Chờ cọc → Đã cọc, chờ giao.\n16:40\n●●●\nGiao nhận HĐ-0018\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nSẵn sàng giao · tiền trả thẳng\nChị Năm xác nhận đã nhận 32.200.000 đ\nBạn ghi đã trả lúc 4:50 · ủy nhiệm chi\nBiển số\n66C-123.45\nTài xế\nAnh Lộc · 0909 •••\nTới vườn\n5:30 ngày 28/10\nMã nhận hàng\n482 917\nĐạt khi bốc\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB6 Giao nhậnMàn 7 · trước giờ xe tới\nSẵn sàng giao: ghi đã trả, xe, mã nhận hàng\n\nĐối xứng với màn 8 của app bán (người bán xác nhận tiền, quét mã, bốc).\n\nGhi đã trả kèm ủy nhiệm chi; ảnh chưa phải bằng chứng tiền về: người bán bấm Đã nhận 32.200.000 đ rồi mới cho bốc.\nXe: biển số, tài xế, giờ tới; mã nhận hàng cho tài xế.\nGiao xa: xem video lúc bốc, bấm Đạt khi bốc. Trạng thái: Đang giao.\n11:20\n●●●\nNhận hàng HĐ-0018\nCòn 1 giờ 40 phút\n(kho ký nhận 9:40). Mở mẫu M-2291 để so.\nĐạt\n1.850\nHạ cấp\n120\nTrả lại\n30\nTiền hàng thực nhận\n44.350.000 đ\nĐã trả người bán\n32.200.000 đ\nCọc ở ngân hàng\n13.800.000 đ\nHoàn bạn từ cọc\n1.650.000 đ\nHàng không đạt\nNhận giá hạ cấp\nBán gấp gần đây\nKho lạnh\nTiêu hủy có biên bản\nGửi kết quả\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB6 Giao nhậnMàn 8 · xe tới kho\nNhận hàng: 2 giờ, 3 phần, gửi kết quả\n\nĐối xứng với màn 9 của app bán (người bán bấm Đúng hoặc Không đúng).\n\nĐồng hồ 2 giờ tính từ lúc kho ký nhận trên app; còn 30 phút app nhắc; chưa kiểm được thì bấm Chưa kiểm được. Trả lại quá 5% phải có ảnh.\nTiền tính lại ngay; trả dư thì hoàn từ cọc. Hàng không đạt xử lý tại chỗ.\nTrạng thái sau khi gửi: Chờ xác nhận số cân.\n11:40\n●●●\nĐơn HĐ-0018\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nChờ bên kia · B6 Giao nhận\ncòn 23 giờ\nChờ chị Năm xác nhận số cân\n\nQuá hạn: app nhắc, rồi người vận hành đối chiếu biên bản. Cọc vẫn giữ.\n\nNgân hàng đang giữ cọc 13.800.000 đ\nHoàn bạn 1.650.000 đ khi chốt số cân\nLượng × giá\n2 tấn × 23.000 đ\nĐã nhận\n1.970 kg (30 kg trả lại)\nNgười bán\nChị Năm · 0918 234 421\nHợp đồng\nGọi\nHỗ trợ\nB6 Giao nhậnMàn 9 · chờ người bán\nChi tiết đơn: chờ người bán xác nhận số cân\n\nCùng bố cục chi tiết đơn với app bán: thanh 5 chặng, thẻ việc, khối tiền, thông tin, ba nút phụ.\n\nThẻ việc nói đang chờ ai, hạn bao lâu, quá hạn thì sao.\nKhối khiên: cọc đang giữ và phần sẽ hoàn bạn.\nTrạng thái: Chờ xác nhận số cân.\n17:30\n●●●\nTH\nTiền\nNghe\nCọc và phải trả\nChứng từ\nCọc ngân hàng đang giữ\n7.200.000 đ\nCòn phải trả người bán\n48.000.000 đ\nĐã trả tháng 10\n186.500.000 đ\nHĐ-0018 · Hoàn tất\nHoàn từ cọc · ngân hàng xác nhận\n+1.650.000 đ\nBảng kê, biên bản, ủy nhiệm chi\nTải về\nSắp tới hạn trả\nHĐ-0021 · Tổ hợp tác Mỹ Hiệp\nKhi nhận hàng · 30/10\n28.000.000\nHĐ-0019 · Cô Hai\nSau 7 ngày · 2/11\n20.000.000\nTrang chủ\nMua hàng\n2\nCần mua\nTin nhắn\n3\nTiền\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB7 XongMàn 10 · cuối ngày, kế toán\nTiền: cọc giữ, còn phải trả, chứng từ\n\nMục cuối của thanh dưới là tiền, đối xứng với Ví của app bán.\n\nCọc đang giữ theo đơn; còn phải trả người bán theo hợp đồng, kèm hạn.\nHĐ-0018 đã xong: phần hoàn từ cọc; tải bảng kê, biên bản, ủy nhiệm chi.\nTrạng thái HĐ-0018: Hoàn tất (không còn nghĩa vụ). Đánh giá người bán.\n12:05\n●●●\nN\nTin nhắn\nNghe\nThông báo · 3\nTin nhắn · 1\nB7 · Ngân hàng đã hoàn 1.650.000 đ HĐ-0018\nChị Năm đã xác nhận số cân. Đánh giá?\n12:00\nB3 · Cô Hai trả giá 24.500 đ/kg\nPhiếu xoài loại 1 · hết hạn 8:15 mai\n10:30\nB6 · Chị Năm xác nhận đã nhận 32.200.000 đ\nCó thể bốc hàng\n5:10\nĐang trò chuyện\nN\nChị Năm\n\"Lô sau em lấy tiếp không, chị để dành 2 tấn\"\n1\nTrang chủ\nMua hàng\n2\nCần mua\nTin nhắn\nTiền\n1\nSuốt quy trìnhMàn 11 · trong ngày\nTin nhắn: thông báo đi theo từng bước của đơn\n\nCùng cách ghi mã bước với app bán.\n\nThông báo theo đơn: ai vừa làm gì, việc tiếp theo của bạn.\nTrò chuyện che số tới khi cọc; số tiền trong tin nhắn không có giá trị.\nBa đường nối của một lượt giao dịch\n\nCác màn nối giữa những màn chính ở trên. Mã N1 là từ đồng ý giá tới ký, N2 là nhận hàng và chốt kết quả, N3 là đối soát tiền và kết thúc. Màn cùng mã ở trang app bán là phía bên kia.\n\n14:06\n●●●\nPhiếu xoài loại 1\nChị Năm đồng ý 23.000 đ/kg · 2 tấn được giữ cho bạn tới 14:05 ngày 23/10.\nCần\n2 tấn\nĐã có người đồng ý\n2 tấn (chị Năm)\nLời chào còn mở\nAnh Sáu\nChưa trả lời\nChờ bên kia\nCô Hai\nTrả giá 24.500 đ\nTới lượt bạn\nRút 2 lời chào, lập thỏa thuận\nGiữ để mua thêm\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB3 → B4Màn N1.1 · chị Năm đồng ý\nMột hộ đồng ý: hàng được giữ, xử lý các lời chào còn lại\n\nPhiếu cần 2 tấn đã đủ từ chị Năm. App hỏi bạn làm gì với các lời chào khác thay vì để chúng treo.\n\nĐang ở: Chị Năm đồng ý giá; hàng giữ cho bạn tới 14:05 ngày 23/10.\nAi làm: Bạn.\nBấm: \"Rút 2 lời chào còn lại và lập thỏa thuận\", hoặc \"Giữ để mua thêm\".\nTiếp theo: Rút thì Anh Sáu, Cô Hai nhận thông báo \"đã đủ hàng\", không ai bị ghi gì. Giữ thì nếu họ đồng ý, bạn có 24 giờ để mua hoặc từ chối.\n15:08\n●●●\nXem lại thỏa thuận\nHĐ-0018 · bản 1 · chưa gửi\nHàng\n2.000 kg xoài loại 1, lô L-0412 của chị Năm\nGiá\n23.000 đ · hạ cấp 15.000 đ\nNgày, nơi\n5:30 ngày 28/10 tại vườn\nBạn lo\nXe 66C-123.45 · kiểm qua video · nhận: anh Lộc\nQua app\nCọc 13.800.000 + phí 138.000 đ, trong 48 giờ sau khi chị Năm ký\nTrả thẳng\n32.200.000 đ chuyển khoản trước khi bốc\nRủi ro\nLên xe là bạn chịu (giao tại vườn)\nKý và gửi\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB4 KýMàn N1.2 · trước khi ký\nXem lại thỏa thuận: bạn mua đúng phần nào, trả khoản nào lúc nào\n\nCùng nội dung với màn N1.2 của app bán, nhìn từ phía bên mua (khoản phải trả, việc phải lo).\n\nĐang ở: Thỏa thuận bản 1 bạn vừa soạn.\nAi làm: Bạn.\nBấm: \"Ký và gửi\" hoặc sửa từng mục trước khi gửi.\nTiếp theo: Gửi thì chị Năm xem và ký trong 24 giờ; chị có thể đề nghị sửa một mục (N1.3).\n15:40\n●●●\nĐề nghị sửa\nChị Năm đề nghị đổi ngày giao\nĐang là\n5:30 ngày 28/10\nĐề nghị\n5:30 ngày 29/10\nLý do: mưa, xoài chưa ráo\nHàng, giá, tiền, cách trả không đổi. Hạn trả phần còn lại dời theo: trước 5:30 ngày 29/10.\nTrả lời trước 15:32 mai.\nKhông đồng ý\nĐồng ý\nB4 KýMàn N1.3 · chị Năm đề nghị đổi ngày\nTrả lời đề nghị sửa: chỉ mục đó thay đổi\n\nĐề nghị không âm thầm vào hợp đồng. Bạn thấy mục cũ, mục mới, lý do và hạn.\n\nĐang ở: Thỏa thuận có 1 mục đang đề nghị.\nAi làm: Bạn, trong 24 giờ (im lặng là không đồng ý).\nBấm: \"Đồng ý\" hoặc \"Không đồng ý\".\nTiếp theo: Đồng ý thì thành bản 2 (ngày 29/10), chị Năm ký. Không đồng ý thì giữ bản 1, chị Năm vẫn ký được.\n9:45\n●●●\nNhận hàng HĐ-0018\nNhận đủ, đúng thỏa thuận\nCó chênh lệch\nĐiền sẵn, rà lại rồi gửi\nGiao\n2.000 kg\nĐạt\n2.000 kg\nHạ cấp · trả lại\n0 · 0\nGiá trị\n46.000.000 đ\nBạn đã trả thẳng 32.200.000 đ. Gửi thì cọc 13.800.000 đ chuyển hết cho chị Năm sau khi chị xác nhận.\nGửi kết quả\nB6 Giao nhậnMàn N2.1 · kho đã ký nhận\nNhận đủ, đúng thỏa thuận: đường ngắn\n\nPhần lớn đơn nhận đủ và đúng chuẩn. Một chạm điền sẵn kết quả để người nhận rà rồi gửi.\n\nĐang ở: Chờ nghiệm thu; còn 1 giờ 40 phút (từ lúc kho ký nhận 9:40).\nAi làm: Người nhận hàng của bạn.\nBấm: \"Nhận đủ, đúng thỏa thuận\" rồi \"Gửi kết quả\"; có lệch thì \"Có chênh lệch\".\nTiếp theo: Gửi thì chị Năm xác nhận (N2.1 app bán). Có chênh lệch thì sang N2.2.\n10:20\n●●●\nCó chênh lệch\nGiao\n2.000 kg\nĐạt (tự tính)\n1.850 kg\nHạ cấp\n120 kg\nTrầy vỏ\nNhỏ cỡ\nChín ép\nKhác\n3 ảnh\nTrả lại\n30 kg\nDập\nÚng\nSâu\nKhác\n2 ảnh · 1,5% (dưới 5%)\nGiá trị\n44.350.000 đ\nHoàn bạn từ cọc\n1.650.000 đ\nGửi kết quả\n\nMàn cuộn được: hiện toàn bộ chiều dài\n\nB6 Giao nhậnMàn N2.2 · có hàng lệch chuẩn\nCó chênh lệch: chỉ nhập phần thay đổi, kèm lý do và ảnh\n\nPhần đạt tự tính từ lượng giao trừ phần thay đổi. Mỗi dòng có lý do và chứng cứ để người bán xác nhận đúng dòng.\n\nĐang ở: Chờ nghiệm thu, đang nhập chênh lệch.\nAi làm: Người nhận hàng.\nBấm: Nhập hạ cấp, trả lại; chọn lý do; thêm ảnh; \"Gửi kết quả\".\nTiếp theo: Chị Năm thấy dòng tóm tắt \"Giao 2.000 → đạt 1.850, hạ cấp 120, trả lại 30 → 44,35 tr\" và xác nhận từng dòng.\n5:08\n●●●\nTiền HĐ-0018\nChị Năm xác nhận mới nhận 20.000.000 đ.\nPhải trả trước khi bốc\n32.200.000 đ\nBạn đã báo trả\n32.200.000 đ\nNgười bán xác nhận\n20.000.000 đ\nCòn thiếu\n12.200.000 đ\nXe đang chờ ở vườn. Tiền chưa đủ thì người bán chưa cần cho bốc.\nGửi chứng từ\nTrả nốt 12,2 tr\nB6 Giao nhậnMàn N3.1 · người bán nhận một phần\nTiền phải trả: đã báo, đã được xác nhận, còn thiếu\n\nBạn thấy riêng số đã báo trả và số người bán xác nhận đã nhận. Chỉ số đã xác nhận mới tính.\n\nĐang ở: Chưa đủ khoản trả trước khi bốc; chưa bốc được.\nAi làm: Bạn.\nBấm: \"Trả nốt 12.200.000 đ\" hoặc \"Gửi chứng từ\" nếu bạn đã trả đủ.\nTiếp theo: Chị Năm xác nhận đủ thì dòng tiền trong Sẵn sàng giao xanh, xe bốc được. Gửi chứng từ thì người vận hành đối soát (48 giờ).\n15:10\n●●●\nTiền HĐ-0018\nBạn đã trả thẳng\n32.200.000 đ\nGiá trị hàng được chấp nhận\n29.100.000 đ\nCọc hoàn từ ngân hàng\n13.800.000 đ · đã về\nChị Năm báo đã hoàn\n3.100.000 đ · 14:30\nBạn đã xác nhận\n0 đ\nChưa nhận\nĐã nhận lại 3,1 tr\nB7 XongMàn N3.2 · người bán báo đã hoàn\nXác nhận đã nhận lại tiền hoàn\n\nCa trả lại nhiều. Bạn nhận hai khoản: cọc từ ngân hàng (tự xác nhận) và phần người bán hoàn thẳng (bạn xác nhận).\n\nĐang ở: Đã giao xong · còn công nợ: chờ bạn xác nhận khoản hoàn 3.100.000 đ.\nAi làm: Bạn.\nBấm: \"Đã nhận lại 3.100.000 đ\" hoặc \"Chưa nhận\".\nTiếp theo: Đã nhận thì công nợ hết, đơn Hoàn tất. Chưa nhận thì người vận hành đối soát với chứng từ của người bán.\n9:30\n●●●\nXin hủy HĐ-0018\nHàng\nTrả về lô người bán\nCọc 13.800.000 đ\nVề người bán\nPhí 138.000 đ\nKhông hoàn (đề xuất)\nĐã trả thẳng\nChưa có\nNgười bán xin hủy hoặc không giao được thì cọc và phí hoàn bạn đủ.\nLý do\nMáy hỏng\nĐổi kế hoạch\nGiá\nKhác\nQuay lại\nGửi đề nghị hủy\nNhánh hủyMàn N3.3 · bạn muốn hủy sau cọc\nXin hủy: thấy hết ảnh hưởng trước khi gửi\n\nMàn xác nhận ghi rõ hàng, cọc, phí được hoàn và phí không hoàn, khoản đã trả. Đề xuất, chờ chốt: hủy trước cọc chưa thu phí; sau cọc, người bán không giao, người bán xin hủy hoặc bất khả kháng thì hoàn đủ phí; bên mua xin hủy hoặc không nhận hàng thì không hoàn phí.\n\nĐang ở: Đơn đã cọc, chưa giao.\nAi làm: Bạn gửi; người bán trả lời trong 24 giờ.\nBấm: \"Gửi đề nghị hủy\" hoặc \"Quay lại\".\nTiếp theo: Người bán đồng ý thì đơn đóng: cọc về người bán, phí không hoàn. Không đồng ý hoặc quá hạn thì đơn giữ nguyên.",
+    "buttons": [
+      {
+        "text": "Ghi đã trả",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đăng phiếu, tìm hàng",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chào giá 3 hộ đã chọn",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Rút lời chào",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Sửa giá",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Ký bằng mã và gửi",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chuyển cọc",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đạt khi bốc",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi kết quả",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Hợp đồng",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gọi",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Hỗ trợ",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Rút 2 lời chào, lập thỏa thuận",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Giữ để mua thêm",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Ký và gửi",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Không đồng ý",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đồng ý",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi kết quả",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi kết quả",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi chứng từ",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Trả nốt 12,2 tr",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chưa nhận",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đã nhận lại 3,1 tr",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Quay lại",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Gửi đề nghị hủy",
+        "title": "",
+        "aria": null
+      }
+    ],
+    "links": [
+      {
+        "text": "App bán",
+        "href": "../bo-cuc-app-ban/index.html"
+      },
+      {
+        "text": "App mua",
+        "href": "../bo-cuc-app-mua/index.html"
+      },
+      {
+        "text": "Hai bên đặt cạnh nhau",
+        "href": "../tai-lieu-tong-hop/index.html#tt"
+      },
+      {
+        "text": "Hủy, sai lệch",
+        "href": "../tai-lieu-tong-hop/index.html#nhanh"
+      },
+      {
+        "text": "Năm loại hợp đồng",
+        "href": "../tai-lieu-tong-hop/index.html#loai-hd"
+      }
+    ],
+    "headings": [
+      "App mua AgiViet, quy trình chuẩn",
+      "Quy trình chuẩn dùng chung hai app",
+      "Bản đồ app: 5 mục, cùng vị trí ở hai app",
+      "Trang chủ",
+      "Mua hàng",
+      "Cần mua",
+      "Tin nhắn",
+      "Tiền",
+      "Hai app đối xứng theo từng bước",
+      "Mười một màn theo quy trình chuẩn",
+      "Trang chủ: tiền phải lo, việc tới hạn, phiếu đang mở",
+      "Phiếu nhu cầu: nói cần gì, giá tối đa để kín",
+      "Hàng khớp: thấy hàng hợp, không thấy giá từng hộ",
+      "Chào giá: gửi chung cho nhóm hộ cùng điều kiện",
+      "Lập hợp đồng: loại, cách chở, cách trả phần còn lại",
+      "Chuyển cọc: tiền qua app tách rõ với tiền trả thẳng",
+      "Sẵn sàng giao: ghi đã trả, xe, mã nhận hàng",
+      "Nhận hàng: 2 giờ, 3 phần, gửi kết quả",
+      "Chi tiết đơn: chờ người bán xác nhận số cân",
+      "Tiền: cọc giữ, còn phải trả, chứng từ",
+      "Tin nhắn: thông báo đi theo từng bước của đơn",
+      "Ba đường nối của một lượt giao dịch",
+      "Một hộ đồng ý: hàng được giữ, xử lý các lời chào còn lại",
+      "Xem lại thỏa thuận: bạn mua đúng phần nào, trả khoản nào lúc nào",
+      "Trả lời đề nghị sửa: chỉ mục đó thay đổi",
+      "Nhận đủ, đúng thỏa thuận: đường ngắn",
+      "Có chênh lệch: chỉ nhập phần thay đổi, kèm lý do và ảnh",
+      "Tiền phải trả: đã báo, đã được xác nhận, còn thiếu",
+      "Xác nhận đã nhận lại tiền hoàn",
+      "Xin hủy: thấy hết ảnh hưởng trước khi gửi"
+    ]
+  },
+  {
+    "file": "thiet-ke-lai/index.html",
+    "filename": "mau2-thiet-ke-lai_index.png",
+    "errors": [],
+    "title": "AgiViet thiết kế lại",
+    "text": "AgiViet · thiết kế lại theo ngôn ngữ \"Sổ làm ăn\"\n\nSo từng màn: bản đang chạy (bên trái mỗi cặp) và bản đề xuất (bên phải). Dữ liệu giữ nguyên của app hiện tại. Mục tiêu: chững chạc, đáng tin như một sổ sách tiền bạc, nhưng vẫn dễ cho người đọc chậm. Học từ bản đã lọt vòng: một font, ảnh nông sản thật, nút chính một màu, giải thích để sau nút \"Vì sao\".\n\n1 · Màn chào mừng\nHIỆN TẠI\nFont tròn Baloo, nút vàng có bóng nổi 3D: cảm giác trò chơi trẻ em.\nTrâu chiếm nửa màn, không nói gì về hàng hóa.\nKhoảng trống lớn giữa chữ và nút.\nĐỀ XUẤT\n9:41\n4G\nAgiViet\nNghe\nBán nông sản, thủy sản đúng mối, đúng giá\n\nTiền đi qua ngân hàng giữ hộ. Người bán dùng miễn phí.\n\nBắt đầu\nTôi đã có tài khoản\nMột font Be Vietnam Pro, đậm 700 thay Baloo 800.\nẢnh hàng thật (xoài, tôm, gạo) nói ngay app bán cái gì.\nLời hứa niềm tin (\"ngân hàng giữ hộ\") ngay màn đầu.\nTrâu không bắt buộc ở đây; nếu giữ thì đặt nhỏ ở màn hướng dẫn.\n2 · Trang chủ\nHIỆN TẠI\nThẻ chào, thẻ tiền xanh đậm, thẻ việc vàng, hàng lối tắt cắt chữ: 4 kiểu thẻ khác nhau.\nNút vàng \"Làm ngay\" khác màu nút chính ở màn khác.\nĐỀ XUẤT\n9:41\n4G\nN\nChào chị Năm\nNghe\nTiền tháng 10\n62,75 triệu đã về\nNgân hàng giữ cọc 7,2 tr\nCòn phải nhận 28 tr\nTới lượt chị\n1 việc\nHạn 14:00 mai\nTrả lời lời chào giá\nNhà máy sấy Đồng Xanh · 2 tấn xoài loại 1 · 23.000 đ/kg\nXem lời chào\n12 bên mua cần xoài loại 1\nĐồng Tháp · tuần này\nTrang chủ\nBán hàng\nTin nhắn\nVí\nMột số tiền lớn là điểm nhìn đầu tiên; hai số phụ nhỏ.\nVàng chỉ dùng cho \"hạn\" (báo gấp), nút luôn xanh.\nGợi ý thị trường có ảnh hàng thật thay vì chữ.\n3 · Lời chào giá\nHIỆN TẠI\nHộp xám \"HĐ-0101 · trạng thái đơn hiện tại\" là dòng gỡ lỗi.\n\"0 đ trong mô phỏng\" lọt vào nội dung.\nBảng 6 dòng ngang hàng nhau, không biết số nào quan trọng; nút ở dưới mép.\nĐỀ XUẤT\n9:41\n4G\nLời chào giá\nNghe\nChào giá\nKý\nCọc\nGiao\nTiền\nĐX\nNhà máy sấy Đồng Xanh\nĐã xác minh · trả đúng hạn 41/42 đơn\nChị nhận về\n46.000.000 đ\n2.000 kg × 23.000 đ/kg · không mất phí\n92% giá tham khảo\nHạn 14:00 mai\nThanh toán\nTrả trước khi bốc\nNgày nhận hàng\n28/10\nGiá tham khảo tính thế nào?\nĐồng ý giá này\nTrả giá\nKhông bán\nDòng bước thay hộp gỡ lỗi: biết đang ở đâu trong 5 bước.\nSố chị nhận về là số lớn nhất màn.\nLuật giá tham khảo để sau \"Vì sao\", không chiếm chỗ.\nNút dính đáy, không bị nút Đăng che.\n4 · Xác nhận tiền\nHIỆN TẠI\nCâu mở đầu là luật (\"ảnh ủy nhiệm chi … không chứng minh…\").\n\"05:30:00 28/10/2026\" khó đọc; nút chính bị nút Đăng che.\nĐỀ XUẤT\n9:41\n4G\nXác nhận tiền về\nNghe\nChào giá\nKý\nTiền\nGiao\nXong\n\nMở ứng dụng Agribank •••• 2186, xem đã có 32.200.000 đ chưa.\n\nĐồng Xanh báo đã chuyển\n32.200.000 đ\nBa mươi hai triệu hai trăm nghìn đồng\nHạn 5 giờ 30 sáng 28/10\nChỉ bấm khi chính chị thấy tiền trong tài khoản. Ảnh chụp biên lai chưa phải tiền về.\nĐã thấy đủ 32.200.000 đ\nMới nhận một phần\nChưa thấy\nCâu đầu nói việc phải làm, không nói luật.\nSố tiền đọc thành chữ cho người đọc chậm (học từ bản lọt vòng).\nCảnh báo lừa đảo ngắn, một dòng, màu đỏ nhạt.\n5 · Bộ token đề xuất\nMàu có nghĩa\nXanh = hành động và đã xác nhận. Nền giấy ngà, thẻ trắng.\nVàng chỉ cho \"tới lượt / sắp hết hạn\". Đỏ chỉ cho tiền thiếu và lỗi. Không dùng vàng cho nút.\nMột font, 5 cỡ\n\n32/700\n46.000.000\n\n22/700\nTiêu đề màn\n\n17/600\nCâu hỏi, tên việc\n\n15/400\nNội dung, nhãn\n\n13/400\nChú thích, ghi chú\n\nBe Vietnam Pro (thiết kế cho tiếng Việt, dấu chuẩn). Số dùng chữ số đều cột (tnum).\nHình khối\nBo góc 14 px cho thẻ và nút, 10 px cho nút nhỏ. Viền 1 px thay bóng nổi. Không bóng đổ \"3D\" dưới nút. Biểu tượng nét 1,8 px, cùng một bộ.\nCâu chữ\nCâu đầu màn = việc phải làm tiếp. Luật hệ thống để sau \"Vì sao?\". Không có chữ \"mô phỏng\", \"mẫu\", \"Motion\" trong nội dung; nếu cần, một dải \"Bản thử\" duy nhất ở đầu app. Ngày \"28/10\", giờ \"5 giờ 30\".\n6 · Học được gì từ bản đã lọt vòng\nĐiểm tốt của bản lọt vòng\tApp hiện tại\tĐề xuất\nMột font Be Vietnam Pro, không font tròn\tBaloo 2 cho mọi tiêu đề và nút\tBỏ Baloo khỏi app, chỉ giữ cho chữ AgiViet nếu muốn\nBiểu tượng thương hiệu (lá xanh, mặt trời vàng) và ảnh nông sản thật ở màn chào\tTrâu chiếm nửa màn chào\tLogo + 3 ảnh hàng thật; trâu chuyển sang hướng dẫn\nDòng bước 1–5 ở đăng ký, đăng hàng\tHộp xám trạng thái gỡ lỗi\tDòng bước trên mọi màn của đơn\n\"Vì sao hỏi câu này?\" thu gọn\tĐoạn luật dài ở đầu màn\tĐưa luật vào \"Vì sao?\"\nMột dải \"Mô phỏng · số liệu mẫu · Làm lại\" duy nhất\tChữ \"mô phỏng\" rải trong nội dung\tMột dải, ngoài nội dung\nSố tiền lớn + đọc thành chữ + nút loa\tBảng 8 dòng \"0 đ\"\tSố chính trước, chi tiết thu gọn\nCảnh báo lừa đảo ở màn mã OTP\tKhông có\tGiữ ở OTP và xác nhận tiền\nMenu theo việc của người bán: Hàng, Khách hỏi, Đăng, Đơn hàng, Tiền hàng\tTrang chủ, Bán hàng, Tin nhắn, Ví\tCân nhắc tên theo việc như bản lọt vòng\nSo sánh \"Tiền về tay khoảng 65 triệu\" giữa các khách\tDanh sách lời chào theo hạn\tThêm dòng \"tiền về tay\" ở mỗi lời chào",
+    "buttons": [
+      {
+        "text": "Nghe",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Bắt đầu",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Tôi đã có tài khoản",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Nghe",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Xem lời chào",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Nghe",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đồng ý giá này",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Trả giá",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Không bán",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Nghe",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Đã thấy đủ 32.200.000 đ",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Mới nhận một phần",
+        "title": "",
+        "aria": null
+      },
+      {
+        "text": "Chưa thấy",
+        "title": "",
+        "aria": null
+      }
+    ],
+    "links": [],
+    "headings": [
+      "AgiViet · thiết kế lại theo ngôn ngữ \"Sổ làm ăn\"",
+      "1 · Màn chào mừng",
+      "AgiViet",
+      "Bán nông sản, thủy sản đúng mối, đúng giá",
+      "2 · Trang chủ",
+      "Chào chị Năm",
+      "3 · Lời chào giá",
+      "Lời chào giá",
+      "4 · Xác nhận tiền",
+      "Xác nhận tiền về",
+      "5 · Bộ token đề xuất",
+      "6 · Học được gì từ bản đã lọt vòng"
+    ]
+  }
+]

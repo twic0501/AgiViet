@@ -1,0 +1,10 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Thử nhập giọng nói AgiViet</title>
+<style>body{font:20px system-ui;max-width:680px;margin:30px auto;padding:16px}button,textarea{font:inherit;margin:10px 0;padding:14px;width:100%;box-sizing:border-box}pre{white-space:pre-wrap}button{min-height:60px}</style>
+<h1>Soạn nháp bằng giọng nói</h1><p>Bản thử nội bộ. Trình duyệt có thể gửi âm thanh tới dịch vụ nhận dạng của nhà cung cấp. Chỉ bật mic khi anh chị đồng ý. Có thể gõ tay bên dưới.</p>
+<button id="mic">Tôi đồng ý, bắt đầu nói</button><textarea id="text" rows="5" placeholder="Ví dụ: Tui có hai tấn rưỡi xoài cát Chu..."></textarea><button id="extract">Đọc và kiểm tra nháp</button><button id="speak" disabled>Nghe lại</button><p id="status" aria-live="polite"></p><pre id="out"></pre>
+<script>
+const $=id=>document.getElementById(id);let last='';
+$('mic').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('status').textContent='Trình duyệt chưa hỗ trợ; anh chị gõ tay giúp em.';return}const r=new SR();r.lang='vi-VN';r.interimResults=false;r.continuous=false;r.onresult=e=>{$('text').value=e.results[0][0].transcript};r.onerror=()=>{$('status').textContent='Chưa nghe được, thử lại hoặc gõ tay.'};r.start()};
+$('extract').onclick=async()=>{try{const res=await fetch('/voice/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({van_ban:$('text').value,che_do:'luat'})});if(!res.ok)throw Error();const d=await res.json();last=d.cau_doc_lai;$('out').textContent=last+'\n\n'+d.cau_hoi_tiep+'\n'+d.canh_bao.join('\n');$('speak').disabled=!last;$('status').textContent='Đây là nháp. Anh chị xem và sửa từng số. Chưa đăng hàng.'}catch{$('status').textContent='Chưa xử lý được. Anh chị giữ nội dung và nhập tay.'}};
+$('speak').onclick=()=>{if(!window.speechSynthesis)return;const s=new SpeechSynthesisUtterance(last);s.lang='vi-VN';s.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(s)};
+</script></html>

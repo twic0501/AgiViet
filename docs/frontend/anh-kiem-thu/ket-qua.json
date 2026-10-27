@@ -1,0 +1,702 @@
+{
+  "date": "2026-10-27T02:26:28.008Z",
+  "results": [
+    {
+      "name": "Đăng nhập OTP hai app",
+      "pass": true
+    },
+    {
+      "name": "Chọn nguồn và gửi chào mua bằng giao diện",
+      "pass": true
+    },
+    {
+      "name": "Người bán đồng ý lời chào",
+      "pass": true
+    },
+    {
+      "name": "Lập hợp đồng và ký phía mua",
+      "pass": true
+    },
+    {
+      "name": "Người bán ký OTP và xem cọc",
+      "pass": true
+    },
+    {
+      "name": "Ngân hàng xác nhận cọc qua công cụ thử",
+      "pass": true
+    },
+    {
+      "name": "Bên mua báo chuyển tiền với chứng từ thật đã tải lên",
+      "pass": true
+    },
+    {
+      "name": "Người bán kiểm tra tiền rồi xác nhận OTP gắn số tiền",
+      "pass": true
+    },
+    {
+      "name": "Chỉ định người nhận, lưu xe và mở QR thật",
+      "pass": true
+    },
+    {
+      "name": "Bắt đầu nghiệm thu (ghi rõ UI hoặc API fixture theo form app bán)",
+      "pass": true
+    },
+    {
+      "name": "Bên mua nhập 3 phần nghiệm thu, người bán ký PIN",
+      "pass": true
+    },
+    {
+      "name": "Nhận tại nơi đến và quyết toán",
+      "pass": true
+    },
+    {
+      "name": "Lệnh ngân hàng thành công và đối soát hoàn tất",
+      "pass": true
+    },
+    {
+      "name": "Các màn bổ sung và bố cục hai kích thước",
+      "pass": true
+    },
+    {
+      "name": "Không lỗi JavaScript hoặc console",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "shots": [
+    {
+      "role": "ban",
+      "name": "dang-nhap",
+      "file": "ban-01-dang-nhap.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "otp-dang-nhap",
+      "file": "ban-02-otp-dang-nhap.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "dang-nhap",
+      "file": "mua-03-dang-nhap.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "otp-dang-nhap",
+      "file": "mua-04-otp-dang-nhap.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "hom-nay",
+      "file": "ban-05-hom-nay.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "tong-quan",
+      "file": "mua-06-tong-quan.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "nguon-hang",
+      "file": "mua-07-nguon-hang.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "chi-tiet-lo",
+      "file": "mua-08-chi-tiet-lo.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "chao-mua",
+      "file": "mua-09-chao-mua.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "loi-chao-da-gui",
+      "file": "mua-10-loi-chao-da-gui.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "loi-chao",
+      "file": "ban-11-loi-chao.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "dong-y-gia",
+      "file": "ban-12-dong-y-gia.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "lap-hop-dong",
+      "file": "mua-13-lap-hop-dong.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "thoa-thuan",
+      "file": "mua-14-thoa-thuan.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "pdf-hop-dong",
+      "file": "mua-15-pdf-hop-dong.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "otp-ky",
+      "file": "mua-16-otp-ky.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "thoa-thuan",
+      "file": "ban-17-thoa-thuan.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "otp-ky",
+      "file": "ban-18-otp-ky.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "cho-coc",
+      "file": "ban-19-cho-coc.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "chuyen-coc",
+      "file": "mua-20-chuyen-coc.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "coc-dang-giu",
+      "file": "ban-21-coc-dang-giu.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "bao-tra-thang",
+      "file": "mua-22-bao-tra-thang.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "da-bao-tra",
+      "file": "mua-23-da-bao-tra.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "doi-chieu-tien",
+      "file": "ban-24-doi-chieu-tien.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "otp-nhan-tien",
+      "file": "ban-25-otp-nhan-tien.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "tien-da-xac-nhan",
+      "file": "ban-26-tien-da-xac-nhan.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "qr-nhan-hang",
+      "file": "mua-27-qr-nhan-hang.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "bat-dau-nghiem-thu-api",
+      "file": "ban-28-bat-dau-nghiem-thu-api.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "nghiem-thu",
+      "file": "mua-29-nghiem-thu.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "gui-bien-ban",
+      "file": "mua-30-gui-bien-ban.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "ket-qua-nghiem-thu",
+      "file": "ban-31-ket-qua-nghiem-thu.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "da-dong-y-can",
+      "file": "ban-32-da-dong-y-can.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "can-noi-den",
+      "file": "mua-33-can-noi-den.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "xac-nhan-noi-den",
+      "file": "mua-34-xac-nhan-noi-den.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "quyet-toan",
+      "file": "mua-35-quyet-toan.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "quyet-toan",
+      "file": "ban-36-quyet-toan.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "hoan-tat",
+      "file": "mua-37-hoan-tat.png",
+      "width": 1280
+    },
+    {
+      "role": "ban",
+      "name": "tien-da-ve",
+      "file": "ban-38-tien-da-ve.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "home",
+      "file": "ban-39-home.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "lots",
+      "file": "ban-40-lots.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "post",
+      "file": "ban-41-post.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "offers",
+      "file": "ban-42-offers.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "orders",
+      "file": "ban-43-orders.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "ledger",
+      "file": "ban-44-ledger.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "demands",
+      "file": "ban-45-demands.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "messages",
+      "file": "ban-46-messages.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "order-4a30cd04-3bad-4f44-abfb-83afc4028616-documents",
+      "file": "ban-47-order-4a30cd04-3bad-4f44-abfb-83afc4028616-documents.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "order-4a30cd04-3bad-4f44-abfb-83afc4028616-cancel",
+      "file": "ban-48-order-4a30cd04-3bad-4f44-abfb-83afc4028616-cancel.png",
+      "width": 390
+    },
+    {
+      "role": "ban",
+      "name": "order-4a30cd04-3bad-4f44-abfb-83afc4028616-disputes",
+      "file": "ban-49-order-4a30cd04-3bad-4f44-abfb-83afc4028616-disputes.png",
+      "width": 390
+    },
+    {
+      "role": "mua",
+      "name": "home",
+      "file": "mua-50-home.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "demands",
+      "file": "mua-51-demands.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "demand-new",
+      "file": "mua-52-demand-new.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "offers",
+      "file": "mua-53-offers.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "orders",
+      "file": "mua-54-orders.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "ledger",
+      "file": "mua-55-ledger.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "organization",
+      "file": "mua-56-organization.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "plans",
+      "file": "mua-57-plans.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "order-4a30cd04-3bad-4f44-abfb-83afc4028616-documents",
+      "file": "mua-58-order-4a30cd04-3bad-4f44-abfb-83afc4028616-documents.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "order-4a30cd04-3bad-4f44-abfb-83afc4028616-cancel",
+      "file": "mua-59-order-4a30cd04-3bad-4f44-abfb-83afc4028616-cancel.png",
+      "width": 1280
+    },
+    {
+      "role": "mua",
+      "name": "order-4a30cd04-3bad-4f44-abfb-83afc4028616-disputes",
+      "file": "mua-60-order-4a30cd04-3bad-4f44-abfb-83afc4028616-disputes.png",
+      "width": 1280
+    }
+  ],
+  "startCheckEvidence": "API fixture: app bán mới chưa hiện form cho chủ",
+  "order": {
+    "id": "4a30cd04-3bad-4f44-abfb-83afc4028616",
+    "code": "HD-3001",
+    "status": "completed",
+    "revision": 7,
+    "close_reason": null,
+    "phia_cua_ban": "buyer",
+    "hien_thi": {
+      "ten": "Hoàn tất",
+      "chang": "Xong",
+      "toi_luot": null
+    },
+    "buyer": {
+      "code": "TC-M01",
+      "display_name": "Nhà máy sấy Đồng Xanh"
+    },
+    "seller": {
+      "code": "TC-B01",
+      "display_name": "Hộ Nguyễn Thị Năm"
+    },
+    "effective_version_no": 1,
+    "co": {
+      "gia_bat_thuong": false,
+      "vi_pham_thanh_toan": false,
+      "de_nghi_mo": false,
+      "dang_xin_huy": false
+    },
+    "dieu_khoan": {
+      "version_no": 1,
+      "qty_g": "2000000",
+      "unit_price_vnd": "23000",
+      "downgrade_price_vnd": "15000",
+      "ref_price_vnd": "25000",
+      "deposit_price_vnd": "23000",
+      "contract_value_vnd": "46000000",
+      "deposit_vnd": "13800000",
+      "fee_vnd": "138000",
+      "payment_timing": "before_loading",
+      "pay_after_days": null,
+      "delivery_mode": "at_farm",
+      "acceptance_point": "tai_vuon",
+      "transport_by": "buyer",
+      "delivery_from": null,
+      "seller_account": {
+        "bank_code": "Agribank",
+        "masked": "****2186",
+        "holder": "Nguyễn Thị Năm"
+      },
+      "designated_receiver_user_id": null,
+      "silent_accept_hours": null,
+      "reject_allowance_bps": 500
+    },
+    "lien_lac": "full",
+    "dot_giao": [
+      {
+        "id": "b28e740e-a703-4566-90f2-0aca656dd6f0",
+        "code": "HD-3001-D1",
+        "batch_no": 1,
+        "planned_qty_g": "2000000",
+        "status": "closed",
+        "revision": 9,
+        "receiver_user_id": "473a2319-83db-5dbb-b06c-7512bd71cd8b",
+        "window_from": "2026-11-03T23:00:00.000Z",
+        "window_to": "2026-11-04T05:00:00.000Z"
+      }
+    ],
+    "han": [
+      {
+        "id": "9147dfe4-d6e2-4b89-a312-c36e42c962df",
+        "kind": "arrival_check",
+        "entity": "delivery",
+        "due_at": "2026-11-04T01:00:03.038Z",
+        "status": "open"
+      },
+      {
+        "id": "3af26171-85c6-44ba-93b9-487d494e8c26",
+        "kind": "direct_payment_confirm",
+        "entity": "direct_payment",
+        "due_at": "2026-11-04T01:00:08.673Z",
+        "status": "open"
+      }
+    ],
+    "lich_su": [
+      {
+        "entity": "order",
+        "from_status": null,
+        "to_status": "drafting",
+        "actor_kind": "buyer",
+        "command": "lap_don",
+        "reason": null,
+        "at": "2026-10-27T02:26:11.727Z"
+      },
+      {
+        "entity": "order",
+        "from_status": "drafting",
+        "to_status": "awaiting_seller",
+        "actor_kind": "buyer",
+        "command": "ky",
+        "reason": null,
+        "at": "2026-10-27T02:26:13.080Z"
+      },
+      {
+        "entity": "order",
+        "from_status": "awaiting_seller",
+        "to_status": "awaiting_deposit",
+        "actor_kind": "system",
+        "command": "ky",
+        "reason": null,
+        "at": "2026-10-27T02:26:14.248Z"
+      },
+      {
+        "entity": "order",
+        "from_status": "awaiting_deposit",
+        "to_status": "active",
+        "actor_kind": "system",
+        "command": "webhook_ngan_hang",
+        "reason": null,
+        "at": "2026-10-27T02:26:15.021Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": null,
+        "to_status": "preparing",
+        "actor_kind": "system",
+        "command": "webhook_ngan_hang",
+        "reason": null,
+        "at": "2026-10-27T02:26:15.021Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "preparing",
+        "to_status": "ready",
+        "actor_kind": "system",
+        "command": "dat_xe",
+        "reason": null,
+        "at": "2026-10-27T02:26:18.678Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "ready",
+        "to_status": "checking",
+        "actor_kind": "buyer",
+        "command": "bat_dau_nghiem_thu",
+        "reason": null,
+        "at": "2026-10-27T02:26:20.319Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "checking",
+        "to_status": "awaiting_seller",
+        "actor_kind": "buyer",
+        "command": "gui_ket_qua",
+        "reason": null,
+        "at": "2026-10-27T02:26:20.743Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "awaiting_seller",
+        "to_status": "in_transit",
+        "actor_kind": "seller",
+        "command": "dong_y_ket_qua",
+        "reason": null,
+        "at": "2026-10-27T02:26:21.510Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "in_transit",
+        "to_status": "arrived",
+        "actor_kind": "buyer",
+        "command": "ky_nhan_tai_noi_den",
+        "reason": null,
+        "at": "2026-10-27T02:26:22.244Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "arrived",
+        "to_status": "arrival_check",
+        "actor_kind": "buyer",
+        "command": "ky_nhan_tai_noi_den",
+        "reason": null,
+        "at": "2026-10-27T02:26:22.244Z"
+      },
+      {
+        "entity": "delivery",
+        "from_status": "arrival_check",
+        "to_status": "closed",
+        "actor_kind": "system",
+        "command": "xac_nhan_den_dat",
+        "reason": null,
+        "at": "2026-10-27T02:26:22.825Z"
+      },
+      {
+        "entity": "order",
+        "from_status": "active",
+        "to_status": "awaiting_settlement",
+        "actor_kind": "system",
+        "command": "xac_nhan_den_dat",
+        "reason": null,
+        "at": "2026-10-27T02:26:22.825Z"
+      },
+      {
+        "entity": "order",
+        "from_status": "awaiting_settlement",
+        "to_status": "completed",
+        "actor_kind": "system",
+        "command": "doi_soat",
+        "reason": null,
+        "at": "2026-10-27T02:26:24.206Z"
+      }
+    ],
+    "tai_lieu": [
+      {
+        "id": "d3d6e199-61ac-408c-a52b-f442a7fff171",
+        "code": "HD-3001-HD",
+        "doc_type": "contract",
+        "version_no": 1,
+        "status": "fully_signed",
+        "content_sha256": "1e8dbc11f73bee95c7a2e4e72f8e11c6afe2416c26ed7f73e8bbdde67891ada7",
+        "file_sha256": "d9de3c12f1ba258e24509d6711d18ef343265c8a4a025ac14142c67755c5684c",
+        "created_at": "2026-11-02T01:00:04.472Z"
+      },
+      {
+        "id": "61671f7f-e3ac-4970-8d93-92bf8fa66cfc",
+        "code": "HD-3001-BBNT-D1",
+        "doc_type": "acceptance_record",
+        "version_no": 1,
+        "status": "fully_signed",
+        "content_sha256": "ed2e5be0664d3d14ff5a4f98c1dd34fbdf7b6aa5aa1b262cde3cec159550bafd",
+        "file_sha256": "3eb1e06267b087e9c5b36f9892ac29d53a83781fa982a4d206b5fcabe4c9ac18",
+        "created_at": "2026-11-03T23:00:01.537Z"
+      },
+      {
+        "id": "d1836e65-50cd-a590-bba7-bb6353c4ab93",
+        "code": "HD-3001-BQT-1",
+        "series_key": "HD-3001-BQT",
+        "version_no": 1,
+        "prev_document_id": null,
+        "prev_content_sha256": null,
+        "content_sha256": "38de0f45601d57cfcbfae77ced2a285da2cf188d581b20bf992bc0a5bec67bef",
+        "canonical_content": {
+          "loai": "BQT",
+          "settlement_id": "df7d77c4-f8e9-4c4b-84bf-2e9562ac5e5b",
+          "V": "46000000",
+          "D": "32200000",
+          "C": "13800000",
+          "N": "46000000",
+          "chi": "13800000",
+          "hoan": "0"
+        },
+        "file_sha256": "9c37b41ef3bee9a7303456bf557a42699ea5a957d3061592482700d1cb02c6b8",
+        "storage_key": "9c/9c37b41ef3bee9a7303456bf557a42699ea5a957d3061592482700d1cb02c6b8",
+        "mime_type": "application/pdf",
+        "size_bytes": 28486,
+        "generator_version": "backend-v2/pdf-lib",
+        "is_test_data": true,
+        "order_id": "4a30cd04-3bad-4f44-abfb-83afc4028616",
+        "owner_org_id": null,
+        "doc_type": "settlement_statement",
+        "status": "draft",
+        "signatures": [],
+        "presentation_only": true
+      }
+    ],
+    "ky": {
+      "duoc_ky": false,
+      "can_duyet_noi_bo": false,
+      "da_duyet": false,
+      "han_muc_vnd": null,
+      "gia_tri_vnd": "46000000",
+      "ly_do": "Đơn không ở bước bên mua ký"
+    },
+    "hanh_dong": []
+  }
+}

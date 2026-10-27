@@ -1,0 +1,513 @@
+{
+  "nhan": "30-dang-lo",
+  "kich_ban": "dang-lo-don",
+  "mo_ta": "Đăng lô đồng loạt 100/giây, ảnh 20/giây trong 30 giây",
+  "luc": "2026-10-25T06:14:57.252Z",
+  "base": "http://127.0.0.1:8180",
+  "pdf": "queue",
+  "ref": "mv",
+  "he_so": 1,
+  "thoi_gian_giay": 30.223,
+  "he_so_thoi_gian": 1,
+  "ket_qua_nghiep_vu": {},
+  "generator_lag_max_ms": 19.9,
+  "throughput_hoan_tat": 119.1,
+  "bo_lo_do_qua_dong_thoi": 0,
+  "dong_thoi_toi_da": 38,
+  "pha": [
+    {
+      "pha": "dang_lo",
+      "so_yc": 3600,
+      "yc_giay": 120,
+      "p50": 3.6,
+      "p95": 17,
+      "p99": 52.6,
+      "loi_pct": 0
+    }
+  ],
+  "luong": [
+    {
+      "pha": "dang_lo",
+      "luong": "ban_dang_lo",
+      "so_yc": 3000,
+      "yc_giay": 100,
+      "p50": 3.8,
+      "p95": 17.3,
+      "p99": 52.6,
+      "max": 332.7,
+      "loi_pct": 0,
+      "ma": {
+        "200": 289,
+        "201": 2711
+      }
+    },
+    {
+      "pha": "dang_lo",
+      "luong": "anh",
+      "so_yc": 600,
+      "yc_giay": 20,
+      "p50": 3.3,
+      "p95": 16,
+      "p99": 42,
+      "max": 302.7,
+      "loi_pct": 0,
+      "ma": {
+        "201": 600
+      }
+    }
+  ],
+  "tai_nguyen": {
+    "postgres": {
+      "cpu_tb_pct": 5,
+      "cpu_p95_pct": 8,
+      "rss_max_mb": 598
+    },
+    "backend": {
+      "cpu_tb_pct": 4,
+      "cpu_p95_pct": 6,
+      "rss_max_mb": 199
+    },
+    "ai": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 0,
+      "rss_max_mb": 31
+    },
+    "worker": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 0,
+      "rss_max_mb": 219
+    }
+  },
+  "tai_nguyen_mau": [
+    {
+      "t": 1792908866032,
+      "postgres_cpu_pct": 8.008008008008009,
+      "postgres_rss_mb": 598.484375,
+      "backend_cpu_pct": 4.004004004004004,
+      "backend_rss_mb": 178.2744140625,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.765625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.7021484375
+    },
+    {
+      "t": 1792908867033,
+      "postgres_cpu_pct": 5.994005994005994,
+      "postgres_rss_mb": 598.4814453125,
+      "backend_cpu_pct": 4.9950049950049955,
+      "backend_rss_mb": 178.2421875,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908868033,
+      "postgres_cpu_pct": 0,
+      "postgres_rss_mb": 591.8369140625,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 178.2421875,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908869033,
+      "postgres_cpu_pct": 4,
+      "postgres_rss_mb": 591.8388671875,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 178.2421875,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908870033,
+      "postgres_cpu_pct": 6,
+      "postgres_rss_mb": 591.8388671875,
+      "backend_cpu_pct": 3,
+      "backend_rss_mb": 178.2109375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908871033,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 591.8388671875,
+      "backend_cpu_pct": 6,
+      "backend_rss_mb": 178.2109375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908872034,
+      "postgres_cpu_pct": 4.9950049950049955,
+      "postgres_rss_mb": 591.8193359375,
+      "backend_cpu_pct": 4.9950049950049955,
+      "backend_rss_mb": 176.375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.1240234375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.05859375
+    },
+    {
+      "t": 1792908873034,
+      "postgres_cpu_pct": 7.000000000000001,
+      "postgres_rss_mb": 591.837890625,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 178.2109375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908874034,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 591.8369140625,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 178.2109375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908875034,
+      "postgres_cpu_pct": 4,
+      "postgres_rss_mb": 591.837890625,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 181.07421875,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908876034,
+      "postgres_cpu_pct": 6,
+      "postgres_rss_mb": 591.837890625,
+      "backend_cpu_pct": 5,
+      "backend_rss_mb": 186.69140625,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908877035,
+      "postgres_cpu_pct": 3.9960039960039966,
+      "postgres_rss_mb": 591.837890625,
+      "backend_cpu_pct": 3.9960039960039966,
+      "backend_rss_mb": 186.69140625,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908878035,
+      "postgres_cpu_pct": 6,
+      "postgres_rss_mb": 591.8369140625,
+      "backend_cpu_pct": 3,
+      "backend_rss_mb": 186.69140625,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.7353515625,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.669921875
+    },
+    {
+      "t": 1792908879034,
+      "postgres_cpu_pct": 6.006006006006006,
+      "postgres_rss_mb": 591.830078125,
+      "backend_cpu_pct": 3.003003003003003,
+      "backend_rss_mb": 186.689453125,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.734375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.6689453125
+    },
+    {
+      "t": 1792908880035,
+      "postgres_cpu_pct": 5.994005994005994,
+      "postgres_rss_mb": 591.8291015625,
+      "backend_cpu_pct": 3.9960039960039966,
+      "backend_rss_mb": 192.736328125,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.734375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.6689453125
+    },
+    {
+      "t": 1792908881036,
+      "postgres_cpu_pct": 4.9950049950049955,
+      "postgres_rss_mb": 591.830078125,
+      "backend_cpu_pct": 4.9950049950049955,
+      "backend_rss_mb": 198.6572265625,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 30.734375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 218.6689453125
+    },
+    {
+      "t": 1792908882036,
+      "postgres_cpu_pct": 6,
+      "postgres_rss_mb": 591.822265625,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 197.3544921875,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.427734375
+    },
+    {
+      "t": 1792908883036,
+      "postgres_cpu_pct": 7.000000000000001,
+      "postgres_rss_mb": 596.2998046875,
+      "backend_cpu_pct": 6,
+      "backend_rss_mb": 166.1318359375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908884036,
+      "postgres_cpu_pct": 6,
+      "postgres_rss_mb": 596.3017578125,
+      "backend_cpu_pct": 2,
+      "backend_rss_mb": 166.1318359375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908885036,
+      "postgres_cpu_pct": 7.000000000000001,
+      "postgres_rss_mb": 596.2998046875,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 173.4130859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908886036,
+      "postgres_cpu_pct": 6,
+      "postgres_rss_mb": 596.3017578125,
+      "backend_cpu_pct": 5,
+      "backend_rss_mb": 174.4755859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908887036,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 596.30078125,
+      "backend_cpu_pct": 5,
+      "backend_rss_mb": 174.4755859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908888036,
+      "postgres_cpu_pct": 4,
+      "postgres_rss_mb": 596.2998046875,
+      "backend_cpu_pct": 3,
+      "backend_rss_mb": 174.4755859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908889036,
+      "postgres_cpu_pct": 8,
+      "postgres_rss_mb": 596.30078125,
+      "backend_cpu_pct": 3,
+      "backend_rss_mb": 175.2099609375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908890036,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 596.30078125,
+      "backend_cpu_pct": 3,
+      "backend_rss_mb": 185.3544921875,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908891036,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 596.298828125,
+      "backend_cpu_pct": 4,
+      "backend_rss_mb": 195.4912109375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908892036,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 596.30078125,
+      "backend_cpu_pct": 5,
+      "backend_rss_mb": 197.5380859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908893036,
+      "postgres_cpu_pct": 5,
+      "postgres_rss_mb": 596.2978515625,
+      "backend_cpu_pct": 2,
+      "backend_rss_mb": 197.5380859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908894035,
+      "postgres_cpu_pct": 4.004004004004004,
+      "postgres_rss_mb": 596.298828125,
+      "backend_cpu_pct": 4.004004004004004,
+      "backend_rss_mb": 197.5380859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908895036,
+      "postgres_cpu_pct": 6.993006993006995,
+      "postgres_rss_mb": 596.3017578125,
+      "backend_cpu_pct": 2.997002997002997,
+      "backend_rss_mb": 197.5380859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    },
+    {
+      "t": 1792908895257,
+      "postgres_cpu_pct": 0,
+      "postgres_rss_mb": 596.2998046875,
+      "backend_cpu_pct": 0,
+      "backend_rss_mb": 197.5380859375,
+      "ai_cpu_pct": 0,
+      "ai_rss_mb": 29.46484375,
+      "worker_cpu_pct": 0,
+      "worker_rss_mb": 217.4267578125
+    }
+  ],
+  "db": {
+    "giao_dich_commit": 3569,
+    "rollback": 0,
+    "ti_le_cache": 99.12
+  },
+  "toan_ven": {
+    "tong_but_toan": "0",
+    "gd_lech": "0",
+    "so_du_lech": "0",
+    "don_coc_hai_lan": "0",
+    "viec_pdf_dang_cho": "0",
+    "viec_pdf_hong": "0"
+  },
+  "pdf_cuoi_luot": {
+    "counts": null,
+    "end_to_end_ms": null
+  },
+  "top_sql": [
+    {
+      "calls": "2711",
+      "total_ms": "1153",
+      "mean_ms": "0.43",
+      "max_ms": "201.4",
+      "q": "INSERT INTO bench.lots (code, seller_org_id, commodity_id, grade, qty_total_g, floor_price_vnd_per_kg, provinc"
+    },
+    {
+      "calls": "2711",
+      "total_ms": "333",
+      "mean_ms": "0.12",
+      "max_ms": "137.7",
+      "q": "INSERT INTO bench.qty_movements (lot_id, from_bucket, to_bucket, qty_g, idem_key) VALUES ($1, $4, $5, $2, $3)"
+    },
+    {
+      "calls": "3000",
+      "total_ms": "49",
+      "mean_ms": "0.02",
+      "max_ms": "3.9",
+      "q": "INSERT INTO bench.idempotency_keys (key, actor) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING key"
+    },
+    {
+      "calls": "2711",
+      "total_ms": "25",
+      "mean_ms": "0.01",
+      "max_ms": "0.1",
+      "q": "UPDATE bench.idempotency_keys SET response = $2 WHERE key = $1"
+    },
+    {
+      "calls": "2711",
+      "total_ms": "17",
+      "mean_ms": "0.01",
+      "max_ms": "0.1",
+      "q": "INSERT INTO bench.outbox (topic, aggregate_id, payload) VALUES ($3, $1, $2)"
+    },
+    {
+      "calls": "600",
+      "total_ms": "11",
+      "mean_ms": "0.02",
+      "max_ms": "0.1",
+      "q": "INSERT INTO bench.photos (lot_id, sha256, bytes, storage_key) VALUES ($4, $1, $2, $3) RETURNING id"
+    },
+    {
+      "calls": "3000",
+      "total_ms": "2",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "BEGIN"
+    },
+    {
+      "calls": "289",
+      "total_ms": "2",
+      "mean_ms": "0.01",
+      "max_ms": "0.0",
+      "q": "SELECT response FROM bench.idempotency_keys WHERE key = $1"
+    },
+    {
+      "calls": "3000",
+      "total_ms": "1",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "COMMIT"
+    },
+    {
+      "calls": "30",
+      "total_ms": "0",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "UPDATE bench.jobs SET status = $1, started_at = now(), attempts = attempts + $2 WHERE id = (SELECT id FROM ben"
+    }
+  ]
+}

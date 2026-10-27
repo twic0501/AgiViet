@@ -1,0 +1,29 @@
+{
+  "pglite": {
+    "migrations": 52,
+    "tables": 147,
+    "passed": 495,
+    "total": 495,
+    "replay": true
+  },
+  "backend": {
+    "passed": 52,
+    "total": 54,
+    "steps_passed": 388,
+    "steps_total": 391,
+    "unchanged_copy": "/tmp/agiviet-backend-14-15/backend",
+    "failed": [
+      "TH-AM-1",
+      "TH-AM-2"
+    ]
+  },
+  "security": {
+    "exit_code": 2,
+    "executed_cases": 0,
+    "reason": "fixture OTP binding cũ; tái hiện với migrations 0001-0050, không sửa security"
+  },
+  "new_migrations": {
+    "0051_phi_giam_gia_va_ma_coc_ngan.sql": "317c0c1253fcf66a4d9010177f60f907229d5f348b14a06201f2f7dd37fd1c9d",
+    "0052_chia_lai_sau_phan_doi.sql": "35ea7b894bd643816cbcc8b299c267e84621a4c86ca6134a00607a43c22c59ba"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@electric-sql/pglite": "0.3.16"
+  },
+  "name": "agiviet-v2-database",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tools/kiem-tra-pglite.mjs",
+    "seed:generate": "python3 tools/tao-seed.py"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-27T01:36:23.545Z",
+  "origin": "http://127.0.0.1:58889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "shortfall",
+      "side": "seller",
+      "pass": false,
+      "error": "Error: Chưa tới đích · Đối ứng xác nhận nơi đến\n    at wait (file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:43:240)\n    at async file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:71:9"
+    },
+    {
+      "profile": "shortfall",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ký kết quả nghiệm thuNgân hàng ảo xử lý và giao webhook QT-113cece3-7058-40a2-bed4-9b6d0d018d92-CHINgân hàng ảo xử lý và giao webhook REF-38d93981-632a-413d-84d2-7b8b8bc884daTài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "inspection",
+      "side": "seller",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'awaiting_seller'\n- 'open'\n\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:63:16"
+    },
+    {
+      "profile": "inspection",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Mở hồ sơ tranh chấp đúng người; kiểm định tới kết luận chưa chứng minh",
+      "seed": "thu-0",
+      "log": ""
+    }
+  ],
+  "errors": [],
+  "shots": [
+    "shortfall-seller-mo-ho-so.png",
+    "shortfall-seller-LOI.png",
+    "shortfall-buyer-mo-ho-so.png",
+    "shortfall-buyer-dat-dich.png",
+    "inspection-seller-mo-ho-so.png",
+    "inspection-seller-LOI.png",
+    "inspection-buyer-mo-ho-so.png",
+    "inspection-buyer-dat-dich.png"
+  ]
+}

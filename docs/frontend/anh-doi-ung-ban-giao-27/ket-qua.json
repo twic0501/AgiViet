@@ -1,0 +1,131 @@
+{
+  "at": "2026-10-27T02:41:57.847Z",
+  "origin": "http://127.0.0.1:38889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "shortfall",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ghi cân nơi đếnĐối ứng xác nhận nơi đếnNgân hàng ảo xử lý và giao webhook QT-efc8f42c-2a20-4680-9232-98eb9c0ec95b-CHINgân hàng ảo xử lý và giao webhook REF-2c8b8a0d-22be-40bd-9131-f8b6b9700aabTài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "shortfall",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ký kết quả nghiệm thuNgân hàng ảo xử lý và giao webhook QT-a29627b0-83f6-4e6d-b818-f39c6a7dc15e-CHINgân hàng ảo xử lý và giao webhook REF-2645e36f-eaf5-410e-a934-1b461ac9fd92Tài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "downgrade",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ghi cân nơi đếnĐối ứng xác nhận nơi đếnNgân hàng ảo xử lý và giao webhook QT-ee71c6e4-c4ae-41f6-86c3-67fc95d4eae2-CHINgân hàng ảo xử lý và giao webhook REF-71074633-e62e-411c-8430-42d8fa250338Tài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "downgrade",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ký kết quả nghiệm thuNgân hàng ảo xử lý và giao webhook QT-cfb4d2d0-655c-419b-8e1f-5e2bc10e4049-CHINgân hàng ảo xử lý và giao webhook REF-6fe55dee-993c-46b6-831e-93871eaa249dTài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "late",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Chậm trả → báo trả có chứng từ → OTP xác nhận đủ",
+      "seed": "thu-0",
+      "log": "Đối ứng báo trả tiền ảo kèm chứng từ giả"
+    },
+    {
+      "profile": "late",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Chậm trả → báo trả có chứng từ → OTP xác nhận đủ",
+      "seed": "thu-0",
+      "log": "Đối ứng xác nhận tiền ảo bằng OTP thử"
+    },
+    {
+      "profile": "harvest",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Xin giảm lượng → phụ lục hai bên ký, phiên bản 2",
+      "seed": "thu-0",
+      "log": "Đối ứng đồng ý lập phụ lụcĐối ứng ký phụ lục bằng OTP thử"
+    },
+    {
+      "profile": "harvest",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Xin giảm lượng → phụ lục hai bên ký, phiên bản 2",
+      "seed": "thu-0",
+      "log": "Đối ứng ký phụ lục bằng OTP thử"
+    },
+    {
+      "profile": "low",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Lời chào trả giá → hợp đồng đủ chữ ký",
+      "seed": "thu-0",
+      "log": "Đối ứng đồng ý lời chàoĐối ứng lập hợp đồng từ lời chào đã đồng ýĐối ứng ký hợp đồng bằng OTP thử"
+    },
+    {
+      "profile": "low",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Lời chào trả giá → hợp đồng đủ chữ ký",
+      "seed": "thu-0",
+      "log": "Đối ứng trả giá trong biên độ 2%Đối ứng ký hợp đồng bằng OTP thử"
+    },
+    {
+      "profile": "inspection",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Mở hồ sơ tranh chấp đúng người; kiểm định tới kết luận chưa chứng minh",
+      "seed": "thu-0",
+      "log": ""
+    },
+    {
+      "profile": "inspection",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Mở hồ sơ tranh chấp đúng người; kiểm định tới kết luận chưa chứng minh",
+      "seed": "thu-0",
+      "log": ""
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "shortfall-seller-mo-ho-so.png",
+    "shortfall-seller-dat-dich.png",
+    "shortfall-buyer-mo-ho-so.png",
+    "shortfall-buyer-dat-dich.png",
+    "downgrade-seller-mo-ho-so.png",
+    "downgrade-seller-dat-dich.png",
+    "downgrade-buyer-mo-ho-so.png",
+    "downgrade-buyer-dat-dich.png",
+    "late-seller-mo-ho-so.png",
+    "late-seller-dat-dich.png",
+    "late-buyer-mo-ho-so.png",
+    "late-buyer-dat-dich.png",
+    "harvest-seller-mo-ho-so.png",
+    "harvest-seller-dat-dich.png",
+    "harvest-buyer-mo-ho-so.png",
+    "harvest-buyer-dat-dich.png",
+    "low-seller-mo-ho-so.png",
+    "low-seller-dat-dich.png",
+    "low-buyer-mo-ho-so.png",
+    "low-buyer-dat-dich.png",
+    "inspection-seller-mo-ho-so.png",
+    "inspection-seller-dat-dich.png",
+    "inspection-buyer-mo-ho-so.png",
+    "inspection-buyer-dat-dich.png"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "code": "DEMO56-OFFTAKE",
+  "docs": [
+    {
+      "id": "1786be5f-fe61-4b91-9c8f-d7d725f8a03d",
+      "doc_type": "contract",
+      "status": 200,
+      "data": {
+        "id": "1786be5f-fe61-4b91-9c8f-d7d725f8a03d",
+        "code": "DEMO56-CONTRACT-2",
+        "doc_type": "contract",
+        "version_no": 1,
+        "status": "draft",
+        "order_id": "8c6a2278-4b16-4781-b04a-1f7c41b31f16",
+        "owner_org_id": "99177a1f-dc84-588e-95bd-199401da0ed3",
+        "content_sha256": "29a66dafe517d78a8401328213ab50d052f26215dc07b59b41df2c3f82046771",
+        "file_sha256": "0028b7451e3c3d57508da6df85a68c2643378c6a36d9cab42a7d3da62e733f88",
+        "size_bytes": "1",
+        "created_at": "2026-10-26T23:14:19.043Z",
+        "canonical_content": {
+          "note": "Bản dự thảo mô phỏng chưa ký, chưa nhận cọc",
+          "simulation": true,
+          "contract_type": "offtake"
+        },
+        "signatures": null
+      }
+    }
+  ]
+}

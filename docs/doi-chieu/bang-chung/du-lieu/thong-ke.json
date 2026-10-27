@@ -1,0 +1,68 @@
+{
+  "tong": 595,
+  "theo_v2": {
+    "có": 184,
+    "khác": 275,
+    "thiếu": 97,
+    "làm sai": 11,
+    "chưa kiểm": 28
+  },
+  "theo_nhom": {
+    "Màn mẫu 1/ban": {
+      "có": 14,
+      "khác": 42,
+      "thiếu": 28,
+      "làm sai": 1
+    },
+    "Màn mẫu 1/mua": {
+      "có": 15,
+      "khác": 20,
+      "thiếu": 18
+    },
+    "Màn mẫu 2/vận hành": {
+      "khác": 4,
+      "thiếu": 7
+    },
+    "Màn mẫu 2/web": {
+      "khác": 1
+    },
+    "Điều hướng/UX": {
+      "khác": 8,
+      "thiếu": 1,
+      "làm sai": 2
+    },
+    "Quy tắc nghiệp vụ": {
+      "khác": 9,
+      "thiếu": 9,
+      "có": 3,
+      "làm sai": 5
+    },
+    "Ca B*/M*": {
+      "khác": 36,
+      "chưa kiểm": 5,
+      "có": 8,
+      "thiếu": 25,
+      "làm sai": 2
+    },
+    "Nhu cầu phỏng vấn": {
+      "thiếu": 4,
+      "khác": 3
+    },
+    "Đề xuất nghiên cứu (không là lời phỏng vấn)": {
+      "chưa kiểm": 4
+    },
+    "Luồng mẫu 2": {
+      "khác": 6,
+      "thiếu": 5,
+      "làm sai": 1
+    },
+    "Nguồn và tính toàn vẹn": {
+      "khác": 2
+    },
+    "Ảnh/header v2": {
+      "khác": 144,
+      "có": 144,
+      "chưa kiểm": 19
+    }
+  }
+}

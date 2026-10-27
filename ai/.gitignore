@@ -1,0 +1,7 @@
+.venv/
+.venv-stt/
+mo_hinh/
+__pycache__/
+ket_qua/am_thanh_tong_hop/
+ket_qua/tam_stt/
+ket_qua/kiem_toan.jsonl

@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-27T01:42:59.666Z",
+  "origin": "http://127.0.0.1:40889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "shortfall",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ghi cân nơi đếnĐối ứng xác nhận nơi đếnNgân hàng ảo xử lý và giao webhook QT-01132783-4ccf-415d-a225-231fffb4225e-CHINgân hàng ảo xử lý và giao webhook REF-d2b686dc-208e-4522-8631-f21139be76cbTài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "shortfall",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ký kết quả nghiệm thuNgân hàng ảo xử lý và giao webhook QT-9b35f742-72f0-40df-9557-6b3eb1cc82bd-CHINgân hàng ảo xử lý và giao webhook REF-ce333a2e-e441-4411-be07-a6965e81aa03Tài chính thử đối soát sau webhook ngân hàng ảo"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "shortfall-seller-mo-ho-so.png",
+    "shortfall-seller-dat-dich.png",
+    "shortfall-buyer-mo-ho-so.png",
+    "shortfall-buyer-dat-dich.png"
+  ]
+}

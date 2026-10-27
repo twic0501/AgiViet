@@ -1,0 +1,576 @@
+[
+  {
+    "id": "chao-mung",
+    "name": "Chào mừng",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "dang-nhap",
+    "name": "Số điện thoại",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "otp",
+    "name": "Nhập mã",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "vai-tro",
+    "name": "Bạn bán thế nào?",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "mat-hang",
+    "name": "Mặt hàng",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "ho-so",
+    "name": "Hồ sơ",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "khai-bao-vuon",
+    "name": "Khai báo vườn",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "xac-minh",
+    "name": "Xác minh",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "tro-giup-truy-cap",
+    "name": "Trợ giúp đăng nhập",
+    "page": "bat-dau",
+    "group": "Bắt đầu",
+    "line": 20
+  },
+  {
+    "id": "hom-nay",
+    "name": "Hôm nay",
+    "page": "hom-nay",
+    "group": "Hôm nay",
+    "line": 20
+  },
+  {
+    "id": "tong-ket-tuan",
+    "name": "Tổng kết tuần",
+    "page": "hom-nay",
+    "group": "Hôm nay",
+    "line": 20
+  },
+  {
+    "id": "thong-bao",
+    "name": "Thông báo",
+    "page": "hom-nay",
+    "group": "Hôm nay",
+    "line": 20
+  },
+  {
+    "id": "vuon",
+    "name": "Vườn của tôi",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "mua-vu",
+    "name": "Mùa vụ",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "nhat-ky",
+    "name": "Nhật ký canh tác",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "thu-chi",
+    "name": "Thu chi",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "ghi",
+    "name": "Nói để ghi",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "xac-nhan-ghi",
+    "name": "Kiểm tra dòng vừa ghi",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "cach-ly",
+    "name": "Thời gian cách ly",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "ho-so-vuon",
+    "name": "Hồ sơ nguồn gốc",
+    "page": "vuon",
+    "group": "Vườn",
+    "line": 20
+  },
+  {
+    "id": "hang",
+    "name": "Hàng đang bán",
+    "page": "ban",
+    "group": "Bán · Hàng",
+    "line": 20
+  },
+  {
+    "id": "chi-tiet-lo",
+    "name": "Chi tiết lô",
+    "page": "ban",
+    "group": "Bán · Hàng",
+    "line": 20
+  },
+  {
+    "id": "cap-nhat-luong",
+    "name": "Còn lại bao nhiêu?",
+    "page": "ban",
+    "group": "Bán · Hàng",
+    "line": 20
+  },
+  {
+    "id": "sap-co-hang",
+    "name": "Sắp có hàng",
+    "page": "ban",
+    "group": "Bán · Hàng",
+    "line": 20
+  },
+  {
+    "id": "chung-tu",
+    "name": "Chứng từ",
+    "page": "ban",
+    "group": "Bán · Hàng",
+    "line": 20
+  },
+  {
+    "id": "lo-gop",
+    "name": "Lô gộp nhiều hộ",
+    "page": "ban",
+    "group": "Bán · Hàng",
+    "line": 20
+  },
+  {
+    "id": "dang",
+    "name": "Đăng hàng",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "chon-mat-hang",
+    "name": "Chọn mặt hàng",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "chup",
+    "name": "Chụp ảnh hàng",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "nghe",
+    "name": "Đang nghe",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "kiem-tra",
+    "name": "Kiểm tra",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "xem-lai",
+    "name": "Xem lại",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "xong",
+    "name": "Đã đăng",
+    "page": "ban",
+    "group": "Bán · Đăng hàng",
+    "line": 20
+  },
+  {
+    "id": "khach",
+    "name": "Khách hỏi mua",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "nhu-cau",
+    "name": "Cần mua",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "ket-noi",
+    "name": "Khách muốn nói chuyện",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "ho-so-ben-mua",
+    "name": "Hồ sơ bên mua",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "chat",
+    "name": "Nhắn tin",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "bao-gia",
+    "name": "Báo giá",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "hen-xem",
+    "name": "Hẹn xem vườn",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "bao-cao",
+    "name": "Báo cáo",
+    "page": "ban",
+    "group": "Bán · Khách",
+    "line": 20
+  },
+  {
+    "id": "lich",
+    "name": "Đơn và lịch giao",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "chi-tiet-don",
+    "name": "Chi tiết đơn",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "xac-nhan-don",
+    "name": "Đơn mới",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "so-sanh",
+    "name": "So sánh khách",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "phuong-thuc",
+    "name": "Chọn cách giao dịch",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "chon-luong",
+    "name": "Hứa bán bao nhiêu?",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "ky",
+    "name": "Thỏa thuận",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "quyen",
+    "name": "Quyền và trách nhiệm",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "ban-day-du",
+    "name": "Bản đầy đủ",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "ky-otp",
+    "name": "Xác nhận ký",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "ky-xong",
+    "name": "Hoàn tất ký",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "ky-giay",
+    "name": "Ký giấy",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "so-ban",
+    "name": "Các bản",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "coc",
+    "name": "Tiền cọc",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "mo-lien-lac",
+    "name": "Đã mở liên lạc",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "ket-qua",
+    "name": "Kết quả cân",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "giao-mot-phan",
+    "name": "Giao đợt sau",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "doi-lich",
+    "name": "Xin đổi lịch",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "yeu-cau-thay-doi",
+    "name": "Xin thay đổi",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "huy-don",
+    "name": "Xin hủy đơn",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "tranh-chap",
+    "name": "Đối soát",
+    "page": "don",
+    "group": "Đơn",
+    "line": 20
+  },
+  {
+    "id": "tien",
+    "name": "Tiền hàng",
+    "page": "tien",
+    "group": "Tiền",
+    "line": 20
+  },
+  {
+    "id": "tien-ve",
+    "name": "Tiền đã về",
+    "page": "tien",
+    "group": "Tiền",
+    "line": 20
+  },
+  {
+    "id": "quyet-toan",
+    "name": "Quyết toán",
+    "page": "tien",
+    "group": "Tiền",
+    "line": 20
+  },
+  {
+    "id": "lich-su-tien",
+    "name": "Lịch sử tiền",
+    "page": "tien",
+    "group": "Tiền",
+    "line": 20
+  },
+  {
+    "id": "ung-tien",
+    "name": "Nhận tiền trước",
+    "page": "tien",
+    "group": "Tiền",
+    "line": 20
+  },
+  {
+    "id": "toi",
+    "name": "Tôi",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "uy-tin",
+    "name": "Uy tín của tôi",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "dich-vu",
+    "name": "Kiểm nghiệm, xe, kho",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "dat-dich-vu",
+    "name": "Đặt dịch vụ",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "cai-dat",
+    "name": "Cài đặt",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "ho-tro",
+    "name": "Trung tâm hỗ trợ",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "can-ho-tro",
+    "name": "Cần hỗ trợ",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "trang-thai",
+    "name": "Lỗi mẫu",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "nguoi-giup",
+    "name": "Người giúp",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "tai-khoan-nhan",
+    "name": "Tài khoản nhận tiền",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "bao-mat",
+    "name": "Bảo mật",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "rieng-tu",
+    "name": "Quyền riêng tư",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "phan-cua-toi",
+    "name": "Phần hàng của tôi",
+    "page": "toi",
+    "group": "Tôi",
+    "line": 20
+  },
+  {
+    "id": "phong-thu",
+    "name": "Phòng thử",
+    "page": "cong-cu",
+    "group": "Công cụ mô phỏng",
+    "line": 20
+  },
+  {
+    "id": "gia-lap",
+    "name": "Giả lập bên mua",
+    "page": "cong-cu",
+    "group": "Công cụ mô phỏng",
+    "line": 20
+  }
+]

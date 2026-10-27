@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-26T05:10:53.781854+00:00",
+  "runtime_business_owner_write_steps": 0,
+  "business_direct_sql_violations": [],
+  "excluded_control_plane": [
+    "migration/seed/cache setup",
+    "runtime role setup during initialization/reset",
+    "test fixture import nhapDuLieuThu"
+  ],
+  "non_owner_infrastructure": [
+    "read queries",
+    "broker login principals",
+    "meta idempotency/events",
+    "test-only clock"
+  ],
+  "verification": "test/kiem-quyen-command.ts; test/ket-qua-quyen-command.json"
+}

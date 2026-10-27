@@ -1,0 +1,160 @@
+{
+  "origin": "https://agiviet.id.vn",
+  "at": "2026-10-26T17:25:43.466Z",
+  "results": [
+    {
+      "app": "ban",
+      "phone": "0907000300",
+      "login": true,
+      "home": true,
+      "pageErrors": [],
+      "httpErrors": [],
+      "consoleErrors": [],
+      "testCalls": [],
+      "screens": []
+    },
+    {
+      "app": "mua",
+      "phone": "0909000213",
+      "login": true,
+      "home": true,
+      "pageErrors": [],
+      "httpErrors": [],
+      "consoleErrors": [],
+      "testCalls": [],
+      "screens": []
+    },
+    {
+      "app": "quan-tri",
+      "phone": "0901000008",
+      "login": true,
+      "home": true,
+      "pageErrors": [],
+      "httpErrors": [],
+      "consoleErrors": [],
+      "testCalls": [],
+      "screens": [
+        {
+          "view": "tasks",
+          "heading": "Hàng việc vận hành"
+        },
+        {
+          "view": "owners",
+          "heading": "Xác minh chủ tổ chức"
+        },
+        {
+          "view": "organizations",
+          "heading": "Tổ chức và người dùng"
+        },
+        {
+          "view": "orders",
+          "heading": "Đơn hàng và tra cứu"
+        },
+        {
+          "view": "disputes",
+          "heading": "Tranh chấp"
+        },
+        {
+          "view": "bank",
+          "heading": "Đối soát ngân hàng"
+        },
+        {
+          "view": "documents",
+          "heading": "Tài liệu PDF"
+        }
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "file": "ban-dang-nhap.png",
+      "name": "ban-dang-nhap",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban-man-chinh.png",
+      "name": "ban-man-chinh",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "ban.png",
+      "name": "ban",
+      "role": "ban",
+      "width": 390
+    },
+    {
+      "file": "mua-dang-nhap.png",
+      "name": "mua-dang-nhap",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua-man-chinh.png",
+      "name": "mua-man-chinh",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "mua.png",
+      "name": "mua",
+      "role": "mua",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-bank.png",
+      "name": "quan-tri-bank",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-dang-nhap.png",
+      "name": "quan-tri-dang-nhap",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-disputes.png",
+      "name": "quan-tri-disputes",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-documents.png",
+      "name": "quan-tri-documents",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-man-chinh.png",
+      "name": "quan-tri-man-chinh",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-orders.png",
+      "name": "quan-tri-orders",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-organizations.png",
+      "name": "quan-tri-organizations",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-owners.png",
+      "name": "quan-tri-owners",
+      "role": "quan-tri",
+      "width": 1280
+    },
+    {
+      "file": "quan-tri-tasks.png",
+      "name": "quan-tri-tasks",
+      "role": "quan-tri",
+      "width": 1280
+    }
+  ]
+}

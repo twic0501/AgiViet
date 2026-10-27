@@ -1,0 +1,8 @@
+route:
+  receiver: xem-tren-giao-dien
+  group_by: [alertname, job]
+  group_wait: 30s
+  repeat_interval: 4h
+# Chỉ lưu và hiện cảnh báo. Chưa gửi email/chat; đội vận hành phải cấu hình receiver thật.
+receivers:
+  - name: xem-tren-giao-dien

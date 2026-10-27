@@ -1,0 +1,260 @@
+{
+  "nhan": "01-smoke-pilot",
+  "kich_ban": "smoke",
+  "mo_ta": "Khói: mức pilot ~5 yc/giây trong 60 giây",
+  "luc": "2026-10-24T23:37:50.139Z",
+  "base": "http://127.0.0.1:8080",
+  "pdf": "sync",
+  "ref": "live",
+  "he_so": 1,
+  "thoi_gian_giay": 61.019,
+  "bo_lo_do_qua_dong_thoi": 0,
+  "dong_thoi_toi_da": 9,
+  "pha": [
+    {
+      "pha": "pilot",
+      "so_yc": 300,
+      "yc_giay": 5,
+      "p50": 27.1,
+      "p95": 117.6,
+      "p99": 1378.5,
+      "loi_pct": 0
+    }
+  ],
+  "luong": [
+    {
+      "pha": "pilot",
+      "luong": "mua_duyet_lo",
+      "so_yc": 90,
+      "yc_giay": 1.5,
+      "p50": 23.2,
+      "p95": 50.3,
+      "p99": 114.4,
+      "max": 114.4,
+      "loi_pct": 0,
+      "ma": {
+        "200": 90
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "mua_gia_tk",
+      "so_yc": 45,
+      "yc_giay": 0.8,
+      "p50": 42.4,
+      "p95": 73.9,
+      "p99": 114.2,
+      "max": 114.2,
+      "loi_pct": 0,
+      "ma": {
+        "200": 45
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "mua_ghep",
+      "so_yc": 36,
+      "yc_giay": 0.6,
+      "p50": 31.5,
+      "p95": 62.6,
+      "p99": 67.1,
+      "max": 67.1,
+      "loi_pct": 0,
+      "ma": {
+        "200": 36
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "anh",
+      "so_yc": 30,
+      "yc_giay": 0.5,
+      "p50": 5.6,
+      "p95": 85.8,
+      "p99": 112.9,
+      "max": 112.9,
+      "loi_pct": 0,
+      "ma": {
+        "201": 30
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "qr_quet",
+      "so_yc": 30,
+      "yc_giay": 0.5,
+      "p50": 7.1,
+      "p95": 15.3,
+      "p99": 19.3,
+      "max": 19.3,
+      "loi_pct": 0,
+      "ma": {
+        "200": 30
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "ban_dang_lo",
+      "so_yc": 24,
+      "yc_giay": 0.4,
+      "p50": 7.6,
+      "p95": 50.6,
+      "p99": 87.8,
+      "max": 87.8,
+      "loi_pct": 0,
+      "ma": {
+        "200": 2,
+        "201": 22
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "webhook",
+      "so_yc": 24,
+      "yc_giay": 0.4,
+      "p50": 89.6,
+      "p95": 160.6,
+      "p99": 169.7,
+      "max": 169.7,
+      "loi_pct": 0,
+      "ma": {
+        "200": 24
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "pdf",
+      "so_yc": 12,
+      "yc_giay": 0.2,
+      "p50": 50.2,
+      "p95": 117.6,
+      "p99": 117.6,
+      "max": 117.6,
+      "loi_pct": 0,
+      "ma": {
+        "201": 12
+      }
+    },
+    {
+      "pha": "pilot",
+      "luong": "giong_noi",
+      "so_yc": 9,
+      "yc_giay": 0.1,
+      "p50": 1366.4,
+      "p95": 2156.2,
+      "p99": 2156.2,
+      "max": 2156.2,
+      "loi_pct": 0,
+      "ma": {
+        "200": 9
+      }
+    }
+  ],
+  "tai_nguyen": {
+    "postgres": {
+      "cpu_tb_pct": 10,
+      "cpu_p95_pct": 18,
+      "rss_max_mb": 2168
+    },
+    "backend": {
+      "cpu_tb_pct": 3,
+      "cpu_p95_pct": 11,
+      "rss_max_mb": 373
+    },
+    "ai": {
+      "cpu_tb_pct": 2,
+      "cpu_p95_pct": 3,
+      "rss_max_mb": 160
+    },
+    "worker": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 0,
+      "rss_max_mb": 75
+    }
+  },
+  "db": {
+    "giao_dich_commit": 1058,
+    "rollback": 0,
+    "ti_le_cache": 98.77
+  },
+  "toan_ven": {
+    "tong_but_toan": "0",
+    "gd_lech": "0",
+    "so_du_lech": "0",
+    "don_coc_hai_lan": "0",
+    "viec_pdf_dang_cho": "0",
+    "viec_pdf_hong": "0"
+  },
+  "top_sql": [
+    {
+      "calls": "90",
+      "total_ms": "1992",
+      "mean_ms": "22.13",
+      "max_ms": "55.6",
+      "q": "SELECT l.code, l.commodity_id, l.grade, l.province_code, l.harvest_on, l.created_at, l.photo_count, l.id FROM "
+    },
+    {
+      "calls": "45",
+      "total_ms": "1907",
+      "mean_ms": "42.38",
+      "max_ms": "70.4",
+      "q": "SELECT percentile_cont($4) WITHIN GROUP (ORDER BY unit_price_vnd_per_kg)::bigint AS median_vnd_per_kg, count(*"
+    },
+    {
+      "calls": "44",
+      "total_ms": "1871",
+      "mean_ms": "42.52",
+      "max_ms": "80.6",
+      "q": "INSERT INTO bench.ledger_entries (transaction_id, line_no, account_id, amount_vnd) VALUES ($1, $6, bench.ledge"
+    },
+    {
+      "calls": "36",
+      "total_ms": "1117",
+      "mean_ms": "31.03",
+      "max_ms": "62.9",
+      "q": "SELECT l.code, l.grade, qb.qty_g AS available_g, l.harvest_on, l.province_code, round(x.dist_km::numeric, $2) "
+    },
+    {
+      "calls": "44",
+      "total_ms": "31",
+      "mean_ms": "0.71",
+      "max_ms": "4.8",
+      "q": "INSERT INTO bench.ledger_txns (kind, order_id, idempotency_key, memo) VALUES ($1, $2, $3, $4) RETURNING id"
+    },
+    {
+      "calls": "30",
+      "total_ms": "28",
+      "mean_ms": "0.94",
+      "max_ms": "5.0",
+      "q": "SELECT id, status, window_during @> now() AS in_window FROM bench.deliveries WHERE id = $1 FOR UPDATE"
+    },
+    {
+      "calls": "22",
+      "total_ms": "16",
+      "mean_ms": "0.74",
+      "max_ms": "3.2",
+      "q": "INSERT INTO bench.lots (code, seller_org_id, commodity_id, grade, qty_total_g, floor_price_vnd_per_kg, provinc"
+    },
+    {
+      "calls": "12",
+      "total_ms": "16",
+      "mean_ms": "1.36",
+      "max_ms": "3.3",
+      "q": "INSERT INTO bench.documents (order_id, kind, version, sha256, storage_key, bytes) VALUES ($1, $5, coalesce((SE"
+    },
+    {
+      "calls": "12",
+      "total_ms": "16",
+      "mean_ms": "1.30",
+      "max_ms": "3.6",
+      "q": "SELECT o.id, o.code, o.grade, o.qty_g, o.unit_price_vnd_per_kg, o.deposit_vnd, o.fee_vnd, c.name_vi AS commodi"
+    },
+    {
+      "calls": "22",
+      "total_ms": "8",
+      "mean_ms": "0.35",
+      "max_ms": "0.8",
+      "q": "UPDATE bench.orders SET deposit_status = $2, status = $3, version = version + $4 WHERE id = $1"
+    }
+  ]
+}

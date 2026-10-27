@@ -1,0 +1,2711 @@
+{
+  "at": "2026-10-27T08:13:49.445661+07:00",
+  "roots": [
+    "/home/twictrn/agiviet-production-v2",
+    "/home/twictrn/agiviet-he-thong/.claude/worktrees/he-thong-v4",
+    "/home/twictrn/Documents/AgiViet"
+  ],
+  "files": [
+    {
+      "root": 0,
+      "path": "backend/src/app.ts",
+      "sha256": "e9e209d4ab875b64323fb2e7303b7876e293a3185384b361d3ed2387adb1aec8",
+      "size": 5806
+    },
+    {
+      "root": 0,
+      "path": "backend/src/auth/otp-hanh-dong.ts",
+      "sha256": "a7d305f20965f56a595681715620d11b2553327a531f63879b5fb81df9f153c8",
+      "size": 5084
+    },
+    {
+      "root": 0,
+      "path": "backend/src/auth/phien.ts",
+      "sha256": "65140d5f79cb2ebc8625957a555c491f17981a54ef03c4455e6b9f86554f2669",
+      "size": 12819
+    },
+    {
+      "root": 0,
+      "path": "backend/src/auth/quyen.ts",
+      "sha256": "3266607801564b52b7f737757013a602c662035953a37887dd6c73d197e3d174",
+      "size": 5061
+    },
+    {
+      "root": 0,
+      "path": "backend/src/cau-hinh.ts",
+      "sha256": "6d9b711fe723c50d83e10f6aeb756f8d065ae9fa442b1426f612372a2f691040",
+      "size": 4702
+    },
+    {
+      "root": 0,
+      "path": "backend/src/chinh-sach.ts",
+      "sha256": "fae103c98e2e0b7d6c202939af03c1449322a2ca23eb8e269a7ed0ede9d5a21e",
+      "size": 4300
+    },
+    {
+      "root": 0,
+      "path": "backend/src/db/co-so-du-lieu.ts",
+      "sha256": "dba623d993f0efe7c1cb51f9e90748f4434212c256f8fca0929553491d1cc6d7",
+      "size": 19681
+    },
+    {
+      "root": 0,
+      "path": "backend/src/db/command.ts",
+      "sha256": "a9a26f6d2e32dde5da2da1eced8b0be55b2a84a3344ce654ac272e30585aab4d",
+      "size": 1570
+    },
+    {
+      "root": 0,
+      "path": "backend/src/db/dang-nhap-rieng.ts",
+      "sha256": "b68769677da94131cacca5f8c7b5959e80606ed05b645c9d44955abc64f88693",
+      "size": 3428
+    },
+    {
+      "root": 0,
+      "path": "backend/src/dong-ho.ts",
+      "sha256": "126312f401026ce4fcdd7ba94c3ecf097bc77b3a215be11d4e2cda3e6c052f20",
+      "size": 1243
+    },
+    {
+      "root": 0,
+      "path": "backend/src/he-thong.ts",
+      "sha256": "94636734287c382690fa0a12bfc626946842e65d2be81fa464b8dbad4b953a38",
+      "size": 2552
+    },
+    {
+      "root": 0,
+      "path": "backend/src/loi.ts",
+      "sha256": "4e03aa59becc9b3c9eb3884f03aa5db57c3ac69dc5b1336a269e6c09dbd5eab5",
+      "size": 10805
+    },
+    {
+      "root": 0,
+      "path": "backend/src/mo-phong/ngan-hang.ts",
+      "sha256": "6b70d05ba0ec77d7ede84522b24d8eab0c04693c232463168a4ff75b2e3cec9f",
+      "size": 6668
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/chung.ts",
+      "sha256": "bb1e03776e93fc4ac6cc5a67b62e9a760818e81860c74872fee7fcb24c41dc42",
+      "size": 4834
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/de-nghi.ts",
+      "sha256": "874dd5ba589d59995dd86f6b4524b8cf44bb203ff768f064c002eb673eb2c6f2",
+      "size": 14413
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/don.ts",
+      "sha256": "fffd82e2f5211ea991f503d7fbc57636e1c59fa26a38a672f6d5624724c5eecc",
+      "size": 38950
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/ghep.ts",
+      "sha256": "a56c48ae0e6be69e7b52dfd146b970bd472d787e1634db714caad834dad7cc4e",
+      "size": 14640
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/giao-nhan.ts",
+      "sha256": "445c39dc6551751ea0d62d55be90c8475aeccc01f3de8fac26349e4d3fe08544",
+      "size": 43839
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/hen-gio.ts",
+      "sha256": "90b1d1c759d1c0a77ff53d809c10fef1642e32bb1499fbc9de01eb368af2f83d",
+      "size": 1755
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/huy.ts",
+      "sha256": "f3c332f9dbf9916ab8a71ff9957eff318947b2dd5198c0f44d5e84a88aa6287c",
+      "size": 7870
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/lo.ts",
+      "sha256": "d31c043271aaf3b323c7e3cd1ef0c7588e3264865d216863cd9b2b58c5bfedc7",
+      "size": 12412
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/loi-chao.ts",
+      "sha256": "3b9cf9a23b07605e401cef60f8626156db44d2c4c9d68a75652399110ee4a9d3",
+      "size": 10427
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/nha-vuon.ts",
+      "sha256": "71fbd922b37c40d3cd2a4cd602c2517c6604e87f224dcd03d76003160518f3ef",
+      "size": 17114
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/nhu-cau.ts",
+      "sha256": "4a2bc4aa4fc9ee1606899a172be0a303dae9bc425a4a4949f78d1f4412b0b632",
+      "size": 7048
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/outbox.ts",
+      "sha256": "b0a0a4ee7ad800f8a649a25aa8db811a16d92ed99f9549b5ff7208f953ec9025",
+      "size": 3887
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/quyet-toan.ts",
+      "sha256": "d8ce32d8e9c873b45718a6eeab8246e6e9c80ad60b7dd50261ee2babc8fe310e",
+      "size": 4662
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/tai-lieu.ts",
+      "sha256": "f01dcc0dfcea5648802133e12a58972a815803329731331d9aa8504d596b90be",
+      "size": 3550
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/tien-ich.ts",
+      "sha256": "278bb53494a8dba526aa0adcb2aaccbeef29f953ab3c562234aef216cc1f28cc",
+      "size": 11211
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/tien.ts",
+      "sha256": "1ce7003e6c26f9f86d1593a0ad0391886ba02e0859940faf6efc0fcf3cf66b37",
+      "size": 23425
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/tinh-tien.ts",
+      "sha256": "65bbca1e3b205643f29b7eca4a77f55d73be43ec975c1aed74f75af11f76d46f",
+      "size": 4064
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/to-chuc.ts",
+      "sha256": "1bb04f1fdb25bff003d67b0e67988e857b6d2154ea7c4d38569f84f62c434d16",
+      "size": 16138
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/tranh-chap.ts",
+      "sha256": "cd3cc940e457f119a54c103e4b61ac4aaf2cb9d63cf2a7977e323ff9fc055b65",
+      "size": 12025
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/trung-binh.ts",
+      "sha256": "89ab7c6efa988de984dfddf1b6586f494665e60e9b9aea45d6598bbbbd677c68",
+      "size": 12071
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/truy-van.ts",
+      "sha256": "6ec391f59b0da05be526edb0438595a4012e69335ce9a13f635b40570fed7c5b",
+      "size": 8812
+    },
+    {
+      "root": 0,
+      "path": "backend/src/nghiep-vu/van-hanh.ts",
+      "sha256": "7dd318c2eab7ef043932599ce8c5a07547cf5af8567f434541f589c40ed4cdee",
+      "size": 4402
+    },
+    {
+      "root": 0,
+      "path": "backend/src/pdf/ban-trinh-bay.ts",
+      "sha256": "e5e1115630bdbfcb5402eb879931b8fe772f56c27d5dee30d7a2f58d54dc9cc3",
+      "size": 1382
+    },
+    {
+      "root": 0,
+      "path": "backend/src/pdf/sinh-pdf.ts",
+      "sha256": "ab3a9c5aa72149bc2671043aaab6fde7734190f84a9efedc02c5be4e94efd6a2",
+      "size": 5752
+    },
+    {
+      "root": 0,
+      "path": "backend/src/pdf/tai-lieu-pdf.ts",
+      "sha256": "48515634b5982295a0744945cd9fbab9a5ef901d483350d28ed50eb6658623b3",
+      "size": 3461
+    },
+    {
+      "root": 0,
+      "path": "backend/src/routes/v1.ts",
+      "sha256": "1658552238d8217718b34c61daa72db3578f4e4d3be632325be75553d6997e15",
+      "size": 46223
+    },
+    {
+      "root": 0,
+      "path": "backend/src/server.ts",
+      "sha256": "3eaa689bf0db986044ad47c3307478aaa4ace9d92860cab1252f538238020c64",
+      "size": 700
+    },
+    {
+      "root": 0,
+      "path": "backend/test/chay-tinh-huong.ts",
+      "sha256": "a5d8b30d918f27912000629c1e6a71c0c8d344c155bffccadac7f2d3159a4f03",
+      "size": 2567
+    },
+    {
+      "root": 0,
+      "path": "backend/test/khung.ts",
+      "sha256": "0b2275ae541a1a77a9e078fbe31f53084dfa0c7c94cdf5539ce3422f2871ce4a",
+      "size": 4081
+    },
+    {
+      "root": 0,
+      "path": "backend/test/kiem-quyen-command.ts",
+      "sha256": "3838c2066513d774e06ffe658ca31dcfc0ab31afce331da0f09f0704d1637b12",
+      "size": 6979
+    },
+    {
+      "root": 0,
+      "path": "backend/test/luong.ts",
+      "sha256": "791545e61060cef9f79b5e8552807d4f4f69d3404a3339d02d427fe5fe900171",
+      "size": 7011
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-10.ts",
+      "sha256": "7722942512d05129807f0248dc3854310617bfe03bf9f6b3323d7a848a7d7ddf",
+      "size": 8117
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-11.ts",
+      "sha256": "ee536640fdae918c0156bd38ac04632ee4c66db88c7e76ba9f95e0c95094e3f3",
+      "size": 5230
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-12.ts",
+      "sha256": "0ca826624a94a7f21c20c66a9dc7f731e478913100c921477ce7bec1f4cb4b0f",
+      "size": 16198
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-2.ts",
+      "sha256": "55fffe6dcea80c66ac7d7b0e9d00c72133db8a10314b5ce4cedaf555b51a27e4",
+      "size": 32375
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-3.ts",
+      "sha256": "54a692f6cfaf35a1a3da2a4c176f2a1b767f0bf2d99f5f03af41c1ad29456586",
+      "size": 5998
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-4.ts",
+      "sha256": "f31fd6d47f87bf4dd0689ef900048000d07bb29e93cbbfc17899fb116ea40a08",
+      "size": 8479
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-5.ts",
+      "sha256": "452bde733ed2b43db2cb5ee866c65e4d7e58e2ee174dcf65e281ae9ee280010e",
+      "size": 12728
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-6.ts",
+      "sha256": "b9d01f533e71b3a82f5a37a2fe2b0ccb9f53ce576a18f13145951adb6dcf0599",
+      "size": 8917
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-7.ts",
+      "sha256": "febcd16eadf5b88c698fc2fd40e058c490d75ea21ffed3b3b73c902ad43a81d2",
+      "size": 6269
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-8.ts",
+      "sha256": "6a2fb68ccc885c070f063bbe3b81ee2c2ba94f2fd367ca492916ab684252fe09",
+      "size": 5794
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong-9.ts",
+      "sha256": "fdb4de6fa409d14f8ebe631fd18afbce673976256a16e1e0b9d3a846921f14a8",
+      "size": 4634
+    },
+    {
+      "root": 0,
+      "path": "backend/test/tinh-huong.ts",
+      "sha256": "a6034081805782f829f7d50bafdf061c057c3510f4865bb73350e8ad8f5579b1",
+      "size": 5434
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0001_nen_tang.sql",
+      "sha256": "b20fdc023d849c47f73ce6e3e33084ef4d0a3e72f460bbae35373bdbc2aed8b2",
+      "size": 16327
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0002_to_chuc_nguoi_dung.sql",
+      "sha256": "a92066a7e9cb9e062acfb88f0c85144042a16e68fa2236894724164f9335a02a",
+      "size": 20695
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0003_danh_muc_dia_diem.sql",
+      "sha256": "f95f096739e094629cb5c1525f027cf172062d32c432465d5c07f1665e6c5df6",
+      "size": 11986
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0004_lo_nhu_cau_loi_chao.sql",
+      "sha256": "972cf71f8435622cd777941c31167837dcdf3f5323f7aeca772fa91107c126ae",
+      "size": 23501
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0005_don_hop_dong.sql",
+      "sha256": "7b07ddd133b5ca5ce86ed88fa20b1ebdf08b3c6d0c962e2715860efb2a63822d",
+      "size": 56886
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0006_tien_nghiep_vu.sql",
+      "sha256": "187bc73164a049762a0ccd0a3fd39871c25566f44f861760439e556918035450",
+      "size": 30069
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0007_so_cai_tien.sql",
+      "sha256": "16be87434fb99b2233a93d2899e721d4fc13989413316bce1a114756690241a7",
+      "size": 17602
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0008_so_luong.sql",
+      "sha256": "9b4d1c3287ab5f9b30b757d8180b57a510af02cf83b7179f085e12bc0b11c67b",
+      "size": 9890
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0009_giao_nhan_van_hanh.sql",
+      "sha256": "1fe3fa6457dc28179dbf7b8736da1e57a1b03ad57c11490846d2186101b3a05e",
+      "size": 27007
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0010_ghi_so_tu_dong.sql",
+      "sha256": "97b1910cf2271d369c49bc31ba46ca537219e7bdc1e6a1ce2b1f50e3b7699ef0",
+      "size": 13821
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0011_cung_co_bat_bien.sql",
+      "sha256": "e3dbd2469b1f0fa49c7ad92820027695839eb30e033649c7cff87ab1643e7252",
+      "size": 19657
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0012_thi_truong_su_kien.sql",
+      "sha256": "c8bea5a515a113c97f94e9f3d0064ed920298a40fa6ac90568c0039e99e748ad",
+      "size": 13546
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0013_kiem_tra_nghiep_vu.sql",
+      "sha256": "2858534622b04e0c8577204d24cb96a31999512f95fdc85afd9ad8f810be3a62",
+      "size": 16642
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0014_quyen_va_giu_luong.sql",
+      "sha256": "577212b8ced96a6afd59314521dd86759979a9047f3d82f9909f165509cf00a8",
+      "size": 11438
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0015_khung_dich_vu_va_chu_thich.sql",
+      "sha256": "9f465af264a7d77e07aaf20dad17aba64c08386f4ac2abfdb8718d26dc825293",
+      "size": 9991
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0016_kiem_soat_chot_va_phan_bo.sql",
+      "sha256": "10d1479b225d535fbd6ef0260d7f723cd48aed1af84f1ad93986a6519acdd643",
+      "size": 6746
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0017_ke_hoach_bao_tieu_nhap.sql",
+      "sha256": "6813ba96bfb3abfc167ec1fa58fd310d3dcb28ba83cac0aaaab59dbb9249bc8a",
+      "size": 2689
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0018_dieu_kien_san_sang.sql",
+      "sha256": "9712c4ab7200d7da067f8f7e6394d547c9d0d319c8a3edc792035310aff78be9",
+      "size": 7759
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0019_chi_muc_va_kiem_toan.sql",
+      "sha256": "24b7507c9e85d5d744ccacee6377d423e70b6a9fa9e29bc55bcf7287e1378bfc",
+      "size": 3172
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0020_lan_goi_nhieu_mat_hang.sql",
+      "sha256": "8c14854011fb12e8c609a1940dab949dace9adaee831c25975c4bc85fe1e2a29",
+      "size": 8487
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0021_quyet_toan_phien_ban.sql",
+      "sha256": "d56d9da46d8a49245329d895ad2a64b71e71355a782456997bea5eb667d7394e",
+      "size": 12535
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0022_chu_ky_quyet_dinh_van_hanh.sql",
+      "sha256": "45853f3856bce9720e289938213df2b0de40f9aea19808133e9f7ae89bc10e8f",
+      "size": 10171
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0023_nguon_gia_tinh_coc.sql",
+      "sha256": "2b63f974610e43aa9d90fd7ba17743fddaf1c6906f5d884d273704542ea0954d",
+      "size": 5567
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0024_bao_ve_so_cai_va_lenh.sql",
+      "sha256": "6bc31551c05968819a7f3ce55269396bddf8b88c83a54f44fb3f4516f955d5bb",
+      "size": 11824
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0025_lenh_ngan_hang_han_quyen.sql",
+      "sha256": "3961a8ae8d54ca024afbcca10a2a18c94d0da25fadf0d81da6e22259d8546b15",
+      "size": 7131
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0026_otp_va_lenh_nguoi_dung.sql",
+      "sha256": "8783fa53b095acf7b93022714a6f414c4e83598386e829215e924e3b99669392",
+      "size": 7977
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0027_nhat_ky_chuoi_bam.sql",
+      "sha256": "6bc3ae186ac075b9b0a290cd61e4fca8af2d8e1b9fc215ccdf682fe1f813855b",
+      "size": 3494
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0028_ngan_gia_danh_phien.sql",
+      "sha256": "3685f62737648c5dcaa51be69d3d349bb0dad78fb186f562ab21926f1ce28170",
+      "size": 1896
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0029_cung_co_bang_chung_hoan_tien.sql",
+      "sha256": "237d2cd004dcb366ff12f5157f5c4bae1a2ed3378f2573c8b4d80e9cc1c241f6",
+      "size": 13618
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0030_tien_treo_va_giu_them_tranh_chap.sql",
+      "sha256": "7f5badaa44cdc9773a7b2b7d4b95525e21abeb4203ba9223a3bc9d1a94a2b400",
+      "size": 18115
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0031_kiem_soat_chinh_sach_qr_va_chi_tien.sql",
+      "sha256": "d0143fb7dcc82f31457f106eea970c15a646ccbd223b558e479bcbb538d305a3",
+      "size": 22286
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0032_hoan_tien_treo_ve_nguon.sql",
+      "sha256": "d47fbcc15aa603bd100174b51370c38d284cd6b103d1b1be11ac26f1a09ea74c",
+      "size": 8837
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0033_chu_dau_tien_va_hoan_coc_chenh.sql",
+      "sha256": "17dc2c20b280fccad854055792511f1d596c436fe46b90dccc57507763b0a6f1",
+      "size": 14355
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0034_lenh_danh_tinh_va_chu_ky.sql",
+      "sha256": "bffd2de5216261e9f8be7bfc2dd100632a4cddb03db13a1a2b26fad90bd335b0",
+      "size": 15666
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0035_lenh_lo_don_va_giao_nhan.sql",
+      "sha256": "20e39dd2b60d88ba458ac46687c78bc657d09e99da30167d39c534e8568f451e",
+      "size": 25347
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0036_lenh_dieu_phoi_tien_va_thoi_han.sql",
+      "sha256": "cd6044790aef210d6583140a12a6d6a294b1569fcc80fdf10363ce5f643108f9",
+      "size": 36435
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0037_chot_giao_nhan_va_cung_co_command.sql",
+      "sha256": "0d22a0b02fc8fa386010f8c584a5514639463d92ba5bf1a8254e9d54830f841f",
+      "size": 16960
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0038_lenh_bo_sung_thi_truong_va_quan_tri.sql",
+      "sha256": "c7180eac8862c1171a90238cdab0457741038968137c3d0f64d39427331841f1",
+      "size": 18351
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0039_lenh_thanh_vien_tai_khoan_va_worker.sql",
+      "sha256": "4faed3ada7e77429a9404b24cf3c57afb91b1a15b17f552bacdcda102d24148d",
+      "size": 14957
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0040_lenh_huy_va_hach_toan.sql",
+      "sha256": "c88e6c840cc7d1b8d6cffcd3ae9654bf8dd52d0230a11c0879759ccd7127dd7b",
+      "size": 18148
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0041_lenh_de_nghi_va_phu_luc.sql",
+      "sha256": "fda4505cbff5ef5ed0a37a5b43faf6d83f5e75b35fbb574c23c3287a6874432d",
+      "size": 15098
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0042_lenh_tranh_chap_va_kiem_dinh.sql",
+      "sha256": "3cebbaa421e3449ee65c77da57b328ed62b0cf703df6492399098eba7f5a8f6a",
+      "size": 21226
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0043_lenh_khung_va_nhom.sql",
+      "sha256": "60353e2cc62ce1e8402608c460bcf32069720ff1eb0c045f5809979208fbbe2e",
+      "size": 30791
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0044_chot_command_va_ket_qua_het_han.sql",
+      "sha256": "c80aef704b2a0bb31a38b6bd63ebcb0f40026748f82c82a0e31f4eaa7055faaa",
+      "size": 17188
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0045_lenh_giao_nhan_bo_sung_va_dong_khung.sql",
+      "sha256": "22495ed9c1a2fc904443734cb90d8882106e5a961de941ff74b3a3aab02cc827",
+      "size": 11899
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0046_hoan_thien_cac_nhanh_command.sql",
+      "sha256": "04af9dedaa9650acfd240f91fc8b8bc33599e0c4d39b07eca7335e3f793ae50b",
+      "size": 26089
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0047_khep_kin_dieu_phoi_backend.sql",
+      "sha256": "c639b79ae5f8d4947b7ba659c4b196019734a5ebdab10fc883d0b136ccb88667",
+      "size": 11678
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0048_sua_nhanh_tich_hop_command.sql",
+      "sha256": "3807f360a8acb27430fc20044ba81c0dd2ce0498a870bf336cbfb1df22fd2042",
+      "size": 29474
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0049_lenh_dang_ky_goi_va_tai_lieu_he_thong.sql",
+      "sha256": "852e21b85cc37376fe4b7465a7b7dd47304b5bcc642cc8d15525a9fcb3bc0368",
+      "size": 20065
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0050_lenh_luong_vuot_rut_hang_va_im_lang.sql",
+      "sha256": "88339711243c0793f08f25b5b848c62d88a947cdf9f88ab16d89865e437e8297",
+      "size": 30716
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0051_phi_giam_gia_va_ma_coc_ngan.sql",
+      "sha256": "317c0c1253fcf66a4d9010177f60f907229d5f348b14a06201f2f7dd37fd1c9d",
+      "size": 14526
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0052_chia_lai_sau_phan_doi.sql",
+      "sha256": "35ea7b894bd643816cbcc8b299c267e84621a4c86ca6134a00607a43c22c59ba",
+      "size": 28337
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0053_dong_ho_nghiep_vu_tranh_chap.sql",
+      "sha256": "435b6804f82e0ca64dacc973d7fed06efd5cabc2d3f6cb3ce1eb366503df6ad5",
+      "size": 15905
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0054_danh_tinh_qua_cong_tin_cay.sql",
+      "sha256": "4bfa24059f37b3c036d0765dce954ff7ef199888db524725462f74264185d171",
+      "size": 12945
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0055_phien_ben_cho_dang_ky_va_nguoi_giup.sql",
+      "sha256": "665c54075e577d5933376ae193200c6f24e30c4264051fdc39bb0dade73497a5",
+      "size": 4518
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0056_nhat_ky_xac_minh_mat_hang_va_ban_gap.sql",
+      "sha256": "a7428d9020098fcbfd9154ecb2fac70da780cd59dd8157c0dce5f798a3b64466",
+      "size": 31506
+    },
+    {
+      "root": 0,
+      "path": "db/migrations/0057_dat_truoc_va_bao_tieu_theo_vu.sql",
+      "sha256": "7eaa38975643b7e3c6839829c6c0393fbe93f44789eee96f8d9990e8d0d4c4ae",
+      "size": 46713
+    },
+    {
+      "root": 0,
+      "path": "docs/TRANG-THAI-VA-LO-TRINH.md",
+      "sha256": "ece9772c0f4990431df2865fec4a2ea95023cb9abf5988a51bbfaeb2515906ee",
+      "size": 9181
+    },
+    {
+      "root": 0,
+      "path": "docs/ai/00-tong-quan.md",
+      "sha256": "ad2de61a33ecb0c7274c816667e5d3afe8e1179ad6c0b7aa16bda150227d84e4",
+      "size": 5439
+    },
+    {
+      "root": 0,
+      "path": "docs/ai/01-ghep-cung-cau.md",
+      "sha256": "c09dc2b73c0dd7e2b8c97ca164323527870d938f491d9b9aaba8df550383ec9a",
+      "size": 9167
+    },
+    {
+      "root": 0,
+      "path": "docs/ai/02-giong-noi.md",
+      "sha256": "8029aa8a6ac617ef40df79c820e7a8fb91fd3ad0865c43da2bc1465ce2cd96bd",
+      "size": 12601
+    },
+    {
+      "root": 0,
+      "path": "docs/ai/03-cac-diem-ai-khac.md",
+      "sha256": "0d62d8e5aabd197457022fd19ace2052e3c1f7cca17f9f0d4301cc11fd37a8a0",
+      "size": 6610
+    },
+    {
+      "root": 0,
+      "path": "docs/ai/04-api-cho-backend.md",
+      "sha256": "ef8b7ac56eaf53fd8036265a47e6f0919ad9ae94aaf4d663f06a7a6c487d3512",
+      "size": 12579
+    },
+    {
+      "root": 0,
+      "path": "docs/ai/05-danh-gia-thanh-that.md",
+      "sha256": "afe407579c59fbdc39aa51954be54e3dab3328a55e682d63422998fe0e962ba6",
+      "size": 10249
+    },
+    {
+      "root": 0,
+      "path": "docs/backend/chuyen-command.md",
+      "sha256": "a7c6f3ea88b5d96b4bcacf76657eca6ac2d9afa30b6568a8872d49a359152065",
+      "size": 8647
+    },
+    {
+      "root": 0,
+      "path": "docs/backend/danh-gia-thanh-that.md",
+      "sha256": "2c89a3e76fac0dfcd82173ff91b135a4da70b21548335ed6b90aa542433c702c",
+      "size": 9814
+    },
+    {
+      "root": 0,
+      "path": "docs/backend/de-xuat-csdl.md",
+      "sha256": "d35e960271e43dd7a4e6aa16e3f67c64f204a3e45207272795c6b4cbbe13c642",
+      "size": 20731
+    },
+    {
+      "root": 0,
+      "path": "docs/backend/huong-dan-giao-dien.md",
+      "sha256": "5a6e1ec4536ee8d64de897e85aadf215ab8c0385b6716d49ee599a9daf87c24a",
+      "size": 24683
+    },
+    {
+      "root": 0,
+      "path": "docs/backend/tham-so-chinh-sach.md",
+      "sha256": "bf8042645d5d0f7fef859308d3363043988698d86f1e62405f6e6ab4049b519c",
+      "size": 4195
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/00-tong-quan.md",
+      "sha256": "a67f2882e8300dfae351b9e79ce9b5847a8d1d37fcefc43570f82981dd3bdcde",
+      "size": 3679
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/01-vong-doi-dong-tien.md",
+      "sha256": "4793f7636757965dc65ac97e7f62f1bf1e93658cf1d43b76db5ded21feab07b8",
+      "size": 31740
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/02-mo-hinh-de-doa.md",
+      "sha256": "19d57230c59c6bdffddde18c84f3a17a11c41978930bb05b5b73cfa6648f24c3",
+      "size": 11343
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/03-bien-phap-va-vi-tri.md",
+      "sha256": "021ebf50cb7e108ba96ec4b28750e704e2210e41ae0036aaef5b24a995060519",
+      "size": 7606
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/04-checklist-backend-app.md",
+      "sha256": "a90a0a66b7b3b1614a228d6151a7b135b1b9f565ec3baf8862c8dfc468142dc6",
+      "size": 8870
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/05-tuan-thu.md",
+      "sha256": "8d4b2350a51b0637d0a82044f08f37f0d75526066c02e5f019230986e73e5a08",
+      "size": 9970
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/06-loi-tim-thay-trong-thiet-ke.md",
+      "sha256": "1c671dea08528fde16bdf76e82322914d446d9a5950141f9496fdbd14f57ac43",
+      "size": 12979
+    },
+    {
+      "root": 0,
+      "path": "docs/bao-mat/07-danh-gia-thanh-that.md",
+      "sha256": "167a664d50a766fb648102a3fb7555f96e153b01947e9d2e4d1c9bd039678ff9",
+      "size": 7242
+    },
+    {
+      "root": 0,
+      "path": "docs/database/00-nguyen-tac.md",
+      "sha256": "7d8f0e4be4896d35156bfac2616f6749263d127b1317bd3ad5190a17955f1c6f",
+      "size": 6190
+    },
+    {
+      "root": 0,
+      "path": "docs/database/01-mo-hinh-du-lieu.md",
+      "sha256": "3c052df39294d221d62e63b4f141e6239b5f6b2e799820ec62593758a8b93b8f",
+      "size": 8584
+    },
+    {
+      "root": 0,
+      "path": "docs/database/02-so-cai-tien-va-luong.md",
+      "sha256": "6ae32f25a02f130ec553e215bfaa31f4a1a265f79e0ee625de5659a9bef44235",
+      "size": 11388
+    },
+    {
+      "root": 0,
+      "path": "docs/database/03-trang-thai-va-su-kien.md",
+      "sha256": "c9faae6fd17302d8f03215461a120bd0520386723d6b8a1e7d7c38e5859558ae",
+      "size": 8250
+    },
+    {
+      "root": 0,
+      "path": "docs/database/04-bao-mat-va-quyen.md",
+      "sha256": "c87bb11320ced106762fc1a4674463ef11bf3e6d73083cd6c331a56d5587c958",
+      "size": 11631
+    },
+    {
+      "root": 0,
+      "path": "docs/database/05-truy-van-nong-va-chi-muc.md",
+      "sha256": "f597f1cb9b75ed1b438726cf73b4a1bfca5facb3c7197e44e6e6d1a0fb3d0bbf",
+      "size": 5410
+    },
+    {
+      "root": 0,
+      "path": "docs/database/06-huong-dan-cho-backend.md",
+      "sha256": "e89622a463a61b53fa24fccab8d97516cdb9402e8e850b08bf8f822a4e4576a3",
+      "size": 88261
+    },
+    {
+      "root": 0,
+      "path": "docs/database/07-danh-gia-thanh-that.md",
+      "sha256": "5549d0c55524605e79f797ad37c921b7aff210a03a095b9f8cb4b07ec27e4968",
+      "size": 21050
+    },
+    {
+      "root": 0,
+      "path": "docs/database/07-ket-qua-de-xuat-14-15.md",
+      "sha256": "b9dd28a97d467534f76c108f139b64b83478de3b47be162412ecc0dbcc1edf04",
+      "size": 4076
+    },
+    {
+      "root": 0,
+      "path": "docs/database/08-ket-qua-cong-postgres.md",
+      "sha256": "f6fded3650bb71167e586d885c0f788f5a9a866231a90e159cd87d77c20d8572",
+      "size": 5817
+    },
+    {
+      "root": 0,
+      "path": "docs/database/08-ket-qua-de-xuat-backend.md",
+      "sha256": "fa9648f1d0d8c39b4e445538920c7ed459ba27909af34cda6f2a9066c892305c",
+      "size": 5921
+    },
+    {
+      "root": 0,
+      "path": "docs/database/09-ket-qua-boc-dieu-phoi-command.md",
+      "sha256": "1e96139cc90878893dfdea22eff59f9b4d9539925a4c46f91ac4af469795d442",
+      "size": 6773
+    },
+    {
+      "root": 0,
+      "path": "docs/database/09-ket-qua-nhat-ky-va-hop-dong-vu.md",
+      "sha256": "269dea9af1cbd060149be77317c2cbf81a04a5b6652f212af981f3eda5b02e6e",
+      "size": 7904
+    },
+    {
+      "root": 0,
+      "path": "docs/database/10-ket-qua-dong-ho-tranh-chap.md",
+      "sha256": "13149ac9ba0c88f6772b422416d961315a84f03d330933a3a9087d78e74a384b",
+      "size": 4529
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/anh-bo-sung/index.html",
+      "sha256": "4ad2a1c5a68bbac5fa9e3d10165534e0a0ac568ea6c0b33e2468132a11662f49",
+      "size": 4074
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/anh-cong-khai-luot-5/index.html",
+      "sha256": "60644be367070a9c38d835bc3b3800eafa82436bfebb572e04da5a4699418225",
+      "size": 3322
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/anh-kiem-thu/index.html",
+      "sha256": "7ff269fc71a9acf8cf8cfbacd04db964c261ea9f6d16400962eeba55893eefe0",
+      "size": 12011
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/anh-luot-2/index.html",
+      "sha256": "39c35cb1ff2884c34aa781ed0c36e382a68abcaeae23bdb8f04fc42bb04aae7d",
+      "size": 9460
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/anh-quan-tri-luot-5/index.html",
+      "sha256": "434140982182196d885d0280bf3985aa0930d885fbf86a72584c50841cee01fe",
+      "size": 1981
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/danh-gia-anh-codex.md",
+      "sha256": "9116b3b07fec7f47456a242a1a378da91b8b2d7b6464fe2fc30245e55cdf8d02",
+      "size": 62914
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/danh-gia-thanh-that.md",
+      "sha256": "27e246732685e40f83dc39c2d91ecf74843317c317d89ce51e8158bf9ac76772",
+      "size": 21821
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/de-xuat-backend.md",
+      "sha256": "380b84f30dfc3fe6b3da78238b7176f57ab77167b97480fdcf3d37f8423fadd9",
+      "size": 9081
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/kien-truc-app-ban.md",
+      "sha256": "8a7e11914272cafc73ddf97360510590e6e7423e35f4448be7a8cb26e7563acc",
+      "size": 2938
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/quan-tri-local.md",
+      "sha256": "09800a2b6eef738e911efccaeb5ce7852159441d62d93d4de6bdd00bc26205e6",
+      "size": 6756
+    },
+    {
+      "root": 0,
+      "path": "docs/frontend/soat-giao-dien-ban.md",
+      "sha256": "ed6ed7401bf7a3fad5d27615de629627e919a12efb3777d2206b876312598260",
+      "size": 4336
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/ai.md",
+      "sha256": "3c0f8e9f955991653aa2ad5b4c2f5e09e7eeab4a861c31bf5f31f90d95dc7fef",
+      "size": 3547
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/backend-cmd.md",
+      "sha256": "c853541e5d85a82fbbf08878c851be84b76731a220e39a5d4009fffb3fa79a25",
+      "size": 1449
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/backend.md",
+      "sha256": "69cbe22af70b38bd1704c95c6acb2a9caa70fcb20a47c07db976997d764bb416",
+      "size": 5304
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/bao-mat.md",
+      "sha256": "d7e7461c4ac15c74acaf3b96a5c7e32312f151e5feffa2d5fd80013800930dd3",
+      "size": 2164
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/danh-gia-anh-giao-dien.md",
+      "sha256": "9d7db8d8d6a6454d7e31d3ff46eb7ec6368e4ea39a5f2b2eb6f691f38630fd42",
+      "size": 1968
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-cmd-con-lai.md",
+      "sha256": "b31ec5b135bba1c4290f9a67e290132bb448202d41200a9e72637a63bddcadca",
+      "size": 1603
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-de-xuat-backend.md",
+      "sha256": "0a273675793537eb8388b96207bbd81feb740ec5d2a244f1bd2e1a39e8a832fa",
+      "size": 1808
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-doi-chieu-n.md",
+      "sha256": "ba8b87523746fff33c5559dd5098380b40c2375a809954b163f3350243001036",
+      "size": 2346
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-ls.md",
+      "sha256": "6ac1328fd9c5b55b3568f11013a1374c19214311f6d0346cad4c3fec11a5b4d9",
+      "size": 3962
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-muc-15.md",
+      "sha256": "9ce39c1f4a2a82e1a1e6b1577dd01e9a00aeb72c15cf01cc3ae22d5def2b244f",
+      "size": 1538
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-muc-16.md",
+      "sha256": "f21f0b1507d64ad6396c55be55e2b87101a66631d80dcdf32b77e2bff631a8fa",
+      "size": 1096
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-muc-17.md",
+      "sha256": "4448af3192f2cccc8502c302377002aca3ea5853dacf03127c9031cc269d6f54",
+      "size": 1925
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database-nhat-ky-dat-truoc-bao-tieu.md",
+      "sha256": "30ffa952faedbb341d2b5d9adb0d12de16d1904b390f17b922366307e9a63b38",
+      "size": 3011
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/database.md",
+      "sha256": "e37d36b255cf361d0bbb30586bb699036a5fe46b51906b440ce5c143b6228896",
+      "size": 3900
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/doi-chieu-ban-mau.md",
+      "sha256": "fc1a263284d7dc750285755fd954ed11ce475dc386a7656e52f2242a0f2f6879",
+      "size": 3601
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/frontend-2.md",
+      "sha256": "19648f2a58fcef0aeae64734b17c6627ef2d227d85cfe48fe14acc1a33bf8e3f",
+      "size": 1531
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/frontend-3.md",
+      "sha256": "298dc4d21f468733de9e96f1ddfe98006f97a8b4f69ad9ecd324932dc26c7452",
+      "size": 1099
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/frontend-4.md",
+      "sha256": "1e457c9233d572cacb0e95c284afa95b676abd3e14f025ac02ace1f03f16e6c8",
+      "size": 1611
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/frontend-5-cong-khai-va-quan-tri.md",
+      "sha256": "862a11f97a01de99a2adcaaf25267414a8706c2d30dab6cef8e5a09ccc2e8159",
+      "size": 3960
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/frontend.md",
+      "sha256": "2d61cc936b2fb2bc71620037daf458914fe824b5507ab785bd36cbf6fc0b155e",
+      "size": 5262
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/ha-tang-chan-tran.md",
+      "sha256": "8b8601b88ec651cfed261eaa35ea73e67311712be420a982d5785bbeb9846294",
+      "size": 2662
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/ha-tang-cloudflare-tunnel.md",
+      "sha256": "ec8b2146c09b7c197fe2cb8d2786a412162c330fb9781246c49c232f4a4b07f7",
+      "size": 2885
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/ha-tang-oracle.md",
+      "sha256": "fbf62058cce30df1e50c33e16435edf3094d6f753c6361187f0c1ed3ecf65550",
+      "size": 2994
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/ha-tang-trien-khai.md",
+      "sha256": "3527bdbbd3a49415b20705f0ac30465fbbc9dcd2189c8b731a2cc100d8b75994",
+      "size": 2249
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/ha-tang.md",
+      "sha256": "57ee495bc0c3fc4908e55b29e4944ff83db647290cc172147fe6b1408b9b3dbb",
+      "size": 3298
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/nghien-cuu-dich-vu-va-danh-muc.md",
+      "sha256": "6c541366e46da2f1123ea2058d1e3789052aa2d5dc676960ac864a5ae94b1b87",
+      "size": 4361
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/nghien-cuu-mat-hang-van-hanh.md",
+      "sha256": "f3b193291604eacf4b700afcda599e85fa4d531cdee811fa67f6ae6435ef9e60",
+      "size": 4203
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/nghien-cuu-mo-hinh-mang-luoi-dich-vu.md",
+      "sha256": "dd5036fe5d1c4bd2358ee94ccb4c008d8e70f332330362127d7b9b0c1f32628f",
+      "size": 3857
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/nghien-cuu-xac-minh-nguoi-ban.md",
+      "sha256": "b557d5ddafa88370a2543e9e04cf413a2e6bf8061152a7ec085de6092ca6984b",
+      "size": 5400
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/nghiep-vu.md",
+      "sha256": "25a7419f82d01c43cfbf72cf1f012dc1c502810b66e6908eb66e6a96f8f7caa6",
+      "size": 1439
+    },
+    {
+      "root": 0,
+      "path": "docs/giao-viec/quan-tri-tao-case.md",
+      "sha256": "41f8d5989fe09a32884e8ac8af3d7f5a76ffa887750467dbcbd1a6b8273d4ba3",
+      "size": 6432
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/00-kien-truc-trien-khai.md",
+      "sha256": "8ba973f52249e7ef096443b5a50fcc158cdab65abe1824fe71fe4cdce9832240",
+      "size": 7319
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/01-moi-truong-cuc-bo.md",
+      "sha256": "a767184bfc47d79b075329e8fefdf15437dcde25f8c36d68f02ee8b80244284b",
+      "size": 7016
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/02-kiem-thu-chiu-tai.md",
+      "sha256": "f8726363259fca0e4fb71aa6aa6b8798813eea1acaad92c250cae3e162096c17",
+      "size": 12643
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/03-toi-uu.md",
+      "sha256": "9c0ba1b06c10440c67af11ae85a4727706cb81ea1bf11eecc70b51240b2566e2",
+      "size": 10947
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/04-van-hanh-giam-sat-sao-luu.md",
+      "sha256": "bd7eb74150fb0fcd2ca01ad6fe6decec1eac3dc2bb5d049d915f0d91e50f8e28",
+      "size": 9266
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/05-danh-gia-thanh-that.md",
+      "sha256": "d1c6e1e5279df2955224ac6e2cacd970a9bbf6854e3312c66d9ee89d28dbb97c",
+      "size": 33861
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/06-trien-khai-oracle-free.md",
+      "sha256": "5198666333299b4779a70a95242f33c8b4a325d97094b4eb4e7474d7fc053cb6",
+      "size": 43322
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/07-chong-tran-chi-phi.md",
+      "sha256": "e23845b21c014649f660f882136b442bd287e70112bd3e342fe840cfccb2ae3e",
+      "size": 19543
+    },
+    {
+      "root": 0,
+      "path": "docs/ha-tang/08-chay-tam-cloudflare-tunnel.md",
+      "sha256": "519db4261e7a8845b4680a57e34e93a68e71bd0fed99c178ea895507e6c95a97",
+      "size": 21402
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/01-xac-minh-nguoi-ban-co-nhan-vien.md",
+      "sha256": "2bb9f90a4f0d955c1b35d960b834be348ba9f9a7c30541af23430aac870bf084",
+      "size": 59336
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/02-de-xuat-thay-doi-he-thong.md",
+      "sha256": "c88758a3ef4ee846e4c2b1b93c50cae530ee325f19e4783e5ca6a0d166d24cd4",
+      "size": 36982
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/03-mat-hang-va-van-hanh.md",
+      "sha256": "dd6eec9546bec849d3bc55d87306a17158b58c968283c2e66c22e3d189f07d64",
+      "size": 61174
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/04-de-xuat-theo-nganh-hang.md",
+      "sha256": "17af291756bf917002807b6e4ba9e9ed7fd10c280741b5a12582d31db0924906",
+      "size": 41155
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/05-dich-vu-di-kem-chuoi-cung-ung.md",
+      "sha256": "e33ef03dbee6444e66f177e48eb5796030658b82f1893bfbedbc4963e050f991",
+      "size": 34620
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/06-danh-muc-mo-va-hang-che-bien.md",
+      "sha256": "0d68c9a739c6b42d8d9f111030c3a2edd65e3c4d463af4a4f2728bf83b630cb9",
+      "size": 43363
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/07-mo-hinh-mang-luoi-dich-vu.md",
+      "sha256": "17f956d61fa0fbfdb2fdf416b8f679761d794a65a087266dda7b71ed411073cf",
+      "size": 22310
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/ghi-chu/chau-a.md",
+      "sha256": "53b5fc6462265242cd26ee749ddddc317b491609b026eb89cb122763a663b254",
+      "size": 21189
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/ghi-chu/chau-phi-my-latinh.md",
+      "sha256": "6ce913a7fe28b6768dd60915ad9d774086c204fafb5877b4505c99714d386b2f",
+      "size": 19107
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/ghi-chu/chung-nhan-bo-sung.md",
+      "sha256": "e4a00d924c2b157c9a9ab9d15f2b1ecae7b6543741499f5106f4d3a7cb3c0b4b",
+      "size": 14543
+    },
+    {
+      "root": 0,
+      "path": "docs/nghien-cuu/ghi-chu/doi-chieu-he-thong.md",
+      "sha256": "a93cb9939569d60984da182c8094e014e59c82446b17c37d8f0d6503f4cbee61",
+      "size": 28570
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/00-tong-quan.md",
+      "sha256": "c471a1be66002960e114030c35d0ac629c656195180ecaa1699fb2ca4aa86424",
+      "size": 37836
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/01-mat-hang.md",
+      "sha256": "f3f5450b85f4211e5a3373a1c6b6e346c1b68e864b3dcd24a45fd3e4ad0c6eac",
+      "size": 24944
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/02-phan-khuc-ben-mua.md",
+      "sha256": "42b6b335407df07d1b8090373e390520dea1267472ff8a04ea227442ffbc6b6e",
+      "size": 13131
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/03-vong-doi-don.md",
+      "sha256": "29f40a8b5160f94408ea0dcf0c406b1b9ce7e88b134c4c186b36535390edec1f",
+      "size": 50078
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/04-tien-va-coc.md",
+      "sha256": "d83b13431bc1dd1e0ae8312d39f2914b3ac0edbe81c69cf4c24165c772330b91",
+      "size": 31302
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/05-ghep-cung-cau-va-chong-lach.md",
+      "sha256": "05a7b64f7f9106ff04a828c2e6a1669493928cd52fb73500e41162e8172bb823",
+      "size": 22915
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/06-kho-van-chuyen-qr.md",
+      "sha256": "0ccf51c6583cbd9e9ff131a86fe93c4df2bf5df84ad4a0f756b2499c71094c5f",
+      "size": 18098
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/07-tai-lieu-pdf.md",
+      "sha256": "fc9cd39d06a5b59f709d960fab03b30ba1b6e8d094058df7aa0c25efb4d5b82e",
+      "size": 16212
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/08-van-hanh-thu-cong.md",
+      "sha256": "e3e10fbf556cee5c8c1c738b6e7a8b437a8d497807332882cf50dc91da848833",
+      "size": 17528
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/09-tinh-huong-kiem-thu.md",
+      "sha256": "1052250487ad398448c18894edacac3cd31b8090315adb3e440d040535b46887",
+      "size": 50279
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/10-du-lieu-ao.md",
+      "sha256": "d2cf81506a5efda84a3c458d92c841c6b63bd86a51b870feaf846bdac8bf9a8d",
+      "size": 15303
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/11-mo-hinh-kinh-doanh.md",
+      "sha256": "ddb1d38f6df54fc0281ba8e389b67ba0b3b671027d2bb32797df05d3bb693136",
+      "size": 14765
+    },
+    {
+      "root": 0,
+      "path": "docs/nghiep-vu/12-yeu-cau-cho-ky-su.md",
+      "sha256": "d30d61c9eb832c86bf1c56ee1ad5b8d512bae3b0ed5c4efad4ac147709c11fee",
+      "size": 28500
+    },
+    {
+      "root": 0,
+      "path": "docs/quy-trinh/index.html",
+      "sha256": "212736d3b50c3623affd03c2cd2e7c2ed4eb7b954ee9b7939d0ed2554899015a",
+      "size": 28156
+    },
+    {
+      "root": 0,
+      "path": "frontend/README.md",
+      "sha256": "9acda16fb38134c9ca684097ff32a1e775685084589863fc79853bf69336e886",
+      "size": 6622
+    },
+    {
+      "root": 0,
+      "path": "frontend/TIEN-DO.md",
+      "sha256": "1ca038545f796bd68a32be4a6eb8ff335d96492f280e5d0bbe9911aaa03740df",
+      "size": 15106
+    },
+    {
+      "root": 0,
+      "path": "frontend/assets/qr.js",
+      "sha256": "8abd27720ea3a445c4e7500287f43a99155fe2eaad7a671db875cabb2bb51ac2",
+      "size": 24829
+    },
+    {
+      "root": 0,
+      "path": "frontend/ban/index.html",
+      "sha256": "27dc3dff5ee2f25bc6a623e46fb054710ed44ffc860045a0ad480eb2b90e1fcf",
+      "size": 1541
+    },
+    {
+      "root": 0,
+      "path": "frontend/ban/seller.css",
+      "sha256": "3a0c382e99663d4fbd25b426d430cc905858cd181d14e713276af3705f838bed",
+      "size": 33656
+    },
+    {
+      "root": 0,
+      "path": "frontend/index.html",
+      "sha256": "6c0fa2942b8e5ce57f7df134cb496f5d69794f707325a9b78adbef5dd52be74e",
+      "size": 519
+    },
+    {
+      "root": 0,
+      "path": "frontend/mua/index.html",
+      "sha256": "a742278fc9725dcb77f3a40fa3803e23df62039f667855f92a50e221920caaef",
+      "size": 973
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/admin.js",
+      "sha256": "845068a9055986d793b876d5834b607ac070da7d32f8b2b8fbee91cd6e473235",
+      "size": 18838
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/case-engine.js",
+      "sha256": "5933b938340615ea2c96aadcfc14d816806fdebbf2a0964607904949960c47d2",
+      "size": 13760
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/demo-data.js",
+      "sha256": "61c93cdcdaa9e4197b92191ee2f5f3b2d7dfbc47cde9b5f24d981025cec1455f",
+      "size": 868
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/index.html",
+      "sha256": "81e85b583605f65d01bad2e165ffab20359f0a15c53feb0954a80103bfe4b24e",
+      "size": 927
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/launch.html",
+      "sha256": "58aa3c7d28d07e4a8215944b3aaf1a37227512e60f64fade804d7c86f4965fa4",
+      "size": 546
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/launch.js",
+      "sha256": "0f483a42be7d0150d8b5168ffae849cb0071c8a110855346b499939355832707",
+      "size": 1017
+    },
+    {
+      "root": 0,
+      "path": "frontend/quan-tri/test-pages.js",
+      "sha256": "ba864e6ffe135d47623bc0d49d5b4e38963ed2cc5ad0a4706f652607c714cfa1",
+      "size": 17446
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/amendments.js",
+      "sha256": "d854df31ffdf7b86b7141cc878d85712f3198bdaddeb4778825e798dda5b4554",
+      "size": 9775
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/api-types.d.ts",
+      "sha256": "6fe2bcb56e83681abe1f1db6482cbba09263b017e426ef9154f9ab653a3c98a9",
+      "size": 11390
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/api.js",
+      "sha256": "22972c305d9b3e0746efd10fcf928bb974348303a55cc18d1488dfb960306b40",
+      "size": 4721
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/app.js",
+      "sha256": "90c147f3114257071de9dd7fcc3feb0aa7d0f300ee71fcbb7973dffb079f7537",
+      "size": 29758
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/enrollment.js",
+      "sha256": "d65969c73f10968bcfdebb7c6e1956aacaf909842ce3844183f7be8c3ee01ec7",
+      "size": 3592
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/form-errors.js",
+      "sha256": "e305815c650af78bed285a57e09ec1ecd81cb2e2a31a885c526072318187c578",
+      "size": 2672
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/format.js",
+      "sha256": "a5bfa3ea48592c97a10c94de4307940ec62b53fcf5b4130bf84935846d5a337b",
+      "size": 2605
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/login-options.js",
+      "sha256": "e205941d867d45134bdfeffa232608788bb84f2c412034b9d4cfad0380b02a8d",
+      "size": 1727
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/market.js",
+      "sha256": "73c9dec60f27a7b80edba5565e95ad091f35a80226ee6f5389594ec9fccae772",
+      "size": 25851
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/orders.js",
+      "sha256": "bff472d252ae8cedfeaaa881df683e34d04f6fa83a94d544ae284e988bfd6d84",
+      "size": 47787
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/select.css",
+      "sha256": "5edff39e2dae2830379df6a8ba6edb1db2f5bcca81ebadf1832b1d457704b84b",
+      "size": 1867
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/seller.js",
+      "sha256": "285abbf5e47ce5a1a798851cbdb29d2804f237d95e704dba7c806635af63d7f6",
+      "size": 76341
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/services.js",
+      "sha256": "d63f3dc145328bc161dbeeac319b5b66d52fa4fd0ab09b520ea6027fbe73b86c",
+      "size": 12565
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/style.css",
+      "sha256": "75080346cfd44c092f50aac4bc2dbc2c398c1b3918eb4140d954a8743bcb2883",
+      "size": 21234
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/ui.js",
+      "sha256": "973a86f67ff43fa6e68fcc719db6910ae6cf60fa65ba72ed2c4115010168dff1",
+      "size": 6245
+    },
+    {
+      "root": 0,
+      "path": "frontend/shared/virtual-money.js",
+      "sha256": "be6a45d2e61f5f05a9bda417cf75f23f95f7d9a1d10a5ca4e3e0aecba3b4a60e",
+      "size": 900
+    },
+    {
+      "root": 0,
+      "path": "frontend/sw.js",
+      "sha256": "a7006c59e340928cc106192106b571f1d96f542af06ae0bd83bae74d3b4a28d8",
+      "size": 2680
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/anh-trau.js",
+      "sha256": "759764c6f0c09275f48406db4018644db007f174ca01bd15ebf650ed96a25b8e",
+      "size": 1120842
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/ban-do-man.js",
+      "sha256": "454e7611d7829baaaa293cd89dae677ccb21c05bc064b352b938602ab1ddfa50",
+      "size": 14939
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/hieu-ung-app.css",
+      "sha256": "042ab95b5aa9077ced49f7670bd155fbe184d01739cd8bfde5c1961e319c6a62",
+      "size": 2197
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/hieu-ung-app.js",
+      "sha256": "9c8b11901913214b341fa6cf845425e2f2c920a14aadc7f4946182497d638c71",
+      "size": 13319
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/index.html",
+      "sha256": "c40070f697804cd2d9341201dc53cc0f734bdafb33fe4b7ad200052e55cc8067",
+      "size": 54425
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/linh-vat-nguyen.css",
+      "sha256": "704c988436ea667be4c993e12d3c492db8f60725792834282887b13bff6cb964",
+      "size": 372
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/linh-vat-nguyen.js",
+      "sha256": "ce4585bfaad0664d66c0579360fa67136556a65f198ca352019a224434aded14",
+      "size": 16737
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/linh-vat.css",
+      "sha256": "eb795b1ab6a8b25e7e45a9e99c44a4c622f92351e719bae7e43effb43f28055d",
+      "size": 1211
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/hieu-ung-va-linh-vat/linh-vat.js",
+      "sha256": "42b3422bd1c58fb400f181524cd63267fa3565e4d55f483e1ec4a757e7ed0cae",
+      "size": 10924
+    },
+    {
+      "root": 0,
+      "path": "frontend/tham-khao/thiet-ke-so-lam-an/index.html",
+      "sha256": "a8d1de0c8f810f29208120c8335229d6c870d8e6ddc3651f4d265d3edfcc9d53",
+      "size": 23189
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/danh-muc/package.json",
+      "sha256": "c7d1a000fbf11e9789b0eff9fdeb26123b3086d4884ad32b33f588bfdbeaff31",
+      "size": 492
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/danh-muc/src/index.ts",
+      "sha256": "0ac05bfb8ea9f708217d77e93b01c861999d0eac04173e67410a2d5c403ec126",
+      "size": 1155
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/danh-muc/src/kieu.ts",
+      "sha256": "e889ce6dc41bdd5b8bedbe0e6165ee90321eda1f84d61d4e449a1e2975a1693d",
+      "size": 969
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/danh-muc/src/mat-hang.ts",
+      "sha256": "66173309bd4845c105270373b0820f4843192801b3d974787a3bea9030a54265",
+      "size": 43267
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/danh-muc/src/mau-chia-loai.ts",
+      "sha256": "32eaa955d47fa7b5063e08b1909ba2a45fa3082434da3ba22a9c96a61e4b0ea0",
+      "size": 3324
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/danh-muc/tsconfig.json",
+      "sha256": "45335e91e7aa301639eb6de3c6aa162ea5a288b8ccf770182202550971a9f5eb",
+      "size": 173
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/package.json",
+      "sha256": "8134abaafa95a7e7a30bca0abf566209d6d76efa6c557bc74c0b99398fe0cf13",
+      "size": 708
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/ca-kiem-thu-mua.ts",
+      "sha256": "4811f2e80fcfceff86d87063489962be3f70095aafe8a1e15bba8a175e0001f7",
+      "size": 25964
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/ca-kiem-thu.ts",
+      "sha256": "e3970953eab20f619dedc09a569355c185913b04661bcf8f6b7c3b9eb51a91e0",
+      "size": 35303
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/dich-vu.ts",
+      "sha256": "5485b3fe396d887965913fbad95ae03690adaf05df1abb8a9aa247c0dc1db8c4",
+      "size": 1536
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/dong-ho.ts",
+      "sha256": "2c44301adaf0691f09c8344e5978891c7350c00f8cb40eb987906444bfe7ab3d",
+      "size": 1310
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/gia-lap.ts",
+      "sha256": "c1ccd54bfee2200a05d22de8ac4f20951463eeaab5549c71c6b788e1a7ec306f",
+      "size": 20336
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/he-thong.ts",
+      "sha256": "3c5e62eb214f5dba5b3e869c754cfaa6fa746fc50cd9312d32efb910e0db52e3",
+      "size": 2193
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/index.ts",
+      "sha256": "215d51a5fb77933364b9fb2dd8f2c848834c0a779e80f866cef47c38d1ee0b8d",
+      "size": 357
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/kho.ts",
+      "sha256": "800d3311e2db03420bf6a00c36085b0849eeba35e965c412d264ebc8ec628618",
+      "size": 3454
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/kich-ban.ts",
+      "sha256": "eb0b16d08a2d8d70de6c69cb3ab0c89335b34d415bb5abd5cce622bd662857cd",
+      "size": 21658
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/src/truy-van.ts",
+      "sha256": "5ba44b569935410cde3aef10cb0f0a5bc4d804f69fc42f49d2fd3abea140ca74",
+      "size": 7702
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/test/may-chu.test.ts",
+      "sha256": "01504e3788be5b90bb331a2afa823291f25e502b43152a7b7ca76fa4b5bb5a48",
+      "size": 8312
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/may-chu/tsconfig.json",
+      "sha256": "5e681dac44fedc3bb859712e101a3a8a5291744e4539a969be40202bdb1b7260",
+      "size": 158
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/package.json",
+      "sha256": "b63ff8c4d2fff2c1b94f36758f277c0db1a16548c4eb62fa30a139e521ea51b5",
+      "size": 501
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/chinh-sach.ts",
+      "sha256": "b3f019db9e7ed8b4d4a119d8367f4ed54653b00e99991e473d84a88881dc89f7",
+      "size": 4030
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/don/hien-thi.ts",
+      "sha256": "76c5232608f9f703359a431643d6daf55b96eed69e7bf07ef0ac10e64cdc2a4e",
+      "size": 5122
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/don/hop-dong.ts",
+      "sha256": "1762624502929f0375b20d1f227ad2deb7218f5130143f3a443b6ffd459b836b",
+      "size": 6728
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/don/luat.ts",
+      "sha256": "d33ccc61bbb4c86ac79a1cd1642117d8c4b37d9896e067b840bf40c860fd35ee",
+      "size": 13906
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/don/trang-thai.ts",
+      "sha256": "ec45e15e0da41ab231751a159b28f0d04c2407e5c13b31d37f37a3925d899913",
+      "size": 1989
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/gia.ts",
+      "sha256": "f744100859b9719b6df2132d8e3c03b549612ba29961ca89b5abe3ae5ae0d707",
+      "size": 3924
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/index.ts",
+      "sha256": "3f73c023d6afcef3bfe6e387088d47a8d7161e679c9ea8177c43a41dd5960f33",
+      "size": 799
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/kieu.ts",
+      "sha256": "c18989ce6ff198ae8f11c620dd611222ec4fe0fc9b3d4761bb464c98a41daae8",
+      "size": 13593
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/chung.ts",
+      "sha256": "cc385ff2596425af072d7e78278bd26c78d9995838989acbe6806fe525488949",
+      "size": 1558
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/don.ts",
+      "sha256": "e14e8154dc82e2f1f1d11987a2f1c455100b12613ce453e9c6c256cc922cd72e",
+      "size": 14474
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/ket-noi.ts",
+      "sha256": "347edc54279d2bedd042b85c06b4bf46326aa0a95d742225fa315295a5e9ad76",
+      "size": 6746
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/khac.ts",
+      "sha256": "fe8d30025744e36fac0534add21dfeb7dea5dcfb3f64d5dc09583006df7554c0",
+      "size": 9300
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/lo.ts",
+      "sha256": "824c229bab33d601c2c181c623aab7a3e7bb0c4f8f1306ea02d06422093da718",
+      "size": 10058
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/nguoi-dung.ts",
+      "sha256": "04b7253efe4edd730f8f369a503ac9a674ab68db57a4ddab4617da2ff1ae1921",
+      "size": 10621
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/thu-mua.ts",
+      "sha256": "c418fabd6a484f3cf008053cf56a0635e1f5fefc36d68701466922bc009e472d",
+      "size": 6603
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/trao-doi.ts",
+      "sha256": "a8f715836f812a695db4a8d6fd1ccc5774dc24fbeeb607bd30ec8f173915e269",
+      "size": 4856
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lenh/vuon.ts",
+      "sha256": "5ea38b79863226653676b01209db54f69138ebb64d94a8022a805da0254f4117",
+      "size": 7090
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lien-lac.ts",
+      "sha256": "c2ce2dcc21f7f7ef2428f62b8f7c1a36750fb3f11a6a20d7a18a26d822d33b0f",
+      "size": 1729
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/lo.ts",
+      "sha256": "7c4dbaa510324ffbe3bcf53208850d61b49004b1619d6916f0dae93052bcaabd",
+      "size": 2136
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/so-giao-dich.ts",
+      "sha256": "e2883a788e423eb685c0b6c4406e33f920686904ac04e5d7340574372b6c05e5",
+      "size": 3247
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/src/tong-hop.ts",
+      "sha256": "af2cca218d5084c840e5ff084660783fdf562e3021465f2d9dbf7ac42ddb6a1b",
+      "size": 15776
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/test/bat-bien.test.ts",
+      "sha256": "584ae79d4ddca7277772fc02474664727feca9a97adda0501753dfbc366ce258",
+      "size": 6332
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/test/co-che-moi.test.ts",
+      "sha256": "c942bbee3b6094960b4981d40bc6833612f8cc8a18c87bb443d34c746c62fdf9",
+      "size": 13932
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/test/luong-don.test.ts",
+      "sha256": "1a67bd2659b6efa85518b43a154003faec0635abe523aa3cc3d8d0df6afd944c",
+      "size": 9901
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/test/mo-rong.test.ts",
+      "sha256": "50caf97ab70f40a42540395676f0162f3479353e476dcab7d04fe95e4b8842e5",
+      "size": 23818
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/test/phien.ts",
+      "sha256": "c3a6512f9c3ba0d19a1ef73fe8d88a5a05aaf28a38bd46b40b4f2ba5d1a35ba9",
+      "size": 3323
+    },
+    {
+      "root": 1,
+      "path": "dong-co/packages/nghiep-vu/tsconfig.json",
+      "sha256": "e276cd734f9100625d04b9593afc472e71ac2ab90c13d4ce374c77aecef1b43f",
+      "size": 192
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/DOI-CHIEU-QUY-TAC.md",
+      "sha256": "588706abbfea484da55c63684940f64aa51ecfe59d0500592f1fa605f2e01d03",
+      "size": 8870
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/GOP-Y-NGHIEP-VU.md",
+      "sha256": "a5f7cd894cf22bc535b437e4852bbeddf31a765d71c0a8f8fbc34484d0f5668e",
+      "size": 9990
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/README.md",
+      "sha256": "a37f52275e8dcb6e8f6b017b899246dca05d18ce49e6fab1c0733a588a6b51da",
+      "size": 5208
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/assets/anh/nguon.json",
+      "sha256": "3766b21bbcf93963edcb0852013a8a15f68895da1bbb29a739d39eb910400722",
+      "size": 23412
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/assets/giong/ds.json",
+      "sha256": "1d81e060f200cc49a780b6b52d0e47ca85c1c4c7da78ec881d5fd2b555decbb3",
+      "size": 26978
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/bat-dau.html",
+      "sha256": "24998eeee1d11e66e3de044acf163d2f41400a247c7c1922a3d24f067fa7e581",
+      "size": 1518
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/cong-cu.html",
+      "sha256": "162477ffe86699bf4169ad2796a98892d01c08752cb7d69f1809d58fc6863001",
+      "size": 978
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/css/app.css",
+      "sha256": "1d720074d91003d5b437e53edf0466146eca970f28511882fe06a1769e2afc2f",
+      "size": 56184
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/css/fonts.css",
+      "sha256": "2d0e1a1b02d0e124c2626ce45434020c668a0af1b0b8992a67937e30af93d6f6",
+      "size": 6211
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/css/moi.css",
+      "sha256": "86cbb3f453849e189995ca63482828649e31363c2ad7377ffbf99b46efc92002",
+      "size": 9604
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/dang.html",
+      "sha256": "912674dfdb3d5315885de0e7f69f2505dd2fa50a098f9178136f9208a4edda9b",
+      "size": 1321
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/giao-dich.html",
+      "sha256": "6ce40cefc5bc7fb4a231fb22f3336c73e6d036f835cc36d176b83f483ca2cdb6",
+      "size": 1462
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/hang.html",
+      "sha256": "bff51040c9f11744da98d003a033190855c0ce063fe9fb9a322dd066b9bb79a1",
+      "size": 1446
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/hom-nay.html",
+      "sha256": "61cfde9cc063c5a3830d0c4c4c89fc846bb6d2374e308513df364a02af692e6a",
+      "size": 1097
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/index.html",
+      "sha256": "b52f49514e320e8c1886dbf3c100a994144bbc2900fb2211bb1ff597ec17f006",
+      "size": 9165
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/app.js",
+      "sha256": "7c05b616f2aa3354cf1024cf468cfaf001b7ad048fcbb2b81cbaab75e36a49e9",
+      "size": 18490
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/cau-hinh.js",
+      "sha256": "5d3189c15dc5fc54f25248ced2ec75058218b2e5d301bb85b3ede14cb837da48",
+      "size": 1979
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/dong-co.js",
+      "sha256": "2ae5afa3aee5c620429afb1856cf50871520a144a5c17be16310996403564af3",
+      "size": 282104
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/he-thong.js",
+      "sha256": "66aab771d9838eb97f2b15e1147d8901ee3cb84f6434e37ac06b218a8b37f62c",
+      "size": 25559
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/huong-dan.js",
+      "sha256": "8bfa870efa00cf224695101f41183f59e970c11667561b992e97cd5fdefc0a0c",
+      "size": 5432
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/khung.js",
+      "sha256": "dc5f76a2d5bff50392db40bdbb717e8bc7519ba4ba8dfd442cb31c015d1b6ea3",
+      "size": 25178
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/bat-dau.js",
+      "sha256": "7efdbba8b5923bec461ffa4c5b7becb379a5f9a2ab6a63c4ff40bb12b10a65a6",
+      "size": 13102
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/cong-cu.js",
+      "sha256": "58bdec9f361478cc18ed9fd4cc49157bb79bf2c49e754b62f3c5a309226e5606",
+      "size": 8830
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/dang.js",
+      "sha256": "335e40aa3e5f330124f40bdc317a6d59761325c79bd9863b64da0c17ebbefba1",
+      "size": 17804
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/giao-dich.js",
+      "sha256": "208374c5f512da7bc93baa87cc78307afa99d2db135253c47d4fe3dcf8a8e445",
+      "size": 14041
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/hang.js",
+      "sha256": "7a5639997a05f28924dd5ed1a367ecbb908118a4eaed5ab127294d66ebbc38e3",
+      "size": 23811
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/hom-nay.js",
+      "sha256": "92c41257a77911704db84915eb5b4c7b7d866dffb40f5d44038f62cd39c853f0",
+      "size": 8865
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/khach.js",
+      "sha256": "363c6d39808079046d7672b12c786498c289655c560df48c18c8d470c654ca64",
+      "size": 17230
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/lich.js",
+      "sha256": "da9d6165f7c9e17555095b03762dddba4918ff33385112810eeaea7206ab9372",
+      "size": 35256
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/tien.js",
+      "sha256": "fd0e9f4634d8c08448afdedd949999aaf0077b71d7abff0fc29aec9423d2feac",
+      "size": 12333
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/toi.js",
+      "sha256": "a75411f615252c6f1ec7ead7169185f7042809f0c6975c5b12cccf8f5469945c",
+      "size": 22080
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/man/vuon.js",
+      "sha256": "5bc4405876b85501a71cc3b38121e00c2439d8f37f6bfc91f67c0d80e94be727",
+      "size": 22605
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/js/mo-phong.js",
+      "sha256": "bd09ddbb0e8e88c66bf8ea9725f5a5fb16e4eccaef440317c0b6d91a7dee0c1a",
+      "size": 651
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/khach.html",
+      "sha256": "d0a283ecfd0840a8ec5efff833094cabfbc2c041f0014a2ced6ed2fef997b806",
+      "size": 1436
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/lich.html",
+      "sha256": "7b7a6e352acdd1cc0bf3da276535a006af34cbad2ef22e0921375009a31e0e3b",
+      "size": 1926
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/nguon-anh.html",
+      "sha256": "9b1bfb6e2585ad62c5e065acd1042899daba64ee4219e277668ad5636a32aa36",
+      "size": 30414
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/nhan-dien.html",
+      "sha256": "d1b9156068e664f91859ae6b05cc5b4cb44f86d8ee3926dd2a3039cbdbc74944",
+      "size": 24906
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/tien.html",
+      "sha256": "44ddd4116d1caae563e02e2c4bae2677d09f69b40fa7c6bfbf4caaf4eeed9f67",
+      "size": 1217
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/toi.html",
+      "sha256": "f31ad2a709fbe58ef0ad7553a0add06d0f176da530be8138bffcf654853d6498",
+      "size": 1875
+    },
+    {
+      "root": 1,
+      "path": "fe-nongdan/vuon.html",
+      "sha256": "b8f6b24506fbbde736af12de103a2e30f70599262a11b1c6cb95a065aa9234d7",
+      "size": 1447
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/DOI-CHIEU-QUY-TAC.md",
+      "sha256": "d8e51cdcde42953ebb193e9ab3908ba647838b8343c9365786d87ffbb29a50ff",
+      "size": 5873
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/GOP-Y-NGHIEP-VU.md",
+      "sha256": "3febc555f1b1b72f67ca4f52e71155b5284ee4c8e1882d262eab2be69b853555",
+      "size": 7155
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/README.md",
+      "sha256": "4e902b226bd423e3d80981b1d5c0da0ae353d3010da0f3d41accf1d978ab83d5",
+      "size": 3540
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/bao-cao.html",
+      "sha256": "d3d59f649e374b1f654c8b6456a03f07dd8426de79b97e33a051debf5b94c0fe",
+      "size": 1155
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/bao-gia.html",
+      "sha256": "01e4bd0a276554dd3f685091a2527e70cf0ce5b519f73a3346e2f2fa6258f6ac",
+      "size": 1211
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/cong-cu.html",
+      "sha256": "d0ba414cc6bf0c95e06e9efa2f40086c434ce4925ff748f4a39bb192663ba8cd",
+      "size": 1158
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/css/fonts.css",
+      "sha256": "2d0e1a1b02d0e124c2626ce45434020c668a0af1b0b8992a67937e30af93d6f6",
+      "size": 6211
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/css/moi.css",
+      "sha256": "86cbb3f453849e189995ca63482828649e31363c2ad7377ffbf99b46efc92002",
+      "size": 9604
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/css/mua.css",
+      "sha256": "d65349b6579c2029d16069a80317b237c43c235adaae8f3dadc0b36d3c192a05",
+      "size": 16435
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/dang-nhap.html",
+      "sha256": "1f0d2bc93fdb2cce7e9108533c1221028a2247a81a2246faac35a236a27b3d4d",
+      "size": 842
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/dich-vu.html",
+      "sha256": "285dc1d14fd3ea75b90019ee89ff6982e5be034a2575e80bef7e1c5df2481d38",
+      "size": 1161
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/don-hang.html",
+      "sha256": "a7f46cf9c62902052997dbea0564ddee58ce34c78be16728314ee3e8aa238e7c",
+      "size": 1889
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/index.html",
+      "sha256": "9d2b4632f68e7f9ca0a0e3d5cfd8604c1ba8ff8fef8c43cfbe3a4a54963f0d6d",
+      "size": 4751
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/app.js",
+      "sha256": "60997acdcc0631004a25f56870b876724a41e474927b1052f916b825db7665cc",
+      "size": 6003
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/cau-hinh.js",
+      "sha256": "90dee14d40f451e0c4ae6850e892897c635261b52881d1fd5da9da489c28dd81",
+      "size": 3885
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/dong-co.js",
+      "sha256": "2ae5afa3aee5c620429afb1856cf50871520a144a5c17be16310996403564af3",
+      "size": 282104
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/he-thong.js",
+      "sha256": "44c4a4975ebacff5aabc64be905f1a2dfdb5951ed6a2aae65c2452eebdef6a1e",
+      "size": 15874
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/khung.js",
+      "sha256": "dc5f76a2d5bff50392db40bdbb717e8bc7519ba4ba8dfd442cb31c015d1b6ea3",
+      "size": 25178
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/bao-cao.js",
+      "sha256": "a1601319fcf85621c7bf02010aa48d559e3b2f0f73e75bc8e0433f79e402b6ca",
+      "size": 5073
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/bao-gia.js",
+      "sha256": "52bb345b6a136f4e2b1ac0d307ca71cf7f78dd152a45f54dc6fe6e1ce28a4648",
+      "size": 8712
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/cong-cu.js",
+      "sha256": "f084644e6f37824cbc8fb1d7ae2d32ef0ac9572fe31b2b1e1f7b2f54e0372c39",
+      "size": 7696
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/dich-vu.js",
+      "sha256": "acc261208b9c8443f5d3e8fb1df12c900675ba86cef82ca56f6d49e0dc4bd4ae",
+      "size": 4000
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/don-hang.js",
+      "sha256": "22e09d04fe292e8ca240f20d938e3677759c039b22f3fea857d3cec06eb17ddd",
+      "size": 33641
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/ke-hoach.js",
+      "sha256": "a95eb1283cfd456892d68f2236e3f0d7809ef322d7c326d35a293999d4552af2",
+      "size": 2323
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/kho.js",
+      "sha256": "0788640c52ddb74ca2335f15df380033382cf75b97d93c0f49d8ed27db918aa0",
+      "size": 8114
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/nguon-hang.js",
+      "sha256": "6dee354ef6235c9598fdba68f17a389a62c0185936093613390af5f0ab0f7ff3",
+      "size": 15343
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/nha-cung-cap.js",
+      "sha256": "061245af59239c0272cf54894bbce13408525993bcb2be0450021e7f33a99fd3",
+      "size": 7109
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/nhu-cau.js",
+      "sha256": "34ad56a561d9d11c9fdc084ae768c21f631bbb5630e9efe155540d81636ceec5",
+      "size": 8079
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/tien.js",
+      "sha256": "72d52ab002e84ae0b0e4ca566e9a9eec954481014b4ab1355ec67ad7bb44f69d",
+      "size": 9421
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/tin-nhan.js",
+      "sha256": "1e722ac9747b837d495fdb4c94590905a6a7aeca220e41929d54ad9104c46619",
+      "size": 6319
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/to-chuc.js",
+      "sha256": "a723e779200277fb91ad324e5dd69e38b6d50342455ea076ec2d78f2be041534",
+      "size": 11167
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/tong-quan.js",
+      "sha256": "7844e8d4aa040b1e46c60d2d70c7db5dbb992ebbe2f2b5ed73a94ed83f8d0427",
+      "size": 4528
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/js/man/vao-app.js",
+      "sha256": "9de51205894bc5d8c139ed09ee9d5d81137ce14fc05d46da4b3d46c75b0ac21a",
+      "size": 7601
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/ke-hoach.html",
+      "sha256": "eb45c69d6214d0a2bfca1fd15ceac6d93de511601410566f258a8cf4a833d6ce",
+      "size": 1070
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/kho.html",
+      "sha256": "196bef54e4483a616b0bf633fccc08446b4ebf31ade6e59da81be4e9a3cbe3c4",
+      "size": 1191
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/nguon-hang.html",
+      "sha256": "3faf0fa58ba0218214c3cc7812efc4364a5fd6297975a3b15d7b464697516dd1",
+      "size": 1402
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/nha-cung-cap.html",
+      "sha256": "198108f4995459eeff27be3b0d26f63976cf23c27e9dc8de07c4697852e47317",
+      "size": 1335
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/nhu-cau.html",
+      "sha256": "1c3f19411e911106338515ae55ce47c3aae78874d1aeb9bec46d5c9bcf82b971",
+      "size": 1233
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/tien.html",
+      "sha256": "97426953d9d2dfe1a9ea121cafa6a609199d4bcf7f64e372b688f3be3e8773ad",
+      "size": 1237
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/tin-nhan.html",
+      "sha256": "e38d5ec53d783e4f5b4ae78117113d5bf8fed961c0cfa771549d568546322c01",
+      "size": 1142
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/to-chuc.html",
+      "sha256": "80855aa003dab4a03da981c6b26feb0fde64edf0c5c13eacd5dd6da8c4fcd2d8",
+      "size": 1576
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/tong-quan.html",
+      "sha256": "12522b486147da213da2014e8829d9f9ecde45939b2858e7b3418eb504df40c3",
+      "size": 1063
+    },
+    {
+      "root": 1,
+      "path": "fe-thumua/vao-app.html",
+      "sha256": "f63fb74bc285a21722972d0a8d2dadd0513b3605292b2f92858d736cdb610147",
+      "size": 1317
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_app_ban.html",
+      "sha256": "5e011f4ed0b8333c8b012bc970ff536d83f8074dff51961799fba6fefb494cb7",
+      "size": 2638811
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_app_mo_phong.html",
+      "sha256": "d131010d3143db77688f2edc3c392f7670b64ceb9339c885e93ee7fa5964f200",
+      "size": 336250
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_brief_app_ban_chot_V1.md",
+      "sha256": "3cc252f83374c37c4d136db79a0f303f4a1f08047de8cc7ddcd1717f2bac02e2",
+      "size": 60596
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_brief_claude_design.md",
+      "sha256": "09bd3a8c05f5a43071d45154c2bfd2f9e3b66216bb01832908ba6b21995fca6f",
+      "size": 21293
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_co_che_production.md",
+      "sha256": "a63f02a51a58f1e8af2eb0144815c2224c9f7ad7d62fc571709ebf8d38f75ac8",
+      "size": 48770
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_dac_ta_nghiep_vu_app_mua_V1.md",
+      "sha256": "e0f6deb860bf1688a64b0ee5b2d65015f4b2cc52acb93e72766ec32f0b9c1321",
+      "size": 49566
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_gia_app_mua_multi_segment.md",
+      "sha256": "d702b35040dd53788e6c8c4dca63d6f1f1efa8e5faca4ca398ef52256af34cf8",
+      "size": 12971
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_gia_app_mua_v2.md",
+      "sha256": "2f428114556ff567bf49d0aa4a2dcdad2a43e1cb6bfe55a82b41b597e1cb691a",
+      "size": 18307
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_gia_motion_v2.md",
+      "sha256": "6cd16696b66dd65c989aca81a0213c0d130c31007baf6120a3ef10dd856dffc7",
+      "size": 9018
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_gia_motion_v2_nghiep_vu.md",
+      "sha256": "2367f25d48db40bf82c46bcc8909220ed89c83d2cbd54b34f019e442689b02a5",
+      "size": 15594
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_gia_v2_ban_mua.md",
+      "sha256": "3585919db76cb412b80e910b4d54cde9c53045c912361bd29d41f48ae16ebf5d",
+      "size": 12020
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_muc_man.csv",
+      "sha256": "65895c322322d4792a3ce26940ad8c04e24280674d2df97b12f9ac829e1ebf39",
+      "size": 21610
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_muc_man.html",
+      "sha256": "52e2c15ae660440ba46de602355dde5996e2e584066098f7d025a725fbba5321",
+      "size": 32555
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_sach_mat_hang.csv",
+      "sha256": "84d28b96c959be02182228aaaad2d6d40094469ba05e37b58ad7f2ae45bc7583",
+      "size": 46436
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_danh_sach_mat_hang.html",
+      "sha256": "519053946216298907df9a1985c0e9021f4ae280737bee399ff4f0895ba8bd0c",
+      "size": 73520
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_gop_y_ban_test_app_ban.md",
+      "sha256": "f2181c1f00e7916ff7a2e529ee3cecb980b19254b3e0be4021a6201a02ad7a86",
+      "size": 9713
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_luong_hoat_dong.csv",
+      "sha256": "d0285215ab4d842b8e34fea212b7520eb7afe78bc9309cacae83c8c0921c9cfd",
+      "size": 4428
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_prompt_app_mua_V2.md",
+      "sha256": "0c25e045f4f3b905f48c936a88b789320655bff66e4c123bf9c9db849c9ea708",
+      "size": 16109
+    },
+    {
+      "root": 2,
+      "path": "AgiViet_web_gioi_thieu.html",
+      "sha256": "7898a8b56925adb276f96b26a16a33a58e737180335882e76c421ad672761ebc",
+      "size": 2263218
+    },
+    {
+      "root": 2,
+      "path": "bo-cuc-app-ban/index.html",
+      "sha256": "c7f0276febe1749336f05368affccb877a6677d4140be0f3c1c1336a870aee98",
+      "size": 98195
+    },
+    {
+      "root": 2,
+      "path": "bo-cuc-app-mua/index.html",
+      "sha256": "5ec33adedc71cff0c9ad72688216ec57f022aab704d54a1821c89f183f843ce9",
+      "size": 78119
+    },
+    {
+      "root": 2,
+      "path": "goi-claude-design-app-ban/00_BRIEF_app_ban_chot_V1.md",
+      "sha256": "3cc252f83374c37c4d136db79a0f303f4a1f08047de8cc7ddcd1717f2bac02e2",
+      "size": 60596
+    },
+    {
+      "root": 2,
+      "path": "goi-claude-design-app-ban/bo-cuc-app-ban/index.html",
+      "sha256": "c7f0276febe1749336f05368affccb877a6677d4140be0f3c1c1336a870aee98",
+      "size": 98195
+    },
+    {
+      "root": 2,
+      "path": "goi-claude-design-app-ban/bo-cuc-app-mua/index.html",
+      "sha256": "5ec33adedc71cff0c9ad72688216ec57f022aab704d54a1821c89f183f843ce9",
+      "size": 78119
+    },
+    {
+      "root": 2,
+      "path": "goi-claude-design-app-ban/tai-lieu-tong-hop/index.html",
+      "sha256": "c41a9bf9b80c4c8165a8030052646cb4664765ec66faf5192a658e1e204525ea",
+      "size": 164908
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/anh-trau.js",
+      "sha256": "759764c6f0c09275f48406db4018644db007f174ca01bd15ebf650ed96a25b8e",
+      "size": 1120842
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/ban-do-man.js",
+      "sha256": "454e7611d7829baaaa293cd89dae677ccb21c05bc064b352b938602ab1ddfa50",
+      "size": 14939
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/hieu-ung-app.css",
+      "sha256": "042ab95b5aa9077ced49f7670bd155fbe184d01739cd8bfde5c1961e319c6a62",
+      "size": 2197
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/hieu-ung-app.js",
+      "sha256": "9c8b11901913214b341fa6cf845425e2f2c920a14aadc7f4946182497d638c71",
+      "size": 13319
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/index.html",
+      "sha256": "c40070f697804cd2d9341201dc53cc0f734bdafb33fe4b7ad200052e55cc8067",
+      "size": 54425
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/linh-vat-nguyen.css",
+      "sha256": "704c988436ea667be4c993e12d3c492db8f60725792834282887b13bff6cb964",
+      "size": 372
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/linh-vat-nguyen.js",
+      "sha256": "ce4585bfaad0664d66c0579360fa67136556a65f198ca352019a224434aded14",
+      "size": 16737
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/linh-vat.css",
+      "sha256": "eb795b1ab6a8b25e7e45a9e99c44a4c622f92351e719bae7e43effb43f28055d",
+      "size": 1211
+    },
+    {
+      "root": 2,
+      "path": "hieu-ung-asset/linh-vat.js",
+      "sha256": "42b3422bd1c58fb400f181524cd63267fa3565e4d55f483e1ec4a757e7ed0cae",
+      "size": 10924
+    },
+    {
+      "root": 2,
+      "path": "tai-lieu-tong-hop/index.html",
+      "sha256": "4f3c15482e7b68932a56b97f4a1c06ca3aecf12f193e6721e2b16a6437cb1d38",
+      "size": 176044
+    },
+    {
+      "root": 2,
+      "path": "thiet-ke-lai/index.html",
+      "sha256": "a8d1de0c8f810f29208120c8335229d6c870d8e6ddc3651f4d265d3edfcc9d53",
+      "size": 23189
+    },
+    {
+      "root": 2,
+      "path": "trau-chuyen-dong/PROMPT_do_vat_Gemini.md",
+      "sha256": "fd7e07642566db148ede8bf8f0c589d149bfcabe3942a11f17bd7db2a7786bda",
+      "size": 5952
+    },
+    {
+      "root": 2,
+      "path": "trau-chuyen-dong/PROMPT_tu_the_moi_Gemini.md",
+      "sha256": "32d137215464d1057630e30a59e5eccb8305080016589d374b45bd82611ea0f6",
+      "size": 6079
+    },
+    {
+      "root": 2,
+      "path": "trau-chuyen-dong/canh/canh.js",
+      "sha256": "cf886dd67bccadbe2500f9f6d894e024e589c2b52483da945fc66fec4f7bba62",
+      "size": 44147
+    },
+    {
+      "root": 2,
+      "path": "trau-chuyen-dong/canh/xem.html",
+      "sha256": "de65676404479f7ec616cf9539fb95d002e48ed13d84fba18b4bea282129ddd3",
+      "size": 4792
+    },
+    {
+      "root": 2,
+      "path": "trau-chuyen-dong/index.html",
+      "sha256": "e055bad75dbce84024c56d4392dff22f2f35b82c73141fe7d68e60f370ca0537",
+      "size": 40527
+    },
+    {
+      "root": 2,
+      "path": "trau-lop/DOC-TRUOC.md",
+      "sha256": "5ac33641108002308ed628735f34a3fa8b804fbf05ad9bc13281d6c43f66cef3",
+      "size": 2870
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/anh-trau.js",
+      "sha256": "759764c6f0c09275f48406db4018644db007f174ca01bd15ebf650ed96a25b8e",
+      "size": 1120842
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/index.html",
+      "sha256": "46edbcc20eea821b7ecdeed80c159778e4ece0d5bd8cc857513728966d283ae3",
+      "size": 8043
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/kiem-khung.html",
+      "sha256": "a443d6ebe293c7ac0cd0edf5a3df7d703d2e0319fd92f0561c544b3c070d0505",
+      "size": 638
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/linh-vat-nguyen.css",
+      "sha256": "704c988436ea667be4c993e12d3c492db8f60725792834282887b13bff6cb964",
+      "size": 372
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/linh-vat-nguyen.js",
+      "sha256": "ce4585bfaad0664d66c0579360fa67136556a65f198ca352019a224434aded14",
+      "size": 16737
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/linh-vat.css",
+      "sha256": "00d34dc70094382384eba5d9fb093077cfbc1552d3a872172026169f8881e18a",
+      "size": 785
+    },
+    {
+      "root": 2,
+      "path": "trau-tu-the/linh-vat.js",
+      "sha256": "dcacade4410db529f55264e4270e9b85500caa5f20936fad29819b8a85a51767",
+      "size": 6456
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/canh-v2.js",
+      "sha256": "8bc20299c41cbedb36965af5448cdfdd56378275d495f2f80a4ad4ecaf36e442",
+      "size": 8479
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/linh-vat-v2.js",
+      "sha256": "4dda08bb2eee660211dd2111df18cd600fab42e81d8c25599e2f4ef71dede7f0",
+      "size": 5869
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/thu.html",
+      "sha256": "3bcd21cd31ab5e327b60af5c7065b06eb5ab19f6348f0185ba2f4ceea40f516e",
+      "size": 1996
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/trau-dong-tac.js",
+      "sha256": "faff7680061fe4fd9a0fd8a6d907beae06bbafef1854bd733a8a11cc255807cb",
+      "size": 12317
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/trau-rig.js",
+      "sha256": "303fcbc35b3aa8fb3118ac74b7493acaa8d8c2d36b3dbd99f33e45d7c0441a72",
+      "size": 10128
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/xem-canh.html",
+      "sha256": "a6a7985e5ea3a4af367a3046ba5ab0e6a57074a91577d06caeda1e954aefa7e6",
+      "size": 1291
+    },
+    {
+      "root": 2,
+      "path": "trau-v2/rig/xem-dong-tac.html",
+      "sha256": "a742639ab180b45aa0387e545993e2e0b0c82a90f802cc3af428abaddc660274",
+      "size": 1769
+    }
+  ],
+  "changed": []
+}

@@ -1,0 +1,18 @@
+dump_seconds=14
+restore_seconds=11
+ orders 
+--------
+ 440000
+(1 row)
+
+ transactions 
+--------------
+       841314
+(1 row)
+
+ ledger_sum 
+------------
+          0
+(1 row)
+
+-rw-r--r-- 1 twictrn twictrn 241M Oct 25 13:22 /home/twictrn/agiviet-production-v2/infra/.local/do-sre/backup.dump

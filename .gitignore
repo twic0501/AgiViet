@@ -1,0 +1,28 @@
+# Cài đặt, môi trường, bộ nhớ đệm
+node_modules/
+.venv*/
+__pycache__/
+*.pyc
+.du-lieu/
+pglite-cache/
+*-artifacts/
+
+# Máy cục bộ: công cụ, đường hầm, sao lưu DB, cấu hình thật
+infra/.local/
+*.env
+.env
+.env.*
+!*.env.example
+!.env.example
+*.dump
+*.tgz
+*.tar.gz
+
+# Mô hình AI tải về
+ai/mo_hinh/
+
+# Nhật ký chạy
+*.log
+
+# Tệp tạm
+.tmp/

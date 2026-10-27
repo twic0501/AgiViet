@@ -1,0 +1,11 @@
+**
+!frontend/server.mjs
+!frontend/index.html
+!frontend/sw.js
+!frontend/ban/**
+!frontend/mua/**
+!frontend/shared/**
+!frontend/assets/**
+**/__pycache__
+**/*.pyc
+**/.env*

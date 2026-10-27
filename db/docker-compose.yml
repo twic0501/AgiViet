@@ -1,0 +1,32 @@
+# Postgres cục bộ cho AgiViet production v2. Cổng 55432 để không trùng Postgres khác trên máy.
+# Chạy:  docker compose -f db/docker-compose.yml up -d   rồi   db/scripts/reset.sh
+services:
+  db:
+    image: postgres:17
+    container_name: agiviet-v2-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agiviet_owner          # chủ sở hữu schema, chỉ dùng cho migration
+      POSTGRES_PASSWORD: agiviet_dev_only   # mật khẩu phát triển; production lấy từ secret manager
+      POSTGRES_DB: agiviet
+      TZ: Asia/Ho_Chi_Minh
+      PGTZ: Asia/Ho_Chi_Minh
+    command:
+      - postgres
+      - -c
+      - timezone=Asia/Ho_Chi_Minh
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - log_min_duration_statement=200      # ghi câu chậm hơn 200 ms
+    ports:
+      - "55432:5432"
+    volumes:
+      - agiviet_v2_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agiviet_owner -d agiviet"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  agiviet_v2_pgdata:

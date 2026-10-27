@@ -1,0 +1,87 @@
+{
+  "engine": "PGlite (không phải PostgreSQL native)",
+  "checks": 20,
+  "passed": 20,
+  "results": [
+    {
+      "name": "upgrade 0053 → 0055 giữ token, ID và thời hạn phiên cũ",
+      "passed": true
+    },
+    {
+      "name": "upgrade phân loại lại pending, giữ member và lookup cả hai",
+      "passed": true
+    },
+    {
+      "name": "script backend nguyên bản bị vòng membership",
+      "passed": true
+    },
+    {
+      "name": "provision sửa chạy hai lần không lỗi",
+      "passed": true
+    },
+    {
+      "name": "gateway đọc metadata trước SET ROLE",
+      "passed": true
+    },
+    {
+      "name": "gateway trần không có EXECUTE/DML nghiệp vụ",
+      "passed": true
+    },
+    {
+      "name": "gateway trần bị chặn command",
+      "passed": true
+    },
+    {
+      "name": "broker không sửa cấu hình cổng",
+      "passed": true
+    },
+    {
+      "name": "broker provision principal + GRANT gateway theo backend",
+      "passed": true
+    },
+    {
+      "name": "reader hiện hành đọc lô qua cùng phiên",
+      "passed": true
+    },
+    {
+      "name": "command seller qua script provision",
+      "passed": true
+    },
+    {
+      "name": "session_user cố định, current_user là principal",
+      "passed": true
+    },
+    {
+      "name": "auth rồi system đăng ký nguyên tử cùng phiên",
+      "passed": true
+    },
+    {
+      "name": "meta phát event trong cùng giao dịch",
+      "passed": true
+    },
+    {
+      "name": "COMMIT trả current_user về gateway",
+      "passed": true
+    },
+    {
+      "name": "lô commit ghi đúng principal",
+      "passed": true
+    },
+    {
+      "name": "event metadata giữ actor điều phối",
+      "passed": true
+    },
+    {
+      "name": "mọi membership trực tiếp của gateway không kế thừa",
+      "passed": true
+    },
+    {
+      "name": "ROLLBACK trả role về owner của harness",
+      "passed": true
+    },
+    {
+      "name": "ROLLBACK không giữ dữ liệu command",
+      "passed": true
+    }
+  ]
+}

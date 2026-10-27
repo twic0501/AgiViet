@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-26T22:49:42.869Z",
+  "fixture": true,
+  "port": 28080,
+  "before": {
+    "ok": true,
+    "moi_truong": "thu",
+    "migrations": 0,
+    "dau_van_tay_db": "pg:57",
+    "gio": "2026-11-02T01:00:02.892Z"
+  },
+  "after": {
+    "ok": true,
+    "moi_truong": "thu",
+    "migrations": 0,
+    "dau_van_tay_db": "pg:57",
+    "gio": "2026-11-02T01:00:00.002Z"
+  },
+  "accounts": 50,
+  "reset": true,
+  "relogin": true
+}

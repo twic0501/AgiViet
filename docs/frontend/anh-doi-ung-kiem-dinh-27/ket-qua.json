@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-27T01:39:23.656Z",
+  "origin": "http://127.0.0.1:58889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "inspection",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Mở hồ sơ tranh chấp đúng người; kiểm định tới kết luận chưa chứng minh",
+      "seed": "thu-0",
+      "log": ""
+    },
+    {
+      "profile": "inspection",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Mở hồ sơ tranh chấp đúng người; kiểm định tới kết luận chưa chứng minh",
+      "seed": "thu-0",
+      "log": ""
+    }
+  ],
+  "errors": [],
+  "shots": [
+    "inspection-seller-mo-ho-so.png",
+    "inspection-seller-dat-dich.png",
+    "inspection-buyer-mo-ho-so.png",
+    "inspection-buyer-dat-dich.png"
+  ]
+}

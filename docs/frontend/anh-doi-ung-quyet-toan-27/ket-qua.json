@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-27T01:42:58.884Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "downgrade",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ghi cân nơi đếnĐối ứng xác nhận nơi đếnNgân hàng ảo xử lý và giao webhook QT-764dcf5d-039e-4e2c-a065-393284025c02-CHINgân hàng ảo xử lý và giao webhook REF-34a53981-8650-4c0f-9b3c-7e5f69dfbf7cTài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "downgrade",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ký kết quả nghiệm thuNgân hàng ảo xử lý và giao webhook QT-977c542d-3eea-49b5-872d-b9a872aeb60b-CHINgân hàng ảo xử lý và giao webhook REF-dbfd2fad-aa5a-4f85-a9b3-4891aab060b3Tài chính thử đối soát sau webhook ngân hàng ảo"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "downgrade-seller-mo-ho-so.png",
+    "downgrade-seller-dat-dich.png",
+    "downgrade-buyer-mo-ho-so.png",
+    "downgrade-buyer-dat-dich.png"
+  ]
+}

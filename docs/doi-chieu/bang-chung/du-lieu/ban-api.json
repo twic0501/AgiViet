@@ -1,0 +1,2813 @@
+{
+  "/v1/orders": {
+    "status": 200,
+    "data": [
+      {
+        "id": "8c6a2278-4b16-4781-b04a-1f7c41b31f16",
+        "code": "DEMO56-OFFTAKE",
+        "status": "drafting",
+        "revision": 1,
+        "buyer_name": "Nhà máy chế biến Mekong",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "54000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "d3bb810c-056d-4458-92f7-61fdb2dfed47",
+        "code": "DEMO56-PRE_HARVEST",
+        "status": "drafting",
+        "revision": 1,
+        "buyer_name": "Nhà máy chế biến Mekong",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "41400000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "code": "HD-3031",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Thanh toán",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Trả khoản trước bốc"
+          }
+        }
+      },
+      {
+        "id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "code": "HD-3030",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "193de3cb-24a0-47df-893e-6581d6699ff0",
+        "code": "HD-3029",
+        "status": "drafting",
+        "revision": 2,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "code": "HD-3028",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Thanh toán",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Trả khoản trước bốc"
+          }
+        }
+      },
+      {
+        "id": "cfe172e5-58e9-4977-85d0-511cffb49075",
+        "code": "HD-3027",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "16a2be69-b735-4ecc-81fe-acdb1c07e6fc",
+        "code": "HD-3026",
+        "status": "drafting",
+        "revision": 2,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "c19b7185-1ff4-4896-8f42-76adb7316c68",
+        "code": "HD-3025",
+        "status": "drafting",
+        "revision": 2,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "63917c1b-ebc5-4098-891b-5bdc67f6081c",
+        "code": "HD-3024",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "6d630c77-1469-4ff7-ae67-db950eee7238",
+        "code": "HD-3023",
+        "status": "drafting",
+        "revision": 2,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "27600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "6c3e0d15-d565-4c35-bb3c-bd8822ee3528",
+        "code": "HD-3022",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "24000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "a69471d3-8a57-488c-8eac-4be7a6fb61d0",
+        "code": "HD-3021",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "18800000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Thanh toán",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Trả khoản trước bốc"
+          }
+        }
+      },
+      {
+        "id": "cefdb4f3-9f6f-411e-a77b-3454a990091d",
+        "code": "HD-3020",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "25600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "5c306239-eff4-4003-ae36-c87551321028",
+        "code": "HD-3019",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "46000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "a6c521b7-7a8a-412f-a241-30fe1a7056fc",
+        "code": "HD-3018",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "46000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "92b7e35d-e3c6-4b06-aa4b-60cf10df42f4",
+        "code": "HD-3017",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "25600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "6ddd9273-8a82-4e1a-9141-37c4a1bf6393",
+        "code": "HD-3016",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "25600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "9b79d53c-7ad1-4780-b78e-9ef9d140bb02",
+        "code": "HD-3015",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "25600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "a0111996-03ed-49ca-80d7-690f8e48a63e",
+        "code": "HD-3014",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "46000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "5a84e254-52ff-4621-b5eb-49e6fcccb6e7",
+        "code": "HD-3013",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "24000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "fb5f9138-30b3-4492-8e60-0f1845546454",
+        "code": "HD-3012",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "18800000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Thanh toán",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Trả khoản trước bốc"
+          }
+        }
+      },
+      {
+        "id": "68e3ce1b-c877-48dd-a518-d1aacead82d5",
+        "code": "HD-3011",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "25600000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "cf9833c5-60f2-406b-b946-2d6858dbada1",
+        "code": "HD-3010",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "46000000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "bd8f63d1-f270-4dcc-866a-6dc18ae66f5d",
+        "code": "HD-3009",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chỉ định người nhận, đặt xe"
+          }
+        }
+      },
+      {
+        "id": "b6045f08-ccd9-493f-b1fe-0334562758a5",
+        "code": "HD-3008",
+        "status": "completed",
+        "revision": 7,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Hoàn tất",
+          "chang": "Xong",
+          "toi_luot": null
+        }
+      },
+      {
+        "id": "1716ae84-3f62-4e98-895f-af6e3915ce3e",
+        "code": "HD-3007",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ nghiệm thu",
+          "chang": "Giao nhận",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Nghiệm thu"
+          }
+        }
+      },
+      {
+        "id": "6db00b85-e1c2-4660-ac46-171a94e83944",
+        "code": "HD-3006",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Thanh toán",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Trả khoản trước bốc"
+          }
+        }
+      },
+      {
+        "id": "0b7b9fbb-9f53-4d46-b69c-34ec05a71d05",
+        "code": "HD-3005",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "10a1ed49-b364-4c40-9a64-08b659eac29c",
+        "code": "HD-3004",
+        "status": "drafting",
+        "revision": 2,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      },
+      {
+        "id": "79fc555d-9d61-47d0-8f20-0207322684b0",
+        "code": "HD-3003",
+        "status": "active",
+        "revision": 5,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đã cọc, chờ giao",
+          "chang": "Thanh toán",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Trả khoản trước bốc"
+          }
+        }
+      },
+      {
+        "id": "db12d087-688d-47e0-9d43-2e6263e20c2c",
+        "code": "HD-3002",
+        "status": "awaiting_deposit",
+        "revision": 4,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Chờ cọc",
+          "chang": "Cọc",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Chuyển cọc"
+          }
+        }
+      },
+      {
+        "id": "e6052e55-ee17-40a8-aa3d-bf98d02262e1",
+        "code": "HD-3001",
+        "status": "drafting",
+        "revision": 2,
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "seller_name": "Hộ Nguyễn Thị Năm",
+        "contract_value_vnd": "1150000",
+        "phia_cua_ban": "seller",
+        "hien_thi": {
+          "ten": "Đang soạn hợp đồng",
+          "chang": "Ký",
+          "toi_luot": {
+            "phia": "buyer",
+            "viec": "Ký và gửi"
+          }
+        }
+      }
+    ]
+  },
+  "/v1/offers": {
+    "status": 200,
+    "data": [
+      {
+        "id": "b5baca32-5d7f-408c-89fe-77221a83fcd6",
+        "code": "LC-0044",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0538",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:49:34.112097+07:00"
+        }
+      },
+      {
+        "id": "b1ad8f0c-1a5c-4a7f-a2a6-8a06bf49bb18",
+        "code": "LC-0043",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0537",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:48:27.728074+07:00"
+        }
+      },
+      {
+        "id": "70336764-41ee-4c0c-8903-0a3b97979d32",
+        "code": "LC-0042",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0536",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:47:21.366183+07:00"
+        }
+      },
+      {
+        "id": "24c3e168-a477-456e-9520-ac9b478e20ba",
+        "code": "LC-0041",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0535",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:46:15.216952+07:00"
+        }
+      },
+      {
+        "id": "701ec484-af45-4640-be2c-193e31c2d03f",
+        "code": "LC-0040",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0534",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:44:41.676689+07:00"
+        }
+      },
+      {
+        "id": "600ed4b4-efaf-4eeb-af22-b64c35223799",
+        "code": "LC-0039",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0533",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:43:35.278906+07:00"
+        }
+      },
+      {
+        "id": "9182ab8e-1a98-4772-975b-0f3069beb411",
+        "code": "LC-0038",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0532",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:42:28.943156+07:00"
+        }
+      },
+      {
+        "id": "25c54ee0-2f62-495a-a0b4-32d7c7aabe29",
+        "code": "LC-0037",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0531",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:41:22.82756+07:00"
+        }
+      },
+      {
+        "id": "7cb1b2a3-909b-40b3-b10b-2b879c9832b3",
+        "code": "LC-0036",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0530",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:39:00.863247+07:00"
+        }
+      },
+      {
+        "id": "15ac0d46-e395-4272-869f-33b653bda60a",
+        "code": "LC-0035",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0529",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:38:59.511054+07:00"
+        }
+      },
+      {
+        "id": "7640934b-25e6-4d79-82f1-28e04b283b7f",
+        "code": "LC-0034",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0528",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:38:58.158013+07:00"
+        }
+      },
+      {
+        "id": "f5944aa4-43f7-4977-81c1-aea46c561f62",
+        "code": "LC-0033",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0527",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:38:57.025478+07:00"
+        }
+      },
+      {
+        "id": "9e52a99f-af0c-42d9-a86c-20a73b05efdb",
+        "code": "LC-0032",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0526",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "1200000",
+          "expires_at": "2026-10-28T05:36:35.669309+07:00"
+        }
+      },
+      {
+        "id": "cfd0c89a-926f-4f6a-aca4-7e9e58037965",
+        "code": "LC-0030",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0525",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "14000",
+          "qty_g": "1500000",
+          "expires_at": "2026-10-28T01:18:41.477458+07:00"
+        }
+      },
+      {
+        "id": "97add37c-26e6-407a-88ad-259bfff012e1",
+        "code": "LC-0029",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0524",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "2000000",
+          "expires_at": "2026-10-28T01:18:41.410401+07:00"
+        }
+      },
+      {
+        "id": "119615a5-e8cc-41c9-9fba-3fcde42e527f",
+        "code": "LC-0028",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0523",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "24000",
+          "qty_g": "1000000",
+          "expires_at": "2026-10-28T01:18:41.203219+07:00"
+        }
+      },
+      {
+        "id": "3db3a172-f01c-4883-a592-36fe3b0f539c",
+        "code": "LC-0027",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0522",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23500",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:18:40.991196+07:00"
+        }
+      },
+      {
+        "id": "2dce9c20-d81d-458b-b658-b6c2ec55e876",
+        "code": "LC-0026",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0521",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "32000",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:18:40.729274+07:00"
+        }
+      },
+      {
+        "id": "144da9e2-b9f2-4ca1-ac12-ddedaecf4ebc",
+        "code": "LC-0025",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0520",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "2000000",
+          "expires_at": "2026-10-28T01:18:40.429091+07:00"
+        }
+      },
+      {
+        "id": "ba19a588-3d89-453f-8d37-79f81c2e3afa",
+        "code": "LC-0024",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0519",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "2000000",
+          "expires_at": "2026-10-28T01:12:27.730767+07:00"
+        }
+      },
+      {
+        "id": "82af84b3-db5d-44dc-a4ed-c52734ca1707",
+        "code": "LC-0023",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0518",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "32000",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:12:27.377379+07:00"
+        }
+      },
+      {
+        "id": "aa8b01b8-b403-4f7f-adb8-770aa90d7cd8",
+        "code": "LC-0022",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0517",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "32000",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:12:15.61891+07:00"
+        }
+      },
+      {
+        "id": "ae014c32-b15b-4a70-93ee-7bc5f8957a69",
+        "code": "LC-0021",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0516",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "32000",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:12:10.872835+07:00"
+        }
+      },
+      {
+        "id": "f03ceff7-0e7b-4cec-aded-c2e9519c10c1",
+        "code": "LC-0020",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0515",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "2000000",
+          "expires_at": "2026-10-28T01:12:10.598094+07:00"
+        }
+      },
+      {
+        "id": "fd39699e-3b14-4297-950a-3d4967aa9d48",
+        "code": "LC-0019",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0514",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "14000",
+          "qty_g": "1500000",
+          "expires_at": "2026-10-28T01:12:03.122072+07:00"
+        }
+      },
+      {
+        "id": "944bf0fb-0442-44bc-bbf6-5508c6749938",
+        "code": "LC-0018",
+        "direction": "buyer_bid",
+        "status": "sent",
+        "revision": 1,
+        "lot_code": "L-0513",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "2000000",
+          "expires_at": "2026-10-28T01:12:03.069457+07:00"
+        }
+      },
+      {
+        "id": "83b8babe-5e51-4d87-9fef-e30be1960cfc",
+        "code": "LC-0017",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0512",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "24000",
+          "qty_g": "1000000",
+          "expires_at": "2026-10-28T01:12:02.876505+07:00"
+        }
+      },
+      {
+        "id": "7c9f9f3d-1ff0-4bc6-a3c4-f12144dcb691",
+        "code": "LC-0016",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0511",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23500",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:12:02.667627+07:00"
+        }
+      },
+      {
+        "id": "839171b3-272e-4225-b788-793914fe6bd9",
+        "code": "LC-0015",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0510",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "32000",
+          "qty_g": "800000",
+          "expires_at": "2026-10-28T01:12:02.399487+07:00"
+        }
+      },
+      {
+        "id": "8f024252-9048-415e-a7cb-32089d629a5a",
+        "code": "LC-0014",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0509",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "2000000",
+          "expires_at": "2026-10-28T01:12:02.099549+07:00"
+        }
+      },
+      {
+        "id": "2d681f13-456f-4835-82ae-4f748a0813b5",
+        "code": "LC-0013",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0508",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:08:42.673925+07:00"
+        }
+      },
+      {
+        "id": "f9cafc27-4404-47aa-bfbf-e8cacfc9801f",
+        "code": "LC-0012",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0507",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:08:41.245275+07:00"
+        }
+      },
+      {
+        "id": "ef7e6623-012a-4ca5-84bd-7b2b17e67a50",
+        "code": "LC-0011",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0506",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:05:16.424592+07:00"
+        }
+      },
+      {
+        "id": "f9f02f6f-545d-4364-a399-acf705588851",
+        "code": "LC-0010",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0505",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:05:15.447613+07:00"
+        }
+      },
+      {
+        "id": "091ee7f9-d1f7-4564-8fee-7e4c2b26423b",
+        "code": "LC-0009",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0504",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:05:14.457116+07:00"
+        }
+      },
+      {
+        "id": "97670108-4a1b-4ae4-a0ce-d3281b193f19",
+        "code": "LC-0008",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0503",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:05:13.517028+07:00"
+        }
+      },
+      {
+        "id": "3714c6cb-a9ac-491b-9147-5e508999e30e",
+        "code": "LC-0007",
+        "direction": "buyer_bid",
+        "status": "rejected",
+        "revision": 2,
+        "lot_code": "L-0502",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T01:05:12.737892+07:00"
+        }
+      },
+      {
+        "id": "91984ab6-2558-408f-b395-15a8e65355f0",
+        "code": "LC-0006",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0501",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T00:40:38.436774+07:00"
+        }
+      },
+      {
+        "id": "158c4fc4-74d2-4ef3-ac84-cc1dfa8f9dc4",
+        "code": "LC-0005",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0500",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T00:40:37.495283+07:00"
+        }
+      },
+      {
+        "id": "83682086-9f14-4b82-aed8-7099efa4bf81",
+        "code": "LC-0004",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0499",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T00:40:36.524274+07:00"
+        }
+      },
+      {
+        "id": "91a573d4-169a-4757-b922-1e80abc9430f",
+        "code": "LC-0003",
+        "direction": "buyer_bid",
+        "status": "rejected",
+        "revision": 2,
+        "lot_code": "L-0498",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T00:40:35.80257+07:00"
+        }
+      },
+      {
+        "id": "228a59b9-13ad-4133-b1fe-e5e0da4b0678",
+        "code": "LC-0002",
+        "direction": "buyer_bid",
+        "status": "accepted",
+        "revision": 2,
+        "lot_code": "L-0497",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T00:39:00.967542+07:00"
+        }
+      },
+      {
+        "id": "06bec30f-7e33-4a9c-89c4-f12af4751ce6",
+        "code": "LC-0001",
+        "direction": "buyer_bid",
+        "status": "rejected",
+        "revision": 2,
+        "lot_code": "L-0496",
+        "la_ben_mua": false,
+        "vong_cuoi": {
+          "round_no": 1,
+          "from_side": "buyer",
+          "price_vnd": "23000",
+          "qty_g": "50000",
+          "expires_at": "2026-10-28T00:39:00.274984+07:00"
+        }
+      }
+    ]
+  },
+  "/v1/lots?mine=true": {
+    "status": 200,
+    "data": [
+      {
+        "id": "f31d2bc3-0673-592d-9f6f-fb3948913de0",
+        "code": "L-0412",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "estimated",
+        "status": "on_sale",
+        "revision": 2,
+        "declared_qty_g": "4000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "4000000"
+      },
+      {
+        "id": "3e615324-61bb-55a0-a108-485ee04cc5ac",
+        "code": "L-0413",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L2",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 2,
+        "declared_qty_g": "600000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "600000"
+      },
+      {
+        "id": "95e87b53-f0f1-5d85-af7b-de8a30f7a466",
+        "code": "L-0414",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 2,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "2000000"
+      },
+      {
+        "id": "db5806e6-17b8-42e0-9b43-755d37de524a",
+        "code": "L-0496",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "upcoming",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "50000"
+      },
+      {
+        "id": "c5ae7156-79b0-4ed1-be62-578e0a69a34a",
+        "code": "L-0497",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "upcoming",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "be467e6b-7778-45b4-a107-6dbfe62835f2",
+        "code": "L-0498",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "50000"
+      },
+      {
+        "id": "b4e89bbb-6158-4ffa-87ee-bca7ea409eda",
+        "code": "L-0499",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "da04caa5-7906-41e7-a5e0-2399b6344e44",
+        "code": "L-0500",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "0098453b-b323-4a6c-9a2a-60a0496b13ee",
+        "code": "L-0501",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "17ed8e58-19a4-4e1b-89b5-2d9f85ac8115",
+        "code": "L-0502",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "50000"
+      },
+      {
+        "id": "d3f69779-70e4-4c5a-b15a-9b3cb983365b",
+        "code": "L-0503",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "83ccc56f-fba9-455b-a513-c0d88c0c09f5",
+        "code": "L-0504",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "40de498e-6f46-4811-8047-145bbcb0158c",
+        "code": "L-0505",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "79d52aa0-c162-4d74-8e81-76be473f1782",
+        "code": "L-0506",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "52e54579-3953-4ee3-acec-fe98e3eb02f1",
+        "code": "L-0507",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "ef01dca2-3bd9-49f4-9202-5a2a4ae2f455",
+        "code": "L-0508",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "50000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "50000"
+      },
+      {
+        "id": "8a158004-12d1-435b-8a39-5ffdee0f092f",
+        "code": "L-0509",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "2bbfcee3-b1be-4d20-8b93-b545e609ea6d",
+        "code": "L-0510",
+        "product_code": "BUOI_DA_XANH",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "dd6e8719-b5eb-47f6-8481-3e6db9a82b4c",
+        "code": "L-0511",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "37ff96e8-e79d-4c09-99aa-de1c55188de9",
+        "code": "L-0512",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "ef703247-20b8-4d34-8103-b59ad87097fa",
+        "code": "L-0513",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "2000000"
+      },
+      {
+        "id": "31bed01e-5aa1-4b4d-a855-337a2b28a832",
+        "code": "L-0514",
+        "product_code": "CHANH_KHONG_HAT",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1500000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "1500000"
+      },
+      {
+        "id": "56664665-447e-4b14-936d-68fcd3558e69",
+        "code": "L-0515",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "6adcc344-d9a1-4833-9fa2-e9060a828119",
+        "code": "L-0516",
+        "product_code": "BUOI_DA_XANH",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "4db9783a-8860-44ef-bbd0-521ea395f600",
+        "code": "L-0517",
+        "product_code": "BUOI_DA_XANH",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "cdb49939-de01-4158-b7ab-0878d5cab308",
+        "code": "L-0518",
+        "product_code": "BUOI_DA_XANH",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "96f55284-b149-41ab-91ee-05d8599b5e6d",
+        "code": "L-0519",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "ae4b974a-2996-42ad-94f7-eb9e1d4bfe31",
+        "code": "L-0520",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "204a6e51-72fb-471e-8972-51c952e2ec6e",
+        "code": "L-0521",
+        "product_code": "BUOI_DA_XANH",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "25113bff-e36f-45b5-949c-8d8df500160b",
+        "code": "L-0522",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "800000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "629cd1ab-851b-4ea3-a3f8-1239cf258325",
+        "code": "L-0523",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "fad5a6ee-fa77-4e9e-8dee-d8f7ab02ea2b",
+        "code": "L-0524",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "2000000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "2000000"
+      },
+      {
+        "id": "20275f23-bf9f-466e-a71c-7d3d03bd25c0",
+        "code": "L-0525",
+        "product_code": "CHANH_KHONG_HAT",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1500000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "1500000"
+      },
+      {
+        "id": "5446cfe3-881e-4b46-ab0d-d9da3301de53",
+        "code": "L-0526",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "1200000"
+      },
+      {
+        "id": "6c472375-3118-4de2-b21f-10739d4700ef",
+        "code": "L-0527",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "1200000"
+      },
+      {
+        "id": "10e3d217-cd49-4fb2-b101-f085941d1375",
+        "code": "L-0528",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "b7189e5c-6384-40bd-aa87-317a14be0097",
+        "code": "L-0529",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "7d1f0b67-ee2a-4945-9246-43453308d8e6",
+        "code": "L-0530",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "7013ad4c-e891-42c4-9f0a-291579ad8cf8",
+        "code": "L-0531",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "1200000"
+      },
+      {
+        "id": "177fc036-083d-4345-8b35-0601b9ee3718",
+        "code": "L-0532",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "c2486144-1fcc-4d83-bb9f-27d85f3a94ac",
+        "code": "L-0533",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "7c8046f5-7d3a-4897-b454-be81db393523",
+        "code": "L-0534",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "7fdb068e-7007-41e2-a447-fc9f12611ce7",
+        "code": "L-0535",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "1200000"
+      },
+      {
+        "id": "cdbe66c4-26cb-4cf9-9229-a4470748183f",
+        "code": "L-0536",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "65c9fab3-c769-4102-ac45-42d305a819e1",
+        "code": "L-0537",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      },
+      {
+        "id": "ea33c4dc-bf1d-47da-9f3c-1a5a0cc57bf6",
+        "code": "L-0538",
+        "product_code": "XOAI_CAT_CHU",
+        "grade_code": "L1",
+        "qty_basis": "weighed",
+        "status": "on_sale",
+        "revision": 4,
+        "declared_qty_g": "1200000",
+        "ban_gap_tu": null,
+        "ban_gap_den": null,
+        "ban_gap_ly_do": null,
+        "site_id": "05c58fa7-622f-58e7-ab2d-c7f8985a93e4",
+        "available_g": "0"
+      }
+    ]
+  },
+  "/v1/demands": {
+    "status": 200,
+    "data": [
+      {
+        "id": "3aa573f7-1eca-58b2-8837-61eda8cd3c1b",
+        "code": "NC-3001",
+        "product_code": "XOAI_CAT_CHU",
+        "segment_code": "processor",
+        "status": "open",
+        "needed_from": "2026-11-03",
+        "needed_to": "2026-11-05",
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "lines": [
+          {
+            "id": "3ff70ce5-033e-5184-813a-53416331d298",
+            "grade_code": "L1",
+            "qty_g": "2000000"
+          }
+        ]
+      },
+      {
+        "id": "8906fbec-a958-51cb-9d82-12d4938936b0",
+        "code": "NC-3002",
+        "product_code": "XOAI_CAT_CHU",
+        "segment_code": "processor",
+        "status": "open",
+        "needed_from": "2026-11-03",
+        "needed_to": "2026-11-15",
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "lines": [
+          {
+            "id": "4212949b-2faf-571a-aaac-c86bcd23f73a",
+            "grade_code": "L2",
+            "qty_g": "3000000"
+          },
+          {
+            "id": "0e70db0e-1b92-5aed-85c6-56fd75da7798",
+            "grade_code": "L3",
+            "qty_g": "2000000"
+          }
+        ]
+      },
+      {
+        "id": "7eba224b-7023-5680-82b0-f00cabc80235",
+        "code": "NC-3003",
+        "product_code": "SAU_RIENG",
+        "segment_code": "export",
+        "status": "open",
+        "needed_from": "2026-11-06",
+        "needed_to": "2026-11-09",
+        "buyer_name": "Công ty XNK Sông Tiền",
+        "lines": [
+          {
+            "id": "b38e9350-6f7c-5f93-8979-6380e646d802",
+            "grade_code": "A",
+            "qty_g": "18000000"
+          }
+        ]
+      },
+      {
+        "id": "97017a4b-8e10-59ae-aee2-7405778c4665",
+        "code": "NC-3004",
+        "product_code": "TOM_THE",
+        "segment_code": "export",
+        "status": "open",
+        "needed_from": "2026-11-05",
+        "needed_to": "2026-11-06",
+        "buyer_name": "Công ty Thủy sản Cửu Long Xanh",
+        "lines": [
+          {
+            "id": "707560bd-93fb-5488-b8c2-9bed6f9725bf",
+            "grade_code": "48-52",
+            "qty_g": "1500000"
+          }
+        ]
+      },
+      {
+        "id": "a61a7821-be4e-5bc6-80ea-d3dc9d9dde83",
+        "code": "NC-3005",
+        "product_code": "BUOI_DA_XANH",
+        "segment_code": "wholesaler",
+        "status": "open",
+        "needed_from": "2026-11-02",
+        "needed_to": "2026-11-04",
+        "buyer_name": "Vựa trái cây Tư Hùng",
+        "lines": [
+          {
+            "id": "24f7c798-fa9e-5375-a4a2-8619e2c2343a",
+            "grade_code": "L1",
+            "qty_g": "3000000"
+          }
+        ]
+      },
+      {
+        "id": "f8aa5094-38c5-5e52-a81b-5f78546acb64",
+        "code": "NC-3006",
+        "product_code": "LUA_TUOI",
+        "segment_code": "wholesaler",
+        "status": "open",
+        "needed_from": "2026-11-04",
+        "needed_to": "2026-11-05",
+        "buyer_name": "Vựa lúa Ba Thành",
+        "lines": [
+          {
+            "id": "06068c00-2b7c-57b6-88ce-8cdb5d33ea88",
+            "grade_code": "OM18-am25",
+            "qty_g": "30000000"
+          }
+        ]
+      },
+      {
+        "id": "13727e8a-727d-5909-98c9-a87d3e3f65a4",
+        "code": "NC-3007",
+        "product_code": "XOAI_CAT_CHU",
+        "segment_code": "wholesaler",
+        "status": "open",
+        "needed_from": "2026-11-04",
+        "needed_to": "2026-11-04",
+        "buyer_name": "Vựa trái cây Tư Hùng",
+        "lines": [
+          {
+            "id": "99a51def-83ff-5067-85ad-780a4b132c1e",
+            "grade_code": "L1",
+            "qty_g": "200000"
+          }
+        ]
+      },
+      {
+        "id": "e75514f2-40fa-5ec3-9f2d-e3ba3dda398e",
+        "code": "NC-3008",
+        "product_code": "XOAI_CAT_CHU",
+        "segment_code": "processor",
+        "status": "open",
+        "needed_from": "2026-11-03",
+        "needed_to": "2026-11-06",
+        "buyer_name": "Nhà máy sấy Đồng Xanh",
+        "lines": [
+          {
+            "id": "b4883848-43a6-581e-ada0-12db4fd1583a",
+            "grade_code": "L1",
+            "qty_g": "2500000"
+          }
+        ]
+      }
+    ]
+  },
+  "/v1/org": {
+    "status": 404,
+    "data": {
+      "message": "Route GET:/v1/org not found",
+      "error": "Not Found",
+      "statusCode": 404
+    }
+  },
+  "/v1/notifications": {
+    "status": 200,
+    "data": [
+      {
+        "seq": "1072",
+        "id": "58d854e5-4d17-424a-bdd5-27a1055596a3",
+        "event_type": "order.drafting",
+        "aggregate_type": "order",
+        "aggregate_id": "8c6a2278-4b16-4781-b04a-1f7c41b31f16",
+        "order_id": "8c6a2278-4b16-4781-b04a-1f7c41b31f16",
+        "occurred_at": "2026-10-26T23:14:19.043Z",
+        "payload": {
+          "to": "drafting",
+          "from": null,
+          "history_id": 963
+        }
+      },
+      {
+        "seq": "1070",
+        "id": "1b6a2d93-c378-47da-a457-4e025ac10c1f",
+        "event_type": "order.drafting",
+        "aggregate_type": "order",
+        "aggregate_id": "d3bb810c-056d-4458-92f7-61fdb2dfed47",
+        "order_id": "d3bb810c-056d-4458-92f7-61fdb2dfed47",
+        "occurred_at": "2026-10-26T23:14:19.043Z",
+        "payload": {
+          "to": "drafting",
+          "from": null,
+          "history_id": 961
+        }
+      },
+      {
+        "seq": "1050",
+        "id": "88d0b7a6-fbd2-4dbe-8854-ed712755112a",
+        "event_type": "direct_payment.due",
+        "aggregate_type": "direct_payment",
+        "aggregate_id": "3e03d346-ef14-4fbd-8b26-2767b5500b87",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.307Z",
+        "payload": {
+          "to": "due",
+          "from": null,
+          "history_id": 941
+        }
+      },
+      {
+        "seq": "1049",
+        "id": "c75e9154-1379-4663-a4c7-64af3d96ee05",
+        "event_type": "delivery.preparing",
+        "aggregate_type": "delivery",
+        "aggregate_id": "7c2de979-e982-4723-9652-4f224493f0fd",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.307Z",
+        "payload": {
+          "to": "preparing",
+          "from": null,
+          "history_id": 940
+        }
+      },
+      {
+        "seq": "1047",
+        "id": "60059e39-51d5-40d9-a7aa-a855e31fa77d",
+        "event_type": "hold.committed",
+        "aggregate_type": "hold",
+        "aggregate_id": "f6fe4e3f-69de-4e46-82a1-07cf61f49e37",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.307Z",
+        "payload": {
+          "to": "committed",
+          "from": "active",
+          "history_id": 938
+        }
+      },
+      {
+        "seq": "1046",
+        "id": "bbe11850-0ce8-4a8d-978e-3d7eab7828bd",
+        "event_type": "don.hieu_luc",
+        "aggregate_type": "order",
+        "aggregate_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.307Z",
+        "payload": {
+          "to": "active",
+          "from": "awaiting_deposit",
+          "history_id": 937
+        }
+      },
+      {
+        "seq": "1045",
+        "id": "82464f82-97bb-49ec-a59e-cf20456bf7ee",
+        "event_type": "deposit.held",
+        "aggregate_type": "deposit",
+        "aggregate_id": "57bd8caa-7213-447f-8bb9-6abfcb1f248a",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.307Z",
+        "payload": {
+          "to": "held",
+          "from": "awaiting_transfer",
+          "history_id": 936
+        }
+      },
+      {
+        "seq": "1042",
+        "id": "f591cc69-254c-4aa6-9e5e-7f94195906ec",
+        "event_type": "deposit.awaiting_transfer",
+        "aggregate_type": "deposit",
+        "aggregate_id": "57bd8caa-7213-447f-8bb9-6abfcb1f248a",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.280Z",
+        "payload": {
+          "to": "awaiting_transfer",
+          "from": null,
+          "history_id": 933
+        }
+      },
+      {
+        "seq": "1041",
+        "id": "d9103567-d2e7-4dab-9347-46c0dd68cf85",
+        "event_type": "order.awaiting_deposit",
+        "aggregate_type": "order",
+        "aggregate_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.280Z",
+        "payload": {
+          "to": "awaiting_deposit",
+          "from": "awaiting_seller",
+          "history_id": 932
+        }
+      },
+      {
+        "seq": "1038",
+        "id": "d926d85f-1886-4626-b359-fae8c1cc1520",
+        "event_type": "order.awaiting_seller",
+        "aggregate_type": "order",
+        "aggregate_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.238Z",
+        "payload": {
+          "to": "awaiting_seller",
+          "from": "drafting",
+          "history_id": 929
+        }
+      },
+      {
+        "seq": "1035",
+        "id": "b8abca1b-420a-422e-b865-65eeedbc8ec3",
+        "event_type": "order.drafting",
+        "aggregate_type": "order",
+        "aggregate_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.142Z",
+        "payload": {
+          "to": "drafting",
+          "from": null,
+          "history_id": 926
+        }
+      },
+      {
+        "seq": "1032",
+        "id": "96a091a8-ee47-40d0-91b0-4d9874c861c9",
+        "event_type": "hold.active",
+        "aggregate_type": "hold",
+        "aggregate_id": "f6fe4e3f-69de-4e46-82a1-07cf61f49e37",
+        "order_id": "02f4a9e3-33b1-4e2a-87d8-8f8d55969526",
+        "occurred_at": "2026-10-26T22:49:34.131Z",
+        "payload": {
+          "to": "active",
+          "from": null,
+          "history_id": 923
+        }
+      },
+      {
+        "seq": "1031",
+        "id": "cf1611a5-dc6d-4587-bec8-7459aa6302b2",
+        "event_type": "offer.accepted",
+        "aggregate_type": "offer",
+        "aggregate_id": "b5baca32-5d7f-408c-89fe-77221a83fcd6",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:49:34.131Z",
+        "payload": {
+          "to": "accepted",
+          "from": "sent",
+          "history_id": 922
+        }
+      },
+      {
+        "seq": "1029",
+        "id": "d7a420ba-16e7-4aee-847e-ad45147a57d8",
+        "event_type": "offer.sent",
+        "aggregate_type": "offer",
+        "aggregate_id": "b5baca32-5d7f-408c-89fe-77221a83fcd6",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:49:34.112Z",
+        "payload": {
+          "to": "sent",
+          "from": null,
+          "history_id": 920
+        }
+      },
+      {
+        "seq": "1028",
+        "id": "04cc7264-e651-4a80-bd47-ca97e07cd4fd",
+        "event_type": "lo.da_dang",
+        "aggregate_type": "lot",
+        "aggregate_id": "ea33c4dc-bf1d-47da-9f3c-1a5a0cc57bf6",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:49:34.097Z",
+        "payload": {}
+      },
+      {
+        "seq": "1027",
+        "id": "56a40c94-91f4-45a0-bb1a-fa7ef5836685",
+        "event_type": "lot.on_sale",
+        "aggregate_type": "lot",
+        "aggregate_id": "ea33c4dc-bf1d-47da-9f3c-1a5a0cc57bf6",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:49:34.097Z",
+        "payload": {
+          "to": "on_sale",
+          "from": "draft",
+          "history_id": 919
+        }
+      },
+      {
+        "seq": "1025",
+        "id": "3a0e299d-b072-46fe-9ae9-98135534ade8",
+        "event_type": "lot.price",
+        "aggregate_type": "lot",
+        "aggregate_id": "ea33c4dc-bf1d-47da-9f3c-1a5a0cc57bf6",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:49:34.065Z",
+        "payload": {}
+      },
+      {
+        "seq": "1024",
+        "id": "58bcaac2-a325-4f59-b2c5-99b79f20f272",
+        "event_type": "lot.draft",
+        "aggregate_type": "lot",
+        "aggregate_id": "ea33c4dc-bf1d-47da-9f3c-1a5a0cc57bf6",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:49:34.065Z",
+        "payload": {
+          "to": "draft",
+          "from": null,
+          "history_id": 917
+        }
+      },
+      {
+        "seq": "1021",
+        "id": "013582ec-d2f9-46a3-b132-febcbd3d30b1",
+        "event_type": "deposit.awaiting_transfer",
+        "aggregate_type": "deposit",
+        "aggregate_id": "1641325c-407e-4402-8323-153091075541",
+        "order_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "occurred_at": "2026-10-26T22:48:27.881Z",
+        "payload": {
+          "to": "awaiting_transfer",
+          "from": null,
+          "history_id": 914
+        }
+      },
+      {
+        "seq": "1020",
+        "id": "56e45ce5-3068-4a67-8201-252ef6989816",
+        "event_type": "order.awaiting_deposit",
+        "aggregate_type": "order",
+        "aggregate_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "order_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "occurred_at": "2026-10-26T22:48:27.881Z",
+        "payload": {
+          "to": "awaiting_deposit",
+          "from": "awaiting_seller",
+          "history_id": 913
+        }
+      },
+      {
+        "seq": "1017",
+        "id": "e56c1513-93e7-445c-80e2-505d12d868fb",
+        "event_type": "order.awaiting_seller",
+        "aggregate_type": "order",
+        "aggregate_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "order_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "occurred_at": "2026-10-26T22:48:27.853Z",
+        "payload": {
+          "to": "awaiting_seller",
+          "from": "drafting",
+          "history_id": 910
+        }
+      },
+      {
+        "seq": "1014",
+        "id": "2ab10b22-d25e-4f5a-a4c1-3754a35921d0",
+        "event_type": "order.drafting",
+        "aggregate_type": "order",
+        "aggregate_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "order_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "occurred_at": "2026-10-26T22:48:27.763Z",
+        "payload": {
+          "to": "drafting",
+          "from": null,
+          "history_id": 907
+        }
+      },
+      {
+        "seq": "1011",
+        "id": "fc8a421e-6b52-4d0b-8a26-a46aca1d3a37",
+        "event_type": "hold.active",
+        "aggregate_type": "hold",
+        "aggregate_id": "1d101a24-1965-4438-953e-fffc5d559d52",
+        "order_id": "65b39399-8197-4d76-859e-4b46208e5533",
+        "occurred_at": "2026-10-26T22:48:27.750Z",
+        "payload": {
+          "to": "active",
+          "from": null,
+          "history_id": 904
+        }
+      },
+      {
+        "seq": "1010",
+        "id": "fc15f2bc-8db8-48b9-934b-99fb77c16d94",
+        "event_type": "offer.accepted",
+        "aggregate_type": "offer",
+        "aggregate_id": "b1ad8f0c-1a5c-4a7f-a2a6-8a06bf49bb18",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:48:27.750Z",
+        "payload": {
+          "to": "accepted",
+          "from": "sent",
+          "history_id": 903
+        }
+      },
+      {
+        "seq": "1008",
+        "id": "4f69bc6d-1e01-4d10-940e-1078b285b07f",
+        "event_type": "offer.sent",
+        "aggregate_type": "offer",
+        "aggregate_id": "b1ad8f0c-1a5c-4a7f-a2a6-8a06bf49bb18",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:48:27.728Z",
+        "payload": {
+          "to": "sent",
+          "from": null,
+          "history_id": 901
+        }
+      },
+      {
+        "seq": "1007",
+        "id": "dd1ad423-c5e1-42f1-8ff1-60703900013b",
+        "event_type": "lo.da_dang",
+        "aggregate_type": "lot",
+        "aggregate_id": "65c9fab3-c769-4102-ac45-42d305a819e1",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:48:27.715Z",
+        "payload": {}
+      },
+      {
+        "seq": "1006",
+        "id": "468f9eb9-c1cb-451d-a668-2ba229a18d99",
+        "event_type": "lot.on_sale",
+        "aggregate_type": "lot",
+        "aggregate_id": "65c9fab3-c769-4102-ac45-42d305a819e1",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:48:27.715Z",
+        "payload": {
+          "to": "on_sale",
+          "from": "draft",
+          "history_id": 900
+        }
+      },
+      {
+        "seq": "1004",
+        "id": "1461981e-876c-4f39-9d61-0707b38acbbc",
+        "event_type": "lot.price",
+        "aggregate_type": "lot",
+        "aggregate_id": "65c9fab3-c769-4102-ac45-42d305a819e1",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:48:27.682Z",
+        "payload": {}
+      },
+      {
+        "seq": "1003",
+        "id": "8d9e4b78-a75a-45e3-a416-f27e26a5880e",
+        "event_type": "lot.draft",
+        "aggregate_type": "lot",
+        "aggregate_id": "65c9fab3-c769-4102-ac45-42d305a819e1",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:48:27.682Z",
+        "payload": {
+          "to": "draft",
+          "from": null,
+          "history_id": 898
+        }
+      },
+      {
+        "seq": "1001",
+        "id": "543f10a0-64d4-4dce-a2c8-d0cc9f2b42e5",
+        "event_type": "order.drafting",
+        "aggregate_type": "order",
+        "aggregate_id": "193de3cb-24a0-47df-893e-6581d6699ff0",
+        "order_id": "193de3cb-24a0-47df-893e-6581d6699ff0",
+        "occurred_at": "2026-10-26T22:47:21.399Z",
+        "payload": {
+          "to": "drafting",
+          "from": null,
+          "history_id": 896
+        }
+      },
+      {
+        "seq": "998",
+        "id": "23999f38-af5c-4369-9eb5-a78c7c48f152",
+        "event_type": "hold.active",
+        "aggregate_type": "hold",
+        "aggregate_id": "71c33391-8287-4e6a-9087-1de63352e2d4",
+        "order_id": "193de3cb-24a0-47df-893e-6581d6699ff0",
+        "occurred_at": "2026-10-26T22:47:21.386Z",
+        "payload": {
+          "to": "active",
+          "from": null,
+          "history_id": 893
+        }
+      },
+      {
+        "seq": "997",
+        "id": "1ff35195-f9a1-47a4-95e0-287fdf105eee",
+        "event_type": "offer.accepted",
+        "aggregate_type": "offer",
+        "aggregate_id": "70336764-41ee-4c0c-8903-0a3b97979d32",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:47:21.386Z",
+        "payload": {
+          "to": "accepted",
+          "from": "sent",
+          "history_id": 892
+        }
+      },
+      {
+        "seq": "995",
+        "id": "2f367e1a-902d-4ee2-be35-bfdb63ba554c",
+        "event_type": "offer.sent",
+        "aggregate_type": "offer",
+        "aggregate_id": "70336764-41ee-4c0c-8903-0a3b97979d32",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:47:21.366Z",
+        "payload": {
+          "to": "sent",
+          "from": null,
+          "history_id": 890
+        }
+      },
+      {
+        "seq": "994",
+        "id": "b70c72e8-3e02-446f-9cde-253e9938a3b5",
+        "event_type": "lo.da_dang",
+        "aggregate_type": "lot",
+        "aggregate_id": "cdbe66c4-26cb-4cf9-9229-a4470748183f",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:47:21.349Z",
+        "payload": {}
+      },
+      {
+        "seq": "993",
+        "id": "ece194be-000b-4285-ab2c-30c64e46bd1c",
+        "event_type": "lot.on_sale",
+        "aggregate_type": "lot",
+        "aggregate_id": "cdbe66c4-26cb-4cf9-9229-a4470748183f",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:47:21.349Z",
+        "payload": {
+          "to": "on_sale",
+          "from": "draft",
+          "history_id": 889
+        }
+      },
+      {
+        "seq": "991",
+        "id": "f5518ef3-b2c7-4109-9ea0-8b38c7f2a622",
+        "event_type": "lot.price",
+        "aggregate_type": "lot",
+        "aggregate_id": "cdbe66c4-26cb-4cf9-9229-a4470748183f",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:47:21.302Z",
+        "payload": {}
+      },
+      {
+        "seq": "990",
+        "id": "210a8411-6515-4058-98d7-91b3d00f2547",
+        "event_type": "lot.draft",
+        "aggregate_type": "lot",
+        "aggregate_id": "cdbe66c4-26cb-4cf9-9229-a4470748183f",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:47:21.302Z",
+        "payload": {
+          "to": "draft",
+          "from": null,
+          "history_id": 887
+        }
+      },
+      {
+        "seq": "988",
+        "id": "2a0422b1-add2-4d2e-b46d-696f8821ca67",
+        "event_type": "offer.sent",
+        "aggregate_type": "offer",
+        "aggregate_id": "24c3e168-a477-456e-9520-ac9b478e20ba",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:46:15.216Z",
+        "payload": {
+          "to": "sent",
+          "from": null,
+          "history_id": 885
+        }
+      },
+      {
+        "seq": "987",
+        "id": "12efc8e0-c80d-4018-8136-1ba3f5da702e",
+        "event_type": "lo.da_dang",
+        "aggregate_type": "lot",
+        "aggregate_id": "7fdb068e-7007-41e2-a447-fc9f12611ce7",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:46:15.205Z",
+        "payload": {}
+      },
+      {
+        "seq": "986",
+        "id": "ba5e597a-0a3a-4ece-9b0b-fdae4af12fee",
+        "event_type": "lot.on_sale",
+        "aggregate_type": "lot",
+        "aggregate_id": "7fdb068e-7007-41e2-a447-fc9f12611ce7",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:46:15.205Z",
+        "payload": {
+          "to": "on_sale",
+          "from": "draft",
+          "history_id": 884
+        }
+      },
+      {
+        "seq": "984",
+        "id": "7105ff62-8782-49e9-90a1-9f3f780bdbc9",
+        "event_type": "lot.price",
+        "aggregate_type": "lot",
+        "aggregate_id": "7fdb068e-7007-41e2-a447-fc9f12611ce7",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:46:15.169Z",
+        "payload": {}
+      },
+      {
+        "seq": "983",
+        "id": "a404bff1-fa0d-4061-b911-605f73bb5b08",
+        "event_type": "lot.draft",
+        "aggregate_type": "lot",
+        "aggregate_id": "7fdb068e-7007-41e2-a447-fc9f12611ce7",
+        "order_id": null,
+        "occurred_at": "2026-10-26T22:46:15.169Z",
+        "payload": {
+          "to": "draft",
+          "from": null,
+          "history_id": 882
+        }
+      },
+      {
+        "seq": "982",
+        "id": "b11663ee-5009-4311-a643-dbe5b992f251",
+        "event_type": "direct_payment.due",
+        "aggregate_type": "direct_payment",
+        "aggregate_id": "bf30b7b1-bf18-4900-a2b1-7b002a6bda2c",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.840Z",
+        "payload": {
+          "to": "due",
+          "from": null,
+          "history_id": 881
+        }
+      },
+      {
+        "seq": "981",
+        "id": "07b59569-dd3e-44f0-819f-372518f1c218",
+        "event_type": "delivery.preparing",
+        "aggregate_type": "delivery",
+        "aggregate_id": "94b61086-00a2-479e-8279-5e11986a9bac",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.840Z",
+        "payload": {
+          "to": "preparing",
+          "from": null,
+          "history_id": 880
+        }
+      },
+      {
+        "seq": "979",
+        "id": "d43a863b-0295-470f-8f22-744fc824c144",
+        "event_type": "hold.committed",
+        "aggregate_type": "hold",
+        "aggregate_id": "0bfc530f-2e6b-409e-8722-d79e5c1ac9fa",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.840Z",
+        "payload": {
+          "to": "committed",
+          "from": "active",
+          "history_id": 878
+        }
+      },
+      {
+        "seq": "978",
+        "id": "8b4ee34d-57b1-47d3-b09f-e9b42a814965",
+        "event_type": "don.hieu_luc",
+        "aggregate_type": "order",
+        "aggregate_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.840Z",
+        "payload": {
+          "to": "active",
+          "from": "awaiting_deposit",
+          "history_id": 877
+        }
+      },
+      {
+        "seq": "977",
+        "id": "c01f3f61-3cee-49e8-95e9-45d6c8b38bd1",
+        "event_type": "deposit.held",
+        "aggregate_type": "deposit",
+        "aggregate_id": "b1b638f3-75c3-4635-9d67-b2aac5062d24",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.840Z",
+        "payload": {
+          "to": "held",
+          "from": "awaiting_transfer",
+          "history_id": 876
+        }
+      },
+      {
+        "seq": "974",
+        "id": "fa7ca988-63bd-43a4-8fe3-7f20e5c4c778",
+        "event_type": "deposit.awaiting_transfer",
+        "aggregate_type": "deposit",
+        "aggregate_id": "b1b638f3-75c3-4635-9d67-b2aac5062d24",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.813Z",
+        "payload": {
+          "to": "awaiting_transfer",
+          "from": null,
+          "history_id": 873
+        }
+      },
+      {
+        "seq": "973",
+        "id": "afb85bc1-19c9-456b-9ca6-9f04628d78c2",
+        "event_type": "order.awaiting_deposit",
+        "aggregate_type": "order",
+        "aggregate_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.813Z",
+        "payload": {
+          "to": "awaiting_deposit",
+          "from": "awaiting_seller",
+          "history_id": 872
+        }
+      },
+      {
+        "seq": "970",
+        "id": "8697e1cc-7562-4783-9be7-4d1e43815044",
+        "event_type": "order.awaiting_seller",
+        "aggregate_type": "order",
+        "aggregate_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "order_id": "eabf1f57-2359-40a1-ad92-e420dae69a4d",
+        "occurred_at": "2026-10-26T22:44:41.783Z",
+        "payload": {
+          "to": "awaiting_seller",
+          "from": "drafting",
+          "history_id": 869
+        }
+      }
+    ]
+  }
+}

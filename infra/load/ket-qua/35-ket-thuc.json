@@ -1,0 +1,29 @@
+{
+  "jobs": [
+    {
+      "status": "done",
+      "n": 360
+    }
+  ],
+  "pdf": [
+    {
+      "pdf_end_to_end_ms": [
+        24.756500000000003,
+        27.83605,
+        28.74104
+      ]
+    }
+  ],
+  "qr": [
+    {
+      "dot_quet_hai_lan": "0"
+    }
+  ],
+  "doi_soat_day_du": [
+    {
+      "so_du_thieu_hoac_lech": "0",
+      "giao_dich_thieu_hoac_lech": "0",
+      "lo_lech_luong": "0"
+    }
+  ]
+}

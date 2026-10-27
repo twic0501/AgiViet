@@ -1,0 +1,38 @@
+{
+  "before_original": {
+    "cases": 45,
+    "must_block": 41,
+    "must_pass": 4,
+    "blocked": 29,
+    "holes": 12,
+    "false_blocks": 0,
+    "invariant_violations": 0,
+    "invariant_skips": 0
+  },
+  "after_fixture_adapter": {
+    "cases": 45,
+    "must_block": 41,
+    "must_pass": 4,
+    "blocked": 41,
+    "holes": 0,
+    "false_blocks": 0,
+    "invariant_violations": 0,
+    "invariant_skips": 0
+  },
+  "after_original": {
+    "exit_code": 2,
+    "setup_failed": true,
+    "reason": "Fixture ký bằng SEC-OTP-B chưa có challenge verified",
+    "log": "db/security-original-after.log"
+  },
+  "fixture_adapter_changes": "Chỉ fixture và 4 ca hợp lệ; 41 SQL tấn công không đổi",
+  "security_source_sha256": {
+    "security/tests/db/kiem-tra-db.mjs": "95bec25e97d76117592f511909bde4f75aae494b407a8801e908d597b9d49a5a",
+    "security/sql/fixture.sql": "eeeaa54f715a9be7ecd769c27c6db2f85028b3608cc1374286f79db625cac22d"
+  },
+  "remaining": [
+    "D19: chưa cấu hình WORM/lịch xuất/checkpoint độc lập",
+    "Chưa có broker pool chung hoặc mọi command điều phối",
+    "Chưa kiểm PostgreSQL server nhiều kết nối và dịch vụ thật"
+  ]
+}

@@ -1,0 +1,398 @@
+[
+  {
+    "id": "TH-001B",
+    "name": "Tổ chức mới: chủ đầu tiên qua xác minh hai người, vai chủ hiệu lực sau 24 giờ",
+    "file": "backend/test/tinh-huong-10.ts",
+    "line": 12
+  },
+  {
+    "id": "TH-API-ANH",
+    "name": "Bên mua đọc được ảnh của lô công khai, không đọc được chứng từ riêng",
+    "file": "backend/test/tinh-huong-10.ts",
+    "line": 36
+  },
+  {
+    "id": "TH-API-NC",
+    "name": "Tạo nhu cầu thiếu min_source_qty_g trả 422, không 500",
+    "file": "backend/test/tinh-huong-10.ts",
+    "line": 47
+  },
+  {
+    "id": "TH-PHIEN-BEN",
+    "name": "Phiên đăng nhập OTP lưu bền ở auth.sessions: khởi động lại vẫn dùng được, đăng xuất thu hồi",
+    "file": "backend/test/tinh-huong-10.ts",
+    "line": 60
+  },
+  {
+    "id": "TH-PHIEN-BEN-2",
+    "name": "Phiên bền cho người giúp (ủy quyền) và người đăng ký tổ chức đang chờ (0055)",
+    "file": "backend/test/tinh-huong-10.ts",
+    "line": 79
+  },
+  {
+    "id": "TH-TI-01",
+    "name": "Thời tiết 7 ngày theo tỉnh, lời khuyên mưa lớn/nắng nóng/gió, bộ đệm 1 giờ, lỗi mạng báo rõ",
+    "file": "backend/test/tinh-huong-11.ts",
+    "line": 17
+  },
+  {
+    "id": "TH-TI-02",
+    "name": "Tin nông nghiệp lọc theo mặt hàng/tỉnh, chỉ tiêu đề/nguồn/ngày/link, nguồn lỗi được ghi",
+    "file": "backend/test/tinh-huong-11.ts",
+    "line": 41
+  },
+  {
+    "id": "TH-TI-03",
+    "name": "Lịch sử người bán gộp lô, lời chào, đơn; bên mua không xem được",
+    "file": "backend/test/tinh-huong-11.ts",
+    "line": 58
+  },
+  {
+    "id": "TH-NV-01",
+    "name": "Mặt hàng đã xác minh của tổ chức; lô mặt hàng chưa xác minh bị chặn từ bản nháp",
+    "file": "backend/test/tinh-huong-12.ts",
+    "line": 6
+  },
+  {
+    "id": "TH-NV-02",
+    "name": "Nhật ký canh tác: danh sách theo vụ, phun thuốc tính ngày cách ly, ảnh, nhãn tự ghi/nhân viên, sửa bằng bản mới",
+    "file": "backend/test/tinh-huong-12.ts",
+    "line": 16
+  },
+  {
+    "id": "TH-NV-03",
+    "name": "Bán gấp: bật có hạn và lý do, bên mua thấy cờ ở đầu danh sách, tắt được",
+    "file": "backend/test/tinh-huong-12.ts",
+    "line": 44
+  },
+  {
+    "id": "TH-NV-04",
+    "name": "Đặt trước khi hái: lập, ký, cọc 30%; danh sách/chi tiết cho người bán; cập nhật sản lượng; đề nghị chốt lượng",
+    "file": "backend/test/tinh-huong-12.ts",
+    "line": 57
+  },
+  {
+    "id": "TH-NV-05",
+    "name": "Từ chối đề nghị chốt lượng",
+    "file": "backend/test/tinh-huong-12.ts",
+    "line": 103
+  },
+  {
+    "id": "TH-NV-06",
+    "name": "Bao tiêu theo vụ 2 đợt: lập, ký, cọc vụ; mất mùa giảm lượng bằng phụ lục có chứng cứ, giảm đợt cuối",
+    "file": "backend/test/tinh-huong-12.ts",
+    "line": 123
+  },
+  {
+    "id": "TH-003",
+    "name": "Đăng lô: chặn cách ly, cảnh báo giá, ảnh chụp trong app, giá kín không lộ",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 19
+  },
+  {
+    "id": "TH-005",
+    "name": "Đồng ý giá, giữ lượng hết hạn sau 24 giờ",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 51
+  },
+  {
+    "id": "TH-010",
+    "name": "Trả giá tối đa 2 lượt mỗi bên",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 66
+  },
+  {
+    "id": "TH-011",
+    "name": "Lời chào dưới giá kín tự từ chối, không lộ số",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 83
+  },
+  {
+    "id": "TH-012",
+    "name": "Ngưỡng 80% (cảnh báo) và 60% (chặn) khi bên mua chào",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 94
+  },
+  {
+    "id": "TH-014",
+    "name": "Chào vượt 2 lần lượng cần của phiếu bị chặn; cùng loại cùng giá",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 102
+  },
+  {
+    "id": "TH-015",
+    "name": "Giá bất thường: cần tick xác nhận, cọc theo giá tính cọc",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 115
+  },
+  {
+    "id": "TH-019",
+    "name": "Trả thẳng một phần: chặn bốc, bổ sung đủ",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 141
+  },
+  {
+    "id": "TH-020",
+    "name": "Báo đã chuyển nhưng chưa nhận: đối soát, không cộng tiền",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 162
+  },
+  {
+    "id": "TH-021",
+    "name": "Cọc sai số tiền: thiếu thì treo, đủ thì hiệu lực; thừa hoàn về nguồn",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 179
+  },
+  {
+    "id": "TH-022",
+    "name": "Sự kiện ngân hàng: chữ ký sai, lặp, tiền lạ vào ngăn treo",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 197
+  },
+  {
+    "id": "TH-022b",
+    "name": "Lệnh hoàn thất bại: không cộng tiền, có việc vận hành",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 214
+  },
+  {
+    "id": "TH-024",
+    "name": "Trả lại nhiều: người bán còn phải hoàn ngoài app",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 228
+  },
+  {
+    "id": "TH-026",
+    "name": "Mã giao dịch trùng khi xác nhận trả thẳng",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 264
+  },
+  {
+    "id": "TH-042",
+    "name": "Hủy trước khi người bán ký: rút đơn; quá hạn ký",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 276
+  },
+  {
+    "id": "TH-043",
+    "name": "Quá hạn cọc hàng tươi 12 giờ",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 298
+  },
+  {
+    "id": "TH-044",
+    "name": "Bên mua xin hủy sau cọc: cọc về người bán, phí không hoàn",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 314
+  },
+  {
+    "id": "TH-044b",
+    "name": "Xin hủy: bên kia im lặng 24 giờ = không đồng ý",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 334
+  },
+  {
+    "id": "TH-045",
+    "name": "Người bán xin hủy sau cọc: cọc và phí hoàn bên mua; người giúp bị chặn",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 344
+  },
+  {
+    "id": "TH-046",
+    "name": "Bất khả kháng sau khi đã trả thẳng: người bán hoàn 32.200.000",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 359
+  },
+  {
+    "id": "TH-060",
+    "name": "Gửi lại cùng khóa chống lặp: đúng một chữ ký, trả kết quả cũ",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 379
+  },
+  {
+    "id": "TH-061",
+    "name": "Người giúp bị chặn đúng chỗ ở API",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 398
+  },
+  {
+    "id": "TH-062",
+    "name": "PDF: xác minh mã băm, tệp bị sửa không khớp, trang công khai không trả bản gốc",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 415
+  },
+  {
+    "id": "BM-01",
+    "name": "Bảo mật: dữ liệu theo tổ chức, quyền theo hành động, giá kín, webhook",
+    "file": "backend/test/tinh-huong-2.ts",
+    "line": 435
+  },
+  {
+    "id": "TH-029A",
+    "name": "Khiếu nại khác mẫu, kiểm định kết luận người bán sai",
+    "file": "backend/test/tinh-huong-3.ts",
+    "line": 38
+  },
+  {
+    "id": "TH-029B",
+    "name": "Khiếu nại khác mẫu, kiểm định kết luận người bán đúng",
+    "file": "backend/test/tinh-huong-3.ts",
+    "line": 54
+  },
+  {
+    "id": "TH-031",
+    "name": "Kiểm định không kết luận, quá 14 ngày: chuyển cơ chế khác, tiền vẫn giữ",
+    "file": "backend/test/tinh-huong-3.ts",
+    "line": 68
+  },
+  {
+    "id": "TH-029x",
+    "name": "Khiếu nại quá 2 giờ bị chặn",
+    "file": "backend/test/tinh-huong-3.ts",
+    "line": 81
+  },
+  {
+    "id": "TH-009A",
+    "name": "Trả sau 7 ngày (bưởi, vựa), trả đúng hạn; lệnh chi ≥ 20 triệu tài khoản mới phải gọi lại",
+    "file": "backend/test/tinh-huong-4.ts",
+    "line": 6
+  },
+  {
+    "id": "TH-052a",
+    "name": "Đơn vượt hạn mức người lập: phải duyệt nội bộ, người lập không tự duyệt",
+    "file": "backend/test/tinh-huong-4.ts",
+    "line": 77
+  },
+  {
+    "id": "TH-007",
+    "name": "Giao tại kho bên mua, người bán thuê xe, trả khi nhận",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 26
+  },
+  {
+    "id": "TH-037a",
+    "name": "Giao trong dung sai 1.960 kg",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 71
+  },
+  {
+    "id": "TH-037b",
+    "name": "Giao vượt 2.100 kg, bên mua nhận phần vượt",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 84
+  },
+  {
+    "id": "TH-038",
+    "name": "Giao thiếu 1.850 kg không báo trước: kết thúc phần thiếu, phạt 100% cọc phần thiếu",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 104
+  },
+  {
+    "id": "TH-039",
+    "name": "Giao bù 150 kg ở đợt 2; không quyết toán ở đợt 1",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 117
+  },
+  {
+    "id": "TH-027",
+    "name": "Phản đối dòng tại vườn, người bán rút phần tranh chấp",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 139
+  },
+  {
+    "id": "TH-R2-CANLAI",
+    "name": "Phản đối dòng chia_lai, bên mua cân lại có chứng cứ mới, người bán đồng ý, tranh chấp đóng",
+    "file": "backend/test/tinh-huong-5.ts",
+    "line": 157
+  },
+  {
+    "id": "TH-040",
+    "name": "Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục hai bên ký",
+    "file": "backend/test/tinh-huong-6.ts",
+    "line": 18
+  },
+  {
+    "id": "TH-040s",
+    "name": "Đề nghị giảm lượng, bên mua im lặng 24 giờ = không đồng ý",
+    "file": "backend/test/tinh-huong-6.ts",
+    "line": 63
+  },
+  {
+    "id": "TH-AM-1",
+    "name": "Tăng lượng 2.000 → 2.400 kg: cọc bổ sung, chặn giao tới khi ngân hàng nhận",
+    "file": "backend/test/tinh-huong-6.ts",
+    "line": 74
+  },
+  {
+    "id": "TH-AM-2",
+    "name": "Phụ lục giảm giá 23.000 → 20.000: hoàn cọc chênh về nguồn, phí giữ theo Q06",
+    "file": "backend/test/tinh-huong-6.ts",
+    "line": 105
+  },
+  {
+    "id": "TH-001",
+    "name": "Đăng ký người bán mới, xác minh, tài khoản nhận tiền chờ 24 giờ",
+    "file": "backend/test/tinh-huong-7.ts",
+    "line": 12
+  },
+  {
+    "id": "TH-002",
+    "name": "Mời thành viên theo gói (Thu mua tối đa 5), nhận lời mời bằng OTP đúng số",
+    "file": "backend/test/tinh-huong-7.ts",
+    "line": 35
+  },
+  {
+    "id": "TH-023",
+    "name": "Đổi tài khoản nhận tiền: người giúp bị chặn, chờ 24 giờ, không phải tôi",
+    "file": "backend/test/tinh-huong-7.ts",
+    "line": 53
+  },
+  {
+    "id": "GD-01",
+    "name": "Thành viên tổ chức: danh sách, đổi vai (vai đặc quyền chờ 24 giờ)",
+    "file": "backend/test/tinh-huong-8.ts",
+    "line": 6
+  },
+  {
+    "id": "GD-02",
+    "name": "Cờ ký phản ánh hạn mức và duyệt nội bộ",
+    "file": "backend/test/tinh-huong-8.ts",
+    "line": 21
+  },
+  {
+    "id": "GD-03",
+    "name": "Yêu cầu hủy hiện hành, hướng dẫn trả thẳng theo quyền",
+    "file": "backend/test/tinh-huong-8.ts",
+    "line": 36
+  },
+  {
+    "id": "GD-04",
+    "name": "Danh sách tranh chấp của đơn sau khi tải lại",
+    "file": "backend/test/tinh-huong-8.ts",
+    "line": 53
+  },
+  {
+    "id": "TH-004dp",
+    "name": "Ghép: AI lỗi → dự phòng bằng luật, cùng nhóm, không lộ giá",
+    "file": "backend/test/tinh-huong-9.ts",
+    "line": 18
+  },
+  {
+    "id": "TH-004ai",
+    "name": "Ghép qua dịch vụ AI thật (/match), ghi mkt.match_candidates",
+    "file": "backend/test/tinh-huong-9.ts",
+    "line": 27
+  },
+  {
+    "id": "GD-05",
+    "name": "Outbox gửi thông báo; sổ tiền; gói; hỗ trợ; hồ sơ nguồn",
+    "file": "backend/test/tinh-huong-9.ts",
+    "line": 39
+  },
+  {
+    "id": "TH-006",
+    "name": "HĐ luồng thuận: giao tại vườn, nghiệm thu tại vườn, trả thẳng trước bốc",
+    "file": "backend/test/tinh-huong.ts",
+    "line": 9
+  }
+]

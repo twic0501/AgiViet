@@ -1,0 +1,29 @@
+# Mẫu workflow, CHƯA được kích hoạt: cần đội repo đặt ở .github/workflows/infra.yml.
+name: infra-stub
+on: [push, pull_request]
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - run: npm ci --prefix infra/stub --no-audit --no-fund
+      - run: bash infra/ci/kiem-tra.sh
+      - run: docker compose -f infra/docker-compose.yml build
+      - run: docker compose -f infra/docker-compose.yml up -d db ai
+      - run: docker compose -f infra/docker-compose.yml --profile setup run --rm setup
+      - run: docker compose -f infra/docker-compose.yml --profile setup run --rm setup node db-setup.mjs --toi-uu
+      - run: docker compose -f infra/docker-compose.yml up -d --wait api pdf-worker proxy
+      # Chạy bên trong mạng Compose, không mở _bench ở proxy.
+      - run: >-
+          docker compose -f infra/docker-compose.yml run --rm --no-deps
+          -e BASE=http://api:8080
+          -v "$PWD/infra/load:/load:ro" api node /load/khoi.mjs
+      - if: always()
+        run: docker compose -f infra/docker-compose.yml logs --no-color > infra/ci-compose.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: infra-logs, path: infra/ci-compose.log}
+      - if: always()
+        run: docker compose -f infra/docker-compose.yml down

@@ -1,0 +1,18 @@
+{
+  "name": "agiviet-stub-gia-lap",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BACKEND GIẢ LẬP để đo tải hạ tầng AgiViet v2. Không phải backend thật.",
+  "type": "module",
+  "scripts": {
+    "db:setup": "node db-setup.mjs",
+    "start": "node server.mjs",
+    "ai": "node ai.mjs",
+    "worker": "node worker.mjs"
+  },
+  "dependencies": {
+    "pdfkit": "0.17.2",
+    "pg": "8.16.3"
+  },
+  "engines": { "node": ">=22" }
+}

@@ -1,0 +1,156 @@
+# Stack độc lập. KHÔNG ghép infra/docker-compose.yml (bộ đo bench).
+# Đường dẫn build từ repo; bind mount tính từ infra/oracle/.
+x-log: &log
+  driver: json-file
+  options: {max-size: 10m, max-file: '3'}
+x-service: &service
+  platform: linux/arm64
+  restart: unless-stopped
+  pids_limit: 256
+  logging: *log
+services:
+  db:
+    <<: *service
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: agiviet_owner
+      POSTGRES_DB: agiviet
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Sinh cấu hình bằng tao-cau-hinh.sh}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    volumes: [pgdata:/var/lib/postgresql/data]
+    # Không publish PostgreSQL lên host.
+    command: [postgres, -c, timezone=Asia/Ho_Chi_Minh, -c, shared_buffers=768MB, -c, work_mem=4MB, -c, maintenance_work_mem=128MB, -c, max_connections=60, -c, password_encryption=scram-sha-256, -c, log_statement=none, -c, log_min_error_statement=panic]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U agiviet_owner -d agiviet']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: 0.65
+  migrate:
+    image: postgres:17-bookworm
+    platform: linux/arm64
+    profiles: [setup]
+    restart: 'no'
+    logging: *log
+    environment:
+      PGHOST: db
+      PGDATABASE: agiviet
+      PGUSER: agiviet_owner
+      PGPASSWORD: ${DB_PASSWORD:?}
+      DATABASE_URL: postgresql://agiviet_owner:${DB_PASSWORD:?}@db:5432/agiviet
+      AGV_GATEWAY_PASSWORD: ${AGV_GATEWAY_PASSWORD:?}
+      SEED_DEMO: ${SEED_DEMO:-0}
+      AGV_MOI_TRUONG: ${AGV_MOI_TRUONG:-production}
+    volumes:
+      - ../../db/migrations:/repo/db/migrations:ro,z
+      - ../../db/seed:/repo/db/seed:ro,z
+      - ../../db/scripts:/repo/db/scripts:ro,z
+      - ./:/oracle:ro,z
+    entrypoint: [bash, /oracle/db-setup.sh]
+    depends_on:
+      db: {condition: service_healthy}
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: 0.25
+    pids_limit: 128
+  backend:
+    <<: *service
+    build: {context: ../.., dockerfile: infra/oracle/backend.Dockerfile}
+    init: true
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8080
+      AGV_MOI_TRUONG: ${AGV_MOI_TRUONG:-production}
+      DATABASE_URL: postgresql://agv_backend_gateway:${AGV_GATEWAY_PASSWORD:?}@db:5432/agiviet
+      AGV_PG_POOL_MAX: ${AGV_PG_POOL_MAX:-6}
+      NODE_OPTIONS: --max-old-space-size=640
+      AGV_DOC_DIR: /data/tai-lieu
+      AGV_QR_PRIVATE_PEM_B64: ${AGV_QR_PRIVATE_PEM_B64:?}
+      AGV_PDF_PRIVATE_PEM_B64: ${AGV_PDF_PRIVATE_PEM_B64:?}
+      AGV_QR_KID: ${AGV_QR_KID:-qr-oci-1}
+      AGV_PDF_KID: ${AGV_PDF_KID:-pdf-oci-1}
+      AGV_SESSION_SECRET: ${AGV_SESSION_SECRET:?}
+      AGV_OTP_PEPPER: ${AGV_OTP_PEPPER:?}
+      AGV_WEBHOOK_SECRET: ${AGV_WEBHOOK_SECRET:?}
+      AGV_FALLBACK_SECRET: ${AGV_FALLBACK_SECRET:?}
+      AGV_AI_API_KEY: ${AGV_AI_API_KEY:?}
+      # chung.sh xuất rỗng khi ENABLE_AI=0; dấu '-' giữ nguyên chuỗi rỗng.
+      AI_URL: ${ORACLE_AI_URL-http://ai:8091}
+      AI_TIMEOUT_MS: 2000
+    volumes: [artifacts:/data]
+    ports: ['127.0.0.1:8080:8080']
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/health/ready').then(async r=>{if(!r.ok||!(await r.json()).ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    stop_grace_period: 45s
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: 0.55
+  frontend:
+    <<: *service
+    build: {context: ../.., dockerfile: infra/oracle/frontend.Dockerfile}
+    init: true
+    environment: {PORT: 8090, API_ORIGIN: 'http://backend:8080'}
+    ports: ['127.0.0.1:8090:8090']
+    healthcheck:
+      test: [CMD, node, -e, "Promise.all(['/ban/','/mua/'].map(p=>fetch('http://127.0.0.1:8090'+p).then(r=>{if(!r.ok)throw Error()}))).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    mem_limit: 256m
+    memswap_limit: 256m
+    cpus: 0.15
+  ai:
+    <<: *service
+    profiles: [ai]
+    build: {context: ../.., dockerfile: infra/oracle/ai.Dockerfile}
+    init: true
+    environment:
+      AGV_AI_API_KEY: ${AGV_AI_API_KEY:?}
+      AGV_STT_TAT: '1'
+      AGV_OLLAMA_URL: http://127.0.0.1:11434
+    volumes: [ai_audit:/opt/ai/ket_qua]
+    healthcheck:
+      test: [CMD, python, -c, "import os,urllib.request; urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8091/health',headers={'x-ai-key':os.environ['AGV_AI_API_KEY']}),timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    mem_limit: 768m
+    memswap_limit: 768m
+    cpus: 0.25
+  https:
+    <<: *service
+    build: {context: ., dockerfile: caddy.Dockerfile}
+    # Host network tránh FORWARD/REJECT của OCI; chỉ gọi cổng loopback.
+    network_mode: host
+    environment:
+      DOMAIN: ${DOMAIN:?}
+      ACME_EMAIL: ${ACME_EMAIL:?}
+      ACME_CA: ${ACME_CA:-https://acme-v02.api.letsencrypt.org/directory}
+      CADDY_PASSWORD_HASH: ${CADDY_PASSWORD_HASH:?}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      backend: {condition: service_healthy}
+      frontend: {condition: service_healthy}
+    mem_limit: 256m
+    memswap_limit: 256m
+    cpus: 0.15
+volumes:
+  pgdata:
+    name: ${AGV_PG_VOLUME:-agiviet_oracle_v2_pgdata}
+  artifacts:
+    name: ${ORACLE_ARTIFACTS_VOLUME:-agiviet_oracle_v2_artifacts}
+  ai_audit:
+    name: ${ORACLE_AI_VOLUME:-agiviet_oracle_v2_ai_audit}
+  caddy_data:
+  caddy_config:

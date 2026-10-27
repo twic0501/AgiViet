@@ -1,0 +1,155 @@
+{
+  "nhan": "22-webhook-truoc",
+  "kich_ban": "webhook-don",
+  "mo_ta": "Webhook dồn: 200 webhook/giây trong 30 giây",
+  "luc": "2026-10-25T06:07:20.928Z",
+  "base": "http://127.0.0.1:8180",
+  "pdf": "sync",
+  "ref": "live",
+  "he_so": 1,
+  "thoi_gian_giay": 25.433,
+  "he_so_thoi_gian": 0.67,
+  "ket_qua_nghiep_vu": {
+    "ok": 629,
+    "trung_lap": 22
+  },
+  "generator_lag_max_ms": 28.6,
+  "throughput_hoan_tat": 157.3,
+  "bo_lo_do_qua_dong_thoi": 0,
+  "dong_thoi_toi_da": 1018,
+  "pha": [
+    {
+      "pha": "webhook",
+      "so_yc": 4001,
+      "yc_giay": 200.1,
+      "p50": 5001.8,
+      "p95": 5393.8,
+      "p99": 5540.5,
+      "loi_pct": 83.73
+    }
+  ],
+  "luong": [
+    {
+      "pha": "webhook",
+      "luong": "webhook",
+      "so_yc": 4001,
+      "yc_giay": 200.1,
+      "p50": 5001.8,
+      "p95": 5393.8,
+      "p99": 5540.5,
+      "max": 6303.9,
+      "loi_pct": 83.73,
+      "ma": {
+        "200": 651,
+        "500": 3350
+      }
+    }
+  ],
+  "tai_nguyen": {
+    "postgres": {
+      "cpu_tb_pct": 389,
+      "cpu_p95_pct": 400,
+      "rss_max_mb": 595
+    },
+    "backend": {
+      "cpu_tb_pct": 5,
+      "cpu_p95_pct": 8,
+      "rss_max_mb": 137
+    },
+    "ai": {
+      "cpu_tb_pct": 10,
+      "cpu_p95_pct": 18,
+      "rss_max_mb": 249
+    },
+    "worker": {
+      "cpu_tb_pct": 0,
+      "cpu_p95_pct": 0,
+      "rss_max_mb": 58
+    }
+  },
+  "db": {
+    "giao_dich_commit": 677,
+    "rollback": 0,
+    "ti_le_cache": 99.95
+  },
+  "toan_ven": {
+    "tong_but_toan": "0",
+    "gd_lech": "0",
+    "so_du_lech": "0",
+    "don_coc_hai_lan": "0",
+    "viec_pdf_dang_cho": "0",
+    "viec_pdf_hong": "0"
+  },
+  "top_sql": [
+    {
+      "calls": "1258",
+      "total_ms": "241411",
+      "mean_ms": "191.90",
+      "max_ms": "1338.9",
+      "q": "INSERT INTO bench.ledger_entries (transaction_id, line_no, account_id, amount_vnd) VALUES ($1, $6, bench.ledge"
+    },
+    {
+      "calls": "1258",
+      "total_ms": "4428",
+      "mean_ms": "3.52",
+      "max_ms": "17.1",
+      "q": "INSERT INTO bench.ledger_txns (kind, order_id, idempotency_key, memo) VALUES ($1, $2, $3, $4) RETURNING id"
+    },
+    {
+      "calls": "651",
+      "total_ms": "788",
+      "mean_ms": "1.21",
+      "max_ms": "331.8",
+      "q": "INSERT INTO bench.inbound_webhooks (provider, provider_event_id, payload) VALUES ($3, $1, $2) ON CONFLICT (pro"
+    },
+    {
+      "calls": "629",
+      "total_ms": "751",
+      "mean_ms": "1.19",
+      "max_ms": "15.0",
+      "q": "UPDATE bench.orders SET deposit_status = $2, status = $3, version = version + $4 WHERE id = $1"
+    },
+    {
+      "calls": "2516",
+      "total_ms": "16",
+      "mean_ms": "0.01",
+      "max_ms": "0.0",
+      "q": "SELECT coalesce(sum(amount_vnd),$18), count(*) FROM bench.ledger_entries WHERE transaction_id = NEW.transactio"
+    },
+    {
+      "calls": "629",
+      "total_ms": "13",
+      "mean_ms": "0.02",
+      "max_ms": "0.0",
+      "q": "SELECT id, buyer_org_id, deposit_vnd, fee_vnd, deposit_status FROM bench.orders WHERE code = $1 FOR UPDATE"
+    },
+    {
+      "calls": "629",
+      "total_ms": "10",
+      "mean_ms": "0.02",
+      "max_ms": "0.1",
+      "q": "UPDATE bench.inbound_webhooks SET processed_at = now(), result = $2 WHERE id = $1"
+    },
+    {
+      "calls": "629",
+      "total_ms": "9",
+      "mean_ms": "0.01",
+      "max_ms": "0.1",
+      "q": "INSERT INTO bench.outbox (topic, aggregate_id, payload) VALUES ($3, $1, $2)"
+    },
+    {
+      "calls": "651",
+      "total_ms": "0",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "COMMIT"
+    },
+    {
+      "calls": "651",
+      "total_ms": "0",
+      "mean_ms": "0.00",
+      "max_ms": "0.0",
+      "q": "BEGIN"
+    }
+  ]
+}

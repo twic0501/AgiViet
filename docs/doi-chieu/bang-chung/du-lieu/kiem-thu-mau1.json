@@ -1,0 +1,1492 @@
+{
+  "at": "2026-10-27T00:59:46.618Z",
+  "source": "M1-src worktree; in-memory, no live browser",
+  "data": [
+    {
+      "id": "B01",
+      "name": "Đăng ký người bán",
+      "expect": "Số điện thoại sai bị chặn; đăng ký đúng thì có hồ sơ, chờ xác minh khi gửi căn cước.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Số điện thoại 5 chữ số bị chặn",
+          "dat": true,
+          "chiTiet": "Số điện thoại gồm 10 hoặc 11 chữ số, bắt đầu bằng 0."
+        },
+        {
+          "moTa": "Đăng ký với số 0918 234 421",
+          "dat": true
+        },
+        {
+          "moTa": "Đăng ký lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Tài khoản này đã đăng ký."
+        },
+        {
+          "moTa": "Hồ sơ chuyển sang chờ duyệt",
+          "dat": true
+        }
+      ],
+      "screen": "xac-minh"
+    },
+    {
+      "id": "B02",
+      "name": "Tài khoản nhận tiền đúng tên",
+      "expect": "Tài khoản đứng tên người khác bị chặn; đúng tên thì lưu.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Chủ tài khoản \"TRAN VAN TU\" bị chặn",
+          "dat": true,
+          "chiTiet": "Tên chủ tài khoản phải trùng tên trên hồ sơ. Muốn nhận vào tài khoản người thân, liên hệ hỗ trợ."
+        },
+        {
+          "moTa": "Chủ tài khoản \"NGUYEN THI NAM\" được lưu",
+          "dat": true
+        }
+      ],
+      "screen": "tai-khoan-nhan"
+    },
+    {
+      "id": "B03",
+      "name": "Người giúp (con cháu)",
+      "expect": "Tối đa 3 người, khác số chủ tài khoản.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Trùng số chủ tài khoản bị chặn",
+          "dat": true,
+          "chiTiet": "Người giúp phải dùng số điện thoại khác số của bạn."
+        },
+        {
+          "moTa": "Người thứ 4 bị chặn",
+          "dat": true,
+          "chiTiet": "Tối đa 3 người giúp."
+        }
+      ],
+      "screen": "nguoi-giup"
+    },
+    {
+      "id": "B04",
+      "name": "Tài khoản bị khóa",
+      "expect": "Bị khóa thì mọi thao tác bị chặn, lời báo nêu lý do.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đăng lô khi bị khóa bị chặn",
+          "dat": true,
+          "chiTiet": "Tài khoản đang tạm khóa: Nghi đăng tin trùng. Liên hệ hỗ trợ."
+        },
+        {
+          "moTa": "Mở khóa thì đăng được",
+          "dat": true
+        }
+      ],
+      "screen": "hom-nay"
+    },
+    {
+      "id": "B05",
+      "name": "Đăng lô thường",
+      "expect": "Lô hiện cho bên mua, đủ thuộc tính chia loại.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Lô có trong danh sách",
+          "dat": true
+        },
+        {
+          "moTa": "Bên mua gửi được lời mời",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-lo?lo=LO-1"
+    },
+    {
+      "id": "B06",
+      "name": "Chặn đăng bán khi đang cách ly thuốc",
+      "expect": "Vườn vừa phun thuốc cách ly 7 ngày: đăng bán hái hôm nay bị chặn; hái sau hạn thì được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Hái hôm nay bị chặn",
+          "dat": true,
+          "chiTiet": "Vườn này còn trong thời gian cách ly thuốc tới hết ngày 01/11/2026. Chọn ngày hái từ ngày đó trở đi."
+        },
+        {
+          "moTa": "Hái từ ngày hết cách ly thì được",
+          "dat": true
+        }
+      ],
+      "screen": "cach-ly"
+    },
+    {
+      "id": "B07",
+      "name": "Lô gộp nhiều hộ",
+      "expect": "Tổng phần các hộ khác lượng lô bị chặn; đúng thì đăng được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Tổng 2.500 kg khác 3.000 kg bị chặn",
+          "dat": true,
+          "chiTiet": "Tổng phần các hộ (2.500 kg) phải bằng lượng lô (3.000 kg)."
+        },
+        {
+          "moTa": "Tổng đúng thì đăng được",
+          "dat": true
+        }
+      ],
+      "screen": "lo-gop"
+    },
+    {
+      "id": "B08",
+      "name": "Tin tự ẩn sau 14 ngày",
+      "expect": "Không xác nhận còn hàng 14 ngày thì bên mua không thấy; bấm \"Vẫn còn hàng\" thì hiện lại.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Bên mua gửi lời mời lô đã ẩn bị chặn",
+          "dat": true,
+          "chiTiet": "Tin lô này đang ẩn."
+        },
+        {
+          "moTa": "Xác nhận còn hàng thì bên mua mời được",
+          "dat": true
+        }
+      ],
+      "screen": "hang"
+    },
+    {
+      "id": "B09",
+      "name": "Báo lượng còn lại thấp hơn đã hứa",
+      "expect": "Được ghi (mưa bão rụng trái), thỏa thuận cũ giữ nguyên, lượng còn bán về 0.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Ghi lượng mới 2.500 kg",
+          "dat": true
+        },
+        {
+          "moTa": "Đã hứa vẫn 3.000 kg",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-lo?lo=LO-1"
+    },
+    {
+      "id": "B10",
+      "name": "Trả lời lời mời kết nối",
+      "expect": "Đồng ý hoặc từ chối một lần; trả lời lần hai bị chặn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đồng ý lời mời 1",
+          "dat": true
+        },
+        {
+          "moTa": "Từ chối lời mời 2",
+          "dat": true
+        },
+        {
+          "moTa": "Trả lời lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Lời mời này đã được đồng ý rồi."
+        }
+      ],
+      "screen": "khach"
+    },
+    {
+      "id": "B11",
+      "name": "Chào hàng vào tin cần mua",
+      "expect": "Người bán chọn lô chào hàng; bên mua đồng ý thì thành kết nối.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Chào hàng được",
+          "dat": true
+        },
+        {
+          "moTa": "Chào lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Bạn đã chào lô này cho bên mua này rồi."
+        },
+        {
+          "moTa": "Kết nối đã đồng ý",
+          "dat": true
+        }
+      ],
+      "screen": "nhu-cau"
+    },
+    {
+      "id": "B12",
+      "name": "Che liên lạc trong tin nhắn",
+      "expect": "Trước khi cọc, số điện thoại và Zalo bị che; sau khi cọc thì hiện.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Số và Zalo bị che",
+          "dat": true,
+          "chiTiet": "Chị gọi em ••• hoặc ••• nha"
+        },
+        {
+          "moTa": "Sau cọc không che",
+          "dat": true
+        }
+      ],
+      "screen": "chat?kn=KN-1"
+    },
+    {
+      "id": "B13",
+      "name": "Báo giá thành đơn",
+      "expect": "Người bán gửi báo giá; bên mua chốt; đơn tạo theo đúng giá, lượng, ngày.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Chưa chốt thì chưa tạo đơn được",
+          "dat": true,
+          "chiTiet": "Báo giá này chưa được hai bên chốt."
+        },
+        {
+          "moTa": "Đơn đúng 2.000 kg × 26.000 đ",
+          "dat": true
+        }
+      ],
+      "screen": "bao-gia?kn=KN-1"
+    },
+    {
+      "id": "B14",
+      "name": "Hẹn xem vườn",
+      "expect": "Bên mua đề nghị giờ hẹn; người bán đồng ý; không hẹn vào quá khứ.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Hẹn vào quá khứ bị chặn",
+          "dat": true,
+          "chiTiet": "Giờ hẹn phải ở tương lai."
+        },
+        {
+          "moTa": "Người bán đồng ý",
+          "dat": true
+        }
+      ],
+      "screen": "hen-xem?kn=KN-1"
+    },
+    {
+      "id": "B15",
+      "name": "Xác nhận đơn: giữ lượng, tính cọc và phí",
+      "expect": "4.000 kg × 25.000 đ: cọc 10 triệu, phí giới thiệu 1 triệu, lượng bị giữ.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Xác nhận đơn",
+          "dat": true
+        },
+        {
+          "moTa": "Cọc 10.000.000 đ, phí 1.000.000 đ",
+          "dat": true
+        },
+        {
+          "moTa": "Lô đã hứa 4.000 kg",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B16",
+      "name": "Chặn bán lố",
+      "expect": "Hai đơn 3.000 kg cho lô 4.000 kg: xác nhận đơn thứ hai bị chặn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn thứ hai bị chặn",
+          "dat": true,
+          "chiTiet": "Lô chỉ còn bán được 1.000 kg, đơn cần 3.000 kg. Từ chối đơn hoặc hỏi bên mua giảm lượng."
+        }
+      ],
+      "screen": "lich"
+    },
+    {
+      "id": "B17",
+      "name": "Bấm xác nhận hai lần",
+      "expect": "Lần hai bị chặn, lượng chỉ giữ một lần.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Đơn HĐ-0001 đang ở bước \"Chờ bên mua đặt cọc\", không xác nhận đơn được."
+        },
+        {
+          "moTa": "Đã hứa đúng 2.000 kg",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B18",
+      "name": "Từ chối đơn",
+      "expect": "Đơn đóng, lượng không bị giữ, lý do lưu lại.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Từ chối",
+          "dat": true
+        },
+        {
+          "moTa": "Đơn \"Người bán từ chối\", lô không giữ",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B19",
+      "name": "Liên lạc mở sau khi cọc",
+      "expect": "Trước cọc không thấy số bên mua; sau cọc thấy.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Trước cọc: chưa có liên lạc",
+          "dat": true
+        },
+        {
+          "moTa": "Sau cọc: thấy số bên mua",
+          "dat": true
+        }
+      ],
+      "screen": "mo-lien-lac?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B20",
+      "name": "Quá hạn cọc",
+      "expect": "Quá 48 giờ chưa cọc: hệ thống đóng đơn, trả lượng cho lô.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Bên mua cọc trễ bị chặn",
+          "dat": true,
+          "chiTiet": "Đã quá hạn đặt cọc. Đơn sẽ tự đóng; tạo đơn mới nếu còn muốn mua."
+        },
+        {
+          "moTa": "Đơn quá hạn, trả lượng",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B21",
+      "name": "Hủy trước khi cọc",
+      "expect": "Người bán hủy được ngay, lượng trả về lô.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Hủy",
+          "dat": true
+        },
+        {
+          "moTa": "Đơn hủy, lô không giữ",
+          "dat": true
+        }
+      ],
+      "screen": "huy-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B22",
+      "name": "Bên mua xin hủy sau khi cọc",
+      "expect": "Người bán đồng ý thì đơn hủy, cọc thuộc về người bán.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Người bán đồng ý hủy",
+          "dat": true
+        },
+        {
+          "moTa": "Cọc thuộc về người bán",
+          "dat": true
+        },
+        {
+          "moTa": "Tiền cọc vào \"đã về\" của người bán",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B23",
+      "name": "Đổi lịch giao",
+      "expect": "Bên mua đề nghị dời ngày; người bán đồng ý thì ngày giao đổi.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Người bán đồng ý",
+          "dat": true
+        },
+        {
+          "moTa": "Ngày giao mới",
+          "dat": true
+        }
+      ],
+      "screen": "doi-lich?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B24",
+      "name": "Giao một phần (giảm lượng)",
+      "expect": "Người bán đề nghị giảm 3.000 → 2.000 kg; bên mua đồng ý; 1.000 kg trả về lô.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn còn 2.000 kg, lô đã hứa 2.000 kg",
+          "dat": true
+        }
+      ],
+      "screen": "giao-mot-phan?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B25",
+      "name": "Số cân đúng: chốt, trừ cọc",
+      "expect": "Nhận 3.800/4.000 kg: tiền hàng 95 triệu, trừ cọc còn 85 triệu.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Tiền hàng 95.000.000 đ, còn phải trả 85.000.000 đ",
+          "dat": true
+        }
+      ],
+      "screen": "quyet-toan?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B26",
+      "name": "Số cân sai: bên mua nhập lại",
+      "expect": "Người bán bấm \"Không đúng\" thì đơn quay về chờ cân.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Báo không đúng",
+          "dat": true
+        },
+        {
+          "moTa": "Đơn chờ cân lại, có đánh dấu phản đối",
+          "dat": true
+        }
+      ],
+      "screen": "ket-qua?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B27",
+      "name": "Tiền qua tài khoản đảm bảo",
+      "expect": "Bên mua chuyển đúng số; ngân hàng giải ngân; đơn đóng với đủ tiền.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đang giữ ở tài khoản đảm bảo",
+          "dat": true
+        },
+        {
+          "moTa": "Đã nhận đủ 50.000.000 đ",
+          "dat": true
+        }
+      ],
+      "screen": "tien-ve?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B28",
+      "name": "Trả thiếu không đóng được đơn",
+      "expect": "Bên mua báo trả một nửa: \"Đã nhận đủ\" bị chặn, chỉ \"Nhận một phần\".",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "\"Đã nhận đủ\" bị chặn",
+          "dat": true,
+          "chiTiet": "Bên mua mới báo trả 22.500.000 đ, còn thiếu 22.500.000 đ. Thấy đúng số này thì bấm Nhận một phần."
+        },
+        {
+          "moTa": "\"Nhận một phần\" được",
+          "dat": true
+        },
+        {
+          "moTa": "Còn phải trả 22.500.000 đ",
+          "dat": true
+        }
+      ],
+      "screen": "tien"
+    },
+    {
+      "id": "B29",
+      "name": "Chưa thấy tiền: đối soát",
+      "expect": "Mở đối soát; bên mua gửi chứng từ; người bán thấy tiền thì đóng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Báo chưa thấy tiền",
+          "dat": true
+        },
+        {
+          "moTa": "Ghi đối soát",
+          "dat": true
+        },
+        {
+          "moTa": "Thấy tiền thì đóng",
+          "dat": true
+        }
+      ],
+      "screen": "tranh-chap?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B30",
+      "name": "Tiền hàng nhỏ hơn cọc",
+      "expect": "Nhận ít hơn giá trị cọc: đơn đóng ngay, hoàn cọc dư cho bên mua.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn đóng, hoàn cọc dư",
+          "dat": true,
+          "chiTiet": "hoàn 1250000"
+        }
+      ],
+      "screen": "quyet-toan?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B31",
+      "name": "Ứng tiền trước",
+      "expect": "Tối đa 70% giá trị đơn; ngân hàng duyệt; đơn đóng thì khoản ứng được thu hồi.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Ứng 80 triệu (vượt 70%) bị chặn",
+          "dat": true,
+          "chiTiet": "Số ứng phải lớn hơn 0 và không quá 70.000.000 đ (70% giá trị đơn)."
+        },
+        {
+          "moTa": "Khoản ứng đã thu hồi",
+          "dat": true
+        }
+      ],
+      "screen": "ung-tien"
+    },
+    {
+      "id": "B32",
+      "name": "Nhật ký canh tác hợp lệ",
+      "expect": "Không ghi ngày tương lai; phun thuốc phải có tên thuốc và ngày cách ly.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Ngày mai bị chặn",
+          "dat": true,
+          "chiTiet": "Nhật ký ghi việc đã làm: không chọn ngày trong tương lai."
+        },
+        {
+          "moTa": "Phun thuốc thiếu ngày cách ly bị chặn",
+          "dat": true,
+          "chiTiet": "Ghi số ngày cách ly trên nhãn thuốc (0 đến 120 ngày)."
+        },
+        {
+          "moTa": "Ghi đủ thì được",
+          "dat": true
+        }
+      ],
+      "screen": "nhat-ky"
+    },
+    {
+      "id": "B33",
+      "name": "Lời lỗ vụ tính cả tiền bán qua app",
+      "expect": "Chi 3 triệu, bán qua app 25 triệu: lời 22 triệu.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Lời 22.000.000 đ",
+          "dat": true,
+          "chiTiet": "{\"chi\":3000000,\"thuTay\":0,\"thuApp\":25000000,\"loi\":22000000}"
+        }
+      ],
+      "screen": "thu-chi"
+    },
+    {
+      "id": "B34",
+      "name": "Chia tiền lô gộp",
+      "expect": "Tiền đơn chia theo phần từng hộ, tổng bằng đúng tiền nhận.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Tổng chia bằng tiền nhận",
+          "dat": true,
+          "chiTiet": "Bà Tư 24583333, Anh Sáu 27041667, Cô Ba 22125000"
+        }
+      ],
+      "screen": "phan-cua-toi"
+    },
+    {
+      "id": "B35",
+      "name": "Uy tín lên \"Tốt\"",
+      "expect": "Ba đơn giao đủ, không hủy, được 5 sao: bậc \"Tốt\".",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Bậc \"Tốt\"",
+          "dat": true
+        }
+      ],
+      "screen": "uy-tin"
+    },
+    {
+      "id": "B36",
+      "name": "Đặt dịch vụ kiểm nghiệm",
+      "expect": "Gửi yêu cầu → đối tác báo giá → người bán đặt.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Chưa có báo giá thì chưa đặt được",
+          "dat": true,
+          "chiTiet": "Chờ đối tác báo giá rồi mới đặt được."
+        },
+        {
+          "moTa": "Đặt được",
+          "dat": true
+        }
+      ],
+      "screen": "dich-vu"
+    },
+    {
+      "id": "B37",
+      "name": "Đánh giá sau đơn",
+      "expect": "Chỉ đánh giá được khi đơn hoàn tất, mỗi đơn một lần.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Chưa xong thì chưa đánh giá",
+          "dat": true,
+          "chiTiet": "Đánh giá được sau khi đơn hoàn tất."
+        },
+        {
+          "moTa": "Đánh giá 5 sao",
+          "dat": true
+        },
+        {
+          "moTa": "Lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Bạn đã đánh giá đơn này."
+        }
+      ],
+      "screen": "chi-tiet-don?ma=H%C4%90-0001"
+    },
+    {
+      "id": "B38",
+      "name": "Gửi yêu cầu hỗ trợ",
+      "expect": "Người bán gửi; vận hành trả lời; yêu cầu đóng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Yêu cầu đã đóng, có trả lời",
+          "dat": true
+        }
+      ],
+      "screen": "ho-tro"
+    },
+    {
+      "id": "B39",
+      "name": "Tách lô theo loại",
+      "expect": "Lô 4 tấn tách 1 tấn loại 2: lô gốc còn 3 tấn loại 1, phần loại 2 thành lô cho chế biến; không tách hết được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Tách 4 tấn (hết lô) bị chặn",
+          "dat": true,
+          "chiTiet": "Phần tách (4.000 kg) phải nhỏ hơn 4.000 kg còn bán được, để lô gốc còn hàng."
+        },
+        {
+          "moTa": "Tách 1 tấn loại 2",
+          "dat": true
+        },
+        {
+          "moTa": "Lô gốc còn 3.000 kg loại 1",
+          "dat": true
+        },
+        {
+          "moTa": "Phần tách là lô loại 2 cho chế biến, 14.000 đ/kg",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-lo?lo=LO-2"
+    },
+    {
+      "id": "B40",
+      "name": "Bán gấp: ai nhận, ai cứu",
+      "expect": "Lô loại 3 bật bán gấp: thấy bên mua đã đăng ký nhận hàng kém loại và lời chào giá sàn của đối tác bao tiêu.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Người khác bật bán gấp lô này bị chặn",
+          "dat": true,
+          "chiTiet": "Chỉ người bán của lô này bật bán gấp được."
+        },
+        {
+          "moTa": "Chị Năm bật bán gấp",
+          "dat": true
+        },
+        {
+          "moTa": "Báo cho Nhà máy sấy Đồng Xanh (đăng ký nhận hàng kém loại)",
+          "dat": true
+        },
+        {
+          "moTa": "Có lời chào bao tiêu 6.000 đ/kg",
+          "dat": true,
+          "chiTiet": "Vựa Út Hiền 6000"
+        },
+        {
+          "moTa": "Hạn bán gấp 3 ngày",
+          "dat": true
+        }
+      ],
+      "screen": "ban-gap?lo=LO-1"
+    },
+    {
+      "id": "B41",
+      "name": "Hàng bị trả lại thành lô bán gấp",
+      "expect": "Đơn 1 tấn bị trả lại 150 kg (có ảnh): chị Năm đưa 150 kg thành lô loại 2 bán gấp; mỗi đơn một lần.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đưa phần trả lại thành lô",
+          "dat": true
+        },
+        {
+          "moTa": "Lô mới 150 kg loại 2, đang bán gấp",
+          "dat": true
+        },
+        {
+          "moTa": "Làm lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Phần trả lại đã thành lô LO-2."
+        }
+      ],
+      "screen": "ban-gap?lo=LO-2"
+    },
+    {
+      "id": "B42",
+      "name": "Cọc tính theo giá sàn",
+      "expect": "Giá tham khảo 25.000 đ/kg; đơn khai 16.000 đ/kg: cọc, phí tính trên 17.500 đ/kg (70% giá tham khảo), không trên giá khai.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Hợp đồng ghi giá tham khảo 25.000, giá tính cọc 17.500",
+          "dat": true,
+          "chiTiet": "25000 / 17500"
+        },
+        {
+          "moTa": "Chị Năm xác nhận (giá thấp nhưng chưa bất thường)",
+          "dat": true
+        },
+        {
+          "moTa": "Cọc = 10% × 1.000 kg × 17.500 đ",
+          "dat": true,
+          "chiTiet": "cọc 1750000"
+        }
+      ],
+      "screen": "hop-dong?ma=H%C4%90-0004"
+    },
+    {
+      "id": "B43",
+      "name": "Giá bất thường phải xác nhận thêm",
+      "expect": "Đơn 12.000 đ/kg (dưới 60% giá tham khảo): ký thường bị chặn; chị Năm đọc cảnh báo và xác nhận thì ký được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn bị đánh dấu giá bất thường",
+          "dat": true
+        },
+        {
+          "moTa": "Ký không xác nhận bị chặn",
+          "dat": true,
+          "chiTiet": "Giá 12.000 đ/kg thấp bất thường so với giá tham khảo 25.000 đ/kg. Tiền chỉ được bảo vệ theo đúng giá trên đơn; tiền trả thêm ngoài app không được tài khoản đảm bảo bảo vệ. Đọc kỹ và xác nhận lại nếu vẫn muốn bán giá này."
+        },
+        {
+          "moTa": "Xác nhận đã hiểu rồi ký",
+          "dat": true
+        },
+        {
+          "moTa": "Hợp đồng ghi lúc người bán xác nhận",
+          "dat": true
+        }
+      ],
+      "screen": "hop-dong?ma=H%C4%90-0004"
+    },
+    {
+      "id": "B44",
+      "name": "Nghiệm thu 3 phần",
+      "expect": "Hợp đồng có giá hạ cấp 15.000 đ: cân đạt 850, hạ cấp 50, trả lại 100 kg; trả lại 10% vượt 5% phải có ảnh; tiền = 850 × 25.000 + 50 × 15.000.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Trả lại 10% không ảnh bị chặn",
+          "dat": true,
+          "chiTiet": "Trả lại 10% vượt mức cho phép 5% của hợp đồng: kèm ảnh hàng không đạt làm bằng chứng."
+        },
+        {
+          "moTa": "Kèm ảnh thì nhập được",
+          "dat": true
+        },
+        {
+          "moTa": "Chị Năm xác nhận số cân",
+          "dat": true
+        },
+        {
+          "moTa": "Tiền hàng 22.000.000 đ",
+          "dat": true,
+          "chiTiet": "22000000"
+        }
+      ],
+      "screen": "ket-qua?ma=H%C4%90-0001"
+    },
+    {
+      "id": "M01",
+      "name": "Đăng ký tổ chức",
+      "expect": "Thiếu tên tổ chức bị chặn; đủ thì có hồ sơ, gửi giấy phép thì chờ duyệt.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Không ghi tên tổ chức bị chặn",
+          "dat": true,
+          "chiTiet": "Ghi tên tổ chức (nhà máy, công ty, vựa)."
+        },
+        {
+          "moTa": "Đăng ký đủ thông tin",
+          "dat": true
+        },
+        {
+          "moTa": "Hồ sơ chờ duyệt xác minh",
+          "dat": true
+        },
+        {
+          "moTa": "Mặc định gói Miễn phí",
+          "dat": true
+        }
+      ],
+      "screen": "ho-so-to-chuc"
+    },
+    {
+      "id": "M02",
+      "name": "Hạn mức lượt kết nối gói Miễn phí",
+      "expect": "5 lời mời mỗi tháng; lời mời thứ 6 bị chặn; người bán từ chối thì trả lượt.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Gửi được 5 lời mời",
+          "dat": true
+        },
+        {
+          "moTa": "Lời mời thứ 6 bị chặn",
+          "dat": true,
+          "chiTiet": "Đã dùng 5/5 lượt kết nối tháng này (gồm lời mời đang chờ). Rút một lời mời hoặc nâng gói."
+        },
+        {
+          "moTa": "Bị từ chối một lời mời thì gửi thêm được",
+          "dat": true
+        }
+      ],
+      "screen": "goi-cua-toi"
+    },
+    {
+      "id": "M03",
+      "name": "Hạn mức tin cần mua",
+      "expect": "Gói Miễn phí đăng tối đa 5 tin cần mua mỗi tháng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Tin thứ 6 bị chặn",
+          "dat": true,
+          "chiTiet": "Đã dùng 5/5 tin cần mua tháng này. Nâng gói hoặc chờ tháng sau."
+        },
+        {
+          "moTa": "Ngày \"đến\" trước ngày \"từ\" bị chặn",
+          "dat": true,
+          "chiTiet": "Ngày \"đến\" phải sau ngày \"từ\"."
+        }
+      ],
+      "screen": "nhu-cau"
+    },
+    {
+      "id": "M04",
+      "name": "Thành viên theo gói",
+      "expect": "Miễn phí chỉ 1 tài khoản; Business tối đa 5; còn thành viên thì không hạ gói được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Gói Miễn phí không thêm thành viên",
+          "dat": true,
+          "chiTiet": "Gói Miễn phí có tối đa 1 tài khoản."
+        },
+        {
+          "moTa": "Lên gói Business",
+          "dat": true
+        },
+        {
+          "moTa": "Thành viên thứ 5 (tài khoản thứ 6) bị chặn",
+          "dat": true,
+          "chiTiet": "Gói Business có tối đa 5 tài khoản."
+        },
+        {
+          "moTa": "Còn thành viên thì không hạ về Miễn phí",
+          "dat": true,
+          "chiTiet": "Gói Miễn phí chỉ có 1 tài khoản. Gỡ bớt thành viên trước."
+        }
+      ],
+      "screen": "thanh-vien"
+    },
+    {
+      "id": "M05",
+      "name": "Chưa kết nối thì chưa đặt hàng",
+      "expect": "Tạo đơn khi người bán chưa đồng ý kết nối bị chặn; đồng ý rồi thì được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Tạo đơn khi chưa kết nối bị chặn",
+          "dat": true,
+          "chiTiet": "Người bán chưa đồng ý kết nối với bạn cho lô này."
+        },
+        {
+          "moTa": "Sau khi người bán đồng ý thì tạo đơn được",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-lo?lo=LO-1"
+    },
+    {
+      "id": "M06",
+      "name": "Che liên lạc trong tin nhắn",
+      "expect": "Trước cọc, số điện thoại trong tin nhắn bị che; bên mua không thấy số người bán.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Số điện thoại trong tin bị che",
+          "dat": true,
+          "chiTiet": "Anh gọi em ••• nha"
+        },
+        {
+          "moTa": "Chưa cọc: không có liên lạc người bán",
+          "dat": true
+        }
+      ],
+      "screen": "tin-nhan?kn=KN-1"
+    },
+    {
+      "id": "M07",
+      "name": "Báo giá thành đơn",
+      "expect": "Bên mua gửi giá, người bán đồng ý; đơn tạo theo đúng báo giá; mỗi báo giá một đơn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn đúng giá và lượng đã chốt",
+          "dat": true
+        },
+        {
+          "moTa": "Dùng lại báo giá lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Báo giá này đã dùng để tạo đơn."
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M08",
+      "name": "Hẹn xem vườn",
+      "expect": "Không hẹn vào quá khứ; người bán đồng ý thì hẹn được chốt.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Hẹn vào hôm qua bị chặn",
+          "dat": true,
+          "chiTiet": "Giờ hẹn phải ở tương lai."
+        },
+        {
+          "moTa": "Hẹn đã chốt",
+          "dat": true
+        }
+      ],
+      "screen": "hen-xem-vuon?kn=KN-1"
+    },
+    {
+      "id": "M09",
+      "name": "Đặt quá lượng còn bán",
+      "expect": "Lô 4.000 kg: đơn 5.000 kg bị chặn ngay khi tạo.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn 5.000 kg bị chặn",
+          "dat": true,
+          "chiTiet": "Lượng phải lớn hơn 0 và không quá 4.000 kg còn bán được của lô."
+        }
+      ],
+      "screen": "chi-tiet-lo?lo=LO-1"
+    },
+    {
+      "id": "M10",
+      "name": "Rút đơn trước khi người bán xác nhận",
+      "expect": "Rút được; lượng của lô không bị giữ.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Rút đơn",
+          "dat": true
+        },
+        {
+          "moTa": "Đơn đã hủy, lô không giữ lượng",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M11",
+      "name": "Cọc và phí: đơn đầu, đơn mối quen",
+      "expect": "Đơn đầu 4.000 kg × 25.000 đ: cọc 10 triệu, phí giới thiệu 1 triệu; đơn sau cùng người bán: phí mối quen 0,3%.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Cọc 10.000.000 đ, phí giới thiệu 1.000.000 đ",
+          "dat": true
+        },
+        {
+          "moTa": "Đặt cọc",
+          "dat": true
+        },
+        {
+          "moTa": "Đơn sau: phí mối quen 300.000 đ",
+          "dat": true,
+          "chiTiet": "300000"
+        }
+      ],
+      "screen": "dat-coc?ma=HĐ-0002"
+    },
+    {
+      "id": "M12",
+      "name": "Quá hạn cọc",
+      "expect": "Quá 48 giờ: không đặt cọc được nữa, hệ thống đóng đơn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Cọc sau hạn bị chặn",
+          "dat": true,
+          "chiTiet": "Đã quá hạn đặt cọc. Đơn sẽ tự đóng; tạo đơn mới nếu còn muốn mua."
+        },
+        {
+          "moTa": "Hệ thống đóng đơn quá hạn",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M13",
+      "name": "Liên lạc người bán mở sau khi cọc",
+      "expect": "Trước cọc không có số người bán; cọc xong thấy số và địa chỉ vườn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Trước cọc: chưa có liên lạc",
+          "dat": true
+        },
+        {
+          "moTa": "Sau cọc: thấy số người bán",
+          "dat": true,
+          "chiTiet": "0918234421"
+        }
+      ],
+      "screen": "mo-lien-lac?ma=HĐ-0001"
+    },
+    {
+      "id": "M14",
+      "name": "Dời lịch giao",
+      "expect": "Bên mua đề nghị dời ngày; người bán đồng ý thì ngày giao đổi.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Ngày giao đã đổi",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M15",
+      "name": "Xin hủy sau khi cọc",
+      "expect": "Bên mua xin hủy, người bán đồng ý: đơn hủy, cọc thuộc về người bán, lượng trả về lô.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn hủy, cọc về người bán",
+          "dat": true
+        },
+        {
+          "moTa": "Lượng trả về lô",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M16",
+      "name": "Nhập kết quả cân",
+      "expect": "Nhận + không nhận vượt lượng đơn bị chặn; đúng thì chờ người bán xác nhận.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Cân 4.100 kg cho đơn 4.000 kg bị chặn",
+          "dat": true,
+          "chiTiet": "Đạt + hạ cấp + trả lại vượt 4.000 kg của đơn."
+        },
+        {
+          "moTa": "Nhận 3.900, trả lại 100",
+          "dat": true
+        },
+        {
+          "moTa": "Chờ người bán xác nhận",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M17",
+      "name": "Người bán báo số cân sai",
+      "expect": "Đơn quay về chờ cân; bên mua nhập lại số mới.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đơn quay về chờ cân, có đánh dấu tranh chấp",
+          "dat": true
+        },
+        {
+          "moTa": "Nhập lại 1.950 kg",
+          "dat": true
+        }
+      ],
+      "screen": "nghiem-thu?ma=HĐ-0001"
+    },
+    {
+      "id": "M18",
+      "name": "Chuyển tiền qua tài khoản đảm bảo",
+      "expect": "Chuyển sai số bị chặn; đúng số thì ngân hàng giải ngân, đơn đóng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Còn phải trả = 95 triệu − cọc 10 triệu",
+          "dat": true,
+          "chiTiet": "85000000"
+        },
+        {
+          "moTa": "Chuyển thiếu 1 triệu bị chặn",
+          "dat": true,
+          "chiTiet": "Tài khoản đảm bảo nhận đúng số còn phải trả: 85.000.000 đ."
+        },
+        {
+          "moTa": "Chuyển đúng số",
+          "dat": true
+        },
+        {
+          "moTa": "Ngân hàng giải ngân, đơn đóng đủ tiền",
+          "dat": true
+        }
+      ],
+      "screen": "chi-tiet-don?ma=HĐ-0001"
+    },
+    {
+      "id": "M19",
+      "name": "Trả trực tiếp nhiều lần",
+      "expect": "Trả một nửa: người bán nhận một phần; trả nốt thì người bán xác nhận đủ.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Người bán không xác nhận \"đủ\" khi mới trả một nửa",
+          "dat": true,
+          "chiTiet": "Bên mua mới báo trả 22.500.000 đ, còn thiếu 22.500.000 đ. Thấy đúng số này thì bấm Nhận một phần."
+        },
+        {
+          "moTa": "Còn phải trả một nửa",
+          "dat": true
+        },
+        {
+          "moTa": "Trả nốt, người bán xác nhận đủ",
+          "dat": true
+        }
+      ],
+      "screen": "cong-no"
+    },
+    {
+      "id": "M20",
+      "name": "Người bán chưa thấy tiền: đối soát",
+      "expect": "Bên mua gửi ủy nhiệm chi và ghi đối soát; người bán thấy tiền thì đóng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Gửi chứng từ",
+          "dat": true
+        },
+        {
+          "moTa": "Ghi đối soát",
+          "dat": true
+        },
+        {
+          "moTa": "Đơn đóng",
+          "dat": true
+        }
+      ],
+      "screen": "doi-soat?ma=HĐ-0001"
+    },
+    {
+      "id": "M21",
+      "name": "Đánh giá người bán sau đơn",
+      "expect": "Chỉ đánh giá được khi đơn hoàn tất, mỗi đơn một lần.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Chưa hoàn tất thì chưa đánh giá",
+          "dat": true,
+          "chiTiet": "Đánh giá được sau khi đơn hoàn tất."
+        },
+        {
+          "moTa": "Đánh giá 5 sao",
+          "dat": true
+        },
+        {
+          "moTa": "Đánh giá lần hai bị chặn",
+          "dat": true,
+          "chiTiet": "Bạn đã đánh giá đơn này."
+        }
+      ],
+      "screen": "uy-tin"
+    },
+    {
+      "id": "M22",
+      "name": "Nhập, xuất kho",
+      "expect": "Nhập không vượt lượng đã nhận; xuất không vượt tồn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Nhập 4.000 kg (nhận 3.800) bị chặn",
+          "dat": true,
+          "chiTiet": "Lượng nhập phải lớn hơn 0 và không quá 3.800 kg còn chưa nhập của đơn."
+        },
+        {
+          "moTa": "Xuất 3.500 kg (tồn 3.000) bị chặn",
+          "dat": true,
+          "chiTiet": "Lượng xuất phải lớn hơn 0 và không quá 3.000 kg còn trong kho."
+        },
+        {
+          "moTa": "Xuất 1.000 kg",
+          "dat": true
+        }
+      ],
+      "screen": "ton-kho"
+    },
+    {
+      "id": "M23",
+      "name": "Truy xuất lô kho về nhật ký vườn",
+      "expect": "Phiếu kho → đơn → người bán → vườn → các lần phun thuốc.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Truy được tới người bán và vườn",
+          "dat": true
+        },
+        {
+          "moTa": "Thấy lần phun thuốc trong nhật ký",
+          "dat": true
+        }
+      ],
+      "screen": "truy-xuat?phieu=PK-1"
+    },
+    {
+      "id": "M24",
+      "name": "Đơn ngoài app và công nợ",
+      "expect": "Đơn mua ngoài app còn nợ vào công nợ; trả hết thì ra khỏi công nợ.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Công nợ có 8 triệu của đơn ngoài app",
+          "dat": true
+        },
+        {
+          "moTa": "Trả vượt số nợ bị chặn",
+          "dat": true,
+          "chiTiet": "Số trả phải lớn hơn 0 và không quá 8.000.000 đ còn nợ."
+        },
+        {
+          "moTa": "Trả hết thì ra khỏi công nợ",
+          "dat": true
+        }
+      ],
+      "screen": "cong-no"
+    },
+    {
+      "id": "M25",
+      "name": "Bảng kê mua hàng 01/TNDN",
+      "expect": "Bảng kê tháng gồm đơn trong app đã nhận đủ tiền và đơn ngoài app, tổng đúng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Bảng kê có 2 dòng",
+          "dat": true,
+          "chiTiet": "2"
+        },
+        {
+          "moTa": "Tổng = 25 triệu + 6 triệu",
+          "dat": true,
+          "chiTiet": "31000000"
+        }
+      ],
+      "screen": "bang-ke"
+    },
+    {
+      "id": "M26",
+      "name": "Kế hoạch mua và phần còn thiếu",
+      "expect": "Kế hoạch 5 tấn; đơn đã cọc 3 tấn trong tháng thì còn thiếu 2 tấn; mỗi tháng một dòng mỗi mặt hàng.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đã có 3 tấn, thiếu 2 tấn",
+          "dat": true,
+          "chiTiet": "3000/2000"
+        },
+        {
+          "moTa": "Dòng trùng tháng, mặt hàng bị chặn",
+          "dat": true,
+          "chiTiet": "Tháng này đã có kế hoạch cho mặt hàng này. Sửa dòng cũ."
+        }
+      ],
+      "screen": "ke-hoach"
+    },
+    {
+      "id": "M27",
+      "name": "Đặt kiểm định cho lô",
+      "expect": "Gửi yêu cầu → đối tác báo giá → bên mua đặt.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đối tác đã báo giá",
+          "dat": true
+        },
+        {
+          "moTa": "Đặt dịch vụ",
+          "dat": true
+        }
+      ],
+      "screen": "dich-vu"
+    },
+    {
+      "id": "M28",
+      "name": "Lập đơn là soạn hợp đồng cọc",
+      "expect": "Đơn ghi tiêu chuẩn, lỗi cho phép 3%, giá hạ cấp, giao tại kho; chưa cọc thì hợp đồng chưa hiệu lực, cọc xong thì có hiệu lực.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Giá hạ cấp không thấp hơn giá đơn bị chặn",
+          "dat": true,
+          "chiTiet": "Giá hạ cấp phải lớn hơn 0 và thấp hơn giá đơn."
+        },
+        {
+          "moTa": "Hợp đồng ghi đủ điều khoản",
+          "dat": true
+        },
+        {
+          "moTa": "Chưa cọc: chưa có hiệu lực",
+          "dat": true
+        },
+        {
+          "moTa": "Cọc qua app: hợp đồng có hiệu lực",
+          "dat": true
+        }
+      ],
+      "screen": "hop-dong?ma=H%C4%90-0001"
+    },
+    {
+      "id": "M29",
+      "name": "Giá tham khảo và giá tính cọc",
+      "expect": "Giá tham khảo 25.000 đ/kg; trả 19.000 thì báo thấp hơn mặt bằng; khai 15.000 thì cọc vẫn tính trên 17.500 đ/kg.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "19.000 đ/kg: thấp hơn mặt bằng 24%",
+          "dat": true,
+          "chiTiet": "thap 24%"
+        },
+        {
+          "moTa": "Cọc tính trên 17.500 đ/kg",
+          "dat": true,
+          "chiTiet": "cọc 1750000"
+        }
+      ],
+      "screen": "thoa-thuan?lo=LO-1"
+    },
+    {
+      "id": "M30",
+      "name": "Nghiệm thu 3 phần, ảnh khi trả nhiều",
+      "expect": "Đơn không có giá hạ cấp: nhập hạ cấp bị chặn; trả lại 8% không ảnh bị chặn; kèm ảnh thì nhập được.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Hạ cấp khi hợp đồng không có giá hạ cấp bị chặn",
+          "dat": true,
+          "chiTiet": "Hợp đồng không có giá hạ cấp: phần không đạt chỉ được trả lại."
+        },
+        {
+          "moTa": "Trả lại 8% không ảnh bị chặn",
+          "dat": true,
+          "chiTiet": "Trả lại 8% vượt mức cho phép 5% của hợp đồng: kèm ảnh hàng không đạt làm bằng chứng."
+        },
+        {
+          "moTa": "Kèm ảnh thì nhập được",
+          "dat": true
+        },
+        {
+          "moTa": "Kết quả lưu ảnh bằng chứng",
+          "dat": true
+        }
+      ],
+      "screen": "nghiem-thu?ma=H%C4%90-0001"
+    },
+    {
+      "id": "M31",
+      "name": "Đăng ký nhận hàng loại 2, 3, hàng dạt",
+      "expect": "Đồng Xanh đăng ký nhận xoài kém loại từ 500 kg: lô loại 2 của chị Năm hiện trong danh sách; lô 300 kg thì không.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Đăng ký nhận hàng kém loại",
+          "dat": true
+        },
+        {
+          "moTa": "Lô loại 2 (2 tấn, đang bán gấp) có trong danh sách",
+          "dat": true
+        },
+        {
+          "moTa": "Lô 300 kg (dưới lượng tối thiểu) không có",
+          "dat": true
+        }
+      ],
+      "screen": "hang-kem-loai"
+    },
+    {
+      "id": "M32",
+      "name": "Đối tác bao tiêu",
+      "expect": "Bên mua tự ghi mình là bao tiêu bị chặn; vận hành ghi Đồng Xanh bao tiêu xoài 6.000 đ/kg thì lô dạt có lời chào giá sàn.",
+      "pass": true,
+      "checks": [
+        {
+          "moTa": "Bên mua tự ghi bao tiêu bị chặn",
+          "dat": true,
+          "chiTiet": "Chỉ đội vận hành ghi đối tác bao tiêu (theo thỏa thuận khung đã ký)."
+        },
+        {
+          "moTa": "Vận hành ghi theo thỏa thuận khung",
+          "dat": true
+        },
+        {
+          "moTa": "Lô dạt có lời chào bao tiêu 6.000 đ/kg",
+          "dat": true
+        }
+      ],
+      "screen": "hang-kem-loai"
+    }
+  ]
+}

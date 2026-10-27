@@ -1,0 +1,121 @@
+{
+  "at": "2026-10-27T01:03:34.828Z",
+  "kind": "API adapter partial coverage; not browser E2E",
+  "rows": [
+    {
+      "id": "AD-B08",
+      "pass": false,
+      "checks": [
+        {
+          "ten": "Buyer thấy trước 14 ngày",
+          "dat": true
+        },
+        {
+          "ten": "Buyer không thấy sau 14 ngày",
+          "dat": false
+        },
+        {
+          "ten": "Buyer thấy lại sau xác nhận",
+          "dat": true
+        }
+      ]
+    },
+    {
+      "id": "AD-B16-M09",
+      "pass": true,
+      "checks": [
+        {
+          "ten": "Chào quá lượng vẫn được gửi (khác điểm chặn mẫu) = 200",
+          "dat": true
+        },
+        {
+          "ten": "Không thể giữ5.000kg trên lô4.000",
+          "dat": true
+        },
+        {
+          "ten": "Không đồng ý được lời chào thứ 2 vượt còn bán",
+          "dat": true
+        },
+        {
+          "ten": "Chỉ giữ 3.000 kg = 3000000",
+          "dat": true
+        },
+        {
+          "ten": "Còn 1.000 kg = 1000000",
+          "dat": true
+        }
+      ]
+    },
+    {
+      "id": "AD-B17",
+      "pass": true,
+      "checks": [
+        {
+          "ten": "Lần đầu thành công = 200",
+          "dat": true
+        },
+        {
+          "ten": "Cùng khóa trả200 = 200",
+          "dat": true
+        },
+        {
+          "ten": "Có replayed = true",
+          "dat": true
+        },
+        {
+          "ten": "Khóa mới bị chặn",
+          "dat": true
+        },
+        {
+          "ten": "Giữ đúng một lần = 3000000",
+          "dat": true
+        }
+      ]
+    },
+    {
+      "id": "AD-B18",
+      "pass": false,
+      "checks": [
+        {
+          "ten": "Từ chối đóng đơn = closed",
+          "dat": true
+        },
+        {
+          "ten": "Hold trả về0 = 0",
+          "dat": true
+        },
+        {
+          "ten": "Lô còn4.000kg = 4000000",
+          "dat": true
+        },
+        {
+          "ten": "Lý do từ chối có lưu",
+          "dat": false,
+          "chi_tiet": "{\"response\":{\"id\":\"e273013b-9519-4a90-963d-7afcd455d0e9\",\"revision\":4,\"status\":\"closed\",\"events\":[\"order.closed\",\"hold.cancelled\",\"deadline.cancelled\"],\"errors\":[],\"data\":{\"id\":\"e273013b-9519-4a90-963d-7afcd455d0e9\",\"code\":\"HD-3001\",\"status\":\"closed\",\"revision\":4,\"close_reason\":\"seller_declined\"}},\"order\":{\"id\":\"e273013b-9519-4a90-963d-7afcd455d0e9\",\"code\":\"HD-3001\",\"status\":\"closed\",\"revision\":4,"
+        }
+      ]
+    },
+    {
+      "id": "AD-B44-M30",
+      "pass": true,
+      "checks": [
+        {
+          "ten": "Trả10%khôngảnh bị chặn = THIEU_ANH_TRA_LAI",
+          "dat": true
+        },
+        {
+          "ten": "Kèm ảnh được nhập",
+          "dat": true
+        },
+        {
+          "ten": "Giá trị nghiệm thu22triệu = 22000000",
+          "dat": true
+        },
+        {
+          "ten": "Bên bán xác nhận: các dòng đã đóng",
+          "dat": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://agiviet-23a94.web.app/ban/bat-dau.html",
+    "status": 200,
+    "bytes": 18843,
+    "sha256": "8a88cd4d60faf9895d1ef980c2a82a1b736e449f0817425810520c72d94709b5",
+    "local_file": "fe-nongdan/bat-dau.html",
+    "local_exists": true,
+    "same": false,
+    "local_sha256": "24998eeee1d11e66e3de044acf163d2f41400a247c7c1922a3d24f067fa7e581",
+    "saved": "bang-chung/du-lieu/live-mau1/ban__bat-dau.html"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/ban/js/app.js",
+    "status": 200,
+    "bytes": 19230,
+    "sha256": "51780f10f8f1633e081dbfbd0bb3d412b7878eea4edaaba96052ff175d1b9cc8",
+    "local_file": "fe-nongdan/js/app.js",
+    "local_exists": true,
+    "same": false,
+    "local_sha256": "7c05b616f2aa3354cf1024cf468cfaf001b7ad048fcbb2b81cbaab75e36a49e9",
+    "saved": "bang-chung/du-lieu/live-mau1/ban__js__app.js"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/ban/js/he-thong.js",
+    "status": 200,
+    "bytes": 25559,
+    "sha256": "66aab771d9838eb97f2b15e1147d8901ee3cb84f6434e37ac06b218a8b37f62c",
+    "local_file": "fe-nongdan/js/he-thong.js",
+    "local_exists": true,
+    "same": true,
+    "local_sha256": "66aab771d9838eb97f2b15e1147d8901ee3cb84f6434e37ac06b218a8b37f62c",
+    "saved": "bang-chung/du-lieu/live-mau1/ban__js__he-thong.js"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/ban/js/kho-mau.js",
+    "status": 200,
+    "bytes": 6707,
+    "sha256": "a883014196e4f9ab70c56263d6f132e60a7593507af8691b4f792b3f84e1b969",
+    "local_file": "fe-nongdan/js/kho-mau.js",
+    "local_exists": false,
+    "same": false,
+    "saved": "bang-chung/du-lieu/live-mau1/ban__js__kho-mau.js"
+  },
+  {
+    "url": "https://agiviet-23a94.web.app/mua/js/app.js",
+    "status": 200,
+    "bytes": 21966,
+    "sha256": "51bbe19512bf7077c36596cd728baaab69508bef175651dc8e3eb5ea3b38ed24",
+    "local_file": "fe-thumua/js/app.js",
+    "local_exists": true,
+    "same": false,
+    "local_sha256": "60997acdcc0631004a25f56870b876724a41e474927b1052f916b825db7665cc",
+    "saved": "bang-chung/du-lieu/live-mau1/mua__js__app.js"
+  }
+]

@@ -1,0 +1,88 @@
+-- Dữ liệu SMS/bank/PDF vẫn mô phỏng; mọi command đang kiểm dùng SESSION AUTHORIZATION.
+DELETE FROM cmd.test_clock;
+SELECT test.context(NULL,NULL,'system');
+CREATE FUNCTION test.actual_command_order(k text,p_signed boolean DEFAULT false,p_override jsonb DEFAULT '{}') RETURNS uuid LANGUAGE plpgsql AS $$
+DECLARE lot uuid; offer uuid; oid uuid; terms jsonb; doc uuid;
+BEGIN
+ PERFORM set_config('test.x.data',(SELECT jsonb_build_object('code',k||'-LOT','product_id',product_id,'profile_version',profile_version,'grade_code',grade_code,'site_id',site_id,'facility_id',facility_id,'qty_basis','weighed','declared_qty',4000000)::text FROM core.lots WHERE code='L-0412'),true);
+ lot:=test.as_login('db_test_seller',$q$SELECT cmd.create_lot(current_setting('test.x.data')::jsonb)$q$)::uuid;
+ PERFORM set_config('test.x.lot',lot::text,true);
+ PERFORM test.as_login('db_test_seller',$q$SELECT cmd.publish_lot(current_setting('test.x.lot')::uuid,23000,20000)$q$);
+ PERFORM set_config('test.x.code',k,true); PERFORM set_config('test.x.buyer',test.org('TC-M01')::text,true);
+ offer:=test.as_login('db_test_buyer',$q$SELECT cmd.send_offer(current_setting('test.x.code')||'-OFFER',current_setting('test.x.lot')::uuid,NULL,current_setting('test.x.buyer')::uuid,'buyer_bid',23000,1000000)$q$)::uuid;
+ PERFORM set_config('test.x.offer',offer::text,true);
+ PERFORM test.as_login('db_test_seller',$q$SELECT cmd.accept_offer(current_setting('test.x.offer')::uuid)$q$);
+ SELECT to_jsonb(v)-ARRAY['write_xid','created_at','amendment_id'] INTO terms FROM core.order_versions v JOIN core.orders o ON o.id=v.order_id WHERE o.code='CMD-ORDER' AND v.version_no=1;
+ terms:=terms||jsonb_build_object('delivery_window',tstzrange(now()-interval '1 hour',now()+interval '4 days'),'designated_receiver_user_id',test.person('Võ Hoàng Phúc'))||p_override;
+ PERFORM set_config('test.x.terms',terms::text,true); PERFORM set_config('test.x.doc',test.command_doc(k||'-DOC')::text,true);
+ oid:=test.as_login('db_test_buyer',$q$SELECT cmd.create_order(current_setting('test.x.code'),current_setting('test.x.offer')::uuid,current_setting('test.x.terms')::jsonb,current_setting('test.x.doc')::jsonb)$q$)::uuid;
+ PERFORM set_config('test.x.order',oid::text,true);
+ IF p_signed THEN
+ SELECT document_id INTO doc FROM core.order_versions WHERE order_id=oid;
+ PERFORM set_config('test.x.docid',doc::text,true); PERFORM set_config('test.x.otp',test.otp(doc,test.person('Trần Thu Hà')),true);
+ PERFORM test.as_login('db_test_buyer',$q$SELECT cmd.sign_document(current_setting('test.x.docid')::uuid,'buyer',current_setting('test.x.otp'),'TEST')$q$);
+ PERFORM test.as_login('db_test_buyer',$q$SELECT cmd.send_order(current_setting('test.x.order')::uuid)$q$);
+ PERFORM set_config('test.x.otp',test.otp(doc,test.person('Nguyễn Thị Năm')),true);
+ PERFORM test.as_login('db_test_seller',$q$SELECT cmd.sign_document(current_setting('test.x.docid')::uuid,'seller',current_setting('test.x.otp'),'TEST')$q$);
+ PERFORM test.as_login('db_test_system',$q$SELECT cmd.finalize_signed_order(current_setting('test.x.order')::uuid,current_setting('test.x.code')||'-REF',current_setting('test.x.code')||'-VA','bank_sim')$q$);
+ END IF;
+ RETURN oid;
+END $$;
+REVOKE ALL ON FUNCTION test.actual_command_order(text,boolean,jsonb) FROM PUBLIC;
+SELECT test.actual_command_order('C48HOLD');
+SELECT test.as_login('db_test_buyer',$$SELECT test.expect_error('C48 không nhả hold đã có đơn','SELECT cmd.release_hold((SELECT NULL::uuid))','KHONG_CO_QUYEN')$$);
+SELECT test.as_login('db_test_buyer',$$SELECT cmd.close_unsigned_order(current_setting('test.x.order')::uuid,'cancel_before_deposit')$$);
+SELECT test.check('C48 đóng đơn thật nhả hold cancelled và hoàn lượng đúng một lần',EXISTS(SELECT 1 FROM core.orders o JOIN core.holds h ON h.id=o.hold_id WHERE o.code='C48HOLD' AND o.status='closed' AND h.status='cancelled') AND (SELECT qty=4000000 FROM ledger.qty_balances WHERE lot_id=current_setting('test.x.lot')::uuid AND bucket='available'));
+SELECT test.actual_command_order('C48UNSIGNED');
+SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.x.cancel',cmd.request_cancel(current_setting('test.x.order')::uuid,'buyer_request','Hủy trước ký')::text,true)$$);
+SELECT test.as_login('db_test_seller',$$SELECT cmd.answer_cancel(current_setting('test.x.cancel')::uuid,true)$$);
+SELECT set_config('test.x.doc',test.command_doc('C48UNSIGNED-CANCEL')::text,true);
+SELECT test.as_login('db_test_system',$$SELECT cmd.process_unsigned_cancellation(current_setting('test.x.cancel')::uuid,current_setting('test.x.doc')::jsonb)$$);
+SELECT test.as_login('db_test_system',$$SELECT cmd.finish_cancellation(current_setting('test.x.cancel')::uuid)$$);
+SELECT test.check('C48 hủy chưa ký có hold thật đóng và trả đủ lượng',EXISTS(SELECT 1 FROM core.cancellation_requests WHERE id=current_setting('test.x.cancel')::uuid AND status='done') AND (SELECT qty=4000000 FROM ledger.qty_balances WHERE lot_id=current_setting('test.x.lot')::uuid AND bucket='available'));
+SELECT test.actual_command_order('C48FRESH',true);
+SELECT test.check('C48 cọc hàng tươi 12h và gia hạn hold cùng mốc',EXISTS(SELECT 1 FROM core.deadlines d JOIN core.deposits dep ON dep.id=d.entity_id JOIN core.orders o ON o.id=dep.order_id JOIN core.holds h ON h.id=o.hold_id WHERE o.code='C48FRESH' AND d.kind='deposit' AND d.due_at=d.created_at+interval '12 hours' AND h.expires_at=d.due_at));
+-- Các lần thấp hơn sàn không phát notify/sync_apps cho người bán.
+SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.x.low',cmd.send_offer('C48LOW',current_setting('test.x.lot')::uuid,NULL,current_setting('test.x.buyer')::uuid,'buyer_bid',19000,10000)::text,true)$$);
+SELECT test.check('C48 dưới sàn tạo auto_rejected không sent/không deadline',EXISTS(SELECT 1 FROM core.offers WHERE code='C48LOW' AND status='auto_rejected') AND NOT EXISTS(SELECT 1 FROM core.deadlines WHERE entity_id=current_setting('test.x.low')::uuid) AND NOT EXISTS(SELECT 1 FROM evt.domain_events e JOIN evt.outbox b ON b.event_id=e.id WHERE e.aggregate_id=current_setting('test.x.low')::uuid AND b.destination IN ('notify','sync_apps')));
+SELECT test.as_login('db_test_seller',$$SELECT test.expect_error('C48 không nhận lời chào tự từ chối','SELECT cmd.accept_offer(current_setting(''test.x.low'')::uuid)','ck_command_state')$$);
+SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.x.counter',cmd.send_offer('C48COUNTER',current_setting('test.x.lot')::uuid,NULL,current_setting('test.x.buyer')::uuid,'buyer_bid',22000,10000)::text,true)$$);
+SELECT test.as_login('db_test_seller',$$SELECT cmd.reply_offer(current_setting('test.x.counter')::uuid,'counter',23000,10000)$$);
+SELECT test.as_login('db_test_buyer',$$SELECT cmd.reply_offer(current_setting('test.x.counter')::uuid,'counter',19000,10000)$$);
+SELECT test.check('C48 trả giá dưới sàn chốt rejected và không mở hạn tiếp',EXISTS(SELECT 1 FROM core.offers WHERE code='C48COUNTER' AND status='rejected' AND buyer_counters=1 AND seller_counters=1) AND NOT EXISTS(SELECT 1 FROM core.deadlines WHERE entity_id=current_setting('test.x.counter')::uuid AND status='open') AND EXISTS(SELECT 1 FROM evt.domain_events e JOIN evt.outbox b ON b.event_id=e.id WHERE e.aggregate_id=current_setting('test.x.counter')::uuid AND e.event_type='offer.rejected' AND b.destination='notify_buyer'));
+-- Helper không cần mượn membership chủ; delegation xác định đúng tổ chức/quyền/thời hạn.
+SELECT test.context(NULL,NULL,'system');
+INSERT INTO core.users(id,display_name) VALUES(test.id('C48HELPER'),'Người giúp kiểm command');
+CREATE ROLE db_test_helper LOGIN NOSUPERUSER NOBYPASSRLS;
+GRANT agiviet_app TO db_test_helper;
+INSERT INTO cmd.login_principals VALUES('db_test_helper',test.id('C48HELPER'),test.org('TC-B01'),'helper',true);
+GRANT USAGE ON SCHEMA test TO db_test_helper;
+GRANT INSERT ON test.results TO db_test_helper;
+GRANT USAGE ON SEQUENCE test.results_id_seq TO db_test_helper;
+SELECT set_config('test.x.helper',test.id('C48HELPER')::text,true);
+SELECT test.as_login('db_test_seller',$$SELECT set_config('test.x.delegation',cmd.delegate_helper(current_setting('test.x.helper')::uuid,ARRAY['lot.draft','lot.update'],tstzrange(now(),now()+interval '3 days'))::text,true)$$);
+SELECT set_config('test.x.data',(SELECT jsonb_build_object('code','C48HELPER-LOT','product_id',product_id,'profile_version',profile_version,'grade_code',grade_code,'site_id',site_id,'qty_basis','weighed','declared_qty',2000000)::text FROM core.lots WHERE code='L-0412'),true);
+SELECT test.as_login('db_test_helper',$$SELECT set_config('app.user_id','00000000-0000-0000-0000-000000000001',true); SELECT set_config('test.x.helperlot',cmd.create_lot(current_setting('test.x.data')::jsonb)::text,true)$$);
+SELECT test.as_login('db_test_helper',$$SELECT cmd.publish_lot(current_setting('test.x.helperlot')::uuid,23000,20000)$$);
+SELECT test.as_login('db_test_helper',$$SELECT test.expect_error('C48 helper vẫn chịu hạn đổi giá 24h','SELECT cmd.update_lot(current_setting(''test.x.helperlot'')::uuid,''price'',''{"ask_price_vnd":24000,"floor_price_vnd":21000}'')','ck_lot_price_rate')$$);
+INSERT INTO cmd.test_clock VALUES(true,now()+interval '25 hours');
+SELECT test.as_login('db_test_helper',$$SELECT cmd.update_lot(current_setting('test.x.helperlot')::uuid,'price','{"ask_price_vnd":24000,"floor_price_vnd":21000}')$$);
+SELECT set_config('test.x.doc',test.command_doc('C48HELPER-PHOTO')::text,true);
+SELECT test.as_login('db_test_helper',$$SELECT cmd.attach_entity_evidence('lot',current_setting('test.x.helperlot')::uuid,current_setting('test.x.doc')::jsonb,true)$$);
+SELECT test.check('C48 helper ghi đúng người giúp trên lô, giá và ảnh',EXISTS(SELECT 1 FROM core.lots WHERE code='C48HELPER-LOT' AND created_by=test.id('C48HELPER') AND seller_org_id=test.org('TC-B01')) AND EXISTS(SELECT 1 FROM core.lot_price_versions WHERE lot_id=current_setting('test.x.helperlot')::uuid AND ask_price_vnd=24000 AND set_by=test.id('C48HELPER')) AND EXISTS(SELECT 1 FROM core.documents WHERE code='C48HELPER-PHOTO' AND created_by=test.id('C48HELPER') AND captured_in_app));
+SELECT test.as_login('db_test_helper',$$SELECT test.expect_error('C48 helper không cấp vai chủ','SELECT cmd.grant_member_role(NULL,''owner'')','KHONG_CO_QUYEN')$$);
+DELETE FROM cmd.test_clock;
+SELECT test.as_login('db_test_seller',$$SELECT cmd.revoke_delegation(current_setting('test.x.delegation')::uuid)$$);
+SELECT test.as_login('db_test_helper',$$SELECT test.expect_error('C48 ủy quyền thu hồi không tiếp tục sửa','SELECT cmd.update_lot(current_setting(''test.x.helperlot'')::uuid,''confirm'')','KHONG_CO_QUYEN')$$);
+-- Báo chưa nhận không ghi confirmation/ledger, không chờ 48h.
+SELECT test.prepare_dispute_command('C48PAY');
+SELECT test.context(NULL,NULL,'system');
+INSERT INTO core.direct_payments(id,code,order_id,kind,direction,payer_org_id,payee_org_id,amount_due_vnd,due_trigger,status) VALUES(test.id('C48PAY-P'),'C48PAY-P',test.id('C48PAY'),'goods_on_receipt','buyer_to_seller',test.org('TC-M01'),test.org('TC-B01'),1000000,'acceptance_closed','due');
+SELECT set_config('test.x.pay',test.id('C48PAY-P')::text,true),set_config('test.x.doc',test.command_doc('C48PAY-EVIDENCE')::text,true);
+SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.x.evidence',cmd.attach_evidence(current_setting('test.c47.order')::uuid,current_setting('test.x.doc')::jsonb)::text,true)$$);
+SELECT test.as_login('db_test_payer',$$SELECT cmd.report_payment(current_setting('test.x.pay')::uuid,1000000,'bank_transfer',current_setting('test.x.evidence')::uuid)$$);
+SELECT test.as_login('db_test_buyer',$$SELECT test.expect_error('C48 người trả không báo chưa nhận thay người nhận','SELECT cmd.report_payment_not_received(current_setting(''test.x.pay'')::uuid,''Chưa thấy tiền'')','KHONG_CO_QUYEN')$$);
+SELECT test.as_login('db_test_seller',$$SELECT set_config('test.x.task',cmd.report_payment_not_received(current_setting('test.x.pay')::uuid,'Chưa thấy tiền')::text,true)$$);
+SELECT test.as_login('db_test_seller',$$SELECT cmd.report_payment_not_received(current_setting('test.x.pay')::uuid,'Vẫn chưa thấy tiền')$$);
+SELECT test.check('C48 báo chưa nhận chỉ mismatch và một task đối soát',EXISTS(SELECT 1 FROM core.direct_payments WHERE id=test.id('C48PAY-P') AND status='mismatch') AND (SELECT count(*)=1 FROM ops.tasks WHERE dedup_key='not-received:'||test.id('C48PAY-P')) AND NOT EXISTS(SELECT 1 FROM core.direct_payment_confirmations WHERE direct_payment_id=test.id('C48PAY-P')));
+SET CONSTRAINTS ALL IMMEDIATE;

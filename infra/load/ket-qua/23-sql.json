@@ -1,0 +1,179 @@
+{
+  "refresh_ms": 233.27398300000002,
+  "plan": [
+    {
+      "QUERY PLAN": [
+        {
+          "Plan": {
+            "Node Type": "Index Scan",
+            "Parallel Aware": false,
+            "Async Capable": false,
+            "Scan Direction": "Forward",
+            "Index Name": "ix_ledger_accounts_order",
+            "Relation Name": "ledger_accounts",
+            "Alias": "ledger_accounts",
+            "Startup Cost": 8.87,
+            "Total Cost": 16.88,
+            "Plan Rows": 1,
+            "Plan Width": 16,
+            "Actual Startup Time": 0.018,
+            "Actual Total Time": 0.018,
+            "Actual Rows": 0,
+            "Actual Loops": 1,
+            "Index Cond": "((order_id = (InitPlan 1).col1) AND (account_type = 'deposit_escrow'::text))",
+            "Rows Removed by Index Recheck": 0,
+            "Shared Hit Blocks": 4,
+            "Shared Read Blocks": 3,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0,
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Parent Relationship": "InitPlan",
+                "Subplan Name": "InitPlan 1",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Scan Direction": "Forward",
+                "Index Name": "orders_code_key",
+                "Relation Name": "orders",
+                "Alias": "orders",
+                "Startup Cost": 0.42,
+                "Total Cost": 8.44,
+                "Plan Rows": 1,
+                "Plan Width": 16,
+                "Actual Startup Time": 0.006,
+                "Actual Total Time": 0.006,
+                "Actual Rows": 1,
+                "Actual Loops": 1,
+                "Index Cond": "(code = 'DC-00000001'::text)",
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 4,
+                "Shared Read Blocks": 0,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0
+              }
+            ]
+          },
+          "Planning": {
+            "Shared Hit Blocks": 87,
+            "Shared Read Blocks": 2,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "Planning Time": 0.188,
+          "Triggers": [],
+          "Execution Time": 0.026
+        }
+      ]
+    }
+  ],
+  "counts": [
+    {
+      "relname": "ledger_entries",
+      "n_live_tup": "1680000"
+    },
+    {
+      "relname": "ledger_accounts",
+      "n_live_tup": "862002"
+    },
+    {
+      "relname": "ledger_balances",
+      "n_live_tup": "842000"
+    },
+    {
+      "relname": "ledger_txns",
+      "n_live_tup": "840000"
+    },
+    {
+      "relname": "orders",
+      "n_live_tup": "440000"
+    },
+    {
+      "relname": "lots",
+      "n_live_tup": "300000"
+    },
+    {
+      "relname": "qty_balances",
+      "n_live_tup": "74535"
+    },
+    {
+      "relname": "qty_movements",
+      "n_live_tup": "74535"
+    },
+    {
+      "relname": "demands",
+      "n_live_tup": "30000"
+    },
+    {
+      "relname": "orgs",
+      "n_live_tup": "22001"
+    },
+    {
+      "relname": "deliveries",
+      "n_live_tup": "20000"
+    },
+    {
+      "relname": "mkt_ref_price",
+      "n_live_tup": "224"
+    },
+    {
+      "relname": "provinces",
+      "n_live_tup": "14"
+    },
+    {
+      "relname": "commodities",
+      "n_live_tup": "8"
+    },
+    {
+      "relname": "photos",
+      "n_live_tup": "0"
+    },
+    {
+      "relname": "inbound_webhooks",
+      "n_live_tup": "0"
+    },
+    {
+      "relname": "idempotency_keys",
+      "n_live_tup": "0"
+    },
+    {
+      "relname": "qr_scans",
+      "n_live_tup": "0"
+    },
+    {
+      "relname": "jobs",
+      "n_live_tup": "0"
+    },
+    {
+      "relname": "documents",
+      "n_live_tup": "0"
+    },
+    {
+      "relname": "outbox",
+      "n_live_tup": "0"
+    }
+  ],
+  "settings": {
+    "version": "PostgreSQL 17.10 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, 64-bit",
+    "shared_buffers": "512MB",
+    "bytes": "1130264243"
+  }
+}

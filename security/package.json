@@ -1,0 +1,13 @@
+{
+  "name": "agiviet-security",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Thư viện và bài kiểm thử bảo mật cho AgiViet production v2 (không phụ thuộc gói ngoài).",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test tests/unit/",
+    "test:db": "node tests/db/kiem-tra-db.mjs",
+    "test:api": "node --test tests/api/"
+  }
+}

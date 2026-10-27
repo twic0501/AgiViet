@@ -1,0 +1,50 @@
+{
+  "pass": 11,
+  "total": 11,
+  "results": [
+    {
+      "name": "Giao dịch đọc/ghi thường dùng session_user không phải owner",
+      "pass": true
+    },
+    {
+      "name": "DML trực tiếp bị chặn và rollback; phiên sau vẫn reader",
+      "pass": true
+    },
+    {
+      "name": "WITH chứa DML không vượt quyền DB",
+      "pass": true
+    },
+    {
+      "name": "SQL helper nội bộ không cấp runtime",
+      "pass": true
+    },
+    {
+      "name": "Login command lấy tổ chức từ session_user dù GUC bị sửa",
+      "pass": true
+    },
+    {
+      "name": "Helper chỉ có lot.draft: DB từ chối đặt giá, không còn lô nào được thêm",
+      "pass": true
+    },
+    {
+      "name": "Giá dưới kín: DB tự từ chối, không lộ giá kín, không tạo hạn trả lời",
+      "pass": true
+    },
+    {
+      "name": "Đăng ký qua command: tổ chức pending, chưa có vai nào",
+      "pass": true
+    },
+    {
+      "name": "API tạo/đăng lô chạy command, khai lượng một lần",
+      "pass": true
+    },
+    {
+      "name": "Tạo nhu cầu mở nguyên tử; endpoint publish cũ giữ trạng thái",
+      "pass": true
+    },
+    {
+      "name": "Không role runtime nào có DML lên sổ tiền/lượng",
+      "pass": true
+    }
+  ]
+}

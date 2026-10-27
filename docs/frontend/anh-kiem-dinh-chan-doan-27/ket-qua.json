@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-27T02:35:11.498Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "arrival",
+      "side": "buyer",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: {\"http\":409,\"body\":{\"errors\":[{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":{\"db\":\"ck_settlement_pending\",\"thong_bao\":\"Chờ kết quả lệnh tạm trước khi chia cọc lần tiếp\"}}],\"request_id\":\"req-cc2d849a1889ba4e\"}}\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:79:118"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "inspectionResponses": [
+    {
+      "profile": "arrival",
+      "side": "buyer",
+      "http": 409,
+      "body": {
+        "errors": [
+          {
+            "code": "TRANG_THAI_KHONG_CHO_PHEP",
+            "message": "Bước này không làm được ở trạng thái hiện tại.",
+            "fix": "Tải lại để xem trạng thái mới nhất.",
+            "details": {
+              "db": "ck_settlement_pending",
+              "thong_bao": "Chờ kết quả lệnh tạm trước khi chia cọc lần tiếp"
+            }
+          }
+        ],
+        "request_id": "req-cc2d849a1889ba4e"
+      }
+    }
+  ],
+  "shots": [
+    "arrival-buyer-mo-ho-so.png",
+    "arrival-buyer-LOI.png"
+  ]
+}

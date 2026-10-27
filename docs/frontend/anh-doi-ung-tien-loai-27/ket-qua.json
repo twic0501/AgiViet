@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-27T01:36:54.316Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "late",
+      "side": "seller",
+      "pass": false,
+      "error": "Error: Chưa tới đích · Mã nhận hàng ảo: 604178. Người bán nhập mã trên app để bắt đầu cân.\n    at wait (file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:43:240)\n    at async file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:60:15"
+    },
+    {
+      "profile": "late",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Chậm trả → báo trả có chứng từ → OTP xác nhận đủ",
+      "seed": "thu-0",
+      "log": "Đối ứng xác nhận tiền ảo bằng OTP thử"
+    },
+    {
+      "profile": "downgrade",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ghi cân nơi đếnĐối ứng xác nhận nơi đếnNgân hàng ảo xử lý và giao webhook QT-020a3f9e-f3fa-43ea-a8d1-fc7cd6523f93-CHINgân hàng ảo xử lý và giao webhook REF-ae4d8658-903f-4b2a-844b-eed28d8a5e76Tài chính thử đối soát sau webhook ngân hàng ảo"
+    },
+    {
+      "profile": "downgrade",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Biên bản giữa quy trình → ký → nơi đến → ngân hàng xác nhận tiền",
+      "seed": "thu-0",
+      "log": "Đối ứng ký kết quả nghiệm thuNgân hàng ảo xử lý và giao webhook QT-2bb33440-07d3-45c2-ba14-c86482fc999a-CHINgân hàng ảo xử lý và giao webhook REF-5c8ec9e0-31ca-451b-b177-3d89bcbc539eTài chính thử đối soát sau webhook ngân hàng ảo"
+    }
+  ],
+  "errors": [],
+  "shots": [
+    "late-seller-mo-ho-so.png",
+    "late-seller-LOI.png",
+    "late-buyer-mo-ho-so.png",
+    "late-buyer-dat-dich.png",
+    "downgrade-seller-mo-ho-so.png",
+    "downgrade-seller-dat-dich.png",
+    "downgrade-buyer-mo-ho-so.png",
+    "downgrade-buyer-dat-dich.png"
+  ]
+}

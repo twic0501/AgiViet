@@ -1,0 +1,320 @@
+[
+  {
+    "id": "dang-nhap",
+    "page": "vao-app.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 6
+  },
+  {
+    "id": "otp",
+    "page": "vao-app.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 6
+  },
+  {
+    "id": "thong-tin-to-chuc",
+    "page": "vao-app.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 6
+  },
+  {
+    "id": "chon-goi",
+    "page": "vao-app.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 6
+  },
+  {
+    "id": "tong-quan",
+    "page": "tong-quan.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 7
+  },
+  {
+    "id": "nguon-hang",
+    "page": "nguon-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 8
+  },
+  {
+    "id": "goi-y",
+    "page": "nguon-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 8
+  },
+  {
+    "id": "chi-tiet-lo",
+    "page": "nguon-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 8
+  },
+  {
+    "id": "ho-so-ban",
+    "page": "nguon-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 8
+  },
+  {
+    "id": "hang-kem-loai",
+    "page": "nguon-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 8
+  },
+  {
+    "id": "nhu-cau",
+    "page": "nhu-cau.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 9
+  },
+  {
+    "id": "tao-nhu-cau",
+    "page": "nhu-cau.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 9
+  },
+  {
+    "id": "chi-tiet-nhu-cau",
+    "page": "nhu-cau.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 9
+  },
+  {
+    "id": "bao-gia",
+    "page": "bao-gia.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 10
+  },
+  {
+    "id": "so-bao-gia",
+    "page": "bao-gia.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 10
+  },
+  {
+    "id": "gui-bao-gia",
+    "page": "bao-gia.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 10
+  },
+  {
+    "id": "tin-nhan",
+    "page": "tin-nhan.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 11
+  },
+  {
+    "id": "hen-xem-vuon",
+    "page": "tin-nhan.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 11
+  },
+  {
+    "id": "don-hang",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "chi-tiet-don",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "thoa-thuan",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "dat-coc",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "mo-lien-lac",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "nghiem-thu",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "hop-dong",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "doc-phieu-can",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "doi-soat",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "lich-nhan",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "huy-don",
+    "page": "don-hang.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 12
+  },
+  {
+    "id": "vi-dam-bao",
+    "page": "tien.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 13
+  },
+  {
+    "id": "cong-no",
+    "page": "tien.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 13
+  },
+  {
+    "id": "ghi-thanh-toan",
+    "page": "tien.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 13
+  },
+  {
+    "id": "ton-kho",
+    "page": "kho.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 14
+  },
+  {
+    "id": "nhap-kho",
+    "page": "kho.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 14
+  },
+  {
+    "id": "truy-xuat",
+    "page": "kho.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 14
+  },
+  {
+    "id": "moi-quen",
+    "page": "nha-cung-cap.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 15
+  },
+  {
+    "id": "cham-diem",
+    "page": "nha-cung-cap.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 15
+  },
+  {
+    "id": "ghi-don-ngoai",
+    "page": "nha-cung-cap.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 15
+  },
+  {
+    "id": "nhap-excel",
+    "page": "nha-cung-cap.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 15
+  },
+  {
+    "id": "ke-hoach",
+    "page": "ke-hoach.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 16
+  },
+  {
+    "id": "bang-ke",
+    "page": "bao-cao.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 17
+  },
+  {
+    "id": "bao-cao",
+    "page": "bao-cao.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 17
+  },
+  {
+    "id": "dich-vu",
+    "page": "dich-vu.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 18
+  },
+  {
+    "id": "yeu-cau-dich-vu",
+    "page": "dich-vu.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 18
+  },
+  {
+    "id": "ho-so-to-chuc",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "thanh-vien",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "goi-cua-toi",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "so-sanh-goi",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "nang-cap",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "nang-cap-xong",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "uy-tin",
+    "page": "to-chuc.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 19
+  },
+  {
+    "id": "phong-thu",
+    "page": "cong-cu.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 20
+  },
+  {
+    "id": "gia-lap",
+    "page": "cong-cu.html",
+    "file": "fe-thumua/js/cau-hinh.js",
+    "line": 20
+  }
+]

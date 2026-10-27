@@ -1,0 +1,5 @@
+# Tương thích lệnh cũ. File chính nay mặc định 2 OCPU/12 GB.
+services:
+  db:
+    mem_limit: 3g
+    memswap_limit: 3g

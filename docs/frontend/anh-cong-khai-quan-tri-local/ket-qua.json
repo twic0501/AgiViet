@@ -1,0 +1,511 @@
+{
+  "origin": "https://agiviet.id.vn",
+  "operator": "http://127.0.0.1:18889",
+  "at": "2026-10-27T02:34:24.949Z",
+  "boundary": [
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/case-engine.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/case-engine.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/demo-data.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/demo-data.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/fixture.png.base64",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/fixture.png.base64",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/index.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/index.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/launch.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/launch.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/launch.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/launch.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/opponent.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/opponent.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.css",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.css",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/profiles.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/profiles.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/test-pages.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/test-pages.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/%71uan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/%71uan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri%2fadmin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri%2fadmin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "//quan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "//quan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/v1/test/accounts",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/v1/sim/bank/state",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/case-engine.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/case-engine.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/demo-data.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/demo-data.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/fixture.png.base64",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/fixture.png.base64",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/index.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/index.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/launch.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/launch.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/launch.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/launch.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/opponent.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/opponent.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.css",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.css",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/profiles.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/profiles.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/test-pages.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/test-pages.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/%71uan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/%71uan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri%2fadmin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri%2fadmin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "//quan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "//quan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/v1/test/accounts",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/v1/sim/bank/state",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/",
+      "pilot": true,
+      "status": 200
+    }
+  ],
+  "results": [
+    {
+      "name": "Trang gốc chỉ có App bán và App mua",
+      "origin": "https://agiviet.id.vn",
+      "status": 403,
+      "pass": false
+    },
+    {
+      "name": "Trang gốc chỉ có App bán và App mua",
+      "origin": "http://127.0.0.1:18888",
+      "status": 403,
+      "pass": false
+    },
+    {
+      "app": "ban",
+      "phone": "0918000421",
+      "pass": true,
+      "login": true,
+      "home": true,
+      "pageErrors": [],
+      "httpErrors": [],
+      "consoleErrors": [],
+      "testCalls": []
+    },
+    {
+      "app": "mua",
+      "phone": "0909000210",
+      "pass": true,
+      "login": true,
+      "home": true,
+      "pageErrors": [],
+      "httpErrors": [],
+      "consoleErrors": [],
+      "testCalls": []
+    }
+  ]
+}

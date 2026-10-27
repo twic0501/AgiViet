@@ -1,0 +1,12 @@
+# SAO CHÉP ra ~/.cloudflared/config.yml; thay UUID và đường dẫn TUYỆT ĐỐI.
+# File credentials JSON và cert.pem KHÔNG lưu trong repo.
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: /home/REPLACE_USER/.cloudflared/REPLACE_WITH_TUNNEL_UUID.json
+metrics: 127.0.0.1:20241
+no-autoupdate: true
+ingress:
+  - hostname: agiviet.id.vn
+    service: http://127.0.0.1:18888
+  - hostname: www.agiviet.id.vn
+    service: http://127.0.0.1:18888
+  - service: http_status:404

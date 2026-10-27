@@ -1,0 +1,144 @@
+{
+  "at": "2026-10-27T02:44:17.293284+00:00",
+  "workspace": "/home/twictrn/agiviet-production-v2",
+  "scope": [
+    "frontend/",
+    "docs/frontend/",
+    "infra/local-tunnel/"
+  ],
+  "verification": {
+    "unit": {
+      "passed": 62,
+      "total": 62,
+      "exit": 0,
+      "log": "kiem-thu-tiep-quan-tri-test-final.log"
+    },
+    "regression": {
+      "at": "2026-10-27T02:26:28.062Z",
+      "state": "/tmp/agv-regression-review-rlQbss",
+      "results": [
+        {
+          "command": "npm --prefix frontend test",
+          "exit": 0
+        },
+        {
+          "command": "npm --prefix frontend run test:branches",
+          "exit": 0
+        },
+        {
+          "command": "npm --prefix frontend run test:round2",
+          "exit": 0
+        },
+        {
+          "command": "npm --prefix frontend run test:e2e",
+          "exit": 0
+        }
+      ]
+    },
+    "operator_18889": {
+      "passed": 4,
+      "total": 4,
+      "shots": 14,
+      "errors": [],
+      "httpErrors": []
+    },
+    "opponent": {
+      "actionJourneys": {
+        "passed": 10,
+        "total": 10
+      },
+      "inspection_at_farm_open_only": {
+        "passed": 2,
+        "total": 2
+      },
+      "inspection_arrival_completed": {
+        "passed": 2,
+        "total": 2,
+        "webhookResults": [
+          200,
+          200
+        ]
+      },
+      "environment": "PGlite cô lập + pilot/Caddy, iframe app thật",
+      "seed": "thu-0"
+    },
+    "public": {
+      "boundaryPassed": 78,
+      "boundaryTotal": 78,
+      "otpAppsPassed": 2,
+      "testPublicExit": 1,
+      "pendingRoot": [
+        {
+          "name": "Trang gốc chỉ có App bán và App mua",
+          "origin": "https://agiviet.id.vn",
+          "status": 403,
+          "pass": false
+        },
+        {
+          "name": "Trang gốc chỉ có App bán và App mua",
+          "origin": "http://127.0.0.1:18888",
+          "status": 403,
+          "pass": false
+        }
+      ]
+    },
+    "fixture_root_fixed": {
+      "passed": true,
+      "evidence": "kiem-thu-quan-tri-ingress.json"
+    },
+    "previous_pg_evidence": {
+      "rerun_this_continuation": false,
+      "reset": "anh-ngan-hang-reset-27/ket-qua.json",
+      "advancedCases": "anh-case-tiep-27/ket-qua.json"
+    }
+  },
+  "sourceCases": {
+    "total": 76,
+    "mappedCodes": 17,
+    "fullOriginalCasesProven": false
+  },
+  "restart": {
+    "attempted": [
+      "AGV_LOCAL_STATE=$HOME/.local/share/agiviet infra/local-tunnel/dung.sh",
+      "AGV_LOCAL_STATE=$HOME/.local/share/agiviet infra/local-tunnel/khoi-dong.sh"
+    ],
+    "completed": false,
+    "stopError": "operation.lock: Read-only file system",
+    "startError": "chmod STATE directories: Read-only file system",
+    "cloudflaredUntouched": true,
+    "next": "Người điều phối restart thường, không bật reset, rồi npm --prefix frontend run test:public"
+  },
+  "limitations": [
+    "Bán gấp/bao tiêu chưa có luồng hai app trọn vẹn",
+    "Chưa chứng minh chuyển nguyên 76 ca B/M",
+    "Kiểm định tại vườn mới mở hồ sơ; nơi đến chỉ kiểm kết quả passed",
+    "Một số bước app bán chuẩn bị bằng API fixture",
+    "Seed/PDF còn có tên ngân hàng thật; UI đã thay nhãn và QR thử",
+    "Số dư tổng và cleanup chọn lọc thiếu API",
+    "Root live 403 cho tới restart frontend source mới"
+  ],
+  "sellerIntegrity": {
+    "frontend/shared/seller.js": "285abbf5e47ce5a1a798851cbdb29d2804f237d95e704dba7c806635af63d7f6",
+    "frontend/ban/seller.css": "3a0c382e99663d4fbd25b426d430cc905858cd181d14e713276af3705f838bed"
+  },
+  "reports": {
+    "regression": "kiem-thu-tiep-quan-tri-regression.json",
+    "operator": "anh-18889-ban-giao-27/ket-qua.json",
+    "opponent": "anh-doi-ung-ban-giao-27/ket-qua.json",
+    "inspection": "anh-kiem-dinh-ket-thuc-27/ket-qua.json",
+    "public": "anh-cong-khai-quan-tri-local/ket-qua.json",
+    "ingress_fixture": "kiem-thu-quan-tri-ingress.json",
+    "previous_pg_reset": "anh-ngan-hang-reset-27/ket-qua.json",
+    "previous_advanced_pg": "anh-case-tiep-27/ket-qua.json"
+  },
+  "failed_attempts_preserved": [
+    "anh-kiem-dinh-noi-den-27/ket-qua.json",
+    "anh-kiem-dinh-noi-den-chot-27/ket-qua.json",
+    "anh-kiem-dinh-chan-doan-27/ket-qua.json"
+  ],
+  "notes": [
+    "Lỗi ck_settlement_pending là chặn đúng; đã sửa thứ tự ngân hàng tạm trước kiểm định",
+    "Không coi 200 ngoài của sim là webhook thành công; đọc http bên trong và GET lại",
+    "Không cộng các loại phép kiểm thành số ca độc lập"
+  ]
+}

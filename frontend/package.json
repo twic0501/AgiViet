@@ -1,0 +1,18 @@
+{
+  "name": "agiviet-v2-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "node tests/flow.mjs",
+    "types": "python3 scripts/generate-types.py",
+    "test:branches": "node tests/branches.mjs",
+    "test:round2": "node tests/round2.mjs",
+    "test:public": "node tests/public-login.mjs",
+    "test:admin": "node tests/admin.mjs",
+    "test:login": "node tests/login-resilience.mjs",
+    "test:cases": "node tests/admin-cases.mjs",
+    "test:opponent": "node tests/opponent-flow.mjs"
+  }
+}

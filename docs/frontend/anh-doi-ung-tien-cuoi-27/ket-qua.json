@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-27T01:47:04.385Z",
+  "origin": "http://127.0.0.1:48889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "late",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Chậm trả → báo trả có chứng từ → OTP xác nhận đủ",
+      "seed": "thu-0",
+      "log": "Đối ứng báo trả tiền ảo kèm chứng từ giả"
+    },
+    {
+      "profile": "late",
+      "side": "buyer",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Đã nhận đủ/. Input:\n\n'Môi trường thử\\n' +\n  'Mở app bán\\n' +\n  'Công cụ thử\\n' +\n  'AgiViet\\n' +\n  'Sổ làm ăn · Thu mua\\n' +\n  'Nguyễn Đức Thịnh\\n' +\n  'Nhà máy sấy Đồng Xanh\\n' +\n  'Đăng xuất\\n' +\n  '\\n' +\n  'SỔ LÀM ĂN\\n' +\n  '\\n' +\n  'Tổng quan\\n' +\n  'Nguồn hàng\\n' +\n  'Nhu cầu mua\\n' +\n  'So báo giá\\n' +\n  'Hợp đồng\\n' +\n  'Tiền và công nợ\\n' +\n  'Tổ chức\\n' +\n  'Gói dịch vụ\\n' +\n  'Thông báoHỗ trợTin nhắn\\n' +\n  '\\n' +\n  'Tiền ảo để xem quy trình, không chuyển tiền thật\\n' +\n  '\\n' +\n  'HD-3001\\n' +\n  '\\n' +\n  'Hộ Nguyễn Thị Năm\\n' +\n  '\\n' +\n  'Tải lại\\n' +\n  'Ký\\n' +\n  'Cọc\\n' +\n  'Giao nhận\\n' +\n  'Thanh toán\\n' +\n  'Xong\\n' +\n  'Đã cọc, chờ giao\\n' +\n  'Bên mua · Trả khoản trước bốc\\n' +\n  '\\n' +\n  'Hạn gần nhất: 08:00 04/11/2026\\n' +\n  '\\n' +\n  'Thỏa thuận\\n' +\n  'Cọc\\n' +\n  'Trả thẳng\\n' +\n  'Giao nhận\\n' +\n  'Quyết toán\\n' +\n  'Giấy tờ\\n' +\n  'Hủy\\n' +\n  'Tranh chấp\\n' +\n  'Sửa / phụ lục\\n' +\n  'Phần còn lại trả thẳng vào tài khoản người bán trong hợp đồng. Ảnh biên lai chưa chứng minh tiền đã về. Người nhận tiền phải tự kiểm tra tài khoản và xác nhận OTP.\\n' +\n  'Tiền trước khi bốc\\n' +\n  'Đang theo dõi\\n' +\n  '\\n' +\n  'Số phải trả\\n' +\n  '\\n' +\n  '19.320.000 đ\\n' +\n  '\\n' +\n  'Mười chín triệu ba trăm hai mươi nghìn đồng\\n' +\n  '\\n' +\n  'Đã báo trả\\n' +\n  '19.320.000 đ\\n' +\n  'Đã xác nhận nhận\\n' +\n  '0 đ\\n' +\n  'Ngân hàng nhận\\n' +\n  'Ngân hàng ảo AgiViet · ẢO · ****2186\\n' +\n  'Chủ tài khoản\\n' +\n  'Nguyễn Thị Năm\\n' +\n  'Hạn trả\\n' +\n  '08:00 02/11/2026\\n' +\n  'Thông tin chuyển khoản\\n' +\n  '\\n' +\n  'Còn cần trả\\n' +\n  '\\n' +\n  '19.320.000 đ\\n' +\n  '\\n' +\n  'Mười chín triệu ba trăm hai mươi nghìn đồng\\n' +\n  '\\n' +\n  'Ngân hàng\\n' +\n  'Ngân hàng ảo AgiViet\\n' +\n  'Số tài khoản trong hợp đồng\\n' +\n  'ẢO · THU-7300000002186\\n' +\n  'Tên người nhận\\n' +\n  'Nguyễn Thị Năm\\n' +\n  'Nội dung chuyển tiền\\n' +\n  'AGV HD3001 BEFORE\\n' +\n  'Tài khoản nhận tiền của người bán vừa đổi ngày 2026-10-01\\n' +\n  '\\n' +\n  'QR giả · Ngân hàng ảo AgiViet · không dùng chuyển tiền\\n' +\n  '\\n' +\n  'Ghi số tiền đã chuyển'\n\n    at file:///home/twictrn/agiviet-production-v2/frontend/tests/opponent-flow.mjs:75:87"
+    }
+  ],
+  "errors": [],
+  "httpErrors": [],
+  "shots": [
+    "late-seller-mo-ho-so.png",
+    "late-seller-dat-dich.png",
+    "late-buyer-mo-ho-so.png",
+    "late-buyer-LOI.png"
+  ]
+}

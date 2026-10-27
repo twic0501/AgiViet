@@ -1,0 +1,2130 @@
+{
+  "capturedAt": "2026-10-26T22:23:12.143Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "screens": [
+    {
+      "name": "01-trang-chu",
+      "route": "home",
+      "capturedAt": "2026-10-26T22:23:14.279Z",
+      "text": "N\nChào\nChị Năm\n?\nTiền đã về\n24 triệu đ\n106 tr ngân hàng giữ hộ\n27,93 tr còn chờ nhận\nThời tiết\nNhật ký vườn\nTin giá\nLịch sử\nCần làm\nTất cả 4\nLời chào xoài cát chu\n2.000 kg · 23.000 đ/kg · hạn 01:12 28-10\n46 tr\nLời chào chanh không hạt\n1.500 kg · 14.000 đ/kg · hạn 01:12 28-10\n21 tr\nLời chào xoài cát chu\n2.000 kg · 23.000 đ/kg · hạn 01:18 28-10\n46 tr\nVườn của mình\n7 ngày\n33°\nMưa 57% · Đồng Tháp\n\nCó thể mưa: chuẩn bị bạt che khi hái và chờ xe.\n\nNhật ký vườn\nXoài cát Chu · có hàng Chưa\n5 bên mua đang cần xoài cát chu\nXem họ cần loại nào, bao nhiêu",
+      "scrollHeight": 1148,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "13px",
+        "20px",
+        "16px",
+        "32px",
+        "15px",
+        "12px",
+        "14px",
+        "28px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "1px 0px 0px",
+          "shadow": "none",
+          "height": 56,
+          "top": 398.671875
+        },
+        {
+          "text": "",
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "1px 0px 0px",
+          "shadow": "none",
+          "height": 56,
+          "top": 462.671875
+        },
+        {
+          "text": "",
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "1px 0px 0px",
+          "shadow": "none",
+          "height": 56,
+          "top": 526.671875
+        },
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "02-loi-chao-ds",
+      "route": "offers",
+      "capturedAt": "2026-10-26T22:23:14.890Z",
+      "text": "Bán hàng\n?\nHàng của tôi\nLời chào\n4\nBên mua cần\nCần chị trả lời\n4\nXoài cát Chu · 2.000 kg\n23.000 đ/kg · hạn 01:12 28-10\n46 tr\nTrả lời\nChanh không hạt · 1.500 kg\n14.000 đ/kg · hạn 01:12 28-10\n21 tr\nTrả lời\nXoài cát Chu · 2.000 kg\n23.000 đ/kg · hạn 01:18 28-10\n46 tr\nTrả lời\nChanh không hạt · 1.500 kg\n14.000 đ/kg · hạn 01:18 28-10\n21 tr\nTrả lời\nĐã đồng ý giá\n23\nXoài cát Chu · 1.000 kg\n24.000 đ/kg · chờ bên mua lập hợp đồng\n24 tr\nĐã đồng ý\nXoài cát Chu · 800 kg\n23.500 đ/kg · chờ bên mua lập hợp đồng\n18,8 tr\nĐã đồng ý\nBưởi da xanh · 800 kg\n32.000 đ/kg · chờ bên mua lập hợp đồng\n25,6 tr\nĐã đồng ý\nXem thêm 20\nĐã xong, hết hạn\n3",
+      "scrollHeight": 1080,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "14px",
+        "12px",
+        "13px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "02b-ben-mua",
+      "route": "lots/ben-mua",
+      "capturedAt": "2026-10-26T22:23:15.498Z",
+      "text": "Bán hàng\n?\nHàng của tôi\nLời chào\n4\nBên mua cần\nCần đúng hàng của mình\n5\nXoài cát Chu · loại L1\nNhà máy sấy Đồng Xanh · cần 03/11\n2.000 kg\nXoài cát Chu · loại L2\nNhà máy sấy Đồng Xanh · cần 03/11\n5.000 kg\nBưởi da xanh · loại L1\nVựa trái cây Tư Hùng · cần 02/11\n3.000 kg\nXoài cát Chu · loại L1\nVựa trái cây Tư Hùng · cần 04/11\n200 kg\nXoài cát Chu · loại L1\nNhà máy sấy Đồng Xanh · cần 03/11\n2.500 kg\nMặt hàng khác\n3",
+      "scrollHeight": 844,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "14px",
+        "12px",
+        "13px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "03-loi-chao",
+      "route": "offers/cfd0c89a-926f-4f6a-aca4-7e9e58037965",
+      "capturedAt": "2026-10-26T22:23:16.104Z",
+      "text": "Lời chào giá\n?\nChào giá\nKý\nCọc\nGiao\nTiền\nChanh không hạt · loại L1\nBên mua đã được AgiViet xác minh · lô L-0525\n\nChị Năm nhận về\n\n1.422.609 đ\n\n1.500 kg × 14.000 đ/kg · người bán không mất phí\n\nHạn 01:18 28/10\nCòn 2 lượt trả giá\nLượng chào\n1.500 kg\nNgày có hàng\n27/10/2026\nCọc\n30% qua ngân hàng giữ hộ\nVì sao?\nĐồng ý giá này\nTrả giá\nKhông bán",
+      "scrollHeight": 874,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "11px",
+        "13px",
+        "32px",
+        "15px",
+        "12px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "Đồng ý giá này",
+          "background": "rgb(29, 90, 66)",
+          "border": "0px",
+          "shadow": "none",
+          "height": 56,
+          "top": 578
+        },
+        {
+          "text": "Trả giá",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 642
+        },
+        {
+          "text": "Không bán",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 642
+        }
+      ]
+    },
+    {
+      "name": "04-dang-hang",
+      "route": "post",
+      "capturedAt": "2026-10-26T22:24:05.095Z",
+      "text": "Đăng hàng\n?\nThông tin\nChụp ảnh\nĐăng\nXoài cát Chu\nMặt hàng trong hồ sơ đã xác minh\nĐã xác minh\nXoài cát Chu\nBưởi da xanh\nChanh không hạt\nHàng loại nào?\nLoại L1\nLoại L2 (hàng dạt)\nLoại L3 (hàng dạt)\nBao nhiêu hàng?\nĐã cân\nMới ước\nKhoảng bao nhiêu kg\n\nHàng mới ước thì bên mua chỉ đặt tối đa 80% số này.\n\nKhi nào có hàng?\nNgày có thể giao\nNgày hái (nếu biết)\nNgày hết cách ly thuốc\nGiá bao nhiêu?\nGiá mong muốn (đồng mỗi kg)\nGiá thấp nhất chịu bán (bên mua không thấy)\nVì sao?\nLưu và chụp ảnh hàng",
+      "scrollHeight": 1927,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "11px",
+        "13px",
+        "12px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "Xoài cát Chu",
+          "background": "rgb(227, 238, 230)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 252.28125
+        },
+        {
+          "text": "Bưởi da xanh",
+          "background": "rgb(238, 241, 235)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 252.28125
+        },
+        {
+          "text": "Chanh không hạt",
+          "background": "rgb(238, 241, 235)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 252.28125
+        },
+        {
+          "text": "Lưu và chụp ảnh hàng",
+          "background": "rgb(29, 90, 66)",
+          "border": "0px",
+          "shadow": "none",
+          "height": 56,
+          "top": 642
+        }
+      ]
+    },
+    {
+      "name": "05-hang",
+      "route": "lots",
+      "capturedAt": "2026-10-26T22:23:17.483Z",
+      "text": "Bán hàng\n?\nHàng của tôi\nLời chào\n4\nBên mua cần\nBán trước mùa\nĐặt trước khi hái, bao tiêu cả vụ\nĐang bán\n10\nXoài cát Chu · loại L1\nCòn bán 4.000 kg\nĐang bán\nXoài cát Chu · loại L2\nCòn bán 600 kg\nĐang bán\nXoài cát Chu · loại L1\nCòn bán 2.000 kg\nĐang bán\nXoài cát Chu · loại L1\nCòn bán 50 kg\nĐang bán\nXoài cát Chu · loại L1\nCòn bán 50 kg\nĐang bán\nXem thêm 5\nSắp có hàng\n1\nXoài cát Chu · loại L1\nCòn bán 50 kg\nSắp có\nĐã đóng, hết hàng\n22",
+      "scrollHeight": 1053,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "14px",
+        "12px",
+        "13px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "06-lo",
+      "route": "lots/f31d2bc3-0673-592d-9f6f-fb3948913de0",
+      "capturedAt": "2026-10-26T22:24:07.971Z",
+      "text": "Xoài cát Chu\n\nL-0412 · Hộ Nguyễn Thị Năm\n\nTrở lại\nNghe\nThông tin lô\nĐang bán\nLoại hàng\nL1\nLượng\n4.000 kg\nCách đo\nƯớc tính\nNgày có hàng\n02/11/2026\nNgày thu hoạch\nChưa có\n\nGiá mong muốn / kg\n\n24.000 đ\n\nHai mươi bốn nghìn đồng\n\nGiá thấp nhất · chỉ bạn thấy\n21.500 đ/kg\nTiêu chuẩn và lý do trả lại\nSổ lượng\nKhả dụng\n4.000 kg\nĐang giữ\n0 kg\nCam kết\n0 kg\nĐang giao\n0 kg\nĐã giao\n0 kg\nTrả lại chờ xử lý\n0 kg\nĐã tách lô\n0 kg\nHao hụt\n0 kg\nXác nhận còn hàng\nĐóng lô\nHồ sơ nguồn hàng\nNgười bán\nHộ Nguyễn Thị Năm\nMức xác minh tổ chức\n2\nTỉnh\nDT\nĐơn hoàn tất trên app\n1\nVị trí người bán khai\nMỹ Xương, Cao Lãnh, Đồng Tháp\nTên vị trí do người bán khai; chưa đối chiếu tọa độ. Chưa có điểm uy tín.\nMã số vùng trồng\nĐã xác minh · 01/01/2026 – 30/06/2027\nMã số vùng trồng\nĐã xác minh · 01/01/2026 – 30/06/2027\nChứng nhận VietGAP\nĐã xác minh · 01/01/2026 – 01/01/2027\nẢnh lô hàng\nChưa có ảnh lô hàng.\nẢnh hàng\nChọn tệp\nChưa chọn tệp\nTôi vừa chụp ảnh này tại lô hàng\nLưu ảnh",
+      "scrollHeight": 2669,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "22px",
+        "13px",
+        "15px",
+        "32px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "name": "07-don-hang",
+      "route": "orders",
+      "capturedAt": "2026-10-26T22:23:18.834Z",
+      "text": "Đơn hàng\n?\nĐang chờ bên mua\n21\nNhà máy sấy Đồng Xanh\nHD-3022 · Chuyển cọc\n24 tr\nCọc\nCông ty XNK Sông Tiền\nHD-3021 · Trả khoản trước bốc\n18,8 tr\nThanh toán\nCông ty XNK Sông Tiền\nHD-3020 · Chỉ định người nhận, đặt xe\n25,6 tr\nGiao nhận\nCông ty XNK Sông Tiền\nHD-3019 · Chỉ định người nhận, đặt xe\n46 tr\nGiao nhận\nCông ty XNK Sông Tiền\nHD-3018 · Chỉ định người nhận, đặt xe\n46 tr\nGiao nhận\nXem thêm 16\nĐã xong\n1",
+      "scrollHeight": 844,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "15px",
+        "12px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "08-don-cho-coc",
+      "route": "order/6c3e0d15-d565-4c35-bb3c-bd8822ee3528",
+      "capturedAt": "2026-10-26T22:24:10.801Z",
+      "text": "Nhà máy sấy Đồng Xanh\n?\n\nHD-3022\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nĐang chờ bên mua\nNhà máy sấy Đồng Xanh: chuyển cọc\n\nChị chưa cần làm gì. Có thay đổi app sẽ báo.\n\nGiá trị hợp đồng\n24.000.000 đ\n7.200.000 đ cọc ngân hàng giữ\nHàng\n1.000 kg × 24.000 đ\nGiao\nTại vườn · bên mua lo xe\nTrả tiền\nTrước khi bốc hàng\nNhận vào\n****2186 · Nguyễn Thị Năm\nChi tiết\nHợp đồng\nCọc\nTiền bên mua trả\nGiao nhận\nTính tiền cuối\nGiấy tờ\nGặp vấn đề?",
+      "scrollHeight": 1305,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "12px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 25
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 25
+        }
+      ]
+    },
+    {
+      "name": "09-hop-dong",
+      "route": "order/6c3e0d15-d565-4c35-bb3c-bd8822ee3528/terms",
+      "capturedAt": "2026-10-26T22:24:13.436Z",
+      "text": "Hợp đồng\n?\n\nHD-3022 · Nhà máy sấy Đồng Xanh\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\n\nGiá trị hợp đồng\n\n24.000.000 đ\n\nHai mươi bốn triệu đồng\n\nCọc đảm bảo\n7.200.000 đ\nPhí bên mua\n0 đ\nTài khoản người bán\nNgân hàng ảo AgiViet · ẢO · ****2186\nChủ tài khoản\nNguyễn Thị Năm\nVì sao?\nTrước khi ký\nChưa tới lượt người bán ký\n\nĐọc lại thỏa thuận và toàn văn hợp đồng.\n\nXem PDF hợp đồng\nChưa tới lượt bạn ký, hoặc vai của bạn không có quyền ký.\n8 điều khoản cần xem\n1. Hàng\n\nXoài cát Chu loại L1, 1.000 kg, dung sai ±5%\n\n2. Giá\n\n24.000 đ/kg; hạ cấp 16.800 đ/kg; giá tính cọc 24.000 đ/kg\n\n3. Tiền\n\nGiá trị 24.000.000 đ; cọc 7.200.000 đ; phí 0 đ; Trả thẳng trước khi bốc; trả thẳng dự kiến 16.800.000 đ\n\n4. Giao nhận\n\nTại vườn (điểm chuyển rủi ro); Bên mua lo xe\n\n5. Nghiệm thu\n\nLỗi cho phép 5%; im lặng ở nơi đến: không\n\n6. Thiếu, vượt lượng\n\nPhạt theo % cọc phần thiếu: 0% / 10% / 50% / 100%\n\n7. Tranh chấp\n\nCân lại 24 giờ, kiểm định 48 giờ, bên sai chịu phí\n\n8. Hủy\n\nCọc về bên không xin hủy; phí theo bảng hoàn",
+      "scrollHeight": 2549,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "Xem PDF hợp đồng",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 791.796875
+        }
+      ]
+    },
+    {
+      "name": "10-coc",
+      "route": "order/6c3e0d15-d565-4c35-bb3c-bd8822ee3528/deposit",
+      "capturedAt": "2026-10-26T22:23:20.815Z",
+      "text": "Cọc\n?\n\nHD-3022 · Nhà máy sấy Đồng Xanh\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nCọc qua tài khoản đảm bảo ngân hàng\n\nTiền cọc · 30% giá tính cọc\n\n7.200.000 đ\n\nBảy triệu hai trăm nghìn đồng\n\nPhí bên mua\n0 đ\nTrạng thái cọc\nChờ chuyển cọc\nXem trạng thái cọc ở trên. Cọc đang giữ không phải tiền đã về người bán.\nChỉ ngân hàng xác nhận mới tính là đã cọc. Không chuyển cọc vào tài khoản riêng của người bán.\nVì sao?",
+      "scrollHeight": 928,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "11-don-da-coc",
+      "route": "order/a69471d3-8a57-488c-8eac-4be7a6fb61d0",
+      "capturedAt": "2026-10-26T22:23:21.423Z",
+      "text": "Công ty XNK Sông Tiền\n?\n\nHD-3021\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nĐang chờ bên mua\nCông ty XNK Sông Tiền: trả khoản trước bốc\n\nChị chưa cần làm gì. Có thay đổi app sẽ báo.\n\nGiá trị hợp đồng\n18.800.000 đ\n5.640.000 đ cọc ngân hàng giữ\nHàng\n800 kg × 23.500 đ\nGiao\nTại vườn · 27/10 · bên mua lo xe\nTrả tiền\nTrước khi bốc hàng\nNhận vào\n****2186 · Nguyễn Thị Năm\nChi tiết\nHợp đồng\nCọc\nTiền bên mua trả\nGiao nhận\nTính tiền cuối\nGiấy tờ\nGặp vấn đề?",
+      "scrollHeight": 1333,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "12px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 25
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 25
+        }
+      ]
+    },
+    {
+      "name": "12-giao-nhan",
+      "route": "order/a69471d3-8a57-488c-8eac-4be7a6fb61d0/delivery",
+      "capturedAt": "2026-10-26T22:24:16.259Z",
+      "text": "Giao nhận\n?\n\nHD-3021 · Công ty XNK Sông Tiền\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nĐợt giao 1\nĐang chuẩn bị\nLượng dự kiến\n800 kg\nBắt đầu nhận\n01:18 27/10/2026\nHạn nhận\n01:18 28/10/2026\nĐủ điều kiện mới giao hàng\n✓\nHàng\n!\nTiền\n\nKhoản HD-3021-BEFORE còn thiếu 13.160.000 đ\n\n!\nNgười nhận\n\nBên mua chưa chỉ định người nhận\n\n!\nXe\n\nChưa có chuyến xe nhận chở\n\n✓\nHồ sơ\n✓\nKhông có đề nghị/hủy đang chờ",
+      "scrollHeight": 1037,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "name": "13-thanh-toan",
+      "route": "order/a69471d3-8a57-488c-8eac-4be7a6fb61d0/payments",
+      "capturedAt": "2026-10-26T22:24:19.095Z",
+      "text": "Tiền bên mua trả\n?\n\nHD-3021 · Công ty XNK Sông Tiền\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nPhần còn lại trả thẳng vào tài khoản người bán trong hợp đồng. Ảnh biên lai chưa chứng minh tiền đã về. Người nhận tiền phải tự kiểm tra tài khoản và xác nhận OTP.\nTiền trước khi bốc\nĐến hạn trả\n\nSố phải trả\n\n13.160.000 đ\n\nMười ba triệu một trăm sáu mươi nghìn đồng\n\nĐã báo trả\n0 đ\nĐã xác nhận nhận\n0 đ\nNgân hàng nhận\nNgân hàng ảo AgiViet · ẢO · ****2186\nChủ tài khoản\nNguyễn Thị Năm\nHạn trả\n01:18 27/10/2026\nTôi đã thấy tiền trong tài khoản\nChưa nhận được tiền",
+      "scrollHeight": 1107,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "",
+          "background": "rgb(29, 90, 66)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 1311.96875
+        },
+        {
+          "text": "Chưa nhận được tiền",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 871.640625
+        }
+      ]
+    },
+    {
+      "name": "14-tien-don",
+      "route": "order/a69471d3-8a57-488c-8eac-4be7a6fb61d0/money",
+      "capturedAt": "2026-10-26T22:24:21.933Z",
+      "text": "Tính tiền cuối\n?\n\nHD-3021 · Công ty XNK Sông Tiền\n\nKý\nCọc\nGiao nhận\nThanh toán\nXong\nTiền của đơn\n\nGiá trị hợp đồng\n\n18.800.000 đ\n\nMười tám triệu tám trăm nghìn đồng\n\nCọc\n5.640.000 đ · Ngân hàng đang giữ\nPhí\n37.600 đ · Đã thu · hoàn hay không tùy kết quả đơn\nVì sao?\nXem khoản trả thẳng\nLệnh ngân hàng\nChưa có lệnh chi hoặc hoàn cọc.\nBảng quyết toán\nChưa có quyết toán\n\nBảng quyết toán xuất hiện khi hàng được chốt nhận hoặc phần không tranh chấp được xử lý.",
+      "scrollHeight": 1221,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "11px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "15-tien",
+      "route": "ledger",
+      "capturedAt": "2026-10-26T22:24:24.773Z",
+      "text": "Tiền\n?\n\nĐã về tay\n\n220.355.000 đ\n\nHai trăm hai mươi triệu ba trăm năm mươi lăm nghìn đồng\n\nTiền bên mua trả thẳng mà mình đã xác nhận, cộng tiền ngân hàng đã chuyển vào tài khoản của mình.\n\nNgân hàng đang giữ hộ\n\n105.915.000 đ\n\nMột trăm lẻ năm triệu chín trăm mười lăm nghìn đồng\n\nTiền cọc bên mua gửi ngân hàng. Giao hàng xong, ngân hàng chuyển cho mình.\n\nCòn chờ nhận\n\n27.930.000 đ\n\nHai mươi bảy triệu chín trăm ba mươi nghìn đồng\n\nBên mua còn phải trả theo hợp đồng. Khi tiền tới, mình kiểm tài khoản rồi bấm xác nhận.\n\nTiền ngân hàng đang giữ theo đơn\nCông ty XNK Sông Tiền\nHD-3021 · Đã cọc, chờ giao\n5.640.000 đ\nCông ty XNK Sông Tiền\nHD-3020 · Đã cọc, chờ giao\n7.680.000 đ\nCông ty XNK Sông Tiền\nHD-3019 · Đã cọc, chờ giao\n13.800.000 đ\nCông ty XNK Sông Tiền\nHD-3018 · Đã cọc, chờ giao\n13.800.000 đ\nCông ty XNK Sông Tiền\nHD-3017 · Đã cọc, chờ giao\n7.680.000 đ\nCông ty XNK Sông Tiền\nHD-3016 · Đã cọc, chờ giao\n7.680.000 đ\nCông ty XNK Sông Tiền\nHD-3015 · Đã cọc, chờ giao\n7.680.000 đ\nCông ty XNK Sông Tiền\nHD-3014 · Đã cọc, chờ giao\n13.800.000 đ\nCông ty XNK Sông Tiền\nHD-3012 · Đã cọc, chờ giao\n5.640.000 đ\nCông ty XNK Sông Tiền\nHD-3011 · Đã cọc, chờ giao\n7.680.000 đ\nCông ty XNK Sông Tiền\nHD-3010 · Đã cọc, chờ giao\n13.800.000 đ\nNhà máy sấy Đồng Xanh\nHD-3007 · Chờ nghiệm thu\n345.000 đ\nNhà máy sấy Đồng Xanh\nHD-3006 · Đã cọc, chờ giao\n345.000 đ\nNhà máy sấy Đồng Xanh\nHD-3003 · Đã cọc, chờ giao\n345.000 đ\nVì sao?\nXem bảng chi tiết cho kế toán",
+      "scrollHeight": 2311,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "16-ben-mua-can",
+      "route": "demands",
+      "capturedAt": "2026-10-26T22:24:27.626Z",
+      "text": "Bán hàng\n?\nHàng của tôi\nLời chào\n4\nBên mua cần\nCần đúng hàng của mình\n5\nXoài cát Chu · loại L1\nNhà máy sấy Đồng Xanh · cần 03/11\n2.000 kg\nXoài cát Chu · loại L2\nNhà máy sấy Đồng Xanh · cần 03/11\n5.000 kg\nBưởi da xanh · loại L1\nVựa trái cây Tư Hùng · cần 02/11\n3.000 kg\nXoài cát Chu · loại L1\nVựa trái cây Tư Hùng · cần 04/11\n200 kg\nXoài cát Chu · loại L1\nNhà máy sấy Đồng Xanh · cần 03/11\n2.500 kg\nMặt hàng khác\n3",
+      "scrollHeight": 844,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "14px",
+        "12px",
+        "13px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "name": "17-thoi-tiet",
+      "route": "thoi-tiet",
+      "capturedAt": "2026-10-26T22:23:25.598Z",
+      "text": "Thời tiết Đồng Tháp\n?\n\nHôm nay\n\n33° thấp 26°\n\nKhả năng mưa 57% · mưa 0.8 mm · gió 16 km/h\n\nThứ 4, 28/10: Có thể mưa: chuẩn bị bạt che khi hái và chờ xe.\nThứ 3, 27/10\n33° · mưa 57%\nThứ 4, 28/10\n31° · mưa 94%\nThứ 5, 29/10\n33° · mưa 97% · lớn\nThứ 6, 30/10\n31° · mưa 96% · lớn\nThứ 7, 31/10\n32° · mưa 94%\nCN, 01/11\n32° · mưa 93% · lớn\nThứ 2, 02/11\n32° · mưa 98%\n\nNguồn: Open-Meteo (open-meteo.com), dự báo theo tọa độ trung tâm tỉnh · lấy lúc 05:21 27/10/2026",
+      "scrollHeight": 844,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px",
+        "32px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "18-tin-tuc",
+      "route": "tin-tuc",
+      "capturedAt": "2026-10-26T22:24:30.241Z",
+      "text": "Tin tức\n?\n\nChưa có tin riêng về Xoài cát Chu. Đây là tin nông nghiệp ở Đồng Tháp.\n\nĐồng Tháp cảnh báo tình trạng trồng cây trên đất quy hoạch khu công nghiệp\nVOV Kinh tế · 25/10/2026 · Đồng Tháp\nKinh tế tập thể đánh thức nguồn lực, tạo động lực tăng trưởng\nVOV Kinh tế · 25/10/2026 · Đồng Tháp\nVỏ tôm, vỏ thơm, vỏ dừa… biến thành nguyên liệu triệu đô\nTuổi Trẻ Kinh doanh · 26/10/2026\nTừ hội chợ đến “xuất khẩu tại chỗ”, nâng tầm giá trị hàng Việt\nVOV Kinh tế · 26/10/2026\nBến xe miền Tây có hơn 300 tỷ đồng gửi tiết kiệm ngân hàng\nVnExpress Kinh doanh · 26/10/2026\nGiá cả đầu ngày: Tiểu thương chỉ cách phân biệt nho Ninh Thuận và nho Trung Quốc, giá cá tra nhích lên\nTuổi Trẻ Kinh doanh · 26/10/2026\nRobusta trong tuần: Giá nội địa mất mốc 90.000 đồng/kg, nông dân ít bán sớm\nTuổi Trẻ Kinh doanh · 26/10/2026\nThái Nguyên tăng trưởng bứt phá, tìm động lực mới ngoài ngành điện tử\nVOV Kinh tế · 26/10/2026\nPhiên chợ quê Hòa Vang kết nối tiêu thụ nông sản vùng cao Đà Nẵng\nVOV Kinh tế · 25/10/2026\nCông ty bầu Đức chốt hợp đồng bán 1.000 tấn cà phê sang Trung Quốc\nVnExpress Kinh doanh · 23/10/2026\nNữ lãnh đạo đầu tiên trong ngành nông nghiệp 2 năm liên tiếp trong bảng Fortune\nBáo Nông nghiệp và Môi trường · 06/10/2026\nGiá tiêu hôm nay 6/10/2026: Đi ngang, xuất khẩu đạt 1,4 tỷ USD sau 9 tháng\nBáo Nông nghiệp và Môi trường · 06/10/2026\nGiá lúa gạo hôm nay 6/10/2026: Thị trường đi ngang, gạo xuất khẩu giữ giá\nBáo Nông nghiệp và Môi trường · 06/10/2026\nRa mắt HTX Nuôi trồng Thủy sản và Du lịch KLC Đại Dương XI\nBáo Nông nghiệp và Môi trường · 05/10/2026\nNâng cấp chuỗi giá trị, tăng sức cạnh tranh cho Việt Nam\nBáo Nông nghiệp và Môi trường · 05/10/2026\nGiá lúa gạo hôm nay 3/10/2026: Lúa tươi biến động trái chiều\nBáo Nông nghiệp và Môi trường · 03/10/2026\nXi măng Tân Thắng vượt biên giới chinh phục thị trường khắt khe\nBáo Nông nghiệp và Môi trường · 02/10/2026\nCà Mau và Vietnam Post hợp tác mở rộng đầu ra cho nông sản\nBáo Nông nghiệp và Môi trường · 02/10/2026\nGiá lúa gạo hôm nay 2/10/2026: Thị trường giữ đà ổn định\nBáo Nông nghiệp và Môi trường · 02/10/2026\nChâu Á tiếp tục chiếm tỷ trọng lớn trong xuất nhập khẩu nông lâm thủy sản Việt Nam\nBáo Nông nghiệp và Môi trường · 02/10/2026\nCá heo nước ngọt tăng giá đầu mùa lũ miền Tây\nBáo Nông nghiệp và Môi trường · 01/10/2026\nXuất khẩu sữa và sản phẩm sữa tăng 67,6% trong 9 tháng\nBáo Nông nghiệp và Môi trường · 01/10/2026\nĐẩy mạnh xuất khẩu nhằm giảm nhập siêu\nBáo Nông nghiệp và Môi trường · 01/10/2026\nHòn Nghệ định hình không gian phát triển đến năm 2050\nBáo Nông nghiệp và Môi trường · 01/10/2026\n\nChỉ hiển thị tiêu đề và đường dẫn tới bài gốc; mở link để đọc trên trang báo.",
+      "scrollHeight": 3553,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "name": "19-lich-su",
+      "route": "lich-su",
+      "capturedAt": "2026-10-26T22:23:26.813Z",
+      "text": "Lịch sử làm ăn\n?\n08:00 02/11/2026 · Lô hàng L-0413\nĐăng/tạo lô Xoài cát Chu L2\n08:00 02/11/2026 · Lô hàng L-0414\nĐăng/tạo lô Xoài cát Chu L1\n08:00 02/11/2026 · Lô hàng L-0412\nĐăng/tạo lô Xoài cát Chu L1\n01:18 27/10/2026 · Lời chào LC-0030\nNhận lời chào mua (lô L-0525)\n01:18 27/10/2026 · Lô hàng L-0525\nĐăng/tạo lô Chanh không hạt L1\n01:18 27/10/2026 · Lời chào LC-0029\nNhận lời chào mua (lô L-0524)\n01:18 27/10/2026 · Lô hàng L-0524\nĐăng/tạo lô Xoài cát Chu L1\n01:18 27/10/2026 · Hợp đồng HD-3022\nĐơn HD-3022 với Nhà máy sấy Đồng Xanh\nMở đơn\n01:18 27/10/2026 · Lời chào LC-0028\nNhận lời chào mua (lô L-0523)\n01:18 27/10/2026 · Lô hàng L-0523\nĐăng/tạo lô Xoài cát Chu L1\n01:18 27/10/2026 · Hợp đồng HD-3021\nĐơn HD-3021 với Công ty XNK Sông Tiền\nMở đơn\n01:18 27/10/2026 · Lời chào LC-0027\nNhận lời chào mua (lô L-0522)\n01:18 27/10/2026 · Lô hàng L-0522\nĐăng/tạo lô Xoài cát Chu L1\n01:18 27/10/2026 · Việc HD-3020-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3020-BEFORE\n17.920.000 đ\nMở đơn\n01:18 27/10/2026 · Hợp đồng HD-3020\nĐơn HD-3020 với Công ty XNK Sông Tiền\nMở đơn\n01:18 27/10/2026 · Lời chào LC-0026\nNhận lời chào mua (lô L-0521)\n01:18 27/10/2026 · Lô hàng L-0521\nĐăng/tạo lô Bưởi da xanh L1\n01:18 27/10/2026 · Việc HD-3019-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3019-BEFORE\n32.200.000 đ\nMở đơn\n01:18 27/10/2026 · Hợp đồng HD-3019\nĐơn HD-3019 với Công ty XNK Sông Tiền\nMở đơn\n01:18 27/10/2026 · Lời chào LC-0025\nNhận lời chào mua (lô L-0520)\n01:18 27/10/2026 · Lô hàng L-0520\nĐăng/tạo lô Xoài cát Chu L1\n01:12 27/10/2026 · Việc HD-3018-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3018-BEFORE\n32.200.000 đ\nMở đơn\n01:12 27/10/2026 · Hợp đồng HD-3018\nĐơn HD-3018 với Công ty XNK Sông Tiền\nMở đơn\n01:12 27/10/2026 · Lời chào LC-0024\nNhận lời chào mua (lô L-0519)\n01:12 27/10/2026 · Lô hàng L-0519\nĐăng/tạo lô Xoài cát Chu L1\n01:12 27/10/2026 · Việc HD-3017-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3017-BEFORE\n17.920.000 đ\nMở đơn\n01:12 27/10/2026 · Hợp đồng HD-3017\nĐơn HD-3017 với Công ty XNK Sông Tiền\nMở đơn\n01:12 27/10/2026 · Lời chào LC-0023\nNhận lời chào mua (lô L-0518)\n01:12 27/10/2026 · Lô hàng L-0518\nĐăng/tạo lô Bưởi da xanh L1\n01:12 27/10/2026 · Việc HD-3016-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3016-BEFORE\n17.920.000 đ\nMở đơn\n01:12 27/10/2026 · Hợp đồng HD-3016\nĐơn HD-3016 với Công ty XNK Sông Tiền\nMở đơn\n01:12 27/10/2026 · Lời chào LC-0022\nNhận lời chào mua (lô L-0517)\n01:12 27/10/2026 · Lô hàng L-0517\nĐăng/tạo lô Bưởi da xanh L1\n01:12 27/10/2026 · Việc HD-3015-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3015-BEFORE\n17.920.000 đ\nMở đơn\n01:12 27/10/2026 · Hợp đồng HD-3015\nĐơn HD-3015 với Công ty XNK Sông Tiền\nMở đơn\n01:12 27/10/2026 · Lời chào LC-0021\nNhận lời chào mua (lô L-0516)\n01:12 27/10/2026 · Lô hàng L-0516\nĐăng/tạo lô Bưởi da xanh L1\n01:12 27/10/2026 · Việc HD-3014-BEFORE\nTiền về (xác nhận đã nhận) khoản HD-3014-BEFORE\n32.200.000 đ\nMở đơn\n01:12 27/10/2026 · Hợp đồng HD-3014\nĐơn HD-3014 với Công ty XNK Sông Tiền\nMở đơn\n01:12 27/10/2026 · Lời chào LC-0020\nNhận lời chào mua (lô L-0515)",
+      "scrollHeight": 4848,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "13px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        }
+      ]
+    },
+    {
+      "name": "20-nhat-ky",
+      "route": "nhat-ky",
+      "capturedAt": "2026-10-26T22:23:27.423Z",
+      "text": "Nhật ký vườn\n?\nĐang làm, sắp có\n\nGhi lại bón phân, phun thuốc, ra hoa, thu hoạch theo từng ngày. Ngày hết cách ly thuốc tự lấy từ nhật ký để không đăng bán sớm. Nhân viên AgiViet có thể xác nhận nhật ký khi đến vườn; bên mua xuất khẩu sẽ hỏi phần này.\n\nKhi xong, mình sẽ:\nGhi một việc trong 3 lần chạm, có ảnh\nNhắc ngày hết cách ly thuốc\nNgười giúp (con cháu) ghi thay được\nCần ngay? Nhờ nhân viên AgiViet làm giúp",
+      "scrollHeight": 844,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "20px",
+        "16px",
+        "12px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "?",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 40,
+          "top": 20
+        },
+        {
+          "text": "Cần ngay? Nhờ nhân viên AgiViet làm giúp",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 50,
+          "top": 620.453125
+        }
+      ]
+    },
+    {
+      "name": "21-thong-bao",
+      "route": "notifications",
+      "capturedAt": "2026-10-26T22:23:28.032Z",
+      "text": "Thông báo\n\nCập nhật được gửi tới tổ chức của bạn.\n\nTải lại\nNghe\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:51 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:51 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:51 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng\nCập nhật giao dịch\n\nTổ chức có cập nhật mới. Mở hồ sơ để xem trạng thái hiện hành.\n\nLúc\n01:18 27/10/2026\nMở hợp đồng",
+      "scrollHeight": 12409,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "22px",
+        "15px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Tải lại",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 12
+        },
+        {
+          "text": "Nghe",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 47.5,
+          "top": 76
+        }
+      ]
+    },
+    {
+      "name": "22-ho-tro",
+      "route": "support",
+      "capturedAt": "2026-10-26T22:23:28.641Z",
+      "text": "Hỗ trợ\n\nTheo dõi người phụ trách và cập nhật của từng yêu cầu.\n\nNghe\nNội dung cần hỗ trợ\nGửi yêu cầu hỗ trợ\nChưa có yêu cầu hỗ trợ.",
+      "scrollHeight": 844,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "22px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Nghe",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 47.5,
+          "top": 12
+        },
+        {
+          "text": "Gửi yêu cầu hỗ trợ",
+          "background": "rgb(29, 90, 66)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 325.984375
+        }
+      ]
+    },
+    {
+      "name": "23-to-chuc",
+      "route": "organization",
+      "capturedAt": "2026-10-26T22:24:32.849Z",
+      "text": "Tổ chức và thành viên\n\nHộ Nguyễn Thị Năm\n\nNghe\nNgười đang dùng\nNguyễn Thị Năm\nVai\nQuản lý / chủ\n\nHạn mức của bạn\n\nChưa có\n\nChưa có số tiền\n\nTài khoản nhận tiền\nHỗ trợ\nThông báo\nVai mua hàng, kế toán, chủ và ban điều hành mới được cấp có thời gian chờ 24 giờ. Chỉ vai đã hiệu lực mới có quyền thao tác.\nNguyễn Thị Năm\nĐang tham gia\nLiên hệ\n0918***421\nVai hiệu lực\nQuản lý / chủ\nĐổi vai và hạn mức\nMời thành viên\nTên người được mời\nSố điện thoại người được mời\nVai được mời\nQuản lý / chủ\nMua hàng\nKế toán\nKho\nNgười nhận\nBan điều hành HTX\nThu gom\nThành viên HTX\nHạn mức duyệt (đ)\nTạo lời mời",
+      "scrollHeight": 2099,
+      "clientHeight": 844,
+      "bodyFont": "\"Be Vietnam Pro\", sans-serif",
+      "fontSizes": [
+        "17px",
+        "22px",
+        "15px",
+        "13px",
+        "32px"
+      ],
+      "fonts": [
+        "\"Be Vietnam Pro\", sans-serif"
+      ],
+      "horizontalOverflow": false,
+      "nav": [
+        {
+          "text": "Hôm nay",
+          "rect": {
+            "x": 0,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Bán hàng",
+          "rect": {
+            "x": 78.796875,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Đăng",
+          "rect": {
+            "x": 157.59375,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 48
+          }
+        },
+        {
+          "text": "Đơn hàng",
+          "rect": {
+            "x": 236.390625,
+            "y": 777.859375,
+            "width": 74.796875,
+            "height": 60.140625
+          }
+        },
+        {
+          "text": "Tiền",
+          "rect": {
+            "x": 315.1875,
+            "y": 777.859375,
+            "width": 74.8125,
+            "height": 60.140625
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "text": "Nghe",
+          "background": "rgb(255, 255, 255)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 47.5,
+          "top": 12
+        },
+        {
+          "text": "",
+          "background": "rgb(29, 90, 66)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 1532.890625
+        },
+        {
+          "text": "Tạo lời mời",
+          "background": "rgb(29, 90, 66)",
+          "border": "1px",
+          "shadow": "none",
+          "height": 56,
+          "top": 1864.484375
+        }
+      ]
+    }
+  ],
+  "note": "Ảnh bổ sung trên các đường dẫn chụp lại đã chờ 2.600 ms; xem capturedAt từng màn. Không thay đổi dữ liệu nghiệp vụ."
+}

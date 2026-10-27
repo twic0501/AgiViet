@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-27T01:36:33.010Z",
+  "origin": "http://127.0.0.1:38889",
+  "seed": "thu-0",
+  "results": [
+    {
+      "profile": "low",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Lời chào trả giá → hợp đồng đủ chữ ký",
+      "seed": "thu-0",
+      "log": "Đối ứng đồng ý lời chàoĐối ứng lập hợp đồng từ lời chào đã đồng ýĐối ứng ký hợp đồng bằng OTP thử"
+    },
+    {
+      "profile": "low",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Lời chào trả giá → hợp đồng đủ chữ ký",
+      "seed": "thu-0",
+      "log": "Đối ứng trả giá trong biên độ 2%Đối ứng ký hợp đồng bằng OTP thử"
+    },
+    {
+      "profile": "harvest",
+      "side": "seller",
+      "pass": true,
+      "endpoint": "Xin giảm lượng → phụ lục hai bên ký, phiên bản 2",
+      "seed": "thu-0",
+      "log": "Đối ứng đồng ý lập phụ lụcĐối ứng ký phụ lục bằng OTP thử"
+    },
+    {
+      "profile": "harvest",
+      "side": "buyer",
+      "pass": true,
+      "endpoint": "Xin giảm lượng → phụ lục hai bên ký, phiên bản 2",
+      "seed": "thu-0",
+      "log": "Đối ứng ký phụ lục bằng OTP thử"
+    }
+  ],
+  "errors": [],
+  "shots": [
+    "low-seller-mo-ho-so.png",
+    "low-seller-dat-dich.png",
+    "low-buyer-mo-ho-so.png",
+    "low-buyer-dat-dich.png",
+    "harvest-seller-mo-ho-so.png",
+    "harvest-seller-dat-dich.png",
+    "harvest-buyer-mo-ho-so.png",
+    "harvest-buyer-dat-dich.png"
+  ]
+}

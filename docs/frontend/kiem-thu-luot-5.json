@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-27",
+  "local_backend_health": {
+    "ok": true,
+    "moi_truong": "thu",
+    "migrations": 55,
+    "dau_van_tay_db": "9aa00c5cfb0abc96",
+    "gio": "2026-11-03T23:01:18.148Z"
+  },
+  "scope": [
+    "frontend/",
+    "docs/frontend/",
+    "infra/local-tunnel/"
+  ],
+  "required_suites": {
+    "unit": {
+      "passed": 48,
+      "total": 48,
+      "exit": 0,
+      "log": "kiem-thu-luot-5-test.log"
+    },
+    "branches": {
+      "passed": 10,
+      "total": 10,
+      "exit": 0,
+      "log": "kiem-thu-luot-5-test-branches.log"
+    },
+    "round2": {
+      "passed": 14,
+      "total": 14,
+      "exit": 0,
+      "log": "kiem-thu-luot-5-test-round2.log"
+    },
+    "e2e": {
+      "passed": 15,
+      "total": 15,
+      "exit": 0,
+      "log": "kiem-thu-luot-5-test-e2e.log",
+      "order": "HD-3001 completed"
+    }
+  },
+  "public": {
+    "source": "anh-cong-khai-luot-5/ket-qua.json",
+    "apps": 3,
+    "admin_screens": 7,
+    "page_errors": 0,
+    "console_errors": 0,
+    "http_errors": 0,
+    "test_sim_app_requests": 0,
+    "original_capture_script": "/home/twictrn/.claude/jobs/d88082d5/tmp/chup_cong_khai.mjs",
+    "original_capture": "ban.png / mua.png",
+    "boundary_evidence": "kiem-thu-luot-5-ranh-gioi.json",
+    "otp_repeat_limit": "Một lần kiểm lặp số 0918000421 nhận 429 QUÁ_NHIỀU_YÊU_CẦU. Lượt cuối dùng các số ảo khác qua UI, không reset/tua clock công khai."
+  },
+  "login_isolation": {
+    "passed": 7,
+    "total": 7,
+    "source": "kiem-thu-luot-5-co-lap.json"
+  },
+  "admin": {
+    "passed_groups": 8,
+    "blocked_groups": 1,
+    "source": "anh-quan-tri-luot-5/ket-qua.json",
+    "blocker": "POST task resolve 409: API detail.result_code differs from cmd detail.result",
+    "callback_tested": false,
+    "pdf_ops_cross_org_access": false,
+    "support_seed_available": false
+  },
+  "ingress": {
+    "bridge_fixture_exit": 0,
+    "caddy_validate_exit": 0,
+    "local_restart": false,
+    "stop_attempt": "operation.lock: Read-only file system",
+    "start_attempt": "chmod state run/logs/artifacts/backups/socket: Read-only file system",
+    "cloudflared_touched": false,
+    "pending": "Restart real STATE from writable terminal to activate new Caddy/bridge; public frontend already verified from existing static server."
+  },
+  "visual_review": {
+    "new_screens": "Public login 390/1280, admin overview, owner verification and resolve unavailable",
+    "artifacts": "141 PNGs in five screenshot indexes; contact sheets and original images reviewed",
+    "limitation": "No real-device test or comprehensive accessibility audit"
+  }
+}

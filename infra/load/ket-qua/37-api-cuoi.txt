@@ -1,0 +1,6 @@
+waiting for server to start.... done
+server started
+Đạt: readiness, metrics PDF/DB trả được số thật từ bench.
+Đạt: JSON sai 400, QR sai 400, body quá lớn 413.
+waiting for server to shut down.... done
+server stopped

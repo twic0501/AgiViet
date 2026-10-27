@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-26T17:22:42.021Z",
+  "results": [
+    {
+      "path": "/ban/",
+      "withoutPilot": 401
+    },
+    {
+      "path": "/mua/",
+      "withoutPilot": 401
+    },
+    {
+      "path": "/quan-tri/",
+      "withoutPilot": 401
+    },
+    {
+      "path": "/v1/test/accounts",
+      "withPilot": 404
+    },
+    {
+      "path": "/v1/sim/bank/state",
+      "withPilot": 404
+    },
+    {
+      "path": "/frontend-capabilities.json",
+      "status": 200,
+      "body": {
+        "test_tools": false
+      }
+    }
+  ]
+}

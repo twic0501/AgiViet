@@ -1,0 +1,257 @@
+{
+  "at": "2026-10-27T01:33:17.013Z",
+  "results": [
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/profiles.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/profiles.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/opponent.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/opponent.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.css",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "https://agiviet.id.vn",
+      "path": "/quan-tri/play.css",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/admin.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/admin.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/profiles.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/profiles.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/opponent.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/opponent.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.html",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.html",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.js",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.js",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.css",
+      "pilot": false,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18888",
+      "path": "/quan-tri/play.css",
+      "pilot": true,
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/",
+      "pilot": true,
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/admin.js",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/admin.js",
+      "pilot": true,
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/profiles.js",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/profiles.js",
+      "pilot": true,
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/opponent.js",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/opponent.js",
+      "pilot": true,
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/play.html",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/play.html",
+      "pilot": true,
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/play.js",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/play.js",
+      "pilot": true,
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/play.css",
+      "pilot": false,
+      "status": 401
+    },
+    {
+      "origin": "http://127.0.0.1:18889",
+      "path": "/quan-tri/play.css",
+      "pilot": true,
+      "status": 200
+    }
+  ]
+}
