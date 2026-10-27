@@ -364,6 +364,25 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
 
   // ---------------- Vận hành ----------------
   app.get('/v1/ops/tasks', async (req) => { const nd = await bo.xacThuc(req); canQuyen(nd, 'ops.view'); return bo.doc((t) => VanHanh.danhSachViec(t, req.query as any)); });
+  // ---- Bản 23: hộp việc, phân bổ phí, khiếu nại sau giao, tìm nguồn định kỳ ----
+  const B23 = () => import('../nghiep-vu/ban-23.ts');
+  app.get('/v1/ops/dossiers', async (req) => { const nd = await bo.xacThuc(req); canQuyen(nd, 'ops.view'); const m = await B23(); return bo.doc((t) => m.hopViec(t, nd, req.query)); });
+  app.post('/v1/ops/dossiers/assign', async (req) => bo.lenh(req, 'giao_ho_so', 'ops', async (t, nd, b) => (await B23()).giaoHoSo(t, nd, b)));
+  app.get('/v1/orders/:id/dossiers', async (req) => { const nd = await bo.xacThuc(req); const m = await B23(); return bo.doc((t) => m.hoSoDon(t, nd, P(req).id)); });
+  app.post('/v1/ops/inspections/:id/fee-allocation-proposals', async (req) => bo.lenh(req, 'de_xuat_phan_bo_phi', 'ops', async (t, nd, b) => (await B23()).deXuatPhanBoPhi(t, nd, P(req).id, b)));
+  app.post('/v1/ops/fee-allocations', async (req) => bo.lenh(req, 'ap_phan_bo_phi', 'ops', async (t, nd, b) => (await B23()).apPhanBoPhi(t, nd, b)));
+  app.post('/v1/acceptance-lines/:id/post-delivery-claim', async (req) => bo.lenh(req, 'khieu_nai_sau_giao', 'buyer', async (t, nd, b) => (await B23()).khieuNaiSauGiao(t, nd, P(req).id, b)));
+  app.post('/v1/sourcing-agreements', async (req) => bo.lenh(req, 'lap_thoa_thuan_nguon', 'buyer', async (t, nd, b) => (await B23()).lapThoaThuanNguon(t, nd, b)));
+  app.get('/v1/sourcing-agreements/:id/coverage', async (req) => { const nd = await bo.xacThuc(req); const m = await B23(); return bo.doc((t) => m.doPhuNguon(t, nd, P(req).id)); });
+  app.post('/v1/sourcing-agreements/:id/days', async (req) => bo.lenh(req, 'chot_ngay_nguon', 'buyer', async (t, nd, b) => (await B23()).chotNgay(t, nd, P(req).id, b)));
+  app.post('/v1/sourcing-agreements/:id/stop', async (req) => bo.lenh(req, 'dung_tim_nguon', 'buyer', async (t, nd) => (await B23()).dungNguon(t, nd, P(req).id)));
+  app.post('/v1/ops/sourcing-days/:id/allocations', async (req) => bo.lenh(req, 'de_xuat_nguon', 'ops', async (t, nd, b) => (await B23()).deXuatNguon(t, nd, P(req).id, b)));
+  app.post('/v1/sourcing-allocations/:id/approve', async (req) => bo.lenh(req, 'duyet_nguon', 'buyer', async (t, nd) => (await B23()).duyetNguon(t, nd, P(req).id)));
+  app.post('/v1/sourcing-allocations/:id/commit', async (req) => bo.lenh(req, 'cam_ket_nguon', 'seller', async (t, nd) => (await B23()).camKetNguon(t, nd, P(req).id)));
+  app.post('/v1/sourcing-allocations/:id/change', async (req) => bo.lenh(req, 'xin_doi_luong', 'buyer', async (t, nd, b) => (await B23()).xinDoiLuong(t, nd, P(req).id, b)));
+  app.post('/v1/allocation-changes/:id/answer', async (req) => bo.lenh(req, 'tra_loi_doi_luong', 'seller', async (t, nd, b) => (await B23()).traLoiDoiLuong(t, nd, P(req).id, b)));
+  app.post('/v1/sourcing-allocations/:id/shortfall', async (req) => bo.lenh(req, 'bao_giao_thieu', 'seller', async (t, nd, b) => (await B23()).baoGiaoThieu(t, nd, P(req).id, b)));
+  app.post('/v1/credit-terms', async (req) => bo.lenh(req, 'dat_dieu_khoan_tra', 'seller', async (t, nd, b) => (await B23()).datDieuKhoanTra(t, nd, b)));
   app.post('/v1/ops/tasks/:id/claim', async (req) => bo.lenh(req, 'nhan_viec', 'ops', (t, nd) => VanHanh.nhanViec(t, nd, P(req).id)));
   app.post('/v1/ops/tasks/:id/resolve', async (req) => bo.lenh(req, 'xong_viec', 'ops', (t, nd, b) => VanHanh.xongViec(t, nd, P(req).id, b)));
   app.post('/v1/ops/instructions/:id/callback', async (req) => bo.lenh(req, 'goi_lai_truoc_chi', 'ops', (t, nd, b) => VanHanh.xacNhanGoiLai(t, nd, P(req).id, b)));
