@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T18:50:59.883Z",
+  "checked_at": "2026-10-27T18:55:46.586Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -61,12 +61,13 @@
     "0057_dat_truoc_va_bao_tieu_theo_vu.sql",
     "0058_quy_trinh_ban_23_e1_e2_dong_ho_so.sql",
     "0059_chinh_sach_theo_don_khao_sat_ky_thay.sql",
-    "0060_sua_ra_soat_d37991a.sql"
+    "0060_sua_ra_soat_d37991a.sql",
+    "0061_giao_ngay_c1_c6.sql"
   ],
-  "tables": 159,
+  "tables": 164,
   "migration_seed_replay": true,
-  "checks": 636,
-  "passed": 636,
+  "checks": 658,
+  "passed": 658,
   "failed": 0,
   "results": [
     {
@@ -492,7 +493,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản 62d36cee-9bdf-4a42-877c-9b7d58e0b502 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản f2403c3e-a89a-49d6-bf25-054618946c7e (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2237,7 +2238,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:50:57.736+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:55:44.402+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3231,6 +3232,116 @@
     },
     {
       "name": "P1-3 tài khoản bị khóa không đọc và không bị lộ liên lạc khảo sát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C1 nhãn \"Đã quyết toán mua bán · còn hồ sơ mở\"",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C1 hộp việc hiện hồ sơ tranh chấp có người phụ trách, chưa quá hạn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C1 hồ sơ chưa giao người phụ trách được đánh dấu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C2 trước phân bổ: hồ sơ phí \"chưa phân bổ\" và nằm trong hồ sơ mở",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C2 người lập không tự duyệt",
+      "passed": true,
+      "detail": "bị chặn: Thiếu người lập độc lập còn quyền"
+    },
+    {
+      "name": "C2 tổng phần chịu = phí 280.000",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C2 bên mua đã ứng, người bán chịu → tự tạo khoản người bán hoàn 280.000 cho bên mua",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C2 hồ sơ phí \"còn thiếu hoàn\"; khoản hoàn nằm trong hồ sơ mở như khoản trả trực tiếp",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C2 phân bổ phí bất biến",
+      "passed": true,
+      "detail": "bị chặn: Phân bổ phí bất biến; đổi bằng quyết định mới"
+    },
+    {
+      "name": "C2 tổng phần chịu khác phí bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Tổng phần chịu phải bằng phí kiểm định 280000"
+    },
+    {
+      "name": "C4 khoản trả trước R59A ghi nguồn \"người nhận xác nhận\"",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C4 không có khoản đã nhận nào \"chưa rõ nguồn\" trong các đơn bản 23 của bộ thử này",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C5 giữ quá 6 giờ bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Giữ tối đa 6 giờ"
+    },
+    {
+      "name": "C5 đang chờ đối soát: không đóng đơn vì quá hạn cọc",
+      "passed": true,
+      "detail": "bị chặn: Đang chờ đối soát cọc: chưa đóng đơn vì quá hạn cọc"
+    },
+    {
+      "name": "C5 hồ sơ \"đang chờ đối soát cọc\" nằm trong hồ sơ mở",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C5 không mở hai lần đối soát cùng lúc",
+      "passed": true,
+      "detail": "bị chặn: duplicate key value violates unique constraint \"ux_deposit_recon_open\""
+    },
+    {
+      "name": "C5 có kết quả \"không có cọc\" thì hết hồ sơ đối soát",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C6 hạn khiếu nại mặc định 12 giờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C6 khiếu nại sau 20 giờ (quá hạn 12 giờ) bị chặn, chỉ ghi phản ánh",
+      "passed": true,
+      "detail": "bị chặn: Quá hạn khiếu nại: chỉ ghi phản ánh (core.late_feedback)"
+    },
+    {
+      "name": "C6 phản ánh muộn ghi được (không tạo nghĩa vụ)",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C6 tiêu chí kiểm sau giao chưa có kết quả nằm trong hồ sơ mở",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C6 đơn còn hồ sơ mở thì không hoàn tất toàn bộ",
       "passed": true,
       "detail": null
     },
