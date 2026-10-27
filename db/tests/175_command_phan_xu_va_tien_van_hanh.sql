@@ -43,6 +43,7 @@ INSERT INTO core.deliveries(code,order_id,version_no,batch_no,planned_qty,delive
 SELECT set_config('test.c46.fmorder',test.id('C46FM')::text,true),set_config('test.c46.fmevidencedata',test.command_doc('C46FM-EVIDENCE')::text,true);
 SELECT test.as_login('db_test_seller',$$SELECT set_config('test.c46.fmevidence',cmd.attach_evidence(current_setting('test.c46.fmorder')::uuid,current_setting('test.c46.fmevidencedata')::jsonb)::text,true)$$);
 INSERT INTO cmd.test_clock(at) VALUES(now()-interval '25 hours');
+UPDATE core.orders SET policy_version=22 WHERE id=current_setting('test.c46.fmorder')::uuid; -- đơn chính sách cũ: kiểm đường ký thay cũ; bản 23 chặn, xem 250
 SELECT test.as_login('db_test_seller',$$SELECT set_config('test.c46.amendment',cmd.propose_amendment(current_setting('test.c46.fmorder')::uuid,'force_majeure_reduction','{"qty_g":1000000,"reason":"Thiên tai thử"}',ARRAY[current_setting('test.c46.fmevidence')::uuid])::text,true)$$);
 DELETE FROM cmd.test_clock;
 SELECT test.as_login('db_test_verify',$$SELECT set_config('test.c46.fmproposal',cmd.propose_decision('force_majeure_reduction','amendment',current_setting('test.c46.amendment')::uuid,'Đã xét chứng cứ thiên tai',current_setting('test.c46.fmevidence')::uuid,'{}')::text,true)$$);
@@ -51,6 +52,23 @@ SELECT set_config('test.c46.fmdoc',(test.command_doc('C46FM-ANNEX')||jsonb_build
 SELECT test.as_login('db_test_verify',$$SELECT test.expect_error('C46 chỉ người duyệt được ký quyết định thay','SELECT cmd.prepare_operational_reduction(current_setting(''test.c46.amendment'')::uuid,current_setting(''test.c46.fmdecision'')::uuid,current_setting(''test.c46.fmdoc'')::jsonb)','ck_operational_signature')$$);
 SELECT test.as_login('db_test_approve',$$SELECT set_config('test.c46.annex',cmd.prepare_operational_reduction(current_setting('test.c46.amendment')::uuid,current_setting('test.c46.fmdecision')::uuid,current_setting('test.c46.fmdoc')::jsonb)::text,true)$$);
 SELECT test.check('C46 ký thay có ghi rõ quyết định và không giả OTP buyer',EXISTS(SELECT 1 FROM core.signatures WHERE document_id=current_setting('test.c46.annex')::uuid AND party='buyer' AND method='quyet_dinh_van_hanh' AND otp_challenge_id IS NULL));
+-- Bản 23 (rà soát 70611c2): CÙNG đường TH-040b đủ điều kiện cũ (im lặng 25 giờ, quyết định hai người) nhưng đơn chính sách 23 → bị chặn.
+SELECT test.command_order('V23FM','TC-M01','Trần Thu Hà','spot',jsonb_build_object('delivery_window',tstzrange(now()+interval '4 days',now()+interval '5 days'))); SELECT test.sign_order('V23FM','TC-M01','Trần Thu Hà'); SELECT test.fund_order('V23FM');
+INSERT INTO core.deliveries(code,order_id,version_no,batch_no,planned_qty,delivery_window) SELECT 'V23FM-D1',order_id,1,1,qty_min,delivery_window FROM core.order_versions WHERE order_id=test.id('V23FM');
+SELECT set_config('test.v23.order',test.id('V23FM')::text,true),set_config('test.v23.evidencedata',test.command_doc('V23FM-EVIDENCE')::text,true);
+SELECT test.as_login('db_test_seller',$$SELECT set_config('test.v23.evidence',cmd.attach_evidence(current_setting('test.v23.order')::uuid,current_setting('test.v23.evidencedata')::jsonb)::text,true)$$);
+INSERT INTO cmd.test_clock(at) VALUES(now()-interval '25 hours');
+SELECT test.as_login('db_test_seller',$$SELECT set_config('test.v23.amendment',cmd.propose_amendment(current_setting('test.v23.order')::uuid,'force_majeure_reduction','{"qty_g":1000000,"reason":"Thiên tai thử"}',ARRAY[current_setting('test.v23.evidence')::uuid])::text,true)$$);
+DELETE FROM cmd.test_clock;
+SELECT test.as_login('db_test_verify',$$SELECT set_config('test.v23.proposal',cmd.propose_decision('force_majeure_reduction','amendment',current_setting('test.v23.amendment')::uuid,'Đã xét chứng cứ thiên tai',current_setting('test.v23.evidence')::uuid,'{}')::text,true)$$);
+SELECT test.as_login('db_test_approve',$$SELECT set_config('test.v23.decision',cmd.approve_decision(current_setting('test.v23.proposal')::uuid)::text,true)$$);
+SELECT set_config('test.v23.doc',(test.command_doc('V23FM-ANNEX')||jsonb_build_object('canonical_content',jsonb_build_object('operational_signature_notice','ký thay bằng quyết định vận hành '||current_setting('test.v23.decision'))))::text,true);
+SELECT test.check('B23 đơn mới mang chính sách 23',(SELECT policy_version=23 FROM core.orders WHERE id=test.id('V23FM')));
+SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('B23 ký thay bên mua im lặng bị chặn dù đủ điều kiện TH-040b cũ','SELECT cmd.prepare_operational_reduction(current_setting(''test.v23.amendment'')::uuid,current_setting(''test.v23.decision'')::uuid,current_setting(''test.v23.doc'')::jsonb)','ck_customer_consent')$$);
+SELECT test.check('B23 phụ lục không có hiệu lực, đề nghị vẫn mở, phiên bản đơn giữ nguyên',
+ (SELECT status='open' FROM core.amendments WHERE id=current_setting('test.v23.amendment')::uuid)
+ AND (SELECT effective_version_no=1 FROM core.orders WHERE id=test.id('V23FM'))
+ AND NOT EXISTS(SELECT 1 FROM core.order_versions WHERE order_id=test.id('V23FM') AND version_no>1));
 SELECT set_config('test.c46.otp',test.otp(current_setting('test.c46.annex')::uuid,test.person('Nguyễn Thị Năm')),true);
 SELECT test.as_login('db_test_seller',$$SELECT cmd.sign_document(current_setting('test.c46.annex')::uuid,'seller',current_setting('test.c46.otp'),'TEST')$$);
 SELECT test.as_login('db_test_system',$$SELECT cmd.apply_signed_amendment(current_setting('test.c46.amendment')::uuid)$$);

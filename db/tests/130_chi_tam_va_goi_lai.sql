@@ -23,10 +23,10 @@ INSERT INTO core.disputes(id,line_id,order_id,disputed_qty,opened_by,reason,clai
  VALUES(test.id('N08:dispute'),test.id('N08:line:3'),test.id('N08'),100000,ref.ctx_user(),'Khác mẫu, đề xuất trả lại','quality');
 INSERT INTO core.inspections(id,delivery_id,dispute_id,provider_org_id,kind,fee_vnd,prepaid_by_org_id,due_at)
  VALUES(test.id('N08:inspection'),test.id('N08:batch:1'),test.id('N08:dispute'),test.org('DT-KD'),'sample',280000,test.org('TC-M01'),now()+interval '1 day');
-SELECT test.check('N08 G_them từ phí buyer ứng, chất lượng không phạt thiếu lượng',core.dispute_additional_hold(test.id('N08'))=280000);
+SELECT test.check('N08 G_them từ phí buyer ứng, chất lượng không phạt thiếu lượng',core.dispute_claim_amount(test.id('N08'))=280000);
 SELECT test.expect_ok('N08 phạt tối đa Q04 chỉ trên lượng tranh chấp thiếu', $$DO $b$ BEGIN
  UPDATE core.disputes SET claim_kind='shortfall' WHERE id=test.id('N08:dispute');
- IF core.dispute_additional_hold(test.id('N08'))<>970000 THEN RAISE EXCEPTION 'Q04 sai: 280000 + 690000'; END IF;
+ IF core.dispute_claim_amount(test.id('N08'))<>970000 THEN RAISE EXCEPTION 'Q04 sai: 280000 + 690000'; END IF;
  END $b$;$$);
 CREATE FUNCTION test.n08_interim(p_release bigint,p_extra bigint DEFAULT 0) RETURNS void LANGUAGE sql AS $$
  INSERT INTO core.settlements(id,order_id,seq,is_final,v_vnd,d_vnd,c_vnd,n_vnd,c_nb_formula_vnd,release_vnd,refund_vnd,t_bm_vnd,t_nb_vnd,inputs,additional_hold_vnd,hold_formula_version)
@@ -36,7 +36,7 @@ $$;
 SELECT test.expect_error('E1 chi tạm kiểu cũ (giữ 280000) bị CHECK chặn', $$SELECT test.n08_interim(9570000,280000)$$,'ck_st_interim');
 SELECT test.n08_interim(9850000,0);
 SELECT test.check('E1 người bán nhận đủ phần công nhận 9850000, không giữ thêm',EXISTS(SELECT 1 FROM core.settlements WHERE id=test.id('N08:s1') AND additional_hold_vnd=0 AND hold_formula_version=3 AND release_vnd=9850000));
-SELECT test.check('E1 khoản đòi thêm (phí bên mua ứng + phạt) ghi chưa bảo đảm, không trừ vào tiền người bán',(SELECT sum(inspection_fee_vnd+penalty_vnd)=core.dispute_additional_hold(test.id('N08')) AND sum(inspection_fee_vnd)=280000 AND bool_and(security_status='chưa bảo đảm') FROM core.v_unsecured_claims WHERE order_id=test.id('N08')));
+SELECT test.check('E1 khoản đòi thêm (phí bên mua ứng + phạt) ghi chưa bảo đảm, không trừ vào tiền người bán',(SELECT sum(inspection_fee_vnd+penalty_vnd)=core.dispute_claim_amount(test.id('N08')) AND core.dispute_additional_hold(test.id('N08'))=0 AND sum(inspection_fee_vnd)=280000 AND bool_and(security_status='chưa bảo đảm') FROM core.v_unsecured_claims WHERE order_id=test.id('N08')));
 SELECT test.expect_error('E1 snapshot bất biến', $$UPDATE core.settlements SET additional_hold_vnd=280000 WHERE id=test.id('N08:s1')$$,'ck_append_only');
 
 -- D-07/D-18: tài khoản mới phải được chụp trong hợp đồng trước ký.

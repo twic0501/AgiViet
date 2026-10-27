@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T18:08:04.918Z",
+  "checked_at": "2026-10-27T18:32:00.750Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -59,12 +59,13 @@
     "0055_phien_ben_cho_dang_ky_va_nguoi_giup.sql",
     "0056_nhat_ky_xac_minh_mat_hang_va_ban_gap.sql",
     "0057_dat_truoc_va_bao_tieu_theo_vu.sql",
-    "0058_quy_trinh_ban_23_e1_e2_dong_ho_so.sql"
+    "0058_quy_trinh_ban_23_e1_e2_dong_ho_so.sql",
+    "0059_chinh_sach_theo_don_khao_sat_ky_thay.sql"
   ],
   "tables": 159,
   "migration_seed_replay": true,
-  "checks": 616,
-  "passed": 616,
+  "checks": 632,
+  "passed": 632,
   "failed": 0,
   "results": [
     {
@@ -490,7 +491,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản 96471dd3-7c8f-4390-a7fc-02ad1c2bd99f (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản 903bb946-55a0-4271-83d1-e5713c3bb9fe (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2068,6 +2069,21 @@
       "detail": null
     },
     {
+      "name": "B23 đơn mới mang chính sách 23",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "B23 ký thay bên mua im lặng bị chặn dù đủ điều kiện TH-040b cũ",
+      "passed": true,
+      "detail": "bị chặn: Quyết định nội bộ không thay chấp thuận của khách hàng; cần chữ ký của chính bên đó"
+    },
+    {
+      "name": "B23 phụ lục không có hiệu lực, đề nghị vẫn mở, phiên bản đơn giữ nguyên",
+      "passed": true,
+      "detail": null
+    },
+    {
       "name": "C46 bất khả kháng giảm lượng không phạt, hoàn chênh đúng",
       "passed": true,
       "detail": null
@@ -2220,7 +2236,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:08:02.82+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 01:31:58.581+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3131,6 +3147,71 @@
       "name": "B23 mở liên lạc không còn ngưỡng 3 triệu",
       "passed": true,
       "detail": null
+    },
+    {
+      "name": "R1 lệnh quyết toán chạy được trên đơn bản 23 (không còn lỗi ck_st_interim)",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R1 khoản giữ thêm = 0, phiên bản công thức 3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R1 chi đủ phần công nhận: release = min(C, V−D) trừ phần đã chi",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R1 lệnh chi cho người bán tạo đúng số đã tính",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R1 khoản đòi thêm 280.000 vẫn ghi, chưa bảo đảm",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R2 đơn cũ giữ chính sách cũ: giữ 280.000, phiên bản công thức 2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R2 chênh lệch hai đơn đúng bằng khoản giữ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R2 đơn có trước migration 0059 mang chính sách 22",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R2 vai runtime không có quyền sửa đơn trực tiếp (gồm chính sách)",
+      "passed": true,
+      "detail": "bị chặn: permission denied for table orders"
+    },
+    {
+      "name": "R3 người bên mua KHÔNG có tên đi khảo sát không đọc được liên lạc người bán",
+      "passed": true,
+      "detail": "bị chặn: Chỉ người đến khảo sát đã khai được nhận liên hệ người bán"
+    },
+    {
+      "name": "R3 người đến đã khai đọc được liên lạc người bán trong khung giờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "R3 trước khung giờ 12 tiếng: chưa mở",
+      "passed": true,
+      "detail": "bị chặn: Liên lạc khảo sát chưa mở hoặc đã hết hạn"
+    },
+    {
+      "name": "R3 người bán không đọc liên lạc người bên mua không đi khảo sát",
+      "passed": true,
+      "detail": "bị chặn: Chỉ liên hệ của người đến đã khai"
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",

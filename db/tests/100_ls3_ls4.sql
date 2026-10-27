@@ -1,5 +1,6 @@
 SELECT set_config('app.test_time','2026-11-04 07:00+07',true);
 SELECT test.make_order('LS3','TC-M01','Trần Thu Hà','spot');
+UPDATE core.orders SET policy_version=22 WHERE id=test.id('LS3'); -- đơn chính sách cũ (trước bản 23): kiểm đường ký thay cũ; bản 23 chặn, xem 250
 SELECT test.sign_order('LS3','TC-M01','Trần Thu Hà');
 SELECT test.fund_order('LS3');
 SELECT test.context('Nguyễn Thị Năm','TC-B01','seller');
