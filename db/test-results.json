@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T19:11:09.559Z",
+  "checked_at": "2026-10-27T19:14:13.886Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -64,12 +64,13 @@
     "0060_sua_ra_soat_d37991a.sql",
     "0061_giao_ngay_c1_c6.sql",
     "0062_sua_ra_soat_1614c70.sql",
-    "0063_tim_nguon_dinh_ky_c7_c9.sql"
+    "0063_tim_nguon_dinh_ky_c7_c9.sql",
+    "0064_van_hanh_c10_c14.sql"
   ],
-  "tables": 171,
+  "tables": 175,
   "migration_seed_replay": true,
-  "checks": 690,
-  "passed": 690,
+  "checks": 702,
+  "passed": 702,
   "failed": 0,
   "results": [
     {
@@ -495,7 +496,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản c320d385-f2b6-40c0-9647-68ea3dd83074 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản fdfcd9d8-1595-4694-a286-25c286c30ad1 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2240,7 +2241,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:11:07.169+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:14:11.467+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3506,6 +3507,66 @@
       "name": "DK dừng rồi không chốt ngày mới",
       "passed": true,
       "detail": "bị chặn: Đã qua hạn chốt hoặc thỏa thuận đã dừng"
+    },
+    {
+      "name": "C10 mặt hàng chưa có thông số giữ thì không giữ tại chỗ",
+      "passed": true,
+      "detail": "bị chặn: Mặt hàng không giữ được tại chỗ"
+    },
+    {
+      "name": "C10 hạn quyết định = bắt đầu + 6 giờ, giữ tối đa 12 giờ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C10 đang giữ tại chỗ là hồ sơ mở",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C10 hết hạn giữ: chạy phương án đã ủy quyền trước",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C11 dựng được mẫu và lần kiểm định",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C11 xác định bên chịu phải có quyết định",
+      "passed": true,
+      "detail": "bị chặn: new row for relation \"sample_incidents\" violates check constraint \"sample_incidents_check\""
+    },
+    {
+      "name": "C11 mẫu có sự cố là không hợp lệ",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C11 không ghi kết quả kiểm định trên mẫu có sự cố",
+      "passed": true,
+      "detail": "bị chặn: Mẫu có sự cố (mất niêm/hỏng/thất lạc): không dùng làm căn cứ"
+    },
+    {
+      "name": "C12 ghi bồi hoàn do AgiViet đặt nhầm xe (quyết định hai người)",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C12 bồi hoàn AgiViet chưa trả là hồ sơ mở",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C14 công trực tiếp 60 phút × 60.000 đ/giờ = 60.000; ca trực dùng chung không tính trọn vào đơn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "C14 chi phí đơn gồm bồi hoàn do lỗi AgiViet",
+      "passed": true,
+      "detail": null
     },
     {
       "name": "D15 SHA256 binding chữ ký khớp security/lib/otp.mjs",
