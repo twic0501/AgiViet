@@ -1,0 +1,23 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chọn vai thử · AgiViet</title><link rel="stylesheet" href="/shared/style.css">
+<style>
+ body{max-width:960px;margin:0 auto;padding:16px}
+ .canh-bao{background:#fff4e5;border:1px solid #f0c27b;border-radius:8px;padding:10px 12px;margin:12px 0}
+ .luoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+ .the{border:1px solid #d9d9d9;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px}
+ .the h3{margin:0;font-size:1rem}.nho{font-size:.85rem;color:#555}.nhan{display:inline-block;background:#eef3ea;border-radius:6px;padding:1px 6px;margin:2px 4px 0 0;font-size:.8rem}
+ .the button{margin-top:auto}#trang-thai{min-height:1.4em}
+</style>
+<h1>Chọn vai thử</h1>
+<p class="canh-bao">Công cụ thử nghiệm, chỉ chạy trên máy (cổng công cụ). Dữ liệu ảo; tiền và ngân hàng đều giả lập. Không phải giao diện người dùng.
+ Mỗi nút mở một tab mới đã đăng nhập đúng vai; phiên nằm trong tab đó, không ở URL.</p>
+<p id="trang-thai" role="status"></p>
+<h2>Bên bán và bên mua (10 tình huống)</h2>
+<div id="khach" class="luoi"></div>
+<h2>Nhân viên AgiViet</h2>
+<p class="nho">Giao diện hộp việc cho nhân viên làm ở bước sau; hiện các vai này thao tác qua API vận hành. Quyết định tiền ngoại lệ luôn cần người thứ hai khác người đề xuất.</p>
+<div id="nhan-vien" class="luoi"></div>
+<h2>Đặt lại dữ liệu</h2>
+<p class="nho">Trên máy chạy: <code>infra/local-tunnel/dat-lai-du-lieu-thu.sh</code> — sao lưu DB, đặt lại từ mẫu sạch, dựng lại 10 tình huống.</p>
+<script type="module" src="./chon-vai.js"></script>
+</html>
