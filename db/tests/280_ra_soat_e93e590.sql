@@ -70,7 +70,21 @@ SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('ca931aa khôn
 -- Hồi quy Codex rà 74bdd15 (0070).
 SELECT test.expect_error('74bdd15 ghi đã trả bồi hoàn trực tiếp (không qua lệnh xác minh) bị chặn',
  $$UPDATE core.platform_liabilities SET paid_at=now(),paid_evidence_id=test.id('R59A:bbnt:1') WHERE decision_id=test.id('C12:qd')$$,'ck_pl_paid_evidence');
-SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('74bdd15 quyết định khác loại không kết luận được tranh chấp chi phí','SELECT cmd.settle_sourcing_cost_dispute(current_setting(''test.e.k'')::uuid,test.id(''C12:qd''),0)')$$);
+-- Khoản chi phí thật sự đang tranh chấp: giảm 500 kg → 400 kg, người bán báo 800.000 đ, bên mua không đồng ý.
+SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.e.c3',cmd.request_allocation_change(current_setting('test.e.a')::uuid,400000)::text,false)$$);
+SELECT test.as_login('db_test_seller',$$SELECT cmd.answer_allocation_change(current_setting('test.e.c3')::uuid,true,800000,current_setting('test.e.ev')::uuid)$$);
+SELECT set_config('test.e.k3',(SELECT id::text FROM core.sourcing_cost_claims WHERE change_id=current_setting('test.e.c3')::uuid),false);
+SELECT test.as_login('db_test_buyer',$$SELECT cmd.answer_sourcing_cost(current_setting('test.e.k3')::uuid,false)$$);
+SELECT test.check('Tiền đề: khoản chi phí đang tranh chấp',
+ (SELECT status='tranh_chap' FROM core.sourcing_cost_claims WHERE id=current_setting('test.e.k3')::uuid));
+INSERT INTO ops.decisions(id,kind,entity,entity_id,proposed_by,approved_by,reason,evidence_document_id,detail)
+ VALUES(test.id('E3:qd'),'sourcing_cost_dispute','sourcing_cost_claim',current_setting('test.e.k3')::uuid,test.person('Đỗ Minh Trí'),test.person('Nguyễn Hữu Tâm'),
+  'Chi phí thực tế có chứng cứ một phần',test.id('R59A:bbnt:1'),'{"amount_vnd":500000}');
+SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('74bdd15 quyết định khác loại không kết luận được tranh chấp chi phí','SELECT cmd.settle_sourcing_cost_dispute(current_setting(''test.e.k3'')::uuid,test.id(''C12:qd''),500000)','ck_decision_two_people')$$);
+SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('74bdd15 số tiền khác số đã duyệt bị chặn','SELECT cmd.settle_sourcing_cost_dispute(current_setting(''test.e.k3'')::uuid,test.id(''E3:qd''),800000)','ck_decision_two_people')$$);
+SELECT test.as_login('db_test_approve',$$SELECT cmd.settle_sourcing_cost_dispute(current_setting('test.e.k3')::uuid,test.id('E3:qd'),500000)$$);
+SELECT test.check('74bdd15 quyết định đúng loại, đúng khoản, đúng số được áp dụng',
+ (SELECT status='phai_tra' AND amount_vnd=500000 AND due_at IS NOT NULL FROM core.sourcing_cost_claims WHERE id=current_setting('test.e.k3')::uuid));
 
 -- Hồi quy Codex rà 3d49bc0 (0071): đơn single_product đọc lượng/giá từ phiên bản hợp đồng.
 SELECT test.check('3d49bc0 đơn single_product đọc được lượng và giá (không NULL)',

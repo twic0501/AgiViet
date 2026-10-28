@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-28T04:25:05.772Z",
+  "checked_at": "2026-10-28T06:57:42.764Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -77,8 +77,8 @@
   ],
   "tables": 176,
   "migration_seed_replay": true,
-  "checks": 729,
-  "passed": 729,
+  "checks": 732,
+  "passed": 732,
   "failed": 0,
   "results": [
     {
@@ -504,7 +504,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản cfcb424f-ca6c-43d2-8cb0-e67f36f3eabf (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản d44b683c-9158-4fbd-9732-ae6094c15db1 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2249,7 +2249,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 11:25:03.224+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 13:57:40.112+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3697,9 +3697,24 @@
       "detail": "bị chặn: Ghi đã trả chỉ qua lệnh xác minh tiền của tài chính"
     },
     {
+      "name": "Tiền đề: khoản chi phí đang tranh chấp",
+      "passed": true,
+      "detail": null
+    },
+    {
       "name": "74bdd15 quyết định khác loại không kết luận được tranh chấp chi phí",
       "passed": true,
-      "detail": "bị chặn: Khoản không ở tranh chấp"
+      "detail": "bị chặn: Cần quyết định hai người loại sourcing_cost_dispute cho đúng khoản và đúng số"
+    },
+    {
+      "name": "74bdd15 số tiền khác số đã duyệt bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Cần quyết định hai người loại sourcing_cost_dispute cho đúng khoản và đúng số"
+    },
+    {
+      "name": "74bdd15 quyết định đúng loại, đúng khoản, đúng số được áp dụng",
+      "passed": true,
+      "detail": null
     },
     {
       "name": "3d49bc0 đơn single_product đọc được lượng và giá (không NULL)",
