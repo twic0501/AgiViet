@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-28T04:10:32.064Z",
+  "checked_at": "2026-10-28T04:19:45.442Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -71,12 +71,13 @@
     "0067_sua_ra_soat_e93e590.sql",
     "0068_sua_ra_soat_2b94702.sql",
     "0069_sua_ra_soat_ca931aa.sql",
-    "0070_sua_ra_soat_74bdd15.sql"
+    "0070_sua_ra_soat_74bdd15.sql",
+    "0071_sua_ra_soat_3d49bc0.sql"
   ],
   "tables": 176,
   "migration_seed_replay": true,
-  "checks": 728,
-  "passed": 728,
+  "checks": 729,
+  "passed": 729,
   "failed": 0,
   "results": [
     {
@@ -502,7 +503,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản f65a11b7-77f8-439b-ba27-56c1dde99db1 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản 7405bb17-76cd-4fde-97fa-8d434bbcae66 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2247,7 +2248,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 11:10:29.514+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 11:19:42.867+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3698,6 +3699,11 @@
       "name": "74bdd15 quyết định khác loại không kết luận được tranh chấp chi phí",
       "passed": true,
       "detail": "bị chặn: Khoản không ở tranh chấp"
+    },
+    {
+      "name": "3d49bc0 đơn single_product đọc được lượng và giá (không NULL)",
+      "passed": true,
+      "detail": null
     },
     {
       "name": "Q24 công ghi qua việc tính vào đơn của việc",

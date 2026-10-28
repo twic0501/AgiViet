@@ -72,6 +72,11 @@ SELECT test.expect_error('74bdd15 ghi đã trả bồi hoàn trực tiếp (khô
  $$UPDATE core.platform_liabilities SET paid_at=now(),paid_evidence_id=test.id('R59A:bbnt:1') WHERE decision_id=test.id('C12:qd')$$,'ck_pl_paid_evidence');
 SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('74bdd15 quyết định khác loại không kết luận được tranh chấp chi phí','SELECT cmd.settle_sourcing_cost_dispute(current_setting(''test.e.k'')::uuid,test.id(''C12:qd''),0)')$$);
 
+-- Hồi quy Codex rà 3d49bc0 (0071): đơn single_product đọc lượng/giá từ phiên bản hợp đồng.
+SELECT test.check('3d49bc0 đơn single_product đọc được lượng và giá (không NULL)',
+ (SELECT op.qty_g=v.qty_min AND op.price_vnd_per_kg=v.unit_price_vnd FROM core.orders o JOIN core.order_versions v ON v.order_id=o.id AND v.version_no=o.effective_version_no,
+   LATERAL core.order_qty_price(o.id,o.effective_version_no) op WHERE o.id=test.id('R59A') AND v.value_basis='single_product'));
+
 -- Q24: ghi công qua việc được tính vào chi phí của đơn.
 INSERT INTO ops.work_logs(task_id,user_id,work_on,minutes,category,outside_cost_vnd,subsidized)
  SELECT id,test.person('Phạm Quốc Bảo'),current_date,30,'exception',0,false FROM ops.tasks WHERE kind='V25' AND order_id=test.id('R59B') LIMIT 1;
