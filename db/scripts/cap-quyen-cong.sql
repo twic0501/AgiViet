@@ -24,8 +24,8 @@ GRANT agv_backend_read,agv_backend_meta,agv_backend_broker,agv_backend_auth,agv_
 -- Không GRANT ngược gateway TO broker: tạo vòng membership và PostgreSQL từ chối.
 -- Broker có ADMIN trên login do chính nó tạo; đủ để GRANT <login> TO gateway.
 
-GRANT USAGE ON SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,auth TO agv_backend_read;
-GRANT SELECT ON ALL TABLES IN SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,auth TO agv_backend_read;
+GRANT USAGE ON SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,app_auth TO agv_backend_read;
+GRANT SELECT ON ALL TABLES IN SCHEMA core,pii,ref,ledger,mkt,evt,ops,cmd,app_auth TO agv_backend_read;
 GRANT EXECUTE ON FUNCTION ref.clock_at(),core.signature_binding(uuid),core.payment_binding(uuid,bigint),core.invitation_binding(uuid),evt.otp_hash(text,uuid,jsonb) TO agv_backend_read;
 GRANT USAGE ON SCHEMA cmd TO agv_backend_broker;
 GRANT SELECT,INSERT,UPDATE ON cmd.login_principals TO agv_backend_broker;
