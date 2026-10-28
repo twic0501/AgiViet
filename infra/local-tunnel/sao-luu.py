@@ -25,7 +25,10 @@ for name in ('backend','ai'):
    if b'AGV_LOCAL_PROCESS_TOKEN='+d['token'].encode()+b'\0' in raw:
     env=dict(x.split(b'=',1) for x in raw.split(b'\0') if b'=' in x)
     argv=[os.fsdecode(x) for x in (proc/'cmdline').read_bytes().split(b'\0') if x]
-    resume.append((name,argv,{os.fsdecode(k):os.fsdecode(v) for k,v in env.items()},os.readlink(proc/'cwd')))
+    env={os.fsdecode(k):os.fsdecode(v) for k,v in env.items()}
+    # Sao lưu không bao giờ kéo theo đặt lại dữ liệu thử: bỏ cờ dựng lại lúc khởi động.
+    env.pop('AGV_DAT_LAI_KHI_KHOI_DONG',None)
+    resume.append((name,argv,env,os.readlink(proc/'cwd')))
   except OSError:pass
 # Dừng writer sạch như Oracle; giữ argv/env chỉ trong RAM, không ghi credential ra file.
 stage=Path(tempfile.mkdtemp(prefix='.stage-',dir=dest));started=time.monotonic()

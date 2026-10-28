@@ -15,4 +15,4 @@ AGV_RESET_ON_START=1 timeout 900 "$HERE_DL/khoi-dong.sh" | tail -2
 echo '3/3 Dựng tình huống theo vai'
 cd "$REPO_DL/backend"
 timeout 600 npx tsx scripts/demo-10-so.ts
-echo 'Xong. Danh sách tài khoản: GET http://127.0.0.1:18080/v1/test/accounts ; trang chọn vai: http://127.0.0.1:18889/quan-tri/launch.html'
+echo 'Xong. Danh sách tài khoản: GET http://127.0.0.1:18080/v1/test/accounts ; trang chọn vai: http://127.0.0.1:18889/quan-tri/chon-vai.html'

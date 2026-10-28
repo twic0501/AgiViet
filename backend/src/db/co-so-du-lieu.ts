@@ -150,7 +150,9 @@ export class CoSoDuLieu {
   private async khoiTaoPg(): Promise<void> {
     pg.types.setTypeParser(20, (v) => v); // bigint giữ chuỗi
     if (this.laThu && process.env.AGV_TEST_PG_OWNER_URL) { this.ownerUrl = process.env.AGV_TEST_PG_OWNER_URL; this.templateDb = process.env.AGV_TEST_PG_TEMPLATE ?? null; }
-    if (this.templateDb) await this.dungLaiTuMau();
+    // Có mẫu chỉ bật khả năng đặt lại (/v1/test/reset). Dựng lại lúc khởi động cần cờ chủ động riêng,
+    // để khởi động lại sau sao lưu không tự xóa dữ liệu thử (Codex rà b6c19c3).
+    if (this.templateDb && process.env.AGV_DAT_LAI_KHI_KHOI_DONG === '1') await this.dungLaiTuMau();
     this.pool = new pg.Pool({ connectionString: this.databaseUrl!, max: this.poolMax, idleTimeoutMillis: 30_000, application_name: 'agiviet-backend' });
     const c = await this.pool.connect();
     try {

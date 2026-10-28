@@ -47,6 +47,7 @@ try {
   const env = {
     DATABASE_URL: `postgres://agv_backend_gateway:thu-cong-chi-dung-local@127.0.0.1:${PORT}/agiviet`,
     AGV_TEST_PG_OWNER_URL: owner('postgres'), AGV_TEST_PG_TEMPLATE: 'agiviet_mau', AGV_MOI_TRUONG: 'thu',
+    AGV_DAT_LAI_KHI_KHOI_DONG: '1', // bộ kiểm thử chủ động dựng DB từ mẫu lúc khởi động
   };
   const args = ['tsx', 'test/chay-tinh-huong.ts', ...process.argv.slice(2)];
   ma = await new Promise((res) => spawn('npx', args, { cwd: BACKEND, stdio: 'inherit', env: { ...process.env, ...env } }).on('exit', (c) => res(c ?? 1)));

@@ -97,11 +97,11 @@ export DATABASE_URL="$runtime_url"
 if [[ "$RESET_ON_START" == 1 ]]; then
   # Ngoại lệ chủ đích chỉ môi trường thử loopback; owner URL không vào argv/log/frontend/pilot.
   AGV_TEST_PG_OWNER_URL="postgresql://agiviet_owner:$DB_PASSWORD@127.0.0.1:$PGPORT/postgres"
-  export AGV_TEST_PG_OWNER_URL AGV_TEST_PG_TEMPLATE=agiviet_clean
+  export AGV_TEST_PG_OWNER_URL AGV_TEST_PG_TEMPLATE=agiviet_clean AGV_DAT_LAI_KHI_KHOI_DONG=1
 fi
 manager spawn backend node --import "$REPO/backend/node_modules/tsx/dist/loader.mjs" "$REPO/backend/src/server.ts"
 wait_http "http://127.0.0.1:$BACKEND_PORT/health/ready" 45
-unset AGV_TEST_PG_OWNER_URL AGV_TEST_PG_TEMPLATE
+unset AGV_TEST_PG_OWNER_URL AGV_TEST_PG_TEMPLATE AGV_DAT_LAI_KHI_KHOI_DONG
 unset DATABASE_URL AGV_QR_PRIVATE_PEM AGV_PDF_PRIVATE_PEM AGV_SESSION_SECRET AGV_OTP_PEPPER AGV_WEBHOOK_SECRET AGV_FALLBACK_SECRET AGV_AI_API_KEY
 export PORT="$FRONTEND_PORT" API_ORIGIN="http://127.0.0.1:$BACKEND_PORT"
 manager spawn frontend node --import "$HERE/loopback.mjs" "$REPO/frontend/server.mjs"
