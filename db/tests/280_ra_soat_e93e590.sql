@@ -67,6 +67,11 @@ SELECT test.expect_error('ca931aa đổi bên nhận bồi hoàn bị chặn',
  $$UPDATE core.platform_liabilities SET payee_org_id=test.org('TC-M01') WHERE decision_id=test.id('C12:qd')$$,'ck_append_only');
 SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('ca931aa không gắn phân bổ vào đơn đã kết thúc','SELECT cmd.link_allocation_order(current_setting(''test.e.a'')::uuid,(SELECT id FROM core.orders WHERE status IN (''completed'',''outstanding'',''closed'') LIMIT 1))')$$);
 
+-- Hồi quy Codex rà 74bdd15 (0070).
+SELECT test.expect_error('74bdd15 ghi đã trả bồi hoàn trực tiếp (không qua lệnh xác minh) bị chặn',
+ $$UPDATE core.platform_liabilities SET paid_at=now(),paid_evidence_id=test.id('R59A:bbnt:1') WHERE decision_id=test.id('C12:qd')$$,'ck_pl_paid_evidence');
+SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('74bdd15 quyết định khác loại không kết luận được tranh chấp chi phí','SELECT cmd.settle_sourcing_cost_dispute(current_setting(''test.e.k'')::uuid,test.id(''C12:qd''),0)')$$);
+
 -- Q24: ghi công qua việc được tính vào chi phí của đơn.
 INSERT INTO ops.work_logs(task_id,user_id,work_on,minutes,category,outside_cost_vnd,subsidized)
  SELECT id,test.person('Phạm Quốc Bảo'),current_date,30,'exception',0,false FROM ops.tasks WHERE kind='V25' AND order_id=test.id('R59B') LIMIT 1;

@@ -121,7 +121,7 @@ export async function traLoiChiPhiDoiLuong(t: GiaoDich, nd: NguoiDung, id: strin
 }
 export async function dsChiPhiDoiLuong(t: GiaoDich, nd: NguoiDung) {
   if (!nd.thanhVien.vai.some((v) => ['owner', 'purchaser', 'accountant'].includes(v))) throw loi('KHONG_CO_QUYEN');
-  const items = await t.q(`SELECT id, change_id, buyer_org_id, seller_org_id, amount_vnd::text, status, due_at, created_at FROM core.sourcing_cost_claims_of($1)`, [nd.thanhVien.orgId]);
+  const items = await t.q(`SELECT id, change_id, buyer_org_id, seller_org_id, amount_vnd::text, status, due_at, evidence_document_id, paid_evidence_id, created_at FROM core.sourcing_cost_claims_of($1)`, [nd.thanhVien.orgId]);
   return { items };
 }
 export async function xacNhanDaTraChiPhi(t: GiaoDich, nd: NguoiDung, id: string, b: any) {
