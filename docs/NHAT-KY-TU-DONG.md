@@ -61,4 +61,5 @@ Cách đọc: mỗi mục có **giờ**, **việc**, **ai quyết** (Người s�
 - Codex rà 2f4517e: gắn đơn single_product, phụ lục 2→1 tấn, hủy nhánh committed **đã hết**; còn 1 P1: báo thiếu rồi hủy → phân bổ shortfall vẫn tính 1 tấn.
 - **0072**: hủy hoàn tất xử lý cả shortfall; giữ riêng phần đã nghiệm thu (`core.order_accepted_qty`), chưa nghiệm thu thì hủy hẳn. DB 729/729.
 - Codex rà 492b9bf: hai probe (báo thiếu → hủy; nghiệm thu 500 kg → hủy phần còn lại) **đạt**; không lệch mới. DB 729/729; backend 74/74 · 554/554; kiểm quyền 11/11; tsc sạch. **Codex xác nhận chặng DB + backend bản 23 đủ để chuyển sang môi trường thử và giao diện** (thanh toán giả lập; bảo đảm chung chưa làm). Việc kèm: đưa hai probe vào bộ hồi quy; kiểm thử riêng cho đồng bộ phụ lục.
+- Hồi quy đồng bộ nguồn `db/tools/kiem-tra-dong-bo-nguon.mjs` (`npm run test:dong-bo-nguon`), lấy từ probe của Codex: gắn đơn single_product, phụ lục 2→1 tấn, hủy hoàn tất, báo thiếu rồi hủy (chưa nghiệm thu / nghiệm thu 500 kg). 5/5 đạt.
 - Ghi chú kỹ thuật: thêm cột vào order_versions làm gãy lệnh tạo đơn (whitelist) → hạn khiếu nại đặt trong extra_terms.

@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "test": "node tools/kiem-tra-pglite.mjs",
-    "seed:generate": "python3 tools/tao-seed.py"
+    "seed:generate": "python3 tools/tao-seed.py",
+    "test:dong-bo-nguon": "node tools/kiem-tra-dong-bo-nguon.mjs"
   }
 }
