@@ -382,6 +382,8 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/sourcing-allocations/:id/change', async (req) => bo.lenh(req, 'xin_doi_luong', 'buyer', async (t, nd, b) => (await B23()).xinDoiLuong(t, nd, P(req).id, b)));
   app.post('/v1/allocation-changes/:id/answer', async (req) => bo.lenh(req, 'tra_loi_doi_luong', 'seller', async (t, nd, b) => (await B23()).traLoiDoiLuong(t, nd, P(req).id, b)));
   app.post('/v1/sourcing-allocations/:id/shortfall', async (req) => bo.lenh(req, 'bao_giao_thieu', 'seller', async (t, nd, b) => (await B23()).baoGiaoThieu(t, nd, P(req).id, b)));
+  app.get('/v1/sourcing-cost-claims', async (req) => { const nd = await bo.xacThuc(req); const m = await B23(); return bo.doc((t) => m.dsChiPhiDoiLuong(t, nd)); });
+  app.post('/v1/sourcing-cost-claims/:id/paid', async (req) => bo.lenh(req, 'xac_nhan_da_tra_chi_phi', 'seller', async (t, nd, b) => (await B23()).xacNhanDaTraChiPhi(t, nd, P(req).id, b)));
   app.post('/v1/sourcing-cost-claims/:id/answer', async (req) => bo.lenh(req, 'tra_loi_chi_phi_doi_luong', 'buyer', async (t, nd, b) => (await B23()).traLoiChiPhiDoiLuong(t, nd, P(req).id, b)));
   app.post('/v1/credit-terms', async (req) => bo.lenh(req, 'dat_dieu_khoan_tra', 'seller', async (t, nd, b) => (await B23()).datDieuKhoanTra(t, nd, b)));
   app.post('/v1/ops/tasks/:id/claim', async (req) => bo.lenh(req, 'nhan_viec', 'ops', (t, nd) => VanHanh.nhanViec(t, nd, P(req).id)));

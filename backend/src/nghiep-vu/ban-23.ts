@@ -104,7 +104,8 @@ export async function xinDoiLuong(t: GiaoDich, nd: NguoiDung, id: string, b: any
 export async function traLoiDoiLuong(t: GiaoDich, nd: NguoiDung, id: string, b: any) {
   if (typeof b?.agree !== 'boolean') throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần agree: true/false');
   await appCmd(t, nd, 'seller', 'answer_allocation_change', [id, b.agree, so(b.cost_vnd ?? 0, 'cost_vnd'), b.evidence_document_id ?? null]);
-  return { status: b.agree ? 'consented' : 'rejected' };
+  const claimId = await t.gtri<string>(`SELECT k.id FROM core.sourcing_cost_claims_of($1) k WHERE k.change_id=$2`, [nd.thanhVien.orgId, id]);
+  return { status: b.agree ? 'consented' : 'rejected', cost_claim_id: claimId ?? null };
 }
 export async function baoGiaoThieu(t: GiaoDich, nd: NguoiDung, id: string, b: any) {
   can(b, ['delivered_qty_g']);
@@ -117,4 +118,14 @@ export async function traLoiChiPhiDoiLuong(t: GiaoDich, nd: NguoiDung, id: strin
   if (typeof b?.accept !== 'boolean') throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần accept: true/false');
   await appCmd(t, nd, 'buyer', 'answer_sourcing_cost', [id, b.accept]);
   return { status: b.accept ? 'phai_tra' : 'tranh_chap' };
+}
+export async function dsChiPhiDoiLuong(t: GiaoDich, nd: NguoiDung) {
+  if (!nd.thanhVien.vai.some((v) => ['owner', 'purchaser', 'accountant'].includes(v))) throw loi('KHONG_CO_QUYEN');
+  const items = await t.q(`SELECT id, change_id, buyer_org_id, seller_org_id, amount_vnd::text, status, due_at, created_at FROM core.sourcing_cost_claims_of($1)`, [nd.thanhVien.orgId]);
+  return { items };
+}
+export async function xacNhanDaTraChiPhi(t: GiaoDich, nd: NguoiDung, id: string, b: any) {
+  can(b, ['evidence_document_id']);
+  await appCmd(t, nd, 'seller', 'confirm_sourcing_cost_paid', [id, b.evidence_document_id]);
+  return { status: 'da_tra' };
 }

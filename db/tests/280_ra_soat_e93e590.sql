@@ -60,6 +60,13 @@ END $f$;
 SELECT test.e_dong_tc();
 SELECT test.as_login('db_test_buyer',$$SELECT test.expect_error('C7 khiếu nại lại cùng phần hàng vượt lượng đã nhận bị chặn','SELECT cmd.open_post_delivery_claim(current_setting(''test.e.l1'')::uuid,1745000,''Lần hai'',''quality'')','ck_claim_qty')$$);
 
+-- Hồi quy Codex rà ca931aa (0069).
+SELECT test.expect_error('ca931aa một quyết định bồi hoàn chỉ tạo một nghĩa vụ',
+ $$INSERT INTO core.platform_liabilities(order_id,kind,amount_vnd,payee_org_id,reason,decision_id) VALUES(test.id('R59A'),'dat_nham_dich_vu',1,test.org('TC-B01'),'Lần hai',test.id('C12:qd'))$$);
+SELECT test.expect_error('ca931aa đổi bên nhận bồi hoàn bị chặn',
+ $$UPDATE core.platform_liabilities SET payee_org_id=test.org('TC-M01') WHERE decision_id=test.id('C12:qd')$$,'ck_append_only');
+SELECT test.as_login('db_test_approve',$$SELECT test.expect_error('ca931aa không gắn phân bổ vào đơn đã kết thúc','SELECT cmd.link_allocation_order(current_setting(''test.e.a'')::uuid,(SELECT id FROM core.orders WHERE status IN (''completed'',''outstanding'',''closed'') LIMIT 1))')$$);
+
 -- Q24: ghi công qua việc được tính vào chi phí của đơn.
 INSERT INTO ops.work_logs(task_id,user_id,work_on,minutes,category,outside_cost_vnd,subsidized)
  SELECT id,test.person('Phạm Quốc Bảo'),current_date,30,'exception',0,false FROM ops.tasks WHERE kind='V25' AND order_id=test.id('R59B') LIMIT 1;

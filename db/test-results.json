@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-27T19:53:27.745Z",
+  "checked_at": "2026-10-28T03:36:24.475Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "migrations": [
     "0001_nen_tang.sql",
@@ -69,12 +69,13 @@
     "0065_sua_ra_soat_f73497a.sql",
     "0066_quyen_ham_cong_no.sql",
     "0067_sua_ra_soat_e93e590.sql",
-    "0068_sua_ra_soat_2b94702.sql"
+    "0068_sua_ra_soat_2b94702.sql",
+    "0069_sua_ra_soat_ca931aa.sql"
   ],
   "tables": 176,
   "migration_seed_replay": true,
-  "checks": 723,
-  "passed": 723,
+  "checks": 726,
+  "passed": 726,
   "failed": 0,
   "results": [
     {
@@ -500,7 +501,7 @@
     {
       "name": "Tài khoản giữ hộ không được âm",
       "passed": true,
-      "detail": "bị chặn: Tài khoản 9fbe327f-2e28-4374-90aa-d6a42c4efee4 (deposit_escrow) sẽ âm: -1"
+      "detail": "bị chặn: Tài khoản debf4f5a-5592-46ce-ab3c-5d6ec6375e10 (deposit_escrow) sẽ âm: -1"
     },
     {
       "name": "Nghiệm thu không thêm dòng sau COMMIT",
@@ -2245,7 +2246,7 @@
     {
       "name": "C48 helper vẫn chịu hạn đổi giá 24h",
       "passed": true,
-      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 02:53:25.273+07)"
+      "detail": "bị chặn: Giá lô chỉ được sửa 1 lần mỗi 24 giờ (lần trước 2026-10-28 10:36:21.881+07)"
     },
     {
       "name": "C48 helper ghi đúng người giúp trên lô, giá và ảnh",
@@ -3671,6 +3672,21 @@
       "name": "C7 khiếu nại lại cùng phần hàng vượt lượng đã nhận bị chặn",
       "passed": true,
       "detail": "bị chặn: Tổng lượng khiếu nại sau giao vượt lượng đã nhận của dòng"
+    },
+    {
+      "name": "ca931aa một quyết định bồi hoàn chỉ tạo một nghĩa vụ",
+      "passed": true,
+      "detail": "bị chặn: duplicate key value violates unique constraint \"ux_platform_liability_decision\""
+    },
+    {
+      "name": "ca931aa đổi bên nhận bồi hoàn bị chặn",
+      "passed": true,
+      "detail": "bị chặn: Bồi hoàn bất biến; sửa bằng quyết định mới"
+    },
+    {
+      "name": "ca931aa không gắn phân bổ vào đơn đã kết thúc",
+      "passed": true,
+      "detail": "bị chặn: Chỉ gắn đơn đã ký và còn đang chạy"
     },
     {
       "name": "Q24 công ghi qua việc tính vào đơn của việc",
