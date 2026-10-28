@@ -13,7 +13,8 @@
     "test": "tsx test/chay-tinh-huong.ts",
     "test:commands": "tsx test/kiem-quyen-command.ts",
     "test:pg": "node scripts/test-pg.mjs",
-    "demo:10-so": "tsx scripts/demo-10-so.ts"
+    "demo:10-so": "tsx scripts/demo-10-so.ts",
+    "test:dong-thoi": "node scripts/kiem-dong-thoi.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.16",

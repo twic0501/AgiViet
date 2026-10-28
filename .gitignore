@@ -26,3 +26,6 @@ ai/mo_hinh/
 
 # Tệp tạm
 .tmp/
+
+# Kết quả kiểm đồng thời (sinh khi chạy)
+backend/.dong-thoi-ket-qua.json
