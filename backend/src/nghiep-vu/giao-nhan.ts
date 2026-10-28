@@ -453,7 +453,7 @@ export async function xemDot(t: GiaoDich, nd: NguoiDung, deliveryId: string) {
   const kq = await t.q<any>(`SELECT a.id, a.version_no, a.weighed_qty::text weighed_g, a.document_id, encode(doc.content_sha256,'hex') content_sha256,
       (SELECT max(s.signed_at) FROM core.signatures s WHERE s.document_id=a.document_id AND s.party='seller') seller_agreed_at,
       (SELECT max(s.signed_at) FROM core.signatures s WHERE s.document_id=a.document_id AND s.party='buyer') buyer_agreed_at,
-      (SELECT json_agg(json_build_object('line_no',l.line_no,'kind',l.kind,'qty_g',l.qty::text,'unit_price_vnd',l.unit_price_vnd::text,'value_vnd',l.value_vnd::text,'reason_code',l.reason_code,'status',l.status) ORDER BY l.line_no) FROM core.acceptance_lines l WHERE l.acceptance_id=a.id) lines
+      (SELECT json_agg(json_build_object('line_no',l.line_no,'kind',l.kind,'qty_g',l.qty::text,'unit_price_vnd',l.unit_price_vnd::text,'value_vnd',l.value_vnd::text,'reason_code',l.reason_code,'evidence_document_id',l.evidence_document_id,'status',l.status) ORDER BY l.line_no) FROM core.acceptance_lines l WHERE l.acceptance_id=a.id) lines
       FROM core.acceptance_versions a JOIN core.documents doc ON doc.id=a.document_id WHERE a.delivery_id=$1 ORDER BY a.version_no`, [deliveryId]);
   // Hành động theo phía và trạng thái để UI không phải đoán quyền (NV11/NV26).
   const phia = phiaCua(nd, o);

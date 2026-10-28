@@ -118,12 +118,17 @@ export async function xemLoiChao(t: GiaoDich, nd: NguoiDung, id: string) {
   const hold = await t.mot<any>(`SELECT id,qty::text qty_g,expires_at,status,order_id FROM core.holds WHERE offer_id=$1 ORDER BY created_at DESC LIMIT 1`, [id]);
   const phia = o.buyer_org_id === nd.thanhVien.orgId ? 'buyer' : 'seller';
   const cuoi = rounds[rounds.length - 1];
+  const ref = await t.gtri<string>(`SELECT ref_price_vnd::text FROM core.lot_price_versions WHERE lot_id=$1 AND ref_price_vnd IS NOT NULL ORDER BY id DESC LIMIT 1`, [o.lot_id]);
   return {
     id: o.id, code: o.code, direction: o.direction, lot_id: o.lot_id, lot_code: o.lot_code, demand_line_id: o.demand_line_id,
     status: o.status, revision: o.version, rounds, hold,
     toi_luot: o.status === 'sent' ? (cuoi.from_side === 'buyer' ? 'seller' : 'buyer') : null,
     toi_luot_toi: o.status === 'sent' && cuoi.from_side !== phia,
     luot_tra_gia_con: CHINH_SACH.luotTraGiaToiDaMoiBen - rounds.filter(r=>r.from_side===phia && r.round_no>1).length,
+    // Giá tham khảo và % do backend tính (màn S2 không tự tính); câu thông báo sau khi đồng ý (màn S4).
+    gia_tham_khao_vnd: ref,
+    phan_tram_gia_tham_khao: ref && cuoi ? Math.round(Number(cuoi.price_vnd) * 100 / Number(ref)) : null,
+    thong_bao: o.status === 'accepted' ? `${CAU_CHUA_HOP_DONG}${hold ? ` Đã giữ ${kg(BigInt(hold.qty_g))}.` : ''}` : null,
   };
 }
 

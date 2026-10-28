@@ -43,7 +43,10 @@ export async function lapVaKy(b: BoiCanh, th: TinhHuong | null, dk: DieuKhoan = 
   const s1 = await b.ha.ok(`/v1/orders/${b.orderId}/sign`, { challenge_id: c1, code: '123456' });
   th?.bang('Bên mua ký và gửi', s1.status, 'awaiting_seller');
   const c2 = await b.nam.otpKy(b.docId!);
-  const s2 = await b.nam.ok(`/v1/orders/${b.orderId}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true });
+  const kyBody = { challenge_id: c2, code: '123456', commitment_ack: true }, kyKey = 'k-ky-' + b.orderId;
+  const s2 = await b.nam.ok(`/v1/orders/${b.orderId}/sign`, kyBody, { key: kyKey });
+  // Gửi lại đúng lệnh (mạng chập chờn): phải nhận lại kết quả đã lưu, không đòi OTP mới.
+  (b as any).guiLaiKy = await b.nam.post(`/v1/orders/${b.orderId}/sign`, kyBody, { key: kyKey });
   th?.bang('Người bán ký', s2.status, 'awaiting_deposit');
   return d;
 }
@@ -79,7 +82,10 @@ export async function traThangVaXacNhan(b: BoiCanh, soTien: number, ref = 'FT-TE
   const anh = await b.lan.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'payment', entity_id: p.id, captured_in_app: true });
   await b.lan.ok(`/v1/payments/${p.id}/report`, { amount_vnd: soTien, method: 'bank_transfer', evidence_document_id: anh.id });
   const c = await b.nam.otpTien(p.id, soTien);
-  return b.nam.ok(`/v1/payments/${p.id}/confirm`, { challenge_id: c, code: '123456', amount_vnd: soTien, result: 'full', bank_txn_ref: ref });
+  const xnBody = { challenge_id: c, code: '123456', amount_vnd: soTien, result: 'full', bank_txn_ref: ref }, xnKey = 'k-xn-' + p.id;
+  const kq = await b.nam.ok(`/v1/payments/${p.id}/confirm`, xnBody, { key: xnKey });
+  (b as any).guiLaiXn = await b.nam.post(`/v1/payments/${p.id}/confirm`, xnBody, { key: xnKey });
+  return kq;
 }
 
 export async function chuanBiGiao(b: BoiCanh) {

@@ -219,6 +219,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/orders/:id/sign', async (req) => {
     const nd = await bo.xacThuc(req);
     const b = z.object({ challenge_id: z.string(), code: z.string(), commitment_ack: z.boolean().optional(), abnormal_price_ack: z.boolean().optional(), device_id: z.string().optional() }).passthrough().parse(req.body);
+    const cu = await bo.layLai(req, 'ky'); if (cu) return cu;
     await ht.otp.xacMinh(nd, b.challenge_id, b.code);
     return bo.lenh(req, 'ky', (t, n) => phiaDon(t, n, P(req).id), (t, n, body) => Don.kyDon(t, n, P(req).id, body, body.expected_revision));
   });
@@ -243,6 +244,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/amendments/:id/sign', async (req) => {
     const nd = await bo.xacThuc(req);
     const b = z.object({ challenge_id: z.string(), code: z.string(), device_id: z.string().optional() }).passthrough().parse(req.body);
+    const cu = await bo.layLai(req, 'ky_phu_luc'); if (cu) return cu;
     await ht.otp.xacMinh(nd, b.challenge_id, b.code);
     return bo.lenh(req, 'ky_phu_luc', (t, n) => phiaDeNghi(t, n, P(req).id), async (t, n, body) => { const m = await import('../nghiep-vu/de-nghi.ts'); return m.kyPhuLuc(ht, t, n, P(req).id, body); });
   });
@@ -260,6 +262,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/payments/:id/confirm', async (req) => {
     const nd = await bo.xacThuc(req);
     const b = z.object({ challenge_id: z.string(), code: z.string(), amount_vnd: soNguyen, result: z.enum(['full', 'partial']), bank_txn_ref: z.string().optional(), method: z.enum(['bank_transfer', 'cash']).optional(), receipt_document_id: uuid.optional() }).passthrough().parse(req.body);
+    const cu = await bo.layLai(req, 'xac_nhan_nhan'); if (cu) return cu;
     await ht.otp.xacMinh(nd, b.challenge_id, b.code);
     return bo.lenh(req, 'xac_nhan_nhan', (t, n) => phiaKhoan(t, n, P(req).id), (t, n, body) => Tien.xacNhanDaNhan(ht, t, n, P(req).id, body));
   });

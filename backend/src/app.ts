@@ -22,6 +22,9 @@ export type Phia = 'buyer' | 'seller' | 'ops' | 'system';
 export interface BoLenh {
   ht: HeThong;
   xacThuc(req: FastifyRequest): Promise<NguoiDung>;
+  /** Lệnh có OTP: gọi trước khi kiểm OTP. Cùng người, cùng idempotency_key, cùng nội dung đã hoàn tất → trả kết quả đã lưu
+   *  (không đòi OTP mới vì OTP chỉ dùng một lần). Không có → null, route kiểm OTP rồi gọi lenh như thường. */
+  layLai(req: FastifyRequest, ten: string): Promise<any | null>;
   lenh(req: FastifyRequest, ten: string, phia: Phia | ((t: GiaoDich, nd: NguoiDung) => Promise<Phia>), fn: (t: GiaoDich, nd: NguoiDung, body: any) => Promise<any>): Promise<any>;
   doc<T>(fn: (t: GiaoDich) => Promise<T>): Promise<T>;
 }
@@ -61,8 +64,19 @@ export async function dungApp(cfgVao?: CauHinh): Promise<{ app: FastifyInstance;
     reply.status(e.http).send({ errors: [{ code: e.ma, message: e.message, fix: mt?.khacPhuc ?? '', details: e.chiTiet ?? null }], request_id: req.id });
   });
 
+  const bamLenh = (req: FastifyRequest, ten: string, body: any) => createHash('sha256').update(canonicalJson({ lenh: ten, params: req.params ?? {}, body: boKhoa(body) })).digest();
   const bo: BoLenh = {
     ht,
+    async layLai(req, ten) {
+      const nd = await bo.xacThuc(req);
+      const body: any = req.body ?? {};
+      const key = body.idempotency_key;
+      if (typeof key !== 'string' || key.length < 8 || key.length > 128) return null;
+      const hash = bamLenh(req, ten, body);
+      const r = await ht.db.tx({ userId: nd.userId, orgId: nd.thanhVien.orgId, actor: 'system', requestId: req.id, lenh: ten + ':lay_lai', thietBi: nd.thietBi ?? null }, (t) =>
+        t.voiDangNhap('agv_backend_meta', () => t.mot<any>(`SELECT response_body FROM evt.idempotency_keys WHERE scope=$1 AND key=$2 AND request_hash=$3 AND status='completed'`, [`user:${nd.userId}`, key, hash])));
+      return r?.response_body ? { ...r.response_body, replayed: true } : null;
+    },
     async xacThuc(req) {
       const h = req.headers.authorization;
       const token = h?.startsWith('Bearer ') ? h.slice(7) : undefined;
@@ -74,7 +88,7 @@ export async function dungApp(cfgVao?: CauHinh): Promise<{ app: FastifyInstance;
       const body: any = req.body ?? {};
       const key = body.idempotency_key;
       if (typeof key !== 'string' || key.length < 8 || key.length > 128) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần idempotency_key (8–128 ký tự).');
-      const hash = createHash('sha256').update(canonicalJson({ lenh: ten, params: req.params ?? {}, body: boKhoa(body) })).digest();
+      const hash = bamLenh(req, ten, body);
       const tbi = (req.headers['x-device-id'] as string | undefined) ?? nd.thietBi ?? null;
       const kq = await ht.db.tx({ userId: nd.userId, orgId: nd.thanhVien.orgId, actor: 'system', requestId: req.id, lenh: ten, thietBi: tbi }, async (t) => {
         const c = await t.voiDangNhap('agv_backend_meta',()=>t.mot<any>(`SELECT (r).status, (r).response_body FROM (SELECT evt.claim_idempotency($1,$2,$3) r) x`, [`user:${nd.userId}`, key, hash]));

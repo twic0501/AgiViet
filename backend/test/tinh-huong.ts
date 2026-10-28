@@ -9,6 +9,9 @@ export const them = (ma: string, ten: string, fn: Fn) => DANH_SACH.push([ma, ten
 them('TH-006', 'HĐ luồng thuận: giao tại vườn, nghiệm thu tại vườn, trả thẳng trước bốc', async (may, th) => {
   const b = await dangNhapCacBen(may);
   await chaoVaDongY(b, th);
+  const lc = (await b.nam.get(`/v1/offers/${b.offerId}`)).json;
+  th.kiem('GET lời chào (S4): có câu thông báo "Đây chưa phải hợp đồng."', String(lc.thong_bao ?? '').startsWith('Đây chưa phải hợp đồng.'), lc.thong_bao);
+  th.kiem('GET lời chào (S2): giá tham khảo và % do backend trả', lc.gia_tham_khao_vnd === null || Number.isInteger(lc.phan_tram_gia_tham_khao), { ref: lc.gia_tham_khao_vnd, pct: lc.phan_tram_gia_tham_khao });
   const d = await lapVaKy(b, th);
   th.bang('P_coc', d.data.tinh.gia_tinh_coc_vnd, '23000');
   th.bang('Cọc C', d.data.tinh.coc_vnd, '13800000');
@@ -35,6 +38,11 @@ them('TH-006', 'HĐ luồng thuận: giao tại vườn, nghiệm thu tại vư�
   th.bang('Khoản trả thẳng đến hạn', so.khoan_tra_thang[0]?.status, 'due');
   const xn = await traThangVaXacNhan(b, 32200000);
   th.bang('Người bán nhận đủ trả thẳng', xn.status, 'fully_received');
+  const kh = (await b.nam.get(`/v1/orders/${b.orderId}/payments`)).json.find((x: any) => x.id === b.paymentId);
+  th.kiem('Danh sách khoản (G1): có mã ảnh chứng từ bên mua báo', Array.isArray(kh?.evidence_document_ids) && kh.evidence_document_ids.length === 1, kh?.evidence_document_ids);
+  const gk = (b as any).guiLaiKy, gx = (b as any).guiLaiXn;
+  th.kiem('Gửi lại lệnh ký cùng mã: trả kết quả đã lưu, không đòi OTP mới', gk.status === 200 && gk.json.replayed === true && gk.json.status === 'awaiting_deposit', { http: gk.status, body: gk.json });
+  th.kiem('Gửi lại xác nhận tiền cùng mã: trả kết quả đã lưu', gx.status === 200 && gx.json.replayed === true && gx.json.status === 'fully_received', { http: gx.status, body: gx.json });
   const xe = await chuanBiGiao(b);
   th.bang('Đợt sẵn sàng sau khi có xe', xe.data.delivery_status, 'ready');
   const kq = await nghiemThuTaiVuon(b, [{ kind: 'accepted', qty_kg: 1850 }, { kind: 'downgraded', qty_kg: 120, reason_code: 'TRAY_VO' }, { kind: 'rejected', qty_kg: 30, reason_code: 'DAP' }]);
@@ -64,6 +72,9 @@ them('TH-006', 'HĐ luồng thuận: giao tại vườn, nghiệm thu tại vư�
   th.bang('Đơn hoàn tất', o.status, 'completed');
   const nhan = await may.v<string>(`SELECT coalesce(sum(e.amount_vnd),0)::text FROM ledger.entries e JOIN ledger.transactions t ON t.id=e.transaction_id JOIN ledger.accounts a ON a.id=e.account_id WHERE t.order_id=$1 AND a.account_type='external' AND a.org_id=(SELECT seller_org_id FROM core.orders WHERE id=$1) AND e.amount_vnd>0`, [b.orderId]);
   th.bang('Người bán thực nhận (sổ cái)', nhan, '44350000');
+  const tn = (await b.nam.get(`/v1/orders/${b.orderId}/money`)).json.thuc_nhan;
+  th.bang('API /money của người bán: thực nhận (cho màn Tiền đã về)', tn?.nguoi_ban_vnd, '44350000');
+  th.kiem('API /money: đã đối soát hết lệnh ngân hàng', tn?.da_xac_minh === true, tn);
   const docs = o.tai_lieu.map((x: any) => x.doc_type);
   th.kiem('Có BBNT và BQT', docs.includes('acceptance_record') && docs.includes('settlement_statement'), docs);
   const phi = (await b.ha.get(`/v1/orders/${b.orderId}/money`)).json.phi;
