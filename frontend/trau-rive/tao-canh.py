@@ -9,6 +9,9 @@ Dùng: python3 tao-canh.py nguon/trau.svg > scene.rml
 - Nền caro (pattern) tạm tô màu nền khăn; lớp bóng mờ (gradient) bỏ qua ở bản thử.
 - Chuyển động nghỉ: thở, chớp mắt, tai, đuôi, nhìn qua lại kiểu giả 3D (mắt+mõm trượt nhiều, tai ít và trễ).
 """
+import copy
+import json
+import os
 import math
 import re
 import sys
@@ -158,13 +161,69 @@ def hinh(el, ke, gx, gy, ten):
 LONG = {}  # nhóm con có id + data-goc (vd khan-dai-1 > khan-dai-2) → (id Rive, x, y tuyệt đối) để làm chuỗi xoay
 
 
+KHOP = {}  # nhóm có transform và id (khớp tay/chân) → id Rive, để làm hoạt ảnh xoay
+
+
+def bien_doi(t):
+    """'translate(a b) rotate(r) scale(sx sy)' → danh sách (loai, so...) theo thứ tự (ngoài → trong)."""
+    out = []
+    for ten, so in re.findall(r'(translate|rotate|scale)\(([^)]*)\)', t or ''):
+        v = [float(x) for x in re.split(r'[ ,]+', so.strip()) if x]
+        out.append((ten, v))
+    return out
+
+
+def nhom_bien_doi(c, a, ten, ruot_fn):
+    """Một <g transform> → chuỗi Node lồng nhau; Node trong cùng mang id của nhóm (nếu có)."""
+    bd = bien_doi(c.get('transform'))
+    if not bd:
+        bd = [('translate', [0, 0])]
+    mo, dong = '', ''
+    for i, (loai, v) in enumerate(bd):
+        trong_cung = i == len(bd) - 1
+        nid = moi_id()
+        if trong_cung and c.get('id'):
+            KHOP[c.get('id')] = nid
+        if loai == 'translate':
+            thuoc = f'x="{v[0]:.2f}" y="{(v[1] if len(v) > 1 else 0):.2f}"'
+        elif loai == 'rotate':
+            thuoc = f'rotation="{math.radians(v[0]):.5f}"'
+        else:
+            thuoc = f'scaleX="{v[0]:.4f}" scaleY="{(v[1] if len(v) > 1 else v[0]):.4f}"'
+        mo += f'<Node {thuoc} name="{(c.get("id") if trong_cung and c.get("id") else ten)}" id="{nid}">'
+        dong = '</Node>' + dong
+    return mo + ruot_fn(thuoc_tinh(c, a)) + dong
+
+
+def ruot_nhom(g, a, gx, gy, tien_to):
+    """Nội dung con của một nhóm (đệ quy cho nhóm có transform), toạ độ tương đối (gx, gy)."""
+    phan = []
+    for k, c in enumerate(x for x in g if x.tag.replace(NS, '') in ('path', 'ellipse', 'rect', 'g')):
+        if c.tag.replace(NS, '') == 'g' and c.get('transform'):
+            phan.append(nhom_bien_doi(c, a, f'{tien_to}-{k}', lambda a2, c=c, k=k: ruot_nhom(c, a2, 0.0, 0.0, f'{tien_to}-{k}')))
+        elif c.tag.replace(NS, '') == 'g':
+            phan.append(ruot_nhom(c, thuoc_tinh(c, a), gx, gy, f'{tien_to}-{k}'))
+        else:
+            phan.append(hinh(c, a, gx, gy, f'{tien_to}-{k}'))
+    return ''.join(reversed(phan))
+
+
 def bo_phan(g, ke):
     gx, gy = map(float, g.get('data-goc', '256 256').split())
     a = thuoc_tinh(g, ke)
+    if g.get('transform'):  # bộ phận khớp nối (tay/chân từ tay-khop.py): toạ độ con đã tương đối theo transform
+        bd = bien_doi(g.get('transform'))
+        # bỏ translate ngoài cùng (vị trí đã là data-goc), giữ các bước còn lại (scale lật gương…)
+        g2 = copy.copy(g); g2.attrib = dict(g.attrib)
+        g2.set('transform', ' '.join(f'{l}({" ".join(str(x) for x in v)})' for l, v in bd if l != 'translate') or 'translate(0 0)')
+        g2.attrib.pop('id', None)
+        return gx, gy, nhom_bien_doi(g2, a, g.get('id') + '-goc', lambda a2: ruot_nhom(g, a2, 0.0, 0.0, g.get('id')))
     con = [c for c in g if c.tag.replace(NS, '') in ('path', 'ellipse', 'rect', 'g')]
     phan = []
     for k, c in enumerate(con):
-        if c.tag.replace(NS, '') == 'g' and c.get('id') and c.get('data-goc'):
+        if c.tag.replace(NS, '') == 'g' and c.get('transform'):
+            phan.append(nhom_bien_doi(c, a, f'{g.get("id")}-{k}', lambda a2, c=c, k=k: ruot_nhom(c, a2, 0.0, 0.0, f'{g.get("id")}-{k}')))
+        elif c.tag.replace(NS, '') == 'g' and c.get('id') and c.get('data-goc'):
             cx, cy, ruot = bo_phan(c, a)
             cid = moi_id(); LONG[c.get('id')] = (cid, cx, cy)
             phan.append(f'<Node x="{cx - gx:.2f}" y="{cy - gy:.2f}" name="{c.get("id")}" id="{cid}">{ruot}</Node>')
@@ -285,6 +344,25 @@ def main():
     if co('tay-phai'):
         k.append(khung(ids['tay-phai'], 'rotation', [(0, -0.035), (100, 0.03), (200, -0.035)]))
     hoat.append(('Khăn và tay', 200, ''.join(k)))
+    # Đổi dáng tay bằng khớp (chỉ khi nguồn là SVG khớp nối từ tay-khop.py): ba chuỗi (bàn tay, viền, màu)
+    # của mỗi khớp xoay cùng góc → tay luôn liền. Dáng đọc từ tu-the-khop.json; thử: nghỉ → chào → mừng → nghỉ.
+    if KHOP and os.environ.get('AGV_DANG_THU'):
+        tt = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tu-the-khop.json'), encoding='utf-8'))
+        thu_tu = os.environ['AGV_DANG_THU'].split(',')
+        doan = 70
+        k = []
+        for ben in ('tay-trai', 'tay-phai'):
+            for j, khop in enumerate(('tren', 'duoi', 'ban')):
+                for lop in ('', '-vien', '-mau'):
+                    nid = KHOP.get(f'{ben}-{khop}{lop}')
+                    if nid is None:
+                        continue
+                    diem = []
+                    for i, ma in enumerate(thu_tu):
+                        goc = tt[ma][ben][j]
+                        diem += [(i * doan, math.radians(goc)), (i * doan + 30, math.radians(goc))]
+                    k.append(khung(nid, 'rotation', diem, '0.45 0 0.25 1'))
+        hoat.append(('Đổi dáng thử', doan * len(thu_tu), ''.join(k)))
     # Nhìn theo kiểu xoay đầu thật (như Muza 'cat x'/'cat y'): Joystick đọc vị trí "điểm nhìn" (chạy theo con trỏ)
     # và tua hai dòng thời gian tư thế. Mỗi lớp lệch theo độ sâu: mõm nhiều nhất, mắt vừa (mắt phía xa co hẹp),
     # lông mày/trán ít, khuôn đầu nghiêng + co nhẹ, tai/sừng phía nhìn tới thu vào sau đầu, phía kia lộ ra.

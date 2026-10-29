@@ -28,7 +28,8 @@ if os.path.exists(_ts):
 
 def hinh_ong(l, r0, r1):
     """Đường bao một đoạn ống áo dọc trục +y dài l, nửa rộng r0 → r1, đầu tròn ở gốc (khớp), đáy hơi cong."""
-    return (f'M {-r0:.2f} 0 A {r0:.2f} {r0:.2f} 0 0 1 {r0:.2f} 0 '
+    k = 0.5523 * r0  # nửa vòng tròn đầu khớp bằng 2 cung bậc ba (Rive không có lệnh cung A)
+    return (f'M {-r0:.2f} 0 C {-r0:.2f} {-k:.2f} {-k:.2f} {-r0:.2f} 0 {-r0:.2f} C {k:.2f} {-r0:.2f} {r0:.2f} {-k:.2f} {r0:.2f} 0 '
             f'C {r0:.2f} {l * .45:.2f} {r1:.2f} {l * .7:.2f} {r1:.2f} {l:.2f} '
             f'Q 0 {l + r1 * .28:.2f} {-r1:.2f} {l:.2f} '
             f'C {-r1:.2f} {l * .7:.2f} {-r0:.2f} {l * .45:.2f} {-r0:.2f} 0 Z')
