@@ -185,6 +185,11 @@ def dung(svg_path, tu_the, ra):
             moi = ET.fromstring(f'<g xmlns="{NS}">' + chan(side, hong, q[0], q[1], q[2], mong_chan, guong,
                                                         q[3] if len(q) > 3 else 1.0, q[4] if len(q) > 4 else 1.0) + '</g>')[0]
             pa.remove(g); pa.insert(i, moi)
+        # Đồ đặt dưới đất / chỗ ngồi: nằm SAU thân (chèn đầu gốc). "do-dat": [[ten, ti_le, x, y], ...]
+        for dd in reversed(p.get('do-dat') or []):
+            g = ET.fromstring(f'<g xmlns="{NS}" data-lop="dat" transform="translate({dd[2]} {dd[3]})">' + dao_cu(dd[0], dd[1], 0, (0, -LONG_BAN_TAY[1])) + '</g>')
+            vt = next((i for i, c in enumerate(r) if c.tag.split('}')[-1] not in ('title', 'desc', 'defs')), 0)
+            r.insert(vt, g)
         # Đồ cầm trước ngực bằng hai tay: nằm lớp trên cùng, hai bàn tay ló ở hai mép.
         # "do-truoc": [ten, ti_le, x, y, xoay] — toạ độ khung 512 của điểm cầm.
         if p.get('do-truoc'):
@@ -197,8 +202,8 @@ def dung(svg_path, tu_the, ra):
             for c in list(r):
                 if c is boc or c.tag.split('}')[-1] in ('title', 'desc', 'defs'):
                     continue
-                if c.get('id') in ('chan-trai', 'chan-phai'):
-                    continue
+                if c.get('id') in ('chan-trai', 'chan-phai') or c.get('data-lop') == 'dat':
+                    continue  # chân và đồ dưới đất đứng yên, nằm dưới thân
                 r.remove(c); boc.append(c)
             # giữ hai chân nằm dưới thân: đưa nhóm thân-trên lên cuối (vẽ sau)
             r.remove(boc); r.append(boc)
