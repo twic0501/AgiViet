@@ -182,12 +182,30 @@ def main():
     svg = ET.parse(sys.argv[1]).getroot()
     ke = {}
     nhom = [g for g in svg.iter(NS + 'g') if g.get('id') and g.get('data-goc')]
+    # Nhìn theo con trỏ kiểu Muza: mỗi bộ phận kéo về "điểm nhìn" với độ mạnh riêng; phần càng ở trước trượt càng nhiều.
+    NHIN = {'mat-trai': .07, 'mat-phai': .07, 'long-may-trai': .06, 'long-may-phai': .06, 'mom': .05,
+            'sung-trai': .015, 'sung-phai': .015, 'tai-trai': .02, 'tai-phai': .02, 'dau-khoi': .01}
+    diem_nhin, vung_cham, kich_hoat = moi_id(), moi_id(), moi_id()
     nodes, vi_tri, ids = [], {}, {}
     for g in nhom:
         gx, gy, noi_dung = bo_phan(g, ke)
         nid = moi_id(); ids[g.get('id')] = nid; vi_tri[g.get('id')] = (gx, gy)
-        nodes.append(f'<Node x="{gx:.2f}" y="{gy:.2f}" name="{g.get("id")}" id="{nid}">{noi_dung}</Node>')
+        rb = (f'<TranslationConstraint targetId="{diem_nhin}" strength="{NHIN[g.get("id")]}" name="Nhìn"/>'
+              if g.get('id') in NHIN else '')
+        nodes.append(f'<Node x="{gx:.2f}" y="{gy:.2f}" name="{g.get("id")}" id="{nid}">{noi_dung}{rb}</Node>')
     nodes.reverse()  # bộ phận khai báo trước nằm trên
+    # Hơi thở: hai làn hơi trắng mờ ở lỗ mũi (203,262) và (307,262), hiện lúc thở ra.
+    hoi = {}
+    for ten, x0 in (('hoi-trai', 205), ('hoi-phai', 305)):
+        hoi[ten] = moi_id()
+        cum = ''.join(f'<Shape x="{dx}" y="{dy}" name="{ten}-{k}"><Ellipse width="{w}" height="{w * .8:.1f}" name="P"/>'
+                      f'<Fill name="F"><SolidColor colorValue="D8FFFFFF" name="C"/></Fill></Shape>'
+                      for k, (dx, dy, w) in enumerate(((0, 0, 14), (-7 if x0 < 256 else 7, 6, 10), (3 if x0 < 256 else -3, 10, 8))))
+        nodes.insert(0, f'<Node x="{x0}" y="272" scaleX="0.4" scaleY="0.4" opacity="0" name="{ten}" id="{hoi[ten]}">{cum}</Node>')
+    nodes.insert(0, f'<Node x="256" y="215" name="diem-nhin" id="{diem_nhin}"/>')
+    # Vùng nhận chạm phủ cả khung, gần như trong suốt; khai báo đầu tiên để nằm trên cùng.
+    nodes.insert(0, f'<Shape x="256" y="256" name="vung-cham" id="{vung_cham}"><Rectangle width="512" height="512" name="P"/>'
+                    f'<Fill name="F"><SolidColor colorValue="01FFFFFF" name="C"/></Fill></Shape>')
 
     def co(ten):
         return ten in ids
@@ -201,6 +219,13 @@ def main():
         if co(p):
             y = vi_tri[p][1]
             k.append(khung(ids[p], 'y', [(0, y), (90, y - 2.2), (180, y)]))
+    for ten, (x0, x1) in (('hoi-trai', (205, 192)), ('hoi-phai', (305, 318))):
+        h = hoi[ten]
+        k.append(khung(h, 'opacity', [(0, 0), (96, 0), (112, .8), (168, 0), (180, 0)]))
+        k.append(khung(h, 'x', [(0, x0), (96, x0), (170, x1), (180, x0)], '0.2 0.6 0.4 1'))
+        k.append(khung(h, 'y', [(0, 272), (96, 272), (170, 290), (180, 272)], '0.2 0.6 0.4 1'))
+        for tr in ('scaleX', 'scaleY'):
+            k.append(khung(h, tr, [(0, .4), (96, .4), (170, 1.15), (180, .4)], '0.2 0.6 0.4 1'))
     hoat.append(('Thở', 180, ''.join(k)))
     # Chớp mắt: co mắt theo chiều dọc rất nhanh.
     k = [khung(ids[m], 'scaleY', [(0, 1), (196, 1), (202, 0.08), (209, 1), (240, 1)]) for m in ('mat-trai', 'mat-phai') if co(m)]
@@ -236,12 +261,32 @@ def main():
         lop_xml.append(f'<StateMachineLayer name="{ten}" id="{lid}"><AnyState/><ExitState/>'
                        f'<EntryState><StateTransition stateToId="{sid}"/></EntryState>'
                        f'<AnimationState animationId="{aid}" id="{sid}"/></StateMachineLayer>')
+    # Lớp "Chạm" (đặt cuối để đè lớp chớp mắt): chạm → nheo mắt + nhún kiểu squash & stretch, chạy hết rồi về nghỉ.
+    dau = [p for p in ('dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'mat-trai', 'mat-phai',
+                       'long-may-trai', 'long-may-phai', 'khan-co', 'khan-dai') if co(p)]
+    k = [khung(ids['than'], 'scaleY', [(0, 1), (8, .93), (20, 1.05), (32, .99), (42, 1)])] if co('than') else []
+    k += [khung(ids[p], 'y', [(0, vi_tri[p][1]), (8, vi_tri[p][1] + 6), (20, vi_tri[p][1] - 9), (32, vi_tri[p][1] + 1),
+                               (42, vi_tri[p][1])]) for p in dau]
+    k += [khung(ids[m], 'scaleY', [(0, 1), (6, .25), (34, .25), (42, 1)]) for m in ('mat-trai', 'mat-phai') if co(m)]
+    a_cho, a_nhun, s_cho, s_nhun, l_cham = moi_id(), moi_id(), moi_id(), moi_id(), moi_id()
+    anim_xml.append(f'<LinearAnimation loopValue="loop" fps="60" duration="1" name="Chờ chạm" id="{a_cho}"/>')
+    anim_xml.append(f'<LinearAnimation fps="60" duration="42" name="Nhún khi chạm" id="{a_nhun}">{"".join(k)}</LinearAnimation>')
+    lop_xml.append(f'<StateMachineLayer name="Chạm" id="{l_cham}"><AnyState/><ExitState/>'
+                   f'<EntryState><StateTransition stateToId="{s_cho}"/></EntryState>'
+                   f'<AnimationState animationId="{a_cho}" id="{s_cho}"><StateTransition stateToId="{s_nhun}">'
+                   f'<TransitionTriggerCondition inputId="{kich_hoat}"/></StateTransition></AnimationState>'
+                   f'<AnimationState animationId="{a_nhun}" id="{s_nhun}"><StateTransition stateToId="{s_cho}" '
+                   f'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"/></AnimationState></StateMachineLayer>')
+    nghe = (f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="move" name="Nhìn theo" id="{moi_id()}">'
+            f'<ListenerAlignTarget targetId="{diem_nhin}"/></StateMachineListenerSingle>'
+            f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="down" name="Chạm" id="{moi_id()}">'
+            f'<ListenerTriggerChange inputId="{kich_hoat}"/></StateMachineListenerSingle>')
     smid = moi_id()
     print(f'''<Rive version="1" kind="fragment">
 <Artboard defaultStateMachineId="{smid}" styleId="0:5" width="512" height="512" name="trau" id="0:2">
 <LayoutComponentStyle name="Kiểu" id="0:5"/>
 {''.join(nodes)}
-<StateMachine name="trau" id="{smid}">{''.join(lop_xml)}</StateMachine>
+<StateMachine name="trau" id="{smid}"><StateMachineTrigger name="cham" id="{kich_hoat}"/>{''.join(lop_xml)}{nghe}</StateMachine>
 {''.join(anim_xml)}
 </Artboard>
 </Rive>''')
