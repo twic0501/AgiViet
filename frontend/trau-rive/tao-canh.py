@@ -186,7 +186,7 @@ def main():
     DAU_CON = ['dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'long-may-trai', 'long-may-phai',
                'mat-trai', 'mat-phai']
     # Nhìn theo con trỏ kiểu Muza: chỉ nét mặt trượt trong khuôn đầu (mõm ít nhất để không lòi ra ngoài đầu).
-    NHIN = {'mat-trai': .045, 'mat-phai': .045, 'long-may-trai': .04, 'long-may-phai': .04, 'mom': .03}
+    NHIN = {}  # thay bằng Joystick tư thế (xem 'Nhìn ngang'/'Nhìn dọc')
     diem_nhin, vung_cham, kich_hoat, dau_id = moi_id(), moi_id(), moi_id(), moi_id()
     lo_mui = [(float(e.get('cx')), float(e.get('cy'))) for e in svg.iter(NS + 'ellipse') if e.get('data-role') == 'lo-mui']
     vi_tri, ids, noi = {}, {}, {}
@@ -261,12 +261,45 @@ def main():
     if co('tay-phai'):
         k.append(khung(ids['tay-phai'], 'rotation', [(0, -0.035), (100, 0.03), (200, -0.035)]))
     hoat.append(('Khăn và tay', 200, ''.join(k)))
-    # Nhìn qua lại giả 3D (khi không có con trỏ): nét mặt trượt nhẹ trong đầu, đầu nghiêng rất nhẹ.
-    lech = {'mat-trai': 5, 'mat-phai': 5, 'long-may-trai': 4, 'long-may-phai': 4, 'mom': 3}
-    k = [khung(ids[p], 'x', [(0, cuc(p)[0]), (60, cuc(p)[0] - dx), (150, cuc(p)[0] - dx), (240, cuc(p)[0] + dx),
-                             (330, cuc(p)[0] + dx), (420, cuc(p)[0])]) for p, dx in lech.items() if co(p)]
-    k.append(khung(dau_id, 'rotation', [(0, 0), (60, -0.025), (150, -0.025), (240, 0.025), (330, 0.025), (420, 0)]))
-    hoat.append(('Nhìn qua lại', 420, ''.join(k)))
+    # Nhìn theo kiểu xoay đầu thật (như Muza 'cat x'/'cat y'): Joystick đọc vị trí "điểm nhìn" (chạy theo con trỏ)
+    # và tua hai dòng thời gian tư thế. Mỗi lớp lệch theo độ sâu: mõm nhiều nhất, mắt vừa (mắt phía xa co hẹp),
+    # lông mày/trán ít, khuôn đầu nghiêng + co nhẹ, tai/sừng phía nhìn tới thu vào sau đầu, phía kia lộ ra.
+    def tu_the(p, prop, trai, phai, giua=None):
+        """Khung 0 = quay hẳn sang trái, 30 = thẳng, 60 = quay hẳn sang phải (giá trị cộng vào gốc)."""
+        if not co(p):
+            return ''
+        gx, gy = cuc(p)
+        goc = {'x': gx, 'y': gy, 'scaleX': 1, 'scaleY': 1, 'rotation': 0}[prop]
+        g = goc if giua is None else giua
+        return khung(ids[p], prop, [(0, goc + trai), (30, g), (60, goc + phai)], '0 0 1 1')
+    ngang = [
+        tu_the('mom', 'x', -15, 15), tu_the('mom', 'scaleX', -.04, -.04),
+        tu_the('mat-trai', 'x', -12, 10), tu_the('mat-phai', 'x', -10, 12),
+        tu_the('mat-trai', 'scaleX', 0, -.2), tu_the('mat-phai', 'scaleX', -.2, 0),   # mắt phía xa co hẹp
+        tu_the('long-may-trai', 'x', -9, 8), tu_the('long-may-phai', 'x', -8, 9),
+        tu_the('dau-khoi', 'x', -3, 3), tu_the('dau-khoi', 'scaleX', -.03, -.03), tu_the('dau-khoi', 'rotation', -.035, .035),
+        tu_the('tai-trai', 'x', 8, -3), tu_the('tai-trai', 'scaleX', -.22, 0),          # nhìn trái: tai trái thu vào
+        tu_the('tai-phai', 'x', 3, -8), tu_the('tai-phai', 'scaleX', 0, -.22),
+        tu_the('sung-trai', 'x', 5, -2), tu_the('sung-trai', 'scaleX', -.12, 0),
+        tu_the('sung-phai', 'x', 2, -5), tu_the('sung-phai', 'scaleX', 0, -.12),
+    ]
+    doc = [  # khung 0 = ngước lên, 60 = cúi xuống
+        tu_the('mom', 'y', -9, 9), tu_the('mom', 'scaleY', .03, -.05),
+        tu_the('mat-trai', 'y', -7, 7), tu_the('mat-phai', 'y', -7, 7),
+        tu_the('long-may-trai', 'y', -6, 6), tu_the('long-may-phai', 'y', -6, 6),
+        tu_the('dau-khoi', 'y', -2, 2),
+        tu_the('tai-trai', 'y', 3, -3), tu_the('tai-phai', 'y', 3, -3),
+        tu_the('sung-trai', 'y', 3, -2), tu_the('sung-phai', 'y', 3, -2),
+    ]
+    a_ngang, a_doc = moi_id(), moi_id()
+    nhin_anim = (f'<LinearAnimation fps="60" duration="60" name="Nhìn ngang" id="{a_ngang}">{"".join(ngang)}</LinearAnimation>'
+                 f'<LinearAnimation fps="60" duration="60" name="Nhìn dọc" id="{a_doc}">{"".join(doc)}</LinearAnimation>')
+    nodes.insert(2, f'<Joystick posX="256" posY="215" width="420" height="360" xId="{a_ngang}" yId="{a_doc}" '
+                    f'handleSourceId="{diem_nhin}" name="Nhìn" id="{moi_id()}"/>')
+    # Khi không có con trỏ (điện thoại không chạm): điểm nhìn tự ngó qua lại; có con trỏ trong khung thì theo con trỏ.
+    co_tro = moi_id()
+    tu_do = khung(diem_nhin, 'x', [(0, 256), (70, 150), (170, 150), (250, 362), (350, 362), (420, 256), (480, 256)]) + \
+        khung(diem_nhin, 'y', [(0, 215), (70, 205), (170, 230), (250, 205), (350, 225), (420, 215), (480, 215)])
 
     anim_xml, lop_xml = [], []
     for j, (ten, dai, keyed) in enumerate(hoat):
@@ -275,6 +308,17 @@ def main():
         lop_xml.append(f'<StateMachineLayer name="{ten}" id="{lid}"><AnyState/><ExitState/>'
                        f'<EntryState><StateTransition stateToId="{sid}"/></EntryState>'
                        f'<AnimationState animationId="{aid}" id="{sid}"/></StateMachineLayer>')
+    a_td, s_td, s_tro, a_rong, l_td = moi_id(), moi_id(), moi_id(), moi_id(), moi_id()
+    anim_xml.append(nhin_anim)
+    anim_xml.append(f'<LinearAnimation loopValue="loop" fps="60" duration="480" name="Nhìn tự do" id="{a_td}">{tu_do}</LinearAnimation>')
+    anim_xml.append(f'<LinearAnimation loopValue="loop" fps="60" duration="1" name="Theo con trỏ" id="{a_rong}"/>')
+    lop_xml.append(f'<StateMachineLayer name="Nhìn tự do" id="{l_td}"><AnyState/><ExitState/>'
+                   f'<EntryState><StateTransition stateToId="{s_td}"/></EntryState>'
+                   f'<AnimationState animationId="{a_td}" id="{s_td}"><StateTransition stateToId="{s_tro}">'
+                   f'<TransitionBoolCondition inputId="{co_tro}" opValue="equal"/></StateTransition></AnimationState>'
+                   f'<AnimationState animationId="{a_rong}" id="{s_tro}"><StateTransition stateToId="{s_td}" duration="400">'
+                   f'<TransitionBoolCondition inputId="{co_tro}" opValue="notEqual"/></StateTransition></AnimationState>'
+                   f'</StateMachineLayer>')
     # Lớp "Chạm" (cuối để đè chớp mắt): nheo mắt + nhún squash & stretch, chạy hết rồi về nghỉ.
     k = [khung(ids['than'], 'scaleY', [(0, 1), (8, .94), (20, 1.04), (32, .99), (42, 1)])] if co('than') else []
     k.append(khung(dau_id, 'y', [(0, hy), (8, hy + 5), (20, hy - 7), (32, hy + 1), (42, hy)]))
@@ -291,13 +335,17 @@ def main():
     nghe = (f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="move" name="Nhìn theo" id="{moi_id()}">'
             f'<ListenerAlignTarget targetId="{diem_nhin}"/></StateMachineListenerSingle>'
             f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="down" name="Chạm" id="{moi_id()}">'
-            f'<ListenerTriggerChange inputId="{kich_hoat}"/></StateMachineListenerSingle>')
+            f'<ListenerTriggerChange inputId="{kich_hoat}"/></StateMachineListenerSingle>'
+            f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="enter" name="Con trỏ vào" id="{moi_id()}">'
+            f'<ListenerBoolChange inputId="{co_tro}" value="1"/></StateMachineListenerSingle>'
+            f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="exit" name="Con trỏ ra" id="{moi_id()}">'
+            f'<ListenerBoolChange inputId="{co_tro}" value="0"/></StateMachineListenerSingle>')
     smid = moi_id()
     print(f'''<Rive version="1" kind="fragment">
 <Artboard defaultStateMachineId="{smid}" styleId="0:5" width="512" height="512" name="trau" id="0:2">
 <LayoutComponentStyle name="Kiểu" id="0:5"/>
 {''.join(nodes)}
-<StateMachine name="trau" id="{smid}"><StateMachineTrigger name="cham" id="{kich_hoat}"/>{''.join(lop_xml)}{nghe}</StateMachine>
+<StateMachine name="trau" id="{smid}"><StateMachineTrigger name="cham" id="{kich_hoat}"/><StateMachineBool name="co_tro" id="{co_tro}"/>{''.join(lop_xml)}{nghe}</StateMachine>
 {''.join(anim_xml)}
 </Artboard>
 </Rive>''')
