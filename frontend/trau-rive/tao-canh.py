@@ -155,13 +155,20 @@ def hinh(el, ke, gx, gy, ten):
     return ''
 
 
+LONG = {}  # nhóm con có id + data-goc (vd khan-dai-1 > khan-dai-2) → (id Rive, x, y tuyệt đối) để làm chuỗi xoay
+
+
 def bo_phan(g, ke):
     gx, gy = map(float, g.get('data-goc', '256 256').split())
     a = thuoc_tinh(g, ke)
     con = [c for c in g if c.tag.replace(NS, '') in ('path', 'ellipse', 'rect', 'g')]
     phan = []
     for k, c in enumerate(con):
-        if c.tag.replace(NS, '') == 'g':
+        if c.tag.replace(NS, '') == 'g' and c.get('id') and c.get('data-goc'):
+            cx, cy, ruot = bo_phan(c, a)
+            cid = moi_id(); LONG[c.get('id')] = (cid, cx, cy)
+            phan.append(f'<Node x="{cx - gx:.2f}" y="{cy - gy:.2f}" name="{c.get("id")}" id="{cid}">{ruot}</Node>')
+        elif c.tag.replace(NS, '') == 'g':
             a2 = thuoc_tinh(c, a)
             phan += [hinh(cc, a2, gx, gy, f'{g.get("id")}-{k}-{j}') for j, cc in enumerate(c)]
         else:
@@ -181,7 +188,9 @@ def khung(obj, prop, cac, ease='0.42 0 0.58 1'):
 def main():
     svg = ET.parse(sys.argv[1]).getroot()
     ke = {}
-    nhom = [g for g in svg.iter(NS + 'g') if g.get('id') and g.get('data-goc') and g.get('id') != 'khuon-mat-clip']
+    long_trong = {c.get('id') for g in svg.iter(NS + 'g') if g.get('data-goc') for c in g.iter(NS + 'g') if c is not g}
+    nhom = [g for g in svg.iter(NS + 'g') if g.get('id') and g.get('data-goc') and g.get('id') != 'khuon-mat-clip'
+            and g.get('id') not in long_trong]
     # --- Khung xương: nhóm "đầu" tại điểm cổ chứa khuôn đầu, sừng, tai, mõm, mắt, lông mày (tai/sừng gắn chết vào đầu).
     DAU_CON = ['dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'long-may-trai', 'long-may-phai',
                'mat-trai', 'mat-phai', 'vien-cam-truoc']
@@ -193,6 +202,11 @@ def main():
     for g in nhom:
         gx, gy, noi_dung = bo_phan(g, ke)
         ten = g.get('id'); ids[ten] = moi_id(); vi_tri[ten] = (gx, gy); noi[ten] = noi_dung
+    for ten, (cid, cx, cy) in LONG.items():
+        ids[ten] = cid; vi_tri[ten] = (cx, cy)
+    # Vòng khăn kéo giãn lên một chút để mép trên luôn nằm sát dưới cằm, che kín hai bên cổ.
+    if 'khan-co' in vi_tri:
+        vi_tri['khan-co'] = (vi_tri['khan-co'][0], vi_tri['khan-co'][1] - 3)
     hx, hy = vi_tri.get('dau-khoi', (256, 300))
     hoi = {}
 
@@ -212,7 +226,8 @@ def main():
         if ten.startswith('tai-'):  # tai lồng 2 lớp: ngoài xoay theo hướng nhìn, trong tự vẫy (không đè nhau)
             ids[ten + '/ve'] = moi_id()
             ruot = f'<Node name="{ten}-ve" id="{ids[ten + "/ve"]}">{ruot}</Node>'
-        return f'<Node x="{gx - goc[0]:.2f}" y="{gy - goc[1]:.2f}" name="{ten}" id="{ids[ten]}">{them}{ruot}{rb}</Node>'
+        co_gian = ' scaleX="1.04" scaleY="1.16"' if ten == 'khan-co' else ''
+        return f'<Node x="{gx - goc[0]:.2f}" y="{gy - goc[1]:.2f}"{co_gian} name="{ten}" id="{ids[ten]}">{them}{ruot}{rb}</Node>'
 
     trong_dau = [nut(t, (hx, hy)) for t in [g.get('id') for g in nhom] if t in DAU_CON]
     nodes, da_dat_dau = [], False
@@ -260,8 +275,11 @@ def main():
         hoat.append(('Đuôi', 120, khung(ids['duoi'], 'rotation', [(0, -0.18), (60, 0.22), (120, -0.18)])))
     # Chuyển động phụ cho bớt cứng: đầu khăn đu đưa từ nút khăn, hai tay đung đưa ngược pha.
     k = []
-    if co('khan-dai'):
-        k.append(khung(ids['khan-dai'], 'rotation', [(0, -0.045), (100, 0.05), (200, -0.045)]))
+    # Khăn bay phất phơ: chuỗi 3 đoạn, đoạn càng xa càng lệch nhịp và lắc nhiều (như vải trong gió nhẹ).
+    for ten, bien, tre in (('khan-dai', 0.06, 0), ('khan-dai-1', 0.08, 22), ('khan-dai-2', 0.17, 44)):
+        if co(ten):
+            k.append(khung(ids[ten], 'rotation',
+                           [(f, bien * math.sin(2 * math.pi * (f - tre) / 200)) for f in range(0, 201, 20)], '0.33 0 0.67 1'))
     if co('tay-trai'):
         k.append(khung(ids['tay-trai'], 'rotation', [(0, 0.035), (100, -0.03), (200, 0.035)]))
     if co('tay-phai'):
@@ -296,7 +314,7 @@ def main():
         tu_the('long-may-trai', 'y', -6, 4), tu_the('long-may-phai', 'y', -6, 4),
         tu_the('mom', 'y', -2, 2),
         tu_the('tai-trai', 'rotation', -.06, .06), tu_the('tai-phai', 'rotation', .06, -.06),
-        tu_the('co', 'y', -2, 1), tu_the('khan-co', 'y', -2.5, 1.5), tu_the('khan-co', 'scaleY', .03, -.02),
+        tu_the('co', 'y', -2, 1), tu_the('khan-co', 'y', -2.5, 1.5),
     ]
     a_ngang, a_doc = moi_id(), moi_id()
     nhin_anim = (f'<LinearAnimation fps="60" duration="60" name="Nhìn ngang" id="{a_ngang}">{"".join(ngang)}</LinearAnimation>'
