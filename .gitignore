@@ -29,3 +29,6 @@ ai/mo_hinh/
 
 # Kết quả kiểm đồng thời (sinh khi chạy)
 backend/.dong-thoi-ket-qua.json
+
+# Rive: thư mục dựng tạm (khung chụp, log); .riv dùng trong app ở frontend/assets/trau/
+frontend/trau-rive/build/
