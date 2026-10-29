@@ -67,7 +67,25 @@ def ban_tay(svg_root):
     return f'<g transform="rotate({-NGHI} 0 0) translate({-cx} {-cy})">' + ''.join(out) + '</g>'
 
 
-def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, keo_duoi=None, chi_ban=False, ban_noi=False):
+THU_DAO_CU = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nguon', 'dao-cu')
+LONG_BAN_TAY = (0.0, 12.0)   # tâm lòng bàn tay trong hệ cổ tay (đo trên tay V4g đã xoay thẳng)
+
+
+def dao_cu(ten, ti_le=0.5, xoay=0.0, lech=(0.0, 0.0), guong=False):
+    """Nội dung SVG đạo cụ, đặt sao cho `diem-cam` trùng lòng bàn tay; nằm DƯỚI bàn tay (ngón đè mép đồ).
+    `guong`: tay phải đã lật gương cả cánh tay → lật lại đạo cụ để chữ/hình không bị ngược."""
+    goc = ET.parse(os.path.join(THU_DAO_CU, ten + '.svg')).getroot()
+    cam = next((c for c in goc.iter(f'{{{NS}}}circle') if c.get('id') == 'diem-cam'), None)
+    cx, cy = (float(cam.get('cx')), float(cam.get('cy'))) if cam is not None else (0.0, 0.0)
+    mac_dinh = ' '.join(f'{k}="{v}"' for k, v in goc.attrib.items() if k in ('fill', 'stroke', 'stroke-width', 'stroke-linejoin', 'stroke-linecap'))
+    ben_trong = ''.join(ET.tostring(c, encoding='unicode') for c in goc if c.tag.split('}')[-1] not in ('title', 'desc'))
+    ben_trong = re.sub(r'\sxmlns(:\w+)?="[^"]*"', '', ben_trong)
+    lat = ' scale(-1 1)' if guong else ''
+    return (f'<g id="do-{ten}" {mac_dinh} transform="translate({LONG_BAN_TAY[0] + lech[0]} {LONG_BAN_TAY[1] + lech[1]}) '
+            f'rotate({xoay}){lat} scale({ti_le}) translate({-cx} {-cy})">{ben_trong}</g>')
+
+
+def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, keo_duoi=None, chi_ban=False, ban_noi=False, do=''):
     """Trả về <g> cánh tay. Góc độ theo chiều kim đồng hồ (tay trái); tay phải lật gương.
     keo: hệ số kéo dài ống tay (co giãn hoạt hình khi giơ tay) — chỉ đổi độ dài, giữ nguyên bề rộng và bàn tay."""
     sx = -1 if guong else 1
@@ -78,7 +96,7 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
         tay = (f'<g id="{ten}-ban{lop}" transform="translate(0 {ld:.2f}) rotate({goc_co})">{phan_ban}</g>') if phan_ban else ''
         duoi = f'<g id="{ten}-duoi{lop}" transform="translate(0 {lt:.2f}) rotate({goc_khuyu})">{tay}{phan_duoi}</g>'
         return f'<g id="{ten}-tren{lop}" transform="rotate({goc_vai})">{phan_tren}{duoi}</g>'
-    ban_tay_lop = chuoi('', '', '', ban)
+    ban_tay_lop = chuoi('', '', '', do + ban)
     mo = f'<g id="{ten}{"-ban-noi" if chi_ban else ""}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
     if chi_ban:  # chỉ bàn tay, đặt ở lớp trên đầu (gãi đầu, khum tai): cùng bộ khớp nên dính đúng cổ tay
         return mo + ban_tay_lop + '</g>'
@@ -144,7 +162,11 @@ def dung(svg_path, tu_the, ra):
             keo = q[3] if len(q) > 3 else 1.0
             keo_duoi = q[4] if len(q) > 4 else None
             noi = bool(p.get(side + '-ban-noi'))
-            moi = ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, ban_noi=noi) + '</g>')[0]
+            # "do": {"tay-phai": ["dien-thoai", ti_le, xoay, lech_x, lech_y]}
+            d = (p.get('do') or {}).get(side)
+            do_svg = dao_cu(d[0], d[1] if len(d) > 1 else 0.5, d[2] if len(d) > 2 else 0.0,
+                            (d[3] if len(d) > 3 else 0.0, d[4] if len(d) > 4 else 0.0), guong) if d else ''
+            moi = ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, ban_noi=noi, do=do_svg) + '</g>')[0]
             if noi:  # bàn tay nổi lên trên đầu: thêm nhóm chỉ-bàn-tay ở cuối gốc SVG (cùng bộ khớp)
                 r.append(ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, chi_ban=True) + '</g>')[0])
             pa.remove(g)
@@ -163,6 +185,12 @@ def dung(svg_path, tu_the, ra):
             moi = ET.fromstring(f'<g xmlns="{NS}">' + chan(side, hong, q[0], q[1], q[2], mong_chan, guong,
                                                         q[3] if len(q) > 3 else 1.0, q[4] if len(q) > 4 else 1.0) + '</g>')[0]
             pa.remove(g); pa.insert(i, moi)
+        # Đồ cầm trước ngực bằng hai tay: nằm lớp trên cùng, hai bàn tay ló ở hai mép.
+        # "do-truoc": [ten, ti_le, x, y, xoay] — toạ độ khung 512 của điểm cầm.
+        if p.get('do-truoc'):
+            dt = p['do-truoc']
+            g = ET.fromstring(f'<g xmlns="{NS}" transform="translate({dt[2]} {dt[3]})">' + dao_cu(dt[0], dt[1], dt[4] if len(dt) > 4 else 0, (0, -LONG_BAN_TAY[1])) + '</g>')
+            r.append(g)
         # Ngồi: hạ cả phần trên (mọi thứ trừ hai chân) xuống `ha_than` px, móng vẫn chạm đất.
         if p.get('ha_than'):
             boc = ET.SubElement(r, f'{{{NS}}}g', {'id': 'than-tren', 'transform': f'translate(0 {p["ha_than"]})'})

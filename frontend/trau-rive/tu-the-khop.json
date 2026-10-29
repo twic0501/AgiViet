@@ -1,23 +1,321 @@
 {
-  "NGHI": {"tay-trai": [34, 0, 0], "tay-phai": [34, 0, 0]},
-  "T01": {"tay-trai": [30, 0, 0], "tay-phai": [95, 70, 10, 2.0, 1.45]},
-  "T02": {"tay-trai": [24, 8, 0], "tay-phai": [24, 8, 0]},
-  "T03": {"tay-trai": [30, 0, 0], "tay-phai": [88, 120, 70, 1.9, 1.45], "tay-phai-ban-noi": true},
-  "T04": {"tay-trai": [-25, -85, 5], "tay-phai": [-25, -85, 5], "tay-trai-truoc": true, "tay-phai-truoc": true},
-  "T07": {"tay-trai": [-30, -95, 10], "tay-phai": [-30, -95, 10], "tay-trai-truoc": true, "tay-phai-truoc": true},
-  "T08": {"tay-trai": [26, 0, 0], "tay-phai": [-35, -125, 20], "tay-phai-truoc": true},
-  "T09": {"tay-trai": [-30, -95, 10], "tay-trai-truoc": true, "tay-phai": [-45, -70, 30], "tay-phai-truoc": true},
-  "T10": {"tay-trai": [28, 0, 0], "tay-phai": [85, 115, 40, 1.9, 1.55], "tay-phai-ban-noi": true},
-  "T11": {"tay-trai": [30, 0, 0], "tay-phai": [100, 95, 0, 1.7, 1.3]},
-  "T14": {"tay-trai": [-30, -80, 0], "tay-trai-truoc": true, "tay-phai": [-50, -60, 25], "tay-phai-truoc": true},
-  "T15": {"tay-trai": [30, 0, 0], "tay-phai": [92, 0, -5, 1.4, 1.3]},
-  "T17": {"tay-trai": [-30, -95, 10], "tay-phai": [-30, -95, 10], "tay-trai-truoc": true, "tay-phai-truoc": true},
-  "T18": {"tay-trai": [100, 60, 10, 2.0, 1.45], "tay-phai": [100, 60, 10, 2.0, 1.45]},
-  "T19": {"tay-trai": [30, 0, 0], "tay-phai": [80, -10, -5, 1.4, 1.3]},
-  "T20": {"tay-trai": [28, 0, 0], "tay-phai": [85, 115, 40, 1.9, 1.55], "tay-phai-ban-noi": true},
-  "T21": {"tay-trai": [30, 0, 0], "tay-phai": [120, 40, 0, 2.0, 1.5]},
-  "T25": {"tay-trai": [55, -40, 0, 1.2, 1.1], "tay-phai": [90, -5, -5, 1.4, 1.3]},
-  "T26": {"tay-trai": [-35, -110, 10], "tay-trai-truoc": true, "tay-phai": [95, 70, 10, 2.0, 1.45]},
-  "T29": {"tay-trai": [30, 0, 0], "tay-phai": [-40, -120, 0], "tay-phai-truoc": true},
-  "T31": {"tay-trai": [70, 15, 0, 1.3, 1.2], "tay-phai": [95, 70, 10, 2.0, 1.45]}
+ "NGHI": {
+  "tay-trai": [
+   34,
+   0,
+   0
+  ],
+  "tay-phai": [
+   34,
+   0,
+   0
+  ]
+ },
+ "T01": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   95,
+   70,
+   10,
+   2.0,
+   1.45
+  ]
+ },
+ "T02": {
+  "tay-trai": [
+   24,
+   8,
+   0
+  ],
+  "tay-phai": [
+   24,
+   8,
+   0
+  ]
+ },
+ "T03": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   88,
+   120,
+   70,
+   1.9,
+   1.45
+  ],
+  "tay-phai-ban-noi": true
+ },
+ "T04": {
+  "tay-trai": [
+   -5,
+   -70,
+   15
+  ],
+  "tay-phai": [
+   -5,
+   -70,
+   15
+  ],
+  "tay-trai-truoc": true,
+  "tay-phai-truoc": true,
+  "do-truoc": [
+   "giay-chao-gia",
+   0.85,
+   244,
+   392,
+   0
+  ]
+ },
+ "T07": {
+  "tay-trai": [
+   -5,
+   -70,
+   15
+  ],
+  "tay-phai": [
+   -5,
+   -70,
+   15
+  ],
+  "tay-trai-truoc": true,
+  "tay-phai-truoc": true,
+  "do-truoc": [
+   "dien-thoai",
+   0.8,
+   240,
+   392,
+   0
+  ]
+ },
+ "T08": {
+  "tay-trai": [
+   26,
+   0,
+   0
+  ],
+  "tay-phai": [
+   -35,
+   -125,
+   20
+  ],
+  "tay-phai-truoc": true
+ },
+ "T09": {
+  "tay-trai": [
+   -30,
+   -95,
+   10
+  ],
+  "tay-trai-truoc": true,
+  "tay-phai": [
+   -45,
+   -70,
+   30
+  ],
+  "tay-phai-truoc": true
+ },
+ "T10": {
+  "tay-trai": [
+   28,
+   0,
+   0
+  ],
+  "tay-phai": [
+   85,
+   115,
+   40,
+   1.9,
+   1.55
+  ],
+  "tay-phai-ban-noi": true
+ },
+ "T11": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   100,
+   95,
+   0,
+   1.7,
+   1.3
+  ]
+ },
+ "T14": {
+  "tay-trai": [
+   -5,
+   -70,
+   15
+  ],
+  "tay-trai-truoc": true,
+  "tay-phai": [
+   -5,
+   -70,
+   15
+  ],
+  "tay-phai-truoc": true,
+  "do-truoc": [
+   "phieu-can",
+   0.75,
+   236,
+   392,
+   0
+  ]
+ },
+ "T15": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   92,
+   0,
+   -5,
+   1.4,
+   1.3
+  ]
+ },
+ "T17": {
+  "tay-trai": [
+   -30,
+   -95,
+   10
+  ],
+  "tay-phai": [
+   -30,
+   -95,
+   10
+  ],
+  "tay-trai-truoc": true,
+  "tay-phai-truoc": true
+ },
+ "T18": {
+  "tay-trai": [
+   100,
+   60,
+   10,
+   2.0,
+   1.45
+  ],
+  "tay-phai": [
+   100,
+   60,
+   10,
+   2.0,
+   1.45
+  ]
+ },
+ "T19": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   80,
+   -10,
+   -5,
+   1.4,
+   1.3
+  ]
+ },
+ "T20": {
+  "tay-trai": [
+   28,
+   0,
+   0
+  ],
+  "tay-phai": [
+   85,
+   115,
+   40,
+   1.9,
+   1.55
+  ],
+  "tay-phai-ban-noi": true
+ },
+ "T21": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   120,
+   40,
+   0,
+   2.0,
+   1.5
+  ]
+ },
+ "T25": {
+  "tay-trai": [
+   55,
+   -40,
+   0,
+   1.2,
+   1.1
+  ],
+  "tay-phai": [
+   90,
+   -5,
+   -5,
+   1.4,
+   1.3
+  ]
+ },
+ "T26": {
+  "tay-trai": [
+   -35,
+   -110,
+   10
+  ],
+  "tay-trai-truoc": true,
+  "tay-phai": [
+   95,
+   70,
+   10,
+   2.0,
+   1.45
+  ]
+ },
+ "T29": {
+  "tay-trai": [
+   30,
+   0,
+   0
+  ],
+  "tay-phai": [
+   -40,
+   -120,
+   0
+  ],
+  "tay-phai-truoc": true
+ },
+ "T31": {
+  "tay-trai": [
+   70,
+   15,
+   0,
+   1.3,
+   1.2
+  ],
+  "tay-phai": [
+   95,
+   70,
+   10,
+   2.0,
+   1.45
+  ]
+ }
 }
