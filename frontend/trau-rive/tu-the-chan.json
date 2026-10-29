@@ -1,0 +1,6 @@
+{
+  "DI_A": {"tay-trai": [10, -15, 0], "tay-phai": [55, 10, 0], "chan-trai": [-18, 10, -8], "chan-phai": [-14, 22, 10]},
+  "DI_B": {"tay-trai": [55, 10, 0], "tay-phai": [10, -15, 0], "chan-trai": [-14, 22, 10], "chan-phai": [-18, 10, -8]},
+  "NGOI": {"ha_than": 22, "tay-trai": [5, -35, 0], "tay-phai": [5, -35, 0], "chan-trai": [35, -35, -5, 0.4, 1.0], "chan-phai": [35, -35, -5, 0.4, 1.0]},
+  "NGOI_CHONG_CAM": {"ha_than": 22, "tay-trai": [5, -35, 0], "tay-phai": [-35, -125, 20], "tay-phai-truoc": true, "chan-trai": [35, -35, -5, 0.4, 1.0], "chan-phai": [35, -35, -5, 0.4, 1.0]}
+}

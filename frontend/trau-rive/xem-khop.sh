@@ -2,8 +2,8 @@
 # Dựng các tư thế tay khớp từ tu-the-khop.json rồi ghép bảng xem build/khop/bang.png (nền tối).
 set -euo pipefail
 cd "$(dirname "$0")"
-D=build/khop; rm -rf "$D"; mkdir -p "$D"
-python3 -I tay-khop.py nguon/trau.svg tu-the-khop.json "$D" >/dev/null
+J=${1:-tu-the-khop.json}; D=${2:-build/khop}; rm -rf "$D"; mkdir -p "$D"
+python3 -I tay-khop.py nguon/trau.svg "$J" "$D" >/dev/null
 # Mặt phải đủ: hai lông mày, hai mắt, mõm (ảnh dáng tham chiếu có khi thiếu lông mày — mặt luôn lấy từ V4g).
 for f in "$D"/*.svg; do
   for id in long-may-trai long-may-phai mat-trai mat-phai mom; do

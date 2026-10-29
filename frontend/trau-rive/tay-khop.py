@@ -87,10 +87,52 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
     return mo + (ban_tay_lop if not ban_noi else '') + vien + mau + '</g>'
 
 
+# ---- Chân: hông → gối → cổ chân, cùng cách làm với tay (ống quần + móng V4g) ----
+MAU_QUAN, MAU_NEP_QUAN = '#45423d', '#757166'
+HONG_TRAI, HONG_PHAI = (214.0, 404.0), (298.0, 404.0)
+L_DUI, L_CANG = 30.0, 34.0
+R_HONG, R_GOI, R_GAU = 35.0, 33.5, 33.0
+
+
+def ong_quan(l, r0, r1, gau=False):
+    g = f'<path d="{hinh_ong(l, r0, r1)}" fill="{MAU_QUAN}" stroke="none"/>'
+    if gau:
+        g += (f'<path d="M {-r1 + 6:.2f} {l - 13:.2f} Q 0 {l - 10:.2f} {r1 - 6:.2f} {l - 13:.2f}" fill="none" stroke="{MAU_NEP_QUAN}" '
+              f'stroke-width="1.6" opacity=".28"/>')
+    return g
+
+
+def mong(svg_root):
+    """Móng chân trái V4g (móng + bóng + khe), đưa về toạ độ cổ chân (0,0)."""
+    goc = next(g for g in svg_root.iter(f'{{{NS}}}g') if g.get('id') == 'chan-trai')
+    out = []
+    for c in goc:
+        if c.get('data-role') in ('mong-chan', 'bong-mong', 'khe-mong'):
+            a = {k: v for k, v in c.attrib.items() if k in ('fill', 'stroke', 'stroke-width', 'opacity')}
+            out.append(f'<path d="{c.get("d")}" ' + ' '.join(f'{k}="{v}"' for k, v in a.items()) + '/>')
+    return '<g transform="translate(-213 -462)">' + ''.join(out) + '</g>'
+
+
+def chan(ten, hong, goc_hong, goc_goi, goc_co, mong_tay, guong=False, keo_dui=1.0, keo_cang=1.0):
+    """Chân 3 đoạn; viền dưới màu → gối liền. keo_dui < 1 = đùi co ngắn (ngồi, nhìn chính diện)."""
+    sx = -1 if guong else 1
+    ld, lc = L_DUI * keo_dui, L_CANG * keo_cang
+
+    def chuoi(lop, p_dui, p_cang, p_mong=''):
+        m = f'<g id="{ten}-mong{lop}" transform="translate(0 {lc:.2f}) rotate({goc_co})">{p_mong}</g>' if p_mong else ''
+        cang = f'<g id="{ten}-cang{lop}" transform="translate(0 {ld:.2f}) rotate({goc_goi})">{m}{p_cang}</g>'
+        return f'<g id="{ten}-dui{lop}" transform="rotate({goc_hong})">{p_dui}{cang}</g>'
+    return (f'<g id="{ten}" data-goc="{hong[0]} {hong[1]}" transform="translate({hong[0]} {hong[1]}) scale({sx} 1)">'
+            + chuoi('', '', '', mong_tay)
+            + chuoi('-vien', vien_ong(ld, R_HONG, R_GOI), vien_ong(lc, R_GOI, R_GAU))
+            + chuoi('-mau', ong_quan(ld, R_HONG, R_GOI), ong_quan(lc, R_GOI, R_GAU, gau=True)) + '</g>')
+
+
 def dung(svg_path, tu_the, ra):
     goc = ET.parse(svg_path)
     root = goc.getroot()
     ban = ban_tay(root)
+    mong_chan = mong(root)
     os.makedirs(ra, exist_ok=True)
     for ma, p in tu_the.items():
         t = copy.deepcopy(goc); r = t.getroot()
@@ -111,6 +153,27 @@ def dung(svg_path, tu_the, ra):
                 pa.append(moi)
             else:
                 pa.insert(i, moi)
+        # Chân chỉ thay khi tư thế có khai báo (dáng đứng giữ nguyên chân V4g).
+        for side, hong, guong in (('chan-trai', HONG_TRAI, False), ('chan-phai', HONG_PHAI, True)):
+            if side not in p:
+                continue
+            g = next(x for x in r.iter(f'{{{NS}}}g') if x.get('id') == side)
+            pa = cha[g]; i = list(pa).index(g)
+            q = p[side]
+            moi = ET.fromstring(f'<g xmlns="{NS}">' + chan(side, hong, q[0], q[1], q[2], mong_chan, guong,
+                                                        q[3] if len(q) > 3 else 1.0, q[4] if len(q) > 4 else 1.0) + '</g>')[0]
+            pa.remove(g); pa.insert(i, moi)
+        # Ngồi: hạ cả phần trên (mọi thứ trừ hai chân) xuống `ha_than` px, móng vẫn chạm đất.
+        if p.get('ha_than'):
+            boc = ET.SubElement(r, f'{{{NS}}}g', {'id': 'than-tren', 'transform': f'translate(0 {p["ha_than"]})'})
+            for c in list(r):
+                if c is boc or c.tag.split('}')[-1] in ('title', 'desc', 'defs'):
+                    continue
+                if c.get('id') in ('chan-trai', 'chan-phai'):
+                    continue
+                r.remove(c); boc.append(c)
+            # giữ hai chân nằm dưới thân: đưa nhóm thân-trên lên cuối (vẽ sau)
+            r.remove(boc); r.append(boc)
         t.write(os.path.join(ra, f'{ma}.svg'), encoding='unicode')
     print('đã dựng', len(tu_the), 'tư thế →', ra)
 

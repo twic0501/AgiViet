@@ -1,5 +1,19 @@
 # Tiến độ giao diện AgiViet production v2
 
+## Tự làm ban đêm · 30/10/2026
+
+Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline → E giao diện mới. Mỗi bước có kiểm rồi mới sang bước sau.
+
+- [x] Backend + DB đạt hết: DB 732/732 (PGlite), 729/729 (PostgreSQL 17); backend 74/74 tình huống, 561/561 bước; kiểm quyền 11/11; đồng thời 3×20/20.
+- [x] A0 Tay khớp nối dùng chung từ tay V4g (`trau-rive/tay-khop.py`), số đo dò bằng OpenCV khớp V4g; viền dưới màu nên khuỷu liền. 21 dáng đứng (`tu-the-khop.json`), tự kiểm đủ lông mày/mắt/mõm (`xem-khop.sh`).
+- [ ] A1 Đạo cụ gắn bàn tay (Codex vẽ, mức high) — đang chạy, kết quả về `~/Downloads/trau-vector/dao-cu/`.
+- [x] A2 Khớp chân (hông-gối-cổ chân, viền dưới màu) + hạ thân khi ngồi; dáng đi A/B, ngồi, ngồi chống cằm (`tu-the-chan.json`). Còn: đặt lên đạo cụ ghế/thúng.
+- [ ] A3 Soi kỹ toàn bộ dáng.
+- [ ] B Rive: xương tay/chân, trạng thái dáng, điểm chạm, soi khung.
+- [ ] C AI + API (khóa đã kiểm: Gemini, NIM gemma-4-31b-it, nemotron lightning, deepseek-v4.1-flash có trong danh mục).
+- [ ] D Offline.
+- [ ] E Giao diện mới.
+
 ## Bàn giao tiếp lượt bị ngắt · 27/10/2026
 
 - Đọc và giữ phần đã làm sau `doi-chieu-ban-mau`; không dựng lại quản trị/Caddy. Bốn mẫu mới **offer/sign/deposit/active** trên **18889 chính** đạt, mở đúng cả hai app; 14 ảnh, 0 pageerror/HTTP lỗi. [Kết quả](../docs/frontend/anh-18889-ban-giao-27/ket-qua.json).
