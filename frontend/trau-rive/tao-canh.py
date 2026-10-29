@@ -277,19 +277,16 @@ def main():
         tu_the('mat-trai', 'x', -9, 7), tu_the('mat-phai', 'x', -7, 9),
         tu_the('mat-trai', 'scaleX', 0, -.2), tu_the('mat-phai', 'scaleX', -.2, 0),   # mắt phía xa co hẹp
         tu_the('long-may-trai', 'x', -9, 8), tu_the('long-may-phai', 'x', -8, 9),
-        tu_the('dau-khoi', 'x', -3, 3), tu_the('dau-khoi', 'scaleX', -.03, -.03), tu_the('dau-khoi', 'rotation', -.035, .035),
-        tu_the('tai-trai', 'x', 8, -3), tu_the('tai-trai', 'scaleX', -.22, 0),          # nhìn trái: tai trái thu vào
-        tu_the('tai-phai', 'x', 3, -8), tu_the('tai-phai', 'scaleX', 0, -.22),
-        tu_the('sung-trai', 'x', 5, -2), tu_the('sung-trai', 'scaleX', -.12, 0),
-        tu_the('sung-phai', 'x', 2, -5), tu_the('sung-phai', 'scaleX', 0, -.12),
+        tu_the('dau-khoi', 'rotation', -.03, .03),
+        # tai/sừng KHÔNG co, KHÔNG dời ngang (gốc vẽ khuất sau đầu sẽ lộ); chỉ xoay nhẹ quanh gốc để luôn dính đầu
+        tu_the('tai-trai', 'rotation', .12, -.06), tu_the('tai-phai', 'rotation', .06, -.12),
+        tu_the('sung-trai', 'rotation', .05, -.03), tu_the('sung-phai', 'rotation', .03, -.05),
     ]
     doc = [  # khung 0 = ngước lên, 60 = cúi xuống
         tu_the('mom', 'y', -6, 5), tu_the('mom', 'scaleY', .02, -.04),
         tu_the('mat-trai', 'y', -7, 7), tu_the('mat-phai', 'y', -7, 7),
         tu_the('long-may-trai', 'y', -6, 6), tu_the('long-may-phai', 'y', -6, 6),
-        tu_the('dau-khoi', 'y', -2, 2),
-        tu_the('tai-trai', 'y', 3, -3), tu_the('tai-phai', 'y', 3, -3),
-        tu_the('sung-trai', 'y', 3, -2), tu_the('sung-phai', 'y', 3, -2),
+        tu_the('tai-trai', 'rotation', -.06, .06), tu_the('tai-phai', 'rotation', .06, -.06),
     ]
     a_ngang, a_doc = moi_id(), moi_id()
     nhin_anim = (f'<LinearAnimation fps="60" duration="60" name="Nhìn ngang" id="{a_ngang}">{"".join(ngang)}</LinearAnimation>'
