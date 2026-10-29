@@ -67,7 +67,7 @@ def ban_tay(svg_root):
     return f'<g transform="rotate({-NGHI} 0 0) translate({-cx} {-cy})">' + ''.join(out) + '</g>'
 
 
-def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, keo_duoi=None):
+def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, keo_duoi=None, chi_ban=False, ban_noi=False):
     """Trả về <g> cánh tay. Góc độ theo chiều kim đồng hồ (tay trái); tay phải lật gương.
     keo: hệ số kéo dài ống tay (co giãn hoạt hình khi giơ tay) — chỉ đổi độ dài, giữ nguyên bề rộng và bàn tay."""
     sx = -1 if guong else 1
@@ -79,10 +79,12 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
         duoi = f'<g id="{ten}-duoi{lop}" transform="translate(0 {lt:.2f}) rotate({goc_khuyu})">{tay}{phan_duoi}</g>'
         return f'<g id="{ten}-tren{lop}" transform="rotate({goc_vai})">{phan_tren}{duoi}</g>'
     ban_tay_lop = chuoi('', '', '', ban)
+    mo = f'<g id="{ten}{"-ban-noi" if chi_ban else ""}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
+    if chi_ban:  # chỉ bàn tay, đặt ở lớp trên đầu (gãi đầu, khum tai): cùng bộ khớp nên dính đúng cổ tay
+        return mo + ban_tay_lop + '</g>'
     vien = chuoi('-vien', vien_ong(lt, R_VAI, R_KHUYU), vien_ong(ld, R_KHUYU, R_CO))
     mau = chuoi('-mau', ong(lt, R_VAI, R_KHUYU), ong(ld, R_KHUYU, R_CO, nep=True))
-    return (f'<g id="{ten}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
-            f'{ban_tay_lop}{vien}{mau}</g>')
+    return mo + (ban_tay_lop if not ban_noi else '') + vien + mau + '</g>'
 
 
 def dung(svg_path, tu_the, ra):
@@ -99,7 +101,10 @@ def dung(svg_path, tu_the, ra):
             q = p[side]
             keo = q[3] if len(q) > 3 else 1.0
             keo_duoi = q[4] if len(q) > 4 else None
-            moi = ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi) + '</g>')[0]
+            noi = bool(p.get(side + '-ban-noi'))
+            moi = ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, ban_noi=noi) + '</g>')[0]
+            if noi:  # bàn tay nổi lên trên đầu: thêm nhóm chỉ-bàn-tay ở cuối gốc SVG (cùng bộ khớp)
+                r.append(ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, chi_ban=True) + '</g>')[0])
             pa.remove(g)
             # Tay đưa ra trước thân (ôm/cầm đồ trước ngực) thì vẽ sau thân.
             if p.get(side + '-truoc'):
