@@ -273,8 +273,8 @@ def main():
         g = goc if giua is None else giua
         return khung(ids[p], prop, [(0, goc + trai), (30, g), (60, goc + phai)], '0 0 1 1')
     ngang = [
-        tu_the('mom', 'x', -15, 15), tu_the('mom', 'scaleX', -.04, -.04),
-        tu_the('mat-trai', 'x', -12, 10), tu_the('mat-phai', 'x', -10, 12),
+        tu_the('mom', 'x', -8, 8), tu_the('mom', 'scaleX', -.03, -.03),
+        tu_the('mat-trai', 'x', -9, 7), tu_the('mat-phai', 'x', -7, 9),
         tu_the('mat-trai', 'scaleX', 0, -.2), tu_the('mat-phai', 'scaleX', -.2, 0),   # mắt phía xa co hẹp
         tu_the('long-may-trai', 'x', -9, 8), tu_the('long-may-phai', 'x', -8, 9),
         tu_the('dau-khoi', 'x', -3, 3), tu_the('dau-khoi', 'scaleX', -.03, -.03), tu_the('dau-khoi', 'rotation', -.035, .035),
@@ -284,7 +284,7 @@ def main():
         tu_the('sung-phai', 'x', 2, -5), tu_the('sung-phai', 'scaleX', 0, -.12),
     ]
     doc = [  # khung 0 = ngước lên, 60 = cúi xuống
-        tu_the('mom', 'y', -9, 9), tu_the('mom', 'scaleY', .03, -.05),
+        tu_the('mom', 'y', -6, 5), tu_the('mom', 'scaleY', .02, -.04),
         tu_the('mat-trai', 'y', -7, 7), tu_the('mat-phai', 'y', -7, 7),
         tu_the('long-may-trai', 'y', -6, 6), tu_the('long-may-phai', 'y', -6, 6),
         tu_the('dau-khoi', 'y', -2, 2),
