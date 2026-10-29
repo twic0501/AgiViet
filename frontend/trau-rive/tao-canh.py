@@ -208,7 +208,11 @@ def main():
                               f'<Fill name="F"><SolidColor colorValue="B8C9D6D8" name="C"/></Fill></Shape>'
                               for j, (dx, dy, w) in enumerate(((0, 0, 12), (6 * huong, 6, 9), (-2 * huong, 9, 7))))
                 them += f'<Node x="{lx:.2f}" y="{ly:.2f}" scaleX="0.4" scaleY="0.4" opacity="0" name="{tn}" id="{hid}">{cum}</Node>'
-        return f'<Node x="{gx - goc[0]:.2f}" y="{gy - goc[1]:.2f}" name="{ten}" id="{ids[ten]}">{them}{noi[ten]}{rb}</Node>'
+        ruot = noi[ten]
+        if ten.startswith('tai-'):  # tai lồng 2 lớp: ngoài xoay theo hướng nhìn, trong tự vẫy (không đè nhau)
+            ids[ten + '/ve'] = moi_id()
+            ruot = f'<Node name="{ten}-ve" id="{ids[ten + "/ve"]}">{ruot}</Node>'
+        return f'<Node x="{gx - goc[0]:.2f}" y="{gy - goc[1]:.2f}" name="{ten}" id="{ids[ten]}">{them}{ruot}{rb}</Node>'
 
     trong_dau = [nut(t, (hx, hy)) for t in [g.get('id') for g in nhom] if t in DAU_CON]
     nodes, da_dat_dau = [], False
@@ -246,10 +250,12 @@ def main():
     hoat.append(('Chớp mắt', 240, ''.join(k)))
     k = []
     if co('tai-trai'):
-        k.append(khung(ids['tai-trai'], 'rotation', [(0, 0), (20, -0.14), (40, 0.05), (55, 0), (150, 0)]))
+        k.append(khung(ids['tai-trai/ve'], 'rotation', [(0, 0), (40, 0), (48, -0.26), (56, 0.06), (62, -0.18), (72, 0.03), (84, 0),
+                                                        (150, 0), (170, -0.07), (200, 0), (240, 0)]))
     if co('tai-phai'):
-        k.append(khung(ids['tai-phai'], 'rotation', [(0, 0), (70, 0), (90, 0.14), (110, -0.05), (125, 0), (150, 0)]))
-    hoat.append(('Tai', 150, ''.join(k)))
+        k.append(khung(ids['tai-phai/ve'], 'rotation', [(0, 0), (110, 0), (118, 0.26), (126, -0.06), (132, 0.18), (142, -0.03),
+                                                        (154, 0), (190, 0.07), (220, 0), (240, 0)]))
+    hoat.append(('Tai', 240, ''.join(k)))
     if co('duoi'):
         hoat.append(('Đuôi', 120, khung(ids['duoi'], 'rotation', [(0, -0.18), (60, 0.22), (120, -0.18)])))
     # Chuyển động phụ cho bớt cứng: đầu khăn đu đưa từ nút khăn, hai tay đung đưa ngược pha.
