@@ -181,10 +181,10 @@ def khung(obj, prop, cac, ease='0.42 0 0.58 1'):
 def main():
     svg = ET.parse(sys.argv[1]).getroot()
     ke = {}
-    nhom = [g for g in svg.iter(NS + 'g') if g.get('id') and g.get('data-goc')]
+    nhom = [g for g in svg.iter(NS + 'g') if g.get('id') and g.get('data-goc') and g.get('id') != 'khuon-mat-clip']
     # --- Khung xương: nhóm "đầu" tại điểm cổ chứa khuôn đầu, sừng, tai, mõm, mắt, lông mày (tai/sừng gắn chết vào đầu).
     DAU_CON = ['dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'long-may-trai', 'long-may-phai',
-               'mat-trai', 'mat-phai']
+               'mat-trai', 'mat-phai', 'vien-cam-truoc']
     # Nhìn theo con trỏ kiểu Muza: chỉ nét mặt trượt trong khuôn đầu (mõm ít nhất để không lòi ra ngoài đầu).
     NHIN = {}  # thay bằng Joystick tư thế (xem 'Nhìn ngang'/'Nhìn dọc')
     diem_nhin, vung_cham, kich_hoat, dau_id = moi_id(), moi_id(), moi_id(), moi_id()
@@ -277,7 +277,7 @@ def main():
     ngang = [
         tu_the('mat-trai', 'x', -7, 7), tu_the('mat-phai', 'x', -7, 7),
         tu_the('long-may-trai', 'x', -5, 5), tu_the('long-may-phai', 'x', -5, 5),
-        tu_the('mom', 'x', -2.5, 2.5),
+        tu_the('mom', 'x', -1.2, 1.2),
         tu_the('tai-trai', 'rotation', .1, -.05), tu_the('tai-phai', 'rotation', .05, -.1),
     ]
     ngang.append(khung(dau_id, 'rotation', [(0, -.075), (30, 0), (60, .075)], '0 0 1 1'))
