@@ -1,0 +1,33 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trâu thử · AgiViet</title>
+<style>
+ :root{--nen:#f7f8f2;--chu:#233c31;--nhan:#235c45;--vien:#d9e2d6}
+ body{margin:0;background:var(--nen);color:var(--chu);font-family:'Be Vietnam Pro',system-ui,sans-serif}
+ main{max-width:440px;margin:0 auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+ h1{font-size:1.1rem;margin:4px 0 0}.ghi{font-size:.85rem;color:#4b5f55;text-align:center;margin:0}
+ .bong-noi{background:#fff;border:1px solid var(--vien);border-radius:14px;padding:10px 14px;min-height:2.6em;text-align:center;max-width:320px}
+ .nut{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+ button{font:inherit;border:1px solid var(--vien);background:#fff;color:var(--chu);border-radius:999px;padding:8px 12px;min-height:40px;cursor:pointer}
+ button[aria-pressed=true]{background:var(--nhan);color:#fff;border-color:var(--nhan)}
+</style>
+<main>
+ <h1>Trâu C01 · bản thử chuyển động</h1>
+ <p class="ghi">Rê hoặc chạm ngón tay hai bên: trâu nghiêng/quay theo. Chạm vào trâu: nhún và vui. Đứng yên: thở, chớp mắt.</p>
+ <agv-trau id="trau" co="240" trang-thai="nghi"></agv-trau>
+ <p class="bong-noi" id="loi" aria-live="polite">Chào chị! Em là trâu AgiViet.</p>
+ <div class="nut" id="nut"></div>
+ <p class="ghi">Bản 1 dùng 16 ảnh tư thế C01 có sẵn. Khi có lớp tách (đầu, mắt, tay) sẽ thêm cử động mượt từng bộ phận.</p>
+</main>
+<script type="module">
+ import '../shared/trau.js';
+ const LOI = { nghi: 'Chào chị! Em là trâu AgiViet.', chao: 'Chào chị!', 'doc-hop-dong': 'Bấm loa để nghe từng điều. Không vội đâu chị.',
+   'nhap-ma': 'Nhập mã 6 số vừa nhận qua tin nhắn.', 'cho-coc': 'Đang chờ bên mua chuyển cọc.', 'dang-kiem': 'Đang kiểm hàng tại vườn.',
+   'thieu-tien': 'Số tiền nhận chưa đủ. Chị kiểm lại nha.', 'cho-ngan-hang': 'Ngân hàng đang xử lý.', loi: 'Có trục trặc nhỏ, chị thử lại giúp em.', mung: 'Tiền đã về đủ rồi chị!' };
+ const trau = document.querySelector('#trau'), loi = document.querySelector('#loi'), nut = document.querySelector('#nut');
+ for (const k of Object.keys(LOI)) {
+   const b = document.createElement('button'); b.type = 'button'; b.textContent = k; b.setAttribute('aria-pressed', k === 'nghi');
+   b.onclick = () => { trau.setAttribute('trang-thai', k); loi.textContent = LOI[k]; for (const x of nut.children) x.setAttribute('aria-pressed', x === b); };
+   nut.append(b);
+ }
+</script>
+</html>
