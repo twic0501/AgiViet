@@ -18,7 +18,7 @@
 </main>
 <script src="https://unpkg.com/@rive-app/canvas@2.21.6/rive.js"></script>
 <script>
- const r = new rive.Rive({ src: '../assets/trau/trau.riv', canvas: document.getElementById('c'), autoplay: true, stateMachines: 'trau',
+ const r = new rive.Rive({ src: '../assets/trau/trau.riv?v=' + Date.now(), canvas: document.getElementById('c'), autoplay: true, stateMachines: 'trau',
    layout: new rive.Layout({ fit: rive.Fit.Contain }), onLoad: () => r.resizeDrawingSurfaceToCanvas() });
  document.getElementById('nen').onclick = () => { const b = document.body.style; b.background = b.background ? '' : '#233c31'; };
 </script>

@@ -272,20 +272,20 @@ def main():
         goc = {'x': gx, 'y': gy, 'scaleX': 1, 'scaleY': 1, 'rotation': 0}[prop]
         g = goc if giua is None else giua
         return khung(ids[p], prop, [(0, goc + trai), (30, g), (60, goc + phai)], '0 0 1 1')
+    # "Nhìn" chứ không "trượt mặt": mắt + lông mày dẫn hướng (dịch nhiều), mõm gần như yên, cả đầu nghiêng
+    # và ngả nhẹ về phía con trỏ như ngoái nhìn; tai/sừng chỉ xoay quanh gốc nên luôn dính đầu.
     ngang = [
-        tu_the('mom', 'x', -8, 8), tu_the('mom', 'scaleX', -.03, -.03),
-        tu_the('mat-trai', 'x', -9, 7), tu_the('mat-phai', 'x', -7, 9),
-        tu_the('mat-trai', 'scaleX', 0, -.2), tu_the('mat-phai', 'scaleX', -.2, 0),   # mắt phía xa co hẹp
-        tu_the('long-may-trai', 'x', -9, 8), tu_the('long-may-phai', 'x', -8, 9),
-        tu_the('dau-khoi', 'rotation', -.03, .03),
-        # tai/sừng KHÔNG co, KHÔNG dời ngang (gốc vẽ khuất sau đầu sẽ lộ); chỉ xoay nhẹ quanh gốc để luôn dính đầu
-        tu_the('tai-trai', 'rotation', .12, -.06), tu_the('tai-phai', 'rotation', .06, -.12),
-        tu_the('sung-trai', 'rotation', .05, -.03), tu_the('sung-phai', 'rotation', .03, -.05),
+        tu_the('mat-trai', 'x', -7, 7), tu_the('mat-phai', 'x', -7, 7),
+        tu_the('long-may-trai', 'x', -5, 5), tu_the('long-may-phai', 'x', -5, 5),
+        tu_the('mom', 'x', -2.5, 2.5),
+        tu_the('tai-trai', 'rotation', .1, -.05), tu_the('tai-phai', 'rotation', .05, -.1),
     ]
+    ngang.append(khung(dau_id, 'rotation', [(0, -.075), (30, 0), (60, .075)], '0 0 1 1'))
+    ngang.append(khung(dau_id, 'x', [(0, hx - 5), (30, hx), (60, hx + 5)], '0 0 1 1'))
     doc = [  # khung 0 = ngước lên, 60 = cúi xuống
-        tu_the('mom', 'y', -6, 5), tu_the('mom', 'scaleY', .02, -.04),
-        tu_the('mat-trai', 'y', -7, 7), tu_the('mat-phai', 'y', -7, 7),
-        tu_the('long-may-trai', 'y', -6, 6), tu_the('long-may-phai', 'y', -6, 6),
+        tu_the('mat-trai', 'y', -6, 5), tu_the('mat-phai', 'y', -6, 5),
+        tu_the('long-may-trai', 'y', -6, 4), tu_the('long-may-phai', 'y', -6, 4),
+        tu_the('mom', 'y', -2, 2),
         tu_the('tai-trai', 'rotation', -.06, .06), tu_the('tai-phai', 'rotation', .06, -.06),
     ]
     a_ngang, a_doc = moi_id(), moi_id()
