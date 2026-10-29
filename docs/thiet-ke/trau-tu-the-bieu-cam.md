@@ -47,6 +47,39 @@ Ký hiệu biểu cảm ở mục 3. "Trạng thái" lấy đúng từ backend (
 | T23 | Vườn / nhật ký | F3 | Nhật ký vườn, Đăng hàng (chụp lô) | Đứng cạnh cây xoài, tay cầm thúng | Bình thường (E1) | Cảnh vườn xoài |
 | T24 | Thời tiết | F2/F3 | Tin vụ mùa, giao hàng gặp mưa | Mưa: che nón lá/áo mưa; nắng: lau mồ hôi; gió: giữ khăn | Theo thời tiết (E1/E7) | Cảnh thời tiết |
 
+### 2b. Bổ sung theo góp ý 29/10 (hướng dẫn lần đầu, giọng nói/mic, xe tới, cân hàng)
+
+| # | Tư thế | Dạng | Màn / trạng thái app | Chuyển động chính | Biểu cảm | Quạ đi kèm |
+|---|---|---|---|---|---|---|
+| T25 | Dẫn đường lần đầu (tour) | F5 → F2 | Lần đầu vào app, mỗi bước hướng dẫn (1/5…5/5) | Ló từ mép màn, cầm **tấm biển gỗ nhỏ** ghi số bước; chỉ tay đúng ô đang giới thiệu (IK theo vị trí ô); bước sau thì đi bộ sang chỗ mới | Vui (E2) / Chú ý (E4) | Ngậm **lá cờ nhỏ** bay trước dẫn đường, đáp lên ô cần bấm |
+| T26 | Xong hướng dẫn | F3 | Bước cuối tour | Gập biển, cúi chào nhẹ, vẫy | Vui (E2) | Tung cánh, rơi một chiếc lá xoài như pháo giấy |
+| T27 | **Nghe giọng nói** (mic) | **F1 đầu** (to dần lên F2 khi mở) | Đăng hàng bằng giọng nói, nút mic, hỏi hỗ trợ | **Tai xoay hướng về phía nguồn âm**; một tai vểnh theo **âm lượng thật** (đầu vào số `am_luong` 0→1 từ micro: nói to → tai vểnh cao + đầu gật nhẹ theo nhịp); **vòng sóng âm** cong tỏa từ tai | Chú ý (E4) | Đậu yên trên sừng, nghiêng đầu nghe cùng |
+| T28 | Đang hiểu lời nói | F1 | Sau khi dừng nói, đang chuyển giọng nói thành chữ | Mắt nhìn lên, ba chấm nhỏ nảy lần lượt trên đầu | Suy nghĩ (E5) | Gõ mỏ lên sừng theo nhịp chấm |
+| T29 | Nghe xong | F1/F2 | Đã điền xong từ giọng nói | Gật đầu hai cái, tai thả | Vui (E2) | — |
+| T30 | **Xe đang tới** | F3 | Đợt giao: xe đã đặt, chưa tới (ETA) | Đứng **nhón chân**, tay đưa lên trán che nắng, nhìn ra đường; xe tải **nhỏ ở xa to dần** theo thời gian còn lại | Chú ý (E4) | Bay lên cao **trinh sát**, chỉ cánh về phía xe |
+| T31 | **Xe đã tới** | F3 | Xe tới vườn / `ready` có xe | Xe phanh, **bụi đất phụt** sau bánh; trâu vẫy tài xế rồi chỉ chỗ đỗ | Vui (E2) | Đáp xuống **nóc ca-bin**, nhảy lò cò |
+| T32 | **Cân hàng** | F3 | `start-check` → nhập nghiệm thu | Trâu **nhấc thúng đặt lên cân** (xương tay + nhún thân), kim cân **lắc rồi dừng**; trâu cúi nhìn, gật khi kim đứng yên | Tập trung (E3) | Đậu mép cân — kim lắc làm quạ **lắc lư theo**, dang cánh giữ thăng bằng |
+| T33 | Xe chạy đi (đang giao) | F3 | **GX** `in_transit` | Trâu vẫy theo xe; hoặc trâu gánh hàng (T13) khi giao tại chỗ | Vui (E2) | **Ráng bay theo xe không kịp**: vỗ cánh dồn dập, **mắt lim dim mệt** (mi mắt sụp nửa), lông đuôi xù, giọt mồ hôi nhỏ; cuối cùng đáp lên thùng xe thở hổn hển (hơi thở phả) |
+
+### 2c. Con quạ — bạn đồng hành có tính cách
+
+Tính cách: **lanh chanh, tò mò, hơi vụng**, luôn cố giúp trâu nhưng hay "quá đà" → tạo tiếng cười nhỏ, không bao giờ làm phiền người dùng.
+
+| Tình huống | Quạ làm gì | Biểu cảm quạ |
+|---|---|---|
+| Nghỉ | Nhảy lò cò trên sừng, mổ nhẹ vào sừng | Mắt chấm, nghiêng đầu |
+| Chờ lâu | Đi đi lại lại trên lưng trâu → ngồi xuống → **ngủ gật**, giật mình tỉnh khi có tin | Mi sụp dần → nhắm → mở to (giật mình) |
+| Có tin mới | **Ngậm phong thư** bay vào thả xuống | Mắt sáng, mỏ ngậm |
+| Xe tới / đi | Trinh sát, bay theo xe **ráng không kịp, mệt** | Lim dim, mồ hôi |
+| Cân hàng | Đậu mép cân, lắc lư theo kim | Hoảng nhẹ, dang cánh |
+| Lỗi | Nghiêng đầu 90° khó hiểu, một dấu "?" nhỏ | Mắt chấm to |
+| Mưa | **Chui dưới tai trâu** trú mưa / đội lá xoài làm dù | Nheo mắt |
+| Tiền về (đã đối soát) | Vỗ cánh mừng, bay vòng quanh trâu | Mắt nheo cung |
+| Hoàn tất | Đậu đỉnh đầu trâu cùng nhảy | Mắt nheo cung |
+| Người dùng chạm quạ | Giật mình bay lên, rơi một chiếc lông, đáp lại | Mắt mở to rồi chớp |
+
+Quy tắc quạ: không che nội dung; không xuất hiện trong ô nhập/OTP; tắt khi màn quá nhỏ (dưới F2); không diễn mừng tiền khi chưa đối soát.
+
 Không làm tư thế cho: số tiền cụ thể, so sánh giá, tranh chấp (giữ trung tính — chỉ dùng T20/T14), nội dung pháp lý.
 
 ## 3. Biểu cảm (không có miệng — chỉ mắt, lông mày, tai, đuôi, hơi thở)
@@ -106,7 +139,7 @@ Mỗi tư thế = một **tư thế khóa** (pose) trên cùng bộ xương → 
 
 ## 7. Việc cần chốt (người sáng lập)
 
-- Danh mục 24 tư thế ở mục 2: thêm/bớt/đổi gì?
+- Danh mục 33 tư thế (mục 2 + 2b) và tính cách quạ (mục 2c): thêm/bớt/đổi gì?
 - Dạng mặc định trong luồng là **F2 nửa người**: đồng ý?
 - Ngồi (F4) cho màn chờ và nằm/ngủ (T22): giữ hay bỏ?
 - Đạo cụ thời tiết: nón lá, áo mưa — đồng ý dùng?
