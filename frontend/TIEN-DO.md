@@ -6,7 +6,7 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 
 - [x] Backend + DB đạt hết: DB 732/732 (PGlite), 729/729 (PostgreSQL 17); backend 74/74 tình huống, 561/561 bước; kiểm quyền 11/11; đồng thời 3×20/20.
 - [x] A0 Tay khớp nối dùng chung từ tay V4g (`trau-rive/tay-khop.py`), số đo dò bằng OpenCV khớp V4g; viền dưới màu nên khuỷu liền. 21 dáng đứng (`tu-the-khop.json`), tự kiểm đủ lông mày/mắt/mõm (`xem-khop.sh`).
-- [ ] A1 Đạo cụ gắn bàn tay (Codex vẽ, mức high) — đang chạy, kết quả về `~/Downloads/trau-vector/dao-cu/`.
+- [~] A1 Đạo cụ: 13 SVG đã vẽ và soi 2 nền (`trau-rive/nguon/dao-cu/`, có `diem-cam`; kim cân, cửa cuốn, cát tách lớp). Còn: gắn vào bàn tay theo `diem-cam`; phóng to thúng của đòn gánh (đang quá nhỏ). Lưu ý: trâu chuẩn V4g ở `trau-rive/nguon/trau.svg` (bản /tmp đã bị dọn).
 - [x] A2 Khớp chân (hông-gối-cổ chân, viền dưới màu) + hạ thân khi ngồi; dáng đi A/B, ngồi, ngồi chống cằm (`tu-the-chan.json`). Còn: đặt lên đạo cụ ghế/thúng.
 - [ ] A3 Soi kỹ toàn bộ dáng.
 - [ ] B Rive: xương tay/chân, trạng thái dáng, điểm chạm, soi khung.
