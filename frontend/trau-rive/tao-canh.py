@@ -286,6 +286,9 @@ def main():
         tu_the('mom', 'x', -1.2, 1.2),
         tu_the('tai-trai', 'rotation', .1, -.05), tu_the('tai-phai', 'rotation', .05, -.1),
     ]
+    # Cổ + khăn đi theo đầu (ít hơn đầu) để vòng khăn luôn che kín cổ khi đầu nghiêng/ngả.
+    ngang += [tu_the('co', 'rotation', -.05, .05), tu_the('co', 'x', -3.5, 3.5),
+              tu_the('khan-co', 'rotation', -.04, .04), tu_the('khan-co', 'x', -3, 3), tu_the('khan-dai', 'x', -2.5, 2.5)]
     ngang.append(khung(dau_id, 'rotation', [(0, -.075), (30, 0), (60, .075)], '0 0 1 1'))
     ngang.append(khung(dau_id, 'x', [(0, hx - 5), (30, hx), (60, hx + 5)], '0 0 1 1'))
     doc = [  # khung 0 = ngước lên, 60 = cúi xuống
@@ -293,6 +296,7 @@ def main():
         tu_the('long-may-trai', 'y', -6, 4), tu_the('long-may-phai', 'y', -6, 4),
         tu_the('mom', 'y', -2, 2),
         tu_the('tai-trai', 'rotation', -.06, .06), tu_the('tai-phai', 'rotation', .06, -.06),
+        tu_the('co', 'y', -2, 1), tu_the('khan-co', 'y', -2.5, 1.5), tu_the('khan-co', 'scaleY', .03, -.02),
     ]
     a_ngang, a_doc = moi_id(), moi_id()
     nhin_anim = (f'<LinearAnimation fps="60" duration="60" name="Nhìn ngang" id="{a_ngang}">{"".join(ngang)}</LinearAnimation>'
