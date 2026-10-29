@@ -182,76 +182,90 @@ def main():
     svg = ET.parse(sys.argv[1]).getroot()
     ke = {}
     nhom = [g for g in svg.iter(NS + 'g') if g.get('id') and g.get('data-goc')]
-    # Nhìn theo con trỏ kiểu Muza: mỗi bộ phận kéo về "điểm nhìn" với độ mạnh riêng; phần càng ở trước trượt càng nhiều.
-    NHIN = {'mat-trai': .07, 'mat-phai': .07, 'long-may-trai': .06, 'long-may-phai': .06, 'mom': .05,
-            'sung-trai': .015, 'sung-phai': .015, 'tai-trai': .02, 'tai-phai': .02, 'dau-khoi': .01}
-    diem_nhin, vung_cham, kich_hoat = moi_id(), moi_id(), moi_id()
-    nodes, vi_tri, ids = [], {}, {}
+    # --- Khung xương: nhóm "đầu" tại điểm cổ chứa khuôn đầu, sừng, tai, mõm, mắt, lông mày (tai/sừng gắn chết vào đầu).
+    DAU_CON = ['dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'long-may-trai', 'long-may-phai',
+               'mat-trai', 'mat-phai']
+    # Nhìn theo con trỏ kiểu Muza: chỉ nét mặt trượt trong khuôn đầu (mõm ít nhất để không lòi ra ngoài đầu).
+    NHIN = {'mat-trai': .045, 'mat-phai': .045, 'long-may-trai': .04, 'long-may-phai': .04, 'mom': .03}
+    diem_nhin, vung_cham, kich_hoat, dau_id = moi_id(), moi_id(), moi_id(), moi_id()
+    lo_mui = [(float(e.get('cx')), float(e.get('cy'))) for e in svg.iter(NS + 'ellipse') if e.get('data-role') == 'lo-mui']
+    vi_tri, ids, noi = {}, {}, {}
     for g in nhom:
         gx, gy, noi_dung = bo_phan(g, ke)
-        nid = moi_id(); ids[g.get('id')] = nid; vi_tri[g.get('id')] = (gx, gy)
-        rb = (f'<TranslationConstraint targetId="{diem_nhin}" strength="{NHIN[g.get("id")]}" name="Nhìn"/>'
-              if g.get('id') in NHIN else '')
-        nodes.append(f'<Node x="{gx:.2f}" y="{gy:.2f}" name="{g.get("id")}" id="{nid}">{noi_dung}{rb}</Node>')
-    nodes.reverse()  # bộ phận khai báo trước nằm trên
-    # Hơi thở: hai làn hơi trắng mờ ở lỗ mũi (203,262) và (307,262), hiện lúc thở ra.
+        ten = g.get('id'); ids[ten] = moi_id(); vi_tri[ten] = (gx, gy); noi[ten] = noi_dung
+    hx, hy = vi_tri.get('dau-khoi', (256, 300))
     hoi = {}
-    for ten, x0 in (('hoi-trai', 205), ('hoi-phai', 305)):
-        hoi[ten] = moi_id()
-        cum = ''.join(f'<Shape x="{dx}" y="{dy}" name="{ten}-{k}"><Ellipse width="{w}" height="{w * .8:.1f}" name="P"/>'
-                      f'<Fill name="F"><SolidColor colorValue="D8FFFFFF" name="C"/></Fill></Shape>'
-                      for k, (dx, dy, w) in enumerate(((0, 0, 14), (-7 if x0 < 256 else 7, 6, 10), (3 if x0 < 256 else -3, 10, 8))))
-        nodes.insert(0, f'<Node x="{x0}" y="272" scaleX="0.4" scaleY="0.4" opacity="0" name="{ten}" id="{hoi[ten]}">{cum}</Node>')
+
+    def nut(ten, goc=(0, 0)):
+        gx, gy = vi_tri[ten]
+        rb = (f'<TranslationConstraint targetId="{diem_nhin}" strength="{NHIN[ten]}" name="Nhìn"/>' if ten in NHIN else '')
+        them = ''
+        if ten == 'mom':  # hơi thở là con của mõm → luôn phả ra từ lỗ mũi, kể cả khi mặt trượt theo con trỏ
+            for k2, (mx, my) in enumerate(lo_mui[:2]):
+                tn = 'hoi-trai' if mx < 256 else 'hoi-phai'; hoi[tn] = (moi_id(), mx - gx, my + 10 - gy, -1 if mx < 256 else 1)
+                hid, lx, ly, huong = hoi[tn]
+                cum = ''.join(f'<Shape x="{dx}" y="{dy}" name="{tn}-{j}"><Ellipse width="{w}" height="{w * .8:.1f}" name="P"/>'
+                              f'<Fill name="F"><SolidColor colorValue="B8C9D6D8" name="C"/></Fill></Shape>'
+                              for j, (dx, dy, w) in enumerate(((0, 0, 12), (6 * huong, 6, 9), (-2 * huong, 9, 7))))
+                them += f'<Node x="{lx:.2f}" y="{ly:.2f}" scaleX="0.4" scaleY="0.4" opacity="0" name="{tn}" id="{hid}">{cum}</Node>'
+        return f'<Node x="{gx - goc[0]:.2f}" y="{gy - goc[1]:.2f}" name="{ten}" id="{ids[ten]}">{them}{noi[ten]}{rb}</Node>'
+
+    trong_dau = [nut(t, (hx, hy)) for t in [g.get('id') for g in nhom] if t in DAU_CON]
+    nodes, da_dat_dau = [], False
+    for g in nhom:
+        t = g.get('id')
+        if t in DAU_CON:
+            if not da_dat_dau:
+                nodes.append(f'<Node x="{hx:.2f}" y="{hy:.2f}" name="dau" id="{dau_id}">{"".join(reversed(trong_dau))}</Node>')
+                da_dat_dau = True
+            continue
+        nodes.append(nut(t))
+    nodes.reverse()  # bộ phận khai báo trước nằm trên
     nodes.insert(0, f'<Node x="256" y="215" name="diem-nhin" id="{diem_nhin}"/>')
-    # Vùng nhận chạm phủ cả khung, gần như trong suốt; khai báo đầu tiên để nằm trên cùng.
     nodes.insert(0, f'<Shape x="256" y="256" name="vung-cham" id="{vung_cham}"><Rectangle width="512" height="512" name="P"/>'
                     f'<Fill name="F"><SolidColor colorValue="01FFFFFF" name="C"/></Fill></Shape>')
 
     def co(ten):
         return ten in ids
-    hoat = []  # (tên, thời lượng, keyed)
-    # Thở: thân co giãn dọc quanh hông, đầu nhấp nhô theo.
-    k = []
-    if co('than'):
-        k.append(khung(ids['than'], 'scaleY', [(0, 1), (90, 1.02), (180, 1)]))
-    for p in ('dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'mat-trai', 'mat-phai',
-              'long-may-trai', 'long-may-phai', 'khan-co', 'khan-dai'):
-        if co(p):
-            y = vi_tri[p][1]
-            k.append(khung(ids[p], 'y', [(0, y), (90, y - 2.2), (180, y)]))
-    for ten, (x0, x1) in (('hoi-trai', (205, 192)), ('hoi-phai', (305, 318))):
-        h = hoi[ten]
-        k.append(khung(h, 'opacity', [(0, 0), (96, 0), (112, .8), (168, 0), (180, 0)]))
-        k.append(khung(h, 'x', [(0, x0), (96, x0), (170, x1), (180, x0)], '0.2 0.6 0.4 1'))
-        k.append(khung(h, 'y', [(0, 272), (96, 272), (170, 290), (180, 272)], '0.2 0.6 0.4 1'))
+
+    def cuc(ten):  # vị trí cục bộ (con của đầu thì tính từ cổ)
+        gx, gy = vi_tri[ten]
+        return (gx - hx, gy - hy) if ten in DAU_CON else (gx, gy)
+    hoat = []
+    # Thở: thân giãn rất nhẹ; đầu chỉ nhấp nhô 1px để không hở cổ; hơi phả từ mũi lúc thở ra.
+    k = [khung(ids['than'], 'scaleY', [(0, 1), (90, 1.015), (180, 1)])] if co('than') else []
+    k.append(khung(dau_id, 'y', [(0, hy), (90, hy - 1.2), (180, hy)]))
+    for tn, (hid, lx, ly, huong) in hoi.items():
+        k.append(khung(hid, 'opacity', [(0, 0), (104, 0), (126, .65), (172, 0), (180, 0)]))
+        k.append(khung(hid, 'x', [(0, lx), (96, lx), (172, lx + 18 * huong), (180, lx)], '0.2 0.6 0.4 1'))
+        k.append(khung(hid, 'y', [(0, ly), (96, ly), (172, ly + 36), (180, ly)], '0.2 0.6 0.4 1'))
         for tr in ('scaleX', 'scaleY'):
-            k.append(khung(h, tr, [(0, .4), (96, .4), (170, 1.15), (180, .4)], '0.2 0.6 0.4 1'))
+            k.append(khung(hid, tr, [(0, .3), (96, .3), (172, 1.25), (180, .3)], '0.2 0.6 0.4 1'))
     hoat.append(('Thở', 180, ''.join(k)))
-    # Chớp mắt: co mắt theo chiều dọc rất nhanh.
     k = [khung(ids[m], 'scaleY', [(0, 1), (196, 1), (202, 0.08), (209, 1), (240, 1)]) for m in ('mat-trai', 'mat-phai') if co(m)]
     hoat.append(('Chớp mắt', 240, ''.join(k)))
-    # Tai vẫy nhẹ, so le hai bên.
     k = []
     if co('tai-trai'):
         k.append(khung(ids['tai-trai'], 'rotation', [(0, 0), (20, -0.14), (40, 0.05), (55, 0), (150, 0)]))
     if co('tai-phai'):
         k.append(khung(ids['tai-phai'], 'rotation', [(0, 0), (70, 0), (90, 0.14), (110, -0.05), (125, 0), (150, 0)]))
     hoat.append(('Tai', 150, ''.join(k)))
-    # Đuôi đung đưa.
     if co('duoi'):
         hoat.append(('Đuôi', 120, khung(ids['duoi'], 'rotation', [(0, -0.18), (60, 0.22), (120, -0.18)])))
-    # Nhìn qua lại giả 3D: mặt trượt nhiều, tai ít + trễ, khuôn đầu gần như yên.
-    lech = {'mat-trai': 9, 'mat-phai': 9, 'long-may-trai': 8, 'long-may-phai': 8, 'mom': 7, 'sung-trai': 2, 'sung-phai': 2,
-            'dau-khoi': 1.5}
+    # Chuyển động phụ cho bớt cứng: đầu khăn đu đưa từ nút khăn, hai tay đung đưa ngược pha.
     k = []
-    for p, dx in lech.items():
-        if co(p):
-            x = vi_tri[p][0]
-            k.append(khung(ids[p], 'x', [(0, x), (60, x - dx), (150, x - dx), (240, x + dx), (330, x + dx), (420, x)]))
-    for p, dau in (('tai-trai', 1), ('tai-phai', 1)):
-        if co(p):
-            x = vi_tri[p][0]
-            k.append(khung(ids[p], 'x', [(0, x), (75, x - 3), (165, x - 3), (255, x + 3), (345, x + 3), (420, x)]))
+    if co('khan-dai'):
+        k.append(khung(ids['khan-dai'], 'rotation', [(0, -0.045), (100, 0.05), (200, -0.045)]))
+    if co('tay-trai'):
+        k.append(khung(ids['tay-trai'], 'rotation', [(0, 0.035), (100, -0.03), (200, 0.035)]))
+    if co('tay-phai'):
+        k.append(khung(ids['tay-phai'], 'rotation', [(0, -0.035), (100, 0.03), (200, -0.035)]))
+    hoat.append(('Khăn và tay', 200, ''.join(k)))
+    # Nhìn qua lại giả 3D (khi không có con trỏ): nét mặt trượt nhẹ trong đầu, đầu nghiêng rất nhẹ.
+    lech = {'mat-trai': 5, 'mat-phai': 5, 'long-may-trai': 4, 'long-may-phai': 4, 'mom': 3}
+    k = [khung(ids[p], 'x', [(0, cuc(p)[0]), (60, cuc(p)[0] - dx), (150, cuc(p)[0] - dx), (240, cuc(p)[0] + dx),
+                             (330, cuc(p)[0] + dx), (420, cuc(p)[0])]) for p, dx in lech.items() if co(p)]
+    k.append(khung(dau_id, 'rotation', [(0, 0), (60, -0.025), (150, -0.025), (240, 0.025), (330, 0.025), (420, 0)]))
     hoat.append(('Nhìn qua lại', 420, ''.join(k)))
 
     anim_xml, lop_xml = [], []
@@ -261,12 +275,9 @@ def main():
         lop_xml.append(f'<StateMachineLayer name="{ten}" id="{lid}"><AnyState/><ExitState/>'
                        f'<EntryState><StateTransition stateToId="{sid}"/></EntryState>'
                        f'<AnimationState animationId="{aid}" id="{sid}"/></StateMachineLayer>')
-    # Lớp "Chạm" (đặt cuối để đè lớp chớp mắt): chạm → nheo mắt + nhún kiểu squash & stretch, chạy hết rồi về nghỉ.
-    dau = [p for p in ('dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'mat-trai', 'mat-phai',
-                       'long-may-trai', 'long-may-phai', 'khan-co', 'khan-dai') if co(p)]
-    k = [khung(ids['than'], 'scaleY', [(0, 1), (8, .93), (20, 1.05), (32, .99), (42, 1)])] if co('than') else []
-    k += [khung(ids[p], 'y', [(0, vi_tri[p][1]), (8, vi_tri[p][1] + 6), (20, vi_tri[p][1] - 9), (32, vi_tri[p][1] + 1),
-                               (42, vi_tri[p][1])]) for p in dau]
+    # Lớp "Chạm" (cuối để đè chớp mắt): nheo mắt + nhún squash & stretch, chạy hết rồi về nghỉ.
+    k = [khung(ids['than'], 'scaleY', [(0, 1), (8, .94), (20, 1.04), (32, .99), (42, 1)])] if co('than') else []
+    k.append(khung(dau_id, 'y', [(0, hy), (8, hy + 5), (20, hy - 7), (32, hy + 1), (42, hy)]))
     k += [khung(ids[m], 'scaleY', [(0, 1), (6, .25), (34, .25), (42, 1)]) for m in ('mat-trai', 'mat-phai') if co(m)]
     a_cho, a_nhun, s_cho, s_nhun, l_cham = moi_id(), moi_id(), moi_id(), moi_id(), moi_id()
     anim_xml.append(f'<LinearAnimation loopValue="loop" fps="60" duration="1" name="Chờ chạm" id="{a_cho}"/>')
