@@ -11,17 +11,17 @@
  button[aria-pressed=true]{background:var(--nhan);color:#fff;border-color:var(--nhan)}
 </style>
 <main>
- <h1>Trâu C01 · bản thử chuyển động</h1>
- <p class="ghi">Rê hoặc chạm ngón tay hai bên: trâu nghiêng/quay theo. Chạm vào trâu: nhún và vui. Đứng yên: thở, chớp mắt.</p>
+ <h1>Trâu C01 toàn thân · bản thử chuyển động</h1>
+ <p class="ghi">Rê hoặc chạm ngón tay hai bên: trâu nghiêng theo. Chạm vào trâu: nhún và mừng. Đứng yên: thở. Bấm nút để đổi trạng thái.</p>
  <agv-trau id="trau" co="240" trang-thai="nghi"></agv-trau>
  <p class="bong-noi" id="loi" aria-live="polite">Chào chị! Em là trâu AgiViet.</p>
  <div class="nut" id="nut"></div>
- <p class="ghi">Bản 1 dùng 16 ảnh tư thế C01 có sẵn. Khi có lớp tách (đầu, mắt, tay) sẽ thêm cử động mượt từng bộ phận.</p>
+ <p class="ghi">Bộ 10 dáng toàn thân tạo từ mẫu gốc C01 (mắt chấm, không miệng). Khi có lớp tách (đầu, tay, chân) sẽ thêm cử động mượt từng bộ phận.</p>
 </main>
 <script type="module">
  import '../shared/trau.js';
  const LOI = { nghi: 'Chào chị! Em là trâu AgiViet.', chao: 'Chào chị!', 'doc-hop-dong': 'Bấm loa để nghe từng điều. Không vội đâu chị.',
-   'nhap-ma': 'Nhập mã 6 số vừa nhận qua tin nhắn.', 'cho-coc': 'Đang chờ bên mua chuyển cọc.', 'dang-kiem': 'Đang kiểm hàng tại vườn.',
+   'nhap-ma': 'Nhập mã 6 số vừa nhận qua tin nhắn.', 'dang-giao': 'Hàng đang trên đường giao.', 'tien-ve': 'Ngân hàng đã chuyển tiền cho chị.', 'chi-dan': 'Chị bấm nút này nha.', di: 'Mình đi xem vườn nha.', 'cho-coc': 'Đang chờ bên mua chuyển cọc.', 'dang-kiem': 'Đang kiểm hàng tại vườn.',
    'thieu-tien': 'Số tiền nhận chưa đủ. Chị kiểm lại nha.', 'cho-ngan-hang': 'Ngân hàng đang xử lý.', loi: 'Có trục trặc nhỏ, chị thử lại giúp em.', mung: 'Tiền đã về đủ rồi chị!' };
  const trau = document.querySelector('#trau'), loi = document.querySelector('#loi'), nut = document.querySelector('#nut');
  for (const k of Object.keys(LOI)) {

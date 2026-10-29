@@ -1,49 +1,49 @@
-// <agv-trau> — nhân vật trâu C01 làm điểm nhấn (người sáng lập chốt 29/10/2026: bám mẫu gốc C01, chuyển động kiểu Duolingo).
-// Bản 1 dùng 16 ảnh tư thế C01 có sẵn (assets/trau/c01/*.webp): thở, chớp mắt, nghiêng theo ngón tay, chạm thì nhún + vui,
-// vẫy chào, đổi dáng theo trạng thái nghiệp vụ. Khi có lớp tách (đầu/mắt/tay…) sẽ thêm chế độ lớp, giữ nguyên API thẻ.
-// Quy tắc: trâu không che số tiền/nút; không tự diễn "tiền đã về" — trang chỉ đặt trang-thai="mung" khi backend xác nhận.
+// <agv-trau> — nhân vật trâu C01 làm điểm nhấn (người sáng lập chốt 29/10/2026: bám mẫu gốc C01, TOÀN THÂN, chuyển động kiểu Duolingo).
+// Bộ 10 dáng toàn thân (assets/trau/toan/*.webp, cùng khung, chân cùng đường đất) tạo từ ban-goc.png C01 qua Higgsfield;
+// mặt đúng mẫu: mắt chấm đen, mõm chỉ hai lỗ mũi, KHÔNG miệng.
+// Chuyển động: thở, nghiêng theo ngón tay, chạm thì nhún + mừng, vẫy chào, bước đi nhún nhịp (đi/gánh), đổi dáng theo trạng thái.
+// Quy tắc: trâu không che số tiền/nút; không tự diễn "tiền đã về" — trang chỉ đặt trang-thai="mung"/"tien-ve" khi backend xác nhận.
 // Thuộc tính: trang-thai (xem DANG_THEO_TRANG_THAI), co (px, mặc định 160), tinh (có = không chuyển động).
-const GOC = new URL('../assets/trau/c01/', import.meta.url).href;
-const ANH = ['angle-left', 'angle-right', 'attention', 'ban-goc', 'blink', 'chinh-dien', 'happy', 'ledger', 'listening', 'neutral', 'point', 'profile', 'thinking', 'wave-in', 'wave-out', 'wave-up'];
-const MAT_TRUOC = new Set(['chinh-dien', 'neutral', 'ban-goc']); // dáng nhìn thẳng: chớp mắt bằng ảnh blink
+const GOC = new URL('../assets/trau/toan/', import.meta.url).href;
+const ANH = ['dung', 'chao', 'di', 'mung', 'doc-so', 'cho', 'chi', 'xin-loi', 'dem-tien', 'ganh'];
+const DI_BO = new Set(['di', 'ganh']); // dáng đang bước: nhún theo nhịp chân
 export const DANG_THEO_TRANG_THAI = {
-  nghi: 'chinh-dien', chao: 'wave', 'doc-hop-dong': 'ledger', 'nhap-ma': 'listening', 'cho': 'thinking',
-  'cho-coc': 'thinking', 'cho-ngan-hang': 'thinking', 'dang-kiem': 'listening', 'thieu-tien': 'attention',
-  'chi-dan': 'point', 'loi': 'attention', 'mung': 'happy',
+  nghi: 'dung', chao: 'vay', 'doc-hop-dong': 'doc-so', 'nhap-ma': 'dem-tien', cho: 'cho', 'cho-coc': 'cho',
+  'cho-ngan-hang': 'cho', 'dang-kiem': 'doc-so', 'dang-giao': 'ganh', 'thieu-tien': 'xin-loi', 'chi-dan': 'chi',
+  loi: 'xin-loi', 'tien-ve': 'dem-tien', mung: 'mung', di: 'di',
 };
 const giamChuyenDong = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ngu = (ms) => new Promise((r) => setTimeout(r, ms));
 
 class AgvTrau extends HTMLElement {
-  static observedAttributes = ['trang-thai', 'co'];
-  #anh = []; #hien = 0; #dang = 'chinh-dien'; #raf = 0; #nghiengMuc = 0; #nghiengDich = 0; #ban = false; #hen = 0;
+  static observedAttributes = ['trang-thai'];
+  #anh = []; #hien = 0; #dang = 'dung'; #raf = 0; #nghiengMuc = 0; #nghiengDich = 0; #ban = false; #theoTay = null;
 
   connectedCallback() {
     const co = Number(this.getAttribute('co') || 160);
     this.attachShadow({ mode: 'open' }).innerHTML = `<style>
       :host{display:inline-block;position:relative;width:${co}px;height:${co}px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
       .khung{position:relative;width:100%;height:100%;transform-origin:50% 100%;will-change:transform}
-      img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .16s ease;user-select:none;-webkit-user-drag:none}
-      .bong{position:absolute;left:22%;right:22%;bottom:1%;height:5%;border-radius:50%;background:rgba(35,60,49,.16);transform-origin:50% 50%}
+      img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .14s ease;user-select:none;-webkit-user-drag:none}
+      .bong{position:absolute;left:24%;right:24%;bottom:2%;height:5%;border-radius:50%;background:rgba(35,60,49,.16)}
     </style><div class="bong"></div><div class="khung"><img alt=""><img alt="" style="opacity:0"></div>`;
     this.#anh = [...this.shadowRoot.querySelectorAll('img')];
     this.khung = this.shadowRoot.querySelector('.khung'); this.bong = this.shadowRoot.querySelector('.bong');
     this.setAttribute('role', 'img'); if (!this.hasAttribute('aria-label')) this.setAttribute('aria-label', 'Trâu AgiViet');
     for (const n of ANH) { const i = new Image(); i.src = GOC + n + '.webp'; } // tải trước để đổi dáng không nháy
-    this.#datDang(this.#dangCho(this.getAttribute('trang-thai')), true);
+    const d = this.#dangCho(this.getAttribute('trang-thai'));
+    this.#datDang(d === 'vay' ? 'chao' : d, true);
     if (this.hasAttribute('tinh') || giamChuyenDong()) return;
     this.addEventListener('pointerdown', () => this.chamVao());
     this.#theoTay = (e) => this.#nhinTheo(e);
     window.addEventListener('pointermove', this.#theoTay, { passive: true });
-    this.#lap(); this.#henChop();
+    this.#lap();
+    if (d === 'vay') this.vayChao();
   }
-  disconnectedCallback() { cancelAnimationFrame(this.#raf); clearTimeout(this.#hen); window.removeEventListener('pointermove', this.#theoTay); }
-  attributeChangedCallback(ten, _cu, moi) {
-    if (ten === 'trang-thai' && this.#anh.length) this.doiTrangThai(moi);
-  }
-  #theoTay = null;
+  disconnectedCallback() { cancelAnimationFrame(this.#raf); if (this.#theoTay) window.removeEventListener('pointermove', this.#theoTay); }
+  attributeChangedCallback(_ten, _cu, moi) { if (this.#anh.length) this.doiTrangThai(moi); }
 
-  #dangCho(tt) { return DANG_THEO_TRANG_THAI[tt || 'nghi'] ?? 'chinh-dien'; }
+  #dangCho(tt) { return DANG_THEO_TRANG_THAI[tt || 'nghi'] ?? 'dung'; }
   /** Đổi ảnh bằng hòa chéo giữa hai lớp ảnh (không nháy trắng). */
   #datDang(ten, ngay = false) {
     if (ten === this.#dang && !ngay) return;
@@ -55,48 +55,42 @@ class AgvTrau extends HTMLElement {
   }
   async doiTrangThai(tt) {
     const d = this.#dangCho(tt);
-    if (d === 'wave') return this.vayChao();
+    if (d === 'vay') return this.vayChao();
     this.#datDang(d);
-    if (tt === 'mung' && !giamChuyenDong()) this.#nhun(1.25);
+    if (d === 'mung' && !giamChuyenDong()) this.#nhun(1.3);
   }
-  async vayChao(lan = 2) {
+  /** Vẫy chào: đổi qua lại dáng đứng/chào ba nhịp, kèm lắc người nhẹ. */
+  async vayChao(lan = 3) {
     if (this.#ban) return; this.#ban = true;
-    for (let i = 0; i < lan; i++) for (const k of ['wave-in', 'wave-up', 'wave-out', 'wave-up']) { this.#datDang(k); await ngu(170); }
-    this.#datDang('chinh-dien'); this.#ban = false;
+    for (let i = 0; i < lan; i++) { this.#datDang('chao'); await ngu(260); this.#datDang('dung'); await ngu(160); }
+    this.#datDang('chao'); this.#ban = false;
   }
   async chamVao() {
     if (this.#ban) return; this.#ban = true;
-    const cu = this.#dang; this.#datDang('happy'); await this.#nhun(1);
-    await ngu(650); this.#datDang(cu); this.#ban = false;
+    const cu = this.#dang; this.#datDang('mung'); await this.#nhun(1);
+    await ngu(600); this.#datDang(cu); this.#ban = false;
   }
   /** Nhún kiểu "squash & stretch": nén xuống, bật lên, rơi về; bóng co giãn theo. */
   #nhun(muc = 1) {
     const k = [
       { transform: 'scale(1,1)' }, { transform: `scale(${1 + .08 * muc},${1 - .1 * muc})`, offset: .18 },
-      { transform: `translateY(${-14 * muc}px) scale(${1 - .05 * muc},${1 + .07 * muc})`, offset: .5 },
+      { transform: `translateY(${-16 * muc}px) scale(${1 - .05 * muc},${1 + .07 * muc})`, offset: .5 },
       { transform: `scale(${1 + .04 * muc},${1 - .04 * muc})`, offset: .82 }, { transform: 'scale(1,1)' },
     ];
-    this.bong.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.1)', offset: .18 }, { transform: 'scale(.75)', offset: .5 }, { transform: 'scale(1)' }], { duration: 520, easing: 'ease-out' });
-    return this.khung.animate(k, { duration: 520, easing: 'cubic-bezier(.3,.7,.4,1)', composite: 'add' }).finished;
-  }
-  #henChop() {
-    this.#hen = setTimeout(async () => {
-      if (!this.#ban && MAT_TRUOC.has(this.#dang)) { const cu = this.#dang; this.#datDang('blink'); await ngu(110); if (this.#dang === 'blink') this.#datDang(cu); }
-      this.#henChop();
-    }, 2800 + Math.random() * 3200);
+    this.bong.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.1)', offset: .18 }, { transform: 'scale(.72)', offset: .5 }, { transform: 'scale(1)' }], { duration: 540, easing: 'ease-out' });
+    return this.khung.animate(k, { duration: 540, easing: 'cubic-bezier(.3,.7,.4,1)', composite: 'add' }).finished;
   }
   #nhinTheo(e) {
-    const r = this.getBoundingClientRect(); const dx = (e.clientX - (r.left + r.width / 2)) / Math.max(innerWidth / 2, 1);
-    this.#nghiengDich = Math.max(-1, Math.min(1, dx));
-    if (this.#ban || !['chinh-dien', 'angle-left', 'angle-right', 'neutral'].includes(this.#dang)) return;
-    this.#datDang(dx < -0.55 ? 'angle-left' : dx > 0.55 ? 'angle-right' : 'chinh-dien');
+    const r = this.getBoundingClientRect();
+    this.#nghiengDich = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / Math.max(innerWidth / 2, 1)));
   }
-  /** Vòng hình: thở (giãn dọc rất nhẹ từ chân) + nghiêng mượt về phía ngón tay. */
+  /** Vòng hình: thở (giãn dọc rất nhẹ từ chân) + nghiêng mượt về phía ngón tay; khi đi/gánh thì nhún theo nhịp bước. */
   #lap = () => {
     const t = performance.now() / 1000;
     this.#nghiengMuc += (this.#nghiengDich - this.#nghiengMuc) * 0.08;
-    const tho = Math.sin(t * 2.1) * 0.012;
-    this.khung.style.transform = `rotate(${this.#nghiengMuc * 3.5}deg) scale(${1 - tho / 3},${1 + tho})`;
+    let y = 0, quay = this.#nghiengMuc * 3, tho = Math.sin(t * 2.1) * 0.012;
+    if (DI_BO.has(this.#dang)) { y = -Math.abs(Math.sin(t * 6)) * 5; quay += Math.sin(t * 6) * 1.6; tho = 0; }
+    this.khung.style.transform = `translateY(${y}px) rotate(${quay}deg) scale(${1 - tho / 3},${1 + tho})`;
     this.#raf = requestAnimationFrame(this.#lap);
   };
 }
