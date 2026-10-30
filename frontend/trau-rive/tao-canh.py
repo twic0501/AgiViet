@@ -267,8 +267,10 @@ def main():
         ten = g.get('id'); ids[ten] = moi_id(); vi_tri[ten] = (gx, gy); noi[ten] = noi_dung
     for ten, (cid, cx, cy) in LONG.items():
         ids[ten] = cid; vi_tri[ten] = (cx, cy)
+    # Bộ góc nhìn (nguon/goc/*.svg, tên *-gan/*-xa) đã vẽ khăn khít cổ → không dùng mẹo riêng của V4g.
+    goc_nhin = any(t.endswith('-gan') or t.endswith('-xa') for t in vi_tri)
     # Vòng khăn kéo giãn lên một chút để mép trên luôn nằm sát dưới cằm, che kín hai bên cổ.
-    if 'khan-co' in vi_tri:
+    if 'khan-co' in vi_tri and not goc_nhin:
         vi_tri['khan-co'] = (vi_tri['khan-co'][0], vi_tri['khan-co'][1] - 3)
     hx, hy = vi_tri.get('dau-khoi', (256, 300))
     hoi = {}
@@ -289,7 +291,7 @@ def main():
         if ten.startswith('tai-'):  # tai lồng 2 lớp: ngoài xoay theo hướng nhìn, trong tự vẫy (không đè nhau)
             ids[ten + '/ve'] = moi_id()
             ruot = f'<Node name="{ten}-ve" id="{ids[ten + "/ve"]}">{ruot}</Node>'
-        co_gian = ' scaleX="1.04" scaleY="1.16"' if ten == 'khan-co' else ''
+        co_gian = ' scaleX="1.04" scaleY="1.16"' if ten == 'khan-co' and not goc_nhin else ''
         return f'<Node x="{gx - goc[0]:.2f}" y="{gy - goc[1]:.2f}"{co_gian} name="{ten}" id="{ids[ten]}">{them}{ruot}{rb}</Node>'
 
     trong_dau = [nut(t, (hx, hy)) for t in [g.get('id') for g in nhom] if t in DAU_CON]
@@ -315,7 +317,22 @@ def main():
         return (gx - hx, gy - hy) if ten in DAU_CON else (gx, gy)
     hoat = []
     # Thở: thân giãn rất nhẹ; đầu chỉ nhấp nhô 1px để không hở cổ; hơi phả từ mũi lúc thở ra.
+    # Góc nhìn: tay, khăn, cổ co giãn cùng điểm tựa của thân → luôn dính áo khi thở / nhún (không tách, không hở).
+    THEO_THAN = ['tay-gan', 'tay-xa', 'khan-co', 'khan-dai', 'co']
+
+    def theo_than(cac):
+        if not goc_nhin or not co('than'):
+            return []
+        px, py = vi_tri['than']
+        out = []
+        for p in THEO_THAN:
+            if co(p) and p not in DAU_CON:
+                qy = vi_tri[p][1]
+                out.append(khung(ids[p], 'scaleY', cac))
+                out.append(khung(ids[p], 'y', [(f, py + (qy - py) * v) for f, v in cac]))
+        return out
     k = [khung(ids['than'], 'scaleY', [(0, 1), (90, 1.015), (180, 1)])] if co('than') else []
+    k += theo_than([(0, 1), (90, 1.015), (180, 1)])
     k.append(khung(dau_id, 'y', [(0, hy), (90, hy - 1.2), (180, hy)]))
     for tn, (hid, lx, ly, huong) in hoi.items():
         k.append(khung(hid, 'opacity', [(0, 0), (104, 0), (126, .65), (172, 0), (180, 0)]))
@@ -463,6 +480,7 @@ def main():
                    f'</StateMachineLayer>')
     # Lớp "Chạm" (cuối để đè chớp mắt): nheo mắt + nhún squash & stretch, chạy hết rồi về nghỉ.
     k = [khung(ids['than'], 'scaleY', [(0, 1), (8, .94), (20, 1.04), (32, .99), (42, 1)])] if co('than') else []
+    k += theo_than([(0, 1), (8, .94), (20, 1.04), (32, .99), (42, 1)])
     k.append(khung(dau_id, 'y', [(0, hy), (8, hy + 5), (20, hy - 7), (32, hy + 1), (42, hy)]))
     k += [khung(ids[m], 'scaleY', [(0, 1), (6, .25), (34, .25), (42, 1)]) for m in ('mat-trai', 'mat-phai') if co(m)]
     a_cho, a_nhun, s_cho, s_nhun, l_cham = moi_id(), moi_id(), moi_id(), moi_id(), moi_id()

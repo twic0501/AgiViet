@@ -95,6 +95,12 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   4. Góc ¾ không có mày xa.
   5. Góc nghiêng chưa tách tai thành nhóm riêng; tay xa, chân xa khuất hẳn.
 - **Sửa theo người sáng lập (¾ "lỗi chân và khăn"):** chân và khăn góc ¾ chuyển sang **đồ tay bằng đường cong** theo toạ độ đọc trên lưới 10 đơn vị phủ ảnh nguồn (`KHAN_CO_34`, `KHAN_DAI_34`, `CHAN_XA_34`, `CHAN_GAN_34` trong `do-goc.py`). Phần này gồm đường háng, nếp quần, móng có khe, dải khăn ôm cổ, đầu khăn thon có tua, caro cắt theo hình, túi áo. Codex: chân và khăn ĐẠT.
+- **Sửa theo người sáng lập (xem Rive: "lỗi cổ, áo thiếu viền tà, nhún thì áo tụt có viền đen, khăn đứng yên, tay với áo tách rời"):**
+  - `tao-canh.py` nhận ra bộ góc nhìn (tên `*-gan`/`*-xa`). Khi đó tay, khăn, cổ co giãn **cùng điểm tựa của thân** lúc thở và lúc nhún khi chạm, nên luôn dính áo.
+  - Bỏ mẹo riêng của V4g (kéo giãn vòng khăn 1,16 lần và đẩy lên 3 px) ở các góc mới. Mẹo này làm khăn cổ bị dày.
+  - Thêm nhóm `co` (lông cổ, nằm dưới áo, sau khăn và đầu) để che khe khi đầu nhún.
+  - Giữ viền tà áo; bo tròn đầu khăn ở cổ.
+  - Đầu ra V4g của `tao-canh.py` không đổi (đã so byte). Khung nghỉ và nhún: `docs/trau/goc-nhin/rive-nghi-nhun.png`.
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")

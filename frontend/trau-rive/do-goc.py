@@ -78,6 +78,9 @@ def nghieng():
               'Đồ từ bảng xoay Higgsfield sinh từ V4g (docs/trau/tham-chieu/higgsfield-v4g-xoay-1.png, hình 3, lật gương); '
               'màu V4g, nét #24190f ~5,6.', toi_rieng=toi_rieng,
               net_rong={'duoi': 44}, caro={'khan-co': 12, 'khan-dai': 12}, lot={'dau-khoi': LONG, 'tai-gan': LONG, 'sung-gan': '#fff1dd', 'khan-co': KHAN_VUA, 'khan-dai': KHAN_VUA})
+    chen_nhom(os.path.join(DIR, 'nguon/goc/trau-nghieng-trai.svg'), 'than', 'co', (268, 300), [
+        '<path d="M222 266Q270 258 314 266Q320 292 314 320Q270 330 224 320Q216 292 222 266Z" fill="#84736b" '
+        'stroke="none" data-role="co-lien"/>'], 'Cổ lông sau đầu và khăn: che khe khi đầu nhún')
 
 
 def ba_tu():
@@ -161,11 +164,14 @@ def ba_tu():
                    'chan-gan': '#45423d', 'mom': '#fdcdb0'}, net_rong={'duoi': 44},
               net_chi_vien=('chan-xa', 'chan-gan'), caro={'khan-co': 12, 'khan-dai': 12},
               them_vung=[('khan-co', khan_co, KHAN_VUA), ('khan-dai', khan_dai, KHAN_VUA)],
-              bo_net=do.no(vung_khan, 6) | anh.da_giac([(150, 409), (340, 409), (340, 500), (150, 500)]))
+              bo_net=do.no(vung_khan, 6) | anh.da_giac([(150, 419), (340, 419), (340, 500), (150, 500)]))
     # khăn và chân: ảnh nguồn vỡ mảnh / có vân vải → đồ tay theo toạ độ đọc trên lưới
     thay_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), {
         'khan-co': khan_tay(KHAN_CO_34), 'khan-dai': khan_tay(KHAN_DAI_34, TUA_34),
         'chan-xa': chan_tay(**CHAN_XA_34), 'chan-gan': chan_tay(**CHAN_GAN_34)})
+    chen_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), 'than', 'co', (256, 300), [
+        '<path d="M198 262Q256 252 312 262Q318 290 310 318Q256 328 200 318Q192 290 198 262Z" fill="#84736b" '
+        'stroke="none" data-role="co-lien"/>'], 'Cổ lông sau đầu và khăn: che khe khi đầu nhún')
     them_vao_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), {'than': [
         '<path d="M234 364L266 363L267 383Q251 388 235 385Z" fill="none" stroke="#aa7652" stroke-width="1.9" '
         'stroke-linejoin="round" data-role="tui"/>']})
@@ -257,6 +263,16 @@ def them_vao_nhom(svg, them):
     open(svg, 'w').write(s)
 
 
+def chen_nhom(svg, truoc, bo, goc, con, nhan):
+    """Chèn nhóm mới ngay trước nhóm `truoc` (thứ tự vẽ: nằm dưới nhóm đó)."""
+    s = open(svg).read()
+    g = (f'  <g id="{bo}" data-goc="{goc[0]:.2f} {goc[1]:.2f}" aria-label="{nhan}" '
+         f'style="transform-box:view-box;transform-origin:{goc[0]:.2f}px {goc[1]:.2f}px">'
+         + ''.join('\n    ' + c for c in con) + '\n  </g>\n')
+    i = s.index(f'  <g id="{truoc}"')
+    open(svg, 'w').write(s[:i] + g + s[i:])
+
+
 def thay_nhom(svg, moi):
     """Thay nội dung các nhóm <g id=...> trong tệp SVG bằng phần đồ tay."""
     s = open(svg).read()
@@ -268,8 +284,8 @@ def thay_nhom(svg, moi):
 
 
 # ¾ trái — toạ độ đọc trên lưới 10 đơn vị phủ ảnh 3D Jutsu (khung 512)
-KHAN_CO_34 = ('M180 294Q182 289 196 288L300 281Q322 279 327 285Q332 293 327 302Q312 304 293 307'
-              'Q262 314 232 326Q212 334 191 334Q181 331 180 318Z')
+KHAN_CO_34 = ('M184 292Q188 288 198 288L300 281Q322 279 327 285Q332 293 327 302Q312 304 293 307'
+              'Q262 314 232 326Q212 334 194 335Q178 332 174 318Q173 300 184 292Z')
 KHAN_DAI_34 = ('M174 322L190 326Q191 358 189 384Q187 400 183 410L161 410Q155 378 162 352'
                'Q166 336 174 322Z')
 TUA_34 = 'M164 411L163 425M169 411L168 426M174 411L174 425M179 410L179 423'
