@@ -61,8 +61,8 @@ export async function phien() {
 export function giuThamSo(goc = document) {
   const thu = new URLSearchParams(location.search).get("thu");
   if (!thu) return;
-  goc.querySelectorAll('a[href$=".html"], a[href*=".html?"]').forEach((a) => {
-    const u = new URL(a.getAttribute("href"), location.href); u.searchParams.set("thu", thu); a.href = u.pathname + u.search;
+  goc.querySelectorAll('a[href*=".html"]').forEach((a) => {
+    const u = new URL(a.getAttribute("href"), location.href); u.searchParams.set("thu", thu); a.href = u.pathname + u.search + u.hash;
   });
 }
 
@@ -89,7 +89,7 @@ export const bieuTuong = (ten, dac = false) => `<svg viewBox="0 0 24 24" width="
 
 // Thanh menu dưới dùng chung: Trang chủ · Chợ · Đăng bài · Tin nhắn · Tiền
 const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "./ban-dang-bai.html"],
-  ["tin-nhan", "Tin nhắn", "#tin-nhan"], ["tien", "Tiền", "#tien"]];
+  ["tin-nhan", "Tin nhắn", "./ban-tin-nhan.html"], ["tien", "Tiền", "#tien"]];
 export function veTab(dangMo, soTin = 0) {
   const nav = document.createElement("nav");
   nav.className = "tab"; nav.setAttribute("aria-label", "Mục chính");
@@ -102,7 +102,21 @@ export function veTab(dangMo, soTin = 0) {
 export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
   goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
     <div class="dau-phai">
-      <a class="nut-tron" href="#ho-tro" aria-label="Hỗ trợ: gọi hoặc nhắn AgiViet">${bieuTuong("ho-tro")}</a>
-      <a class="nut-tron" href="#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>
+      <a class="nut-tron" href="./ban-tin-nhan.html#ho-tro" aria-label="Hỗ trợ: nhắn AgiViet">${bieuTuong("ho-tro")}</a>
+      <a class="nut-tron" href="./ban-tin-nhan.html#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>
     </div>`;
+  giuThamSo(goc);
+}
+
+// ---- Thông báo: backend không lưu "đã đọc" → máy nhớ seq lớn nhất đã xem ----
+const KHOA_XEM = "agv-tb-da-xem";
+export const seqDaXem = () => { try { return Number(localStorage.getItem(KHOA_XEM)) || 0; } catch { return 0; } };
+export const ghiDaXem = (seq) => { try { if (seq > seqDaXem()) localStorage.setItem(KHOA_XEM, String(seq)); } catch {} };
+export async function soThongBaoMoi(token) {
+  try {
+    const r = await fetch("/v1/notifications?limit=50", { headers: { authorization: "Bearer " + token } });
+    if (!r.ok) return 0;
+    const ds = await r.json(); const da = seqDaXem();
+    return (Array.isArray(ds) ? ds : []).filter((n) => Number(n.seq) > da).length;
+  } catch { return 0; }
 }

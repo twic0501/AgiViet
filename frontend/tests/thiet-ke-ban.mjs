@@ -36,13 +36,11 @@ async function guiMa(p) {
     p.locator("#b2").waitFor({ state: "visible", timeout: 8000 }).then(() => "ok"),
     p.locator("#loi-1").waitFor({ state: "visible", timeout: 8000 }).then(() => "chan"),
   ]);
-  if (ketQuaGui === "chan") {
-    assert.ok((await p.locator("#loi-1").textContent()).trim().length > 0, "bị chặn gửi mã phải có câu báo");
-    await p.waitForTimeout(61000);
-    await p.locator("#gui").click();
-    await p.locator("#b2").waitFor({ state: "visible", timeout: 8000 });
-  }
+  if (ketQuaGui === "chan") assert.match(await p.locator("#loi-1").textContent(), /thử lại sau|chờ/, "bị chặn gửi mã phải có câu báo dễ hiểu");
+  return ketQuaGui;
 }
+// Người bán mẫu dùng cho kiểm thử (không dùng 0918000421 người sáng lập đang thử tay)
+const SO_BAN = ["0918000422", "0939000140", "0977000620", "0966000520", "0939000160", "0977000630", "0977000640", "0988000770"];
 
 // Số lô đang bán thật trên backend (các lượt thử Đăng bài làm số lô thay đổi)
 async function loDangBan(sdt) {
@@ -75,22 +73,26 @@ await trang("dang-nhap-qua-cau", async (p) => {
 await trang("dang-nhap-dung-ma", async (p) => {
   await p.goto(`${GOC}/thiet-ke/dang-nhap.html`);
   await p.getByRole("button", { name: "Đăng nhập" }).click();
-  // Số riêng cho kiểm thử (0918000422, cùng hộ Năm) — không dùng 0918000421 người sáng lập đang thử tay
-  await p.locator("#sdt").pressSequentially("0918000422");
-  await guiMa(p);
+  let duoc = false;
+  for (const so of SO_BAN) {
+    await p.locator("#sdt").fill(""); await p.locator("#sdt").pressSequentially(so);
+    if ((await guiMa(p)) === "ok") { duoc = true; break; }
+  }
+  assert.ok(duoc, "mọi số người bán mẫu đều đang bị khóa OTP");
   await p.locator("#ma-thu").waitFor({ state: "visible", timeout: 5000 });
   const ma = (await p.locator("#ma-thu").textContent()).match(/\d{6}/)[0];
   await p.screenshot({ path: `${ANH}02-otp.png` });
   await p.locator("#otp input").first().pressSequentially(ma);
   await p.waitForURL(/ban-hom-nay\.html/, { timeout: 8000 });
-  await p.getByText("Hộ Nguyễn Thị Năm").waitFor({ timeout: 8000 });
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 8000 });
+  assert.notEqual((await p.locator(".dau h1").textContent()).trim(), "AgiViet", "đã vào bằng phiên thật, hiện tên tổ chức");
 }, /status of 429/);
 
 await trang("dang-nhap-sai-ma", async (p) => {
   await p.goto(`${GOC}/thiet-ke/dang-nhap.html`);
   await p.getByRole("button", { name: "Đăng nhập" }).click();
-  await p.locator("#sdt").pressSequentially("0966000520");
-  await guiMa(p);
+  await p.locator("#sdt").pressSequentially("097" + String(Date.now()).slice(-7));   // số mới: không bị khóa
+  assert.equal(await guiMa(p), "ok");
   await p.locator("#otp input").first().pressSequentially("000000");
   await p.locator("#loi-2").waitFor({ state: "visible", timeout: 5000 });
   assert.match(p.url(), /dang-nhap\.html/);
@@ -179,6 +181,38 @@ await trang("dang-bai", async (p) => {
   const lo = (await (await fetch("http://127.0.0.1:18980/v1/lots?mine=true", { headers: { authorization: "Bearer " + t } })).json()).find((l) => l.declared_qty_g === String(kg * 1000));
   assert.ok(lo, "lô mới phải có trên backend");
   assert.equal(lo.status, "on_sale", "lô phải được đăng (đang bán), không kẹt nháp");
+});
+
+await trang("tin-nhan-thong-bao", async (p) => {
+  // Trước khi xem: chuông có chấm mới; xem xong quay về Trang chủ: hết chấm
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
+  assert.equal(await p.locator('.dau a[href*="thong-bao"] .cham-moi').count(), 1, "chưa xem thì chuông có chấm");
+  await p.locator('.dau a[href*="thong-bao"]').click();
+  await p.waitForURL(/ban-tin-nhan\.html/);
+  await p.locator("#ds-tb .tb").first().waitFor({ timeout: 8000 });
+  assert.ok(await p.locator("#ds-tb .tb").count() > 0, "có thông báo thật");
+  assert.ok(await p.locator("#ds-tb .ngay").count() > 0, "có nhóm theo ngày");
+  assert.equal(await p.locator('.tab a[aria-current="page"]').innerText().then((s) => s.trim()), "Tin nhắn");
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}11-tin-nhan.png` });
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
+  assert.equal(await p.locator('.dau a[href*="thong-bao"] .cham-moi').count(), 0, "đã xem thì hết chấm");
+});
+
+await trang("hoi-agiviet", async (p) => {
+  await p.goto(`${GOC}/thiet-ke/ban-tin-nhan.html?thu=0918000421#ho-tro`);
+  assert.equal(await p.locator("#p-ht").isVisible(), true, "mở thẳng thẻ Hỏi AgiViet từ nút tai nghe");
+  assert.ok(await p.locator("#gui").isDisabled(), "chưa có nội dung thì chưa gửi");
+  await p.getByRole("button", { name: "Bên mua chưa ký hợp đồng" }).click();
+  await p.locator("#noi-dung").press("End");
+  await p.locator("#noi-dung").pressSequentially("Hợp đồng DEMO56 chờ lâu rồi.");
+  await p.locator("#gui").click();
+  await p.locator("#da-gui").waitFor({ state: "visible", timeout: 8000 });
+  assert.match(await p.locator("#da-gui").innerText(), /Đã gửi cho AgiViet/);
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}12-hoi-agiviet.png` });
 });
 
 await browser.close();

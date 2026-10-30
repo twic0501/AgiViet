@@ -53,7 +53,7 @@
 
 <script src="/assets/vendor/rive/rive.js"></script>
 <script type="module">
-import { tien, tienDu, can, esc, so, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT, dangLam, giuThamSo, veDau, veTab } from "./chung.js";
+import { tien, tienDu, can, esc, so, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT, dangLam, giuThamSo, veDau, veTab, soThongBaoMoi } from "./chung.js";
 veTab("trang-chu");
 veDau(document.getElementById("dau"), { chao: "Chào bác", ten: "AgiViet", chuDau: "" });
 const $ = (id) => document.getElementById(id);
@@ -78,8 +78,7 @@ async function mo() {
   const don = d.don.filter(dangLam);                       // chỉ hợp đồng còn đang chạy
   const lo = d.lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);   // lô bên mua đang thấy
   // Số thông báo chưa đọc lấy từ backend (lỗi tải thì không hiện chấm)
-  const tb = await fetch("/v1/notifications", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : [])).catch(() => []);
-  const chuaDoc = (Array.isArray(tb) ? tb : tb.items || []).filter((n) => !n.read_at && !n.da_doc).length;
+  const chuaDoc = await soThongBaoMoi(token);
   veDau($("dau"), { chao: `Chào ${me.name.split(" ").at(-1)}`, ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase(), soThongBao: chuaDoc });
   $("ngay").textContent = new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
 
