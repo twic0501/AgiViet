@@ -349,10 +349,31 @@ def main():
     # Đổi dáng tay bằng khớp (chỉ khi nguồn là SVG khớp nối từ tay-khop.py): ba chuỗi (bàn tay, viền, màu)
     # của mỗi khớp xoay cùng góc → tay luôn liền. Dáng đọc từ tu-the-khop.json; thử: nghỉ → chào → mừng → nghỉ.
     if KHOP and os.environ.get('AGV_DANG_THU'):
-        tt = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tu-the-khop.json'), encoding='utf-8'))
+        goc_tm = os.path.dirname(os.path.abspath(__file__))
+        tt = json.load(open(os.path.join(goc_tm, 'tu-the-khop.json'), encoding='utf-8'))
+        tt.update({m: v for m, v in json.load(open(os.path.join(goc_tm, 'tu-the-chan.json'), encoding='utf-8')).items() if m not in tt})
         thu_tu = os.environ['AGV_DANG_THU'].split(',')
         doan = 70
         k = []
+        # Chân: hông → gối → cổ chân, ba chuỗi (móng, viền, màu) cùng góc; dáng không khai báo chân = đứng thẳng.
+        ts_c = json.load(open(os.path.join(goc_tm, 'tham-so-tay.json')))
+        L_DUI, L_CANG = ts_c.get('L_DUI', 30.0), ts_c.get('L_CANG', 34.0)
+        for ben in ('chan-trai', 'chan-phai'):
+            def q_chan(ma):
+                return tt[ma].get(ben) or [0, 0, 0]
+            for j, khop in enumerate(('dui', 'cang', 'mong')):
+                for lop in ('', '-vien', '-mau'):
+                    nid = KHOP.get(f'{ben}-{khop}{lop}')
+                    if nid is not None:
+                        k.append(khung(nid, 'rotation', sum(([(n * doan, math.radians(q_chan(m)[j])), (n * doan + 30, math.radians(q_chan(m)[j]))]
+                                                             for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
+            for lop in ('', '-vien', '-mau'):
+                for khop, L, idx in (('cang', L_DUI, 3), ('mong', L_CANG, 4)):
+                    d = KHOP.get(f'{ben}-{khop}{lop}#dich')
+                    if d is not None:
+                        k.append(khung(d, 'y', sum(([(n * doan, L * (q_chan(m)[idx] if len(q_chan(m)) > idx else 1.0)),
+                                                     (n * doan + 30, L * (q_chan(m)[idx] if len(q_chan(m)) > idx else 1.0))]
+                                                    for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
         for ben in ('tay-trai', 'tay-phai'):
             for j, khop in enumerate(('tren', 'duoi', 'ban')):
                 for lop in ('', '-vien', '-mau', '-noi'):
