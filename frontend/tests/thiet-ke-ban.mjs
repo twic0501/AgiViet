@@ -185,6 +185,23 @@ await trang("hang-hoa", async (p) => {
   await p.screenshot({ path: `${ANH}05b-cho-chao-hang.png` });
 });
 
+await trang("tien", async (p) => {
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator('.tab a[href*="ban-tien"]').click();
+  await p.waitForURL(/ban-tien\.html\?thu=/);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 8000 });
+  // Số lấy đúng từ /v1/money/summary của backend
+  const t = (await (await fetch(`${GOC}/v1/test/impersonate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const s = await (await fetch(`${GOC}/v1/money/summary`, { headers: { authorization: "Bearer " + t } })).json();
+  assert.equal(await p.locator("#coc").getAttribute("title"), `${Number(s.tong.coc_dang_giu).toLocaleString("vi-VN")} đồng`, "cọc đang giữ đúng số backend");
+  assert.equal(await p.locator(".hd-tien").count(), s.theo_don.filter((d) => !d.la_mua).length, "mỗi hợp đồng một dòng");
+  assert.equal(await p.locator('.tab a[aria-current="page"]').getAttribute("aria-label"), "Tiền");
+  await p.locator('.ky button[data-ky="tat-ca"]').click();
+  await p.getByText("Đã nhận từ trước tới nay").waitFor({ timeout: 5000 });
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}06-tien.png`, fullPage: true });
+});
+
 await trang("thieu-phien-bao-loi", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html`);
   await p.getByText("Chưa mở được sổ").waitFor({ timeout: 5000 });

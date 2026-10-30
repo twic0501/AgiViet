@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiền · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  /* Số lớn: tiền đã về tay bác trong kỳ */
+  .the-lon { border-radius: 22px; padding: 16px 16px 14px; color: #f6f2e7; overflow: hidden; }
+  .the-lon .ky { display: flex; gap: 6px; }
+  .the-lon .ky button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(246, 242, 231, .28); background: transparent; color: #f6f2e7; font: 600 14px/1 var(--chu); cursor: pointer; }
+  .the-lon .ky button[aria-pressed="true"] { background: var(--vang-lua); border-color: var(--vang-lua); color: #3a2a0c; }
+  .the-lon .nhan { margin-top: 14px; font-size: 14px; color: rgba(246, 242, 231, .82); }
+  .the-lon .so { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .the-lon .tach { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(246, 242, 231, .18); font-size: 13px; color: rgba(246, 242, 231, .82); }
+  .the-lon .tach b { display: block; color: #f6f2e7; font-size: 16px; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  /* Ba ô */
+  .o-tien { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .o-tien > div { background: var(--giay-noi); border: 1px solid var(--ke); border-radius: 16px; padding: 12px 14px; }
+  .o-tien .rong { grid-column: 1 / -1; }
+  .o-tien .ten { font-size: 13px; font-weight: 600; color: var(--muc-phu); display: flex; align-items: center; gap: 6px; }
+  .o-tien .ten svg { width: 18px; height: 18px; flex: none; }
+  .o-tien b { display: block; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px; }
+  .o-tien .phu { font-size: 12.5px; color: var(--muc-nhat); margin-top: 2px; line-height: 1.35; }
+  .o-tien .khien { background: var(--la-nhat); border-color: transparent; }
+  .o-tien .khien .ten, .o-tien .khien b { color: var(--la-dam); }
+  .o-tien .vang b { color: var(--nau-dat); }
+  /* Nguyên tắc tiền */
+  .nguyen-tac { padding: 12px 14px; border-radius: 14px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 13.5px; line-height: 1.5; }
+  .nguyen-tac b { font-weight: 700; }
+  /* Theo hợp đồng */
+  .hd-tien { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; }
+  .hd-tien:last-child { border-bottom: 0; }
+  .hd-tien .ten { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hd-tien .phu { font-size: 13px; color: var(--muc-nhat); }
+  .hd-tien .gia { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+  .hd-tien .coc { grid-column: 1 / -1; justify-self: start; font-size: 12.5px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--cho-nen); color: var(--cho); margin-top: 4px; }
+  .hd-tien .coc.giu { background: var(--la-nhat); color: var(--la-dam); }
+  .hd-tien .coc.xong { background: var(--vang-lua-nhat); color: var(--nau-dat); }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau" id="dau"></header>
+
+  <main class="noi" id="noi" aria-busy="true" style="gap:14px">
+    <section class="the-lon nen-xanh" aria-labelledby="t-nhan">
+      <div class="ky" role="group" aria-label="Kỳ xem">
+        <button type="button" data-ky="thang" aria-pressed="true">Tháng này</button>
+        <button type="button" data-ky="tat-ca" aria-pressed="false">Từ trước tới nay</button>
+      </div>
+      <p class="nhan" id="t-nhan">Đã nhận tháng này</p>
+      <p class="so" id="da-nhan">—</p>
+      <div class="tach">
+        <span>Bên mua chuyển thẳng<br><small>(bác đã xác nhận)</small><b id="truc-tiep">—</b></span>
+        <span>Ngân hàng đã chuyển về<br><small>(cọc, ngân hàng xác nhận)</small><b id="ngan-hang">—</b></span>
+      </div>
+    </section>
+
+    <div class="o-tien">
+      <div class="khien"><p class="ten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Ngân hàng đang giữ cọc</p><b id="coc">—</b><p class="phu">Không bên nào rút được; xử lý khi quyết toán xong.</p></div>
+      <div class="vang"><p class="ten">Bên mua còn phải trả</p><b id="con-nhan">—</b><p class="phu">Theo hợp đồng, trả thẳng cho bác.</p></div>
+      <div class="rong"><p class="ten">Đang chờ ngân hàng xác nhận</p><b id="treo">—</b><p class="phu">Bên mua đã nộp cọc, ngân hàng chưa xác nhận đúng tiền đúng đơn nên chưa tính là đang giữ.</p></div>
+    </div>
+
+    <p class="nguyen-tac"><b>Cách AgiViet tính tiền:</b> ngân hàng đối tác chỉ giữ <b>cọc 30%</b>; phần còn lại bên mua trả thẳng cho bác. Số chỉ được cộng khi đã xác nhận: bên mua báo đã chuyển mà bác chưa xác nhận thì <b>chưa tính là đã nhận</b>.</p>
+
+    <section class="muc" aria-labelledby="t-hd">
+      <h3 id="t-hd"><span>Tiền theo từng hợp đồng</span></h3>
+      <div id="ds-hd"><div class="khung-tai"></div></div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import { tien, tienDu, esc, phien, giuThamSo, veDau, veTab } from "./chung.js";
+const $ = (id) => document.getElementById(id);
+giuThamSo();
+veTab("tien");
+veDau($("dau"), { chao: "Tiền của bác", ten: "Sổ tiền", chuDau: "" });
+
+// Trạng thái cọc (core.deposits.status) → chữ cho bác
+const COC = { null: ["Chưa cọc", ""], pending: ["Chờ bên mua cọc", ""], held: ["Ngân hàng đang giữ cọc", "giu"], processing: ["Ngân hàng đang xử lý cọc", "giu"],
+  fully_processed: ["Cọc đã xử lý xong", "xong"], refunded: ["Cọc đã hoàn bên mua", ""], expired: ["Quá hạn cọc", ""] };
+const ghiSo = (id, v) => { $(id).textContent = tien(v); $(id).title = tienDu(v); };
+
+let token, tenHd = new Map();
+const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
+
+async function taiKy(ky) {
+  document.querySelectorAll(".ky button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ky === ky)));
+  const dau = new Date(); dau.setDate(1); dau.setHours(0, 0, 0, 0);
+  const s = await get(ky === "thang" ? `/v1/money/summary?from=${encodeURIComponent(dau.toISOString())}` : "/v1/money/summary");
+  const g = s.tong;
+  $("t-nhan").textContent = ky === "thang" ? "Đã nhận tháng này" : "Đã nhận từ trước tới nay";
+  ghiSo("da-nhan", BigInt(g.da_nhan_truc_tiep) + BigInt(g.ngan_hang_da_chuyen_den));
+  ghiSo("truc-tiep", g.da_nhan_truc_tiep); ghiSo("ngan-hang", g.ngan_hang_da_chuyen_den);
+  ghiSo("coc", g.coc_dang_giu); ghiSo("con-nhan", g.con_phai_nhan); ghiSo("treo", g.tien_treo);
+  const cuaBac = s.theo_don.filter((d) => !d.la_mua);
+  $("ds-hd").innerHTML = cuaBac.length ? cuaBac.map((d) => {
+    const h = tenHd.get(d.id) || {};
+    const [chu, lop] = COC[d.coc_trang_thai] || [d.coc_trang_thai, ""];
+    const giu = BigInt(d.coc_dang_giu_vnd || 0);
+    return `<a class="hd-tien" href="./ban-tin-nhan.html${location.search}">
+      <span style="min-width:0"><p class="ten">${esc(h.buyer_name || "Hợp đồng")}</p><p class="phu">${esc(d.code)}${h.hien_thi?.ten ? ` · ${esc(h.hien_thi.ten)}` : ""}</p></span>
+      <span class="gia" title="${esc(tienDu(h.contract_value_vnd))}">${h.contract_value_vnd ? esc(tien(h.contract_value_vnd)) : "—"}</span>
+      <span class="coc ${lop}">${esc(chu)}${giu > 0n ? ` · ${esc(tien(giu))}` : ""}</span></a>`;
+  }).join("") : `<p class="bao" style="margin-top:12px">Bác chưa có hợp đồng nào. Khi bác đồng ý một lời chào giá và hai bên ký, tiền của hợp đồng sẽ hiện ở đây.</p>`;
+}
+
+async function mo() {
+  token = await phien();
+  const [me, don] = await Promise.all([get("/v1/me"), get("/v1/orders")]);
+  veDau($("dau"), { chao: "Tiền của bác", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase() });
+  tenHd = new Map(don.map((d) => [d.id, d]));
+  await taiKy("thang");
+  document.querySelectorAll(".ky button").forEach((b) => (b.onclick = () => taiKy(b.dataset.ky).catch(baoLoi)));
+  giuThamSo();
+  $("noi").setAttribute("aria-busy", "false");
+}
+const baoLoi = (e) => {
+  $("ds-hd").innerHTML = `<p class="bao loi" style="margin-top:12px">Chưa tải được sổ tiền (${esc(e.message)}).</p><button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`;
+  $("noi").setAttribute("aria-busy", "false");
+};
+mo().catch(baoLoi);
+</script>
+</body>
+</html>

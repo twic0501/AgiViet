@@ -100,7 +100,7 @@ export const bieuTuong = (ten, dac = false, co = 24) => {
 
 // Thanh menu dưới dùng chung: Trang chủ · Chợ · Đăng bài · Tin nhắn · Tiền
 const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "./ban-dang-bai.html"],
-  ["tin-nhan", "Tin nhắn", "./ban-tin-nhan.html"], ["tien", "Tiền", "#tien"]];
+  ["tin-nhan", "Tin nhắn", "./ban-tin-nhan.html"], ["tien", "Tiền", "./ban-tien.html"]];
 // Đăng bài ở giữa là nút tròn xanh lớn nhô lên khỏi thanh; cuộn xuống thì thanh thụt bớt, cuộn lên hiện đủ.
 const CONG = '<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 export function veTab(dangMo, soTin = 0) {
