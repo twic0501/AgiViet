@@ -147,7 +147,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - **Tay giơ cao bằng đổi hình** (người sáng lập đồng ý dùng Higgsfield, 2 credit, còn 1): bảng `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` có 3 tư thế (dang ngang, vẫy một tay, giơ hai tay). `do-tay.py` đồ 4 tay (trái/phải × ngang/cao) → `nguon/goc/tay-chinh.svg`; vai áo phình liền ống tay, cổ tay phẳng. Trong `dung-v3.py`, góc chính diện có thêm nút `gio-<bên>-<tư thế>` → `hien` → `xoay`, nằm trên thân, dưới khăn. Hàm `doi_tay()` ẩn tay buông (cả bắp vai) rồi hiện tay giơ, và tay mới đi nốt đoạn xoay quanh vai.
     - Vươn vai: hai tay giơ cao.
     - Giật mình: hai tay dang ngang; vào động tác không trộn, để không thấy hai tay chồng nhau.
-    - Vẫy chào: tay phải giơ cao và vẫy thật.
+    - Vẫy chào (người sáng lập: "tay đang quơ có giống đâu"): dùng đúng hình 2 của bảng, gồm `tay-phai-vay` (tay vẫy to, bàn tay ngang tai) và `tay-trai-tha` (tay buông sát thân), cắt riêng ở `nguon/goc/hf/tay-vay.png`.
     - Ảnh chuỗi khung: `docs/trau/chang-2/tay-gio-cao.png`.
     - Góc ¾ và nghiêng chưa có tay giơ (cần sinh thêm). Hiện hai góc đó vẫn vung tay vừa phải.
   - **Kiểm thử:** `AGV_THU=<0–8> AGV_HUONG=<h> python3 dung-v3.py` ép chạy một động tác ngay. Bảng cảm xúc ở 3 góc: `docs/trau/chang-2/cam-xuc-3-goc.png`.

@@ -571,14 +571,18 @@ def main():
             for nid in g.tay_ben('phai'):
                 out.append(khung(nid, 'rotation', [(0, 0), (8, .1), (16, -.45), (132, -.45), (146, -.2), (160, .03),
                                                    (176, 0)]))
-            vay = [(26 + 10 * i, (.16 if i % 2 else -.12)) for i in range(0, 10)]
-            out += doi_tay(g, 'phai', 'cao', 16, 132, [(0, .65), (16, .65), (26, 0)] + vay[1:] + [(122, 0), (132, .65)])
+            # tay phải: hình vẫy (bảng Higgsfield hình 2), vẫy quanh vai; tay trái: hình buông thả sát thân
+            vay = [(26 + 10 * i, (.14 if i % 2 else -.1)) for i in range(0, 10)]
+            out += doi_tay(g, 'phai', 'vay', 16, 132, [(0, .65), (16, .65), (26, 0)] + vay[1:] + [(122, 0), (132, .65)])
+            for nid in g.tay_ben('trai'):
+                out.append(khung(nid, 'rotation', [(0, 0), (16, -.12), (132, -.12), (150, 0), (176, 0)]))
+            out += doi_tay(g, 'trai', 'tha', 18, 130, [(0, .22), (18, .22), (30, -.03), (38, 0), (120, 0), (130, .22)])
         else:
             for nid in g.tay_ben(ben):
                 out.append(khung(nid, 'rotation', [(0, 0), (10, -.1 * d), (28, .48 * d)] +
                                  [(28 + 10 * i, (.48 + (.1 if i % 2 else -.06)) * d) for i in range(1, 9)] +
                                  [(128, .48 * d), (148, -.08 * d), (160, .03 * d), (176, 0)]))
-        for b2 in ('trai', 'xa'):
+        for b2 in (() if co_gio(g) else ('trai', 'xa')):
             if b2 != ben:
                 for nid in g.tay_ben(b2):
                     out.append(khung(nid, 'rotation', [(0, 0), (28, .1 * (1 if b2 == 'trai' else d)), (128, .1),
