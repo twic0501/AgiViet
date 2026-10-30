@@ -11,7 +11,7 @@ Tài liệu này để **nhiều người/AI làm song song** (Claude tài kho�
 | 13 đạo cụ SVG (giấy chào giá, điện thoại, phiếu cân, biển gỗ, thúng, cân bàn, kho, đòn gánh, đồng hồ cát, đồng xu, nón lá, áo mưa, sổ xanh) + ghế đẩu | Vẽ xong, soi 2 nền | `frontend/trau-rive/nguon/dao-cu/` (có điểm cầm `diem-cam`); thúng đòn gánh còn nhỏ |
 | 22 dáng tay khớp nối (chào, cầm giấy, mừng, xin lỗi…) | **BỊ LOẠI** | Người sáng lập: tay gãy ở vai, tay khác V4g đã chốt, đứng cứng. Không dùng tiếp `tay-khop.py`/`trau-khop.riv` làm sản phẩm |
 | Uốn đúng nét tay V4g bằng 2 xương (`tay-da.py`) | Dừng, chưa đạt | Dáng nghỉ còn lệch V4g vùng hai tay; không giải quyết xoay người |
-| **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **¾ trái + nghiêng trái bản 3 (đồ từ Higgsfield): chờ người sáng lập xem** · sau lưng chưa làm | `frontend/trau-rive/nguon/goc/`, ảnh duyệt `docs/trau/goc-nhin/`; xem mục 4 |
+| **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **¾ trái + nghiêng trái: ĐÃ CHỐT T1 (31/10)** · sau lưng chưa làm | `frontend/trau-rive/nguon/goc/`, ảnh duyệt `docs/trau/goc-nhin/`; xem mục 4 |
 | Dáng ngồi / cầm đồ | Chưa đạt | Ghế bị thân che, thúng nhỏ |
 
 **Kết luận của người sáng lập (30/10):** chuyển động phải có xoay người, nghiêng, dồn trọng tâm, nhịp thân nhiều góc cho tự nhiên — "không thì khỏi làm". Bẻ tay trên một hình chính diện phẳng là không đạt.
@@ -104,7 +104,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
 - **Góc nghiêng làm lại (người sáng lập: "nghiêng thì tệ quá").** Bản cắt từ bảng xoay có đầu quá to, chân cụt, tai dẹt. Đã sinh riêng góc nghiêng bằng 3D Jutsu Angles từ V4g + góc ¾ đã duyệt (`docs/trau/tham-chieu/higgsfield-v4g-nghieng-trai-2.png`, 2,5 credit; tổng đã dùng 7/10, còn 3). Đồ như góc ¾: đầu và áo đồ tự động; chân và khăn đồ tay (`*_NG` trong `do-goc.py`); lòng tai vẽ liền; bóng má nhạt như V4g.
 - **Luật 3, cổ tay phẳng (cả hai góc):** ảnh Higgsfield có cổ tay là cung vòm. `co_tay_phang()` tô màu áo phần giữa cung và đường cắt, rồi kẻ đường cắt thẳng nét V4g (`CO_TAY_34`, `CO_TAY_NG`).
 - **Góc nghiêng chốt theo thiết kế Higgsfield (người sáng lập: bản 3D Jutsu "khác V4g", hình nghiêng của bảng a "đúng hơn với thiết kế Higgsfield"):** đồ lại từ `docs/trau/tham-chieu/goc-nhin-higgsfield-a.png`, hàng dưới, hình giữa (có đầu khăn dài); đuôi theo hình trái. Nguồn cắt: `nguon/goc/hf/nghieng-hf-a-giua.png`, `nghieng-hf-a-trai.png`; toạ độ đồ tay `*_A` trong `do-goc.py`. Ảnh nguồn không có lông mày nên vẽ thêm theo V4g (luật 2). Ảnh 3D Jutsu nghiêng giữ trong tham chiếu, không dùng.
-- **Còn chờ người sáng lập quyết:** góc nghiêng chỉ thấy 1 lỗ mũi (đúng phối cảnh, nhưng luật 2 ghi "đúng 2 lỗ mũi").
+- **Chốt T1 (31/10):** người sáng lập duyệt góc ¾ trái và góc nghiêng trái ("oke") khi xem trực tiếp trong Rive. Góc nghiêng giữ 1 lỗ mũi (lỗ xa khuất theo phối cảnh), người sáng lập duyệt nguyên trạng. Bước tiếp theo: Chặng 2, khung xương và dáng nghỉ sống (`hanh_dong=0`), chốt T2.
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
