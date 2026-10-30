@@ -134,7 +134,7 @@ export async function xemLoiChao(t: GiaoDich, nd: NguoiDung, id: string) {
 
 export async function danhSachLoiChao(t: GiaoDich, nd: NguoiDung) {
   return t.q(`SELECT o.id,o.code,o.direction,o.status,o.version revision,l.code lot_code,o.buyer_org_id=$1 la_ben_mua,
-      o.buyer_org_id,o.demand_line_id,
+      o.buyer_org_id,o.demand_line_id,(SELECT display_name FROM core.organizations WHERE id=o.buyer_org_id) buyer_name,
       (SELECT json_build_object('round_no',r.round_no,'from_side',r.from_side,'price_vnd',r.price_vnd::text,'qty_g',r.qty::text,'expires_at',r.expires_at)
        FROM core.offer_rounds r WHERE r.offer_id=o.id ORDER BY r.round_no DESC LIMIT 1) vong_cuoi
       FROM core.offers o JOIN core.lots l ON l.id=o.lot_id WHERE o.buyer_org_id=$1 OR o.seller_org_id=$1 ORDER BY o.created_at DESC`, [nd.thanhVien.orgId]);

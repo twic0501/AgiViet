@@ -162,9 +162,29 @@ await trang("hang-hoa", async (p) => {
   assert.match(await p.locator('.tab a[href*="ban-hom-nay"]').getAttribute("href"), /thu=0918000421/);
   assert.equal(await p.locator(".nut-noi").count(), 0, "không còn nút Đăng hàng trùng với thanh menu");
   assert.ok(await p.locator(".lo .luong i").count() > 0, "mỗi lô có thanh lượng");
-  await p.waitForFunction(() => /bên mua đang chào giá/.test(document.querySelector('.lo[data-lo="L-0412"] .hoi')?.textContent || ""), null, { timeout: 8000 });
+  await p.waitForFunction(() => /lời chào đang mở/.test(document.querySelector('.lo[data-lo="L-0412"] .hoi')?.textContent || ""), null, { timeout: 8000 });
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}05-hang-hoa.png`, fullPage: true });
+  // Lời chào hiện ngay trên lô, có tên bên mua và tới lượt ai
+  assert.match(await p.locator('.lo[data-lo="L-0412"] .chao-lo').innerText(), /chào[\s\S]*đ\/kg[\s\S]*Chờ bác/);
+  // Quản lý lô: chặn giá thấp nhất cao hơn giá mong muốn ngay trên máy; lưu giá hợp lệ; bật bán nhanh
+  await p.locator('.lo[data-lo="L-0413"] [data-ql]').click();
+  await p.locator("#f-gia").waitFor({ timeout: 8000 });
+  if (await p.locator('#f-gia button[type="submit"]').isEnabled()) {
+    await p.locator('#f-gia input[name="ask"]').fill("22000");
+    await p.locator('#f-gia input[name="floor"]').fill("23000");
+    await p.locator('#f-gia button[type="submit"]').click();
+    await p.getByText("Giá thấp nhất không được cao hơn giá mong muốn.").waitFor({ timeout: 3000 });
+    await p.locator('#f-gia input[name="floor"]').fill("20000");
+    await p.locator('#f-gia button[type="submit"]').click();
+    await p.getByText("Đã lưu giá mới").waitFor({ timeout: 8000 });
+  } else {
+    // Đã sửa trong 24 giờ qua (lần chạy trước): ô giá khóa sẵn và ghi giờ được sửa lại
+    assert.match(await p.locator("#bao-gia").textContent(), /sửa lại được từ/);
+  }
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}05c-quan-ly-lo.png` });
+  await p.locator("#ql-dong").click();
   // Ngăn Bên mua đang cần → chào hàng vào một nhu cầu khớp
   await p.locator("#ngan-can").click();
   await p.locator("#p-can .can").first().waitFor({ timeout: 8000 });
@@ -240,6 +260,8 @@ await trang("tin-nhan-thong-bao", async (p) => {
   // Trước khi xem: chuông có chấm mới; xem xong quay về Trang chủ: hết chấm
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
+  // số thông báo tải sau khi trang hiện; chờ tới 8 s (stack vừa khởi động thì sự kiện được ghi chậm hơn)
+  await p.locator('#dau a[href*="#thong-bao"] .cham-moi').waitFor({ timeout: 8000 }).catch(() => {});
   assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 1, "chưa xem thì chuông có chấm");
   await p.locator('#dau a[href*="#thong-bao"]').click();
   await p.waitForURL(/ban-thong-bao\.html/);

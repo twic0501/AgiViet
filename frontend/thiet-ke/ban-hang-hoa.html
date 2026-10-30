@@ -30,7 +30,7 @@
   .loc button small { font-weight: 400; opacity: .75; margin-left: 4px; }
   /* Thẻ lô */
   .lo { display: block; padding: 12px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); color: inherit; }
-  .lo + .lo { margin-top: 10px; }
+  .lo + .lo { margin-top: 12px; }
   .lo .dau-lo { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; }
   .lo .anh { width: 64px; height: 64px; border-radius: 12px; background: var(--giay-lot) center / cover no-repeat; }
   .lo .ten { font-weight: 600; font-size: 16px; }
@@ -48,11 +48,34 @@
   .lo .duoi { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
   .lo .hoi { font-size: 13px; color: var(--muc-phu); }
   .lo .hoi b { color: var(--la-dam); }
-  .lo .xac-nhan { min-height: 36px; padding: 0 12px; font-size: 13px; background: var(--giay-noi); color: var(--la-dam); box-shadow: inset 0 0 0 1.5px var(--la); }
+  .lo .xac-nhan { min-height: 44px; padding: 0 12px; font-size: 13px; background: var(--giay-noi); color: var(--la-dam); box-shadow: inset 0 0 0 1.5px var(--la); }
   .lo .goi-y { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--dau-do-nen); color: var(--dau-do); font-size: 13px; line-height: 1.4; }
+  /* Lời chào trên lô */
+  .chao-lo { display: grid; gap: 6px; margin-top: 10px; }
+  .chao-lo a { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--giay-lot); text-decoration: none; color: inherit; font-size: 13px; }
+  .chao-lo .ai { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chao-lo .gia { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+  .chao-lo .phu2 { color: var(--muc-nhat); }
+  .chao-lo .luot { justify-self: end; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--cho-nen); color: var(--cho); }
+  .chao-lo .luot.bac { background: var(--dau-do-nen); color: var(--dau-do); }
+  .lo .nut-hang { display: flex; gap: 8px; }
+  .lo .nut-ql { min-height: 44px; padding: 0 12px; border-radius: 999px; border: 0; background: var(--la-nhat); color: var(--la-dam); font: 600 13px/1 var(--chu); cursor: pointer; }
+  /* Tấm quản lý lô */
+  .tam .muc-tam { display: grid; gap: 10px; padding: 12px; border-radius: 14px; background: var(--giay-noi); border: 1px solid var(--ke); }
+  .tam .muc-tam h3 { font-size: 15px; }
+  .tam .muc-tam p { font-size: 13px; color: var(--muc-nhat); line-height: 1.4; }
+  .tam .hai-o { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tam .nut-do { background: var(--dau-do-nen); color: var(--dau-do); box-shadow: none; }
+  .tam { max-height: 88vh; overflow-y: auto; }
+  /* Cung cầu trong vùng */
+  .cung-cau { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .cung-cau > div { padding: 10px 12px; border-radius: 14px; background: var(--giay-noi); border: 1px solid var(--ke); }
+  .cung-cau b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .cung-cau span { font-size: 12.5px; color: var(--muc-nhat); }
+  .tieu-nho { font-size: 13px; font-weight: 600; color: var(--muc-phu); margin: 18px 0 8px; }
   /* Bên mua đang cần */
   .can { display: block; padding: 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); }
-  .can + .can { margin-top: 10px; }
+  .can + .can { margin-top: 12px; }
   .can .tren { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
   .can .ben { font-weight: 600; }
   .can .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
@@ -97,7 +120,9 @@
 
     <section id="p-can" role="tabpanel" aria-labelledby="ngan-can" hidden>
       <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Bên mua đăng nhu cầu, bác chọn lô của mình để chào hàng. Giá thấp nhất của bác luôn được giữ kín.</p>
+      <div class="cung-cau" id="cung-cau" hidden></div>
       <div id="ds-can"><div class="khung-tai"></div></div>
+      <div id="khoi-da-chao" hidden><p class="tieu-nho">Lời chào bác đã gửi</p><div class="chao-lo" id="ds-da-chao"></div></div>
     </section>
   </main>
 </div>
@@ -124,6 +149,7 @@ const lenh = async (d, b) => {
   const j = await r.json().catch(() => ({}));
   if (!r.ok) {
     const e = j.errors?.[0] || {};
+    if (/ck_lot_price_rate/.test(JSON.stringify(e))) throw new Error("Giá lô chỉ sửa được 1 lần mỗi 24 giờ. Bác đợi qua 24 giờ rồi sửa lại.");
     if (e.details?.db === "uq_offer_open_per_lot_buyer") throw new Error("Lô này đã có lời chào đang mở với bên mua này. Bác xem và trả lời ở Tin nhắn.");
     throw new Error(e.message || j.thong_diep || j.message || `Lỗi ${r.status}`);
   }
@@ -138,6 +164,81 @@ const chonNgan = (k) => {
 $("ngan-hang").onclick = () => chonNgan("ngan-hang");
 $("ngan-can").onclick = () => chonNgan("ngan-can");
 if (location.hash === "#can") chonNgan("ngan-can"); else { try { if (sessionStorage.getItem("agv-ngan-cho") === "ngan-can") chonNgan("ngan-can"); } catch {} }
+
+// Một dòng lời chào: ai chào, giá, lượng, tới lượt ai, hạn → bấm mở Tin nhắn để trả lời
+const dongChao = (c, coMaLo = true) => {
+  const v = c.vong_cuoi || {};
+  const bacChao = c.direction === "seller_quote";
+  const toiBac = v.from_side === "buyer";
+  const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" }) : "";
+  return `<a href="./ban-tin-nhan.html${location.search}">
+    <span class="ai">${bacChao ? `Bác chào ${esc(c.buyer_name || "bên mua")}` : `${esc(c.buyer_name || "Bên mua")} chào`}</span>
+    <span class="gia">${Number(v.price_vnd || 0).toLocaleString("vi-VN")} đ/kg</span>
+    <span class="phu2">${esc(can(v.qty_g).join(" "))}${coMaLo ? ` · lô ${esc(c.lot_code)}` : ""}${han ? ` · hạn ${han}` : ""}</span>
+    <span class="luot ${toiBac ? "bac" : ""}">${toiBac ? "Chờ bác" : "Chờ bên mua"}</span></a>`;
+};
+
+// Quản lý lô: sửa giá (1 lần/24 giờ), bán nhanh 3 ngày, ngừng bán
+async function moQuanLy(l) {
+  const che = document.createElement("div"); che.className = "man-che";
+  const ten = `${tenSp.get(l.product_code) || l.product_code} · Loại ${l.grade_code.replace(/^L/, "")}`;
+  che.innerHTML = `<div class="tam" role="dialog" aria-modal="true" aria-labelledby="ql-t"><h2 id="ql-t">${esc(ten)} · ${esc(l.code)}</h2><div class="khung-tai"></div></div>`;
+  document.body.appendChild(che);
+  const dong_ = () => che.remove();
+  che.addEventListener("pointerdown", (e) => { if (e.target === che) dong_(); });
+  const ct = await get(`/v1/lots/${l.id}`).catch(() => null);
+  const g = await get(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`).catch(() => null);
+  const tam = che.querySelector(".tam");
+  const dangGap = l.ban_gap_den && new Date(l.ban_gap_den) > new Date();
+  tam.innerHTML = `<h2 id="ql-t">${esc(ten)} · ${esc(l.code)}</h2>
+    <form class="muc-tam" id="f-gia"><h3>Sửa giá</h3>
+      <p>Sửa được 1 lần mỗi 24 giờ. Giá thấp nhất giữ kín, bên mua không thấy; lời chào thấp hơn bị tự từ chối.${g?.price_vnd ? ` Giá tham khảo hiện ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg.` : ""}</p>
+      <div class="hai-o"><label>Giá mong muốn (đ/kg)<input name="ask" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.ask_price_vnd || "")}"></label>
+        <label>Giá thấp nhất (đ/kg)<input name="floor" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.floor_price_vnd || "")}"></label></div>
+      <p class="bao-ket" id="bao-gia" role="status"></p>
+      <button type="submit" class="nut chinh-nut">Lưu giá mới</button></form>
+    <div class="muc-tam"><h3>Bán nhanh trong 3 ngày</h3>
+      <p>${dangGap ? `Đang bán nhanh tới ${new Date(l.ban_gap_den).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })}.` : "Bên mua chỉ thấy \"giao được trong 48 giờ\", không thấy chữ gấp. Bên nhận hàng kém loại sẽ được báo."}</p>
+      <p class="bao-ket" id="bao-gap" role="status"></p>
+      <button type="button" class="nut phu-nut" id="nut-gap">${dangGap ? "Tắt bán nhanh" : "Bật bán nhanh 3 ngày"}</button></div>
+    <div class="muc-tam"><h3>Ngừng bán lô này</h3>
+      <p>Bên mua sẽ không thấy lô nữa. Lời chào đang mở và hợp đồng đã ký không bị ảnh hưởng.</p>
+      <p class="bao-ket" id="bao-dong" role="status"></p>
+      <button type="button" class="nut nut-do" id="nut-dong">Ngừng bán</button></div>
+    <button type="button" class="nut phu-nut" id="ql-dong">Đóng</button>`;
+  tam.querySelector("#ql-dong").onclick = dong_;
+  const f = tam.querySelector("#f-gia");
+  // Chưa đủ 24 giờ từ lần sửa trước: khóa sẵn, ghi rõ giờ được sửa lại (không để bác bấm rồi mới báo lỗi)
+  const suaTu = ct?.price_editable_from ? new Date(ct.price_editable_from) : null;
+  if (suaTu && suaTu > new Date()) {
+    f.querySelectorAll("input, button").forEach((x) => (x.disabled = true));
+    $("bao-gia").textContent = `Giá vừa được sửa. Bác sửa lại được từ ${suaTu.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })}.`;
+  }
+  f.onsubmit = async (e) => {
+    e.preventDefault();
+    if (Number(f.floor.value) > Number(f.ask.value)) { $("bao-gia").textContent = "Giá thấp nhất không được cao hơn giá mong muốn."; return; }
+    $("bao-gia").textContent = "Đang lưu…";
+    try {
+      const r = await lenh(`/v1/lots/${l.id}/price`, { ask_price_vnd: String(f.ask.value), floor_price_vnd: String(f.floor.value) });
+      $("bao-gia").textContent = "Đã lưu giá mới." + (r.canh_bao ? ` Lưu ý: ${typeof r.canh_bao === "string" ? r.canh_bao : "giá thấp so với giá tham khảo."}` : "");
+    } catch (err) { $("bao-gia").textContent = err.message; }
+  };
+  tam.querySelector("#nut-gap").onclick = async (e) => {
+    e.target.disabled = true; $("bao-gap").textContent = "Đang gửi…";
+    try {
+      await lenh(`/v1/lots/${l.id}/urgent-sale`, dangGap ? { on: false } : { until: new Date(Date.now() + 3 * 864e5).toISOString(), reason: "Người bán bật bán nhanh trên Chợ" });
+      $("bao-gap").textContent = dangGap ? "Đã tắt bán nhanh." : "Đã bật bán nhanh 3 ngày."; setTimeout(() => location.reload(), 900);
+    } catch (err) { $("bao-gap").textContent = err.message; e.target.disabled = false; }
+  };
+  // Ngừng bán cần bấm hai lần (không dùng hộp thoại trình duyệt)
+  let xacNhan = false;
+  tam.querySelector("#nut-dong").onclick = async (e) => {
+    if (!xacNhan) { xacNhan = true; e.target.textContent = "Bấm lần nữa để ngừng bán"; $("bao-dong").textContent = "Bác chắc chắn ngừng bán lô này?"; return; }
+    e.target.disabled = true; $("bao-dong").textContent = "Đang gửi…";
+    try { await lenh(`/v1/lots/${l.id}/close`, {}); $("bao-dong").textContent = "Đã ngừng bán."; setTimeout(() => location.reload(), 900); }
+    catch (err) { $("bao-dong").textContent = err.message; e.target.disabled = false; }
+  };
+}
 
 async function moHang() {
   const [me, ds, sp, chao] = await Promise.all([get("/v1/me"), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => null)]);
@@ -191,7 +292,8 @@ async function moHang() {
       const conGap = l.ban_gap_den && new Date(l.ban_gap_den) > new Date() && l.status === "on_sale";
       const [tt, lop] = l.an_tu_dong ? ["Bên mua không thấy", "gap"] : conGap ? ["Đang bán nhanh", "vang"] : TT[l.status] || [l.status, "cho"];
       const anh = ANH_SP(l.product_code);
-      const hoi = hoiTheoLo.get(l.code) || 0;
+      const chaoLo = (dsChao || []).filter((c) => c.lot_code === l.code);
+      const hoi = chaoLo.length;
       const lauChuaXn = l.status === "on_sale" && (!l.last_confirmed_at || (Date.now() - new Date(l.last_confirmed_at)) / 864e5 > NGAY_NHAC);
       return `<article class="lo" data-lo="${esc(l.code)}">
         <div class="dau-lo"><span class="anh" ${anh ? `style="background-image:url(${anh})"` : ""}></span>
@@ -200,12 +302,14 @@ async function moHang() {
           <span class="tt ${lop}">${esc(tt)}</span></div>
         <div class="luong" role="img" aria-label="${phan.filter(([, , g]) => g).map(([, ten, g]) => `${ten} ${can(g).join(" ")}`).join(", ")}">${phan.filter(([, , g]) => g).map(([k, , g]) => `<i class="${k}" style="width:${(g / tong * 100).toFixed(1)}%"></i>`).join("")}</div>
         <div class="chu-luong">${phan.filter(([k, , g]) => g || k === "con").map(([, ten, g, mau]) => `<span style="--c:${mau}">${ten} <b>${can(g).join(" ")}</b></span>`).join("")}</div>
-        <div class="duoi"><span class="hoi">${hoi ? `<b>${hoi}</b> bên mua đang chào giá` : "Chưa có bên mua chào giá"}</span>
-          ${lauChuaXn ? `<button type="button" class="xac-nhan" data-xn="${l.id}">Vẫn còn hàng</button>` : ""}</div>
+        ${chaoLo.length ? `<div class="chao-lo">${chaoLo.map((c) => dongChao(c, false)).join("")}</div>` : ""}
+        <div class="duoi"><span class="hoi">${hoi ? `<b>${hoi}</b> lời chào đang mở` : "Chưa có lời chào"}</span>
+          <span class="nut-hang">${lauChuaXn ? `<button type="button" class="xac-nhan" data-xn="${l.id}">Vẫn còn hàng</button>` : ""}${l.status === "on_sale" ? `<button type="button" class="nut-ql" data-ql="${l.id}">Quản lý lô</button>` : ""}</span></div>
         ${l.goi_y_ban_gap ? `<p class="goi-y">Lô này lâu chưa có người hỏi. Bác có thể bật bán nhanh (bên mua chỉ thấy "giao được trong 48 giờ"), hoặc nhắn AgiViet hỏi ứng tiền, kho lạnh.</p>` : ""}
       </article>`;
     }).join("") : `<div class="trong"><p><b>Chưa có lô nào ở đây</b></p><p style="margin-top:4px">Bấm nút Đăng bài ở giữa thanh dưới để đăng hàng.</p></div>`;
     $("ds").setAttribute("aria-label", `${d.length} lô`);
+    $("ds").querySelectorAll("[data-ql]").forEach((b) => (b.onclick = () => moQuanLy(lo.find((x) => x.id === b.dataset.ql))));
     $("ds").querySelectorAll("[data-xn]").forEach((b) => (b.onclick = async () => {
       b.disabled = true; b.textContent = "Đang gửi…";
       try { await lenh(`/v1/lots/${b.dataset.xn}/confirm-available`, {}); b.textContent = "Đã xác nhận"; } catch (e) { b.textContent = "Thử lại"; b.disabled = false; }
@@ -224,13 +328,26 @@ async function moCan() {
   const diem = (n) => n.lines.some((x) => loKhop(n.product_code, x.grade_code).length) ? 0 : dangBan.some((l) => l.product_code === n.product_code) ? 1 : 2;
   mo.sort((a, b) => diem(a) - diem(b));
   const soKhop = mo.filter((n) => diem(n) === 0).length;
+  // Cung cầu trong vùng cho các mặt hàng bác đang bán (không nêu ai rẻ nhất)
+  const spBac = [...new Set(dangBan.map((l) => l.product_code))];
+  const canKg = mo.filter((n) => spBac.includes(n.product_code)).flatMap((n) => n.lines).reduce((t, x) => t + Number(x.qty_g), 0);
+  const banKg = dangBan.reduce((t, l) => t + Number(l.available_g || 0), 0);
+  if (spBac.length) {
+    $("cung-cau").innerHTML = `<div><b>${esc(can(canKg).join(" "))}</b><span>bên mua đang cần (${mo.filter((n) => spBac.includes(n.product_code)).length} phiếu)</span></div>
+      <div><b>${esc(can(banKg).join(" "))}</b><span>bác đang bán</span></div>`;
+    $("cung-cau").hidden = false;
+  }
+  const daChao = dsChaoMo.filter((c) => c.direction === "seller_quote");
+  if (daChao.length) { $("ds-da-chao").innerHTML = daChao.map((c) => dongChao(c)).join(""); $("khoi-da-chao").hidden = false; }
   $("so-can").textContent = soKhop ? soKhop : "";
   $("ds-can").innerHTML = mo.length ? mo.map((n) => {
     const khop = diem(n) === 0;
     return `<article class="can">
-      <div class="tren"><span><p class="ben">${esc(n.buyer_name)}</p><p class="phu">${esc(NHOM_MUA[n.segment_code] || n.segment_code)} · <span style="white-space:nowrap">cần ${ngayVN(n.needed_from)}–${ngayVN(n.needed_to)}</span></p></span>${khop ? '<span class="khop">Khớp hàng của bác</span>' : ""}</div>
+      <p class="ben">${esc(n.buyer_name)}</p>
+      <p class="phu">${esc(NHOM_MUA[n.segment_code] || n.segment_code)} · cần <b style="color:var(--muc)">${esc(tenSp.get(n.product_code) || n.product_code)}</b> · <span style="white-space:nowrap">${ngayVN(n.needed_from)}–${ngayVN(n.needed_to)}</span></p>
+      ${khop ? '<span class="khop" style="display:inline-block;margin-top:6px">Khớp hàng của bác</span>' : ""}
       ${n.lines.map((x) => { const k = loKhop(n.product_code, x.grade_code, n.buyer_org_id), daChao = dsChaoMo.some((c) => c.demand_line_id === x.id); return `<div class="dong">
-        <span>${esc(tenSp.get(n.product_code) || n.product_code)} · Loại ${esc(x.grade_code.replace(/^L/, ""))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
+        <span>Loại ${esc(x.grade_code.replace(/^L/, ""))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
         <button type="button" data-nc="${n.id}" data-dong="${x.id}" ${k.length && !daChao ? "" : "disabled"} aria-label="Chào hàng cho ${esc(n.buyer_name)}">${daChao ? "Đã chào" : k.length ? "Chào hàng" : loKhop(n.product_code, x.grade_code).length ? "Đang chào" : "Chưa có hàng"}</button></div>`; }).join("")}
     </article>`;
   }).join("") : `<div class="trong">Hiện chưa có bên mua nào đăng nhu cầu.</div>`;

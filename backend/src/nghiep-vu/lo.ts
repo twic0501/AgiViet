@@ -136,8 +136,10 @@ export async function xemLo(t: GiaoDich, nd: NguoiDung | null, lotId: string) {
     photos: await t.q(`SELECT id, code, captured_in_app, created_at FROM core.documents WHERE entity='lot' AND entity_id=$1 AND doc_type='evidence' ORDER BY created_at`, [lotId]),
   };
   if (laChu) {
-    const gia = await t.mot<any>(`SELECT ask_price_vnd::text ask, floor_price_vnd::text floor, ref_price_vnd::text ref FROM core.lot_price_versions WHERE lot_id=$1 ORDER BY id DESC LIMIT 1`, [lotId]);
+    const gia = await t.mot<any>(`SELECT ask_price_vnd::text ask, floor_price_vnd::text floor, ref_price_vnd::text ref, set_at + interval '24 hours' sua_lai_tu FROM core.lot_price_versions WHERE lot_id=$1 ORDER BY id DESC LIMIT 1`, [lotId]);
     out.ask_price_vnd = gia?.ask ?? null; out.floor_price_vnd = gia?.floor ?? null; out.ref_price_at_set_vnd = gia?.ref ?? null;
+    // Giá chỉ sửa 1 lần mỗi 24 giờ (trừ lúc đang bán gấp, lô nháp) — cùng điều kiện với core.check_lot_price_rate
+    out.price_editable_from = gia && l.status !== 'draft' && !(l.urgent_sale_until && new Date(l.urgent_sale_until) > new Date()) ? gia.sua_lai_tu : null;
     out.urgent_sale_until = l.urgent_sale_until; out.spray_clear_on = l.spray_clear_on; out.last_confirmed_at = l.last_confirmed_at;
   }
   return out;
