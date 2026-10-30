@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trâu khớp nối · xem thử</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+  :root { --nen: #f7f8f2; --chu: #233c31; --phu: #51625a; --the: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --nen: #1d2b24; --chu: #e8eee9; --phu: #a9b8af; --the: #24372e; } }
+  body { margin: 0; background: var(--nen); color: var(--chu); font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; } p { color: var(--phu); margin: 0 0 14px; line-height: 1.5; }
+  .the { background: var(--the); border-radius: 18px; padding: 14px; margin-bottom: 18px; }
+  .hai { display: flex; gap: 10px; flex-wrap: wrap; }
+  canvas { width: 100%; max-width: 420px; aspect-ratio: 1; display: block; margin: 0 auto; border-radius: 14px; }
+  .nen-toi { background: #233c31; } .nen-sang { background: #f7f8f2; }
+  .hai > div { flex: 1 1 300px; text-align: center; font-size: 13px; color: var(--phu); }
+  img { width: 100%; border-radius: 12px; display: block; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Trâu khớp nối</h1>
+  <p>Hai tay là cùng một cánh tay V4g, gập theo khớp vai, khuỷu, cổ tay. Hoạt ảnh đổi dáng lần lượt: nghỉ → chào → mừng → gãi đầu → cầm giấy → cầm điện thoại → tìm sóng → nghỉ. Rê chuột để trâu nhìn theo.</p>
+  <div class="the hai">
+    <div><canvas id="c1" class="nen-toi" width="840" height="840"></canvas>nền tối</div>
+    <div><canvas id="c2" class="nen-sang" width="840" height="840"></canvas>nền sáng</div>
+  </div>
+  <h1>Các dáng đã dựng</h1>
+  <p>Ảnh tĩnh của từng dáng (gồm dáng cầm đồ, dáng ngồi trên ghế đẩu).</p>
+  <div class="the"><img src="../assets/trau/xem/bang-dang.png" alt="Bảng các dáng trâu"></div>
+</main>
+<script src="/assets/vendor/rive/rive.js"></script>
+<script>
+  rive.RuntimeLoader.setWasmUrl('/assets/vendor/rive/rive.wasm');
+  for (const id of ['c1', 'c2']) {
+    const r = new rive.Rive({ src: '../assets/trau/trau-khop.riv?v=' + Date.now(), canvas: document.getElementById(id), autoplay: true,
+      stateMachines: 'trau', layout: new rive.Layout({ fit: rive.Fit.Contain }), onLoad: () => r.resizeDrawingSurfaceToCanvas() });
+  }
+</script>
+</body>
+</html>

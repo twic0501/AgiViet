@@ -15,6 +15,8 @@ const mime = {
   ".json": "application/json",
   ".webmanifest": "application/manifest+json",
   ".png": "image/png",
+  ".wasm": "application/wasm",
+  ".riv": "application/octet-stream",
 };
 http
   .createServer(async (req, res) => {
