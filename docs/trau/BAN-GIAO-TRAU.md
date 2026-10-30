@@ -103,6 +103,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - Đầu ra V4g của `tao-canh.py` không đổi (đã so byte). Khung nghỉ và nhún: `docs/trau/goc-nhin/rive-nghi-nhun.png`.
 - **Góc nghiêng làm lại (người sáng lập: "nghiêng thì tệ quá").** Bản cắt từ bảng xoay có đầu quá to, chân cụt, tai dẹt. Đã sinh riêng góc nghiêng bằng 3D Jutsu Angles từ V4g + góc ¾ đã duyệt (`docs/trau/tham-chieu/higgsfield-v4g-nghieng-trai-2.png`, 2,5 credit; tổng đã dùng 7/10, còn 3). Đồ như góc ¾: đầu và áo đồ tự động; chân và khăn đồ tay (`*_NG` trong `do-goc.py`); lòng tai vẽ liền; bóng má nhạt như V4g.
 - **Luật 3, cổ tay phẳng (cả hai góc):** ảnh Higgsfield có cổ tay là cung vòm. `co_tay_phang()` tô màu áo phần giữa cung và đường cắt, rồi kẻ đường cắt thẳng nét V4g (`CO_TAY_34`, `CO_TAY_NG`).
+- **Góc nghiêng chốt theo thiết kế Higgsfield (người sáng lập: bản 3D Jutsu "khác V4g", hình nghiêng của bảng a "đúng hơn với thiết kế Higgsfield"):** đồ lại từ `docs/trau/tham-chieu/goc-nhin-higgsfield-a.png`, hàng dưới, hình giữa (có đầu khăn dài); đuôi theo hình trái. Nguồn cắt: `nguon/goc/hf/nghieng-hf-a-giua.png`, `nghieng-hf-a-trai.png`; toạ độ đồ tay `*_A` trong `do-goc.py`. Ảnh nguồn không có lông mày nên vẽ thêm theo V4g (luật 2). Ảnh 3D Jutsu nghiêng giữ trong tham chiếu, không dùng.
 - **Còn chờ người sáng lập quyết:** góc nghiêng chỉ thấy 1 lỗ mũi (đúng phối cảnh, nhưng luật 2 ghi "đúng 2 lỗ mũi").
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
