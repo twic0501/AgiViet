@@ -9,7 +9,9 @@ Khóa đọc từ biến môi trường, nếu thiếu thì từ ~/.local/share/
 from __future__ import annotations
 
 import os
+import threading
 import time
+from collections import deque
 from dataclasses import dataclass
 
 import httpx
@@ -19,8 +21,10 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:genera
 NIM_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 
 CAU_SOAN_SAN = "Xin lỗi, trợ lý đang bận. Bạn thử lại sau ít phút hoặc gọi tổng đài AgiViet để được hỗ trợ."
-NGHI_SAU_LOI_S = 60.0   # bỏ qua nhà cung cấp vừa lỗi liên tiếp trong khoảng này
-LOI_TOI_DA = 2
+NGHI_SAU_LOI_S = 60.0   # bỏ qua nhà cung cấp đang hỏng trong khoảng này (tính từ lỗi cuối)
+CUA_SO = 20             # xét 20 lượt gần nhất của mỗi bậc
+LOI_TOI_THIEU = 5       # nghỉ khi có ít nhất 5 lỗi và tỉ lệ lỗi ≥ 50% trong cửa sổ
+TI_LE_NGHI = 0.5
 
 
 class LoiNhaCungCap(Exception):
@@ -56,7 +60,9 @@ class NhaCungCap:
     def __init__(self, khoa: dict[str, str] | None = None, client: httpx.Client | None = None):
         self.khoa = doc_khoa() if khoa is None else khoa
         self.client = client or httpx.Client()
-        self._loi: dict[str, tuple[int, float]] = {}   # bậc → (số lỗi liên tiếp, thời điểm lỗi cuối)
+        self._lich_su: dict[str, deque] = {}   # bậc → các lượt gần nhất (True = lỗi)
+        self._loi_cuoi: dict[str, float] = {}
+        self._khoa = threading.Lock()
 
     # ---- từng nhà cung cấp ----
     def _gemini(self, model: str, he_thong: str, nguoi_dung: str, timeout_s: float, toi_da: int) -> str:
@@ -103,8 +109,18 @@ class NhaCungCap:
         raise ValueError(f"loại việc không hỗ trợ: {loai}")
 
     def _dang_nghi(self, bac: str) -> bool:
-        n, t = self._loi.get(bac, (0, 0.0))
-        return n >= LOI_TOI_DA and time.monotonic() - t < NGHI_SAU_LOI_S
+        with self._khoa:
+            ls = self._lich_su.get(bac)
+            if not ls or time.monotonic() - self._loi_cuoi.get(bac, 0.0) >= NGHI_SAU_LOI_S:
+                return False
+            n = sum(ls)
+            return n >= LOI_TOI_THIEU and n / len(ls) >= TI_LE_NGHI
+
+    def _ghi(self, bac: str, loi: bool) -> None:
+        with self._khoa:
+            self._lich_su.setdefault(bac, deque(maxlen=CUA_SO)).append(loi)
+            if loi:
+                self._loi_cuoi[bac] = time.monotonic()
 
     def goi(self, he_thong: str, nguoi_dung: str, loai: str = "truc_tiep", timeout_s: float = 8.0,
             toi_da: int = 400) -> KetQua:
@@ -119,11 +135,10 @@ class NhaCungCap:
                 van_ban = f(model, he_thong, nguoi_dung, timeout_s, toi_da)
                 if not van_ban:
                     raise LoiNhaCungCap("trả rỗng")
-                self._loi.pop(bac, None)
+                self._ghi(bac, False)
                 return KetQua(van_ban, bac, (time.perf_counter() - t0) * 1000, loi)
             except (LoiNhaCungCap, httpx.HTTPError) as e:
-                n, _ = self._loi.get(bac, (0, 0.0))
-                self._loi[bac] = (n + 1, time.monotonic())
+                self._ghi(bac, True)
                 loi.append(f"{bac}: {type(e).__name__}: {e}")
         if loai == "truc_tiep":
             return KetQua(CAU_SOAN_SAN, "soan_san", (time.perf_counter() - t0) * 1000, loi)

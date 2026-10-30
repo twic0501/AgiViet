@@ -61,7 +61,7 @@ def bo_dau(s: str) -> str:
 # So khớp trên chuỗi đã bỏ dấu, chữ thường.
 _MA = r"(\botp\b|\bma xac (nhan|thuc)\b|mat khau|\bpin\b)"
 _DUA = r"\b(gui|doc|dua|hoi|xin|nhan tin|cung cap|bao)\b"
-LUA = [_DUA + r".*" + _MA, _MA + r".*\b(cho|gui|doc|dua)\b.*\b(anh|chi|em|toi|chau|minh|nguoi|ho|nhan vien)\b",
+LUA = [_DUA + r".*" + _MA, r"\bcho (toi|em|anh|chi|minh|chau|tui)\b.*" + _MA,_MA + r".*\b(cho|gui|doc|dua)\b.*\b(anh|chi|em|toi|chau|minh|nguoi|ho|nhan vien)\b",
        r"chuyen (tien|khoan).*(rieng|ca nhan|ngoai|truoc|thang cho)", r"(tai khoan|stk) (rieng|ca nhan)",
        r"(dat )?coc.*(tai khoan|stk) (rieng|ca nhan|cua (anh|chi|em|toi))", r"ngoai (app|ung dung|he thong)",
        r"(bo qua|vuot|khong qua) (ngan hang|tai khoan dam bao)", r"bo qua (huong dan|quy tac)|ignore (previous|all)"]

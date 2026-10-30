@@ -69,10 +69,23 @@ class ChuoiDuPhong(unittest.TestCase):
 
     def test_nghi_bac_loi_lien_tiep(self):
         n, goi = may(lambda r: httpx.Response(500) if "googleapis" in str(r.url) else nim_ok("ok"))
-        for _ in range(3):
+        for _ in range(8):
             n.goi("h", "x")
         gemini = [g for g in goi if "googleapis" in str(g.url)]
-        self.assertEqual(len(gemini), 2)   # lần 3 bỏ qua Gemini vì đang nghỉ
+        self.assertEqual(len(gemini), 5)   # sau 5 lỗi (100%) thì bỏ qua Gemini
+
+    def test_loi_le_te_khong_nghi(self):
+        dem = {"n": 0}
+
+        def h(r):
+            if "googleapis" in str(r.url):
+                dem["n"] += 1
+                return httpx.Response(429) if dem["n"] % 4 == 0 else gemini_ok("ok")
+            return nim_ok("ok")
+        n, goi = may(h)
+        for _ in range(40):
+            n.goi("h", "x")
+        self.assertEqual(len([g for g in goi if "googleapis" in str(g.url)]), 40)   # lỗi 25% vẫn được thử mỗi lượt
 
     def test_khong_lo_khoa_trong_loi(self):
         n, _ = may(lambda r: httpx.Response(401, text="bad key g-khoa-bi-mat"))
