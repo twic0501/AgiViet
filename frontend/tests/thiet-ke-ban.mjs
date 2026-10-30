@@ -44,6 +44,13 @@ async function guiMa(p) {
   }
 }
 
+// Số lô đang bán thật trên backend (các lượt thử Đăng bài làm số lô thay đổi)
+async function loDangBan(sdt) {
+  const t = (await (await fetch("http://127.0.0.1:18980/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
+  const ds = await (await fetch("http://127.0.0.1:18980/v1/lots?mine=true", { headers: { authorization: "Bearer " + t } })).json();
+  return { tatCa: ds.length, dangBan: ds.filter((l) => l.status === "on_sale" && !l.an_tu_dong).length };
+}
+
 // Kiểm chung: không tràn ngang, nút bấm cao ≥ 44px
 async function kiemChung(p) {
   const tran = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
@@ -111,7 +118,8 @@ await trang("hom-nay", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
   assert.equal(await p.locator(".the-hd").count(), 2, "2 hợp đồng");
-  assert.equal(await p.locator(".the-lo").count(), 3, "3 lô");
+  const { dangBan } = await loDangBan("0918000421");
+  assert.equal(await p.locator(".the-lo").count(), Math.min(4, dangBan), "Trang chủ hiện tối đa 4 lô đang bán");
   assert.equal(await p.locator(".ngay-troi").count(), 4, "4 ngày thời tiết");
   assert.match(await p.locator("#cau-chinh").textContent(), /chưa có việc gấp/);
   assert.equal(await p.locator(".chang i.dang").count(), 2, "mỗi hợp đồng một chặng đang làm");
@@ -128,11 +136,11 @@ await trang("hom-nay-chua-co-hop-dong", async (p) => {
 await trang("hang-hoa", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421`);
   await p.locator(".lo").first().waitFor({ timeout: 8000 });
-  assert.equal(await p.locator(".lo").count(), 3);
-  assert.equal((await p.locator("#so-lo").textContent()).trim(), "3");
+  const { tatCa, dangBan } = await loDangBan("0918000421");
+  assert.equal(await p.locator(".lo").count(), tatCa, "Tất cả = mọi lô của bác");
+  assert.equal((await p.locator("#so-lo").textContent()).trim(), String(dangBan));
   await p.locator('#loc button[data-k="on_sale"]').click();
   assert.equal(await p.locator('#loc button[data-k="on_sale"]').getAttribute("aria-pressed"), "true");
-  assert.equal(await p.locator(".lo").count(), 3);
   // tab giữ ?thu= khi chuyển màn
   assert.match(await p.locator('.tab a[href*="ban-hom-nay"]').getAttribute("href"), /thu=0918000421/);
   await kiemChung(p);
@@ -143,6 +151,34 @@ await trang("thieu-phien-bao-loi", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html`);
   await p.getByText("Chưa mở được sổ").waitFor({ timeout: 5000 });
   assert.ok(await p.getByRole("button", { name: "Thử lại" }).isVisible());
+});
+
+await trang("dang-bai", async (p) => {
+  // Lượng ngẫu nhiên để nhận ra lô vừa tạo trên backend
+  const kg = 300 + (Date.now() % 600);
+  await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
+  await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
+  assert.ok(await p.locator("#tiep").isDisabled(), "chưa chọn mặt hàng thì chưa đi tiếp");
+  await p.locator("#ds-sp button").first().click();
+  await p.locator('#ds-loai button[data-g="L1"]').click();
+  await p.locator("#tiep").click();
+  await p.locator("#luong").fill(String(kg));
+  await p.locator("#tiep").click();
+  await p.locator("#gia-muon").pressSequentially("27000");
+  await p.locator("#gia-san").pressSequentially("28000");
+  assert.ok(await p.locator("#tiep").isDisabled(), "giá thấp nhất > giá mong muốn phải bị chặn");
+  await p.locator("#gia-san").fill(""); await p.locator("#gia-san").pressSequentially("24000");
+  await p.locator("#tiep").click();
+  assert.ok(await p.locator("#tiep").isDisabled(), "chưa có ảnh thì chưa đăng được");
+  await p.locator("#chon-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.locator("#anh-chon .o").first().waitFor();
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  await p.locator('[data-b="5"]').waitFor({ state: "visible", timeout: 10000 });
+  const t = (await (await fetch("http://127.0.0.1:18980/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const lo = (await (await fetch("http://127.0.0.1:18980/v1/lots?mine=true", { headers: { authorization: "Bearer " + t } })).json()).find((l) => l.declared_qty_g === String(kg * 1000));
+  assert.ok(lo, "lô mới phải có trên backend");
+  assert.equal(lo.status, "on_sale", "lô phải được đăng (đang bán), không kẹt nháp");
 });
 
 await browser.close();

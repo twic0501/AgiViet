@@ -88,7 +88,7 @@ const IC = {
 export const bieuTuong = (ten, dac = false) => `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[ten][dac && IC[ten][1] ? 1 : 0]}</svg>`;
 
 // Thanh menu dưới dùng chung: Trang chủ · Chợ · Đăng bài · Tin nhắn · Tiền
-const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "#dang-bai"],
+const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "./ban-dang-bai.html"],
   ["tin-nhan", "Tin nhắn", "#tin-nhan"], ["tien", "Tiền", "#tien"]];
 export function veTab(dangMo, soTin = 0) {
   const nav = document.createElement("nav");
@@ -100,7 +100,7 @@ export function veTab(dangMo, soTin = 0) {
 
 // Header dùng chung: ảnh đại diện + tên bên trái; Hỗ trợ (tai nghe) + Thông báo (chuông, chấm xanh) bên phải
 export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
-  goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${esc(chuDau)}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
+  goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
     <div class="dau-phai">
       <a class="nut-tron" href="#ho-tro" aria-label="Hỗ trợ: gọi hoặc nhắn AgiViet">${bieuTuong("ho-tro")}</a>
       <a class="nut-tron" href="#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>

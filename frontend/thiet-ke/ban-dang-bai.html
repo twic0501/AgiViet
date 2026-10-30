@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đăng bài · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .buoc-thanh { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .buoc-thanh i { height: 5px; border-radius: 3px; background: var(--ke-dam); }
+  .buoc-thanh i.xong { background: var(--la); }
+  .buoc-ten { display: flex; justify-content: space-between; font-size: 13px; color: var(--muc-nhat); margin-top: 6px; }
+  .buoc-ten b { color: var(--la); }
+  .tieu { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .goi-y { color: var(--muc-phu); margin-top: 4px; }
+  .chon-sp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .chon-sp button { border: 2px solid transparent; border-radius: 16px; background: var(--giay-noi); padding: 0; overflow: hidden; text-align: left; cursor: pointer; font: inherit; color: inherit; box-shadow: 0 0 0 1px var(--ke); }
+  .chon-sp button[aria-pressed="true"] { border-color: var(--la); box-shadow: none; }
+  .chon-sp .anh { aspect-ratio: 4 / 3; background: var(--giay-lot) center / cover; }
+  .chon-sp .ten { padding: 10px 12px 2px; font-weight: 600; }
+  .chon-sp .noi { padding: 0 12px 12px; font-size: 13px; color: var(--muc-nhat); }
+  .chip { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip button { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: 600 15px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
+  .chip button[aria-pressed="true"] { background: var(--la); border-color: var(--la); color: var(--tren-la); }
+  .nhan-o { font-size: 14px; font-weight: 600; color: var(--muc-phu); margin: 18px 0 8px; display: block; }
+  .o-so { display: flex; align-items: center; border-radius: 14px; background: var(--giay-lot); border: 1.5px solid var(--ke-dam); overflow: hidden; }
+  .o-so:focus-within { border-color: var(--la); }
+  .o-so input { flex: 1; min-width: 0; height: 56px; border: 0; background: transparent; padding: 0 16px; font: 600 22px/1 var(--chu); color: var(--muc); font-variant-numeric: tabular-nums; outline: none; }
+  .o-so .don-vi { padding: 0 16px; color: var(--muc-phu); font-weight: 600; }
+  .o-ngay { width: 100%; height: 52px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 0 14px; font: 400 16px/1 var(--chu); color: var(--muc); }
+  .ghi { font-size: 13px; color: var(--muc-nhat); margin-top: 6px; }
+  .ghi.canh-bao { color: var(--dau-do); }
+  .tham-khao { margin-top: 16px; padding: 14px 16px; border-radius: 14px; background: var(--chin-nen); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .tham-khao b { font-size: 20px; font-variant-numeric: tabular-nums; }
+  .tham-khao span { font-size: 13px; color: var(--muc-phu); }
+  .anh-chon { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .anh-chon .o { aspect-ratio: 1; border-radius: 12px; background: var(--giay-lot) center / cover; position: relative; }
+  .anh-chon label { aspect-ratio: 1; border-radius: 12px; border: 2px dashed var(--ke-dam); display: grid; place-items: center; text-align: center; color: var(--la); font-weight: 600; font-size: 14px; cursor: pointer; padding: 8px; }
+  .anh-chon label svg { width: 28px; height: 28px; display: block; margin: 0 auto 4px; }
+  .anh-chon .xoa { position: absolute; top: 2px; right: 2px; width: 44px; height: 44px; background-clip: content-box; padding: 6px; border-radius: 50%; border: 0; background: rgba(20,28,23,.7); color: #fff; font-size: 18px; line-height: 1; cursor: pointer; }
+  .xem-lai { border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); overflow: hidden; }
+  .xem-lai .anh { aspect-ratio: 16 / 9; background: var(--giay-lot) center / cover; }
+  .xem-lai dl { margin: 0; padding: 4px 16px 12px; display: grid; grid-template-columns: auto 1fr; gap: 0 12px; }
+  .xem-lai dt { color: var(--muc-nhat); font-size: 14px; padding: 10px 0; border-bottom: 1px solid var(--ke); }
+  .xem-lai dd { margin: 0; text-align: right; font-weight: 600; padding: 10px 0; border-bottom: 1px solid var(--ke); font-variant-numeric: tabular-nums; }
+  .hang-nut { display: grid; grid-template-columns: auto 1fr; gap: 10px; position: sticky; bottom: 68px; z-index: 4; padding: 12px 0; margin: 0 0 -12px; background: linear-gradient(transparent, var(--giay) 22%); }
+  .nut.lui { background: var(--giay-noi); color: var(--muc-phu); box-shadow: inset 0 0 0 1.5px var(--ke-dam); }
+  .xong-hop { text-align: center; padding: 24px 8px; }
+  .xong-hop .vong-tich { width: 72px; height: 72px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 16px; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau" id="dau"></header>
+  <main class="noi" id="noi" style="gap:20px;padding-bottom:24px">
+    <div>
+      <div class="buoc-thanh" id="thanh"><i></i><i></i><i></i><i></i></div>
+      <div class="buoc-ten" id="ten-buoc"><span>Mặt hàng</span><span>Lượng</span><span>Giá</span><span>Ảnh</span></div>
+    </div>
+
+    <!-- Bước 1 -->
+    <section data-b="1">
+      <h2 class="tieu">Bác bán mặt hàng gì?</h2>
+      <p class="goi-y">Chỉ hiện mặt hàng đã được AgiViet xác minh ở vườn của bác.</p>
+      <div class="chon-sp" id="ds-sp" style="margin-top:16px"><div class="khung-tai"></div></div>
+      <span class="nhan-o" id="nhan-loai" hidden>Loại</span>
+      <div class="chip" id="ds-loai"></div>
+    </section>
+
+    <!-- Bước 2 -->
+    <section data-b="2" hidden>
+      <h2 class="tieu">Bác có bao nhiêu hàng?</h2>
+      <label class="nhan-o" for="luong">Lượng</label>
+      <div class="o-so"><input id="luong" inputmode="decimal" placeholder="0" autocomplete="off"><span class="don-vi" id="dv-hien">kg</span></div>
+      <div class="chip" id="dv" style="margin-top:10px"><button type="button" data-v="kg" aria-pressed="true">kg</button><button type="button" data-v="tan" aria-pressed="false">tấn</button></div>
+      <span class="nhan-o">Lượng này là</span>
+      <div class="chip" id="co-so"><button type="button" data-v="weighed" aria-pressed="true">Đã cân</button><button type="button" data-v="estimated" aria-pressed="false">Ước tính</button></div>
+      <p class="ghi" id="ghi-uoc" hidden>Hàng ước tính: bên mua chỉ được đặt tối đa 80% lượng, cân thực rồi cập nhật sau.</p>
+      <label class="nhan-o" for="ngay-hai">Ngày hái / thu hoạch dự kiến</label>
+      <input class="o-ngay" type="date" id="ngay-hai">
+    </section>
+
+    <!-- Bước 3 -->
+    <section data-b="3" hidden>
+      <h2 class="tieu">Bác muốn bán giá bao nhiêu?</h2>
+      <div class="tham-khao" id="tham-khao" hidden><span id="tk-nhan">Giá tham khảo</span><b id="tk-gia"></b></div>
+      <label class="nhan-o" for="gia-muon">Giá mong muốn (đồng / kg)</label>
+      <div class="o-so"><input id="gia-muon" inputmode="numeric" placeholder="0" autocomplete="off"><span class="don-vi">đ/kg</span></div>
+      <label class="nhan-o" for="gia-san">Giá thấp nhất bác chấp nhận (đồng / kg)</label>
+      <div class="o-so"><input id="gia-san" inputmode="numeric" placeholder="0" autocomplete="off"><span class="don-vi">đ/kg</span></div>
+      <p class="ghi">Bên mua chỉ thấy giá mong muốn. Giá thấp nhất để AgiViet lọc lời chào quá thấp.</p>
+      <p class="ghi canh-bao" id="loi-gia" hidden></p>
+    </section>
+
+    <!-- Bước 4 -->
+    <section data-b="4" hidden>
+      <h2 class="tieu">Thêm ảnh hàng</h2>
+      <p class="goi-y">Cần ít nhất 1 ảnh chụp hàng thật để đăng lên chợ. Ảnh giúp bên mua tin và chào giá nhanh hơn.</p>
+      <div class="anh-chon" id="anh-chon" style="margin-top:16px">
+        <label><input type="file" accept="image/*" capture="environment" multiple id="chon-anh" hidden><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp / chọn ảnh</span></label>
+      </div>
+      <h3 class="nhan-o" style="margin-top:24px">Xem lại trước khi đăng</h3>
+      <div class="xem-lai" id="xem-lai"></div>
+    </section>
+
+    <!-- Xong -->
+    <section data-b="5" hidden class="xong-hop">
+      <div class="vong-tich"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></div>
+      <h2 class="tieu" id="xong-tieu">Đã đăng lên chợ</h2>
+      <p class="goi-y" id="xong-chu">Bên mua đã thấy lô hàng của bác. Có lời chào giá, AgiViet báo ngay.</p>
+      <a class="nut chinh-nut" href="./ban-hang-hoa.html" style="margin-top:20px;text-decoration:none">Xem hàng đang bán</a>
+    </section>
+
+    <p class="bao loi" id="loi" hidden></p>
+    <div class="hang-nut" id="hang-nut">
+      <button class="nut lui" type="button" id="lui" hidden>Quay lại</button>
+      <button class="nut chinh-nut" type="button" id="tiep" disabled style="grid-column: 1 / -1">Tiếp tục</button>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, tienDu } from "./chung.js";
+import { anhThanhBase64 } from "/shared/ngoai-tuyen.js";
+const $ = (id) => document.getElementById(id);
+veTab("dang-bai");
+veDau($("dau"), { chao: "Đăng bài", ten: "Bán hàng mới", chuDau: "" });
+
+const st = { sp: null, loai: null, dv: "kg", coSo: "weighed", anh: [] };
+let token, buoc = 1, ds = [];
+const so = (s) => Number(String(s).replace(/\./g, "").replace(",", "."));
+const dinhDangTien = (el) => el.addEventListener("input", () => { const n = el.value.replace(/\D/g, ""); el.value = n ? Number(n).toLocaleString("vi-VN") : ""; kiem(); });
+const luongG = () => { const n = so($("luong").value); return Number.isFinite(n) && n > 0 ? Math.round(n * (st.dv === "tan" ? 1e6 : 1e3)) : 0; };
+const hienLoi = (m) => { $("loi").textContent = m; $("loi").hidden = !m; };
+
+function kiem() {
+  let ok = false;
+  if (buoc === 1) ok = !!(st.sp && st.loai);
+  if (buoc === 2) ok = luongG() > 0;
+  if (buoc === 3) {
+    const muon = so($("gia-muon").value), san = so($("gia-san").value);
+    const sai = muon > 0 && san > 0 && san > muon ? "Giá thấp nhất không được cao hơn giá mong muốn." : "";
+    $("loi-gia").textContent = sai; $("loi-gia").hidden = !sai;
+    ok = muon > 0 && san > 0 && !sai;
+  }
+  if (buoc === 4) ok = st.anh.length > 0;
+  $("tiep").disabled = !ok;
+}
+function den(b) {
+  buoc = b; hienLoi("");
+  document.querySelectorAll("[data-b]").forEach((s) => (s.hidden = Number(s.dataset.b) !== b));
+  [...$("thanh").children].forEach((i, k) => i.classList.toggle("xong", k < Math.min(b, 4)));
+  [...$("ten-buoc").children].forEach((s, k) => (s.innerHTML = k === b - 1 ? `<b>${s.textContent}</b>` : s.textContent));
+  $("lui").hidden = b === 1 || b === 5;
+  $("hang-nut").hidden = b === 5;
+  $("hang-nut").style.gridTemplateColumns = b === 1 ? "1fr" : "auto 1fr";
+  $("tiep").style.gridColumn = b === 1 ? "1 / -1" : "auto";
+  $("tiep").textContent = b === 4 ? "Đăng bán" : "Tiếp tục";
+  if (b === 3) giaThamKhao();
+  if (b === 4) xemLai();
+  kiem(); scrollTo({ top: 0 });
+}
+
+async function mo() {
+  token = await phien();
+  fetch("/v1/me", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).then((me) => {
+    if (me) veDau($("dau"), { chao: "Đăng bài", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase() });
+  }).catch(() => {});
+  const r = await fetch("/v1/seller/verified-products", { headers: { authorization: "Bearer " + token } });
+  if (!r.ok) throw new Error("Chưa tải được mặt hàng của bác.");
+  ds = (await r.json()).filter((x) => x.trang_thai === "hieu_luc");
+  const theoSp = new Map();
+  for (const x of ds) { if (!theoSp.has(x.product_code)) theoSp.set(x.product_code, []); theoSp.get(x.product_code).push(x); }
+  $("ds-sp").innerHTML = theoSp.size ? [...theoSp].map(([ma, ls]) => {
+    const anh = ANH_SP(ma);
+    return `<button type="button" data-ma="${esc(ma)}" aria-pressed="false"><div class="anh ${anh ? "" : "anh-trong"}" ${anh ? `style="background-image:url(${anh})"` : ""}></div><p class="ten">${esc(ls[0].product_name)}</p><p class="noi">${esc(ls[0].site_name)}</p></button>`;
+  }).join("") : `<p class="bao" style="grid-column:1/-1">Chưa có mặt hàng nào được xác minh. Bác bấm Hỗ trợ để hẹn nhân viên tới vườn.</p>`;
+  $("ds-sp").querySelectorAll("button").forEach((b) => (b.onclick = () => {
+    st.sp = b.dataset.ma; st.loai = null;
+    $("ds-sp").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    const loai = theoSp.get(st.sp);
+    $("nhan-loai").hidden = false;
+    $("ds-loai").innerHTML = loai.map((x) => `<button type="button" data-g="${esc(x.grade_code)}" aria-pressed="false">Loại ${esc(x.grade_label.replace(/^L/, ""))}</button>`).join("");
+    $("ds-loai").querySelectorAll("button").forEach((g) => (g.onclick = () => { st.loai = g.dataset.g; $("ds-loai").querySelectorAll("button").forEach((y) => y.setAttribute("aria-pressed", String(y === g))); kiem(); }));
+    if (loai.length === 1) $("ds-loai").querySelector("button").click();
+    kiem();
+  }));
+}
+
+// Chọn đơn vị / cơ sở lượng
+for (const [id, khoa] of [["dv", "dv"], ["co-so", "coSo"]]) $(id).querySelectorAll("button").forEach((b) => (b.onclick = () => {
+  st[khoa] = b.dataset.v; $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  $("dv-hien").textContent = st.dv === "tan" ? "tấn" : "kg"; $("ghi-uoc").hidden = st.coSo !== "estimated"; kiem();
+}));
+$("luong").addEventListener("input", kiem);
+dinhDangTien($("gia-muon")); dinhDangTien($("gia-san"));
+
+async function giaThamKhao() {
+  try {
+    const r = await fetch(`/v1/reference-prices?product=${encodeURIComponent(st.sp)}&grade=${encodeURIComponent(st.loai)}`, { headers: { authorization: "Bearer " + token } });
+    const j = r.ok ? await r.json() : null;
+    if (j?.price_vnd) {
+      $("tk-gia").textContent = `${Number(j.price_vnd).toLocaleString("vi-VN")} đ/kg`;
+      $("tk-nhan").textContent = `Giá tham khảo · ${j.order_count || 0} đơn gần đây`;
+      $("tham-khao").hidden = false;
+    } else chuaCo();
+  } catch { chuaCo(); }
+  function chuaCo() { $("tk-nhan").textContent = "Chưa có giá tham khảo cho loại này"; $("tk-gia").textContent = ""; $("tham-khao").hidden = false; }
+}
+
+// Ảnh: thu nhỏ trên máy trước khi gửi
+$("chon-anh").addEventListener("change", async (e) => {
+  for (const f of [...e.target.files].slice(0, 6 - st.anh.length)) {
+    try { st.anh.push({ xem: URL.createObjectURL(f), du: await anhThanhBase64(f) }); } catch { hienLoi("Có ảnh không đọc được, bác chọn ảnh khác."); }
+  }
+  e.target.value = ""; veAnh(); xemLai(); kiem();
+});
+function veAnh() {
+  $("anh-chon").querySelectorAll(".o").forEach((o) => o.remove());
+  st.anh.forEach((a, i) => $("anh-chon").insertAdjacentHTML("beforeend", `<div class="o" style="background-image:url(${a.xem})"><button class="xoa" type="button" data-i="${i}" aria-label="Bỏ ảnh ${i + 1}">×</button></div>`));
+  $("anh-chon").querySelectorAll(".xoa").forEach((b) => (b.onclick = () => { st.anh.splice(Number(b.dataset.i), 1); veAnh(); xemLai(); kiem(); }));
+}
+function xemLai() {
+  const x = ds.find((d) => d.product_code === st.sp && d.grade_code === st.loai);
+  const anh = st.anh[0]?.xem || ANH_SP(st.sp);
+  const kg = luongG() / 1000;
+  $("xem-lai").innerHTML = `<div class="anh" style="${anh ? `background-image:url(${anh})` : ""}"></div><dl>
+    <dt>Mặt hàng</dt><dd>${esc(x?.product_name || st.sp)} · Loại ${esc((st.loai || "").replace(/^L/, ""))}</dd>
+    <dt>Lượng</dt><dd>${kg.toLocaleString("vi-VN")} kg · ${st.coSo === "estimated" ? "ước tính" : "đã cân"}</dd>
+    <dt>Giá mong muốn</dt><dd>${esc($("gia-muon").value)} đ/kg</dd>
+    <dt>Giá thấp nhất</dt><dd>${esc($("gia-san").value)} đ/kg</dd>
+    <dt>Ước tính tổng</dt><dd title="${tienDu(kg * so($("gia-muon").value))}">${Math.round(kg * so($("gia-muon").value)).toLocaleString("vi-VN")} đ</dd>
+    <dt>Ảnh</dt><dd>${st.anh.length ? `${st.anh.length} ảnh` : "Chưa có"}</dd></dl>`;
+}
+
+// Gửi lệnh có khóa chống lặp (bấm 2 lần không tạo 2 lô)
+const khoa = { tao: crypto.randomUUID() };
+async function lenh(duong, than) {
+  const r = await fetch(duong, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify(than) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = j.errors?.[0] || {}; throw new Error([e.message, e.fix].filter(Boolean).join(" ") || "Chưa đăng được, bác thử lại."); }
+  return j;
+}
+async function dangBan() {
+  $("tiep").disabled = true; $("tiep").textContent = "Đang đăng…"; hienLoi("");
+  try {
+    const x = ds.find((d) => d.product_code === st.sp && d.grade_code === st.loai);
+    const tao = await lenh("/v1/lots", { idempotency_key: khoa.tao, product_code: st.sp, grade_code: st.loai, site_id: x?.site_id, qty_g: String(luongG()), qty_basis: st.coSo,
+      harvest_on: $("ngay-hai").value || undefined, ask_price_vnd: String(so($("gia-muon").value)), floor_price_vnd: String(so($("gia-san").value)) });
+    const lo = tao.data || tao;
+    // Quy tắc: lô cần ít nhất 1 ảnh chụp trong app mới đăng được → gửi ảnh trước, rồi mới đăng
+    let loiAnh = 0;
+    for (const [i, a] of st.anh.entries()) {
+      a.khoa ||= crypto.randomUUID();
+      try { await lenh("/v1/files", { idempotency_key: a.khoa, entity: "lot", entity_id: lo.id, captured_in_app: true, mime: a.du.mime, data_base64: a.du.data_base64 }); } catch { loiAnh++; }
+      $("tiep").textContent = `Đang gửi ảnh ${i + 1}/${st.anh.length}…`;
+    }
+    if (loiAnh === st.anh.length) throw new Error("Chưa gửi được ảnh. Bác kiểm tra mạng rồi bấm Đăng bán lại, lô nháp vẫn được giữ.");
+    khoa.dang ||= crypto.randomUUID();
+    await lenh(`/v1/lots/${lo.id}/publish`, { idempotency_key: khoa.dang, expected_revision: tao.revision ?? lo.revision });
+    $("xong-tieu").textContent = `Đã đăng lô ${lo.code || ""}`.trim();
+    if (loiAnh) $("xong-chu").textContent = `Lô đã lên chợ. ${loiAnh} ảnh chưa gửi được, bác thêm lại trong chi tiết lô.`;
+    den(5);
+  } catch (e) { hienLoi(e.message); $("tiep").disabled = false; $("tiep").textContent = "Đăng bán"; }
+}
+$("tiep").onclick = () => (buoc === 4 ? dangBan() : den(buoc + 1));
+$("lui").onclick = () => den(buoc - 1);
+giuThamSo();
+mo().then(() => den(1)).catch((e) => { $("ds-sp").innerHTML = `<p class="bao loi" style="grid-column:1/-1">${esc(e.message)}</p>`; });
+</script>
+</body>
+</html>

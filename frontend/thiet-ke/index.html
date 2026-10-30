@@ -29,7 +29,8 @@
     <div class="nhom">App bán</div>
     <a href="#dang-nhap.html">1. Đăng nhập</a>
     <a href="#ban-hom-nay.html?thu=0918000421">2. Trang chủ · Hôm nay</a>
-    <a href="#ban-hang-hoa.html?thu=0918000421">3. Hàng hóa</a>
+    <a href="#ban-hang-hoa.html?thu=0918000421">3. Chợ · Hàng đang bán</a>
+    <a href="#ban-dang-bai.html?thu=0918000421">4. Đăng bài</a>
   </nav>
   <main class="san">
     <div><div class="may"><iframe id="sang" title="Nền sáng"></iframe></div><p class="nhan-may">390 × 844</p></div>
@@ -47,7 +48,7 @@
   let dau = null;
   setInterval(async () => {
     try {
-      const ds = ["so-vuon.css", "dang-nhap.html", "ban-hom-nay.html", "ban-hang-hoa.html"];
+      const ds = ["so-vuon.css", "chung.js", "dang-nhap.html", "ban-hom-nay.html", "ban-hang-hoa.html", "ban-dang-bai.html"];
       const t = (await Promise.all(ds.map((f) => fetch("./" + f, { method: "HEAD", cache: "no-store" }).then((r) => r.headers.get("last-modified") || r.headers.get("etag") || "")))).join("|");
       if (dau !== null && t !== dau) mo();
       dau = t;
