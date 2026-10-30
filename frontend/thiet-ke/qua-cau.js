@@ -19,8 +19,9 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
     img.onload = () => {
       const s = 128, c = document.createElement("canvas"); c.width = c.height = s;
       const g = c.getContext("2d"); g.beginPath(); g.arc(s / 2, s / 2, s / 2 - 4, 0, Math.PI * 2); g.save(); g.clip();
-      const k = Math.max(s / img.width, s / img.height) * 1.4;
-      g.drawImage(img, (s - img.width * k) / 2, (s - img.height * k) / 2, img.width * k, img.height * k); g.restore();
+      // Phóng vào phần nông sản (thường nằm giữa, hơi lệch xuống trong ảnh chụp) để ảnh tròn nhỏ vẫn nhận ra mặt hàng
+      const k = Math.max(s / img.width, s / img.height) * 1.9;
+      g.drawImage(img, (s - img.width * k) / 2, (s - img.height * k) / 2 - img.height * k * 0.1, img.width * k, img.height * k); g.restore();
       g.lineWidth = 7; g.strokeStyle = "#fff"; g.stroke();
       tron[i] = c;
     };

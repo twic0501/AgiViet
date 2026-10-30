@@ -16,7 +16,9 @@ export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.char
 
 // Ảnh sản phẩm theo mã mặt hàng (ảnh thật trong /assets/products); chưa có ảnh thì dùng ảnh nhóm gần nhất.
 const ANH = [[/XOAI/, "xoai-cat-chu"], [/SAU_RIENG|DURIAN/, "sau-rieng"], [/THANH_LONG|DRAGON/, "thanh-long"], [/TOM|SHRIMP/, "tom"],
-  [/CA_PHE|COFFEE/, "ca-phe"], [/LUA|GAO|RICE/, "lua-gao"]];
+  [/CA_PHE|COFFEE/, "ca-phe"], [/LUA|GAO|RICE/, "lua-gao"], [/BUOI|POMELO|CAM|QUYT|CHANH/, "buoi"], [/VAI|NHAN|CHOM/, "vai"],
+  [/CHUOI|BANANA/, "chuoi"], [/DUA_HAU|DUA_LUOI|DUA|MELON/, "dua-hau"], [/RAU|CAI|XA_LACH/, "rau-cai"], [/KHOAI|CA_ROT|CU_/, "cu"],
+  [/TIEU|PEPPER/, "ho-tieu"], [/DIEU|CASHEW/, "hat-dieu"], [/CA_TRA|BASA|CA_/, "ca-tra"], [/CUA|GHE|CRAB/, "cua"]];
 export const ANH_SP = (ma) => `/assets/products/${(ANH.find(([m]) => m.test(ma || "")) || [, "xoai-cat-chu"])[1]}.jpg`;
 
 // Chặng hiện tại của hợp đồng (0 chào giá … 4 nhận tiền) theo hien_thi.chang của backend, rơi về trạng thái.
