@@ -131,6 +131,18 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - nhún nhảy 2 nhịp (squash & stretch, tai, tay, đuôi theo đà);
     - vẫy tai và gật đầu.
   - Mỗi lớp chuyển động có nút bọc riêng (`*-giat`, `*-nghich`, `dau-nghich`, `nghich`), nên các lớp không ghi đè lên nhau.
+- **Tính cách và cảm xúc (người sáng lập: "cho nó cảm xúc, tính cách, tay quơ cao", 31/10):**
+  - **Tính cách:** hiền lành, chăm chỉ, tò mò, hay vui, thỉnh thoảng ngái ngủ.
+  - **Khung mặt:** mắt và mày có nút cảm xúc riêng (`*-cx`), nên biểu cảm không đè lên chớp mắt và nhìn theo. Mỗi mắt có sẵn **mắt cười ^^** (`*-cuoi`), bật hoặc tắt bằng độ mờ.
+  - **4 cảm xúc mới** trong lớp Nghịch, nâng tổng số động tác ngẫu nhiên lên 9:
+    - **vui hớn hở:** mắt cười, lắc lư theo nhịp, hai tay vung xen kẽ, tai vểnh, đuôi vẫy;
+    - **ngái ngủ:** mắt lim dim, đầu gật gù chúi xuống, tai cụp, rồi giật mình tỉnh và lắc đầu;
+    - **giật mình:** mắt mở to, mày nhướng, tai dựng, người bật lùi rồi thở phào;
+    - **vẫy tay chào:** một tay giơ cao vẫy, mắt cười, đầu nghiêng.
+  - **Vươn vai:** tay giơ cao (66°), mắt nheo, mày nhướng.
+  - **Tay:** góc chính diện vung cao hết cỡ. Ở góc ¾ và nghiêng, tay vẽ cho dáng buông nên giơ cao sẽ lộ ống tay phẳng, vì vậy hiện chỉ cho vung khoảng 40 %. **Muốn giơ cao ở ¾ và nghiêng phải vẽ thêm tư thế tay giơ** (làm ở chặng hành động).
+  - Góc nghiêng: đã đồ thêm phần áo và đường gấu sau bàn tay (`chen_dau_nhom`), góc ¾ và nghiêng có lót áo (`lot['than']`), nên khi tay vung không còn lộ lỗ.
+  - **Kiểm thử:** `AGV_THU=<0–8> AGV_HUONG=<h> python3 dung-v3.py` ép chạy một động tác ngay. Bảng cảm xúc ở 3 góc: `docs/trau/chang-2/cam-xuc-3-goc.png`.
 - **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
 - **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.
 - **Ảnh:** `docs/trau/chang-2/` (5 nấc hướng, chuỗi xoay, 8 khung nghỉ).

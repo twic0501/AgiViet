@@ -76,7 +76,7 @@ def nghieng():
               'Trâu V4g — góc nghiêng trái (đồ từ bảng Higgsfield a)',
               'Đồ từ docs/trau/tham-chieu/goc-nhin-higgsfield-a.png (hàng dưới, hình giữa; đuôi theo hình trái); '
               'màu V4g, nét #24190f ~5,6.', toi_rieng=toi_rieng,
-              lot={'dau-khoi': LONG, 'tai-gan': LONG, 'sung-gan': '#fff1dd', 'mom': '#fdcdb0',
+              lot={'than': '#c48f65', 'dau-khoi': LONG, 'tai-gan': LONG, 'sung-gan': '#fff1dd', 'mom': '#fdcdb0',
                    'khan-co': KHAN_VUA, 'khan-dai': KHAN_VUA},
               them_vung=[('khan-co', khan_co, KHAN_VUA), ('khan-dai', khan_dai, KHAN_VUA),
                          ('chan-gan', anh.da_giac(phang(CHAN_GAN_A['ong'])[0]), '#45423d')],
@@ -102,6 +102,12 @@ def nghieng():
         'data-role="bong-tay"/>',
         '<path d="M254 374L318 383" fill="none" stroke="#24190f" stroke-width="5.6" stroke-linecap="round" '
         'data-role="co-tay-phang"/>']})
+    # áo sau bàn tay (ảnh nguồn bị tay che, hở ra ngoài gấu nên lớp lót không tự lấp) + đường gấu
+    chen_dau_nhom(svg, {'than': ['<path d="M248 370L320 377L321 398Q285 402 248 404Z" fill="#c48f65" stroke="none" '
+                                 'data-role="ao-sau-tay"/>']})
+    them_vao_nhom(svg, {'than': [
+        '<path d="M244 404Q284 402 323 398" fill="none" stroke="#24190f" stroke-width="5.6" stroke-linecap="round" '
+        'data-role="gau-sau-tay"/>']})
     them_vao_nhom(svg, {'than': [
         '<path d="M226 365L254 365L255 383Q240 386 227 383Z" fill="none" stroke="#aa7652" stroke-width="1.9" '
         'stroke-linejoin="round" data-role="tui"/>']})
@@ -183,7 +189,7 @@ def ba_tu():
               os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), 'Trâu V4g — góc ¾ trái (đồ từ Higgsfield)',
               'Đồ từ ảnh 3D Jutsu Angles sinh từ V4g (docs/trau/tham-chieu/higgsfield-v4g-34-trai-1.png); '
               'màu V4g, nét #24190f ~5,6.', toi_rieng=toi_rieng,
-              lot={'dau-khoi': LONG, 'tai-gan': LONG, 'tai-xa': LONG, 'sung-gan': '#fff1dd', 'sung-xa': '#fff1dd',
+              lot={'than': '#c48f65', 'dau-khoi': LONG, 'tai-gan': LONG, 'tai-xa': LONG, 'sung-gan': '#fff1dd', 'sung-xa': '#fff1dd',
                    'khan-co': KHAN_VUA, 'khan-dai': KHAN_VUA, 'chan-xa': '#45423d',
                    'chan-gan': '#45423d', 'mom': '#fdcdb0'}, net_rong={'duoi': 44},
               net_chi_vien=('chan-xa', 'chan-gan'), caro={'khan-co': 12, 'khan-dai': 12},
@@ -306,6 +312,15 @@ def co_tay_phang(trai, dinh, phai, cat_trai, cat_phai):
     return [f'<path d="M{x0} {y0}Q{xd} {cy:.1f} {x1} {y1}Z" fill="#c48f65" stroke="none" data-role="lap-vom-co-tay"/>',
             f'<path d="M{cat_trai[0]} {cat_trai[1]}L{cat_phai[0]} {cat_phai[1]}" fill="none" stroke="{VIEN}" '
             f'stroke-width="5.6" stroke-linecap="round" data-role="co-tay-phang"/>']
+
+
+def chen_dau_nhom(svg, them):
+    """Chèn phần đồ tay vào ĐẦU nhóm (nằm dưới mọi hình khác của nhóm)."""
+    s = open(svg).read()
+    for bo, con in them.items():
+        s, n = re.subn(rf'(<g id="{bo}"[^>]*>)', lambda m: m.group(1) + ''.join('\n    ' + c for c in con), s, count=1)
+        assert n == 1, bo
+    open(svg, 'w').write(s)
 
 
 def thay_nhom(svg, moi):
