@@ -346,74 +346,60 @@ def main():
     if co('tay-phai'):
         k.append(khung(ids['tay-phai'], 'rotation', [(0, -0.035), (100, 0.03), (200, -0.035)]))
     hoat.append(('Khăn và tay', 200, ''.join(k)))
-    # Đổi dáng tay bằng khớp (chỉ khi nguồn là SVG khớp nối từ tay-khop.py): ba chuỗi (bàn tay, viền, màu)
-    # của mỗi khớp xoay cùng góc → tay luôn liền. Dáng đọc từ tu-the-khop.json; thử: nghỉ → chào → mừng → nghỉ.
-    if KHOP and os.environ.get('AGV_DANG_THU'):
+    # Dáng theo khớp (nguồn SVG khớp nối từ tay-khop.py với "_rive"). Mỗi dáng = một hoạt ảnh giữ tư thế;
+    # máy trạng thái lớp "Dáng" chọn theo đầu vào số `dang` (thứ tự trong AGV_DANG), Rive trộn mượt khi đổi.
+    # Mọi bản sao của một khớp (bàn tay, viền, màu, bàn tay nổi, tay trước thân) xoay cùng góc → luôn liền.
+    DANG_SM = []   # (tên dáng, id hoạt ảnh) cho lớp máy trạng thái
+    if KHOP and os.environ.get('AGV_DANG'):
         goc_tm = os.path.dirname(os.path.abspath(__file__))
         tt = json.load(open(os.path.join(goc_tm, 'tu-the-khop.json'), encoding='utf-8'))
         tt.update({m: v for m, v in json.load(open(os.path.join(goc_tm, 'tu-the-chan.json'), encoding='utf-8')).items() if m not in tt})
-        thu_tu = os.environ['AGV_DANG_THU'].split(',')
-        doan = 70
-        k = []
-        # Chân: hông → gối → cổ chân, ba chuỗi (móng, viền, màu) cùng góc; dáng không khai báo chân = đứng thẳng.
-        ts_c = json.load(open(os.path.join(goc_tm, 'tham-so-tay.json')))
-        L_DUI, L_CANG = ts_c.get('L_DUI', 30.0), ts_c.get('L_CANG', 34.0)
-        for ben in ('chan-trai', 'chan-phai'):
-            def q_chan(ma):
-                return tt[ma].get(ben) or [0, 0, 0]
-            for j, khop in enumerate(('dui', 'cang', 'mong')):
-                for lop in ('', '-vien', '-mau'):
-                    nid = KHOP.get(f'{ben}-{khop}{lop}')
-                    if nid is not None:
-                        k.append(khung(nid, 'rotation', sum(([(n * doan, math.radians(q_chan(m)[j])), (n * doan + 30, math.radians(q_chan(m)[j]))]
-                                                             for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
-            for lop in ('', '-vien', '-mau'):
-                for khop, L, idx in (('cang', L_DUI, 3), ('mong', L_CANG, 4)):
-                    d = KHOP.get(f'{ben}-{khop}{lop}#dich')
-                    if d is not None:
-                        k.append(khung(d, 'y', sum(([(n * doan, L * (q_chan(m)[idx] if len(q_chan(m)) > idx else 1.0)),
-                                                     (n * doan + 30, L * (q_chan(m)[idx] if len(q_chan(m)) > idx else 1.0))]
-                                                    for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
-        for ben in ('tay-trai', 'tay-phai'):
-            for j, khop in enumerate(('tren', 'duoi', 'ban')):
-                for lop in ('', '-vien', '-mau', '-noi'):
-                    nid = KHOP.get(f'{ben}-{khop}{lop}')
-                    if nid is None:
-                        continue
-                    diem = []
-                    for i, ma in enumerate(thu_tu):
-                        goc = tt[ma][ben][j]
-                        diem += [(i * doan, math.radians(goc)), (i * doan + 30, math.radians(goc))]
-                    k.append(khung(nid, 'rotation', diem, '0.45 0 0.25 1'))
-            # Kéo dài ống tay theo dáng: ống co giãn dọc, khuỷu/cổ tay dời theo (bàn tay giữ nguyên cỡ).
-            ts = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tham-so-tay.json')))
-            L_TREN, L_DUOI = ts.get('L_TREN', 30.0), ts.get('L_DUOI', 36.0)
+        ts = json.load(open(os.path.join(goc_tm, 'tham-so-tay.json')))
+        L_TREN, L_DUOI = ts.get('L_TREN', 30.0), ts.get('L_DUOI', 36.0)
+        L_DUI, L_CANG = ts.get('L_DUI', 30.0), ts.get('L_CANG', 34.0)
+        LOP_TAY = ('', '-vien', '-mau', '-noi', '-truoc', '-vien-truoc', '-mau-truoc')
 
-            def keo(ma, i):
-                q = tt[ma][ben]
+        def giu(nid, prop, v):  # khóa một giá trị suốt hoạt ảnh dáng (2 khung giống nhau)
+            return khung(nid, prop, [(0, v), (1, v)])
+
+        def khoa_dang(ma):
+            p = tt[ma]; out = []
+            for ben in ('tay-trai', 'tay-phai'):
+                q = p[ben]
                 kt = q[3] if len(q) > 3 else 1.0
-                return kt if i == 0 else (q[4] if len(q) > 4 else kt)
-            for lop in ('', '-vien', '-mau', '-noi'):
-                for i, (ong, khop, L) in enumerate((('ongtren', 'duoi', L_TREN), ('ongduoi', 'ban', L_DUOI))):
-                    o, d = KHOP.get(f'{ben}-{ong}{lop}'), KHOP.get(f'{ben}-{khop}{lop}#dich')
-                    if o is not None:
-                        k.append(khung(o, 'scaleY', sum(([(n * doan, keo(m, i)), (n * doan + 30, keo(m, i))] for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
-                    if d is not None:
-                        k.append(khung(d, 'y', sum(([(n * doan, L * keo(m, i)), (n * doan + 30, L * keo(m, i))] for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
-            # Bàn tay nổi trên đầu (gãi đầu, khum tai): bật bản nổi, tắt bàn tay gốc; dáng khác thì ngược lại.
-            # Đổi tức thì ở giữa đoạn chuyển (khung +15) để không thấy hai bàn tay cùng lúc.
-            noi, goc_ban = KHOP.get(f'{ben}-noi'), KHOP.get(f'{ben}-ban')
-            for nid, khi_noi in ((noi, 1.0), (goc_ban, 0.0)):
-                if nid is None:
-                    continue
-                diem = []
-                for n, m in enumerate(thu_tu):
-                    bat = bool(tt[m].get(ben + '-ban-noi'))
-                    v = khi_noi if bat else 1.0 - khi_noi
-                    diem += [(n * doan + 15, v), (n * doan + 30, v)]
-                diem = [(0, diem[0][1])] + diem
-                k.append(khung(nid, 'opacity', diem, '0 0 1 1'))
-        hoat.append(('Đổi dáng thử', doan * len(thu_tu), ''.join(k)))
+                kd = q[4] if len(q) > 4 else kt
+                truoc, noi = bool(p.get(ben + '-truoc')), bool(p.get(ben + '-ban-noi'))
+                for lop in LOP_TAY:
+                    for j, khop in enumerate(('tren', 'duoi', 'ban')):
+                        nid = KHOP.get(f'{ben}-{khop}{lop}')
+                        if nid is not None:
+                            out.append(giu(nid, 'rotation', math.radians(q[j])))
+                    for ong, khop, L, kk in (('ongtren', 'duoi', L_TREN, kt), ('ongduoi', 'ban', L_DUOI, kd)):
+                        o, d = KHOP.get(f'{ben}-{ong}{lop}'), KHOP.get(f'{ben}-{khop}{lop}#dich')
+                        if o is not None:
+                            out.append(giu(o, 'scaleY', kk))
+                        if d is not None:
+                            out.append(giu(d, 'y', L * kk))
+                # Bật/tắt bản sao: tay trước thân (cầm đồ trước ngực) / bàn tay nổi trên đầu
+                for ten_nhom, bat in ((ben, not truoc), (ben + '-truoc', truoc), (ben + '-noi', noi), (ben + '-ban', not noi)):
+                    nid = KHOP.get(ten_nhom)
+                    if nid is not None:
+                        out.append(giu(nid, 'opacity', 1.0 if bat else 0.0))
+            for ben in ('chan-trai', 'chan-phai'):
+                q = p.get(ben) or [0, 0, 0]
+                for lop in ('', '-vien', '-mau'):
+                    for j, khop in enumerate(('dui', 'cang', 'mong')):
+                        nid = KHOP.get(f'{ben}-{khop}{lop}')
+                        if nid is not None:
+                            out.append(giu(nid, 'rotation', math.radians(q[j])))
+                    for khop, L, idx in (('cang', L_DUI, 3), ('mong', L_CANG, 4)):
+                        d = KHOP.get(f'{ben}-{khop}{lop}#dich')
+                        if d is not None:
+                            out.append(giu(d, 'y', L * (q[idx] if len(q) > idx else 1.0)))
+            return ''.join(out)
+
+        for ma in os.environ['AGV_DANG'].split(','):
+            DANG_SM.append((ma, moi_id(), khoa_dang(ma)))
     # Nhìn theo kiểu xoay đầu thật (như Muza 'cat x'/'cat y'): Joystick đọc vị trí "điểm nhìn" (chạy theo con trỏ)
     # và tua hai dòng thời gian tư thế. Mỗi lớp lệch theo độ sâu: mõm nhiều nhất, mắt vừa (mắt phía xa co hẹp),
     # lông mày/trán ít, khuôn đầu nghiêng + co nhẹ, tai/sừng phía nhìn tới thu vào sau đầu, phía kia lộ ra.
@@ -486,6 +472,28 @@ def main():
                    f'<TransitionTriggerCondition inputId="{kich_hoat}"/></StateTransition></AnimationState>'
                    f'<AnimationState animationId="{a_nhun}" id="{s_nhun}"><StateTransition stateToId="{s_cho}" '
                    f'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"/></AnimationState></StateMachineLayer>')
+    # Lớp "Dáng": AnyState → dáng i khi `dang` == i, trộn 350 ms (Rive nội suy góc khớp giữa hai dáng).
+    vao_dang = moi_id()
+    if DANG_SM:
+        s_ids = [moi_id() for _ in DANG_SM]
+        chuyen = ''.join(f'<StateTransition stateToId="{s}" duration="350"><TransitionNumberCondition inputId="{vao_dang}" '
+                         f'opValue="equal" value="{i}"/></StateTransition>' for i, s in enumerate(s_ids))
+        trang_thai = ''.join(f'<AnimationState animationId="{aid}" id="{s}"/>' for (ma, aid, _), s in zip(DANG_SM, s_ids))
+        anim_xml.extend(f'<LinearAnimation loopValue="loop" fps="60" duration="1" name="Dáng {ma}" id="{aid}">{keyed}</LinearAnimation>'
+                        for ma, aid, keyed in DANG_SM)
+        lop_xml.insert(0, f'<StateMachineLayer name="Dáng" id="{moi_id()}"><AnyState>{chuyen}</AnyState><ExitState/>'
+                          f'<EntryState><StateTransition stateToId="{s_ids[int(os.environ.get('AGV_DANG_DAU', '0'))]}"/></EntryState>{trang_thai}</StateMachineLayer>')
+    # Lớp "Nhún thân": cả người lắc nhẹ, chuyển trọng tâm và nhún theo nhịp thở (gốc ở bàn chân) → bớt đứng cứng.
+    toan_than = moi_id()
+    k = [khung(toan_than, 'rotation', [(f, 0.022 * math.sin(2 * math.pi * f / 300)) for f in range(0, 301, 30)], '0.37 0 0.63 1'),
+         khung(toan_than, 'x', [(f, 256 + 2.2 * math.sin(2 * math.pi * f / 300)) for f in range(0, 301, 30)], '0.37 0 0.63 1'),
+         khung(toan_than, 'scaleY', [(f, 1 + 0.012 * (1 - math.cos(2 * math.pi * f / 150)) / 2) for f in range(0, 301, 30)], '0.37 0 0.63 1')]
+    a_nt = moi_id()
+    anim_xml.append(f'<LinearAnimation loopValue="loop" fps="60" duration="300" name="Nhún thân" id="{a_nt}">{"".join(k)}</LinearAnimation>')
+    s_nt = moi_id()
+    lop_xml.append(f'<StateMachineLayer name="Nhún thân" id="{moi_id()}"><AnyState/><ExitState/>'
+                   f'<EntryState><StateTransition stateToId="{s_nt}"/></EntryState><AnimationState animationId="{a_nt}" id="{s_nt}"/></StateMachineLayer>')
+    nodes = [f'<Node x="256" y="492" name="toan-than" id="{toan_than}"><Node x="-256" y="-492" name="toan-than-goc">{"".join(nodes)}</Node></Node>']
     nghe = (f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="move" name="Nhìn theo" id="{moi_id()}">'
             f'<ListenerAlignTarget targetId="{diem_nhin}"/></StateMachineListenerSingle>'
             f'<StateMachineListenerSingle targetId="{vung_cham}" listenerTypeValue="down" name="Chạm" id="{moi_id()}">'
@@ -499,7 +507,7 @@ def main():
 <Artboard defaultStateMachineId="{smid}" styleId="0:5" width="512" height="512" name="trau" id="0:2">
 <LayoutComponentStyle name="Kiểu" id="0:5"/>
 {''.join(nodes)}
-<StateMachine name="trau" id="{smid}"><StateMachineTrigger name="cham" id="{kich_hoat}"/><StateMachineBool name="co_tro" id="{co_tro}"/>{''.join(lop_xml)}{nghe}</StateMachine>
+<StateMachine name="trau" id="{smid}"><StateMachineTrigger name="cham" id="{kich_hoat}"/><StateMachineBool name="co_tro" id="{co_tro}"/><StateMachineNumber name="dang" value="{os.environ.get('AGV_DANG_DAU', '0')}" id="{vao_dang}"/>{''.join(lop_xml)}{nghe}</StateMachine>
 {''.join(anim_xml)}
 </Artboard>
 </Rive>''')

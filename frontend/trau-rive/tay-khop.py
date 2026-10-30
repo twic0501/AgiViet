@@ -86,7 +86,7 @@ def dao_cu(ten, ti_le=0.5, xoay=0.0, lech=(0.0, 0.0), guong=False):
             f'rotate({xoay}){lat} scale({ti_le}) translate({-cx} {-cy})">{ben_trong}</g>')
 
 
-def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, keo_duoi=None, chi_ban=False, ban_noi=False, do=''):
+def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, keo_duoi=None, chi_ban=False, ban_noi=False, do='', hau_to=''):
     """Trả về <g> cánh tay. Góc độ theo chiều kim đồng hồ (tay trái); tay phải lật gương.
     keo: hệ số kéo dài ống tay (co giãn hoạt hình khi giơ tay) — chỉ đổi độ dài, giữ nguyên bề rộng và bàn tay."""
     sx = -1 if guong else 1
@@ -94,6 +94,7 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
     # Ba chuỗi cùng một bộ khớp (cùng góc): bàn tay → viền ống áo → màu ống áo (sau nằm trên).
     # Màu đè lên viền nên chỗ hai đoạn chồng nhau ở khuỷu không còn nét giữa: tay liền một ống.
     def chuoi(lop, phan_tren, phan_duoi, phan_ban=''):
+        lop = lop + hau_to  # bản sao trước thân: mọi id có thêm hậu tố (vd -vien-truoc)
         # Ống áo bọc trong nhóm co giãn riêng (Rive kéo dài ống khi giơ tay mà bàn tay không bị méo).
         if phan_tren:
             phan_tren = f'<g id="{ten}-ongtren{lop}" transform="scale(1 1)">{phan_tren}</g>'
@@ -103,7 +104,7 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
         duoi = f'<g id="{ten}-duoi{lop}" transform="translate(0 {lt:.2f}) rotate({goc_khuyu})">{tay}{phan_duoi}</g>'
         return f'<g id="{ten}-tren{lop}" transform="rotate({goc_vai})">{phan_tren}{duoi}</g>'
     ban_tay_lop = chuoi('', '', '', do + ban)
-    mo = f'<g id="{ten}{"-noi" if chi_ban else ""}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
+    mo = f'<g id="{ten}{"-noi" if chi_ban else hau_to}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
     if chi_ban:  # chỉ bàn tay, đặt ở lớp trên đầu (gãi đầu, khum tai): cùng bộ khớp nên dính đúng cổ tay
         return mo + chuoi('-noi', '', '', do + ban) + '</g>'
     vien = chuoi('-vien', vien_ong(lt, R_VAI, R_KHUYU), vien_ong(ld, R_KHUYU, R_CO))
@@ -182,6 +183,9 @@ def dung(svg_path, tu_the, ra):
                 pa.append(moi)
             else:
                 pa.insert(i, moi)
+            # Bản dựng cho Rive: thêm bản sao cả cánh tay ở lớp TRƯỚC thân (ẩn), bật ở dáng cầm đồ trước ngực.
+            if p.get('_rive'):
+                pa.append(ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, hau_to='-truoc') + '</g>')[0])
         # Chân chỉ thay khi tư thế có khai báo (dáng đứng giữ nguyên chân V4g).
         for side, hong, guong in (('chan-trai', HONG_TRAI, False), ('chan-phai', HONG_PHAI, True)):
             if side not in p:
