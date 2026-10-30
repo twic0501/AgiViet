@@ -124,7 +124,7 @@ def pchip(xs, ys):
 
 
 # u = (x - tâm)/bán kính, chính diện → ¾ trái (~30°). Viền hai bên gần giữ nguyên, đường giữa dời về −0,42.
-UON = pchip([-1.15, -1.0, -0.5, 0.0, 0.5, 1.0, 1.15], [-1.12, -0.97, -0.81, -0.48, 0.04, 1.0, 1.15])
+UON = pchip([-1.15, -1.0, -0.5, 0.0, 0.5, 1.0, 1.15], [-1.12, -0.97, -0.84, -0.55, -0.06, 1.0, 1.15])
 
 
 def uon(cx, R, them=None):
@@ -226,7 +226,7 @@ def goc_34():
     f_than = uon(TX, 95)
     # đầu: bán kính 111; mõm và má dưới bên trái nhô ra (gò mõm phá viền má)
     def go_mom(x, y):
-        return -20 * mem(212, 250, y) * (1 - mem(292, 312, y)) * (1 - mem(200, 250, x))
+        return -26 * mem(212, 246, y) * (1 - mem(292, 312, y)) * (1 - mem(200, 250, x))
     f_dau = uon(TX, 111, go_mom)
 
     def f_dau_ngoai(x, y):  # dời cả đầu lên trên trục thân một chút sang trái
@@ -261,12 +261,14 @@ def goc_34():
             u = (x - tam) * sx
             if lat:
                 u = -u
-            u = 30 + (u - 30) * 1.08  # neo ở gót (mép phải móng)
-            return (x1 - 8 + (tam - x0) * sx + u, y1 + (y - y0))
+            u = 30 + (u - 30) * 1.14  # neo ở gót (mép phải móng)
+            return (x1 - 12 + (tam - x0) * sx + u, y1 + (y - y0))
         return lambda e: 'mong' in e.get('data-role', '') and f
-    g.append(nhom('chan-xa', (226, 401), 'Chân xa: hẹp hơn, lùi sau', lay('chan-trai', cung(212, 405, 226, 401, 0.9),
+    def xien(f):  # ống quần xiên nhẹ về trái theo hướng quay (gấu lệch 6 px so với hông)
+        return lambda x, y: (f(x, y)[0] - 6 * mem(400, 470, y), f(x, y)[1])
+    g.append(nhom('chan-xa', (226, 401), 'Chân xa: hẹp hơn, lùi sau', lay('chan-trai', xien(cung(212, 405, 226, 401, 0.9)),
                                                                         rieng=mong_lech(212, 405, 226, 401, 0.9))))
-    g.append(nhom('chan-gan', (286, 405), 'Chân gần', lay('chan-phai', cung(298, 405, 286, 405), rieng=mong_lech(298, 405, 286, 405, lat=True))))
+    g.append(nhom('chan-gan', (286, 405), 'Chân gần', lay('chan-phai', xien(cung(298, 405, 286, 405)), rieng=mong_lech(298, 405, 286, 405, lat=True))))
     vai_gan = xo_gan(330, 327)
     dem_vai = P(bien_d('M322 310L346 314L354 352L326 352Z', xo_gan), AO, w=5.6, stroke='none', data_role='dem-vai')
     g.append(nhom('tay-gan', vai_gan, 'Tay gần; khớp vai (đệm vai kín khe khi thân uốn)',
@@ -342,12 +344,33 @@ def dai_caro(tren, duoi, ncot, nhang, vien=4.8, dong_dau=True):
     return out
 
 
+def xoay(cx, cy, goc, sx=1.0, sy=1.0, tx=None, ty=None):
+    """Xoay quanh (cx,cy) góc độ (chiều kim đồng hồ trên màn hình), co theo trục mới, rồi đặt (cx,cy) về (tx,ty)."""
+    a = math.radians(goc); ca, sa = math.cos(a), math.sin(a)
+    tx = cx if tx is None else tx; ty = cy if ty is None else ty
+
+    def f(x, y):
+        u, v = x - cx, y - cy
+        u, v = u * ca - v * sa, u * sa + v * ca
+        return (tx + u * sx, ty + v * sy)
+    return f
+
+
 def goc_nghieng():
+    """Nghiêng trái dựng TỪ bộ phận V4g (đồng nhất thiết kế): khuôn đầu, áo chữ A, ống quần, móng, tay, tai, đuôi
+    đều là hình V4g biến đổi; chỉ vẽ mới phần bắt buộc đổi theo góc (mảng hồng mõm bên hông, sừng nhìn cạnh, khăn)."""
     g = []
-    # --- sừng (dựng đứng: phần chĩa ngang của sừng V4g nằm theo trục nhìn nên khuất) ---
-    def sung(dx, dy, ten, nhan):
-        def T(x, y):  # ép dọc quanh gốc: chóp sừng chỉ cao hơn đỉnh đầu chừng như V4g
-            return (x + dx, 146 + (y - 146) * 0.8 + dy)
+    # --- đầu: khuôn V4g co ngang theo chiều sâu 0,9; nửa dưới phía trước nhô thành gò mõm ---
+    def go(x, y):
+        truoc = (1 - mem(190, 236, x)) * (1 - mem(296, 314, y))
+        return (12 * mem(140, 214, y) - 24 * mem(214, 230, y)) * truoc  # trán dựng đứng, bậc rõ vào gò mõm
+
+    def f_dau(x, y):
+        return (256 + (x - 256) * 0.9 - 8 + go(x, y), y)
+
+    def sung(dx, dy, ten, nhan, chan_long=True):
+        def T(x, y):  # sừng nhìn cạnh: phần chĩa ngang nằm theo trục nhìn, chỉ thấy gốc tròn r≈24 và cung dựng
+            return (x + dx, 146 + (y - 146) * 0.74 + dy)
         d = ('M316 128C322 100 318 70 302 48C294 36 284 28 276 26C266 24 261 32 267 42C275 56 278 74 274 92'
              'C272 104 268 114 268 124C270 134 282 138 292 138C302 138 314 134 316 128Z')
         return nhom(ten, T(292, 128), nhan, [
@@ -358,110 +381,94 @@ def goc_nghieng():
               w=5.6, stroke='none', opacity='.30', data_role='bong-sung'),
             P(bien_d('M284 42Q300 62 300 96M281 66Q290 84 288 110M302 72Q310 96 306 124', T), w=1.1, stroke=SUNG_TOI,
               opacity='.46', data_role='van-sung'),
-            P(bien_d('M264 126Q292 142 320 126Q320 142 292 146Q264 142 264 126Z', T), LONG, w=5.6, stroke='none',
+            P(bien_d('M264 130Q292 116 320 130Q322 144 292 148Q262 144 264 130Z', T), LONG, w=5.6, stroke='none',
               data_role='long-chan-sung'),
-            P(bien_d('M270 130Q292 142 314 130', T), w=2.4, stroke=LONG_TOI, opacity='.22', data_role='bong-chan-sung')])
-    # --- đuôi ---
-    dd = 'M326 412C342 430 350 446 370 446C386 446 396 438 402 430'
-    g.append(nhom('duoi', (326, 412), 'Đuôi phía sau', [
-        P(dd, w=6.2, data_role='vien-duoi'), P(dd, w=2.3, stroke=LONG_TOI.replace('6b5d5b', '84736b'), data_role='long-duoi'),
-        P('M396 434Q398 420 414 415Q419 430 404 439Z', '#292b27', VIEN, 5.0, data_role='chum-long-duoi'),
-        P('M403 431L409 423', w=1.5, stroke='#4b4b45')]))
+            P(bien_d('M270 129Q292 119 314 129', T), w=2.4, stroke=LONG_TOI, opacity='.30', data_role='bong-chan-sung')]
+            [:None if chan_long else -2])
 
-    # --- tay (nhìn ngang): ống tay rủ dọc thân, cổ tay cắt phẳng, bàn tay nghiêng ---
-    def tay(dx, dy, ten, nhan):
-        def T(x, y):
+    # --- đuôi V4g, gốc dời ra sau lưng ---
+    g.append(nhom('duoi', (324, 410), 'Đuôi phía sau', lay('duoi', cung(328, 406, 324, 410))))
+    # --- tay V4g xoay rủ thẳng dưới vai (35°) và rút ngắn 0,85 theo phối cảnh; cổ tay phẳng, khuỷu liền giữ nguyên ---
+    def tay(ten, nhan, vai):  # tay trái V4g (bàn tay hướng ra) xoay về trước → bàn tay hướng về phía mặt
+        f = xoay(181, 327, -35.3, 1.0, 0.85, *vai)
+        vien_trong = P(bien_d('M170.48 363.14C172.5 356 174 348 174.89 341.52C175.4 331.8 178.4 319.2 174.32 313.18', f),
+                       w=5.6, stroke_linecap='butt', data_role='vien-trong-tay')
+        return nhom(ten, vai, nhan, lay('tay-trai', f) + [vien_trong])
+    g.append(tay('tay-xa', 'Tay xa sau thân (khuất); khớp vai', (276, 324)))
+    # --- chân: ống quần + móng V4g; móng lật gương để khe móng phía trước, mũi kéo dài 15 % về trái ---
+    def chan(ten, nhan, dx, dy, toi=False):
+        def f(x, y):
             return (x + dx, y + dy)
-        return nhom(ten, T(270, 326), nhan, [
-            P(bien_d('M250 386Q272 381 295 386Q302 399 298 411Q295 420 287 418Q283 425 274 422Q267 427 259 420'
-                     'Q250 418 248 407Q246 396 250 386Z', T), LONG, VIEN, 5.6, data_role='mong-tay'),
-            P(bien_d('M252 400Q272 404 296 400L296 408Q290 414 284 412Q276 418 268 414Q258 416 252 410Z', T),
-              LONG_TOI, w=5.6, stroke='none', opacity='.34', data_role='bong-tay'),
-            P(bien_d('M246 320Q270 312 294 321Q302 356 297 393L247 393Q239 356 246 320Z', T), AO, w=5.6,
-              stroke='none', data_role='ao-tay'),
-            P(bien_d('M282 330Q294 360 291 388L297 393Q302 356 294 321Z', T), AO_TOI, w=5.6, stroke='none',
-              opacity='.18', data_role='bong-tay-ao'),
-            P(bien_d('M244 330Q239 360 247 393L297 393Q302 356 295 330', T), w=5.6, stroke_linecap='butt',
-              data_role='vien-ngoai-tay'),
-            P(bien_d('M252 386Q272 389 292 386', T), w=1.35, stroke=AO_MAY, opacity='.55', data_role='duong-may-tay'),
-            P(bien_d('M291 352Q283 357 279 366', T), w=1.35, stroke=AO_TOI, opacity='.45', data_role='nep-khuyu')])
-    g.append(tay(10, -2, 'tay-xa', 'Tay xa sau thân (khuất); khớp vai'))
 
-    # --- chân (nhìn ngang): mũi móng chĩa trái ---
-    def chan(dx, dy, ten, nhan, toi=False):
-        def T(x, y):
-            return (x + dx, y + dy)
-        c = [P(bien_d('M204 466Q238 460 274 466Q282 476 279 485Q277 491 262 491L214 491Q200 490 199 480Q199 470 204 466Z', T),
-               MONG, VIEN, 5.6, data_role='mong-chan'),
-             P(bien_d('M204 480Q238 487 277 480Q276 488 262 489L214 489Q203 488 204 480Z', T), LONG_TOI, w=5.6,
-               stroke='none', opacity='.20', data_role='bong-mong'),
-             P(bien_d('M212 398L272 398L274 470Q244 474 214 470Z', T), QUAN, w=5.6, stroke='none', data_role='ong-quan'),
-             P(bien_d('M213 410L214 470Q244 474 274 470L272 410', T), w=5.6, data_role='vien-quan'),
-             P(bien_d('M216 462Q244 466 272 462L272 467Q244 470 216 467Z', T), VIEN, w=5.6, stroke='none',
-               opacity='.10', data_role='bong-gau'),
-             P(bien_d('M220 452Q240 454 262 452', T), w=1.6, stroke='#757166', opacity='.28', data_role='nep-quan')]
+        def mong(x, y):
+            u = -(x - 307)  # lật quanh tâm móng V4g chân phải
+            u = 30 + (u - 30) * 1.15
+            return (307 + dx - 6 + u, y + dy)
+        c = lay('chan-phai', f, rieng=lambda e: 'mong' in e.get('data-role', '') and mong)
         if toi:
-            c.append(P(bien_d('M212 398L272 398L274 470Q244 474 214 470Z', T), VIEN, w=5.6, stroke='none',
-                       opacity='.16', data_role='bong-xa'))
-        return nhom(ten, T(243, 405), nhan, c)
-    g.append(chan(22, -2, 'chan-xa', 'Chân xa (sau)', toi=True))
-    g.append(chan(0, 0, 'chan-gan', 'Chân gần (trước)'))
-
-    # --- thân áo ---
-    than = 'M203 312Q264 302 326 310Q339 360 343 410Q306 424 264 424Q222 424 191 414Q187 384 191 356Q195 330 203 312Z'
-    g.append(nhom('than', (262, 420), 'Thân áo nhìn ngang: nẹp cúc ở mép trước, một túi bên hông', [
-        P(than, AO, VIEN, 5.6, data_role='ao-than'),
-        P('M326 316Q337 362 339 408Q324 415 308 418Q322 364 312 316Z', AO_TOI, w=5.6, stroke='none', opacity='.13',
-          data_role='bong-lung'),
-        P('M205 336L199 410', w=1.7, opacity='.68', data_role='nep-cuc'),
-        P(ellipse_d(208, 366, 3.8, 5.1), CUC, w=5.6, stroke='none', data_role='cuc-ao'),
-        P(ellipse_d(206, 394, 3.8, 5.1), CUC, w=5.6, stroke='none', data_role='cuc-ao'),
-        P('M214 377L238 380L238 394Q226 398 215 395Z', w=1.9, stroke=AO_TOI, data_role='tui'),
-        P('M198 410Q262 420 336 406', w=1.1, stroke=AO_TOI, opacity='.45', data_role='may-gau')]))
-    # --- đầu khăn dài: buông trước ngực, nhìn cạnh nên hẹp ---
-    g.append(nhom('khan-dai', (196, 326), 'Đầu khăn dài buông trước ngực (nhìn cạnh)',
-                  dai_caro(qb((176, 330), (173, 380), (178, 432)), qb((204, 330), (202, 380), (205, 432)), 7, 2, 3.6) +
-                  [P('M182 434L181 443M188 434L187 444M194 434L194 444M200 434L200 443', w=3.4, data_role='tua-vien'),
-                   P('M182 435L181 442M188 435L187 443M194 435L194 443M200 435L200 442', w=1.4, stroke=CARO[2],
+            c.append(P(bien_d('M260 391Q297 386 334 391L337 422L334 468Q301 473 268 468L263 435L252 433L252 418Z', f),
+                       VIEN, w=5.6, stroke='none', opacity='.16', data_role='bong-xa'))
+        return nhom(ten, f(298, 405), nhan, c)
+    g.append(chan('chan-xa', 'Chân xa (sau), tối hơn', -24, -2, toi=True))
+    g.append(chan('chan-gan', 'Chân gần (trước)', -46, 0))
+    # --- thân: áo chữ A V4g co ngang 0,8 (chiều sâu), bỏ chi tiết mặt trước; nẹp cúc ở mép trước, một túi hông ---
+    # áo: uốn trục ngang kiểu quay 90° — nửa trước bên phải trâu ép thành dải mỏng ở mép trước, đường giữa trước
+    # (nẹp cúc, khe xẻ gấu x≈264) về sát mép trước, nửa bên trái trâu thành mặt hông
+    u90 = pchip([140, 161, 264, 351, 372], [181, 189, 200, 334, 355])
+    f_than = lambda x, y: (u90(x), y)
+    bo = ('day-quan', 'may-day-quan', 'co-ao', 'cuc-ao', 'tui-trai', 'tui-phai', 'vien-nach-thuot-trai',
+          'vien-nach-thuot-phai', 'bong-vat')
+    than = lay('than', f_than, bo=bo)
+    than += [P(ellipse_d(u90(275.2) + 3, 366.5, 3.4, 5.1), CUC, w=5.6, stroke='none', data_role='cuc-ao'),
+             P(ellipse_d(u90(275.2) + 3, 393.9, 3.4, 5.1), CUC, w=5.6, stroke='none', data_role='cuc-ao')]
+    than += lay('than', cung_tam(f_than, (323, 384), 0.85), bo=tuple(
+        r for r in ('day-quan', 'may-day-quan', 'ao-than', 'vien-ngoai-ao', 'bong-vat', 'co-ao', 'nep-cuc', 'cuc-ao',
+                    'tui-trai', 'may-gau', 'vien-nach-thuot-trai', 'vien-nach-thuot-phai')))
+    than += [
+             P(bien_d('M173 312Q173 328 174.89 341.52C168.31 363.14 163.68 384.77 161.01 406.39', f_than), w=5.6,
+               data_role='vien-mep-truoc'),
+             P(bien_d('M339 312Q339 328 337.11 341.52C343.69 363.14 348.32 384.77 350.99 406.39', f_than), w=5.6,
+               data_role='vien-mep-sau')]
+    g.append(nhom('than', f_than(256, 420), 'Thân áo chữ A V4g nhìn ngang: nẹp cúc + khe xẻ ở mép trước, túi hông', than))
+    # --- đầu khăn dài buông trước ngực (nhìn cạnh nên hẹp), dài quá gấu áo như V4g ---
+    g.append(nhom('khan-dai', (190, 330), 'Đầu khăn dài buông trước ngực (nhìn cạnh)',
+                  dai_caro(qb((170, 330), (167, 380), (172, 432)), qb((198, 330), (196, 380), (199, 432)), 7, 2, 3.6) +
+                  [P('M176 434L175 443M182 434L181 444M188 434L188 444M194 434L194 443', w=3.4, data_role='tua-vien'),
+                   P('M176 435L175 442M182 435L181 443M188 435L188 443M194 435L194 442', w=1.4, stroke=CARO[2],
                      data_role='tua')]))
-    g.append(nhom('co', (264, 337), 'Cổ lông sau đầu và khăn', [
-        P('M210 290Q262 280 318 290Q326 312 316 334Q262 344 210 334Q200 312 210 290Z', LONG, w=5.6, stroke='none',
-          data_role='co-lien')]))
-    g.append(tay(0, 0, 'tay-gan', 'Tay gần rủ dọc thân; khớp vai, khuỷu liền, cổ tay cắt phẳng'))
-    g.append(nhom('khan-co', (262, 318), 'Khăn caro quấn cổ (nhìn ngang)',
-                  dai_caro(qb((190, 300), (262, 308), (334, 292)), qb((194, 348), (262, 358), (332, 336)), 7, 3)))
-    g.append(sung(13, -3, 'sung-xa', 'Sừng xa, khuất gần hết sau sừng gần'))
-    # --- đầu: hộp bo tròn, gò mõm nhô trước-dưới, chỏm lông trên đỉnh ---
-    dau = ('M196 114Q204 108 212 105Q216 98 224 98Q218 92 214 90Q228 89 237 94Q241 85 250 81Q250 89 247 95'
-           'Q260 87 274 85Q270 93 264 98Q276 97 286 100Q340 104 352 140Q364 186 358 240Q352 288 312 304'
-           'Q262 318 206 312Q160 308 142 290Q126 270 134 248Q144 224 176 218Q181 180 184 150Q188 124 196 114Z')
-    g.append(nhom('dau-khoi', (262, 295), 'Khuôn đầu nhìn ngang, chỏm lông trên đỉnh', [
-        P(dau, LONG, VIEN, 5.6),
-        P('M338 128Q356 180 352 240Q346 286 306 302Q338 280 340 240Q344 180 326 132Z', LONG_TOI, w=5.6, stroke='none',
-          opacity='.12')]))
-    g.append(nhom('mom', (190, 266), 'Mõm hồng nhìn ngang; hai lỗ mũi (lỗ xa chỉ hé ở chóp), không có miệng', [
-        P('M176 218Q144 224 134 248Q126 270 142 290Q160 308 206 312Q238 312 244 294Q250 268 234 244Q214 220 176 218Z',
-          MOM, w=5.6, stroke='none'),
-        P('M140 278Q154 300 202 305Q232 306 242 296Q236 312 206 312Q160 308 140 278Z', AO_TOI, w=5.6, stroke='none',
-          opacity='.10'),
-        P(ellipse_d(141, 259, 2.9, 6.4, 8), MUI, w=5.6, stroke='none', data_role='lo-mui'),
-        P(ellipse_d(160, 263, 5.2, 8.4, -14), MUI, w=5.6, stroke='none', data_role='lo-mui')]))
-    g.append(nhom('vien-cam-truoc', (206, 290), 'Viền gò mõm và cằm, vẽ đè lên mõm', [
-        P('M176 218Q144 224 134 248Q126 270 142 290Q160 308 206 312Q262 318 312 304', w=5.6,
-          data_role='vien-cam-truoc')]))
+    g.append(nhom('co', (256, 337), 'Cổ lông sau đầu và khăn', lay('co', lambda x, y: (256 + (x - 256) * 0.85, y))))
+    g.append(tay('tay-gan', 'Tay V4g rủ dọc thân; khớp vai, khuỷu liền, cổ tay cắt phẳng', (262, 326)))
+    g.append(nhom('khan-co', (262, 322), 'Khăn caro quấn cổ (nhìn ngang)',
+                  dai_caro(qb((186, 302), (262, 312), (334, 296)), qb((190, 346), (262, 356), (332, 336)), 7, 3)))
+    g.append(sung(5, -1, 'sung-xa', 'Sừng xa nấp sau sừng gần (nhìn ngang đúng trục); vẫn có nhóm để xoay', chan_long=False))
+    g.append(nhom('dau-khoi', f_dau(256, 295), 'Khuôn đầu V4g nhìn ngang (vuông bo góc, đỉnh phẳng, chỏm lông)',
+                  lay('dau-khoi', f_dau)))
+    # mõm: mảng hồng V4g thu theo chiều sâu (0,66, neo mép trước) → mép sau là cung mõm V4g; lỗ mũi ở mặt trước mõm
+    neo = f_dau(158, 265)[0]
+
+    def f_mom(x, y):
+        x2, y2 = f_dau(x, y)
+        return (neo + (x2 - neo) * 0.66, y2)
+    mom = lay('mom', f_mom, bo=('lo-mui',))
+    mom.insert(2, P(bien_d('M335 235Q356 246 352 265Q349 288 322 296Q330 286 334 266Q338 248 322 238Z', f_mom), AO_TOI,
+                    w=5.6, stroke='none', opacity='.16', data_role='bong-khoi-mom'))
+    # nhìn ngang lỗ mũi nằm ở mặt trước mõm: lỗ gần hẹp sát mép trước, lỗ xa chỉ hé một vệt ở mép
+    x0 = f_mom(160, 259)[0]
+    mom += [P(ellipse_d(x0 + 4, 256, 1.9, 6.0, 12), MUI, w=5.6, stroke='none', data_role='lo-mui'),
+            P(ellipse_d(x0 + 12, 260, 3.4, 8.0, 14), MUI, w=5.6, stroke='none', data_role='lo-mui')]
+    g.append(nhom('mom', f_mom(256, 267), 'Mõm V4g nhìn ngang; hai lỗ mũi (lỗ xa hé ở mép), không có miệng', mom))
+    g.append(nhom('vien-cam-truoc', f_dau(256, 295), 'Viền gò mõm và cằm', lay('vien-cam-truoc', f_dau)))
     g.append(sung(0, 0, 'sung-gan', 'Sừng gần, gốc tròn nằm trên mặt bên đầu'))
-    g.append(nhom('tai-gan', (290, 184), 'Tai gần cụp ra sau, phá viền gáy', [
-        P('M286 176Q306 166 334 174Q364 184 373 208Q364 229 334 224Q302 218 288 200Q280 186 286 176Z', LONG, w=5.6,
-          stroke='none', data_role='tai-chinh'),
-        P('M299 170Q316 166 334 174Q364 184 373 208Q364 229 334 224Q311 220 297 209', w=5.6, data_role='vien-tai'),
-        P('M300 199Q322 192 354 208Q361 216 350 219Q322 218 300 199Z', TAI_HONG, w=5.6, stroke='none', opacity='.34',
-          data_role='long-tai-hong'),
-        P('M292 186Q322 196 356 211', w=2.5, data_role='nep-tai'),
-        P('M292 185Q302 198 318 205Q302 207 292 191Z', VIEN, w=5.6, stroke='none', opacity='.10', data_role='bong-goc-tai')]))
-    g.append(nhom('long-may-gan', (210, 166), 'Lông mày', [P('M200 170Q209 161 220 167', w=3.7)]))
-    g.append(nhom('mat-gan', (212, 196), 'Mắt: chấm đen, không tròng trắng',
-                  [P(ellipse_d(212, 196, 6.4, 13.6), VIEN, w=5.6, stroke='none', data_role='mat')]))
-    return svg_moi('Trâu V4g — góc nghiêng trái', 'Vẽ lại theo dáng nghiêng, màu và nét V4g; mặt quay về trái màn hình.', g)
+    # tai V4g (vốn cụp ~25°) xoay ngược 8° cho chĩa ra sau, co 0,8; viền hở ở gốc để chân tai chìm vào đầu
+    f_tai = xoay(360, 182, -8, 0.8, 0.95, 302, 188)
+    tai = lay('tai-phai', f_tai)
+    tai[0].set('stroke', 'none')
+    tai.insert(1, P(bien_d('M360 200Q367 223 391 233Q416 245 443 229Q454 218 432 203Q402 181 362 165', f_tai), w=5.6,
+                    data_role='vien-tai'))
+    g.append(nhom('tai-gan', (302, 190), 'Tai V4g cụp rủ ra sau', tai))
+    g.append(nhom('long-may-gan', (190, 166), 'Lông mày', lay('long-may-trai', cung(200, 166, 190, 166))))
+    g.append(nhom('mat-gan', (190, 202), 'Mắt: chấm đen, không tròng trắng', lay('mat-trai', cung(200, 202, 190, 202, 0.9))))
+    return svg_moi('Trâu V4g — góc nghiêng trái', 'Dựng từ bộ phận V4g; mặt quay về trái màn hình.', g)
 
 
 if __name__ == '__main__':
