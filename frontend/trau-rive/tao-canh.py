@@ -255,6 +255,8 @@ def main():
     # --- Khung xương: nhóm "đầu" tại điểm cổ chứa khuôn đầu, sừng, tai, mõm, mắt, lông mày (tai/sừng gắn chết vào đầu).
     DAU_CON = ['dau-khoi', 'sung-trai', 'sung-phai', 'tai-trai', 'tai-phai', 'mom', 'long-may-trai', 'long-may-phai',
                'mat-trai', 'mat-phai', 'vien-cam-truoc']
+    # Bộ góc nhìn (nguon/goc/*.svg) đặt tên theo gần/xa người xem
+    DAU_CON += [f'{b}-{p}' for b in ('sung', 'tai', 'long-may', 'mat') for p in ('gan', 'xa')]
     # Nhìn theo con trỏ kiểu Muza: chỉ nét mặt trượt trong khuôn đầu (mõm ít nhất để không lòi ra ngoài đầu).
     NHIN = {}  # thay bằng Joystick tư thế (xem 'Nhìn ngang'/'Nhìn dọc')
     diem_nhin, vung_cham, kich_hoat, dau_id = moi_id(), moi_id(), moi_id(), moi_id()

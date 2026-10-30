@@ -11,7 +11,7 @@ Tài liệu này để **nhiều người/AI làm song song** (Claude tài kho�
 | 13 đạo cụ SVG (giấy chào giá, điện thoại, phiếu cân, biển gỗ, thúng, cân bàn, kho, đòn gánh, đồng hồ cát, đồng xu, nón lá, áo mưa, sổ xanh) + ghế đẩu | Vẽ xong, soi 2 nền | `frontend/trau-rive/nguon/dao-cu/` (có điểm cầm `diem-cam`); thúng đòn gánh còn nhỏ |
 | 22 dáng tay khớp nối (chào, cầm giấy, mừng, xin lỗi…) | **BỊ LOẠI** | Người sáng lập: tay gãy ở vai, tay khác V4g đã chốt, đứng cứng. Không dùng tiếp `tay-khop.py`/`trau-khop.riv` làm sản phẩm |
 | Uốn đúng nét tay V4g bằng 2 xương (`tay-da.py`) | Dừng, chưa đạt | Dáng nghỉ còn lệch V4g vùng hai tay; không giải quyết xoay người |
-| **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **CHƯA LÀM — việc chính tiếp theo** | Xem mục 4 |
+| **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **¾ trái + nghiêng trái: chờ duyệt T1** (Codex soi 3 vòng: ĐẠT để gửi duyệt) · sau lưng chưa làm | `frontend/trau-rive/nguon/goc/`, ảnh duyệt `docs/trau/goc-nhin/`; xem mục 4 |
 | Dáng ngồi / cầm đồ | Chưa đạt | Ghế bị thân che, thúng nhỏ |
 
 **Kết luận của người sáng lập (30/10):** chuyển động phải có xoay người, nghiêng, dồn trọng tâm, nhịp thân nhiều góc cho tự nhiên — "không thì khỏi làm". Bẻ tay trên một hình chính diện phẳng là không đạt.
@@ -44,6 +44,9 @@ Tài liệu này để **nhiều người/AI làm song song** (Claude tài kho�
 | `frontend/trau-rive/kiem-*.sh` | Chụp khung Rive bằng CLI để soi chuyển động |
 | `frontend/ban/trau-rive.html`, `trau-khop.html` | Trang xem thử trong trình duyệt |
 | `docs/trau/tham-chieu/goc-nhin-higgsfield-{a,b}.png` | 2 bảng góc nhìn do Higgsfield vẽ thử (chỉ để tham khảo, xem mục 4) |
+| `frontend/trau-rive/goc-nhin.py` | Sinh bộ góc nhìn → `nguon/goc/trau-34-trai.svg`, `trau-nghieng-trai.svg`. "Trái" = mặt quay về trái màn hình; bộ phận đặt tên `*-gan` / `*-xa` (gần/xa người xem), giữ quy ước `data-goc` của V4g |
+| `frontend/trau-rive/soi-goc.py` | Ảnh duyệt góc: C01 \| V4g \| góc mới trên nền sáng/tối + phóng to mặt, vai-tay, đáy quần-chân, tai-sừng (luật 6) |
+| `frontend/trau-rive/xem-goc/{34,nghieng}/` | Dự án Rive xem trực tiếp từng góc (`rive frontend/trau-rive/xem-goc/34`); `scene.rml` dựng bằng `tao-canh.py` từ SVG góc |
 | `~/Documents/AgiViet/trau-v2`, `trau-tu-the`, `trau-lop`, `trau-chuyen-dong`, `trau-3d` | Các vòng thử cũ (chỉ trên máy chính, không có trong repo) |
 
 Công cụ: Rive CLI 1.8.0 (`~/.rive/bin/rive`, đọc `rive docs`, `rive schema` — RML mới hơn dữ liệu huấn luyện, **không đoán tên kiểu**); `@rive-app/canvas` 2.21.6 vendored ở `frontend/assets/vendor/rive/`; OpenCV; `rsvg-convert`; Playwright.
@@ -61,6 +64,13 @@ Quy trình đề xuất:
 2. Vẽ tay góc ¾ từ bộ phận V4g (dời/hẹp theo góc xoay; tai xa nhỏ lại, sừng xa che một phần, một tay khuất).
 3. Gửi người sáng lập duyệt **từng góc** (ảnh phóng to 2 nền, đặt cạnh C01).
 4. Duyệt xong mới dựng Rive: lớp xoay người theo góc, lớp nghiêng/dồn trọng tâm, lớp thở/nhún, lớp tai/khăn trễ nhịp; dáng hành động đặt trên các góc đó.
+
+### Chặng 1 — ¾ trái và nghiêng trái (30/10, Claude 2, chờ chốt T1)
+- **¾ trái**: dựng thẳng từ hình học V4g. Trục ngang được uốn bằng hàm đơn điệu (thân tròn quay ~30°), nên mặt, mõm, nẹp cúc dồn trái, phía xa co lại, phía gần giãn ra. Mõm nhô qua viền má trái và có mảng má gần. Mắt, mày, lỗ mũi, túi áo, bàn tay **dời nguyên khối** (không méo, hai tay cùng cỡ V4g). Ống tay xô theo vai/mép áo, có đệm vai nên không hở. Sừng/tai gần ×0,95/0,92, xa ×0,68/0,72 lùi sau đầu. Chân xa hẹp 0,9; móng cả hai chân chĩa trái. Giữ chuỗi khớp `khan-dai-1/2`.
+- **Nghiêng trái**: vẽ lại theo dáng nghiêng Higgsfield, dùng màu và nét V4g. Mõm cao ≈ V4g, mắt/mày cùng tầng V4g. Sừng gần và tai gần có gốc chìm trong lông (viền hở ở gốc); sừng xa gần như khuất. Khăn caro 3 màu như V4g; đầu khăn buông quá gấu áo. Tay gần rủ dọc thân, cổ tay cắt phẳng. Tay xa khuất sau thân (vẫn có nhóm để dựng xương). Chân trước/sau chồng nhau.
+- **Codex** soi 3 vòng (`codex exec`, effort high, chỉ đọc). Vòng 1: cả hai CHƯA ĐẠT. Vòng 2: nghiêng ĐẠT, ¾ còn móng chân và túi áo. Vòng 3: ¾ ĐẠT.
+- **Tự soi, lỗi/điểm còn cần người sáng lập quyết:** (1) góc nghiêng chỉ thấy rõ 1 lỗ mũi, lỗ xa chỉ hé ở chóp mõm (đúng phối cảnh; luật 2 ghi "đúng 2 lỗ mũi"); (2) tai nghiêng cụp ra sau như Higgsfield, trong khi tai V4g chĩa ngang; (3) ¾: viền đầu gần như giữ nguyên chính diện, độ quay đọc chủ yếu qua nét mặt và mảng má; ống quần vẫn dáng V4g, hướng chân chỉ thể hiện ở móng; (4) mõm, sừng, tai góc nghiêng là hình vẽ mới, không lấy từ đường V4g.
+- **Chưa làm (thuộc T2):** tách khớp khuỷu/cổ tay/gối/cổ chân, cha "đầu" và xương. `tao-canh.py` đã gom `*-gan`/`*-xa` vào nhóm đầu (đầu ra V4g không đổi).
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.

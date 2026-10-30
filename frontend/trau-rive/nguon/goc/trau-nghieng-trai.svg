@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img">
+  <title>Trâu V4g — góc nghiêng trái</title>
+  <desc>Vẽ lại theo dáng nghiêng, màu và nét V4g; mặt quay về trái màn hình.</desc>
+  <g id="duoi" data-goc="326.00 412.00" aria-label="Đuôi phía sau" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:326.00px 412.00px">
+    <path d="M326 412C342 430 350 446 370 446C386 446 396 438 402 430" fill="none" stroke="#24190f" stroke-width="6.2" data-role="vien-duoi" />
+    <path d="M326 412C342 430 350 446 370 446C386 446 396 438 402 430" fill="none" stroke="#84736b" stroke-width="2.3" data-role="long-duoi" />
+    <path d="M396 434Q398 420 414 415Q419 430 404 439Z" fill="#292b27" stroke="#24190f" stroke-width="5.0" data-role="chum-long-duoi" />
+    <path d="M403 431L409 423" fill="none" stroke="#4b4b45" stroke-width="1.5" />
+  </g>
+  <g id="tay-xa" data-goc="280.00 324.00" aria-label="Tay xa sau thân (khuất); khớp vai" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:280.00px 324.00px">
+    <path d="M260.00 384.00Q282.00 379.00 305.00 384.00Q312.00 397.00 308.00 409.00Q305.00 418.00 297.00 416.00Q293.00 423.00 284.00 420.00Q277.00 425.00 269.00 418.00Q260.00 416.00 258.00 405.00Q256.00 394.00 260.00 384.00Z" fill="#84736b" stroke="#24190f" stroke-width="5.6" data-role="mong-tay" />
+    <path d="M262.00 398.00Q282.00 402.00 306.00 398.00L306.00 406.00Q300.00 412.00 294.00 410.00Q286.00 416.00 278.00 412.00Q268.00 414.00 262.00 408.00Z" fill="#6b5d5b" stroke="none" stroke-width="5.6" opacity=".34" data-role="bong-tay" />
+    <path d="M256.00 318.00Q280.00 310.00 304.00 319.00Q312.00 354.00 307.00 391.00L257.00 391.00Q249.00 354.00 256.00 318.00Z" fill="#c48f65" stroke="none" stroke-width="5.6" data-role="ao-tay" />
+    <path d="M292.00 328.00Q304.00 358.00 301.00 386.00L307.00 391.00Q312.00 354.00 304.00 319.00Z" fill="#aa7652" stroke="none" stroke-width="5.6" opacity=".18" data-role="bong-tay-ao" />
+    <path d="M254.00 328.00Q249.00 358.00 257.00 391.00L307.00 391.00Q312.00 354.00 305.00 328.00" fill="none" stroke="#24190f" stroke-width="5.6" stroke-linecap="butt" data-role="vien-ngoai-tay" />
+    <path d="M262.00 384.00Q282.00 387.00 302.00 384.00" fill="none" stroke="#986b4c" stroke-width="1.35" opacity=".55" data-role="duong-may-tay" />
+    <path d="M301.00 350.00Q293.00 355.00 289.00 364.00" fill="none" stroke="#aa7652" stroke-width="1.35" opacity=".45" data-role="nep-khuyu" />
+  </g>
+  <g id="chan-xa" data-goc="265.00 403.00" aria-label="Chân xa (sau)" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:265.00px 403.00px">
+    <path d="M226.00 464.00Q260.00 458.00 296.00 464.00Q304.00 474.00 301.00 483.00Q299.00 489.00 284.00 489.00L236.00 489.00Q222.00 488.00 221.00 478.00Q221.00 468.00 226.00 464.00Z" fill="#807169" stroke="#24190f" stroke-width="5.6" data-role="mong-chan" />
+    <path d="M226.00 478.00Q260.00 485.00 299.00 478.00Q298.00 486.00 284.00 487.00L236.00 487.00Q225.00 486.00 226.00 478.00Z" fill="#6b5d5b" stroke="none" stroke-width="5.6" opacity=".20" data-role="bong-mong" />
+    <path d="M234.00 396.00L294.00 396.00L296.00 468.00Q266.00 472.00 236.00 468.00Z" fill="#45423d" stroke="none" stroke-width="5.6" data-role="ong-quan" />
+    <path d="M235.00 408.00L236.00 468.00Q266.00 472.00 296.00 468.00L294.00 408.00" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-quan" />
+    <path d="M238.00 460.00Q266.00 464.00 294.00 460.00L294.00 465.00Q266.00 468.00 238.00 465.00Z" fill="#24190f" stroke="none" stroke-width="5.6" opacity=".10" data-role="bong-gau" />
+    <path d="M242.00 450.00Q262.00 452.00 284.00 450.00" fill="none" stroke="#757166" stroke-width="1.6" opacity=".28" data-role="nep-quan" />
+    <path d="M234.00 396.00L294.00 396.00L296.00 468.00Q266.00 472.00 236.00 468.00Z" fill="#24190f" stroke="none" stroke-width="5.6" opacity=".16" data-role="bong-xa" />
+  </g>
+  <g id="chan-gan" data-goc="243.00 405.00" aria-label="Chân gần (trước)" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:243.00px 405.00px">
+    <path d="M204.00 466.00Q238.00 460.00 274.00 466.00Q282.00 476.00 279.00 485.00Q277.00 491.00 262.00 491.00L214.00 491.00Q200.00 490.00 199.00 480.00Q199.00 470.00 204.00 466.00Z" fill="#807169" stroke="#24190f" stroke-width="5.6" data-role="mong-chan" />
+    <path d="M204.00 480.00Q238.00 487.00 277.00 480.00Q276.00 488.00 262.00 489.00L214.00 489.00Q203.00 488.00 204.00 480.00Z" fill="#6b5d5b" stroke="none" stroke-width="5.6" opacity=".20" data-role="bong-mong" />
+    <path d="M212.00 398.00L272.00 398.00L274.00 470.00Q244.00 474.00 214.00 470.00Z" fill="#45423d" stroke="none" stroke-width="5.6" data-role="ong-quan" />
+    <path d="M213.00 410.00L214.00 470.00Q244.00 474.00 274.00 470.00L272.00 410.00" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-quan" />
+    <path d="M216.00 462.00Q244.00 466.00 272.00 462.00L272.00 467.00Q244.00 470.00 216.00 467.00Z" fill="#24190f" stroke="none" stroke-width="5.6" opacity=".10" data-role="bong-gau" />
+    <path d="M220.00 452.00Q240.00 454.00 262.00 452.00" fill="none" stroke="#757166" stroke-width="1.6" opacity=".28" data-role="nep-quan" />
+  </g>
+  <g id="than" data-goc="262.00 420.00" aria-label="Thân áo nhìn ngang: nẹp cúc ở mép trước, một túi bên hông" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:262.00px 420.00px">
+    <path d="M203 312Q264 302 326 310Q339 360 343 410Q306 424 264 424Q222 424 191 414Q187 384 191 356Q195 330 203 312Z" fill="#c48f65" stroke="#24190f" stroke-width="5.6" data-role="ao-than" />
+    <path d="M326 316Q337 362 339 408Q324 415 308 418Q322 364 312 316Z" fill="#aa7652" stroke="none" stroke-width="5.6" opacity=".13" data-role="bong-lung" />
+    <path d="M205 336L199 410" fill="none" stroke="#24190f" stroke-width="1.7" opacity=".68" data-role="nep-cuc" />
+    <path d="M211.80 366.00C211.80 368.82 210.10 371.10 208.00 371.10C205.90 371.10 204.20 368.82 204.20 366.00C204.20 363.18 205.90 360.90 208.00 360.90C210.10 360.90 211.80 363.18 211.80 366.00Z" fill="#513a25" stroke="none" stroke-width="5.6" data-role="cuc-ao" />
+    <path d="M209.80 394.00C209.80 396.82 208.10 399.10 206.00 399.10C203.90 399.10 202.20 396.82 202.20 394.00C202.20 391.18 203.90 388.90 206.00 388.90C208.10 388.90 209.80 391.18 209.80 394.00Z" fill="#513a25" stroke="none" stroke-width="5.6" data-role="cuc-ao" />
+    <path d="M214 377L238 380L238 394Q226 398 215 395Z" fill="none" stroke="#aa7652" stroke-width="1.9" data-role="tui" />
+    <path d="M198 410Q262 420 336 406" fill="none" stroke="#aa7652" stroke-width="1.1" opacity=".45" data-role="may-gau" />
+  </g>
+  <g id="khan-dai" data-goc="196.00 326.00" aria-label="Đầu khăn dài buông trước ngực (nhìn cạnh)" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:196.00px 326.00px">
+    <path d="M176.00 330.00L175.80 333.57L175.61 337.15L175.45 340.74L175.31 344.33L189.42 344.33L189.54 340.74L189.68 337.15L189.83 333.57L190.00 330.00Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-0-0" />
+    <path d="M190.00 330.00L189.83 333.57L189.68 337.15L189.54 340.74L189.42 344.33L203.53 344.33L203.63 340.74L203.74 337.15L203.86 333.57L204.00 330.00Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-0-1" />
+    <path d="M175.31 344.33L175.18 347.92L175.08 351.52L175.00 355.12L174.94 358.73L189.10 358.73L189.16 355.12L189.23 351.52L189.31 347.92L189.42 344.33Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-1-0" />
+    <path d="M189.42 344.33L189.31 347.92L189.23 351.52L189.16 355.12L189.10 358.73L203.27 358.73L203.31 355.12L203.37 351.52L203.45 347.92L203.53 344.33Z" fill="#f8f6ef" stroke="none" stroke-width="3.6" data-role="caro-1-1" />
+    <path d="M174.94 358.73L174.90 362.35L174.88 365.97L174.88 369.59L174.90 373.22L189.05 373.22L189.04 369.59L189.04 365.97L189.06 362.35L189.10 358.73Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-2-0" />
+    <path d="M189.10 358.73L189.06 362.35L189.04 365.97L189.04 369.59L189.05 373.22L203.20 373.22L203.20 369.59L203.21 365.97L203.23 362.35L203.27 358.73Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-2-1" />
+    <path d="M174.90 373.22L174.94 376.86L175.00 380.50L175.08 384.15L175.18 387.80L189.27 387.80L189.19 384.15L189.12 380.50L189.08 376.86L189.05 373.22Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-3-0" />
+    <path d="M189.05 373.22L189.08 376.86L189.12 380.50L189.19 384.15L189.27 387.80L203.35 387.80L203.29 384.15L203.25 380.50L203.22 376.86L203.20 373.22Z" fill="#f8f6ef" stroke="none" stroke-width="3.6" data-role="caro-3-1" />
+    <path d="M175.18 387.80L175.31 391.45L175.45 395.11L175.61 398.78L175.80 402.45L189.74 402.45L189.60 398.78L189.47 395.11L189.36 391.45L189.27 387.80Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-4-0" />
+    <path d="M189.27 387.80L189.36 391.45L189.47 395.11L189.60 398.78L189.74 402.45L203.69 402.45L203.59 398.78L203.49 395.11L203.41 391.45L203.35 387.80Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-4-1" />
+    <path d="M175.80 402.45L176.00 406.12L176.22 409.81L176.47 413.49L176.73 417.18L190.49 417.18L190.28 413.49L190.08 409.81L189.91 406.12L189.74 402.45Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-5-0" />
+    <path d="M189.74 402.45L189.91 406.12L190.08 409.81L190.28 413.49L190.49 417.18L204.24 417.18L204.09 413.49L203.94 409.81L203.81 406.12L203.69 402.45Z" fill="#f8f6ef" stroke="none" stroke-width="3.6" data-role="caro-5-1" />
+    <path d="M176.73 417.18L177.02 420.88L177.33 424.58L177.65 428.29L178.00 432.00L191.50 432.00L191.22 428.29L190.96 424.58L190.72 420.88L190.49 417.18Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-6-0" />
+    <path d="M190.49 417.18L190.72 420.88L190.96 424.58L191.22 428.29L191.50 432.00L205.00 432.00L204.79 428.29L204.60 424.58L204.41 420.88L204.24 417.18Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-6-1" />
+    <path d="M176.00 330.00L175.76 334.17L175.56 338.35L175.38 342.53L175.22 346.72L175.10 350.92L175.00 355.12L174.93 359.34L174.89 363.56L174.88 367.78L174.89 372.01L174.93 376.25L175.00 380.50L175.10 384.75L175.22 389.01L175.38 393.28L175.56 397.56L175.76 401.84L176.00 406.12L176.26 410.42L176.56 414.72L176.88 419.03L177.22 423.35L177.60 427.67L178.00 432.00L205.00 432.00L204.76 427.67L204.53 423.35L204.33 419.03L204.14 414.72L203.97 410.42L203.81 406.12L203.68 401.84L203.56 397.56L203.45 393.28L203.37 389.01L203.30 384.75L203.25 380.50L203.22 376.25L203.20 372.01L203.20 367.78L203.22 363.56L203.26 359.34L203.31 355.12L203.38 350.92L203.47 346.72L203.58 342.53L203.70 338.35L203.84 334.17L204.00 330.00Z" fill="none" stroke="#24190f" stroke-width="3.6" data-role="vien-khan" />
+    <path d="M182 434L181 443M188 434L187 444M194 434L194 444M200 434L200 443" fill="none" stroke="#24190f" stroke-width="3.4" data-role="tua-vien" />
+    <path d="M182 435L181 442M188 435L187 443M194 435L194 443M200 435L200 442" fill="none" stroke="#f8f6ef" stroke-width="1.4" data-role="tua" />
+  </g>
+  <g id="co" data-goc="264.00 337.00" aria-label="Cổ lông sau đầu và khăn" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:264.00px 337.00px">
+    <path d="M210 290Q262 280 318 290Q326 312 316 334Q262 344 210 334Q200 312 210 290Z" fill="#84736b" stroke="none" stroke-width="5.6" data-role="co-lien" />
+  </g>
+  <g id="tay-gan" data-goc="270.00 326.00" aria-label="Tay gần rủ dọc thân; khớp vai, khuỷu liền, cổ tay cắt phẳng" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:270.00px 326.00px">
+    <path d="M250.00 386.00Q272.00 381.00 295.00 386.00Q302.00 399.00 298.00 411.00Q295.00 420.00 287.00 418.00Q283.00 425.00 274.00 422.00Q267.00 427.00 259.00 420.00Q250.00 418.00 248.00 407.00Q246.00 396.00 250.00 386.00Z" fill="#84736b" stroke="#24190f" stroke-width="5.6" data-role="mong-tay" />
+    <path d="M252.00 400.00Q272.00 404.00 296.00 400.00L296.00 408.00Q290.00 414.00 284.00 412.00Q276.00 418.00 268.00 414.00Q258.00 416.00 252.00 410.00Z" fill="#6b5d5b" stroke="none" stroke-width="5.6" opacity=".34" data-role="bong-tay" />
+    <path d="M246.00 320.00Q270.00 312.00 294.00 321.00Q302.00 356.00 297.00 393.00L247.00 393.00Q239.00 356.00 246.00 320.00Z" fill="#c48f65" stroke="none" stroke-width="5.6" data-role="ao-tay" />
+    <path d="M282.00 330.00Q294.00 360.00 291.00 388.00L297.00 393.00Q302.00 356.00 294.00 321.00Z" fill="#aa7652" stroke="none" stroke-width="5.6" opacity=".18" data-role="bong-tay-ao" />
+    <path d="M244.00 330.00Q239.00 360.00 247.00 393.00L297.00 393.00Q302.00 356.00 295.00 330.00" fill="none" stroke="#24190f" stroke-width="5.6" stroke-linecap="butt" data-role="vien-ngoai-tay" />
+    <path d="M252.00 386.00Q272.00 389.00 292.00 386.00" fill="none" stroke="#986b4c" stroke-width="1.35" opacity=".55" data-role="duong-may-tay" />
+    <path d="M291.00 352.00Q283.00 357.00 279.00 366.00" fill="none" stroke="#aa7652" stroke-width="1.35" opacity=".45" data-role="nep-khuyu" />
+  </g>
+  <g id="khan-co" data-goc="262.00 318.00" aria-label="Khăn caro quấn cổ (nhìn ngang)" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:262.00px 318.00px">
+    <path d="M190.00 300.00L195.14 300.54L200.29 301.02L205.43 301.44L210.57 301.80L211.54 317.93L206.48 317.55L201.43 317.10L196.38 316.59L191.33 316.00Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-0-0" />
+    <path d="M191.33 316.00L196.38 316.59L201.43 317.10L206.48 317.55L211.54 317.93L212.50 334.07L207.54 333.66L202.58 333.18L197.62 332.63L192.67 332.00Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-0-1" />
+    <path d="M192.67 332.00L197.62 332.63L202.58 333.18L207.54 333.66L212.50 334.07L213.47 350.20L208.59 349.78L203.72 349.27L198.86 348.67L194.00 348.00Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-0-2" />
+    <path d="M210.57 301.80L215.71 302.09L220.86 302.33L226.00 302.50L231.14 302.61L231.77 318.78L226.71 318.67L221.65 318.49L216.59 318.24L211.54 317.93Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-1-0" />
+    <path d="M211.54 317.93L216.59 318.24L221.65 318.49L226.71 318.67L231.77 318.78L232.39 334.94L227.42 334.83L222.44 334.65L217.47 334.40L212.50 334.07Z" fill="#f8f6ef" stroke="none" stroke-width="3.6" data-role="caro-1-1" />
+    <path d="M212.50 334.07L217.47 334.40L222.44 334.65L227.42 334.83L232.39 334.94L233.02 351.10L228.12 351.00L223.23 350.82L218.35 350.55L213.47 350.20Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-1-2" />
+    <path d="M231.14 302.61L236.29 302.66L241.43 302.65L246.57 302.58L251.71 302.45L252.03 318.53L246.96 318.69L241.89 318.79L236.83 318.82L231.77 318.78Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-2-0" />
+    <path d="M231.77 318.78L236.83 318.82L241.89 318.79L246.96 318.69L252.03 318.53L252.34 334.61L247.35 334.81L242.36 334.93L237.38 334.97L232.39 334.94Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-2-1" />
+    <path d="M232.39 334.94L237.38 334.97L242.36 334.93L247.35 334.81L252.34 334.61L252.65 350.69L247.74 350.92L242.83 351.06L237.92 351.12L233.02 351.10Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-2-2" />
+    <path d="M251.71 302.45L256.86 302.26L262.00 302.00L267.14 301.68L272.29 301.31L272.31 317.20L267.24 317.63L262.17 318.00L257.10 318.30L252.03 318.53Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-3-0" />
+    <path d="M252.03 318.53L257.10 318.30L262.17 318.00L267.24 317.63L272.31 317.20L272.34 333.09L267.34 333.58L262.33 334.00L257.34 334.34L252.34 334.61Z" fill="#f8f6ef" stroke="none" stroke-width="3.6" data-role="caro-3-1" />
+    <path d="M252.34 334.61L257.34 334.34L262.33 334.00L267.34 333.58L272.34 333.09L272.37 348.98L267.43 349.53L262.50 350.00L257.57 350.39L252.65 350.69Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-3-2" />
+    <path d="M272.29 301.31L277.43 300.87L282.57 300.37L287.71 299.81L292.86 299.18L292.63 314.78L287.55 315.48L282.47 316.12L277.39 316.69L272.31 317.20Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-4-0" />
+    <path d="M272.31 317.20L277.39 316.69L282.47 316.12L287.55 315.48L292.63 314.78L292.39 330.37L287.38 331.16L282.36 331.88L277.35 332.52L272.34 333.09Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-4-1" />
+    <path d="M272.34 333.09L277.35 332.52L282.36 331.88L287.38 331.16L292.39 330.37L292.16 345.96L287.21 346.84L282.26 347.63L277.31 348.35L272.37 348.98Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-4-2" />
+    <path d="M292.86 299.18L298.00 298.50L303.14 297.76L308.29 296.95L313.43 296.08L312.97 311.27L307.88 312.24L302.79 313.16L297.71 314.00L292.63 314.78Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-5-0" />
+    <path d="M292.63 314.78L297.71 314.00L302.79 313.16L307.88 312.24L312.97 311.27L312.50 326.45L307.47 327.54L302.44 328.56L297.42 329.50L292.39 330.37Z" fill="#f8f6ef" stroke="none" stroke-width="3.6" data-role="caro-5-1" />
+    <path d="M292.39 330.37L297.42 329.50L302.44 328.56L307.47 327.54L312.50 326.45L312.04 341.63L307.06 342.84L302.09 343.96L297.12 345.00L292.16 345.96Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-5-2" />
+    <path d="M313.43 296.08L318.57 295.15L323.71 294.16L328.86 293.11L334.00 292.00L333.33 306.67L328.24 307.92L323.15 309.10L318.06 310.22L312.97 311.27Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-6-0" />
+    <path d="M312.97 311.27L318.06 310.22L323.15 309.10L328.24 307.92L333.33 306.67L332.67 321.33L327.62 322.72L322.58 324.04L317.54 325.28L312.50 326.45Z" fill="#a09e99" stroke="none" stroke-width="3.6" data-role="caro-6-1" />
+    <path d="M312.50 326.45L317.54 325.28L322.58 324.04L327.62 322.72L332.67 321.33L332.00 336.00L327.00 337.53L322.01 338.98L317.02 340.35L312.04 341.63Z" fill="#3b3935" stroke="none" stroke-width="3.6" data-role="caro-6-2" />
+    <path d="M190.00 300.00L196.00 300.63L202.00 301.17L208.00 301.62L214.00 302.00L220.00 302.29L226.00 302.50L232.00 302.62L238.00 302.67L244.00 302.62L250.00 302.50L256.00 302.29L262.00 302.00L268.00 301.62L274.00 301.17L280.00 300.62L286.00 300.00L292.00 299.29L298.00 298.50L304.00 297.62L310.00 296.67L316.00 295.62L322.00 294.50L328.00 293.29L334.00 292.00L332.00 336.00L326.17 337.78L320.35 339.44L314.53 341.00L308.72 342.44L302.92 343.78L297.12 345.00L291.34 346.11L285.56 347.11L279.78 348.00L274.01 348.78L268.25 349.44L262.50 350.00L256.75 350.44L251.01 350.78L245.28 351.00L239.56 351.11L233.84 351.11L228.12 351.00L222.42 350.78L216.72 350.44L211.03 350.00L205.35 349.44L199.67 348.78L194.00 348.00Z" fill="none" stroke="#24190f" stroke-width="4.8" data-role="vien-khan" />
+  </g>
+  <g id="sung-xa" data-goc="305.00 128.60" aria-label="Sừng xa, khuất gần hết sau sừng gần" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:305.00px 128.60px">
+    <path d="M329.00 128.60C335.00 106.20 331.00 82.20 315.00 64.60C307.00 55.00 297.00 48.60 289.00 47.00C279.00 45.40 274.00 51.80 280.00 59.80C288.00 71.00 291.00 85.40 287.00 99.80C285.00 109.40 281.00 117.40 281.00 125.40C283.00 133.40 295.00 136.60 305.00 136.60C315.00 136.60 327.00 133.40 329.00 128.60Z" fill="#fff1dd" stroke="none" stroke-width="5.6" data-role="sung-chinh" />
+    <path d="M281.00 129.40C281.00 127.80 281.00 127.00 281.00 125.40C281.00 117.40 285.00 109.40 287.00 99.80C291.00 85.40 288.00 71.00 280.00 59.80C274.00 51.80 279.00 45.40 289.00 47.00C297.00 48.60 307.00 55.00 315.00 64.60C331.00 82.20 335.00 106.20 329.00 128.60L329.00 130.20" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-sung" />
+    <path d="M285.00 120.60C287.00 131.80 297.00 139.00 309.00 139.00C321.00 138.20 327.00 131.80 327.00 123.80C319.00 131.80 303.00 133.40 285.00 120.60Z" fill="#dbc1a2" stroke="none" stroke-width="5.6" opacity=".30" data-role="bong-sung" />
+    <path d="M297.00 59.80Q313.00 75.80 313.00 103.00M294.00 79.00Q303.00 93.40 301.00 114.20M315.00 83.80Q323.00 103.00 319.00 125.40" fill="none" stroke="#dbc1a2" stroke-width="1.1" opacity=".46" data-role="van-sung" />
+    <path d="M277.00 127.00Q305.00 139.80 333.00 127.00Q333.00 139.80 305.00 143.00Q277.00 139.80 277.00 127.00Z" fill="#84736b" stroke="none" stroke-width="5.6" data-role="long-chan-sung" />
+    <path d="M283.00 130.20Q305.00 139.80 327.00 130.20" fill="none" stroke="#6b5d5b" stroke-width="2.4" opacity=".22" data-role="bong-chan-sung" />
+  </g>
+  <g id="dau-khoi" data-goc="262.00 295.00" aria-label="Khuôn đầu nhìn ngang, chỏm lông trên đỉnh" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:262.00px 295.00px">
+    <path d="M196 114Q204 108 212 105Q216 98 224 98Q218 92 214 90Q228 89 237 94Q241 85 250 81Q250 89 247 95Q260 87 274 85Q270 93 264 98Q276 97 286 100Q340 104 352 140Q364 186 358 240Q352 288 312 304Q262 318 206 312Q160 308 142 290Q126 270 134 248Q144 224 176 218Q181 180 184 150Q188 124 196 114Z" fill="#84736b" stroke="#24190f" stroke-width="5.6" />
+    <path d="M338 128Q356 180 352 240Q346 286 306 302Q338 280 340 240Q344 180 326 132Z" fill="#6b5d5b" stroke="none" stroke-width="5.6" opacity=".12" />
+  </g>
+  <g id="mom" data-goc="190.00 266.00" aria-label="Mõm hồng nhìn ngang; hai lỗ mũi (lỗ xa chỉ hé ở chóp), không có miệng" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:190.00px 266.00px">
+    <path d="M176 218Q144 224 134 248Q126 270 142 290Q160 308 206 312Q238 312 244 294Q250 268 234 244Q214 220 176 218Z" fill="#fdcdb0" stroke="none" stroke-width="5.6" />
+    <path d="M140 278Q154 300 202 305Q232 306 242 296Q236 312 206 312Q160 308 140 278Z" fill="#aa7652" stroke="none" stroke-width="5.6" opacity=".10" />
+    <path d="M143.87 259.40C143.38 262.90 141.70 265.56 140.11 265.34C138.52 265.11 137.64 262.10 138.13 258.60C138.62 255.10 140.30 252.44 141.89 252.66C143.48 252.89 144.36 255.90 143.87 259.40Z" fill="#401a02" stroke="none" stroke-width="5.6" data-role="lo-mui" />
+    <path d="M165.05 261.74C166.17 266.24 164.82 270.46 162.03 271.15C159.25 271.85 156.08 268.76 154.95 264.26C153.83 259.76 155.18 255.54 157.97 254.85C160.75 254.15 163.92 257.24 165.05 261.74Z" fill="#401a02" stroke="none" stroke-width="5.6" data-role="lo-mui" />
+  </g>
+  <g id="vien-cam-truoc" data-goc="206.00 290.00" aria-label="Viền gò mõm và cằm, vẽ đè lên mõm" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:206.00px 290.00px">
+    <path d="M176 218Q144 224 134 248Q126 270 142 290Q160 308 206 312Q262 318 312 304" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-cam-truoc" />
+  </g>
+  <g id="sung-gan" data-goc="292.00 131.60" aria-label="Sừng gần, gốc tròn nằm trên mặt bên đầu" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:292.00px 131.60px">
+    <path d="M316.00 131.60C322.00 109.20 318.00 85.20 302.00 67.60C294.00 58.00 284.00 51.60 276.00 50.00C266.00 48.40 261.00 54.80 267.00 62.80C275.00 74.00 278.00 88.40 274.00 102.80C272.00 112.40 268.00 120.40 268.00 128.40C270.00 136.40 282.00 139.60 292.00 139.60C302.00 139.60 314.00 136.40 316.00 131.60Z" fill="#fff1dd" stroke="none" stroke-width="5.6" data-role="sung-chinh" />
+    <path d="M268.00 132.40C268.00 130.80 268.00 130.00 268.00 128.40C268.00 120.40 272.00 112.40 274.00 102.80C278.00 88.40 275.00 74.00 267.00 62.80C261.00 54.80 266.00 48.40 276.00 50.00C284.00 51.60 294.00 58.00 302.00 67.60C318.00 85.20 322.00 109.20 316.00 131.60L316.00 133.20" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-sung" />
+    <path d="M272.00 123.60C274.00 134.80 284.00 142.00 296.00 142.00C308.00 141.20 314.00 134.80 314.00 126.80C306.00 134.80 290.00 136.40 272.00 123.60Z" fill="#dbc1a2" stroke="none" stroke-width="5.6" opacity=".30" data-role="bong-sung" />
+    <path d="M284.00 62.80Q300.00 78.80 300.00 106.00M281.00 82.00Q290.00 96.40 288.00 117.20M302.00 86.80Q310.00 106.00 306.00 128.40" fill="none" stroke="#dbc1a2" stroke-width="1.1" opacity=".46" data-role="van-sung" />
+    <path d="M264.00 130.00Q292.00 142.80 320.00 130.00Q320.00 142.80 292.00 146.00Q264.00 142.80 264.00 130.00Z" fill="#84736b" stroke="none" stroke-width="5.6" data-role="long-chan-sung" />
+    <path d="M270.00 133.20Q292.00 142.80 314.00 133.20" fill="none" stroke="#6b5d5b" stroke-width="2.4" opacity=".22" data-role="bong-chan-sung" />
+  </g>
+  <g id="tai-gan" data-goc="290.00 184.00" aria-label="Tai gần cụp ra sau, phá viền gáy" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:290.00px 184.00px">
+    <path d="M286 176Q306 166 334 174Q364 184 373 208Q364 229 334 224Q302 218 288 200Q280 186 286 176Z" fill="#84736b" stroke="none" stroke-width="5.6" data-role="tai-chinh" />
+    <path d="M299 170Q316 166 334 174Q364 184 373 208Q364 229 334 224Q311 220 297 209" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-tai" />
+    <path d="M300 199Q322 192 354 208Q361 216 350 219Q322 218 300 199Z" fill="#c49a94" stroke="none" stroke-width="5.6" opacity=".34" data-role="long-tai-hong" />
+    <path d="M292 186Q322 196 356 211" fill="none" stroke="#24190f" stroke-width="2.5" data-role="nep-tai" />
+    <path d="M292 185Q302 198 318 205Q302 207 292 191Z" fill="#24190f" stroke="none" stroke-width="5.6" opacity=".10" data-role="bong-goc-tai" />
+  </g>
+  <g id="long-may-gan" data-goc="210.00 166.00" aria-label="Lông mày" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:210.00px 166.00px">
+    <path d="M200 170Q209 161 220 167" fill="none" stroke="#24190f" stroke-width="3.7" />
+  </g>
+  <g id="mat-gan" data-goc="212.00 196.00" aria-label="Mắt: chấm đen, không tròng trắng" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round" style="transform-box:view-box;transform-origin:212.00px 196.00px">
+    <path d="M218.40 196.00C218.40 203.51 215.53 209.60 212.00 209.60C208.47 209.60 205.60 203.51 205.60 196.00C205.60 188.49 208.47 182.40 212.00 182.40C215.53 182.40 218.40 188.49 218.40 196.00Z" fill="#24190f" stroke="none" stroke-width="5.6" data-role="mat" />
+  </g>
+</svg>
