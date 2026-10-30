@@ -122,8 +122,7 @@ p { margin: 0; text-wrap: pretty; }
 .tab { position: sticky; bottom: 0; z-index: 10; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; background: var(--giay-noi);
   border-radius: 22px 22px 0 0; box-shadow: 0 -1px 0 var(--ke), 0 -8px 24px rgba(31, 77, 58, 0.08); padding: 4px 4px env(safe-area-inset-bottom);
   transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1); }
-.tab.thu { transform: translateY(22px); }
-.tab.thu .fab { transform: translateY(10px) scale(0.9); }
+.tab.thu .fab { transform: translateY(8px) scale(0.7); box-shadow: 0 0 0 3px var(--giay-noi); }
 .tab a { min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; font-size: var(--c-ghi); font-weight: 500; color: var(--muc-nhat); text-decoration: none; line-height: 1.15; padding: 6px 2px; position: relative; -webkit-tap-highlight-color: transparent; }
 .tab .ic { position: relative; display: grid; place-items: center; }
 .tab .ic .cham-moi { top: -2px; right: -4px; box-shadow: 0 0 0 2px var(--giay); }
