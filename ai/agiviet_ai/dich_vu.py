@@ -17,6 +17,7 @@ import uuid
 import wave
 from datetime import datetime, timezone
 from fastapi import FastAPI, Request, HTTPException
+from pydantic import BaseModel, Field
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, FileResponse
 from . import PHIEN_BAN
@@ -137,6 +138,22 @@ def anomalies(req:BatThuongRequest):return bat_thuong(req)
 
 @app.post('/contracts/summarize')
 def summary(req:TomTatRequest):return tom_tat(req)
+
+class HoiTroLyRequest(BaseModel):
+    cau: str = Field(min_length=1, max_length=600)
+    vai: str = Field(default='ban', pattern='^(ban|mua)$')
+    du_lieu: str = Field(default='', max_length=4000)
+
+
+@app.post('/assistant/ask')
+def assistant_ask(req: HoiTroLyRequest, request: Request):
+    # Trợ lý hỏi đáp: rào chặn lừa/ngoài lề/số bịa nằm trong tro_ly; chỉ một lượt gọi mô hình tại một thời điểm
+    from .tro_ly import tra_loi
+    with LLM_SLOT:
+        k = tra_loi(req.cau, req.vai, req.du_lieu)
+    request.state.tom_tat = {'loai': k.loai, 'nguon': k.nguon}
+    return {'tra_loi': k.van_ban, 'loai': k.loai, 'nguon': k.nguon}
+
 
 @app.post('/messages/scan')
 def messages_scan(req:QuetTinRequest,request:Request):

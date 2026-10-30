@@ -421,6 +421,27 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.get('/v1/support', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/trung-binh.ts'); return bo.doc((t) => m.danhSachHoTro(t, nd)); });
   app.post('/v1/support', async (req) => bo.lenh(req, 'ho_tro', 'system', async (t, nd, b) => { const m = await import('../nghiep-vu/trung-binh.ts'); return m.taoHoTro(t, nd, z.object({ message: z.string().min(1), error_code: z.string().optional(), request_id: z.string().optional(), order_id: uuid.optional() }).parse(b)); }));
   app.get('/v1/lots/:id/source-profile', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/trung-binh.ts'); return bo.doc((t) => m.hoSoNguon(t, nd, P(req).id)); });
+  // Trợ lý AI cho app: gọi dịch vụ AI nội bộ kèm bối cảnh thật của tổ chức (lô, hợp đồng) để không bịa số. Không phải lệnh ghi.
+  app.post('/v1/assistant/ask', async (req, reply) => {
+    const nd = await bo.xacThuc(req);
+    const b = z.object({ cau: z.string().min(1).max(600) }).parse(req.body);
+    if (!ht.cfg.aiUrl) return reply.status(503).send({ errors: [{ code: 'AI_CHUA_BAT', message: 'Trợ lý AI đang tạm nghỉ.', fix: 'Bác dùng các nút gợi ý hoặc nhắn nhân viên AgiViet.' }] });
+    const vai = nd.thanhVien.canSell ? 'ban' : 'mua';
+    const duLieu = await ht.db.doc(async (t) => {
+      const lo = await t.q<any>(`SELECT l.code, p.name_vi, l.grade_code, l.status, l.declared_qty::text qty_g FROM core.lots l JOIN core.products p ON p.id=l.product_id WHERE l.seller_org_id=$1 AND l.status IN ('on_sale','draft','upcoming') ORDER BY l.created_at DESC LIMIT 8`, [nd.thanhVien.orgId]);
+      const don = await t.q<any>(`SELECT code, status, contract_value_vnd::text gia FROM core.orders WHERE seller_org_id=$1 OR buyer_org_id=$1 ORDER BY created_at DESC LIMIT 6`, [nd.thanhVien.orgId]);
+      return [...lo.map((l) => `Lô ${l.code}: ${l.name_vi} loại ${String(l.grade_code).replace(/^L/, '')}, ${Number(l.qty_g) / 1000} kg, trạng thái ${l.status}`),
+        ...don.map((d) => `Hợp đồng ${d.code}: trạng thái ${d.status}, giá trị ${d.gia} đồng`)].join('\n');
+    });
+    try {
+      const r = await fetch(`${ht.cfg.aiUrl}/assistant/ask`, { method: 'POST', signal: AbortSignal.timeout(15000),
+        headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify({ cau: b.cau, vai, du_lieu: duLieu }) });
+      if (!r.ok) throw new Error(String(r.status));
+      return await r.json();
+    } catch {
+      return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Trợ lý chưa trả lời được lúc này.', fix: 'Bác thử lại sau ít phút hoặc nhắn nhân viên AgiViet.' }] });
+    }
+  });
   app.get('/v1/notifications', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/outbox.ts'); const q: any = req.query; return bo.doc((t) => m.thongBao(t, nd, { limit: q.limit ? Number(q.limit) : undefined, after_seq: q.after_seq ? Number(q.after_seq) : undefined })); });
 
   // ---------------- Môi trường thử ----------------
