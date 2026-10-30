@@ -108,6 +108,9 @@
   .nc-khac[open] summary::before { transform: rotate(90deg); }
   .nc-khac summary small { font-weight: 700; color: var(--la); }
   .nc-khac .the-nc { margin-top: 12px; }
+  .da-chao { display: grid; gap: 6px; }
+  .da-chao + .da-chao { margin-top: 10px; }
+  .da-chao .rut { justify-self: end; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--ke-dam); background: var(--giay-noi); color: var(--dau-do); font: 600 14px/1 var(--chu); cursor: pointer; }
   .tieu-nho { font-size: 13px; font-weight: 600; color: var(--muc-phu); margin: 18px 0 8px; }
   /* Bên mua đang cần */
   .the-nc { display: block; padding: 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); }
@@ -131,12 +134,33 @@
   .tam label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--muc-phu); }
   .tam select, .tam input { min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); padding: 0 12px; font: 500 16px/1 var(--chu); color: var(--muc); }
   .tam .goi-y-gia { display: block; font-size: 13px; color: var(--muc-nhat); font-weight: 400; }
-  .tam .thanh-tien { padding: 10px 12px; border-radius: 12px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 14px; }
-  .tam .thanh-tien:empty { display: none; }
-  .tam .thanh-tien b { font-size: 17px; }
-  .tam .thanh-tien small { display: block; font-size: 12.5px; opacity: .8; }
+  .tam .o-thanh-tien:empty { display: none; }
+  .tam .o-thanh-tien { padding: 10px 12px; border-radius: 12px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 14px; }
   .tam .hang-nut { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
   .tam .bao-ket { font-size: 14px; }
+  .tam .bao-ket:empty, .tam .canh-bao.an, .tam .goi-y-gia:empty { display: none; }
+  /* Xếp dọc bằng flex, không cho phần nào co lại: tấm dài thì cuộn, không ép bẹp ô (lưới có max-height từng nén hàng) */
+  .tam-chao { display: flex; flex-direction: column; gap: 12px; padding-bottom: 0; }
+  .tam-chao > * { flex-shrink: 0; }
+  .tam .dau-tam h2 { font-size: 19px; }
+  .tam .dau-tam p { font-size: 14px; color: var(--muc-phu); margin-top: 2px; }
+  .tam .ngu-canh { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; padding: 10px 12px; border-radius: 12px; background: var(--giay-noi); border: 1px solid var(--ke); font-size: 13.5px; }
+  .tam .ngu-canh dt { color: var(--muc-nhat); }
+  .tam .ngu-canh dd { font-weight: 600; text-align: right; }
+  .tam .o-don-vi { position: relative; display: block; }
+  .tam .o-don-vi input { padding-right: 52px; }
+  .tam .o-don-vi i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 13px; font-weight: 600; color: var(--muc-nhat); pointer-events: none; }
+  .tam .goi-y-gia { font-size: 13px; color: var(--muc-phu); line-height: 1.6; }
+  .tam .goi-y-gia { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  .tam .dung-gia { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--la); background: transparent; color: var(--la-dam); font: 600 12.5px/1 var(--chu); cursor: pointer; vertical-align: middle; }
+  .tam .o-thanh-tien { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 10px; }
+  .tam .o-thanh-tien span { font-weight: 600; }
+  .tam .o-thanh-tien b { font-size: 20px; font-variant-numeric: tabular-nums; }
+  .tam .o-thanh-tien small { grid-column: 1 / -1; display: block; font-size: 12.5px; opacity: .85; }
+  .tam .canh-bao { font-size: 13.5px; padding: 8px 12px; border-radius: 10px; background: var(--chin-nen); color: var(--chin); line-height: 1.4; }
+  .tam .canh-bao.chan { background: var(--dau-do-nen); color: var(--dau-do); }
+  /* Nút dính đáy tấm: luôn thấy dù tấm phải cuộn */
+  .tam .day-tam { position: sticky; bottom: 0; margin: 0 -16px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--giay); box-shadow: 0 -8px 12px -10px rgba(0,0,0,.25); }
 </style>
 </head>
 <body>
@@ -215,6 +239,7 @@ $("ngan-vu").onclick = () => chonNgan("ngan-vu");
 if (location.hash === "#can") chonNgan("ngan-can"); else if (location.hash === "#vu") chonNgan("ngan-vu");
 else { try { const k = sessionStorage.getItem("agv-ngan-cho"); if (k === "ngan-can" || k === "ngan-vu") chonNgan(k); } catch {} }
 
+const alertNhe = (m) => { const p = document.createElement("p"); p.className = "bao loi"; p.textContent = m; $("ds-da-chao").prepend(p); setTimeout(() => p.remove(), 5000); };
 // Một dòng lời chào: ai chào, giá, lượng, tới lượt ai, hạn → bấm mở Tin nhắn để trả lời
 const dongChao = (c, coMaLo = true) => {
   const v = c.vong_cuoi || {};
@@ -388,7 +413,17 @@ async function moCan() {
     $("cung-cau").hidden = false;
   }
   const daChao = dsChaoMo.filter((c) => c.direction === "seller_quote");
-  if (daChao.length) { $("ds-da-chao").innerHTML = daChao.map((c) => dongChao(c)).join(""); $("khoi-da-chao").hidden = false; }
+  if (daChao.length) {
+    $("ds-da-chao").innerHTML = daChao.map((c) => `<div class="da-chao">${dongChao(c)}${c.vong_cuoi?.from_side === "seller" ? `<button type="button" class="rut" data-rut="${c.id}">Rút lại</button>` : ""}</div>`).join("");
+    $("khoi-da-chao").hidden = false;
+    // Rút lại: bấm 2 lần (không dùng hộp thoại trình duyệt)
+    $("ds-da-chao").querySelectorAll("[data-rut]").forEach((x) => (x.onclick = async () => {
+      if (x.dataset.xn !== "1") { x.dataset.xn = "1"; x.textContent = "Bấm lần nữa để rút"; return; }
+      x.disabled = true; x.textContent = "Đang rút…";
+      try { await lenh(`/v1/offers/${x.dataset.rut}/withdraw`, {}); x.textContent = "Đã rút"; setTimeout(() => location.reload(), 700); }
+      catch (err) { x.textContent = "Rút lại"; x.disabled = false; x.dataset.xn = ""; alertNhe(err.message); }
+    }));
+  }
   $("so-can").textContent = soKhop ? soKhop : "";
   const veNc = (n) => {
     const khop = diem(n) === 0;
@@ -413,39 +448,88 @@ async function moCan() {
 }
 
 // Tấm chào hàng: chọn lô khớp, lượng, giá → lời chào của người bán vào nhu cầu
-function moTam(n, dong, dsLo) {
+const GIAO = { self_pickup: "Bên mua tự đến lấy tại vườn", seller_delivers: "Bác chở tới nơi bên mua", platform_logistics: "AgiViet điều phối xe", warehouse: "Giao tại kho" };
+async function moTam(n, dong, dsLo) {
   const che = document.createElement("div"); che.className = "man-che";
+  const soVN = (v) => Number(v || 0).toLocaleString("vi-VN");
+  const gom = dong.min_source_qty_g && Number(dong.min_source_qty_g) < Number(dong.qty_g);
+  const toiThieuKg = gom ? Math.ceil(Number(dong.min_source_qty_g) / 1000) : 1;
   const toiDaKg = (l) => Math.floor(Math.min(Number(l.available_g), Number(dong.qty_g)) / 1000);
-  che.innerHTML = `<form class="tam" role="dialog" aria-modal="true" aria-labelledby="tam-t">
-    <h2 id="tam-t">Chào hàng cho ${esc(n.buyer_name)}</h2>
-    <label>Lô của bác<select name="lo">${dsLo.map((l) => `<option value="${l.id}">${esc(l.code)} · còn ${can(l.available_g).join(" ")}</option>`).join("")}</select></label>
-    <label>Lượng (kg)<input name="kg" type="number" inputmode="numeric" min="1" required></label>
-    <label>Giá (đồng/kg) <span class="goi-y-gia" id="gy-gia"></span><input name="gia" type="number" inputmode="numeric" min="1000" step="100" required></label>
-    <p class="thanh-tien" id="thanh-tien" aria-live="polite"></p>
+  che.innerHTML = `<form class="tam tam-chao" role="dialog" aria-modal="true" aria-labelledby="tam-t" novalidate>
+    <div class="dau-tam"><h2 id="tam-t">Chào hàng</h2><p>cho <b>${esc(n.buyer_name)}</b></p></div>
+    <dl class="ngu-canh">
+      <dt>Bên mua cần</dt><dd>${esc(tenSp.get(n.product_code) || n.product_code)} · ${esc(tenLoai(dong.grade_code))} · ${esc(can(dong.qty_g).join(" "))}</dd>
+      <dt>Thời gian</dt><dd>${ngayVN(n.needed_from)} – ${ngayVN(n.needed_to)}</dd>
+      <dt>Giao nhận</dt><dd id="nc-giao">…</dd>
+      ${gom ? `<dt>Đơn gom</dt><dd>Mỗi vườn tối thiểu ${esc(can(dong.min_source_qty_g).join(" "))}</dd>` : ""}
+    </dl>
+    <label>Lô của bác<select name="lo">${dsLo.map((l) => `<option value="${l.id}">${esc(l.code)} · còn ${esc(can(l.available_g).join(" "))}</option>`).join("")}</select></label>
+    <div class="hai-o">
+      <label>Lượng<span class="o-don-vi"><input name="kg" type="number" inputmode="numeric" min="${toiThieuKg}" required><i>kg</i></span></label>
+      <label>Giá<span class="o-don-vi"><input name="gia" type="number" inputmode="numeric" min="1000" step="100" required><i>đ/kg</i></span></label>
+    </div>
+    <p class="goi-y-gia" id="gy-gia"></p>
+    <div class="o-thanh-tien" id="thanh-tien" aria-live="polite"></div>
+    <p class="canh-bao" id="canh-bao" role="status"></p>
     <p class="bao-ket" id="tam-bao" role="status"></p>
-    <div class="hang-nut"><button type="button" class="nut phu-nut" id="tam-huy">Đóng</button><button type="submit" class="nut chinh-nut" id="tam-gui">Gửi chào hàng</button></div>
+    <div class="hang-nut day-tam"><button type="button" class="nut phu-nut" id="tam-huy">Đóng</button><button type="submit" class="nut chinh-nut" id="tam-gui">Gửi chào hàng</button></div>
   </form>`;
   document.body.appendChild(che);
   const f = che.querySelector("form");
-  const capNhat = () => { const l = dsLo.find((x) => x.id === f.lo.value); f.kg.max = toiDaKg(l); if (!f.kg.value || Number(f.kg.value) > toiDaKg(l)) f.kg.value = toiDaKg(l); };
-  const tinhTien = () => { const k = Number(f.kg.value), g = Number(f.gia.value);
-    $("thanh-tien").innerHTML = k > 0 && g > 0 ? `Thành tiền: <b>${(k * g).toLocaleString("vi-VN")} đ</b> <small>(${k.toLocaleString("vi-VN")} kg × ${g.toLocaleString("vi-VN")} đ)</small>` : ""; };
-  f.kg.oninput = tinhTien; f.gia.oninput = tinhTien;
-  f.lo.onchange = () => { capNhat(); tinhTien(); }; capNhat(); tinhTien();
-  get(`/v1/reference-prices?product=${encodeURIComponent(n.product_code)}&grade=${encodeURIComponent(dong.grade_code)}`).then((g) => {
-    if (g?.price_vnd) { $("gy-gia").textContent = `Giá tham khảo ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg`; if (!f.gia.value) { f.gia.value = g.price_vnd; tinhTien(); } /* không ghi đè giá bác đã gõ */ }
-  }).catch(() => {});
+  let giaThap = null, giaTK = null;
+  const loChon = () => dsLo.find((x) => x.id === f.lo.value);
+  // Kiểm trước khi gửi: trả về [lỗi chặn, cảnh báo]
+  const kiem = () => {
+    const k = Number(f.kg.value), g = Number(f.gia.value), max = toiDaKg(loChon());
+    if (!k || k <= 0) return ["Bác nhập lượng muốn chào.", ""];
+    if (k > max) return [`Tối đa ${soVN(max)} kg (lô còn ${can(loChon().available_g).join(" ")}, bên mua cần ${can(dong.qty_g).join(" ")}).`, ""];
+    if (gom && k < toiThieuKg) return [`Đơn gom: mỗi vườn chào tối thiểu ${soVN(toiThieuKg)} kg.`, ""];
+    if (!g || g < 1000) return ["Bác nhập giá chào (đồng/kg).", ""];
+    const cb = [];
+    if (giaThap && g < giaThap) cb.push(`Giá này thấp hơn giá thấp nhất bác đã đặt cho lô (${soVN(giaThap)} đ/kg).`);
+    if (giaTK && g < giaTK * 0.8) cb.push(`Thấp hơn giá tham khảo hơn 20%.`);
+    return ["", cb.join(" ")];
+  };
+  const veLai = () => {
+    const k = Number(f.kg.value), g = Number(f.gia.value);
+    $("thanh-tien").innerHTML = k > 0 && g > 0 ? `<span>Thành tiền</span><b>${soVN(k * g)} đ</b><small>${soVN(k)} kg × ${soVN(g)} đ/kg · trước chi phí chở, phân loại</small>` : "";
+    const [chan, cb] = kiem();
+    $("canh-bao").textContent = chan || cb; $("canh-bao").className = "canh-bao" + (chan ? " chan" : cb ? "" : " an");
+  };
+  const capNhatLo = async () => {
+    const l = loChon(), max = toiDaKg(l);
+    if (!f.kg.value || Number(f.kg.value) > max) f.kg.value = Math.max(Math.min(max, toiThieuKg > max ? max : max), 0);
+    f.kg.max = max;
+    const ct = await get(`/v1/lots/${l.id}`).catch(() => null);
+    giaThap = ct?.floor_price_vnd ? Number(ct.floor_price_vnd) : null;
+    if (!f.gia.value && ct?.ask_price_vnd) f.gia.value = ct.ask_price_vnd;   // gợi ý giá mong muốn của lô; không ghi đè giá bác đã gõ
+    veGoiY(); veLai();
+  };
+  const veGoiY = () => {
+    const phan = [];
+    if (giaTK) phan.push(`<span>Giá tham khảo <b>${soVN(giaTK)}</b></span><button type="button" class="dung-gia" data-gia="${giaTK}">Dùng giá này</button>`);
+    if (giaThap) phan.push(`<span style="flex-basis:100%">Giá thấp nhất của bác <b>${soVN(giaThap)}</b> (kín)</span>`);
+    $("gy-gia").innerHTML = phan.join("");
+    $("gy-gia").querySelectorAll(".dung-gia").forEach((x) => (x.onclick = () => { f.gia.value = x.dataset.gia; veLai(); }));
+  };
+  f.kg.oninput = veLai; f.gia.oninput = veLai; f.lo.onchange = capNhatLo;
+  capNhatLo();
+  get(`/v1/reference-prices?product=${encodeURIComponent(n.product_code)}&grade=${encodeURIComponent(dong.grade_code)}`).then((g) => { if (g?.price_vnd) { giaTK = Number(g.price_vnd); veGoiY(); veLai(); } }).catch(() => {});
+  get(`/v1/demands/${n.id}`).then((ct) => { $("nc-giao").textContent = GIAO[ct.delivery_mode] || "Thỏa thuận khi chốt"; }).catch(() => { $("nc-giao").textContent = "—"; });
   const dong_ = () => che.remove();
   che.addEventListener("pointerdown", (e) => { if (e.target === che) dong_(); });
   $("tam-huy").onclick = dong_;
   f.onsubmit = async (e) => {
     e.preventDefault();
+    const [chan] = kiem(); if (chan) { veLai(); return; }
     $("tam-gui").disabled = true; $("tam-bao").textContent = "Đang gửi…";
     try {
       await lenh("/v1/offers", { direction: "seller_quote", lot_id: f.lo.value, demand_line_id: dong.id, qty_g: String(Number(f.kg.value) * 1000), price_vnd: String(f.gia.value) });
-      f.innerHTML = `<h2>Đã gửi chào hàng</h2><p class="bao-ket">${esc(n.buyer_name)} có 24 giờ để trả lời. Bác theo dõi ở Tin nhắn.</p>
+      f.innerHTML = `<div class="dau-tam"><h2>Đã gửi chào hàng</h2><p>${esc(n.buyer_name)} có 24 giờ để trả lời.</p></div>
+        <div class="o-thanh-tien"><span>Bác chào</span><b>${soVN(Number(f.kg.value) * Number(f.gia.value))} đ</b><small>${soVN(f.kg.value)} kg × ${soVN(f.gia.value)} đ/kg</small></div>
+        <p class="bao-ket">Lời chào hiện ở mục "Lời chào bác đã gửi" trong ngăn Bên mua cần. Bác có thể rút lại khi bên mua chưa trả lời.</p>
         <div class="hang-nut"><button type="button" class="nut phu-nut" id="tam-xong">Đóng</button><a class="nut chinh-nut" href="./ban-tin-nhan.html${location.search}">Mở Tin nhắn</a></div>`;
-      f.querySelector("#tam-xong").onclick = dong_;
+      f.querySelector("#tam-xong").onclick = () => location.reload();
     } catch (err) { $("tam-bao").textContent = err.message; $("tam-gui").disabled = false; }
   };
 }

@@ -65,7 +65,15 @@ async function kiemChung(p) {
   const loRa = await p.evaluate(() => [...document.querySelectorAll(".tam *, .man-che *")].filter((e) => e.offsetParent && e.getBoundingClientRect().right > innerWidth + 1)
     .map((e) => `${e.tagName.toLowerCase()} ${(e.textContent || "").trim().slice(0, 16)}`));
   assert.deepEqual(loRa, [], "phần tử trong tấm nổi lòi ra ngoài màn hình");
-  const nho = await p.evaluate(() => [...document.querySelectorAll("button, .tab a")].filter((b) => b.offsetParent && b.getBoundingClientRect().height < 44)
+  // Phần tử bị ép thấp hơn nội dung (vd. trùng tên lớp với CSS chung có height cố định) → chữ bị cắt
+  const bep = await p.evaluate(() => [...document.querySelectorAll(".tam *, .the-nc *, .lo *, .vu *")].filter((e) => {
+    if (!e.offsetParent) return false;
+    const cs = getComputedStyle(e);
+    if (cs.textOverflow === "ellipsis" || cs.webkitLineClamp !== "none" || !/hidden|clip/.test(cs.overflowY)) return false;
+    return e.scrollHeight > e.clientHeight + 2;
+  }).map((e) => `${e.tagName.toLowerCase()}.${[...e.classList].join(".")} ${e.scrollHeight}>${e.clientHeight}`));
+  assert.deepEqual(bep, [], "phần tử bị ép, chữ bị cắt");
+  const nho = await p.evaluate(() => [...document.querySelectorAll("button, .tab a")].filter((b) => b.offsetParent && Math.round(b.getBoundingClientRect().height) < 44)
     .map((b) => `${b.textContent.trim().slice(0, 20)}=${Math.round(b.getBoundingClientRect().height)}`));
   assert.deepEqual(nho, [], "vùng bấm < 44px");
 }
@@ -217,6 +225,16 @@ await trang("hang-hoa", async (p) => {
     await kiemChung(p);
     await p.locator("#tam-gui").click();
     await p.getByText("Đã gửi chào hàng").waitFor({ timeout: 8000 });
+    // Lời chào vừa gửi hiện trong "Lời chào bác đã gửi" và rút lại được (bấm 2 lần); tải lại thật (cùng địa chỉ + #can thì goto không tải lại)
+    await p.reload();
+    await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+    const truoc = await p.locator("#ds-da-chao [data-rut]").count();
+    assert.ok(truoc > 0, "có lời chào để rút");
+    const rut = p.locator("#ds-da-chao [data-rut]").first();
+    await rut.click(); await p.getByText("Bấm lần nữa để rút").waitFor({ timeout: 3000 });
+    await rut.click(); await p.waitForURL(/ban-hang-hoa/); await p.waitForTimeout(1500);
+    await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+    assert.equal(await p.locator("#ds-da-chao [data-rut]").count(), truoc - 1, "rút xong thì bớt một lời chào");
   } else {
     // Chạy lại trên cùng dữ liệu: mọi dòng khớp đã chào → nút phải ghi rõ lý do, không cho chào trùng
     const nhan = await p.locator("#p-can .tt-dong").allTextContents();
