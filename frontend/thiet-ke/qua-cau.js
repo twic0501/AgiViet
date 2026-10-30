@@ -1,7 +1,7 @@
 // Quả cầu kết nối nông sản: ảnh tròn nhỏ là các điểm nằm trên mặt cầu 3D, nối nhau bằng đường thẳng (mạng lưới mua bán),
 // chấm sáng chạy dọc đường như hàng đang đi. Cầu xoay; điểm phía trước to/rõ, phía sau nhỏ/mờ.
 // Canvas 2D, không thư viện ngoài (chạy được khi ngoại tuyến). Tôn trọng prefers-reduced-motion.
-export function quaCau(canvas, { anh, so = 42, noi = 3, tocDo = 0.2, nghieng = 0.35 } = {}) {
+export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0.35 } = {}) {
   const ctx = canvas.getContext("2d");
   const giam = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const dpr = Math.min(2, devicePixelRatio || 1);
@@ -40,7 +40,7 @@ export function quaCau(canvas, { anh, so = 42, noi = 3, tocDo = 0.2, nghieng = 0
   });
   const dsCanh = [...canh].map((k) => k.split("-").map(Number));
   // Chấm chạy: mỗi chấm đi trên một cạnh, vị trí 0→1
-  const cham = Array.from({ length: 14 }, () => ({ c: Math.floor(Math.random() * dsCanh.length), p: Math.random(), v: 0.18 + Math.random() * 0.22 }));
+  const cham = Array.from({ length: 20 }, () => ({ c: Math.floor(Math.random() * dsCanh.length), p: Math.random(), v: 0.18 + Math.random() * 0.22 }));
 
   const t0 = performance.now(), NHAP = giam ? 0 : 1600;
   const ra = (x) => 1 - Math.pow(1 - x, 3);
@@ -82,7 +82,7 @@ export function quaCau(canvas, { anh, so = 42, noi = 3, tocDo = 0.2, nghieng = 0
     // Điểm ảnh: vẽ từ sau ra trước
     for (const p of [...ch].sort((a, b) => a.z - b.z)) {
       const img = tron[p.anh]; if (!img) continue;
-      const kt = RR * (p.z > 0 ? 0.2 + p.z * 0.07 : 0.13 + (p.z + 1) * 0.07) * p.pc;
+      const kt = RR * (p.z > 0 ? 0.165 + p.z * 0.06 : 0.1 + (p.z + 1) * 0.06) * p.pc;
       ctx.globalAlpha = k * (p.z > 0 ? 1 : 0.25 + (p.z + 1) * 0.35);
       ctx.drawImage(img, p.X - kt / 2, p.Y - kt / 2, kt, kt);
     }
