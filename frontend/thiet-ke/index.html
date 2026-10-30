@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bàn thiết kế AgiViet</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  body { background: #2a332d; color: #ece8dc; }
+  .ban { display: grid; grid-template-columns: 220px 1fr; min-height: 100dvh; }
+  .ben { padding: 20px 16px; border-right: 1px solid rgba(236,232,220,.12); }
+  .ben h1 { font-size: 16px; margin-bottom: 4px; }
+  .ben p { font-size: 13px; color: #b9bdb0; margin-bottom: 16px; }
+  .ben a { display: block; padding: 10px 12px; border-radius: 8px; color: #ece8dc; text-decoration: none; font-size: 14px; }
+  .ben a[aria-current="true"] { background: #1f4d3a; }
+  .ben .nhom { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #8f9488; margin: 16px 12px 6px; }
+  .san { display: flex; gap: 32px; align-items: flex-start; justify-content: center; padding: 28px; flex-wrap: wrap; }
+  .may { width: 390px; height: 844px; border-radius: 36px; overflow: hidden; border: 10px solid #111; background: #000; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+  .may iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .nhan-may { text-align: center; font-size: 12px; color: #b9bdb0; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="ban">
+  <nav class="ben">
+    <h1>Bàn thiết kế</h1>
+    <p>App bán · nền sáng. Trang tự tải lại khi có bản mới.</p>
+    <div class="nhom">App bán</div>
+    <a href="#dang-nhap.html">1. Đăng nhập</a>
+    <a href="#ban-hom-nay.html?thu=0918000421">2. Trang chủ · Hôm nay</a>
+    <a href="#ban-hang-hoa.html?thu=0918000421">3. Hàng hóa</a>
+  </nav>
+  <main class="san">
+    <div><div class="may"><iframe id="sang" title="Nền sáng"></iframe></div><p class="nhan-may">390 × 844</p></div>
+  </main>
+</div>
+<script>
+  const mo = () => {
+    const man = decodeURIComponent(location.hash.slice(1)) || "dang-nhap.html";
+    const noi = man.includes("?") ? "&" : "?";
+    document.getElementById("sang").src = `./${man}${noi}nen=sang&t=${Date.now()}`;
+    document.querySelectorAll(".ben a").forEach((a) => a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + man)));
+  };
+  addEventListener("hashchange", mo); mo();
+  // Tự tải lại khi tệp thiết kế đổi (so dấu thời gian sửa của các tệp, 1,5 giây một lần)
+  let dau = null;
+  setInterval(async () => {
+    try {
+      const ds = ["so-vuon.css", "dang-nhap.html", "ban-hom-nay.html", "ban-hang-hoa.html"];
+      const t = (await Promise.all(ds.map((f) => fetch("./" + f, { method: "HEAD", cache: "no-store" }).then((r) => r.headers.get("last-modified") || r.headers.get("etag") || "")))).join("|");
+      if (dau !== null && t !== dau) mo();
+      dau = t;
+    } catch {}
+  }, 1500);
+</script>
+</body>
+</html>

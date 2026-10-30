@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đăng nhập · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<script>{ const n = new URLSearchParams(location.search).get("nen"); if (n) document.documentElement.dataset.theme = n === "toi" ? "dark" : "light"; }</script>
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .dn { min-height: 100dvh; display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; }
+  /* Ô ảnh nông sản: 5 ảnh ghép mosaic, phần dưới chìm vào giấy */
+  .anh-ghep { position: relative; height: 260px; display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; padding: 4px; }
+  .anh-ghep div { background: var(--giay-lot) center / cover no-repeat; border-radius: 14px; }
+  .anh-ghep div:first-child { grid-row: span 2; }
+  .anh-ghep::after { content: ""; position: absolute; inset: 40% 0 0; background: linear-gradient(transparent, var(--giay) 92%); pointer-events: none; }
+  .the-anh { position: absolute; left: 16px; bottom: 8px; z-index: 1; display: flex; gap: 8px; flex-wrap: wrap; }
+  .the-anh span { background: var(--giay-noi); color: var(--muc-phu); font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--ke); }
+  .than-dn { padding: 8px 20px 28px; display: flex; flex-direction: column; gap: 20px; flex: 1; }
+  .thuong-hieu { display: flex; align-items: center; justify-content: space-between; }
+  .thuong-hieu { justify-content: flex-start; gap: 10px; }
+  .thuong-hieu img { height: 32px; }
+  .thuong-hieu b { font-size: 20px; font-weight: 700; color: var(--la); letter-spacing: -0.01em; }
+  .anh-ghep canvas { position: absolute; right: 6px; bottom: -34px; width: 132px; height: 132px; z-index: 2; }
+  .loi-chao h1 { font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+  .loi-chao p { color: var(--muc-phu); margin-top: 8px; }
+  .loi-ich { display: grid; gap: 10px; }
+  .loi-ich li { list-style: none; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center; font-size: 14px; color: var(--muc-phu); }
+  .loi-ich li b { color: var(--muc); font-weight: 600; display: block; font-size: 15px; }
+  .bieu-tuong { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--la-nhat); color: var(--la-dam); }
+  .bieu-tuong.vang { background: var(--chin-nen); color: var(--chin); }
+  .bieu-tuong svg { width: 20px; height: 20px; }
+  .o-nhap { display: flex; align-items: center; gap: 0; border-radius: 14px; background: var(--giay-lot); border: 1.5px solid var(--ke-dam); overflow: hidden; transition: border-color 140ms var(--cham); }
+  .o-nhap:focus-within { border-color: var(--la); }
+  .o-nhap .ma-vung { padding: 0 12px 0 16px; font-weight: 600; color: var(--muc-phu); border-right: 1px solid var(--ke-dam); height: 56px; display: grid; place-items: center; }
+  .o-nhap input { flex: 1; min-width: 0; height: 56px; border: 0; background: transparent; padding: 0 16px; font: 600 20px/1 var(--chu); color: var(--muc); letter-spacing: 0.04em; font-variant-numeric: tabular-nums; outline: none; }
+  .nhan-o { font-size: 13px; font-weight: 600; color: var(--muc-phu); margin-bottom: 8px; display: block; }
+  .otp { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .otp input { height: 60px; text-align: center; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); font: 600 24px/1 var(--chu); color: var(--muc); font-variant-numeric: tabular-nums; outline: none; min-width: 0; }
+  .otp input:focus { border-color: var(--la); }
+  .ghi-nho { font-size: 13px; color: var(--muc-nhat); text-align: center; }
+  .ghi-nho button { color: var(--la); font-weight: 600; background: none; border: 0; font: inherit; padding: 8px; cursor: pointer; }
+  .ma-thu { font-size: 12px; color: var(--chin); background: var(--chin-nen); padding: 8px 12px; border-radius: 8px; }
+  .buoc[hidden] { display: none; }
+  .nut:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+<div class="dn">
+  <div class="anh-ghep" aria-hidden="true">
+    <div style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></div>
+    <div data-anh="tom"></div>
+    <div data-anh="lua"></div>
+    <div class="the-anh"><span>Trái cây</span><span>Lúa gạo</span><span>Thủy sản</span></div>
+    <canvas id="trau" width="396" height="396" aria-hidden="true"></canvas>
+  </div>
+
+  <div class="than-dn">
+    <div class="thuong-hieu">
+      <img src="/assets/logo.svg" alt=""><b>AgiViet</b>
+    </div>
+
+    <section class="buoc" id="buoc-1">
+      <div class="loi-chao">
+        <h1>Bán nông sản, tiền có ngân hàng giữ</h1>
+        <p>Đăng hàng, nhận chào giá, ký hợp đồng ngay trên điện thoại.</p>
+      </div>
+      <ul class="loi-ich" style="margin:16px 0 20px;padding:0">
+        <li><span class="bieu-tuong vang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18M12 3l9 5H3z"/></svg></span><span><b>Cọc do ngân hàng giữ</b>Bên mua đặt cọc trước khi bác hái hàng.</span></li>
+        <li><span class="bieu-tuong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13l2 2 4-4"/></svg></span><span><b>Hợp đồng rõ ràng</b>Ký bằng mã OTP, có bản PDF giữ lại.</span></li>
+      </ul>
+      <label class="nhan-o" for="sdt">Số điện thoại</label>
+      <div class="o-nhap"><span class="ma-vung">+84</span><input id="sdt" inputmode="numeric" autocomplete="tel" placeholder="0909 000 000" maxlength="12"></div>
+      <p class="bao loi" id="loi-1" hidden style="margin-top:12px"></p>
+      <button class="nut chinh-nut" id="gui" type="button" style="margin-top:16px" disabled>Gửi mã xác nhận</button>
+      <p class="ghi-nho" style="margin-top:12px">Lần đầu dùng? Nhân viên AgiViet sẽ tới xác minh vườn trước khi bác bán.</p>
+    </section>
+
+    <section class="buoc" id="buoc-2" hidden>
+      <div class="loi-chao">
+        <h1>Nhập mã 6 số</h1>
+        <p id="gui-toi">Mã đã gửi tới số của bác.</p>
+      </div>
+      <div class="otp" id="otp" style="margin-top:20px">
+        <input inputmode="numeric" maxlength="1" aria-label="Số 1"><input inputmode="numeric" maxlength="1" aria-label="Số 2"><input inputmode="numeric" maxlength="1" aria-label="Số 3"><input inputmode="numeric" maxlength="1" aria-label="Số 4"><input inputmode="numeric" maxlength="1" aria-label="Số 5"><input inputmode="numeric" maxlength="1" aria-label="Số 6">
+      </div>
+      <p class="ma-thu" id="ma-thu" hidden style="margin-top:12px"></p>
+      <p class="bao loi" id="loi-2" hidden style="margin-top:12px"></p>
+      <button class="nut chinh-nut" id="vao" type="button" style="margin-top:16px" disabled>Vào app</button>
+      <p class="ghi-nho"><span id="dem"></span> <button type="button" id="gui-lai" hidden>Gửi lại mã</button> · <button type="button" id="doi-so">Đổi số</button></p>
+    </section>
+  </div>
+</div>
+
+<script src="/assets/vendor/rive/rive.js"></script>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+// Ảnh nông sản: dùng ảnh thật nếu đã có, chưa có thì để nền giấy
+for (const [ten, tep] of [["tom", "tom.jpg"], ["lua", "lua-gao.jpg"]]) {
+  const o = document.querySelector(`[data-anh="${ten}"]`); const img = new Image();
+  img.onload = () => { o.style.backgroundImage = `url(${img.src})`; }; img.src = `/assets/products/${tep}`;
+}
+// Trâu V4g (thở, chớp mắt) chào ở góc
+try {
+  rive.RuntimeLoader.setWasmUrl("/assets/vendor/rive/rive.wasm");
+  const r = new rive.Rive({ src: "/assets/trau/trau.riv", canvas: $("trau"), autoplay: true, stateMachines: "trau", layout: new rive.Layout({ fit: rive.Fit.Contain }), onLoad: () => r.resizeDrawingSurfaceToCanvas() });
+} catch {}
+
+const chuan = (s) => s.replace(/\D/g, "");
+let thuThach = null, demNguoc = null;
+$("sdt").addEventListener("input", (e) => {
+  const so = chuan(e.target.value).slice(0, 10);
+  e.target.value = so.replace(/(\d{4})(\d{0,3})(\d{0,3})/, (_, a, b, c) => [a, b, c].filter(Boolean).join(" "));
+  $("gui").disabled = !/^0\d{9}$/.test(so);
+});
+function hienLoi(id, msg) { $(id).textContent = msg; $(id).hidden = !msg; }
+
+async function guiMa() {
+  const sdt = chuan($("sdt").value);
+  $("gui").disabled = true; $("gui").textContent = "Đang gửi…"; hienLoi("loi-1", "");
+  try {
+    const r = await fetch("/v1/auth/otp/send", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được mã. Bác thử lại sau ít phút.");
+    thuThach = j.challenge_id;
+    $("buoc-1").hidden = true; $("buoc-2").hidden = false;
+    $("gui-toi").textContent = `Mã đã gửi tới số ${sdt.replace(/(\d{4})(\d{3})(\d{3})/, "$1 $2 $3")}.`;
+    $("otp").querySelector("input").focus();
+    batDem(60);
+    // Môi trường thử: hiện mã để kiểm, bản thật không có dòng này
+    fetch(`/v1/test/sms/${sdt}`).then((x) => (x.ok ? x.json() : null)).then((m) => {
+      const ma = JSON.stringify(m || "").match(/\b\d{6}\b/)?.[0];
+      if (ma) { $("ma-thu").textContent = `Môi trường thử · mã: ${ma}`; $("ma-thu").hidden = false; }
+    }).catch(() => {});
+  } catch (e) { hienLoi("loi-1", e.message); }
+  $("gui").textContent = "Gửi mã xác nhận"; $("gui").disabled = !/^0\d{9}$/.test(sdt);
+}
+function batDem(s) {
+  clearInterval(demNguoc); $("gui-lai").hidden = true;
+  const ve = () => { $("dem").textContent = s > 0 ? `Gửi lại sau ${s} giây` : ""; if (s-- <= 0) { clearInterval(demNguoc); $("gui-lai").hidden = false; } };
+  ve(); demNguoc = setInterval(ve, 1000);
+}
+$("gui").onclick = guiMa;
+$("gui-lai").onclick = guiMa;
+$("doi-so").onclick = () => { $("buoc-2").hidden = true; $("buoc-1").hidden = false; clearInterval(demNguoc); };
+
+const o6 = [...$("otp").querySelectorAll("input")];
+const ma = () => o6.map((x) => x.value).join("");
+o6.forEach((o, i) => {
+  o.addEventListener("input", () => { o.value = chuan(o.value).slice(-1); if (o.value && o6[i + 1]) o6[i + 1].focus(); $("vao").disabled = ma().length !== 6; if (ma().length === 6) vao(); });
+  o.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !o.value && o6[i - 1]) o6[i - 1].focus(); });
+  o.addEventListener("paste", (e) => { const s = chuan(e.clipboardData.getData("text")).slice(0, 6); if (s.length > 1) { e.preventDefault(); s.split("").forEach((c, k) => { if (o6[k]) o6[k].value = c; }); $("vao").disabled = s.length !== 6; if (s.length === 6) vao(); } });
+});
+async function vao() {
+  $("vao").disabled = true; $("vao").textContent = "Đang vào…"; hienLoi("loi-2", "");
+  try {
+    const r = await fetch("/v1/auth/otp/verify", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ challenge_id: thuThach, phone: chuan($("sdt").value), code: ma() }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.errors?.[0]?.message || "Mã chưa đúng. Bác kiểm tra lại tin nhắn.");
+    location.href = `./ban-hom-nay.html?thu=${chuan($("sdt").value)}&${location.search.slice(1)}`;
+  } catch (e) {
+    hienLoi("loi-2", e.message); o6.forEach((x) => (x.value = "")); o6[0].focus();
+  }
+  $("vao").textContent = "Vào app";
+}
+$("vao").onclick = vao;
+</script>
+</body>
+</html>

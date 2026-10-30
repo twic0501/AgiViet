@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hàng hóa · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .tong-quan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tong-quan div { background: var(--giay-noi); border: 1px solid var(--ke); border-radius: 12px; padding: 12px; }
+  .tong-quan b { display: block; font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .tong-quan span { font-size: 12px; color: var(--muc-nhat); }
+  .loc { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+  .loc::-webkit-scrollbar { display: none; }
+  .loc button { flex: none; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ke-dam); background: var(--giay-noi); color: var(--muc-phu); font: 600 14px/1 var(--chu); cursor: pointer; transition: background-color 140ms var(--cham), color 140ms var(--cham); }
+  .loc button[aria-pressed="true"] { background: var(--la); color: var(--tren-la); border-color: var(--la); }
+  .loc button small { font-weight: 400; opacity: .75; margin-left: 4px; }
+  .lo { display: grid; grid-template-columns: 104px 1fr; gap: 14px; padding: 12px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); text-decoration: none; color: inherit; }
+  .lo + .lo { margin-top: 10px; }
+  .lo .anh { border-radius: 12px; background: var(--giay-lot) center / cover no-repeat; aspect-ratio: 1; position: relative; }
+  .lo .anh .trang-thai { position: absolute; left: 6px; bottom: 6px; font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 999px; background: var(--la); color: var(--tren-la); }
+  .lo .anh .trang-thai.gap { background: var(--dau-do); }
+  .lo .tren { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .lo .ten { font-weight: 600; font-size: 16px; }
+  .lo .ma { font-size: 12px; }
+  .lo .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
+  .lo .con { margin-top: 10px; }
+  .lo .con .so { display: flex; justify-content: space-between; font-size: 13px; color: var(--muc-phu); }
+  .lo .con .so b { color: var(--muc); font-size: 18px; font-weight: 600; }
+  .thanh { height: 8px; border-radius: 4px; background: var(--ke); margin-top: 6px; overflow: hidden; }
+  .thanh span { display: block; height: 100%; background: var(--la); border-radius: 4px; }
+  .lo .duoi { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .nhan-nho { font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: var(--la-nhat); color: var(--la-dam); }
+  .nhan-nho.cho { background: var(--cho-nen); color: var(--cho); }
+  .nhan-nho.vang { background: var(--chin-nen); color: var(--chin); }
+  .nut-noi { position: sticky; bottom: 72px; display: flex; justify-content: flex-end; pointer-events: none; padding-right: 16px; margin-top: -8px; }
+  .nut-noi .nut { pointer-events: auto; box-shadow: 0 6px 20px rgba(31, 77, 58, .28); border-radius: 999px; gap: 8px; }
+  .nut-noi svg { width: 20px; height: 20px; }
+  .trong { text-align: center; padding: 32px 16px; }
+  .trong img { width: 160px; height: 120px; object-fit: cover; border-radius: 16px; margin: 0 auto 12px; display: block; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau">
+    <div><p class="chao">Hàng hóa</p><h1 id="ten-ho" style="font-size:18px">Hàng của bác</h1></div>
+    <button class="nut-chu" type="button">Nhật ký vườn</button>
+  </header>
+
+  <main class="noi" id="noi" aria-busy="true" style="gap:16px">
+    <div class="tong-quan">
+      <div><b id="so-lo">—</b><span>lô đang bán</span></div>
+      <div><b id="tong-con">—</b><span id="dv-con">còn bán</span></div>
+      <div><b id="so-chao">—</b><span>chào giá mới</span></div>
+    </div>
+
+    <div class="loc" role="group" aria-label="Lọc theo trạng thái" id="loc"></div>
+
+    <div id="ds"><div class="khung-tai"></div><div class="khung-tai"></div></div>
+  </main>
+
+  <div class="nut-noi"><button class="nut chinh-nut" type="button" style="width:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Đăng hàng</button></div>
+
+  <nav class="tab" aria-label="Mục chính">
+    <a href="./ban-hom-nay.html">Hôm nay</a>
+    <a href="#" aria-current="page">Hàng hóa</a>
+    <a href="#">Bên mua</a>
+    <a href="#">Hợp đồng</a>
+    <a href="#">Tiền</a>
+  </nav>
+</div>
+
+<script type="module">
+import { can, esc, phien, ANH_SP } from "./chung.js";
+const $ = (id) => document.getElementById(id);
+// Giữ ?thu= khi chuyển tab
+document.querySelectorAll('.tab a[href$=".html"]').forEach((a) => (a.href += location.search));
+
+const TT = {
+  on_sale: ["Đang bán", ""], draft: ["Nháp", "cho"], reserved: ["Đã giữ cho đơn", "vang"],
+  sold_out: ["Đã bán hết", "cho"], closed: ["Đã đóng", "cho"], paused: ["Tạm ngưng", "cho"],
+};
+
+async function mo() {
+  const token = await phien();
+  const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
+  const [me, lo, sp, chao] = await Promise.all([get("/v1/me"), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => [])]);
+  const tenSp = new Map((Array.isArray(sp) ? sp : sp.items || []).map((p) => [p.code, p.name_vi || p.name]));
+  $("ten-ho").textContent = me.org.name;
+
+  const dangBan = lo.filter((l) => l.status === "on_sale");
+  const [tc, dv] = can(dangBan.reduce((s, l) => s + Number(l.available_g || 0), 0));
+  $("so-lo").textContent = dangBan.length; $("tong-con").textContent = tc; $("dv-con").textContent = `${dv} còn bán`;
+  const dsChao = Array.isArray(chao) ? chao : chao.items || [];
+  $("so-chao").textContent = dsChao.filter((c) => /open|pending|sent/.test(c.status || "")).length;
+
+  const nhom = [["tat-ca", "Tất cả", lo], ...Object.entries(TT).map(([k, [ten]]) => [k, ten, lo.filter((l) => l.status === k)]).filter(([, , d]) => d.length)];
+  let chon = "tat-ca";
+  const ve = () => {
+    $("loc").innerHTML = nhom.map(([k, ten, d]) => `<button type="button" data-k="${k}" aria-pressed="${k === chon}">${ten}<small>${d.length}</small></button>`).join("");
+    const d = nhom.find(([k]) => k === chon)[2];
+    $("ds").innerHTML = d.length ? d.map((l) => {
+      const [so, dvi] = can(l.available_g);
+      const ti = Math.max(0, Math.min(1, Number(l.available_g) / Number(l.declared_qty_g || l.available_g || 1)));
+      const [tt, lop] = l.ban_gap_den ? ["Bán gấp", "gap"] : TT[l.status] || [l.status, "cho"];
+      const ngay = l.last_confirmed_at ? new Date(l.last_confirmed_at).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" }) : null;
+      return `<a class="lo" href="#">
+        <span class="anh" style="background-image:url(${ANH_SP(l.product_code)})"><span class="trang-thai ${lop}">${esc(tt)}</span></span>
+        <span>
+          <span class="tren"><span class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</span><span class="ma">${esc(l.code)}</span></span>
+          <p class="phu">Loại ${esc(l.grade_code.replace(/^L/, ""))}${ngay ? ` · xác nhận còn hàng ${ngay}` : ""}</p>
+          <span class="con" style="display:block"><span class="so"><span>Còn bán</span><span><b>${so}</b> ${dvi}</span></span>
+            <span class="thanh" style="display:block"><span style="width:${(ti * 100).toFixed(0)}%"></span></span></span>
+          <span class="duoi"><span class="nhan-nho ${l.qty_basis === "estimated" ? "vang" : ""}">${l.qty_basis === "estimated" ? "Ước tính · cam kết tối đa 80%" : "Đã cân"}</span></span>
+        </span></a>`;
+    }).join("") : `<div class="trong"><img src="/assets/products/xoai-cat-chu.jpg" alt=""><p><b>Chưa có lô nào ở đây</b></p><p class="phu" style="color:var(--muc-nhat)">Bấm Đăng hàng, chụp vài tấm ảnh là bên mua thấy ngay.</p></div>`;
+    $("loc").querySelectorAll("button").forEach((b) => (b.onclick = () => { chon = b.dataset.k; ve(); }));
+  };
+  ve();
+  $("noi").setAttribute("aria-busy", "false");
+}
+mo().catch((e) => {
+  $("ds").innerHTML = `<p class="bao loi">${esc(e.message)}</p><button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`;
+  $("noi").setAttribute("aria-busy", "false");
+});
+</script>
+</body>
+</html>

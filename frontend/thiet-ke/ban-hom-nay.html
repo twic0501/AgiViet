@@ -10,140 +10,147 @@
 <body>
 <div class="trang">
   <header class="dau">
-    <div>
-      <p class="chao" id="chao">AgiViet</p>
-      <h1 id="ten-ho">Hôm nay</h1>
+    <div class="dau-trai">
+      <span class="anh-dai-dien" id="chu-dau">AV</span>
+      <div><p class="chao" id="chao">AgiViet</p><h1 id="ten-ho" style="font-size:18px">Hôm nay</h1></div>
     </div>
     <button class="nut-chu" type="button">Hỗ trợ</button>
   </header>
 
   <main class="noi" id="noi" aria-busy="true">
-    <section class="chinh" aria-live="polite">
-      <p class="nhan" id="ngay">&nbsp;</p>
-      <h2 id="cau-chinh">Đang mở sổ…</h2>
-      <p id="cau-phu">&nbsp;</p>
+    <section class="chinh co-trau" aria-live="polite">
+      <div class="chu">
+        <p class="nhan" id="ngay">&nbsp;</p>
+        <h2 id="cau-chinh">Đang mở sổ…</h2>
+        <p id="cau-phu">&nbsp;</p>
+        <button class="nut-trong" type="button" id="nut-chinh" hidden></button>
+      </div>
+      <canvas id="trau" width="396" height="456" aria-hidden="true"></canvas>
     </section>
 
     <section class="muc" aria-labelledby="t-hd">
       <h3 id="t-hd"><span>Hợp đồng đang làm</span><a href="#">Xem hết</a></h3>
-      <div id="ds-hd"><div class="khung-tai"></div><div class="khung-tai"></div></div>
+      <div id="ds-hd"><div class="khung-tai"></div></div>
     </section>
 
     <section class="muc" aria-labelledby="t-lo">
-      <h3 id="t-lo"><span>Lô đang bán · còn lại</span><a href="#">Đăng lô</a></h3>
-      <div id="ds-lo"><div class="khung-tai"></div></div>
+      <h3 id="t-lo"><span>Hàng đang bán</span><a href="./ban-hang-hoa.html">Xem hết</a></h3>
+      <div class="ke-ngang" id="ds-lo"><div class="khung-tai" style="flex:0 0 72%"></div></div>
     </section>
 
     <section class="muc" aria-labelledby="t-tien">
       <h3 id="t-tien"><span>Tiền</span><a href="#">Sổ tiền</a></h3>
-      <div class="tien" id="tien" style="margin-top:12px">
-        <div><p class="nhan">Ngân hàng giữ cọc</p><p class="so-tien so" id="coc">—</p></div>
-        <div><p class="nhan">Còn phải nhận</p><p class="so-tien so" id="con-nhan">—</p></div>
+      <div class="the-tien">
+        <p class="nhan">Giá trị hợp đồng đang làm</p>
+        <p class="tong" id="tong-hd">—</p>
+        <div class="thanh-tien" id="thanh-tien"></div>
+        <div class="chu-giai" id="chu-giai"></div>
       </div>
     </section>
 
-    <p class="troi" id="troi"></p>
+    <section class="muc" aria-labelledby="t-troi">
+      <h3 id="t-troi"><span id="tinh">Thời tiết</span><span style="font-weight:400">4 ngày tới</span></h3>
+      <div class="troi-4" id="troi"></div>
+      <p class="loi-khuyen" id="loi-khuyen" hidden></p>
+    </section>
   </main>
 
   <nav class="tab" aria-label="Mục chính">
     <a href="#" aria-current="page">Hôm nay</a>
-    <a href="#">Lô hàng</a>
-    <a href="#">Nhu cầu mua</a>
+    <a href="./ban-hang-hoa.html">Hàng hóa</a>
+    <a href="#">Bên mua</a>
     <a href="#">Hợp đồng</a>
     <a href="#">Tiền</a>
   </nav>
 </div>
 
+<script src="/assets/vendor/rive/rive.js"></script>
 <script type="module">
-// Bản mẫu E1: đọc dữ liệu thật từ backend. ?thu=<sđt> chỉ chạy được ở môi trường thử (đăng nhập giả lập).
+import { tien, can, esc, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT } from "./chung.js";
 const $ = (id) => document.getElementById(id);
-const q = new URLSearchParams(location.search);
-const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Bên mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
+try {
+  rive.RuntimeLoader.setWasmUrl("/assets/vendor/rive/rive.wasm");
+  const r = new rive.Rive({ src: "/assets/trau/trau.riv", canvas: $("trau"), autoplay: true, stateMachines: "trau", layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter }), onLoad: () => r.resizeDrawingSurfaceToCanvas() });
+} catch {}
 
-const tien = (v) => {
-  const n = Number(v || 0);
-  if (n >= 1e9) return `${(n / 1e9).toLocaleString("vi-VN", { maximumFractionDigits: 2 })} tỷ`;
-  if (n >= 1e6) return `${(n / 1e6).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} triệu`;
-  return `${n.toLocaleString("vi-VN")} đ`;
-};
-const can = (g) => {
-  const kg = Number(g || 0) / 1000;
-  return kg >= 1000 ? [(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }), "tấn"] : [kg.toLocaleString("vi-VN", { maximumFractionDigits: 0 }), "kg"];
-};
-// "Chờ bên mua ký và gửi" / "Bác cần ký và gửi" — nói rõ ai làm, không để người bán tưởng việc của mình
-const viecCho = (d) => {
-  const l = d.hien_thi?.toi_luot;
-  if (!l) return d.hien_thi?.ten || d.status;
-  const viec = l.viec.charAt(0).toLowerCase() + l.viec.slice(1);
-  return l.phia === d.phia_cua_ban ? `Bác cần ${viec}` : `Chờ ${(LUOT[l.phia]?.[1] || "bên kia").toLowerCase()} ${viec}`;
-};
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const iconTroi = (p) => p >= 70
+  ? `<svg viewBox="0 0 36 36" fill="none"><path d="M10 20a6 6 0 0 1 1-12 8 8 0 0 1 15 2 5 5 0 0 1 0 10z" fill="#c9d3dc"/><path d="M13 24l-2 5M19 24l-2 5M25 24l-2 5" stroke="#2b6cb0" stroke-width="2.4" stroke-linecap="round"/></svg>`
+  : p >= 30
+  ? `<svg viewBox="0 0 36 36" fill="none"><circle cx="13" cy="13" r="6" fill="#e8b53a"/><path d="M12 24a6 6 0 0 1 1-12 8 8 0 0 1 15 2 5 5 0 0 1 0 10z" fill="#dfe4e8"/></svg>`
+  : `<svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="7" fill="#e8b53a"/><path d="M18 4v4M18 28v4M4 18h4M28 18h4M8 8l3 3M25 25l3 3M8 28l3-3M25 11l3-3" stroke="#e8b53a" stroke-width="2.4" stroke-linecap="round"/></svg>`;
 
-async function phien() {
-  const sdt = q.get("thu");
-  if (!sdt) throw new Error("Thêm ?thu=<số điện thoại mẫu> để xem bằng dữ liệu thử.");
-  const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) });
-  if (!r.ok) throw new Error("Không mở được tài khoản thử.");
-  return (await r.json()).token;
-}
+// Chữ tắt tên bên mua: lấy chữ đầu của 2 từ viết hoa đầu tiên ("Nhà máy chế biến Mekong" → "NM")
+const chuTat = (ten) => (ten.match(/\p{Lu}/gu) || ["?"]).slice(0, 2).join("");
 
 async function mo() {
   const token = await phien();
-  const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
-  const [me, don, lo, tienTom, troi, sp] = await Promise.all([
-    get("/v1/me"), get("/v1/orders"), get("/v1/lots?mine=true"), get("/v1/money/summary"),
-    get("/v1/weather").catch(() => null), get("/v1/products").catch(() => []),
-  ]);
-  const tenSp = new Map((Array.isArray(sp) ? sp : sp.items || []).map((p) => [p.code, p.name_vi || p.name]));
-
+  const { me, don, lo, tienTom, troi, tenSp } = await layDuLieu(token);
   $("chao").textContent = `Chào ${me.name.split(" ").at(-1)}`;
   $("ten-ho").textContent = me.org.name;
+  $("chu-dau").textContent = me.name.split(" ").at(-1).charAt(0).toUpperCase();
   $("ngay").textContent = new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
 
-  // Điểm nhìn: việc tới lượt bác trước, rồi mới tới việc đang chờ người khác
   const toiBac = don.filter((d) => d.hien_thi?.toi_luot?.phia === d.phia_cua_ban);
   const choNguoi = don.filter((d) => d.hien_thi?.toi_luot && d.hien_thi.toi_luot.phia !== d.phia_cua_ban);
   if (toiBac.length) {
-    $("cau-chinh").textContent = `Bác có ${toiBac.length} việc cần làm hôm nay`;
-    $("cau-phu").textContent = `${toiBac[0].hien_thi.toi_luot.viec} · hợp đồng với ${toiBac[0].buyer_name}`;
+    $("cau-chinh").textContent = `Bác có ${toiBac.length} việc cần làm`;
+    $("cau-phu").textContent = viecCho(toiBac[0]);
+    $("nut-chinh").textContent = "Làm ngay"; $("nut-chinh").hidden = false;
   } else if (choNguoi.length) {
-    const ai = LUOT[choNguoi[0].hien_thi.toi_luot.phia]?.[1] || "bên kia";
     $("cau-chinh").textContent = "Hôm nay bác chưa có việc gấp";
-    $("cau-phu").textContent = `Đang chờ ${ai.toLowerCase()} ${choNguoi[0].hien_thi.toi_luot.viec.toLowerCase()} ${choNguoi.length} hợp đồng.`;
+    $("cau-phu").textContent = `${choNguoi.length} hợp đồng đang chờ ${(LUOT[choNguoi[0].hien_thi.toi_luot.phia]?.[1] || "bên kia").toLowerCase()}.`;
   } else {
-    $("cau-chinh").textContent = "Chưa có hợp đồng nào đang chạy";
-    $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô. Có bên mua chào giá, AgiViet sẽ báo ngay.` : "Đăng một lô hàng để bên mua thấy và chào giá.";
+    $("cau-chinh").textContent = "Chưa có hợp đồng nào";
+    $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô, chờ bên mua chào giá.` : "Đăng một lô hàng để bên mua thấy và chào giá.";
+    $("nut-chinh").textContent = "Đăng hàng"; $("nut-chinh").hidden = false;
   }
 
   $("ds-hd").innerHTML = don.length ? don.map((d) => {
+    const k = chiSoChang(d);
     const [lop, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"];
-    return `<a class="dong" href="#">
-      <span class="dau-luot ${lop}">${esc(ai)}</span>
-      <span><span class="ten">${esc(d.buyer_name)}</span><br><span class="phu">${esc(viecCho(d))}</span></span>
-      <span class="so-lon">${esc(tien(d.contract_value_vnd))}<br><span class="phu ma">${esc(d.code)}</span></span></a>`;
-  }).join("") : `<p class="bao" style="margin-top:12px">Chưa có hợp đồng. Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
+    return `<a class="the-hd" href="#">
+      <div class="hang"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
+        <span class="giua"><span class="ten">${esc(d.buyer_name)}</span><span class="phu ma">${esc(d.code)}</span></span>
+        <span class="gia">${esc(tien(d.contract_value_vnd))}</span></div>
+      <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
+      <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
+      <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div></a>`;
+  }).join("") : `<p class="bao" style="margin-top:12px">Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
 
   $("ds-lo").innerHTML = lo.length ? lo.map((l) => {
     const [so, dv] = can(l.available_g);
-    const uoc = l.qty_basis === "estimated" ? "ước tính" : "đã cân";
-    return `<a class="dong lo" href="#">
-      <span><span class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</span><br><span class="phu"><span class="ma">${esc(l.code)}</span> · Loại ${esc(l.grade_code.replace(/^L/, ""))} · ${uoc}</span></span>
-      <span class="can"><b>${so}</b><small>${dv}</small></span></a>`;
-  }).join("") : `<p class="bao" style="margin-top:12px">Bác chưa có lô nào đang bán.</p>`;
+    const ti = Math.max(0, Math.min(1, Number(l.available_g) / Number(l.declared_qty_g || l.available_g || 1)));
+    const C = 2 * Math.PI * 24;
+    return `<a class="the-lo" href="./ban-hang-hoa.html">
+      <div class="anh" style="background-image:url(${ANH_SP(l.product_code)})"><span class="nhan-lo">${esc(l.code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</span></div>
+      <div class="than"><div><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</p><p class="phu">${l.qty_basis === "estimated" ? "Lượng ước tính" : "Đã cân"}</p></div>
+        <span class="vong" aria-label="Còn ${so} ${dv}"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--ke-dam)" stroke-width="5"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--la)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C * ti} ${C}"/></svg><b>${so}<small>${dv}</small></b></span></div></a>`;
+  }).join("") : `<p class="bao">Bác chưa có lô nào đang bán.</p>`;
 
-  $("coc").textContent = tien(tienTom.tong.coc_dang_giu);
-  $("con-nhan").textContent = tien(tienTom.tong.con_phai_nhan);
+  const tongHd = don.reduce((s, d) => s + Number(d.contract_value_vnd || 0), 0);
+  const t = tienTom.tong, coc = +t.coc_dang_giu, nhan = +t.da_nhan_truc_tiep + +t.ngan_hang_da_chuyen_den, con = Math.max(0, tongHd - coc - nhan);
+  $("tong-hd").textContent = tien(tongHd);
+  const phan = [["Đã nhận", nhan, "var(--la)"], ["Ngân hàng giữ cọc", coc, "var(--chin)"], ["Chưa tới hạn", con, "rgba(0,0,0,.14)"]];
+  $("thanh-tien").innerHTML = phan.map(([, v, m]) => `<span style="flex:${v || 0.0001};background:${m}"></span>`).join("");
+  $("chu-giai").innerHTML = phan.map(([n, v, m]) => `<span><i style="background:${m}"></i>${n} <b class="so">${tien(v)}</b></span>`).join("");
 
-  const hn = troi?.ngay?.[0];
-  if (hn) $("troi").innerHTML = `<b>${esc(troi.tinh.ten)}</b> ${Math.round(hn.nhiet_do_thap_c)}–${Math.round(hn.nhiet_do_cao_c)}°C, khả năng mưa ${hn.kha_nang_mua_phan_tram}%. ${esc(hn.loi_khuyen?.[0] || "")}`;
+  if (troi?.ngay?.length) {
+    $("tinh").textContent = `Thời tiết · ${troi.tinh.ten}`;
+    $("troi").innerHTML = troi.ngay.slice(0, 4).map((n, i) => {
+      const thu = i === 0 ? "Hôm nay" : new Date(n.ngay).toLocaleDateString("vi-VN", { weekday: "short" });
+      return `<div class="ngay-troi"><p class="thu">${thu}</p>${iconTroi(n.kha_nang_mua_phan_tram)}<p class="nhiet">${Math.round(n.nhiet_do_cao_c)}°</p><div class="mua" title="Khả năng mưa ${n.kha_nang_mua_phan_tram}%"><span style="width:${n.kha_nang_mua_phan_tram}%"></span></div></div>`;
+    }).join("");
+    const lk = troi.ngay[0].loi_khuyen?.[0];
+    if (lk) { $("loi-khuyen").innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>${esc(lk)}</span>`; $("loi-khuyen").hidden = false; }
+  }
   $("noi").setAttribute("aria-busy", "false");
 }
 
 mo().catch((e) => {
   $("cau-chinh").textContent = "Chưa mở được sổ";
   $("cau-phu").textContent = e.message;
-  for (const id of ["ds-hd", "ds-lo"]) $(id).innerHTML = `<p class="bao loi" style="margin-top:12px">Không tải được.</p>`;
-  $("ds-lo").insertAdjacentHTML("beforeend", `<button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`);
+  $("ds-hd").innerHTML = `<p class="bao loi" style="margin-top:12px">Không tải được.</p><button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`;
+  $("ds-lo").innerHTML = "";
   $("noi").setAttribute("aria-busy", "false");
 });
 </script>
