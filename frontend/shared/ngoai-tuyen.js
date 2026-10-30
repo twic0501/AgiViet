@@ -11,7 +11,10 @@ export const DUOC_XEP_HANG = [
   { mau: /^\/v1\/lots$/, ten: "Tạo lô hàng nháp" },
   { mau: /^\/v1\/seasonal-orders\/[^/]+\/production-updates$/, ten: "Cập nhật tình hình sản xuất" },
   { mau: /^\/v1\/support$/, ten: "Gửi yêu cầu hỗ trợ" },
+  // Ảnh chứng từ chụp tại vườn/kho/điểm giao: được chờ gửi, TRỪ ảnh khoản tiền (tiền chỉ làm khi có mạng).
+  { mau: /^\/v1\/files$/, ten: "Gửi ảnh chứng từ", hop_le: (than) => ANH_DUOC_CHO.has(than?.entity) },
 ];
+const ANH_DUOC_CHO = new Set(["lot", "production_site", "delivery", "acceptance", "order", "dispute"]);
 
 export const CAM_NGOAI_TUYEN = [
   { mau: /\/(auth|otp)\//, ly_do: "Đăng nhập và mã OTP cần mạng để xác thực." },
@@ -21,15 +24,20 @@ export const CAM_NGOAI_TUYEN = [
   { mau: /\/deliveries\//, ly_do: "Giao nhận cần ghi nhận đúng thời điểm, cần có mạng." },
 ];
 
-export function phanLoai(duong) {
+export function phanLoai(duong, than = {}) {
   const p = String(duong).split("?")[0];
   const cho = DUOC_XEP_HANG.find((x) => x.mau.test(p));
-  if (cho) return { xep_hang: true, ten: cho.ten, khoa_rieng: cho.khoa_rieng };
+  if (cho && (!cho.hop_le || cho.hop_le(than))) return { xep_hang: true, ten: cho.ten, khoa_rieng: cho.khoa_rieng };
+  if (cho) return { xep_hang: false, ly_do: "Ảnh chứng từ khoản tiền chỉ gửi khi có mạng." };
   const cam = CAM_NGOAI_TUYEN.find((x) => x.mau.test(p));
   return { xep_hang: false, ly_do: cam?.ly_do || "Thao tác này cần có mạng." };
 }
 
 const MA_XUNG_DOT = new Set(["REVISION_XUNG_DOT", "PHIEN_BAN_DA_DOI"]);
+const THAM_CHIEU = /^@muc:(.+)$/;
+
+/** Tham chiếu tới kết quả của một mục trước trong hàng (vd. mã tệp ảnh cho nhật ký): than.photo_document_ids = [thamChieu(anh.id)]. */
+export const thamChieu = (id) => `@muc:${id}`;
 const taoKhoa = () => (globalThis.crypto?.randomUUID?.() || `k-${Date.now()}-${Math.random().toString(36).slice(2)}`);
 
 // ---- Kho: cùng giao diện cho IndexedDB (trình duyệt) và bộ nhớ (kiểm thử) ----
@@ -81,7 +89,7 @@ export class NgoaiTuyen {
 
   // ---- Hàng đợi ----
   async them(duong, than = {}) {
-    const pl = phanLoai(duong);
+    const pl = phanLoai(duong, than);
     if (!pl.xep_hang) {
       const e = new Error(pl.ly_do); e.code = "CAN_MANG"; throw e;
     }
@@ -119,12 +127,19 @@ export class NgoaiTuyen {
 
   async _dongBo() {
     const kq = { da_gui: 0, xung_dot: 0, loi: 0, con_cho: 0, mat_mang: false };
-    for (const m of await this.danhSach()) {
+    const ds = await this.danhSach();
+    for (const m of ds) {
       if (m.trang_thai !== "cho") continue;
       if (kq.mat_mang) { kq.con_cho++; continue; }
+      const giai = await this._giaiThamChieu(m.than, ds);
+      if (giai.loi) {
+        m.trang_thai = "loi"; m.loi = giai.loi; kq.loi++;
+        await this.kho.dat("hang", m.id, m);
+        continue;
+      }
       m.lan_thu++;
       let r;
-      try { r = await this.gui(m.duong, m.than); } catch { r = null; }
+      try { r = await this.gui(m.duong, giai.than); } catch { r = null; }
       if (!r || r.status >= 500) {
         kq.mat_mang = true; kq.con_cho++;
         m.loi = r ? `Máy chủ lỗi ${r.status}, sẽ thử lại.` : "Chưa có mạng, sẽ gửi lại.";
@@ -132,6 +147,7 @@ export class NgoaiTuyen {
         continue;
       }
       if (r.status < 300) {
+        await this.kho.dat("doc", `ket_qua:${m.id}`, { id: r.body?.id ?? r.body?.data?.id ?? null, luc: this.bayGio() });
         await this.kho.xoa("hang", m.id); kq.da_gui++;
         continue;
       }
@@ -143,6 +159,40 @@ export class NgoaiTuyen {
     }
     return kq;
   }
+
+  /** Thay mọi "@muc:<id>" trong thân bằng mã kết quả của mục đó. Mục gốc lỗi/xung đột → mục này lỗi theo, không gửi mã sai. */
+  async _giaiThamChieu(than, ds) {
+    let loi = null;
+    const di = async (v) => {
+      if (typeof v === "string") {
+        const k = THAM_CHIEU.exec(v);
+        if (!k) return v;
+        const kq = await this.kho.lay("doc", `ket_qua:${k[1]}`);
+        if (kq?.id) return kq.id;
+        const goc = ds.find((x) => x.id === k[1]);
+        loi = { code: "PHU_THUOC_LOI", message: `Chưa gửi được "${goc?.ten || "mục liên quan"}" nên mục này chưa gửi.`, fix: "Xử lý mục kia trước rồi gửi lại mục này." };
+        return v;
+      }
+      if (Array.isArray(v)) return Promise.all(v.map(di));
+      if (v && typeof v === "object") return Object.fromEntries(await Promise.all(Object.entries(v).map(async ([a, b]) => [a, await di(b)])));
+      return v;
+    };
+    const ket = await di(than);
+    return loi ? { loi } : { than: ket };
+  }
+}
+
+/** Đọc ảnh (File/Blob) thành base64 sau khi thu nhỏ cạnh dài về tối đa `canh` px, JPEG — chỉ chạy trong trình duyệt. */
+export async function anhThanhBase64(tep, canh = 1600, chat = 0.82) {
+  const bm = await createImageBitmap(tep);
+  const tl = Math.min(1, canh / Math.max(bm.width, bm.height));
+  const c = new OffscreenCanvas(Math.round(bm.width * tl), Math.round(bm.height * tl));
+  c.getContext("2d").drawImage(bm, 0, 0, c.width, c.height);
+  const blob = await c.convertToBlob({ type: "image/jpeg", quality: chat });
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return { mime: "image/jpeg", data_base64: btoa(s), rong: c.width, cao: c.height, byte: bytes.length };
 }
 
 /** Gói fetch thành hàm gửi cho NgoaiTuyen (lỗi mạng ném ra để được giữ lại hàng đợi). */

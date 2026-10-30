@@ -10,6 +10,8 @@ Mô-đun dùng chung: `frontend/shared/ngoai-tuyen.js`. Vỏ app (HTML/JS/CSS, �
 | Tạo lô hàng nháp | Xếp hàng `POST /v1/lots` (chỉ tạo nháp; **đăng lô cần mạng**) |
 | Cập nhật tình hình sản xuất (đơn theo vụ) | Xếp hàng `POST /v1/seasonal-orders/:id/production-updates` |
 | Gửi yêu cầu hỗ trợ | Xếp hàng `POST /v1/support` |
+| Chụp ảnh chứng từ (lô, vườn, giao nhận, nghiệm thu, đơn, tranh chấp) | `anhThanhBase64(tep)` thu nhỏ cạnh dài ≤1600 px JPEG, rồi xếp hàng `POST /v1/files`. **Ảnh khoản tiền (`entity: payment`) không được chờ gửi.** |
+| Nhật ký kèm ảnh | `photo_document_ids: [thamChieu(anh.id)]` — lúc gửi tự thay bằng mã tệp thật; ảnh lỗi thì nhật ký báo `PHU_THUOC_LOI`, không gửi mã sai |
 
 ## Luôn cần mạng (không xếp hàng)
 Đăng nhập, OTP, ký, duyệt; mọi thao tác tiền (báo trả, xác nhận, tài khoản nhận tiền, trả chậm); chào giá/đồng ý/trả giá, hợp đồng, phụ lục, hủy; giao nhận, nghiệm thu; đăng lô/nhu cầu. Mọi đường không có trong danh sách được phép đều bị chặn (chặn mặc định) và trả lỗi `CAN_MANG` kèm lý do.
@@ -26,5 +28,8 @@ Mô-đun dùng chung: `frontend/shared/ngoai-tuyen.js`. Vỏ app (HTML/JS/CSS, �
 - `node tests/ngoai-tuyen-that.mjs` — backend thật trên stack thử 18980: chặn ký; mất mạng giữ lệnh; lần đầu tới máy chủ nhưng mất phản hồi → gửi lại cùng khóa chỉ tạo **1** dòng nhật ký.
 - Trình duyệt thật (Playwright): IndexedDB giữ hàng đợi và bản đã lưu qua lần mở lại, đồng bộ hết khi có mạng, thao tác tiền bị chặn.
 
+## Đề xuất backend (chưa sửa, cần người sáng lập duyệt vì đổi CSDL)
+**Giờ chụp ảnh khi mất mạng bị mất:** `/v1/files` không nhận thời điểm chụp; CSDL đóng dấu giờ lúc tải lên. Ảnh chụp tại vườn lúc 7 giờ, có mạng lúc 15 giờ sẽ mang giờ 15 giờ — sai với chứng từ cân/giao. Đề xuất migration thêm `captured_at` (nhận từ app, ghi nhãn "giờ máy khai", từ chối nếu lệch tương lai hoặc cũ hơn 7 ngày) và hiển thị cả hai giờ. Hàng đợi đã giữ `tao_luc` (giờ chụp) sẵn để gửi khi backend nhận.
+
 ## Chưa làm
-Ảnh chứng từ chờ gửi (`/v1/files` dạng multipart, cần lưu Blob rồi gắn mã tệp vào lệnh sau) — làm cùng giao diện mới. Gắn vào giao diện: nhãn "đang chờ gửi"/"xung đột", nút gửi lại — ở bước E.
+Gắn vào giao diện (nhãn "đang chờ gửi"/"xung đột", nút gửi lại/bỏ, "Bản đã lưu lúc …") — ở bước E.

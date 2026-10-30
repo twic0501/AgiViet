@@ -58,3 +58,20 @@ assert.equal(so_lan_toi_may, 2);
 assert.equal(ds.length - ds_truoc.length, 1, "gửi lại cùng khóa không được tạo dòng thứ hai");
 assert.equal((await nt.danhSach()).length, 0);
 console.log("ĐẠT: chặn ký; mất mạng giữ lệnh; mất phản hồi gửi lại cùng khóa chỉ tạo 1 dòng nhật ký (idempotency_key", m.than.idempotency_key.slice(0, 8) + "…)");
+
+// 4) Ảnh chứng từ chụp khi mất mạng + nhật ký phun thuốc tham chiếu ảnh đó → có mạng gửi ảnh trước, nhật ký gắn đúng mã tệp
+const JPEG = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAwAEADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDPooor5o8oKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==";
+const { thamChieu } = await import("../shared/ngoai-tuyen.js");
+che_do = "mat_mang";
+const anh = await nt.them("/v1/files", { entity: "production_site", entity_id: site_id, mime: "image/jpeg", data_base64: JPEG, captured_in_app: true });
+await nt.them("/v1/farm-diary", { site_id, activity: "spray", medicine_name: "Abamectin", withdrawal_days: 7, occurred_on: "2026-10-30", note: "Phun sâu (kèm ảnh, ghi khi mất mạng)", photo_document_ids: [thamChieu(anh.id)] });
+await assert.rejects(nt.them("/v1/files", { entity: "payment", entity_id: site_id, mime: "image/jpeg", data_base64: JPEG, captured_in_app: true }), (e) => e.code === "CAN_MANG");
+assert.equal((await nt.dongBo()).mat_mang, true);
+che_do = "binh_thuong";
+kq = await nt.dongBo();
+assert.deepEqual([kq.da_gui, kq.loi], [2, 0], JSON.stringify(await nt.danhSach()));
+const phun = (await get(`/v1/farm-diary?site_id=${site_id}`, token)).viec.find((x) => x.activity === "spray");
+assert.ok(phun, "có dòng phun thuốc");
+assert.equal(phun.photo_document_ids?.length, 1);
+assert.ok(!String(phun.photo_document_ids[0]).startsWith("@muc:"), "mã tệp phải là mã thật");
+console.log("ĐẠT: ảnh chụp khi mất mạng gửi trước, nhật ký phun gắn mã tệp", String(phun.photo_document_ids[0]).slice(0, 8) + "…; ảnh khoản tiền bị chặn");

@@ -1,7 +1,7 @@
 // Kiểm chế độ ngoại tuyến bằng kho bộ nhớ. Chạy: node --test tests/ngoai-tuyen.test.mjs
 import assert from "node:assert/strict";
 import test from "node:test";
-import { NgoaiTuyen, khoBoNho, phanLoai } from "../shared/ngoai-tuyen.js";
+import { NgoaiTuyen, khoBoNho, phanLoai, thamChieu } from "../shared/ngoai-tuyen.js";
 
 function mayGui(kich_ban) {
   const da_goi = [];
@@ -108,4 +108,37 @@ test("bản đã tải lưu kèm thời điểm và revision", async () => {
   const d = await nt.docDaLuu("don:HD-0018");
   assert.deepEqual([d.luc, d.revision, d.du_lieu.status], [1000, 5, "active"]);
   assert.equal(await nt.docDaLuu("khong-co"), null);
+});
+
+test("ảnh chứng từ: lô/vườn/giao nhận được chờ gửi, ảnh khoản tiền thì không", () => {
+  for (const e of ["lot", "production_site", "delivery", "acceptance"]) assert.equal(phanLoai("/v1/files", { entity: e }).xep_hang, true, e);
+  const tien = phanLoai("/v1/files", { entity: "payment" });
+  assert.equal(tien.xep_hang, false);
+  assert.match(tien.ly_do, /tiền/);
+  assert.equal(phanLoai("/v1/files", {}).xep_hang, false);
+});
+
+test("nhật ký kèm ảnh: tham chiếu @muc được thay bằng mã tệp thật lúc gửi", async () => {
+  const goi = [];
+  const nt = new NgoaiTuyen({ kho: khoBoNho(), gui: async (d, t) => { goi.push({ d, t }); return { status: 200, body: { id: d === "/v1/files" ? "TEP-1" : "NK-1" } }; } });
+  const anh = await nt.them("/v1/files", { entity: "production_site", entity_id: "s", mime: "image/jpeg", data_base64: "AAAA", captured_in_app: true });
+  const nk = await nt.them("/v1/farm-diary", { site_id: "s", activity: "spray", note: "phun", photo_document_ids: [thamChieu(anh.id)] });
+  const kq = await nt.dongBo();
+  assert.equal(kq.da_gui, 2);
+  assert.deepEqual(goi[1].t.photo_document_ids, ["TEP-1"]);
+  assert.equal((await nt.danhSach()).length, 0);
+  assert.ok(nk.than.photo_document_ids[0].startsWith("@muc:"));
+});
+
+test("ảnh gửi lỗi thì nhật ký phụ thuộc báo lỗi, không gửi với mã sai", async () => {
+  const goi = [];
+  const nt = new NgoaiTuyen({ kho: khoBoNho(), gui: async (d) => { goi.push(d); return d === "/v1/files" ? { status: 422, body: { errors: [{ code: "DU_LIEU_KHONG_HOP_LE", message: "Ảnh hỏng." }] } } : { status: 200, body: { id: "x" } }; } });
+  const anh = await nt.them("/v1/files", { entity: "lot", entity_id: "l", mime: "image/jpeg", data_base64: "x", captured_in_app: true });
+  await nt.them("/v1/farm-diary", { site_id: "s", activity: "care", note: "x", photo_document_ids: [thamChieu(anh.id)] });
+  const kq = await nt.dongBo();
+  assert.equal(kq.loi, 2);
+  assert.deepEqual(goi, ["/v1/files"]);
+  const [, nk] = await nt.danhSach();
+  assert.equal(nk.loi.code, "PHU_THUOC_LOI");
+  assert.match(nk.loi.message, /ảnh chứng từ/);
 });
