@@ -25,6 +25,13 @@ Tài liệu này để **nhiều người/AI làm song song** (Claude tài kho�
 5. Chuyển động phải **mượt bằng Rive** (không đổi ảnh từng khung).
 6. **Soi khi chốt:** phóng to từng vùng (mặt, vai, tay, bàn tay, đáy quần, tai/sừng) trên **nền sáng và nền tối**, đặt cạnh C01/V4g, **liệt kê lỗi trước khi báo đạt**. So hình dạng, không chỉ lỗi kỹ thuật.
 7. Codex/ChatGPT: chỉ rà soát và vẽ đạo cụ/minh họa; **không vẽ con quạ**, không sửa repo, không commit/push.
+8. **NGHIÊM CẤM chuyển động kiểu "đứng yên một tư thế, chỉ tay và mặt cử động"** (người sáng lập, 30/10). Mọi hành động phải là **chuyển động của cả cơ thể, hợp lý về cơ thể học**:
+   - Trọng tâm dồn chân này sang chân kia; hông và vai nghiêng ngược chiều nhau khi đứng dồn một chân.
+   - Xoay người theo thứ tự: mắt/đầu đi trước → vai → hông → chân theo sau (độ trễ vài khung).
+   - Có chuẩn bị và theo đà: trước khi giơ tay thì thân hơi hạ/ngả ngược lại; sau động tác chính, tai, khăn, đuôi và tay còn lắc nhẹ rồi mới dừng.
+   - Dáng nghỉ cũng phải sống: thở bằng ngực/vai, đổi chân trụ thỉnh thoảng, nhìn quanh, không đứng như tượng.
+   - Mỗi hành động (chào, chỉ đường, cầm giấy, mừng, xin lỗi, đi…) đều phải thấy thân, hông, chân tham gia — không chỉ cánh tay.
+   - Kiểm tra: chụp chuỗi khung; nếu che tay và mặt đi mà thân/chân đứng yên suốt hành động → **không đạt**.
 
 ## 3. Tệp và công cụ
 
@@ -55,12 +62,18 @@ Quy trình đề xuất:
 3. Gửi người sáng lập duyệt **từng góc** (ảnh phóng to 2 nền, đặt cạnh C01).
 4. Duyệt xong mới dựng Rive: lớp xoay người theo góc, lớp nghiêng/dồn trọng tâm, lớp thở/nhún, lớp tai/khăn trễ nhịp; dáng hành động đặt trên các góc đó.
 
-## 5. Chia việc đề xuất khi chạy song song
+### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
+- **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
+- **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.
+- Tự kiểm bằng `rive <thư mục> --verify`, `rive inspect --summary`, `--screenshot --advance=N` (chuỗi khung).
+- Chỉnh xương/nhịp tinh bằng **Rive Editor** (người sáng lập tự đăng nhập tài khoản Rive để mở tệp CLI trong Editor). Đo hiệu năng trên điện thoại tầm trung: một thử nghiệm công khai cho thấy tệp dựng bằng CLI tốn gấp >3 lần thời gian vẽ mỗi khung so với dựng trong Editor.
+
+## 5. Chia việc khi chạy song song (đã chốt 30/10)
 
 | Ai | Làm | Không đụng |
 |---|---|---|
-| **Claude tài khoản 1** (phiên hiện tại) | Giao diện mới (bước E): hệ thiết kế "Sổ vườn", màn app bán/mua, hiệu ứng mở app quả cầu nông sản; gắn trâu V4g đứng yên vào giao diện | `trau-rive/` (tránh xung đột) |
-| **Claude tài khoản 2** | Trâu: bộ góc nhìn (mục 4) trong `frontend/trau-rive/` + `docs/trau/`; dựng Rive xoay người | `frontend/thiet-ke/`, `frontend/shared/`, backend |
+| **Claude tài khoản 1** | Thiết kế từng màn giao diện cùng người sáng lập (bước E): hệ "Sổ vườn", 80 màn bán + 49 màn mua, hiệu ứng mở app quả cầu nông sản | `frontend/trau-rive/`, `docs/trau/` (tránh xung đột) |
+| **Claude tài khoản 2** | Trâu: bộ góc nhìn (mục 4), tách bộ phận, dựng Rive chuyển động **toàn thân** theo luật 8; xuất `.riv` để Claude 1 gắn vào giao diện | `frontend/thiet-ke/`, `frontend/shared/`, `frontend/ban/`, `frontend/mua/`, backend |
 | **ChatGPT / Codex** (`codex exec`, `-c model_reasoning_effort=high`, không fast) | Rà soát độc lập từng góc trâu và từng màn giao diện theo luật mục 2; vẽ đạo cụ, minh họa | Không sửa repo, không vẽ quạ |
 
 Mỗi bên làm trên **nhánh riêng** tách từ `production-test` (ví dụ `trau-goc-nhin`, `giao-dien-moi`) rồi mở PR vào `production-test`; không push `main`, không force-push. Ghi tiến độ vào `frontend/TIEN-DO.md` mục của mình.
