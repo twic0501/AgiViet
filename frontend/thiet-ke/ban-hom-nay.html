@@ -21,15 +21,15 @@
   .dau-xanh .nut-tron { background: rgba(246, 242, 231, 0.12); border-color: rgba(246, 242, 231, 0.18); color: #f6f2e7; }
   .dau-xanh .cham-moi { background: #7ee0a3; box-shadow: 0 0 0 2px #1f4d3a; }
   /* Khối thông báo: chữ chiếm cả bề ngang, trâu đặt góc phải; mép dưới thẳng, thẻ tính năng đè lên nửa dưới để hai phần liền nhau */
-  .tb-xanh { position: relative; padding: 2px 16px 62px; margin-top: -1px; overflow: hidden; border-radius: 0 0 50% 50% / 0 0 26px 26px; }
+  .tb-xanh { position: relative; padding: 2px 16px 88px; margin-top: -1px; overflow: hidden; border-radius: 0 0 50% 50% / 0 0 26px 26px; }
   .tb-xanh .chu { position: relative; z-index: 1; padding-right: 104px; }
   .tb-xanh .chip-hero { display: inline-block; font-size: 13px; color: rgba(246, 242, 231, 0.78); white-space: nowrap; }
   .tb-xanh h2 { font-size: 20px; line-height: 1.25; font-weight: 700; letter-spacing: -0.015em; margin-top: 4px; }
   .tb-xanh #cau-phu { margin-top: 2px; font-size: 14px; line-height: 1.4; color: rgba(246, 242, 231, 0.82); }
   .tb-xanh .nut-trong { margin-top: 10px; min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 0; background: #f6f2e7; color: #1f4d3a; font: 600 14px/1 var(--chu); cursor: pointer; }
-  .tb-xanh #trau { position: absolute; right: 6px; bottom: 40px; width: 108px; height: 124px; cursor: pointer; touch-action: manipulation; }
+  .tb-xanh #trau { position: absolute; right: 6px; bottom: 66px; width: 108px; height: 124px; cursor: pointer; touch-action: manipulation; }
   /* Lối tắt */
-  .loi-tat { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: -44px; padding: 10px 4px 8px;
+  .loi-tat { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: -70px; padding: 10px 4px 8px;
     background: var(--giay-noi); border-radius: 20px; box-shadow: 0 0 0 1px var(--ke), 0 10px 24px rgba(31, 77, 58, 0.10); }
   .loi-tat a { display: grid; justify-items: center; gap: 6px; text-decoration: none; color: var(--muc); font-size: 13px; font-weight: 500; text-align: center; line-height: 1.25; padding: 6px 2px; border-radius: 14px; }
   .loi-tat a:active { background: var(--giay-lot); }
@@ -37,6 +37,11 @@
   .loi-tat .o svg { width: 28px !important; height: 28px !important; }
   .loi-tat .o svg { width: 24px; height: 24px; }
   /* Hợp đồng: một dòng mỗi hợp đồng */
+  .hd-wrap { padding: 12px 0; border-bottom: 1px solid var(--ke); display: block; text-decoration: none; color: inherit; }
+  .hd-wrap:last-child { border-bottom: 0; }
+  .hd-wrap .hd-gon { padding: 0; border: 0; }
+  .hd-wrap .chang { margin-top: 10px; }
+  .hd-wrap .cho-ai { margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muc-phu); }
   .hd-gon { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; }
   .hd-gon:last-child { border-bottom: 0; }
   .hd-gon .logo-ben { width: 40px; height: 40px; border-radius: 12px; background: var(--cho-nen); color: var(--muc-phu); display: grid; place-items: center; font-weight: 600; font-size: 14px; }
@@ -49,7 +54,7 @@
   .o-tom { display: block; padding: 12px 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); text-decoration: none; color: inherit; min-width: 0; }
   .o-tom.rong { grid-column: 1 / -1; }
   #tom-gia { position: relative; overflow: hidden; }
-  #tom-gia .anh-sp { position: absolute; right: -10px; bottom: -10px; width: 56px; height: 56px; border-radius: 50%; background: center / cover; box-shadow: 0 0 0 3px var(--giay-noi); }
+  #tom-gia .anh-sp { position: absolute; right: 12px; bottom: 12px; width: 44px; height: 44px; border-radius: 50%; background: center / cover no-repeat; overflow: hidden; clip-path: circle(50%); }
   #tom-gia .the-gd { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--la-dam); background: var(--la-nhat); padding: 2px 8px; border-radius: 999px; }
   #tom-gia .phu, #tom-gia .lon { padding-right: 40px; }
   /* Tin mới: chạy lần lượt từ phải sang trái */
@@ -186,10 +191,13 @@ async function mo() {
 
   $("ds-hd").innerHTML = don.length ? don.slice(0, 3).map((d) => {
     const k = chiSoChang(d);
-    const [, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"];
-    return `<a class="hd-gon" href="./ban-tin-nhan.html"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
-      <span style="min-width:0"><p class="ten">${esc(d.buyer_name)}</p><p class="phu"><b>${esc(CHANG[k])}</b> · ${esc(ai)}</p></span>
-      <span class="gia" title="${esc(tienDu(d.contract_value_vnd))}">${esc(tien(d.contract_value_vnd))}</span></a>`;
+    const [lop, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"];
+    return `<a class="hd-wrap" href="./ban-tin-nhan.html"><div class="hd-gon"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
+      <span style="min-width:0"><p class="ten">${esc(d.buyer_name)}</p><p class="phu">${esc(d.code)}</p></span>
+      <span class="gia" title="${esc(tienDu(d.contract_value_vnd))}">${esc(tien(d.contract_value_vnd))}</span></div>
+      <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
+      <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
+      <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div></a>`;
   }).join("") : `<p class="bao" style="margin-top:12px">Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
 
   // Ô thời tiết hôm nay
