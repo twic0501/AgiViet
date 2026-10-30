@@ -122,6 +122,15 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - phụ (tai, khăn, đuôi, tay đung đưa lệch pha);
   - chớp mắt.
   Đo khi che mặt và tay: thân và chân vẫn đổi 2–3 nghìn điểm ảnh qua các khung, tâm thân lệch ±2,5 px. Tức là không đứng như tượng.
+- **Thêm sau góp ý "tai thêm sinh động, đứng yên trông ngố" (31/10):**
+  - **Giật tai:** thỉnh thoảng một bên tai giật nhanh, có lúc giật 2 cái liền, nhịp lặp 20 s nhưng các lần giật không đều. Biên độ đung đưa tai tăng từ 0,05 lên 0,08.
+  - **Nghịch:** chờ 5 s, rồi **chọn ngẫu nhiên** 1 trong 5 động tác hoặc chờ thêm 4 s:
+    - lắc đầu đuổi ruồi (tai và đuôi quất theo, thân nghiêng ngược);
+    - vươn vai (có lấy đà; thân giãn, tay dang, ngửa đầu, tai vểnh);
+    - nghiêng đầu tò mò (thân ngả theo, một tai cụp một tai vểnh);
+    - nhún nhảy 2 nhịp (squash & stretch, tai, tay, đuôi theo đà);
+    - vẫy tai và gật đầu.
+  - Mỗi lớp chuyển động có nút bọc riêng (`*-giat`, `*-nghich`, `dau-nghich`, `nghich`), nên các lớp không ghi đè lên nhau.
 - **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
 - **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.
 - **Ảnh:** `docs/trau/chang-2/` (5 nấc hướng, chuỗi xoay, 8 khung nghỉ).

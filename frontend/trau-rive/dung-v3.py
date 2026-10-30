@@ -76,7 +76,25 @@ class Goc:
         self.long = dict(tc.LONG)                          # chuỗi khớp khăn dài (V4g)
         dk = self.bp.get('dau-khoi')
         self.co_xy = (dk[0], dk[1]) if dk else (256, 300)  # điểm xoay đầu = cổ
-        self.id = {k: moi_id() for k in ('goc', 'nhun', 'hong', 'vai', 'than', 'dau', 'dau-quanh', 'dau-nhin')}
+        self.id = {k: moi_id() for k in ('goc', 'nghich', 'nhun', 'hong', 'vai', 'than', 'dau', 'dau-quanh',
+                                          'dau-nghich', 'dau-nhin')}
+        # Nút bọc trong bộ phận (mỗi lớp hoạt ảnh một nút riêng → không giành nhau một thuộc tính):
+        # tai: ngoài = Phụ (đung đưa) → giat (Giật tai) → nghich (Nghịch); tay, đuôi: ngoài = Phụ → nghich.
+        self.boc = {}
+        for t in self.thu_tu:
+            if t.startswith('tai-'):
+                self.boc[t] = {'giat': moi_id(), 'nghich': moi_id()}
+            elif t.startswith('tay-') or t == 'duoi':
+                self.boc[t] = {'nghich': moi_id()}
+
+    def tai(self):
+        """[(id giat, id nghich, chiều 'vểnh lên')]: tai chĩa trái (tai-trai V4g) vểnh lên = xoay dương."""
+        return [(self.boc[t]['giat'], self.boc[t]['nghich'], 1 if t == 'tai-trai' else -1)
+                for t in self.thu_tu if t.startswith('tai-')]
+
+    def tay(self):
+        """[(id nghich, chiều 'dang ra')]: tay bên trái màn hình / tay góc nghiêng dang ra = xoay dương."""
+        return [(self.boc[t]['nghich'], -1 if t == 'tay-phai' else 1) for t in self.thu_tu if t.startswith('tay-')]
 
     def k(self, t):
         return self.bp[t][3]
@@ -103,17 +121,21 @@ class Goc:
             out = []
             for t in reversed(ds):
                 x, y, ruot, nid = self.bp[t]
+                for ten_boc, bid in reversed(list(self.boc.get(t, {}).items())):
+                    ruot = node(f'{t}-{ten_boc}', bid, 0, 0, ruot)
                 out.append(node(t, nid, x - cha[0], y - cha[1], ruot))
             return ''.join(out)
         dau_nhin = node('dau-nhin', self.id['dau-nhin'], 0, 0, ve(self.dau_bp(), (cox, coy)))
-        dau_quanh = node('dau-quanh', self.id['dau-quanh'], 0, 0, dau_nhin)
+        dau_nghich = node('dau-nghich', self.id['dau-nghich'], 0, 0, dau_nhin)
+        dau_quanh = node('dau-quanh', self.id['dau-quanh'], 0, 0, dau_nghich)
         dau = node('dau', self.id['dau'], cox - hong[0], coy - hong[1], dau_quanh)
         than = node('than-tren', self.id['than'], 0, 0, dau + ve(self.than_bp(), hong))
         vai = node('vai', self.id['vai'], 0, 0, than)
         hong_xml = node('hong', self.id['hong'], hong[0] - cx, hong[1] - CHAN_DAT, vai)
         nhun = node('nhun', self.id['nhun'], 0, 0, hong_xml + ve(self.chan_bp(), (cx, CHAN_DAT)))
         lat = ' scaleX="-1"' if self.lat else ''
-        return node(f'goc-{self.ten}', self.id['goc'], cx, CHAN_DAT, nhun, lat)
+        nghich = node('nghich', self.id['nghich'], 0, 0, nhun)  # gốc ở bàn chân: vươn vai, nhún nhảy
+        return node(f'goc-{self.ten}', self.id['goc'], cx, CHAN_DAT, nghich, lat)
 
     def vi_tri_dau(self, t):
         """Toạ độ cục bộ (trong cha) của bộ phận — để cộng dồn khi tạo hoạt ảnh x/y."""
@@ -270,7 +292,7 @@ def main():
         s = -1 if g.lat else 1
         for t in g.thu_tu:
             if t.startswith('tai-'):
-                k.append(khung(g.k(t), 'rotation', [(f, s * song(f, 300, 0.05, 20 if 'trai' in t or 'xa' in t else 60))
+                k.append(khung(g.k(t), 'rotation', [(f, s * song(f, 300, 0.08, 20 if 'trai' in t or 'xa' in t else 60))
                                                       for f in range(0, 601, 50)], E))
             elif t == 'khan-dai':
                 k.append(khung(g.k(t), 'rotation', [(f, s * song(f, 200, 0.05, 30)) for f in range(0, 601, 40)], E))
@@ -292,6 +314,88 @@ def main():
                 k.append(khung(g.k(t), 'scaleY', [(0, 1), (200, 1), (205, 0.08), (211, 1), (232, 1), (236, 0.08),
                                                    (242, 1), (520, 1)]))
     lop_mot('Chớp mắt', ani('Chớp mắt', 520, k))
+
+    # ---------- Giật tai: thỉnh thoảng một tai giật nhanh (có lúc 2 cái liền), nhịp không đều ----------
+    def giat(f0, d, bien=0.32):
+        return [(f0, 0), (f0 + 4, bien * d), (f0 + 9, -0.10 * d), (f0 + 14, 0.12 * d), (f0 + 21, 0)]
+    k = []
+    for g in goc:
+        ds = g.tai()
+        for j, (gid, _, d) in enumerate(ds):
+            ks = [(0, 0)]
+            lich = [130, 760] if j == 0 else [410, 452, 1040]
+            if len(ds) == 1:
+                lich = [130, 410, 452, 760, 1040]
+            for f0 in lich:
+                ks += giat(f0, d)
+            ks.append((1200, 0))
+            k.append(khung(gid, 'rotation', sorted(set(ks)), '0.2 0 0.4 1'))
+    lop_mot('Giật tai', ani('Giật tai', 1200, k))
+
+    # ---------- Nghịch: cứ vài giây chọn ngẫu nhiên một động tác toàn thân ----------
+    def nghich(ten, dai, fn):
+        k = []
+        for g in goc:
+            k += fn(g)
+        return ani(ten, dai, k, lap=False)
+
+    def tai_theo(g, cac):  # cac: [(khung, mức)] mức > 0 = vểnh lên
+        return [khung(nid, 'rotation', [(f, v * d) for f, v in cac]) for _, nid, d in g.tai()]
+
+    def duoi_theo(g, cac):
+        return [khung(g.boc['duoi']['nghich'], 'rotation', cac)] if 'duoi' in g.boc else []
+
+    lac_dau = nghich('Nghịch: lắc đầu đuổi ruồi', 80, lambda g: [
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (6, .10), (13, -.12), (20, .09), (27, -.06), (34, .03), (44, 0)]),
+        khung(g.id['nghich'], 'rotation', [(0, 0), (8, -.012), (15, .014), (22, -.01), (30, .005), (44, 0)]),
+        *tai_theo(g, [(0, 0), (9, .30), (16, -.28), (23, .24), (30, -.16), (38, .08), (50, 0)]),
+        *duoi_theo(g, [(0, 0), (10, .35), (22, -.3), (34, .18), (48, -.06), (62, 0)])])
+    vuon_vai = nghich('Nghịch: vươn vai', 160, lambda g: [
+        khung(g.id['nghich'], 'scaleY', [(0, 1), (16, .95), (46, 1.07), (100, 1.07), (120, .98), (136, 1.01), (160, 1)]),
+        khung(g.id['nghich'], 'scaleX', [(0, 1), (16, 1.03), (46, .97), (100, .97), (120, 1.015), (136, 1), (160, 1)]),
+        khung(g.id['dau-nghich'], 'y', [(0, 0), (16, 2), (46, -5), (100, -5), (124, 1), (160, 0)]),
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (46, -.06), (100, -.06), (128, .015), (160, 0)]),
+        *[khung(nid, 'rotation', [(0, 0), (16, -.06 * d), (50, .38 * d), (100, .38 * d), (124, -.05 * d), (160, 0)])
+          for nid, d in g.tay()],
+        *tai_theo(g, [(0, 0), (20, -.1), (50, .25), (100, .25), (124, -.08), (160, 0)]),
+        *duoi_theo(g, [(0, 0), (50, .3), (100, .3), (130, -.1), (160, 0)])])
+    to_mo = nghich('Nghịch: nghiêng đầu tò mò', 170, lambda g: [
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (26, .17), (112, .17), (142, -.025), (170, 0)]),
+        khung(g.id['dau-nghich'], 'x', [(0, 0), (26, 3), (112, 3), (170, 0)]),
+        khung(g.id['nghich'], 'rotation', [(0, 0), (32, .022), (112, .022), (152, 0), (170, 0)]),
+        *[khung(nid, 'rotation', [(0, 0), (30, (.2 if j == 0 else -.16) * d), (112, (.2 if j == 0 else -.16) * d),
+                                  (140, 0), (170, 0)]) for j, (_, nid, d) in enumerate(g.tai())],
+        *duoi_theo(g, [(0, 0), (40, .15), (112, .15), (150, 0), (170, 0)])])
+    nhay = nghich('Nghịch: nhún nhảy hai nhịp', 72, lambda g: [
+        khung(g.id['nghich'], 'y', [(0, 0), (7, 0), (15, -9), (23, 0), (30, 0), (38, -7), (46, 0), (72, 0)], '0.3 0 0.7 1'),
+        khung(g.id['nghich'], 'scaleY', [(0, 1), (6, .94), (12, 1.05), (19, 1.04), (23, .93), (29, 1.03), (35, 1.04),
+                                         (42, 1.02), (46, .94), (54, 1.01), (64, 1), (72, 1)]),
+        khung(g.id['nghich'], 'scaleX', [(0, 1), (6, 1.04), (12, .97), (23, 1.05), (29, .98), (46, 1.04), (54, .995),
+                                         (64, 1), (72, 1)]),
+        khung(g.id['dau-nghich'], 'y', [(0, 0), (10, 2), (17, -2), (24, 3), (32, 0), (40, -2), (47, 3), (56, 0), (72, 0)]),
+        *tai_theo(g, [(0, 0), (14, -.18), (22, .28), (30, -.08), (38, -.18), (46, .28), (56, -.08), (66, 0), (72, 0)]),
+        *[khung(nid, 'rotation', [(0, 0), (15, .12 * d), (24, -.04 * d), (38, .1 * d), (47, -.04 * d), (60, 0), (72, 0)])
+          for nid, d in g.tay()],
+        *duoi_theo(g, [(0, 0), (16, -.3), (26, .3), (40, -.25), (50, .25), (64, 0), (72, 0)])])
+    vay_tai = nghich('Nghịch: vẫy tai gật đầu', 70, lambda g: [
+        *tai_theo(g, [(0, 0), (4, .35), (9, -.1), (14, .12), (20, 0), (26, .35), (31, -.1), (36, .12), (44, 0), (70, 0)]),
+        khung(g.id['dau-nghich'], 'y', [(0, 0), (10, 3), (20, -1), (30, 2), (42, 0), (70, 0)]),
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (10, .03), (22, -.02), (34, .01), (44, 0), (70, 0)]),
+        khung(g.id['nghich'], 'scaleY', [(0, 1), (10, .985), (22, 1.012), (34, .995), (46, 1), (70, 1)])])
+    # Lớp: Chờ (5 s) → chọn ngẫu nhiên 1 trong 5 động tác hoặc chờ thêm (4 s) → xong động tác thì về Chờ.
+    a_cho1, a_cho2 = ani('Nghịch: chờ', 300, [], lap=False), ani('Nghịch: chờ thêm', 240, [], lap=False)
+    s_cho1, s_cho2 = moi_id(), moi_id()
+    dong = [(lac_dau, moi_id()), (vuon_vai, moi_id()), (to_mo, moi_id()), (nhay, moi_id()), (vay_tai, moi_id())]
+    het = 'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"'
+    chon = ''.join(f'<StateTransition stateToId="{sid}" duration="200" {het}/>' for _, sid in dong) + \
+        f'<StateTransition stateToId="{s_cho2}" {het}/>'
+    ve_cho = f'<StateTransition stateToId="{s_cho1}" duration="250" {het}/>'
+    lop.append(f'<StateMachineLayer name="Nghịch" id="{moi_id()}"><AnyState/><ExitState/>'
+               f'<EntryState><StateTransition stateToId="{s_cho1}"/></EntryState>'
+               f'<AnimationState animationId="{a_cho1}" id="{s_cho1}" random="true">{chon}</AnimationState>'
+               f'<AnimationState animationId="{a_cho2}" id="{s_cho2}">{ve_cho}</AnimationState>'
+               + ''.join(f'<AnimationState animationId="{aid}" id="{sid}">{ve_cho}</AnimationState>' for aid, sid in dong)
+               + '</StateMachineLayer>')
 
     # ---------- Nhìn theo nhin_x / nhin_y: joystick "Nhìn" tua 2 dòng tư thế, đặt bằng lớp chia nấc ----------
     kx, ky = [], []
