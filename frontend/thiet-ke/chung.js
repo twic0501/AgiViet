@@ -161,6 +161,10 @@ function nutCuonNhanh() {
   });
   const tha = () => { if (!keo) return; keo = false; n.classList.remove("dang-keo"); if (!daKeo) scrollTo({ top: 0, behavior: "smooth" }); hien(); };
   n.addEventListener("pointerup", tha); n.addEventListener("pointercancel", tha);
+  // Bàn phím (Enter/Space): lên đầu trang; nút ẩn thì ra khỏi thứ tự Tab
+  n.addEventListener("click", (e) => { if (e.detail === 0) scrollTo({ top: 0, behavior: "smooth" }); });
+  n.tabIndex = -1;
+  new MutationObserver(() => { n.tabIndex = n.classList.contains("hien") ? 0 : -1; }).observe(n, { attributes: true, attributeFilter: ["class"] });
   datViTri();
 }
 

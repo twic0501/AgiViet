@@ -219,9 +219,11 @@ await trang("hang-hoa", async (p) => {
   if (await conChao.count()) {
     await conChao.first().click();
     await p.locator(".tam").waitFor({ timeout: 3000 });
+    // chờ tấm tải xong chi tiết lô (trần chào lô ước tính 80% có thể hạ lượng mặc định)
+    await p.waitForFunction(() => document.querySelector('.tam [data-r="goi-y"]')?.textContent.includes("Giá thấp nhất"), null, { timeout: 8000 });
     await p.locator('.tam input[name="gia"]').fill("24000");
     const kg = Number(await p.locator('.tam input[name="kg"]').inputValue());
-    assert.equal((await p.locator("#thanh-tien b").innerText()).trim(), `${(kg * 24000).toLocaleString("vi-VN")} đ`, "thành tiền = lượng × giá");
+    assert.equal((await p.locator(".tam [data-r=tien] b").innerText()).trim(), `${(kg * 24000).toLocaleString("vi-VN")} đ`, "thành tiền = lượng × giá");
     await kiemChung(p);
     await p.locator("#tam-gui").click();
     await p.getByText("Đã gửi chào hàng").waitFor({ timeout: 8000 });
@@ -284,10 +286,12 @@ await trang("cho-chi-tiet", async (p) => {
   await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
   const moiNhat = new Map(); for (const c of await api("/v1/offers")) if (c.direction === "seller_quote" && c.demand_line_id && !moiNhat.has(c.demand_line_id)) moiNhat.set(c.demand_line_id, c);
   const dem = { dongY: 0, toiBac: 0, cho: 0 };
-  for (const c of moiNhat.values()) if (c.status === "accepted") dem.dongY++; else if (c.status === "sent" && c.vong_cuoi.from_side === "buyer") dem.toiBac++; else if (c.status === "sent") dem.cho++;
+  for (const c of moiNhat.values()) if (c.status === "accepted") dem.dongY++; else if (c.status === "sent" && c.vong_cuoi.from_side === "buyer") dem.toiBac++; else if (c.status === "sent" && (c.vong_cuoi.round_no || 1) === 1) dem.cho++; else if (c.status === "sent") dem.daTraGia = (dem.daTraGia || 0) + 1;
   assert.equal(await p.locator(".loi-cua-bac.dong-y").count(), dem.dongY, "lời chào đã đồng ý");
   assert.equal(await p.locator(".loi-cua-bac.toi-bac").count(), dem.toiBac, "bên mua trả giá, tới lượt bác");
   assert.equal(await p.locator(".loi-cua-bac [data-huy]").count(), dem.cho, "chỉ lời chào chưa được trả lời mới sửa/hủy được");
+  // Hai bên đã trả giá qua lại: không còn nút hủy/sửa (quy trình B3, backend 0074)
+  if (dem.daTraGia) assert.ok((await p.locator(".loi-cua-bac").allInnerTexts()).some((t) => /không hủy hay sửa được nữa/.test(t)), "lời chào đã trả giá qua lại ghi rõ không hủy được");
   if (dem.dongY) assert.match(await p.locator(".loi-cua-bac.dong-y").first().innerText(), /chưa phải hợp đồng/);
   // Chi tiết nhu cầu: đơn gom, giao nhận, không mã hạng thô
   await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421#can`);

@@ -43,7 +43,7 @@ const $ = (id) => document.getElementById(id);
 veTab("cho");
 const ngay = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" }) : "—");
 const NHOM = { processor: "Nhà máy chế biến", export: "Doanh nghiệp xuất khẩu", horeca: "Nhà hàng, bếp ăn", wholesale: "Đầu mối", wholesaler: "Vựa, đầu mối", trader: "Thương lái", retail: "Bán lẻ", household: "Hộ chế biến" };
-const GIAO = { self_pickup: "Bên mua tự đến lấy tại vườn", seller_delivers: "Bác chở tới nơi bên mua", platform_logistics: "AgiViet điều phối xe", warehouse: "Giao tại kho" };
+const GIAO = { self_pickup: "Bên mua tự đến lấy tại vườn", delivered: "Bác giao tới nơi bên mua", seller_delivers: "Bác chở tới nơi bên mua", platform_logistics: "AgiViet điều phối xe", warehouse: "Giao tại kho" };
 const GIAY = { vietgap: "Chứng nhận VietGAP", growing_area_code: "Mã số vùng trồng", globalgap: "GlobalGAP", residue_test: "Kết quả kiểm dư lượng", organic: "Chứng nhận hữu cơ" };
 
 async function mo() {
@@ -51,7 +51,7 @@ async function mo() {
   if (!id) throw new Error("Thiếu mã nhu cầu");
   const token = await phien();
   const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${r.status}`))));
-  const [n, lo, sp, chao] = await Promise.all([get(`/v1/demands/${id}`), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => [])]);
+  const [n, lo, sp, chao] = await Promise.all([get(`/v1/demands/${id}`), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => null)]);
   // Lời chào mới nhất của bác cho dòng này, còn hiệu lực (đang chờ / đã được đồng ý)
   const cuaBac = (lineId) => { const c = (Array.isArray(chao) ? chao : []).find((x) => x.demand_line_id === lineId && x.direction === "seller_quote"); return c && /sent|accepted/.test(c.status) ? c : null; };
   const trangThai = (c) => c.status === "accepted" ? "bên mua đã đồng ý, hàng đang giữ cho bên mua (chưa phải hợp đồng)" : c.vong_cuoi.from_side === "buyer" ? "bên mua đã trả giá, tới lượt bác" : "chờ bên mua trả lời";
@@ -77,7 +77,9 @@ async function mo() {
 
     ${gom ? `<p class="giai-thich"><b>Đơn gom là gì?</b> Bên mua cần lượng lớn nhưng nhận từ nhiều nhà vườn. Mỗi vườn ký hợp đồng riêng, cọc riêng, cân và nhận tiền riêng; một xe ghé từng vườn theo tuyến. Bác chỉ cần chào phần mình có.</p>` : ""}
     <p class="giai-thich" style="background:var(--la-nhat);color:var(--la-dam)">Giá thấp nhất của bác luôn giữ kín. Bên mua không thấy ai đang chào rẻ nhất.</p>
-    ${n.lines.every((x) => cuaBac(x.id)) ? `<a class="nut-di phu" href="./ban-hang-hoa.html#can">Xem lời chào ở Chợ</a>` : dangBan.length ? `<a class="nut-di" href="./ban-hang-hoa.html#can">Chào hàng ở Chợ</a>` : ""}`;
+    ${n.status !== "open" ? `<p class="giai-thich" style="background:var(--cho-nen);color:var(--cho)">Nhu cầu này bên mua đã đóng, không nhận chào hàng mới.</p>`
+      : chao === null ? `<p class="bao loi">Chưa tải được lời chào của bác. Bác tải lại trang trước khi chào hàng.</p>`
+      : n.lines.every((x) => cuaBac(x.id)) ? `<a class="nut-di phu" href="./ban-hang-hoa.html#can">Xem lời chào ở Chợ</a>` : dangBan.length ? `<a class="nut-di" href="./ban-hang-hoa.html#can">Chào hàng ở Chợ</a>` : ""}`;
   giuThamSo();
 }
 mo().catch((e) => { $("noi-dung").innerHTML = `<p class="bao loi">Chưa mở được nhu cầu (${esc(e.message)}).</p>`; }).finally(() => $("noi").setAttribute("aria-busy", "false"));
