@@ -152,6 +152,7 @@ function nutCuonNhanh() {
 
 // Header dùng chung: ảnh đại diện + tên bên trái; Hỗ trợ (tai nghe) + Thông báo (chuông, chấm xanh) bên phải
 export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
+  goc.classList.add("dau-xanh", "nen-xanh");
   goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
     <div class="dau-phai">
       <button class="nut-tron" type="button" data-tro-ly aria-label="Trợ lý AgiViet: hỏi đáp, tìm tính năng">${bieuTuong("ho-tro")}</button>

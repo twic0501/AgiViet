@@ -7,26 +7,13 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
-  /* Nền xanh có sóng ruộng nước chạy liên tục (dùng chung cho header và khối thông báo để liền mạch) */
-  .nen-xanh { color: #f6f2e7; background-color: #1f4d3a; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='60' viewBox='0 0 400 60'%3E%3Cpath d='M0 30 C50 10 150 50 200 30 S350 10 400 30' fill='none' stroke='rgba(246,242,231,0.08)' stroke-width='1.5'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='60' viewBox='0 0 400 60'%3E%3Cpath d='M0 30 C50 10 150 50 200 30 S350 10 400 30' fill='none' stroke='rgba(246,242,231,0.08)' stroke-width='1.5'/%3E%3C/svg%3E");
-    background-size: 400px 60px, 400px 60px; background-position: 0 6px, 120px 34px; background-repeat: repeat, repeat;
-    animation: song-chay 18s linear infinite; }
-  @keyframes song-chay { to { background-position: 400px 6px, -280px 34px; } }
-  @media (prefers-reduced-motion: reduce) { .nen-xanh { animation: none; } }
-  /* Một header duy nhất: dính trên cùng, chừa vùng tai thỏ iPhone */
-  .dau.dau-xanh { position: sticky; top: 0; z-index: 12; border: 0; padding-top: calc(12px + env(safe-area-inset-top)); }
-  .dau-xanh .chao { color: rgba(246, 242, 231, 0.75); }
-  .dau-xanh h1 { color: #f6f2e7; }
-  .dau-xanh .anh-dai-dien { background: rgba(246, 242, 231, 0.16); color: #f6f2e7; }
-  .dau-xanh .nut-tron { background: rgba(246, 242, 231, 0.12); border-color: rgba(246, 242, 231, 0.18); color: #f6f2e7; }
-  .dau-xanh .cham-moi { background: #7ee0a3; box-shadow: 0 0 0 2px #1f4d3a; }
   /* Khối thông báo: chữ chiếm cả bề ngang, trâu đặt góc phải; mép dưới thẳng, thẻ tính năng đè lên nửa dưới để hai phần liền nhau */
   .tb-xanh { position: relative; padding: 2px 16px 88px; margin-top: -1px; overflow: hidden; border-radius: 0 0 50% 50% / 0 0 26px 26px; }
   .tb-xanh .chu { position: relative; z-index: 1; padding-right: 104px; }
-  .tb-xanh .chip-hero { display: inline-block; font-size: 13px; color: rgba(246, 242, 231, 0.78); white-space: nowrap; }
+  .tb-xanh .chip-hero { display: inline-block; font-size: 13px; color: #f2d27a; font-weight: 600; white-space: nowrap; }
   .tb-xanh h2 { font-size: 20px; line-height: 1.25; font-weight: 700; letter-spacing: -0.015em; margin-top: 4px; }
   .tb-xanh #cau-phu { margin-top: 2px; font-size: 14px; line-height: 1.4; color: rgba(246, 242, 231, 0.82); }
-  .tb-xanh .nut-trong { margin-top: 10px; min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 0; background: #f6f2e7; color: #1f4d3a; font: 600 14px/1 var(--chu); cursor: pointer; }
+  .tb-xanh .nut-trong { margin-top: 10px; min-height: 44px; display: inline-flex; align-items: center; padding: 0 18px; border-radius: 999px; border: 0; background: var(--vang-lua); color: #3a2a0c; box-shadow: 0 4px 12px rgba(0,0,0,.18); font: 600 14px/1 var(--chu); cursor: pointer; }
   .tb-xanh #trau { position: absolute; right: 6px; bottom: 66px; width: 108px; height: 124px; cursor: pointer; touch-action: manipulation; }
   /* Lối tắt */
   .loi-tat { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: -70px; padding: 10px 4px 8px;
@@ -36,6 +23,17 @@
   .loi-tat .o { width: 40px; height: 40px; display: grid; place-items: center; color: var(--la-dam); }
   .loi-tat .o svg { width: 28px !important; height: 28px !important; }
   .loi-tat .o svg { width: 24px; height: 24px; }
+  .dau.dau-xanh { box-shadow: none; }   /* Trang chủ: header liền khối xanh, không kẻ vàng */
+  /* Tiêu đề mục: bông lúa vàng nhỏ phía trước */
+  .noi .muc h3 > span:first-child::before { content: ""; display: inline-block; width: 10px; height: 14px; margin-right: 7px; vertical-align: -1px;
+    background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M5 14V5' stroke='%238a5a2b' stroke-width='1.4' stroke-linecap='round'/%3E%3Cellipse cx='5' cy='3' rx='1.6' ry='2.6' fill='%23d9a521'/%3E%3Cellipse cx='2.6' cy='6.6' rx='1.4' ry='2.3' transform='rotate(-30 2.6 6.6)' fill='%23d9a521'/%3E%3Cellipse cx='7.4' cy='6.6' rx='1.4' ry='2.3' transform='rotate(30 7.4 6.6)' fill='%23d9a521'/%3E%3C/svg%3E"); }
+  /* Biểu tượng lối tắt: chi tiết bên trong màu vàng lúa */
+  .loi-tat .o svg path:last-child { stroke: var(--vang-lua); }
+  .loi-tat .o { color: var(--la-dam); }
+  /* Ô giá: số giao dịch màu nâu đất; ô thời tiết nền kem ấm */
+  #tom-gia .the-gd { background: var(--nau-dat-nhat); color: var(--nau-dat); }
+  #tom-gia .lon { color: var(--nau-dat); }
+  .cham-tin i.dang { background: var(--vang-lua) !important; }
   /* Hợp đồng: một dòng mỗi hợp đồng */
   .hd-wrap { padding: 12px 0; border-bottom: 1px solid var(--ke); display: block; text-decoration: none; color: inherit; }
   .hd-wrap:last-child { border-bottom: 0; }

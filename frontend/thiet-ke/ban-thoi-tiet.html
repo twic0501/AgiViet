@@ -7,9 +7,9 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
-  .dau-lui { position: sticky; top: 0; z-index: 12; display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; background: var(--giay); border-bottom: 1px solid var(--ke); }
-  .dau-lui a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: var(--muc); text-decoration: none; }
-  .dau-lui h1 { font-size: 18px; font-weight: 700; }
+  .dau-lui { position: sticky; top: 0; z-index: 12; display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55); }
+  .dau-lui a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: #f6f2e7; text-decoration: none; }
+  .dau-lui h1 { font-size: 18px; font-weight: 700; color: #f6f2e7; }
   .ngay-dai { display: grid; grid-template-columns: 96px 36px 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--ke); }
   .ngay-dai svg { width: 36px; height: 36px; }
   .ngay-dai .thu { font-weight: 600; white-space: nowrap; }
@@ -22,7 +22,7 @@
 </head>
 <body>
 <div class="trang">
-  <header class="dau-lui"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1>Thời tiết</h1></header>
+  <header class="dau-lui nen-xanh"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1>Thời tiết</h1></header>
   <main class="noi" id="noi" aria-busy="true">
     <section class="muc" aria-labelledby="t-troi">
       <h3 id="t-troi"><span id="tinh">Các ngày tới</span></h3>

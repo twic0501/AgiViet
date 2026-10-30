@@ -262,3 +262,23 @@ p { margin: 0; text-wrap: pretty; }
 .tab.thu { transform: translateY(calc(100% + 24px + env(safe-area-inset-bottom))); opacity: 0; pointer-events: none;
   transition: transform 160ms cubic-bezier(0.4, 0, 1, 1), opacity 160ms ease-in; }
 @media (prefers-reduced-motion: reduce) { .tab, .tab.thu { transition: none; } }
+
+/* ===== Header xanh có sóng (dùng chung mọi màn chính) ===== */
+/* Nền xanh có sóng ruộng nước chạy liên tục (dùng chung cho header và khối thông báo để liền mạch) */
+.nen-xanh { color: #f6f2e7; background-color: #1f4d3a; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='60' viewBox='0 0 400 60'%3E%3Cpath d='M0 30 C50 10 150 50 200 30 S350 10 400 30' fill='none' stroke='rgba(246,242,231,0.08)' stroke-width='1.5'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='60' viewBox='0 0 400 60'%3E%3Cpath d='M0 30 C50 10 150 50 200 30 S350 10 400 30' fill='none' stroke='rgba(246,242,231,0.08)' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-size: 400px 60px, 400px 60px; background-position: 0 6px, 120px 34px; background-repeat: repeat, repeat;
+  animation: song-chay 18s linear infinite; }
+@keyframes song-chay { to { background-position: 400px 6px, -280px 34px; } }
+@media (prefers-reduced-motion: reduce) { .nen-xanh { animation: none; } }
+/* Một header duy nhất: dính trên cùng, chừa vùng tai thỏ iPhone */
+.dau.dau-xanh { position: sticky; top: 0; z-index: 12; border: 0; padding-top: calc(12px + env(safe-area-inset-top)); }
+.dau-xanh .chao { color: rgba(246, 242, 231, 0.75); }
+.dau-xanh h1 { color: #f6f2e7; }
+.dau-xanh .anh-dai-dien { background: rgba(246, 242, 231, 0.16); color: #f6f2e7; }
+.dau-xanh .nut-tron { background: rgba(246, 242, 231, 0.12); border-color: rgba(246, 242, 231, 0.18); color: #f6f2e7; }
+.dau-xanh .cham-moi { background: #7ee0a3; box-shadow: 0 0 0 2px #1f4d3a; }
+
+/* Màu nông dân: vàng lúa chín, nâu đất */
+:root { --vang-lua: #d9a521; --vang-lua-nhat: #f6e6b4; --nau-dat: #8a5a2b; --nau-dat-nhat: #efe2d2; }
+/* Viền lúa vàng mảnh dưới header */
+.dau.dau-xanh { box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55); }

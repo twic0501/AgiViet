@@ -153,10 +153,11 @@ await trang("hang-hoa", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421`);
   await p.locator(".lo").first().waitFor({ timeout: 8000 });
   const { tatCa, dangBan } = await loDangBan("0918000421");
-  assert.equal(await p.locator(".lo").count(), tatCa, "Tất cả = mọi lô của bác");
+  assert.equal(await p.locator(".lo").count(), dangBan, "mặc định hiện các lô đang bán");
   assert.equal((await p.locator("#so-lo").textContent()).trim(), String(dangBan));
-  await p.locator('#loc button[data-k="on_sale"]').click();
-  assert.equal(await p.locator('#loc button[data-k="on_sale"]').getAttribute("aria-pressed"), "true");
+  assert.equal(await p.locator('#loc button[data-k="tat-ca"]').count(), 0, "không còn nút Tất cả trùng với Đang bán");
+  if (tatCa === dangBan) assert.ok(await p.locator("#loc").isHidden(), "chỉ một trạng thái thì ẩn bộ lọc");
+  assert.equal(await p.locator("#dau.dau-xanh").count(), 1, "header xanh như Trang chủ");
   // tab giữ ?thu= khi chuyển màn
   assert.match(await p.locator('.tab a[href*="ban-hom-nay"]').getAttribute("href"), /thu=0918000421/);
   assert.equal(await p.locator(".nut-noi").count(), 0, "không còn nút Đăng hàng trùng với thanh menu");

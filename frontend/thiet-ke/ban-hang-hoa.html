@@ -168,8 +168,16 @@ async function moHang() {
     };
   }
 
-  const nhom = [["tat-ca", "Tất cả", lo], ...Object.entries(TT).map(([k, [ten]]) => [k, ten, lo.filter((l) => l.status === k)]).filter(([, , d]) => d.length)];
-  let chon = "tat-ca";
+  // Nhóm theo trạng thái (chỉ nhóm có lô); một nhóm thì không cần nút lọc
+  const anDi = lo.filter((l) => l.status === "on_sale" && l.an_tu_dong);
+  const nhom = [
+    ["on_sale", "Đang bán", lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong)],
+    ["an", "Bên mua không thấy", anDi],
+    ...Object.entries(TT).filter(([k]) => k !== "on_sale").map(([k, [ten]]) => [k, ten, lo.filter((l) => l.status === k)]),
+  ].filter(([, , d]) => d.length);
+  if (!nhom.length) nhom.push(["on_sale", "Đang bán", []]);
+  let chon = nhom[0][0];
+  $("loc").hidden = nhom.length < 2;
   $("loc").innerHTML = nhom.length > 1 ? nhom.map(([k, ten, d]) => `<button type="button" data-k="${k}" aria-pressed="${k === chon}">${ten}<small>${d.length}</small></button>`).join("") : "";
   $("loc").querySelectorAll("button").forEach((b) => (b.onclick = () => { chon = b.dataset.k; ve(); }));
   const ve = () => {
