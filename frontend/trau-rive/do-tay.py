@@ -53,7 +53,7 @@ def main():
             return kq or None
         ra = os.path.join(DIR, f'build/tay-{ten}.svg')
         do.do_goc(anh, chia, list(nhom), {bo: g for bo, (_, g) in nhom.items()}, ra, ten, ten,
-                  lot={bo: '#c48f65' for bo in nhom}, bo_net=~do.no(moi, 0))
+                  lot={bo: '#c48f65' for bo in nhom}, bo_net=~do.no(moi, 0), net_toi_thieu=60)
         s = open(ra).read()
         out.append(s[s.index('  <g '):s.rindex('</svg>')])
     p = os.path.join(DIR, 'nguon/goc/tay-chinh.svg')

@@ -150,6 +150,11 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - Vẫy chào (người sáng lập: "tay đang quơ có giống đâu"): dùng đúng hình 2 của bảng, gồm `tay-phai-vay` (tay vẫy to, bàn tay ngang tai) và `tay-trai-tha` (tay buông sát thân), cắt riêng ở `nguon/goc/hf/tay-vay.png`.
     - Ảnh chuỗi khung: `docs/trau/chang-2/tay-gio-cao.png`.
     - Góc ¾ và nghiêng chưa có tay giơ (cần sinh thêm). Hiện hai góc đó vẫn vung tay vừa phải.
+  - **Soi tay toàn bộ** (người sáng lập: "đôi lúc vài khúc cánh tay vẫn lỗi form"): chụp 6 động tác có tay × 3 góc, cứ 8 khung một ảnh (351 khung, `docs/trau/chang-2/soi-tay-351-khung.png`). Đã sửa 4 lỗi:
+    - Chính diện: viền nách V4g nằm cố định trong thân áo, tay đưa ra thì lộ thành vệt đen. Đã tách viền nách thành `tay-*-nach`, đi theo tay (`nach_theo_tay()`).
+    - Tay đồ từ Higgsfield dính mẩu nét viền áo, thành chấm đen rời khi xoay. `do-anh.py` thêm `net_toi_thieu`, bỏ mẩu nét nhỏ.
+    - Giật mình: tay dang ngang hạ sâu thì mép dưới ống tay quét qua mặt áo. Giờ chỉ hạ một đoạn ngắn rồi đổi về tay buông.
+    - ¾ và nghiêng: biên độ vung tay giảm còn 0,25 và 0,28, vì lớn hơn thì mép sau ống tay lòi khỏi áo hoặc nét đỉnh vai tách đôi.
   - **Kiểm thử:** `AGV_THU=<0–8> AGV_HUONG=<h> python3 dung-v3.py` ép chạy một động tác ngay. Bảng cảm xúc ở 3 góc: `docs/trau/chang-2/cam-xuc-3-goc.png`.
 - **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
 - **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.

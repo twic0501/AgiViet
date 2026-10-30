@@ -155,10 +155,11 @@ class Anh:
 
 
 def do_goc(anh, chia, thu_tu, goc, ra, tieu_de, mo_ta, day_net=5.6, toi_rieng=None, lot=None, net_rong=None,
-           net_chi_vien=(), caro=None, them_vung=(), bo_net=None):
+           net_chi_vien=(), caro=None, them_vung=(), bo_net=None, net_toi_thieu=0):
     """chia(lop, tam512, khung512, mặt nạ) → tên bộ phận | [(bộ phận, mặt nạ, màu)] | None.
     toi_rieng(tam512, khung512) → bộ phận cho mảng tối nhỏ đứng riêng (mắt, mày, lỗ mũi) hoặc None.
     lot: {bộ phận: màu} → thêm lớp lót kín (đã lấp lỗ) dưới cùng bộ phận, tránh lộ nền giữa các mảng vụn.
+    net_toi_thieu: bỏ mẩu nét rời có diện tích < giá trị này (đơn vị khung 512²), ví dụ mẩu viền áo dính vào tay.
     bo_net: mặt nạ vùng bỏ hẳn nét gốc (ví dụ trong khăn: khăn đã có caro và viền riêng).
     them_vung: [(bộ phận, mặt nạ, màu)] thêm thẳng (ví dụ bao khăn lấy theo đa giác khi ảnh khăn vỡ mảnh).
     caro: {bộ phận: cỡ ô} → khăn: bao khăn lấy từ ảnh, bên trong tô lưới caro đều 3 màu V4g (ô vuông gọn).
@@ -221,6 +222,12 @@ def do_goc(anh, chia, thu_tu, goc, ra, tieu_de, mo_ta, day_net=5.6, toi_rieng=No
                 no(phu[bo], int((net_rong or {}).get(bo, 14) * anh.phong / 2) + r_net)
             if bo in net_chi_vien:
                 m = np.zeros_like(m)
+            if net_toi_thieu and m.any():
+                nh, n = gan_nhan(m)
+                dt = np.bincount(nh.ravel())
+                nho = [i for i in range(1, n + 1) if dt[i] * anh.k ** 2 < net_toi_thieu]
+                if nho:
+                    m &= ~np.isin(nh, nho)
             net_bo[bo] = m
     h, w = anh.lop.shape
     gx512 = 256 + (np.arange(w)[None, :] - anh.cx) * anh.k

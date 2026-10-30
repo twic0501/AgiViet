@@ -21,6 +21,7 @@ Cách dựng:
 - cham: nhún cả người (squash & stretch từ bàn chân). nhin_x/nhin_y: đầu và mắt nhìn theo.
 - hanh_dong 1–8 (chào, chỉ đường…): chưa có, giữ dáng nghỉ (làm từng hành động ở chặng 3).
 """
+import copy
 import importlib.util
 import math
 import os
@@ -76,6 +77,7 @@ class Goc:
         self.long = dict(tc.LONG)                          # chuỗi khớp khăn dài (V4g)
         self.bien = {}                                     # (bên, tư thế) → (id hiện, id xoay)
         if ten == 'chinh':
+            self.nach_theo_tay(svg)
             self.khop_vai()
             self.tay_gio()
         dk = self.bp.get('dau-khoi')
@@ -114,6 +116,28 @@ class Goc:
                 self.boc[t] = {'giat': moi_id(), 'nghich': moi_id()}
             elif t.startswith('tay-') or t == 'duoi':
                 self.boc[t] = {'nghich': moi_id()}
+
+    def nach_theo_tay(self, svg):
+        """Viền nách (vien-nach-thuot-*) V4g nằm trong thân áo, cố định → khi tay đưa ra lộ thành vệt đen lạc trên áo.
+        Tách thành 'tay-<bên>-nach': cùng điểm xoay vai, tên bắt đầu bằng tay- nên nhận mọi hoạt ảnh tay và bị ẩn
+        khi đổi sang tay tư thế giơ; vẫn nằm trên thân áo như cũ."""
+        than = next(g for g in svg.iter(NS + 'g') if g.get('id') == 'than')
+        for ben in ('trai', 'phai'):
+            el = next((e for e in than if e.get('data-role') == f'vien-nach-thuot-{ben}'), None)
+            if el is None or f'tay-{ben}' not in self.bp:
+                continue
+            gx, gy, _, _ = self.bp[f'tay-{ben}']
+            ten = f'tay-{ben}-nach'
+            self.bp[ten] = (gx, gy, tc.hinh(el, {}, gx, gy, ten + '-h'), moi_id())
+            self.thu_tu.insert(self.thu_tu.index('than') + 1, ten)
+            # bỏ viền nách khỏi nội dung thân (dựng lại thân không có nó)
+        g2 = copy.deepcopy(than)
+        for e in list(g2):
+            if (e.get('data-role') or '').startswith('vien-nach-thuot'):
+                g2.remove(e)
+        x, y, _, nid = self.bp['than']
+        _, _, ruot = tc.bo_phan(g2, {})
+        self.bp['than'] = (x, y, ruot, nid)
 
     def khop_vai(self):
         """Bắp vai phình (chính diện, nơi tay giơ cao): tay V4g là khối cứng nằm sau thân, giơ lên thì ống tay mỏng
@@ -167,9 +191,9 @@ class Goc:
             # ¾ và nghiêng: tay vẽ cho dáng buông, giơ cao sẽ lộ ống tay phẳng → chỉ vung vừa (≈ 40 %);
             # giơ cao ở các góc này cần vẽ thêm tư thế tay giơ (làm ở chặng hành động).
             if t == 'tay-gan' and self.ten.startswith('34'):
-                return -0.4        # ¾: tay gần nằm bên phải thân → dang ra = xoay ngược
+                return -0.25       # ¾: tay gần nằm bên phải thân → dang ra = xoay ngược (quá → mép sau lòi khỏi áo)
             if self.ten.startswith('ng'):
-                return 0.45        # nghiêng: tay đưa ra trước mặt
+                return 0.28        # nghiêng: tay đưa ra trước mặt (quá → nét đỉnh vai tách đôi)
             return 1
         return [(self.boc[t]['nghich'], chieu(t)) for t in self.thu_tu if t.startswith('tay-')]
 
@@ -550,8 +574,9 @@ def main():
                                                  (72, .97), (90, 1), (110, 1)]),
                 *[khung(nid, 'rotation', [(0, 0), (5, .45 * d), (40, .38 * d), (68, -.05 * d), (86, 0), (110, 0)])
                   for nid, d in g.tay()],
-                *doi_tay(g, 'trai', 'ngang', 5, 44, [(0, -.6), (5, -.6), (9, .05), (14, 0), (36, -.05), (44, -.6)]),
-                *doi_tay(g, 'phai', 'ngang', 5, 44, [(0, .6), (5, .6), (9, -.05), (14, 0), (36, .05), (44, .6)]),
+                # hạ tay ngang chỉ một đoạn ngắn rồi đổi về tay buông (hạ sâu thì mép dưới ống tay quét qua mặt áo)
+                *doi_tay(g, 'trai', 'ngang', 5, 40, [(0, -.6), (5, -.6), (9, .05), (14, 0), (34, -.03), (40, -.16)]),
+                *doi_tay(g, 'phai', 'ngang', 5, 40, [(0, .6), (5, .6), (9, -.05), (14, 0), (34, .03), (40, .16)]),
                 *duoi_theo(g, [(0, 0), (6, .5), (40, .4), (70, -.1), (90, 0), (110, 0)])]
     giat_minh = nghich('Cảm xúc: giật mình', 110, giat_minh_fn)
 
