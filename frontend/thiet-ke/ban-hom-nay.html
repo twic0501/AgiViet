@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hôm nay · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+</head>
+<body>
+<div class="trang">
+  <header class="dau">
+    <div>
+      <p class="chao" id="chao">AgiViet</p>
+      <h1 id="ten-ho">Hôm nay</h1>
+    </div>
+    <button class="nut-chu" type="button">Hỗ trợ</button>
+  </header>
+
+  <main class="noi" id="noi" aria-busy="true">
+    <section class="chinh" aria-live="polite">
+      <p class="nhan" id="ngay">&nbsp;</p>
+      <h2 id="cau-chinh">Đang mở sổ…</h2>
+      <p id="cau-phu">&nbsp;</p>
+    </section>
+
+    <section class="muc" aria-labelledby="t-hd">
+      <h3 id="t-hd"><span>Hợp đồng đang làm</span><a href="#">Xem hết</a></h3>
+      <div id="ds-hd"><div class="khung-tai"></div><div class="khung-tai"></div></div>
+    </section>
+
+    <section class="muc" aria-labelledby="t-lo">
+      <h3 id="t-lo"><span>Lô đang bán · còn lại</span><a href="#">Đăng lô</a></h3>
+      <div id="ds-lo"><div class="khung-tai"></div></div>
+    </section>
+
+    <section class="muc" aria-labelledby="t-tien">
+      <h3 id="t-tien"><span>Tiền</span><a href="#">Sổ tiền</a></h3>
+      <div class="tien" id="tien" style="margin-top:12px">
+        <div><p class="nhan">Ngân hàng giữ cọc</p><p class="so-tien so" id="coc">—</p></div>
+        <div><p class="nhan">Còn phải nhận</p><p class="so-tien so" id="con-nhan">—</p></div>
+      </div>
+    </section>
+
+    <p class="troi" id="troi"></p>
+  </main>
+
+  <nav class="tab" aria-label="Mục chính">
+    <a href="#" aria-current="page">Hôm nay</a>
+    <a href="#">Lô hàng</a>
+    <a href="#">Nhu cầu mua</a>
+    <a href="#">Hợp đồng</a>
+    <a href="#">Tiền</a>
+  </nav>
+</div>
+
+<script type="module">
+// Bản mẫu E1: đọc dữ liệu thật từ backend. ?thu=<sđt> chỉ chạy được ở môi trường thử (đăng nhập giả lập).
+const $ = (id) => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Bên mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
+
+const tien = (v) => {
+  const n = Number(v || 0);
+  if (n >= 1e9) return `${(n / 1e9).toLocaleString("vi-VN", { maximumFractionDigits: 2 })} tỷ`;
+  if (n >= 1e6) return `${(n / 1e6).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} triệu`;
+  return `${n.toLocaleString("vi-VN")} đ`;
+};
+const can = (g) => {
+  const kg = Number(g || 0) / 1000;
+  return kg >= 1000 ? [(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }), "tấn"] : [kg.toLocaleString("vi-VN", { maximumFractionDigits: 0 }), "kg"];
+};
+// "Chờ bên mua ký và gửi" / "Bác cần ký và gửi" — nói rõ ai làm, không để người bán tưởng việc của mình
+const viecCho = (d) => {
+  const l = d.hien_thi?.toi_luot;
+  if (!l) return d.hien_thi?.ten || d.status;
+  const viec = l.viec.charAt(0).toLowerCase() + l.viec.slice(1);
+  return l.phia === d.phia_cua_ban ? `Bác cần ${viec}` : `Chờ ${(LUOT[l.phia]?.[1] || "bên kia").toLowerCase()} ${viec}`;
+};
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+async function phien() {
+  const sdt = q.get("thu");
+  if (!sdt) throw new Error("Thêm ?thu=<số điện thoại mẫu> để xem bằng dữ liệu thử.");
+  const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) });
+  if (!r.ok) throw new Error("Không mở được tài khoản thử.");
+  return (await r.json()).token;
+}
+
+async function mo() {
+  const token = await phien();
+  const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
+  const [me, don, lo, tienTom, troi, sp] = await Promise.all([
+    get("/v1/me"), get("/v1/orders"), get("/v1/lots?mine=true"), get("/v1/money/summary"),
+    get("/v1/weather").catch(() => null), get("/v1/products").catch(() => []),
+  ]);
+  const tenSp = new Map((Array.isArray(sp) ? sp : sp.items || []).map((p) => [p.code, p.name_vi || p.name]));
+
+  $("chao").textContent = `Chào ${me.name.split(" ").at(-1)}`;
+  $("ten-ho").textContent = me.org.name;
+  $("ngay").textContent = new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
+
+  // Điểm nhìn: việc tới lượt bác trước, rồi mới tới việc đang chờ người khác
+  const toiBac = don.filter((d) => d.hien_thi?.toi_luot?.phia === d.phia_cua_ban);
+  const choNguoi = don.filter((d) => d.hien_thi?.toi_luot && d.hien_thi.toi_luot.phia !== d.phia_cua_ban);
+  if (toiBac.length) {
+    $("cau-chinh").textContent = `Bác có ${toiBac.length} việc cần làm hôm nay`;
+    $("cau-phu").textContent = `${toiBac[0].hien_thi.toi_luot.viec} · hợp đồng với ${toiBac[0].buyer_name}`;
+  } else if (choNguoi.length) {
+    const ai = LUOT[choNguoi[0].hien_thi.toi_luot.phia]?.[1] || "bên kia";
+    $("cau-chinh").textContent = "Hôm nay bác chưa có việc gấp";
+    $("cau-phu").textContent = `Đang chờ ${ai.toLowerCase()} ${choNguoi[0].hien_thi.toi_luot.viec.toLowerCase()} ${choNguoi.length} hợp đồng.`;
+  } else {
+    $("cau-chinh").textContent = "Chưa có hợp đồng nào đang chạy";
+    $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô. Có bên mua chào giá, AgiViet sẽ báo ngay.` : "Đăng một lô hàng để bên mua thấy và chào giá.";
+  }
+
+  $("ds-hd").innerHTML = don.length ? don.map((d) => {
+    const [lop, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"];
+    return `<a class="dong" href="#">
+      <span class="dau-luot ${lop}">${esc(ai)}</span>
+      <span><span class="ten">${esc(d.buyer_name)}</span><br><span class="phu">${esc(viecCho(d))}</span></span>
+      <span class="so-lon">${esc(tien(d.contract_value_vnd))}<br><span class="phu ma">${esc(d.code)}</span></span></a>`;
+  }).join("") : `<p class="bao" style="margin-top:12px">Chưa có hợp đồng. Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
+
+  $("ds-lo").innerHTML = lo.length ? lo.map((l) => {
+    const [so, dv] = can(l.available_g);
+    const uoc = l.qty_basis === "estimated" ? "ước tính" : "đã cân";
+    return `<a class="dong lo" href="#">
+      <span><span class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</span><br><span class="phu"><span class="ma">${esc(l.code)}</span> · Loại ${esc(l.grade_code.replace(/^L/, ""))} · ${uoc}</span></span>
+      <span class="can"><b>${so}</b><small>${dv}</small></span></a>`;
+  }).join("") : `<p class="bao" style="margin-top:12px">Bác chưa có lô nào đang bán.</p>`;
+
+  $("coc").textContent = tien(tienTom.tong.coc_dang_giu);
+  $("con-nhan").textContent = tien(tienTom.tong.con_phai_nhan);
+
+  const hn = troi?.ngay?.[0];
+  if (hn) $("troi").innerHTML = `<b>${esc(troi.tinh.ten)}</b> ${Math.round(hn.nhiet_do_thap_c)}–${Math.round(hn.nhiet_do_cao_c)}°C, khả năng mưa ${hn.kha_nang_mua_phan_tram}%. ${esc(hn.loi_khuyen?.[0] || "")}`;
+  $("noi").setAttribute("aria-busy", "false");
+}
+
+mo().catch((e) => {
+  $("cau-chinh").textContent = "Chưa mở được sổ";
+  $("cau-phu").textContent = e.message;
+  for (const id of ["ds-hd", "ds-lo"]) $(id).innerHTML = `<p class="bao loi" style="margin-top:12px">Không tải được.</p>`;
+  $("ds-lo").insertAdjacentHTML("beforeend", `<button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`);
+  $("noi").setAttribute("aria-busy", "false");
+});
+</script>
+</body>
+</html>
