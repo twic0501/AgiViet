@@ -20,67 +20,84 @@ def trong(tam, x0, y0, x1, y1):
 
 
 def nghieng():
+    """Nghiêng trái, từ ảnh 3D Jutsu Angles (docs/trau/tham-chieu/higgsfield-v4g-nghieng-trai-2.png)."""
     anh = do.Anh(os.path.join(DIR, 'nguon/goc/hf/nghieng-hf-trai.png'))
-    tay = anh.da_giac([(224, 316), (294, 316), (296, 388), (224, 388)])
-
-    LONG, KHAN_DAM, KHAN_VUA = '#84736b', '#3b3935', '#a09e99'
+    LONG, KHAN_VUA = '#84736b', '#a09e99'
+    svg = os.path.join(DIR, 'nguon/goc/trau-nghieng-trai.svg')
+    tay = anh.da_giac([(234, 300), (291, 300), (291, 368), (234, 368)])
+    khan_co = anh.da_giac(phang(KHAN_CO_NG)[0])
+    khan_dai = anh.da_giac(phang(KHAN_DAI_NG)[0])
+    vung_khan = khan_co | khan_dai
 
     def chia(t, tam, khung, m):
+        (ax, ay), (bx, by) = khung
+        if (m & vung_khan).sum() > 0.4 * m.sum():
+            return None                                          # khăn đồ tay
         if t == 'sung':
-            return 'sung-gan'
-        if trong(khung[0], 245, 160, 322, 234) and trong(khung[1], 245, 160, 322, 234):  # tai: cả mảng nằm trong vùng tai
-            return [('tai-gan', m, None)] if t == 'long' else None
-        if trong(tam, 232, 374, 302, 418) and t in ('long', 'khan-vua', 'khan-sang'):
-            return [('tay-gan', m, LONG)]                        # bàn tay (lông sáng dễ lẫn màu khăn)
+            if tam[1] > 200:
+                return None
+            return 'sung-xa' if bx < 268 else 'sung-gan'
+        tai = trong(khung[0], 238, 160, 328, 238) and trong(khung[1], 238, 160, 328, 238)
+        if tai:
+            return [('tai-gan', m, LONG)] if t == 'long' else None  # vệt hồng vụn bỏ, lòng tai vẽ liền (them_vung)
         if t == 'mom':
-            return 'mom' if tam[0] < 240 and tam[1] < 300 else None
+            if tam[1] < 200:
+                return [('sung-gan', m, '#ecd3b6')]               # mảng bóng ở chân sừng
+            return 'mom' if trong(tam, 125, 190, 215, 290) and m.sum() > 3000 else None
+        if trong(tam, 228, 355, 296, 406) and t in ('long', 'khan-vua', 'khan-sang'):
+            return [('tay-gan', m, LONG)]
         if t == 'ao':
-            return [('tay-gan', m & tay, None), ('than', m, None)]  # thân giữ mảng đủ (nằm dưới), ống tay chồng lên
-        if trong(tam, 182, 284, 338, 432) and t in ('khan-sang', 'khan-vua', 'quan', 'long') and \
-                not (t == 'long' and tam[1] < 300) and not (t == 'quan' and tam[1] > 412):
-            mau = {'quan': KHAN_DAM, 'long': KHAN_VUA}.get(t)
-            bo = 'khan-dai' if tam[1] > 336 and tam[0] < 236 else 'khan-co'
-            return [(bo, m, mau)]
+            return [('tay-gan', m & tay, None), ('than', m, None)]
         if t == 'long':
             if 283 < tam[1] < 335 and m.sum() < 4000:
-                return None                                      # mảnh lông vụn sát khăn
+                return None
             if tam[1] < 300:
                 return 'dau-khoi'
-            if tam[0] > 288 and 400 < tam[1] < 470:
+            if tam[0] > 298 and 400 < tam[1] < 455:
                 return 'duoi'
-            if tam[1] > 455:
-                return 'chan-gan'
             return None
         if t == 'quan':
-            if tam[0] > 330 and tam[1] < 470:
+            if tam[1] < 300:
+                return [('dau-khoi', m, '#7a6b66')]              # mảng bóng má sau (nhạt như V4g)
+            if tam[0] > 330 and tam[1] < 450:
                 return [('duoi', m, '#292b27')]                  # chùm lông đuôi
-            return 'chan-gan'
-        return None                                              # đốm khăn lạc ngoài vùng khăn
-
-    def chia2(t, tam, khung, m):  # gói kết quả 3 phần tử thành danh sách
-        r = chia(t, tam, khung, m)
-        return [r] if isinstance(r, tuple) else r
-
-    def toi_rieng(tam, khung):
-        if trong(tam, 180, 175, 205, 200):
-            return 'mat-gan'
-        if trong(tam, 180, 150, 215, 172):
-            return 'long-may-gan'
         return None
 
-    thu_tu = ['duoi', 'chan-gan', 'than', 'khan-dai', 'tay-gan', 'khan-co', 'dau-khoi', 'mom', 'tai-gan', 'sung-gan',
-              'long-may-gan', 'mat-gan']
-    goc = {'duoi': (300, 412), 'chan-gan': (255, 420), 'than': (262, 412), 'khan-dai': (205, 338),
-           'tay-gan': (258, 326), 'khan-co': (258, 315), 'dau-khoi': (245, 290), 'mom': (180, 245),
-           'tai-gan': (262, 180), 'sung-gan': (282, 150), 'long-may-gan': (196, 160), 'mat-gan': (192, 187)}
-    do.do_goc(anh, chia2, thu_tu, goc, os.path.join(DIR, 'nguon/goc/trau-nghieng-trai.svg'),
+    def toi_rieng(tam, khung):
+        if trong(tam, 174, 176, 196, 206):
+            return 'mat-gan'
+        if trong(tam, 178, 148, 206, 172):
+            return 'long-may-gan'
+        if trong(tam, 142, 222, 164, 248):
+            return 'mom'                                         # lỗ mũi
+        return None
+
+    thu_tu = ['duoi', 'chan-xa', 'chan-gan', 'than', 'khan-dai', 'tay-gan', 'khan-co', 'sung-xa', 'dau-khoi', 'mom',
+              'tai-gan', 'sung-gan', 'long-may-gan', 'mat-gan']
+    goc = {'duoi': (305, 412), 'chan-xa': (216, 410), 'chan-gan': (262, 410), 'than': (262, 410),
+           'khan-dai': (186, 330), 'tay-gan': (262, 305), 'khan-co': (256, 300), 'sung-xa': (250, 110),
+           'dau-khoi': (245, 290), 'mom': (170, 240), 'tai-gan': (250, 190), 'sung-gan': (270, 150),
+           'long-may-gan': (190, 160), 'mat-gan': (184, 190)}
+    do.do_goc(anh, lambda *a: (lambda r: [r] if isinstance(r, tuple) else r)(chia(*a)), thu_tu, goc, svg,
               'Trâu V4g — góc nghiêng trái (đồ từ Higgsfield)',
-              'Đồ từ bảng xoay Higgsfield sinh từ V4g (docs/trau/tham-chieu/higgsfield-v4g-xoay-1.png, hình 3, lật gương); '
-              'màu V4g, nét #24190f ~5,6.', toi_rieng=toi_rieng,
-              net_rong={'duoi': 44}, caro={'khan-co': 12, 'khan-dai': 12}, lot={'dau-khoi': LONG, 'tai-gan': LONG, 'sung-gan': '#fff1dd', 'khan-co': KHAN_VUA, 'khan-dai': KHAN_VUA})
-    chen_nhom(os.path.join(DIR, 'nguon/goc/trau-nghieng-trai.svg'), 'than', 'co', (268, 300), [
-        '<path d="M222 266Q270 258 314 266Q320 292 314 320Q270 330 224 320Q216 292 222 266Z" fill="#84736b" '
+              'Đồ từ ảnh 3D Jutsu Angles sinh từ V4g (docs/trau/tham-chieu/higgsfield-v4g-nghieng-trai-2.png); '
+              'màu V4g, nét #24190f ~5,6.', toi_rieng=toi_rieng, net_rong={'duoi': 44},
+              lot={'dau-khoi': LONG, 'tai-gan': LONG, 'sung-gan': '#fff1dd', 'sung-xa': '#fff1dd', 'mom': '#fdcdb0',
+                   'khan-co': KHAN_VUA, 'khan-dai': KHAN_VUA},
+              them_vung=[('khan-co', khan_co, KHAN_VUA), ('khan-dai', khan_dai, KHAN_VUA),
+                         ('tai-gan', anh.da_giac(phang(LONG_TAI_NG)[0]), '#9a8079'),
+                         ('chan-xa', anh.da_giac(phang(CHAN_XA_NG['ong'])[0]), '#45423d'),
+                         ('chan-gan', anh.da_giac(phang(CHAN_GAN_NG['ong'])[0]), '#45423d')],
+              bo_net=do.no(vung_khan, 6) | anh.da_giac([(190, 413), (304, 413), (304, 500), (190, 500)]))
+    thay_nhom(svg, {'khan-co': khan_tay(KHAN_CO_NG), 'khan-dai': khan_tay(KHAN_DAI_NG, TUA_NG),
+                    'chan-xa': chan_tay(**CHAN_XA_NG), 'chan-gan': chan_tay(**CHAN_GAN_NG)})
+    chen_nhom(svg, 'than', 'co', (262, 290), [
+        '<path d="M200 262Q262 252 326 258Q334 284 326 306Q262 318 202 314Q194 288 200 262Z" fill="#84736b" '
         'stroke="none" data-role="co-lien"/>'], 'Cổ lông sau đầu và khăn: che khe khi đầu nhún')
+    them_vao_nhom(svg, {'tay-gan': co_tay_phang(*CO_TAY_NG)})
+    them_vao_nhom(svg, {'than': [
+        '<path d="M207 360L231 360L231 381Q219 384 208 382Z" fill="none" stroke="#aa7652" stroke-width="1.9" '
+        'stroke-linejoin="round" data-role="tui"/>']})
 
 
 def ba_tu():
@@ -172,6 +189,7 @@ def ba_tu():
     chen_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), 'than', 'co', (256, 300), [
         '<path d="M198 262Q260 250 326 256Q336 280 328 304Q260 326 200 318Q192 290 198 262Z" fill="#84736b" '
         'stroke="none" data-role="co-lien"/>'], 'Cổ lông sau đầu và khăn: che khe khi đầu nhún')
+    them_vao_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), {'tay-gan': co_tay_phang(*CO_TAY_34)})
     them_vao_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), {'than': [
         '<path d="M234 364L266 363L267 383Q251 388 235 385Z" fill="none" stroke="#aa7652" stroke-width="1.9" '
         'stroke-linejoin="round" data-role="tui"/>']})
@@ -273,6 +291,16 @@ def chen_nhom(svg, truoc, bo, goc, con, nhan):
     open(svg, 'w').write(s[:i] + g + s[i:])
 
 
+def co_tay_phang(trai, dinh, phai, cat_trai, cat_phai):
+    """Luật 3: ống tay cắt phẳng ở cổ tay. Ảnh nguồn có cổ tay là cung vòm (đỉnh bàn tay) → tô màu áo phần
+    giữa cung và đường cắt, rồi kẻ đường cắt thẳng bằng nét V4g."""
+    (x0, y0), (xd, yd), (x1, y1) = trai, dinh, phai
+    cy = 2 * yd - (y0 + y1) / 2 - 3  # điểm điều khiển để cung phủ hết nét vòm cũ
+    return [f'<path d="M{x0} {y0}Q{xd} {cy:.1f} {x1} {y1}Z" fill="#c48f65" stroke="none" data-role="lap-vom-co-tay"/>',
+            f'<path d="M{cat_trai[0]} {cat_trai[1]}L{cat_phai[0]} {cat_phai[1]}" fill="none" stroke="{VIEN}" '
+            f'stroke-width="5.6" stroke-linecap="round" data-role="co-tay-phang"/>']
+
+
 def thay_nhom(svg, moi):
     """Thay nội dung các nhóm <g id=...> trong tệp SVG bằng phần đồ tay."""
     s = open(svg).read()
@@ -289,6 +317,7 @@ KHAN_CO_34 = ('M184 292Q188 288 198 288L300 281Q316 279 325 275Q335 282 334 292Q
 KHAN_DAI_34 = ('M174 322L190 326Q191 358 189 384Q187 400 183 410L161 410Q155 378 162 352'
                'Q166 336 174 322Z')
 TUA_34 = 'M164 411L163 425M169 411L168 426M174 411L174 425M179 410L179 423'
+CO_TAY_34 = ((276, 374), (305, 363), (333, 370), (274, 374), (333, 370))
 CHAN_XA_34 = dict(ong='M190 408L245 408L246 432L247 458Q220 462 194 459Q191 434 190 408Z',
                   nep='M197 444Q210 446 223 445',
                   mong='M192 459Q216 456 240 460Q246 467 244 473Q241 479 226 479Q205 481 189 478Q181 475 184 467Q186 461 192 459Z',
@@ -299,6 +328,24 @@ CHAN_GAN_34 = dict(ong='M243 408L325 408Q322 440 320 466Q285 471 249 467L246 440
                    mong='M252 467Q282 464 312 467Q320 472 318 480Q315 488 300 489Q272 491 250 488Q241 485 243 477Q245 470 252 467Z',
                    bong_mong='M244 481Q280 488 317 481Q314 488 300 489Q272 491 250 488Z',
                    khe='M262 476L259 484', them=('M218 424Q232 427 243 430',))
+
+# nghiêng trái — toạ độ đọc trên lưới phủ ảnh 3D Jutsu nghiêng (khung 512)
+KHAN_CO_NG = ('M186 290Q186 278 200 276L318 273Q328 274 327 290Q327 300 323 305Q306 298 292 297'
+              'Q262 297 240 318Q224 328 200 329Q188 326 185 315Z')
+KHAN_DAI_NG = 'M183 326L193 330Q192 370 189 408L170 411Q168 380 175 345Q178 334 183 326Z'
+TUA_NG = 'M172 412L171 425M176 412L175 426M180 412L180 425M185 411L185 423'
+LONG_TAI_NG = 'M256 196Q266 208 280 216Q296 224 308 216Q304 207 290 205Q270 202 256 196Z'
+CO_TAY_NG = ((235, 372), (263, 362), (292, 369), (233, 372), (294, 369))
+CHAN_XA_NG = dict(ong='M201 406L232 406L232 430L231 460Q220 462 209 460Q205 434 201 406Z',
+                  nep='M210 445Q218 446 225 445',
+                  mong='M203 458Q218 455 233 458Q236 464 234 469Q231 472 220 472Q205 473 198 470Q193 467 196 462Q198 459 203 458Z',
+                  bong_mong='M197 467Q215 471 234 467Q231 472 220 472Q205 473 198 470Z',
+                  khe='M207 465L202 471')
+CHAN_GAN_NG = dict(ong='M211 406L306 406Q304 440 300 467Q266 470 231 467L223 428L211 421Z',
+                   nep='M238 452Q256 454 273 452',
+                   mong='M228 467Q262 463 296 467Q302 474 299 481Q296 487 280 487Q250 489 226 486Q218 483 220 476Q222 469 228 467Z',
+                   bong_mong='M220 480Q258 487 298 480Q296 487 280 487Q250 489 226 486Z',
+                   khe='M236 476L231 483', them=('M211 421Q217 425 223 428',))
 
 
 if __name__ == '__main__':

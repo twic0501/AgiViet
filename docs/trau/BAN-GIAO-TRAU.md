@@ -101,6 +101,9 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - Thêm nhóm `co` (lông cổ, nằm dưới áo, sau khăn và đầu) để che khe khi đầu nhún.
   - Giữ viền tà áo; bo tròn đầu khăn ở cổ.
   - Đầu ra V4g của `tao-canh.py` không đổi (đã so byte). Khung nghỉ và nhún: `docs/trau/goc-nhin/rive-nghi-nhun.png`.
+- **Góc nghiêng làm lại (người sáng lập: "nghiêng thì tệ quá").** Bản cắt từ bảng xoay có đầu quá to, chân cụt, tai dẹt. Đã sinh riêng góc nghiêng bằng 3D Jutsu Angles từ V4g + góc ¾ đã duyệt (`docs/trau/tham-chieu/higgsfield-v4g-nghieng-trai-2.png`, 2,5 credit; tổng đã dùng 7/10, còn 3). Đồ như góc ¾: đầu và áo đồ tự động; chân và khăn đồ tay (`*_NG` trong `do-goc.py`); lòng tai vẽ liền; bóng má nhạt như V4g.
+- **Luật 3, cổ tay phẳng (cả hai góc):** ảnh Higgsfield có cổ tay là cung vòm. `co_tay_phang()` tô màu áo phần giữa cung và đường cắt, rồi kẻ đường cắt thẳng nét V4g (`CO_TAY_34`, `CO_TAY_NG`).
+- **Còn chờ người sáng lập quyết:** góc nghiêng chỉ thấy 1 lỗ mũi (đúng phối cảnh, nhưng luật 2 ghi "đúng 2 lỗ mũi").
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
