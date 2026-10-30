@@ -107,6 +107,25 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
 - **Chốt T1 (31/10):** người sáng lập duyệt góc ¾ trái và góc nghiêng trái ("oke") khi xem trực tiếp trong Rive. Góc nghiêng giữ 1 lỗ mũi (lỗ xa khuất theo phối cảnh), người sáng lập duyệt nguyên trạng. Bước tiếp theo: Chặng 2, khung xương và dáng nghỉ sống (`hanh_dong=0`), chốt T2.
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
+### Chặng 2 — khung xương, xoay theo `huong`, nghỉ sống (31/10, chờ chốt T2)
+- **Dựng:** `frontend/trau-rive/dung-v3.sh` chạy `dung-v3.py` và ra hai bản:
+  - `frontend/assets/trau/trau-v3.riv` (bản giao app, 467 KB);
+  - `xem-v3/` (bản xem thử: bấm 5 cột để đổi hướng và nhún, rê chuột để nhìn theo).
+- **Hợp đồng nối:** artboard `trau` 512×512, chân chạm y≈490. State machine `trau` có các đầu vào `hanh_dong`, `huong`, `cham`, `nhin_x`, `nhin_y`. Đã nạp thử bằng `@rive-app/canvas@2.21.6` (đúng bản app dùng): 0 lỗi, đặt `huong` thì xoay đúng.
+- **5 góc:** chính diện V4g, ¾ trái, nghiêng trái, và ¾ phải, nghiêng phải (lật gương). `huong` chia nấc: < −0,75 nghiêng trái · < −0,25 ¾ trái · chính diện · ≤ 0,75 ¾ phải · nghiêng phải.
+- **Khung xương mỗi góc:** gốc ở bàn chân → nhún → hông → vai → thân trên (áo, tay, khăn, cổ) → đầu → đầu quanh → đầu nhìn → bộ phận đầu. Chân và đuôi gắn vào lớp nhún, nên đứng yên khi hông dồn.
+- **Xoay (luật 8):** 3 Joystick bật/tắt bộ phận theo góc cho đầu, thân và chân. Đổi nấc thì đầu trộn trong 220 ms, thân 420 ms, chân 600 ms, nên đầu quay trước, rồi vai, rồi hông và chân. Thân bóp ngang nhẹ lúc đổi góc.
+- **Nghỉ sống (`hanh_dong = 0`),** 5 lớp chạy song song với nhịp lệch nhau:
+  - thở (ngực giãn, 3 s);
+  - dồn chân (hông lệch và nghiêng, vai nghiêng ngược, đầu bù, chân nghỉ hơi nhấc, 10 s);
+  - nhìn quanh (đầu dẫn, vai theo sau trễ, 12 s);
+  - phụ (tai, khăn, đuôi, tay đung đưa lệch pha);
+  - chớp mắt.
+  Đo khi che mặt và tay: thân và chân vẫn đổi 2–3 nghìn điểm ảnh qua các khung, tâm thân lệch ±2,5 px. Tức là không đứng như tượng.
+- **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
+- **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.
+- **Ảnh:** `docs/trau/chang-2/` (5 nấc hướng, chuỗi xoay, 8 khung nghỉ).
+
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
 - **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.
