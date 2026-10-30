@@ -25,6 +25,8 @@
   .dong-nc .khop { color: var(--la-dam); font-weight: 600; }
   .giai-thich { padding: 12px 14px; border-radius: 14px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 13.5px; line-height: 1.5; }
   .nut-di { display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 14px; background: var(--la); color: var(--tren-la); font-weight: 600; text-decoration: none; }
+  .cua-bac { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: var(--la-nhat); color: var(--la-dam); font-size: 13.5px; }
+  .nut-di.phu { background: var(--giay-noi); color: var(--la-dam); box-shadow: inset 0 0 0 1.5px var(--la); }
   .ghi { font-size: 13px; color: var(--muc-nhat); margin-top: 8px; }
 </style>
 </head>
@@ -49,7 +51,10 @@ async function mo() {
   if (!id) throw new Error("Thiếu mã nhu cầu");
   const token = await phien();
   const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${r.status}`))));
-  const [n, lo, sp] = await Promise.all([get(`/v1/demands/${id}`), get("/v1/lots?mine=true"), get("/v1/products").catch(() => [])]);
+  const [n, lo, sp, chao] = await Promise.all([get(`/v1/demands/${id}`), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => [])]);
+  // Lời chào mới nhất của bác cho dòng này, còn hiệu lực (đang chờ / đã được đồng ý)
+  const cuaBac = (lineId) => { const c = (Array.isArray(chao) ? chao : []).find((x) => x.demand_line_id === lineId && x.direction === "seller_quote"); return c && /sent|accepted/.test(c.status) ? c : null; };
+  const trangThai = (c) => c.status === "accepted" ? "bên mua đã đồng ý, hàng đang giữ cho bên mua (chưa phải hợp đồng)" : c.vong_cuoi.from_side === "buyer" ? "bên mua đã trả giá, tới lượt bác" : "chờ bên mua trả lời";
   const tenSp = new Map((Array.isArray(sp) ? sp : []).map((p) => [p.code, p.name_vi]));
   const dangBan = lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong && l.product_code === n.product_code);
   const gom = n.lines.some((x) => x.min_source_qty_g && Number(x.min_source_qty_g) < Number(x.qty_g));
@@ -62,6 +67,7 @@ async function mo() {
     <section class="muc" style="margin-top:18px"><h3><span>Bên mua cần</span><span style="font-weight:400">${n.lines.length} loại</span></h3>
       ${n.lines.map((x) => { const k = dangBan.filter((l) => l.grade_code === x.grade_code); const cg = x.min_source_qty_g && Number(x.min_source_qty_g) < Number(x.qty_g);
         return `<div class="dong-nc"><p class="tren"><span>${esc(tenLoai(x.grade_code))}</span><span>${esc(can(x.qty_g).join(" "))}</span></p>
+          ${cuaBac(x.id) ? `<p class="cua-bac">${cuaBac(x.id).vong_cuoi.from_side === "buyer" ? "Bên mua trả" : "Bác đã chào"} <b>${Number(cuaBac(x.id).vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg</b> · ${esc(can(cuaBac(x.id).vong_cuoi.qty_g).join(" "))} · lô ${esc(cuaBac(x.id).lot_code)} · ${trangThai(cuaBac(x.id))}</p>` : ""}
           <p class="phu">${cg ? `Nhận từ nhiều vườn, mỗi vườn tối thiểu ${esc(can(x.min_source_qty_g).join(" "))}. ` : ""}${k.length ? `<span class="khop">Bác có ${k.length} lô khớp: ${k.map((l) => `${esc(l.code)} (còn ${esc(can(l.available_g).join(" "))})`).join(", ")}</span>` : "Bác chưa có lô loại này."}</p></div>`; }).join("")}</section>
 
     <section class="muc" style="margin-top:18px"><h3><span>Điều kiện</span></h3>
@@ -71,7 +77,7 @@ async function mo() {
 
     ${gom ? `<p class="giai-thich"><b>Đơn gom là gì?</b> Bên mua cần lượng lớn nhưng nhận từ nhiều nhà vườn. Mỗi vườn ký hợp đồng riêng, cọc riêng, cân và nhận tiền riêng; một xe ghé từng vườn theo tuyến. Bác chỉ cần chào phần mình có.</p>` : ""}
     <p class="giai-thich" style="background:var(--la-nhat);color:var(--la-dam)">Giá thấp nhất của bác luôn giữ kín. Bên mua không thấy ai đang chào rẻ nhất.</p>
-    ${dangBan.length ? `<a class="nut-di" href="./ban-hang-hoa.html#can">Chào hàng ở Chợ</a>` : ""}`;
+    ${n.lines.every((x) => cuaBac(x.id)) ? `<a class="nut-di phu" href="./ban-hang-hoa.html#can">Xem lời chào ở Chợ</a>` : dangBan.length ? `<a class="nut-di" href="./ban-hang-hoa.html#can">Chào hàng ở Chợ</a>` : ""}`;
   giuThamSo();
 }
 mo().catch((e) => { $("noi-dung").innerHTML = `<p class="bao loi">Chưa mở được nhu cầu (${esc(e.message)}).</p>`; }).finally(() => $("noi").setAttribute("aria-busy", "false"));

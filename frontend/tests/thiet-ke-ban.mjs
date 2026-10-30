@@ -225,16 +225,26 @@ await trang("hang-hoa", async (p) => {
     await kiemChung(p);
     await p.locator("#tam-gui").click();
     await p.getByText("Đã gửi chào hàng").waitFor({ timeout: 8000 });
-    // Lời chào vừa gửi hiện trong "Lời chào bác đã gửi" và rút lại được (bấm 2 lần); tải lại thật (cùng địa chỉ + #can thì goto không tải lại)
-    await p.reload();
-    await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
-    const truoc = await p.locator("#ds-da-chao [data-rut]").count();
-    assert.ok(truoc > 0, "có lời chào để rút");
-    const rut = p.locator("#ds-da-chao [data-rut]").first();
-    await rut.click(); await p.getByText("Bấm lần nữa để rút").waitFor({ timeout: 3000 });
-    await rut.click(); await p.waitForURL(/ban-hang-hoa/); await p.waitForTimeout(1500);
-    await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
-    assert.equal(await p.locator("#ds-da-chao [data-rut]").count(), truoc - 1, "rút xong thì bớt một lời chào");
+    // Lời chào vừa gửi hiện ngay dưới nhu cầu; Sửa lời chào thay giá; Hủy chào → dòng trở lại nút Chào hàng (vẫn chào lại được)
+    await p.reload(); await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+    const the = p.locator(".the-nc").filter({ hasText: /Bác đã chào 24\.000 đ\/kg/ }).first();
+    assert.match(await the.locator(".loi-cua-bac").innerText(), /Bác đã chào 24\.000 đ\/kg/, "thấy lời chào của bác ngay dưới nhu cầu");
+    await the.locator("[data-sua]").click();
+    await p.getByText("Sửa lời chào").first().waitFor({ timeout: 3000 });
+    assert.equal(await p.locator('.tam input[name="gia"]').inputValue(), "24000", "điền sẵn giá cũ");
+    await p.locator('.tam input[name="gia"]').fill("23500");
+    await p.locator("#tam-gui").click();
+    await p.getByText("Đã sửa lời chào").waitFor({ timeout: 10000 });
+    assert.match(await p.locator(".tam .o-thanh-tien small").innerText(), /× 23\.500 đ\/kg/, "bảng xác nhận đúng giá vừa sửa");
+    await p.reload(); await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+    const the2 = p.locator(".the-nc").filter({ hasText: /Bác đã chào 23\.500 đ\/kg/ }).first();
+    assert.match(await the2.locator(".loi-cua-bac").innerText(), /23\.500 đ\/kg/, "giá mới thay giá cũ");
+    const soSua = await p.locator("[data-sua]").count();
+    const huy = the2.locator("[data-huy]");
+    await huy.click(); await p.getByText("Bấm lần nữa để hủy").waitFor({ timeout: 3000 });
+    await huy.click(); await p.getByText("Bác vẫn chào lại được").waitFor({ timeout: 8000 });
+    await p.waitForTimeout(1800); await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+    assert.equal(await p.locator("[data-sua]").count(), soSua - 1, "hủy xong thì bớt một lời chào");
   } else {
     // Chạy lại trên cùng dữ liệu: mọi dòng khớp đã chào → nút phải ghi rõ lý do, không cho chào trùng
     const nhan = await p.locator("#p-can .tt-dong").allTextContents();
@@ -269,6 +279,16 @@ await trang("cho-chi-tiet", async (p) => {
   assert.ok(!/undefined|NaN/.test(await p.locator("#noi").innerText()));
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}05d-chi-tiet-lo.png`, fullPage: true });
+  // Mỗi dòng nhu cầu hiện đúng trạng thái lời chào mới nhất của bác (quy trình B3)
+  await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421#can`);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+  const moiNhat = new Map(); for (const c of await api("/v1/offers")) if (c.direction === "seller_quote" && c.demand_line_id && !moiNhat.has(c.demand_line_id)) moiNhat.set(c.demand_line_id, c);
+  const dem = { dongY: 0, toiBac: 0, cho: 0 };
+  for (const c of moiNhat.values()) if (c.status === "accepted") dem.dongY++; else if (c.status === "sent" && c.vong_cuoi.from_side === "buyer") dem.toiBac++; else if (c.status === "sent") dem.cho++;
+  assert.equal(await p.locator(".loi-cua-bac.dong-y").count(), dem.dongY, "lời chào đã đồng ý");
+  assert.equal(await p.locator(".loi-cua-bac.toi-bac").count(), dem.toiBac, "bên mua trả giá, tới lượt bác");
+  assert.equal(await p.locator(".loi-cua-bac [data-huy]").count(), dem.cho, "chỉ lời chào chưa được trả lời mới sửa/hủy được");
+  if (dem.dongY) assert.match(await p.locator(".loi-cua-bac.dong-y").first().innerText(), /chưa phải hợp đồng/);
   // Chi tiết nhu cầu: đơn gom, giao nhận, không mã hạng thô
   await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421#can`);
   await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
