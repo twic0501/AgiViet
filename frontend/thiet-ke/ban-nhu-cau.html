@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nhu cầu bên mua · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .dau-lui { position: sticky; top: 0; z-index: 12; display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55); }
+  .dau-lui a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: #f6f2e7; text-decoration: none; }
+  .dau-lui h1 { font-size: 18px; font-weight: 700; color: #f6f2e7; }
+  .tieu-de h2 { font-size: 22px; font-weight: 700; }
+  .tieu-de p { font-size: 14px; color: var(--muc-phu); margin-top: 2px; }
+  .nhan { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .nhan span { font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); }
+  .nhan .gom { background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  dl.bang { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; margin-top: 12px; font-size: 14px; }
+  dl.bang dt { color: var(--muc-phu); }
+  dl.bang dd { font-weight: 600; text-align: right; }
+  .dong-nc { padding: 12px 0; border-bottom: 1px solid var(--ke); }
+  .dong-nc:last-child { border-bottom: 0; }
+  .dong-nc .tren { display: flex; justify-content: space-between; gap: 10px; font-weight: 600; }
+  .dong-nc .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 4px; line-height: 1.45; }
+  .dong-nc .khop { color: var(--la-dam); font-weight: 600; }
+  .giai-thich { padding: 12px 14px; border-radius: 14px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 13.5px; line-height: 1.5; }
+  .nut-di { display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 14px; background: var(--la); color: var(--tren-la); font-weight: 600; text-decoration: none; }
+  .ghi { font-size: 13px; color: var(--muc-nhat); margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau-lui nen-xanh"><a href="./ban-hang-hoa.html#can" aria-label="Về Chợ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1 id="t-nc">Nhu cầu bên mua</h1></header>
+  <main class="noi" id="noi" aria-busy="true" style="gap:16px">
+    <div id="noi-dung"><div class="khung-tai"></div><div class="khung-tai"></div></div>
+  </main>
+</div>
+<script type="module">
+import { can, esc, phien, giuThamSo, veTab, tenLoai } from "./chung.js";
+const $ = (id) => document.getElementById(id);
+veTab("cho");
+const ngay = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" }) : "—");
+const NHOM = { processor: "Nhà máy chế biến", export: "Doanh nghiệp xuất khẩu", horeca: "Nhà hàng, bếp ăn", wholesale: "Đầu mối", wholesaler: "Vựa, đầu mối", trader: "Thương lái", retail: "Bán lẻ", household: "Hộ chế biến" };
+const GIAO = { self_pickup: "Bên mua tự đến lấy tại vườn", seller_delivers: "Bác chở tới nơi bên mua", platform_logistics: "AgiViet điều phối xe", warehouse: "Giao tại kho" };
+const GIAY = { vietgap: "Chứng nhận VietGAP", growing_area_code: "Mã số vùng trồng", globalgap: "GlobalGAP", residue_test: "Kết quả kiểm dư lượng", organic: "Chứng nhận hữu cơ" };
+
+async function mo() {
+  const id = new URLSearchParams(location.search).get("id");
+  if (!id) throw new Error("Thiếu mã nhu cầu");
+  const token = await phien();
+  const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${r.status}`))));
+  const [n, lo, sp] = await Promise.all([get(`/v1/demands/${id}`), get("/v1/lots?mine=true"), get("/v1/products").catch(() => [])]);
+  const tenSp = new Map((Array.isArray(sp) ? sp : []).map((p) => [p.code, p.name_vi]));
+  const dangBan = lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong && l.product_code === n.product_code);
+  const gom = n.lines.some((x) => x.min_source_qty_g && Number(x.min_source_qty_g) < Number(x.qty_g));
+  const docs = Array.isArray(n.required_docs) ? n.required_docs : [];
+  $("t-nc").textContent = n.code;
+  $("noi-dung").innerHTML = `
+    <section class="tieu-de" style="padding-top:6px"><h2>${esc(n.buyer_name)}</h2><p>${esc(NHOM[n.segment_code] || n.segment_code)} · cần <b style="color:var(--muc)">${esc(tenSp.get(n.product_code) || n.product_code)}</b></p>
+      <div class="nhan">${dangBan.length ? "<span>Khớp hàng của bác</span>" : ""}${gom ? '<span class="gom">Nhận gom nhiều vườn</span>' : ""}</div></section>
+
+    <section class="muc" style="margin-top:18px"><h3><span>Bên mua cần</span><span style="font-weight:400">${n.lines.length} loại</span></h3>
+      ${n.lines.map((x) => { const k = dangBan.filter((l) => l.grade_code === x.grade_code); const cg = x.min_source_qty_g && Number(x.min_source_qty_g) < Number(x.qty_g);
+        return `<div class="dong-nc"><p class="tren"><span>${esc(tenLoai(x.grade_code))}</span><span>${esc(can(x.qty_g).join(" "))}</span></p>
+          <p class="phu">${cg ? `Nhận từ nhiều vườn, mỗi vườn tối thiểu ${esc(can(x.min_source_qty_g).join(" "))}. ` : ""}${k.length ? `<span class="khop">Bác có ${k.length} lô khớp: ${k.map((l) => `${esc(l.code)} (còn ${esc(can(l.available_g).join(" "))})`).join(", ")}</span>` : "Bác chưa có lô loại này."}</p></div>`; }).join("")}</section>
+
+    <section class="muc" style="margin-top:18px"><h3><span>Điều kiện</span></h3>
+      <dl class="bang"><dt>Thời gian cần</dt><dd>${ngay(n.needed_from)} – ${ngay(n.needed_to)}</dd>
+        <dt>Giao nhận</dt><dd>${esc(GIAO[n.delivery_mode] || n.delivery_mode || "Thỏa thuận khi chốt")}</dd>
+        <dt>Giấy tờ yêu cầu</dt><dd>${docs.length ? docs.map((x) => esc(GIAY[x] || x)).join(", ") : "Không yêu cầu thêm"}</dd></dl></section>
+
+    ${gom ? `<p class="giai-thich"><b>Đơn gom là gì?</b> Bên mua cần lượng lớn nhưng nhận từ nhiều nhà vườn. Mỗi vườn ký hợp đồng riêng, cọc riêng, cân và nhận tiền riêng; một xe ghé từng vườn theo tuyến. Bác chỉ cần chào phần mình có.</p>` : ""}
+    <p class="giai-thich" style="background:var(--la-nhat);color:var(--la-dam)">Giá thấp nhất của bác luôn giữ kín. Bên mua không thấy ai đang chào rẻ nhất.</p>
+    ${dangBan.length ? `<a class="nut-di" href="./ban-hang-hoa.html#can">Chào hàng ở Chợ</a>` : ""}`;
+  giuThamSo();
+}
+mo().catch((e) => { $("noi-dung").innerHTML = `<p class="bao loi">Chưa mở được nhu cầu (${esc(e.message)}).</p>`; }).finally(() => $("noi").setAttribute("aria-busy", "false"));
+</script>
+</body>
+</html>

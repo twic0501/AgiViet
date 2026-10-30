@@ -8,10 +8,12 @@
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
   /* Hai ngăn */
-  .ngan { display: grid; grid-template-columns: 1fr 1fr; background: var(--giay-lot); border-radius: 14px; padding: 4px; position: sticky; top: calc(68px + env(safe-area-inset-top)); z-index: 4; }
-  .ngan button { min-height: 44px; border: 0; border-radius: 10px; background: transparent; font: 600 15px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
+  /* Dải ngăn dính dưới header, có nền đệm để không sát header và che nội dung cuộn bên dưới */
+  .dai-ngan { position: sticky; top: calc(66px + env(safe-area-inset-top)); z-index: 4; margin: -14px -16px 0; padding: 12px 16px 10px; background: var(--giay); box-shadow: 0 6px 10px -8px rgba(31, 77, 58, .25); }
+  .ngan { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--giay-lot); border-radius: 14px; padding: 4px; }
+  .ngan button { min-height: 44px; border: 0; border-radius: 10px; background: transparent; font: 600 14px/1.15 var(--chu); padding: 0 4px; color: var(--muc-phu); cursor: pointer; }
   .ngan button[aria-selected="true"] { background: var(--giay-noi); color: var(--la-dam); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 0 0 1px var(--ke); }
-  .ngan small { font-weight: 700; margin-left: 4px; color: var(--la); }
+  .ngan small { font-size: 12px; font-weight: 700; margin-left: 4px; color: var(--la); }
   /* Tóm tắt */
   .tong-quan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .tong-quan > * { background: var(--giay-noi); border: 1px solid var(--ke); border-radius: 14px; padding: 12px; text-decoration: none; color: inherit; }
@@ -31,7 +33,8 @@
   /* Thẻ lô */
   .lo { display: block; padding: 12px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); color: inherit; }
   .lo + .lo { margin-top: 12px; }
-  .lo .dau-lo { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; }
+  .lo .dau-lo { display: grid; grid-template-columns: 64px 1fr 14px; gap: 12px; align-items: center; text-decoration: none; color: inherit; }
+  .lo .mui-ct, .the-nc .mui-ct { color: var(--muc-nhat); font-size: 20px; }
   .lo .loai { font-size: 14px; font-weight: 600; color: var(--muc-phu); margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .lo .anh { width: 64px; height: 64px; border-radius: 12px; background: var(--giay-lot) center / cover no-repeat; }
   .lo .ten { font-weight: 600; font-size: 16px; }
@@ -84,6 +87,21 @@
   .the-nc .dong:last-child { padding-bottom: 0; }
   .the-nc .tt-dong { font-size: 13px; font-weight: 600; color: var(--muc-nhat); text-align: right; max-width: 120px; line-height: 1.3; }
   .the-nc .tt-dong.da { color: var(--la-dam); }
+  .the-nc .dau-nc { display: grid; grid-template-columns: 1fr 14px; gap: 8px; align-items: center; text-decoration: none; color: inherit; }
+  .the-nc .nhan-nc { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .the-nc .nhan-nc:empty { display: none; }
+  .the-nc .gom { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  /* Mùa vụ */
+  .vu { display: block; padding: 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); text-decoration: none; color: inherit; }
+  .vu + .vu { margin-top: 12px; }
+  .vu .loai-hd { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); }
+  .vu .loai-hd.bt { background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  .vu .ben { font-weight: 600; margin-top: 8px; }
+  .vu .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
+  .vu dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--ke-dam); font-size: 14px; }
+  .vu dt { color: var(--muc-phu); }
+  .vu dd { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .vu .tt-vu { margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--la-dam); }
   .nc-khac { margin-top: 16px; }
   .nc-khac summary { min-height: 44px; display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--muc-phu); cursor: pointer; list-style: none; }
   .nc-khac summary::before { content: "›"; display: inline-block; transition: transform 200ms; font-size: 20px; }
@@ -126,9 +144,10 @@
   <header class="dau" id="dau"></header>
 
   <main class="noi" id="noi" aria-busy="true" style="gap:14px">
-    <div class="ngan" role="tablist" aria-label="Chợ">
+    <div class="dai-ngan"><div class="ngan" role="tablist" aria-label="Chợ">
       <button type="button" role="tab" id="ngan-hang" aria-selected="true" aria-controls="p-hang">Hàng của tôi</button>
       <button type="button" role="tab" id="ngan-can" aria-selected="false" aria-controls="p-can">Bên mua cần<small id="so-can"></small></button>
+      <button type="button" role="tab" id="ngan-vu" aria-selected="false" aria-controls="p-vu">Mùa vụ<small id="so-vu"></small></button></div>
     </div>
 
     <section id="p-hang" role="tabpanel" aria-labelledby="ngan-hang" style="display:grid;gap:14px">
@@ -140,6 +159,11 @@
       <div class="nhac" id="nhac" hidden></div>
       <div class="loc" role="group" aria-label="Lọc theo trạng thái" id="loc"></div>
       <div id="ds"><div class="khung-tai"></div><div class="khung-tai"></div></div>
+    </section>
+
+    <section id="p-vu" role="tabpanel" aria-labelledby="ngan-vu" hidden>
+      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Hợp đồng ký trước mùa: <b style="color:var(--muc)">đặt trước khi hái</b> (chốt lượng gần ngày hái) và <b style="color:var(--muc)">bao tiêu theo vụ</b> (bên mua cam kết mua cả vụ, có thể ứng vật tư).</p>
+      <div id="ds-vu"><div class="khung-tai"></div></div>
     </section>
 
     <section id="p-can" role="tabpanel" aria-labelledby="ngan-can" hidden>
@@ -182,12 +206,14 @@ const lenh = async (d, b) => {
 
 // Hai ngăn
 const chonNgan = (k) => {
-  for (const [n, p] of [["ngan-hang", "p-hang"], ["ngan-can", "p-can"]]) { const on = n === k; $(n).setAttribute("aria-selected", String(on)); $(p).hidden = !on; $(p).style.display = on ? "grid" : ""; }
+  for (const [n, p] of [["ngan-hang", "p-hang"], ["ngan-can", "p-can"], ["ngan-vu", "p-vu"]]) { const on = n === k; $(n).setAttribute("aria-selected", String(on)); $(p).hidden = !on; $(p).style.display = on ? "grid" : ""; }
   try { sessionStorage.setItem("agv-ngan-cho", k); } catch {}
 };
 $("ngan-hang").onclick = () => chonNgan("ngan-hang");
 $("ngan-can").onclick = () => chonNgan("ngan-can");
-if (location.hash === "#can") chonNgan("ngan-can"); else { try { if (sessionStorage.getItem("agv-ngan-cho") === "ngan-can") chonNgan("ngan-can"); } catch {} }
+$("ngan-vu").onclick = () => chonNgan("ngan-vu");
+if (location.hash === "#can") chonNgan("ngan-can"); else if (location.hash === "#vu") chonNgan("ngan-vu");
+else { try { const k = sessionStorage.getItem("agv-ngan-cho"); if (k === "ngan-can" || k === "ngan-vu") chonNgan(k); } catch {} }
 
 // Một dòng lời chào: ai chào, giá, lượng, tới lượt ai, hạn → bấm mở Tin nhắn để trả lời
 const dongChao = (c, coMaLo = true) => {
@@ -320,10 +346,10 @@ async function moHang() {
       const hoi = chaoLo.length;
       const lauChuaXn = l.status === "on_sale" && (!l.last_confirmed_at || (Date.now() - new Date(l.last_confirmed_at)) / 864e5 > NGAY_NHAC);
       return `<article class="lo" data-lo="${esc(l.code)}">
-        <div class="dau-lo"><span class="anh" ${anh ? `style="background-image:url(${anh})"` : ""}></span>
+        <a class="dau-lo" href="./ban-lo.html?id=${encodeURIComponent(l.id)}" aria-label="Xem chi tiết lô ${esc(l.code)}"><span class="anh" ${anh ? `style="background-image:url(${anh})"` : ""}></span>
           <span style="min-width:0"><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</p>
             <p class="loai">${esc(tenLoai(l.grade_code))} <span class="tt ${lop}">${esc(tt)}</span></p>
-            <p class="phu">${esc(l.code)} · ${l.qty_basis === "estimated" ? "lượng ước tính" : "đã cân"}${l.last_confirmed_at ? ` · báo còn hàng ${ngayVN(l.last_confirmed_at)}` : ""}</p></span></div>
+            <p class="phu">${esc(l.code)} · ${l.qty_basis === "estimated" ? "lượng ước tính" : "đã cân"}${l.last_confirmed_at ? ` · báo còn hàng ${ngayVN(l.last_confirmed_at)}` : ""}</p></span><span class="mui-ct" aria-hidden="true">›</span></a>
         <div class="luong" role="img" aria-label="${phan.filter(([, , g]) => g).map(([, ten, g]) => `${ten} ${can(g).join(" ")}`).join(", ")}">${phan.filter(([, , g]) => g).map(([k, , g]) => `<i class="${k}" style="width:${(g / tong * 100).toFixed(1)}%"></i>`).join("")}</div>
         <div class="chu-luong">${phan.filter(([k, , g]) => g || k === "con").map(([, ten, g, mau]) => `<span style="--c:${mau}">${ten} <b>${can(g).join(" ")}</b></span>`).join("")}</div>
         ${chaoLo.length ? `<div class="chao-lo">${chaoLo.map((c) => dongChao(c, false)).join("")}</div>` : ""}
@@ -367,9 +393,10 @@ async function moCan() {
   const veNc = (n) => {
     const khop = diem(n) === 0;
     return `<article class="the-nc">
-      <p class="ben">${esc(n.buyer_name)}</p>
+      <a class="dau-nc" href="./ban-nhu-cau.html?id=${encodeURIComponent(n.id)}"><span><p class="ben">${esc(n.buyer_name)}</p>
       <p class="sp-nc">${esc(tenSp.get(n.product_code) || n.product_code)} <span>· cần ${ngayVN(n.needed_from)}–${ngayVN(n.needed_to)}</span></p>
-      <p class="phu">${esc(NHOM_MUA[n.segment_code] || n.segment_code)}${khop ? ' · <span class="khop">Khớp hàng của bác</span>' : ""}</p>
+      <p class="phu">${esc(NHOM_MUA[n.segment_code] || n.segment_code)}</p>
+      <p class="nhan-nc">${khop ? '<span class="khop">Khớp hàng của bác</span>' : ""}${n.lines.some((x) => x.min_source_qty_g && Number(x.min_source_qty_g) < Number(x.qty_g)) ? '<span class="gom">Nhận gom nhiều vườn</span>' : ""}</p></span><span class="mui-ct" aria-hidden="true">›</span></a>
       ${n.lines.map((x) => { const k = loKhop(n.product_code, x.grade_code, n.buyer_org_id), daChao = dsChaoMo.some((c) => c.demand_line_id === x.id);
         const nhan = daChao ? ["Bác đã chào", "da"] : !k.length && loKhop(n.product_code, x.grade_code).length ? ["Đang có lời chào", "da"] : !k.length ? ["Bác chưa có hàng này", "chua"] : null;
         return `<div class="dong"><span>${esc(tenLoai(x.grade_code))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
@@ -406,7 +433,7 @@ function moTam(n, dong, dsLo) {
   f.kg.oninput = tinhTien; f.gia.oninput = tinhTien;
   f.lo.onchange = () => { capNhat(); tinhTien(); }; capNhat(); tinhTien();
   get(`/v1/reference-prices?product=${encodeURIComponent(n.product_code)}&grade=${encodeURIComponent(dong.grade_code)}`).then((g) => {
-    if (g?.price_vnd) { $("gy-gia").textContent = `Giá tham khảo ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg`; f.gia.value = g.price_vnd; tinhTien(); }
+    if (g?.price_vnd) { $("gy-gia").textContent = `Giá tham khảo ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg`; if (!f.gia.value) { f.gia.value = g.price_vnd; tinhTien(); } /* không ghi đè giá bác đã gõ */ }
   }).catch(() => {});
   const dong_ = () => che.remove();
   che.addEventListener("pointerdown", (e) => { if (e.target === che) dong_(); });
@@ -423,10 +450,35 @@ function moTam(n, dong, dsLo) {
   };
 }
 
+const TT_DON = { drafting: "Đang soạn hợp đồng", awaiting_signatures: "Chờ ký", awaiting_deposit: "Chờ bên mua cọc", active: "Đang thực hiện", completed: "Đã xong", cancelled: "Đã hủy" };
+async function moVu() {
+  const ds = await get("/v1/seasonal-orders").catch(() => null);
+  if (!ds) { $("ds-vu").innerHTML = `<p class="bao loi">Chưa tải được hợp đồng mùa vụ.</p>`; return; }
+  const cuaBac = ds.filter((v) => v.phia === "seller");
+  $("so-vu").textContent = cuaBac.length || "";
+  const kg = (g) => can(g).join(" ");
+  $("ds-vu").innerHTML = cuaBac.length ? cuaBac.map((v) => {
+    const bt = v.contract_type === "offtake";
+    const luong = v.qty_min_g === v.qty_max_g ? kg(v.qty_min_g) : `${kg(v.qty_min_g)} – ${kg(v.qty_max_g)}`;
+    return `<a class="vu" href="./ban-tin-nhan.html${location.search}">
+      <span class="loai-hd ${bt ? "bt" : ""}">${bt ? "Bao tiêu theo vụ" : "Đặt trước khi hái"}</span>
+      <p class="ben">${esc(v.buyer_name)}</p>
+      <p class="phu">${esc(v.product_name)} · ${esc(v.code)}</p>
+      <dl><dt>Lượng</dt><dd>${esc(luong)}</dd>
+        <dt>Giá</dt><dd>${Number(v.unit_price_vnd).toLocaleString("vi-VN")} đ/kg${v.price_mode === "formula" ? " (theo công thức)" : ""}</dd>
+        <dt>Cọc bên mua</dt><dd>${Number(v.deposit_vnd).toLocaleString("vi-VN")} đ</dd>
+        <dt>Mùa hái</dt><dd>${ngayVN(v.harvest_from)} – ${ngayVN(v.harvest_to)}</dd>
+        <dt>Vườn</dt><dd>${esc(v.site_name || "—")}</dd>
+        ${v.so_dot > 1 ? `<dt>Số đợt giao</dt><dd>${v.so_dot}</dd>` : ""}</dl>
+      <p class="tt-vu">${esc(TT_DON[v.order_status] || v.order_status)} ›</p></a>`;
+  }).join("") : `<div class="trong">Bác chưa có hợp đồng đặt trước hay bao tiêu nào. Khi bên mua muốn đặt hàng trước mùa, hợp đồng sẽ hiện ở đây.</div>`;
+}
+
 async function mo() {
   token = await phien();
   await moHang();
   await moCan();
+  await moVu();
   giuThamSo();
   $("noi").setAttribute("aria-busy", "false");
 }

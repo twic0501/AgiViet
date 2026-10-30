@@ -205,7 +205,7 @@ await trang("hang-hoa", async (p) => {
   const chu = await p.locator("#p-can").innerText();
   assert.ok(!/Loại L\d|OM18-am|\bDAT\b|ngoai_co|chua_tach/.test(chu), "còn mã hạng thô");
   assert.equal(await p.locator("#p-can > #ds-can > .the-nc .khop").count(), await p.locator("#p-can > #ds-can > .the-nc").filter({ has: p.locator(".khop") }).count());
-  const to = await p.evaluate(() => [...document.querySelectorAll("#p-can .the-nc *")].filter((e) => e.offsetParent && parseFloat(getComputedStyle(e).fontSize) > 18).map((e) => e.textContent.trim().slice(0, 20)));
+  const to = await p.evaluate(() => [...document.querySelectorAll("#p-can .the-nc *:not(.mui-ct)")].filter((e) => e.offsetParent && parseFloat(getComputedStyle(e).fontSize) > 18).map((e) => e.textContent.trim().slice(0, 20)));
   assert.deepEqual(to, [], "chữ trong thẻ nhu cầu bị phóng to");
   const conChao = p.locator("#p-can button[data-dong]:not([disabled])");
   if (await conChao.count()) {
@@ -223,6 +223,45 @@ await trang("hang-hoa", async (p) => {
     assert.ok(nhan.length && nhan.every((t) => /Bác đã chào|Đang có lời chào|chưa có hàng/.test(t)), `dòng không chào được phải ghi lý do: ${nhan.join(", ")}`);
   }
   await p.screenshot({ path: `${ANH}05b-cho-chao-hang.png` });
+});
+
+await trang("cho-chi-tiet", async (p) => {
+  const tk = (await (await fetch(`${GOC}/v1/test/impersonate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const api = (d) => fetch(GOC + d, { headers: { authorization: "Bearer " + tk } }).then((r) => r.json());
+  // Ngăn Mùa vụ: đúng số hợp đồng đặt trước / bao tiêu của bác
+  await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421#vu`);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+  const vu = (await api("/v1/seasonal-orders")).filter((v) => v.phia === "seller");
+  assert.equal(await p.locator("#ds-vu .vu").count(), vu.length, "số hợp đồng mùa vụ");
+  if (vu.some((v) => v.contract_type === "offtake")) assert.ok(await p.getByText("Bao tiêu theo vụ").first().isVisible());
+  if (vu.some((v) => v.contract_type === "pre_harvest")) assert.ok(await p.getByText("Đặt trước khi hái").first().isVisible());
+  await kiemChung(p);
+  // Thanh ngăn không dính sát header
+  const cach = await p.evaluate(() => document.querySelector(".ngan").getBoundingClientRect().top - document.querySelector(".dau").getBoundingClientRect().bottom);
+  assert.ok(cach >= 8, `thanh ngăn cách header ${cach}px`);
+  // Chi tiết lô: giá, giấy tờ đúng backend
+  await p.locator("#ngan-hang").click();
+  await p.locator('.lo[data-lo="L-0412"] .dau-lo').click();
+  await p.waitForURL(/ban-lo\.html\?.*thu=/);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+  const loL = (await api("/v1/lots?mine=true")).find((l) => l.code === "L-0412");
+  const ng = await api(`/v1/lots/${loL.id}/source-profile`);
+  assert.equal(await p.locator(".giay").count(), ng.giay_to.length, "số giấy tờ của lô");
+  assert.match(await p.locator(".o-gia").innerText(), /giá thấp nhất · kín/);
+  assert.ok(!/undefined|NaN/.test(await p.locator("#noi").innerText()));
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}05d-chi-tiet-lo.png`, fullPage: true });
+  // Chi tiết nhu cầu: đơn gom, giao nhận, không mã hạng thô
+  await p.goto(`${GOC}/thiet-ke/ban-hang-hoa.html?thu=0918000421#can`);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+  await p.locator("#ds-can .dau-nc").first().click();
+  await p.waitForURL(/ban-nhu-cau\.html/);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 10000 });
+  const chu = await p.locator("#noi").innerText();
+  assert.match(chu, /Giao nhận/); assert.ok(!/undefined|NaN|Loại L\d/.test(chu));
+  if (await p.getByText("Nhận gom nhiều vườn").count()) assert.match(chu, /Đơn gom là gì/);
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}05e-chi-tiet-nhu-cau.png`, fullPage: true });
 });
 
 await trang("tien", async (p) => {
