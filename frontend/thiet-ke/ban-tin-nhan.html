@@ -7,166 +7,106 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
-  .the-chon { display: grid; grid-template-columns: 1fr 1fr; background: var(--giay-lot); border-radius: 14px; padding: 4px; }
-  .the-chon button { min-height: 44px; border: 0; border-radius: 10px; background: transparent; font: 600 15px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
-  .the-chon button[aria-selected="true"] { background: var(--giay-noi); color: var(--la); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 0 0 1px var(--ke); }
-  .ngay { font-size: 13px; font-weight: 600; color: var(--muc-nhat); margin: 18px 0 6px; }
-  .tb { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; align-items: start; }
-  .tb .bt { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; }
-  .tb .bt svg { width: 22px; height: 22px; }
-  .tb .bt.lo { background: var(--la-nhat); color: var(--la-dam); }
-  .tb .bt.hd { background: #e3e9f4; color: #2b4f86; }
-  .tb .bt.tien { background: var(--chin-nen); color: var(--chin); }
-  .tb .bt.khac { background: var(--cho-nen); color: var(--cho); }
-  .tb .tieu { font-weight: 600; line-height: 1.35; }
-  .tb .phu { font-size: 14px; color: var(--muc-nhat); margin-top: 2px; }
-  .tb.moi .tieu::after { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2f9e5b; margin-left: 6px; vertical-align: 2px; }
-  .sap-co { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 14px; background: var(--giay-noi); border: 1px dashed var(--ke-dam); color: var(--muc-phu); font-size: 14px; }
-  .sap-co svg { flex: none; width: 28px; height: 28px; color: var(--muc-nhat); }
-  .hoi { display: grid; gap: 10px; }
-  .hoi textarea { width: 100%; min-height: 120px; border-radius: 14px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 14px; font: 400 16px/1.5 var(--chu); color: var(--muc); resize: vertical; outline: none; }
-  .hoi textarea:focus { border-color: var(--la); }
-  .goi-nhanh { display: flex; gap: 8px; flex-wrap: wrap; }
-  .goi-nhanh button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ke-dam); background: var(--giay-noi); color: var(--muc-phu); font: 500 14px/1.2 var(--chu); cursor: pointer; text-align: left; }
-  .da-gui { padding: 14px 16px; border-radius: 14px; background: var(--la-nhat); color: var(--la-dam); }
-  .goi-dt { display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+  .loc-tn { display: flex; gap: 8px; }
+  .loc-tn button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: 600 14px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
+  .loc-tn button[aria-pressed="true"] { background: var(--la); border-color: var(--la); color: var(--tren-la); }
+  .loc-tn small { font-weight: 400; opacity: .8; margin-left: 4px; }
+  .cuoc { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; align-items: center; }
+  .cuoc .anh { width: 52px; height: 52px; border-radius: 16px; background: var(--giay-lot) center / cover; position: relative; }
+  .cuoc .anh .loai { position: absolute; right: -4px; bottom: -4px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--la); color: var(--tren-la); box-shadow: 0 0 0 2px var(--giay); }
+  .cuoc .anh .loai.hd { background: #2b4f86; }
+  .cuoc .anh .loai svg { width: 14px; height: 14px; }
+  .cuoc .giua { min-width: 0; }
+  .cuoc .ai { font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cuoc .phu-dong { display: block; font-size: 13px; color: var(--muc-nhat); margin-top: 1px; }
+  .cuoc .tin { color: var(--muc-phu); font-size: 15px; margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .cuoc .tin b { color: var(--muc); font-variant-numeric: tabular-nums; }
+  .cuoc .phai { text-align: right; align-self: start; padding-top: 2px; }
+  .cuoc .gio { font-size: 13px; color: var(--muc-nhat); }
+  .nhan-cho { font-size: 13px; font-weight: 600; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+  .nhan-cho.bac { background: var(--dau-do-nen); color: var(--dau-do); }
+  .nhan-cho.ho { background: var(--cho-nen); color: var(--cho); }
+  .cuoc.toi-bac .ai::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2f9e5b; margin-right: 6px; vertical-align: 2px; }
+  .trong-tn { text-align: center; padding: 40px 16px; color: var(--muc-phu); }
+  .trong-tn svg { width: 56px; height: 56px; color: var(--muc-mo); margin: 0 auto 12px; display: block; }
 </style>
 </head>
 <body>
 <div class="trang">
   <header class="dau" id="dau"></header>
-  <main class="noi" style="gap:16px">
-    <div class="the-chon" role="tablist" aria-label="Tin nhắn">
-      <button role="tab" id="t-tb" aria-controls="p-tb" aria-selected="true">Thông báo</button>
-      <button role="tab" id="t-ht" aria-controls="p-ht" aria-selected="false">Hỏi AgiViet</button>
+  <main class="noi" id="noi" style="gap:12px" aria-busy="true">
+    <div class="loc-tn" id="loc" role="group" aria-label="Lọc tin nhắn">
+      <button type="button" data-k="tat-ca" aria-pressed="true">Tất cả</button>
+      <button type="button" data-k="cho-bac" aria-pressed="false">Chờ bác trả lời</button>
     </div>
-
-    <section id="p-tb" role="tabpanel" aria-labelledby="t-tb">
-      <div class="sap-co"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>
-        <span>Trò chuyện trực tiếp với bên mua đang được làm. Hiện bác trao đổi qua lời chào giá và hợp đồng.</span></div>
-      <div id="ds-tb"><div class="khung-tai"></div><div class="khung-tai"></div><div class="khung-tai"></div></div>
-    </section>
-
-    <section id="p-ht" role="tabpanel" aria-labelledby="t-ht" hidden>
-      <div class="hoi">
-        <p class="goi-y" style="color:var(--muc-phu)">Bác gặp khó ở đâu cứ nhắn, nhân viên AgiViet trả lời trong giờ làm việc.</p>
-        <div class="goi-nhanh" id="goi-nhanh">
-          <button type="button">Tôi chưa nhận được tiền cọc</button>
-          <button type="button">Bên mua chưa ký hợp đồng</button>
-          <button type="button">Tôi muốn sửa lô hàng đã đăng</button>
-          <button type="button">Hẹn nhân viên tới xác minh vườn</button>
-        </div>
-        <label class="nhan-o" for="noi-dung" style="font-size:14px;font-weight:600;color:var(--muc-phu)">Nội dung</label>
-        <textarea id="noi-dung" maxlength="1000" placeholder="Ví dụ: Lô L-0412 tôi muốn đổi giá…"></textarea>
-        <p class="bao loi" id="loi" hidden></p>
-        <button class="nut chinh-nut" type="button" id="gui" disabled>Gửi cho AgiViet</button>
-        <div class="da-gui" id="da-gui" hidden></div>
-      </div>
-    </section>
+    <div id="ds"><div class="khung-tai"></div><div class="khung-tai"></div></div>
   </main>
 </div>
 
 <script type="module">
-import { esc, phien, giuThamSo, veDau, veTab, ghiDaXem, seqDaXem } from "./chung.js";
+import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, soThongBaoMoi, viecCho, tien } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 veTab("tin-nhan");
-veDau($("dau"), { chao: "Tin nhắn", ten: "Thông báo & hỗ trợ", chuDau: "" });
-giuThamSo();
+veDau($("dau"), { chao: "Tin nhắn", ten: "Chào giá & trao đổi", chuDau: "" });
 
-// Thẻ: Thông báo / Hỏi AgiViet (mở thẳng bằng #ho-tro từ nút tai nghe ở header)
-const chon = (ht) => {
-  $("t-tb").setAttribute("aria-selected", String(!ht)); $("t-ht").setAttribute("aria-selected", String(ht));
-  $("p-tb").hidden = ht; $("p-ht").hidden = !ht;
+const conLai = (iso) => {
+  const ms = new Date(iso) - Date.now();
+  if (!(ms > 0)) return "đã hết hạn";
+  const g = Math.floor(ms / 36e5);
+  return g >= 24 ? `còn ${Math.floor(g / 24)} ngày` : g >= 1 ? `còn ${g} giờ` : `còn ${Math.max(1, Math.floor(ms / 6e4))} phút`;
 };
-$("t-tb").onclick = () => { chon(false); history.replaceState(null, "", "#thong-bao"); };
-$("t-ht").onclick = () => { chon(true); history.replaceState(null, "", "#ho-tro"); };
-if (location.hash === "#ho-tro") chon(true);
+const kgTan = (g) => { const kg = Number(g) / 1000; return kg >= 1000 ? `${(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} tấn` : `${kg.toLocaleString("vi-VN")} kg`; };
+const IC_CHAO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H8M12 8l-4 4 4 4"/></svg>';
+const IC_HD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h4"/></svg>';
 
-// Tên tiếng Việt cho sự kiện; trạng thái lấy từ payload.to
-const TRANG_THAI = {
-  draft: "nháp", on_sale: "đang bán trên chợ", closed: "đã đóng", sold_out: "đã bán hết", reserved: "đã giữ cho đơn",
-  drafting: "đang soạn", awaiting_signatures: "chờ ký", active: "có hiệu lực", completed: "đã hoàn tất", cancelled: "đã hủy",
-  open: "đang mở", pending: "chờ duyệt",
-};
-const IC = {
-  lo: '<path d="M4 9h16l-1.2 11.1a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9z"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/>',
-  hd: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
-  tien: '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M16 14.5h2"/>',
-  khac: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>',
-};
-function dien(n, maLo, maDon) {
-  const to = n.payload?.to, tt = TRANG_THAI[to] || to;
-  const loai = n.aggregate_type;
-  if (loai === "lot") {
-    const ma = maLo.get(n.aggregate_id) || "Lô";
-    if (n.event_type === "lot.price") return ["lo", `${ma}: đã đổi giá`, "Giá mới đã hiện cho bên mua"];
-    if (n.event_type === "lo.da_dang") return ["lo", `${ma} đã lên chợ`, "Bên mua tìm thấy lô này"];
-    return ["lo", `${ma} ${tt ? "chuyển sang " + tt : "được cập nhật"}`, ""];
-  }
-  if (loai === "order") return ["hd", `Hợp đồng ${maDon.get(n.aggregate_id) || ""} ${tt ? tt : "có cập nhật"}`.replace(/\s+/g, " "), "Bấm để xem hợp đồng"];
-  if (/deposit|payment|tien|bank|hold/.test(n.event_type + loai)) return ["tien", "Có cập nhật về tiền", tt ? `Trạng thái: ${tt}` : ""];
-  if (loai === "organization") return ["khac", to === "active" ? "Tài khoản đã được kích hoạt" : "Tài khoản có cập nhật", "AgiViet đã xác minh tổ chức của bác"];
-  return ["khac", "Có cập nhật mới", n.event_type];
-}
-const nhom = (d) => {
-  const h = new Date(); const x = new Date(d);
-  const cach = Math.floor((new Date(h.toDateString()) - new Date(x.toDateString())) / 864e5);
-  return cach === 0 ? "Hôm nay" : cach === 1 ? "Hôm qua" : x.toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
-};
-
-let token;
-async function moThongBao() {
-  token = await phien();
+let tatCa = [];
+async function mo() {
+  const token = await phien();
   const h = { headers: { authorization: "Bearer " + token } };
-  const [me, ds, lo, don] = await Promise.all([
-    fetch("/v1/me", h).then((x) => x.json()), fetch("/v1/notifications?limit=100", h).then((x) => (x.ok ? x.json() : Promise.reject(new Error("tb")))),
-    fetch("/v1/lots?mine=true", h).then((x) => (x.ok ? x.json() : [])).catch(() => []), fetch("/v1/orders", h).then((x) => (x.ok ? x.json() : [])).catch(() => []),
-  ]);
-  veDau($("dau"), { chao: "Tin nhắn", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase() });
-  const maLo = new Map(lo.map((l) => [l.id, l.code])), maDon = new Map(don.map((d) => [d.id, d.code]));
-  const daXem = seqDaXem();
-  if (!ds.length) { $("ds-tb").innerHTML = `<p class="bao" style="margin-top:16px">Chưa có thông báo nào.</p>`; return; }
-  // Gộp: các sự kiện cùng một lô/đơn trong 10 phút → 1 dòng, giữ sự kiện có nghĩa nhất (đăng lô sinh 4 sự kiện liền nhau)
-  const UU_TIEN = { "lo.da_dang": 5, "lot.on_sale": 4, "lot.price": 3, "lot.draft": 1 };
-  const gon = [];
-  for (const n of ds) {
-    const cu = gon.find((g) => g.aggregate_id === n.aggregate_id && Math.abs(new Date(g.occurred_at) - new Date(n.occurred_at)) < 6e5);
-    if (!cu) { gon.push(n); continue; }
-    if ((UU_TIEN[n.event_type] || 2) > (UU_TIEN[cu.event_type] || 2)) Object.assign(cu, n, { seq: Math.max(Number(cu.seq), Number(n.seq)) });
-  }
-  let truoc = ""; const out = [];
-  for (const n of gon) {
-    const g = nhom(n.occurred_at); if (g !== truoc) { out.push(`<h3 class="ngay">${esc(g)}</h3>`); truoc = g; }
-    const [lop, tieu, phu] = dien(n, maLo, maDon);
-    const gio = new Date(n.occurred_at).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
-    const lien = lop === "lo" ? "./ban-hang-hoa.html" : "#";
-    out.push(`<a class="tb ${Number(n.seq) > daXem ? "moi" : ""}" href="${lien}"><span class="bt ${lop}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[lop]}</svg></span>
-      <span><p class="tieu">${esc(tieu)}</p><p class="phu">${esc([phu, gio].filter(Boolean).join(" · "))}</p></span></a>`);
-  }
-  $("ds-tb").innerHTML = out.join("");
-  giuThamSo($("ds-tb"));
-  ghiDaXem(Math.max(...ds.map((n) => Number(n.seq) || 0)));   // đã mở xem → tắt chấm mới ở chuông
+  const get = (d) => fetch(d, h).then((x) => (x.ok ? x.json() : Promise.reject(new Error(d))));
+  const [me, chao, don, lo, tb] = await Promise.all([get("/v1/me"), get("/v1/offers"), get("/v1/orders").catch(() => []), get("/v1/lots?mine=true").catch(() => []), soThongBaoMoi(token)]);
+  veDau($("dau"), { chao: "Tin nhắn", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase(), soThongBao: tb });
+  const loTheoMa = new Map(lo.map((l) => [l.code, l]));
+  // Lời chào giá đang mở: chi tiết từng lời chào để biết tới lượt ai
+  const dang = (Array.isArray(chao) ? chao : chao.items || []).filter((c) => /sent|countered|open/.test(c.status));
+  const chiTiet = await Promise.all(dang.map((c) => get(`/v1/offers/${c.id}`).catch(() => null)));
+  const cuocChao = dang.map((c, i) => {
+    const ct = chiTiet[i] || {}, v = c.vong_cuoi || ct.rounds?.at(-1) || {};
+    const l = loTheoMa.get(c.lot_code);
+    const toiBac = ct.toi_luot_toi ?? (v.from_side === "buyer");
+    return { loai: "chao", toiBac, thoi: v.expires_at || c.updated_at, ma: c.code, anh: l ? ANH_SP(l.product_code) : null, lo: c.lot_code,
+      ai: v.from_side === "buyer" ? "Bên mua" : "Bác", gia: v.price_vnd, luong: v.qty_g, het: v.expires_at, vong: v.round_no, con: ct.luot_tra_gia_con };
+  });
+  const cuocDon = don.filter((d) => d.hien_thi?.toi_luot && !/complet|cancel/.test(d.status)).map((d) => ({
+    loai: "don", toiBac: d.hien_thi.toi_luot.phia === d.phia_cua_ban, ma: d.code, ai: d.buyer_name, viec: viecCho(d), gia: d.contract_value_vnd }));
+  tatCa = [...cuocChao, ...cuocDon].sort((a, b) => Number(b.toiBac) - Number(a.toiBac));
+  $("loc").querySelector('[data-k="cho-bac"]').innerHTML = `Chờ bác trả lời<small>${tatCa.filter((c) => c.toiBac).length}</small>`;
+  ve("tat-ca");
+  $("noi").setAttribute("aria-busy", "false");
 }
-moThongBao().catch(() => { $("ds-tb").innerHTML = `<p class="bao loi" style="margin-top:16px">Chưa tải được thông báo.</p><button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`; });
 
-// Hỏi AgiViet: gửi yêu cầu hỗ trợ thật (POST /v1/support), có khóa chống gửi trùng
-$("goi-nhanh").querySelectorAll("button").forEach((b) => (b.onclick = () => { $("noi-dung").value = b.textContent + ". "; $("noi-dung").focus(); $("gui").disabled = false; }));
-$("noi-dung").addEventListener("input", () => ($("gui").disabled = $("noi-dung").value.trim().length < 5));
-let khoa = null;
-$("gui").onclick = async () => {
-  const nd = $("noi-dung").value.trim();
-  khoa ||= crypto.randomUUID();
-  $("gui").disabled = true; $("gui").textContent = "Đang gửi…"; $("loi").hidden = true;
-  try {
-    token ||= await phien();
-    const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: khoa, message: nd }) });
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được, bác thử lại.");
-    $("da-gui").innerHTML = `<b>Đã gửi cho AgiViet.</b><br>Nhân viên sẽ gọi hoặc nhắn lại cho bác. Mã yêu cầu: ${esc((j.data?.code || j.id || "").toString().slice(0, 12))}`;
-    $("da-gui").hidden = false; $("noi-dung").value = ""; khoa = null;
-  } catch (e) { $("loi").textContent = e.message; $("loi").hidden = false; }
-  $("gui").textContent = "Gửi cho AgiViet"; $("gui").disabled = $("noi-dung").value.trim().length < 5;
-};
+function ve(k) {
+  $("loc").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === k)));
+  const ds = k === "cho-bac" ? tatCa.filter((c) => c.toiBac) : tatCa;
+  $("ds").innerHTML = ds.length ? ds.map((c) => c.loai === "chao" ? `
+    <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#">
+      <span class="anh" style="${c.anh ? `background-image:url(${c.anh})` : ""}"><span class="loai">${IC_CHAO}</span></span>
+      <span class="giua"><span class="ai">${esc(c.ai)} chào giá</span>
+        <span class="phu-dong">Lô ${esc(c.lo)} · ${esc(conLai(c.het))}${c.vong > 1 ? ` · vòng ${c.vong}` : ""}</span>
+        <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt trả giá` : ""}</span></span>
+      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span></span>
+    </a>` : `
+    <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#">
+      <span class="anh" style="background:#e3e9f4"><span class="loai hd">${IC_HD}</span></span>
+      <span class="giua"><span class="ai">${esc(c.ai)}</span><span class="phu-dong">Hợp đồng ${esc(c.ma)}</span><span class="tin">${esc(c.viec)} · <b>${esc(tien(c.gia))}</b></span></span>
+      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Đang chờ"}</span></span>
+    </a>`).join("") : `<div class="trong-tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
+      <p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
+  giuThamSo($("ds"));
+}
+$("loc").querySelectorAll("button").forEach((b) => (b.onclick = () => ve(b.dataset.k)));
+giuThamSo();
+mo().catch(() => { $("ds").innerHTML = `<p class="bao loi">Chưa tải được tin nhắn.</p><button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`; $("noi").setAttribute("aria-busy", "false"); });
 </script>
 </body>
 </html>

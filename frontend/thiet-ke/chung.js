@@ -90,20 +90,35 @@ export const bieuTuong = (ten, dac = false) => `<svg viewBox="0 0 24 24" width="
 // Thanh menu dưới dùng chung: Trang chủ · Chợ · Đăng bài · Tin nhắn · Tiền
 const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "./ban-dang-bai.html"],
   ["tin-nhan", "Tin nhắn", "./ban-tin-nhan.html"], ["tien", "Tiền", "#tien"]];
+// Đăng bài ở giữa là nút tròn xanh lớn nhô lên khỏi thanh; cuộn xuống thì thanh thụt bớt, cuộn lên hiện đủ.
+const CONG = '<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 export function veTab(dangMo, soTin = 0) {
   const nav = document.createElement("nav");
   nav.className = "tab"; nav.setAttribute("aria-label", "Mục chính");
-  nav.innerHTML = MUC_TAB.map(([k, ten, href]) => `<a href="${href}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span>${ten}${k === "tin-nhan" && soTin ? `<span class="an-chu"> (${soTin} tin mới)</span>` : ""}</span></a>`).join("");
+  nav.innerHTML = MUC_TAB.map(([k, ten, href]) => k === "dang-bai"
+    ? `<a href="${href}" class="tab-giua"${k === dangMo ? ' aria-current="page"' : ""}><span class="fab">${CONG}</span><span>${ten}</span></a>`
+    : `<a href="${href}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span>${ten}${k === "tin-nhan" && soTin ? `<span class="an-chu"> (${soTin} tin mới)</span>` : ""}</span></a>`).join("");
   document.querySelector(".trang").appendChild(nav);
   giuThamSo(nav);
+  // Cuộn xuống: thanh thụt vào; cuộn lên hoặc gần đầu trang: hiện đủ
+  let truoc = scrollY, cho = false;
+  addEventListener("scroll", () => {
+    if (cho) return; cho = true;
+    requestAnimationFrame(() => {
+      const y = scrollY, d = y - truoc;
+      if (Math.abs(d) > 6) { nav.classList.toggle("thu", d > 0 && y > 60); truoc = y; }
+      cho = false;
+    });
+  }, { passive: true });
+  return nav;
 }
 
 // Header dùng chung: ảnh đại diện + tên bên trái; Hỗ trợ (tai nghe) + Thông báo (chuông, chấm xanh) bên phải
 export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
   goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
     <div class="dau-phai">
-      <a class="nut-tron" href="./ban-tin-nhan.html#ho-tro" aria-label="Hỗ trợ: nhắn AgiViet">${bieuTuong("ho-tro")}</a>
-      <a class="nut-tron" href="./ban-tin-nhan.html#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>
+      <a class="nut-tron" href="./ban-thong-bao.html#ho-tro" aria-label="Hỗ trợ: nhắn AgiViet">${bieuTuong("ho-tro")}</a>
+      <a class="nut-tron" href="./ban-thong-bao.html#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>
     </div>`;
   giuThamSo(goc);
 }

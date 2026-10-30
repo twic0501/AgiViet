@@ -31,7 +31,8 @@
     <a href="#ban-hom-nay.html?thu=0918000421">2. Trang chủ · Hôm nay</a>
     <a href="#ban-hang-hoa.html?thu=0918000421">3. Chợ · Hàng đang bán</a>
     <a href="#ban-dang-bai.html?thu=0918000421">4. Đăng bài</a>
-    <a href="#ban-tin-nhan.html?thu=0918000421">5. Tin nhắn · Thông báo</a>
+    <a href="#ban-tin-nhan.html?thu=0918000421">5. Tin nhắn · chào giá</a>
+    <a href="#ban-thong-bao.html?thu=0918000421">6. Thông báo · Hỏi AgiViet</a>
   </nav>
   <main class="san">
     <div><div class="may"><iframe id="sang" title="Nền sáng"></iframe></div><p class="nhan-may">390 × 844</p></div>
@@ -49,7 +50,7 @@
   let dau = null;
   setInterval(async () => {
     try {
-      const ds = ["so-vuon.css", "chung.js", "dang-nhap.html", "ban-hom-nay.html", "ban-hang-hoa.html", "ban-dang-bai.html", "ban-tin-nhan.html"];
+      const ds = ["so-vuon.css", "chung.js", "dang-nhap.html", "ban-hom-nay.html", "ban-hang-hoa.html", "ban-dang-bai.html", "ban-tin-nhan.html", "ban-thong-bao.html"];
       const t = (await Promise.all(ds.map((f) => fetch("./" + f, { method: "HEAD", cache: "no-store" }).then((r) => r.headers.get("last-modified") || r.headers.get("etag") || "")))).join("|");
       if (dau !== null && t !== dau) mo();
       dau = t;

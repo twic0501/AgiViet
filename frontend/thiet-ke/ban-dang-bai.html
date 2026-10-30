@@ -44,7 +44,7 @@
   .xem-lai dl { margin: 0; padding: 4px 16px 12px; display: grid; grid-template-columns: auto 1fr; gap: 0 12px; }
   .xem-lai dt { color: var(--muc-nhat); font-size: 14px; padding: 10px 0; border-bottom: 1px solid var(--ke); }
   .xem-lai dd { margin: 0; text-align: right; font-weight: 600; padding: 10px 0; border-bottom: 1px solid var(--ke); font-variant-numeric: tabular-nums; }
-  .hang-nut { display: grid; grid-template-columns: auto 1fr; gap: 10px; position: sticky; bottom: 68px; z-index: 4; padding: 12px 0; margin: 0 0 -12px; background: linear-gradient(transparent, var(--giay) 22%); }
+  .hang-nut { display: grid; grid-template-columns: auto 1fr; gap: 10px; position: sticky; bottom: 0; z-index: 4; padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important; padding: 12px 0; margin: 0 0 -12px; background: linear-gradient(transparent, var(--giay) 22%); }
   .nut.lui { background: var(--giay-noi); color: var(--muc-phu); box-shadow: inset 0 0 0 1.5px var(--ke-dam); }
   .xong-hop { text-align: center; padding: 24px 8px; }
   .xong-hop .vong-tich { width: 72px; height: 72px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 16px; }
@@ -121,11 +121,16 @@
 </div>
 
 <script type="module">
-import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, tienDu } from "./chung.js";
+import { esc, phien, ANH_SP, giuThamSo, tienDu } from "./chung.js";
 import { anhThanhBase64 } from "/shared/ngoai-tuyen.js";
 const $ = (id) => document.getElementById(id);
-veTab("dang-bai");
-veDau($("dau"), { chao: "Đăng bài", ten: "Bán hàng mới", chuDau: "" });
+// Đăng bài là màn làm việc tập trung: không có thanh menu, chỉ có nút quay lại
+const veDauDang = (ten = "Bán hàng mới") => {
+  $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Thoát, quay lại trang trước"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div style="flex:1;min-width:0"><p class="chao">Đăng bài</p><h1>${esc(ten)}</h1></div>`;
+  $("dong").onclick = () => (history.length > 1 ? history.back() : (location.href = "./ban-hom-nay.html" + location.search));
+};
+veDauDang();
 
 const st = { sp: null, loai: null, dv: "kg", coSo: "weighed", anh: [] };
 let token, buoc = 1, ds = [];
@@ -165,7 +170,7 @@ function den(b) {
 async function mo() {
   token = await phien();
   fetch("/v1/me", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).then((me) => {
-    if (me) veDau($("dau"), { chao: "Đăng bài", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase() });
+    if (me) veDauDang(me.org.name);
   }).catch(() => {});
   const r = await fetch("/v1/seller/verified-products", { headers: { authorization: "Bearer " + token } });
   if (!r.ok) throw new Error("Chưa tải được mặt hàng của bác.");

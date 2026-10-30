@@ -85,7 +85,7 @@ await trang("dang-nhap-dung-ma", async (p) => {
   await p.locator("#otp input").first().pressSequentially(ma);
   await p.waitForURL(/ban-hom-nay\.html/, { timeout: 8000 });
   await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 8000 });
-  assert.notEqual((await p.locator(".dau h1").textContent()).trim(), "AgiViet", "đã vào bằng phiên thật, hiện tên tổ chức");
+  assert.notEqual((await p.locator("#dau h1").textContent()).trim(), "AgiViet", "đã vào bằng phiên thật, hiện tên tổ chức");
 }, /status of 429/);
 
 await trang("dang-nhap-sai-ma", async (p) => {
@@ -187,22 +187,21 @@ await trang("tin-nhan-thong-bao", async (p) => {
   // Trước khi xem: chuông có chấm mới; xem xong quay về Trang chủ: hết chấm
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
-  assert.equal(await p.locator('.dau a[href*="thong-bao"] .cham-moi').count(), 1, "chưa xem thì chuông có chấm");
-  await p.locator('.dau a[href*="thong-bao"]').click();
-  await p.waitForURL(/ban-tin-nhan\.html/);
+  assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 1, "chưa xem thì chuông có chấm");
+  await p.locator('#dau a[href*="#thong-bao"]').click();
+  await p.waitForURL(/ban-thong-bao\.html/);
   await p.locator("#ds-tb .tb").first().waitFor({ timeout: 8000 });
   assert.ok(await p.locator("#ds-tb .tb").count() > 0, "có thông báo thật");
   assert.ok(await p.locator("#ds-tb .ngay").count() > 0, "có nhóm theo ngày");
-  assert.equal(await p.locator('.tab a[aria-current="page"]').innerText().then((s) => s.trim()), "Tin nhắn");
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}11-tin-nhan.png` });
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
-  assert.equal(await p.locator('.dau a[href*="thong-bao"] .cham-moi').count(), 0, "đã xem thì hết chấm");
+  assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 0, "đã xem thì hết chấm");
 });
 
 await trang("hoi-agiviet", async (p) => {
-  await p.goto(`${GOC}/thiet-ke/ban-tin-nhan.html?thu=0918000421#ho-tro`);
+  await p.goto(`${GOC}/thiet-ke/ban-thong-bao.html?thu=0918000421#ho-tro`);
   assert.equal(await p.locator("#p-ht").isVisible(), true, "mở thẳng thẻ Hỏi AgiViet từ nút tai nghe");
   assert.ok(await p.locator("#gui").isDisabled(), "chưa có nội dung thì chưa gửi");
   await p.getByRole("button", { name: "Bên mua chưa ký hợp đồng" }).click();
@@ -213,6 +212,39 @@ await trang("hoi-agiviet", async (p) => {
   assert.match(await p.locator("#da-gui").innerText(), /Đã gửi cho AgiViet/);
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}12-hoi-agiviet.png` });
+});
+
+await trang("tin-nhan-chao-gia", async (p) => {
+  // Có lời chào giá thật của bên mua thì phải hiện, mục tới lượt bác đứng đầu
+  const t = (await (await fetch("http://127.0.0.1:18980/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const chao = await (await fetch("http://127.0.0.1:18980/v1/offers", { headers: { authorization: "Bearer " + t } })).json();
+  const mo = chao.filter((c) => /sent|countered|open/.test(c.status)).length;
+  await p.goto(`${GOC}/thiet-ke/ban-tin-nhan.html?thu=0918000421`);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 8000 });
+  assert.equal(await p.locator('.tab a[aria-current="page"]').innerText().then((s) => s.trim()), "Tin nhắn");
+  assert.ok(await p.locator(".cuoc").count() >= mo, "mọi lời chào đang mở đều hiện");
+  if (mo) {
+    await p.locator('#loc [data-k="cho-bac"]').click();
+    assert.ok(await p.locator(".cuoc .nhan-cho.bac").count() > 0, "lọc Chờ bác trả lời có mục");
+  }
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}13-tin-nhan-chao-gia.png` });
+});
+
+await trang("menu-va-dang-bai", async (p) => {
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator(".tab .fab").waitFor({ timeout: 8000 });
+  assert.equal(await p.locator(".tab a").count(), 5, "menu 5 mục");
+  const fab = await p.locator(".tab .fab").boundingBox(), thanh = await p.locator(".tab").boundingBox();
+  assert.ok(fab.y < thanh.y, "nút Đăng bài nhô lên khỏi thanh menu");
+  await p.mouse.wheel(0, 600); await p.waitForTimeout(500);
+  assert.ok(await p.locator(".tab.thu").count() === 1, "cuộn xuống thì thanh thụt vào");
+  await p.mouse.wheel(0, -300); await p.waitForTimeout(500);
+  assert.ok(await p.locator(".tab.thu").count() === 0, "cuộn lên thì hiện đủ");
+  await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
+  await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
+  assert.equal(await p.locator(".tab").count(), 0, "Đăng bài không có thanh menu");
+  assert.ok(await p.locator("#dong").isVisible(), "Đăng bài có nút quay lại");
 });
 
 await browser.close();
