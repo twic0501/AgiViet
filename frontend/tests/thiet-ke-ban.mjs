@@ -243,7 +243,7 @@ await trang("menu-va-dang-bai", async (p) => {
   await p.locator(".tab .fab").waitFor({ timeout: 8000 });
   assert.equal(await p.locator(".tab a").count(), 5, "menu 5 mục");
   const fab = await p.locator(".tab .fab").boundingBox(), thanh = await p.locator(".tab").boundingBox();
-  assert.ok(fab.y < thanh.y, "nút Đăng bài nhô lên khỏi thanh menu");
+  assert.ok(fab.y >= thanh.y - 1 && fab.y + fab.height <= thanh.y + thanh.height + 1, "nút Đăng bài nằm gọn trong thanh menu nổi");
   await p.mouse.wheel(0, 600); await p.waitForTimeout(500);
   assert.ok(await p.locator(".tab.thu").count() === 1, "cuộn xuống thì thanh thụt vào");
   await p.mouse.wheel(0, -300); await p.waitForTimeout(500);

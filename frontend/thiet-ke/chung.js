@@ -75,17 +75,28 @@ export async function layDuLieu(token) {
   return { me, don, lo, tienTom, troi, tenSp };
 }
 
-// ---- Biểu tượng nét (viền rỗng) / đặc (đang chọn). Không hiệu ứng rê chuột. ----
+// ---- Bộ biểu tượng AgiViet: hai lớp — khối tô xanh nhạt bên trong + nét đậm bo tròn 2px; đang chọn thì khối tô đặc, chi tiết bên trong đổi màu kem ----
+// Mỗi biểu tượng: [khối (tô), viền (nét), chi tiết (nét)]
 const IC = {
-  "trang-chu": ['<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>', '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" fill="currentColor"/>'],
-  cho: ['<path d="M4 9h16l-1.2 11.1a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9z"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/>', '<path d="M4 9h16l-1.2 11.1a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9z" fill="currentColor"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/>'],
-  "dang-bai": ['<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/>', '<rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="currentColor"/><path d="M12 8v8M8 12h8" stroke="#f6f2e7"/>'],
-  "tin-nhan": ['<path d="M4 5h16v11H9l-5 4z"/>', '<path d="M4 5h16v11H9l-5 4z" fill="currentColor"/>'],
-  tien: ['<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M16 14.5h2"/>', '<rect x="3" y="6" width="18" height="13" rx="2.5" fill="currentColor"/><path d="M3 10h18M16 14.5h2" stroke="#f6f2e7"/>'],
-  "ho-tro": ['<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13.5" width="4.5" height="6" rx="1.5"/><rect x="16.5" y="13.5" width="4.5" height="6" rx="1.5"/><path d="M19 19.5a3 3 0 0 1-3 2.5h-3"/>', ""],
-  chuong: ['<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>', ""],
+  "trang-chu": ["M4 10.2 12 4l8 6.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z", "M4 10.2 12 4l8 6.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z", "M10 20.5v-5h4v5"],
+  cho: ["M4.5 10.5h15v8.5a1.5 1.5 0 0 1-1.5 1.5H6a1.5 1.5 0 0 1-1.5-1.5z", "M3.5 10.5 5.2 4.5h13.6l1.7 6M4.5 10.5v8.5A1.5 1.5 0 0 0 6 20.5h12a1.5 1.5 0 0 0 1.5-1.5v-8.5", "M3.5 10.5a2.8 2.8 0 0 0 5.6 0 2.8 2.8 0 0 0 5.8 0 2.8 2.8 0 0 0 5.6 0M10 20.5v-4.5h4v4.5"],
+  "tin-nhan": ["M5 4.5h14A1.5 1.5 0 0 1 20.5 6v9.5A1.5 1.5 0 0 1 19 17h-8l-5 3.5V17H5a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 5 4.5z", "M5 4.5h14A1.5 1.5 0 0 1 20.5 6v9.5A1.5 1.5 0 0 1 19 17h-8l-5 3.5V17H5a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 5 4.5z", "M8 9.5h8M8 12.5h5"],
+  tien: ["M4 7.5h15.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5V8.5a1 1 0 0 1 1-1z", "M4 7.5h15.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5V8.5a1 1 0 0 1 1-1zM5 7.5l10-3.5 1.2 3.5", "M15.5 13.75h2.5"],
+  "nhat-ky": ["M6.5 3.5H18a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H6.5A2 2 0 0 1 4.5 18.5v-13a2 2 0 0 1 2-2z", "M6.5 3.5H18a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H6.5A2 2 0 0 1 4.5 18.5v-13a2 2 0 0 1 2-2zM8 3.5v17", "M15.5 8c-2.6 0-4 1.6-4 4 2.6 0 4-1.6 4-4zM11.5 12v3"],
+  "thoi-tiet": ["M7.5 19a4 4 0 0 1-.4-8 5.5 5.5 0 0 1 10.7 1A3.5 3.5 0 0 1 17.5 19z", "M7.5 19a4 4 0 0 1-.4-8 5.5 5.5 0 0 1 10.7 1A3.5 3.5 0 0 1 17.5 19z", "M6 4.5l1 1.2M3.5 8h1.5M10 2.5v1.5"],
+  "tin-tuc": ["M5 4.5h11.5V18a2 2 0 0 0 2 2H6.5A1.5 1.5 0 0 1 5 18.5z", "M5 4.5h11.5V18a2 2 0 0 0 2 2H6.5A1.5 1.5 0 0 1 5 18.5zM16.5 9h3v9a2 2 0 0 1-2 2", "M8 8.5h5.5M8 12h5.5M8 15.5h3.5"],
+  hoc: ["M12 4.5 21 9l-9 4.5L3 9z", "M12 4.5 21 9l-9 4.5L3 9zM6.5 11v4.5c0 1.6 2.5 3 5.5 3s5.5-1.4 5.5-3V11", "M21 9v5"],
+  "cai-dat": ["M4 6.5h16M4 12h16M4 17.5h16", "M4 6.5h16M4 12h16M4 17.5h16", "M9 6.5h.01M15 12h.01M8 17.5h.01"],
+  "ho-tro": ["M4.5 13.5h3v6h-1.5a1.5 1.5 0 0 1-1.5-1.5zM16.5 13.5h3V18a1.5 1.5 0 0 1-1.5 1.5h-1.5z", "M4.5 15v-3a7.5 7.5 0 0 1 15 0v3M4.5 13.5h3v6h-1.5a1.5 1.5 0 0 1-1.5-1.5zM16.5 13.5h3V18a1.5 1.5 0 0 1-1.5 1.5h-1.5z", "M18 19.5a3 3 0 0 1-3 2h-2"],
+  chuong: ["M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2h-14z", "M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2h-14z", "M10 21a2 2 0 0 0 4 0"],
 };
-export const bieuTuong = (ten, dac = false) => `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[ten][dac && IC[ten][1] ? 1 : 0]}</svg>`;
+export const bieuTuong = (ten, dac = false, co = 24) => {
+  const [khoi, vien, chiTiet] = IC[ten];
+  return `<svg viewBox="0 0 24 24" width="${co}" height="${co}" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">`
+    + `<path d="${khoi}" fill="currentColor" opacity="${dac ? 1 : 0.16}" stroke="none"/>`
+    + `<path d="${vien}" stroke="currentColor" stroke-width="2"/>`
+    + `<path d="${chiTiet}" stroke="${dac ? "var(--tren-la)" : "currentColor"}" stroke-width="2"/></svg>`;
+};
 
 // Thanh menu dưới dùng chung: Trang chủ · Chợ · Đăng bài · Tin nhắn · Tiền
 const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "./ban-dang-bai.html"],
@@ -93,11 +104,12 @@ const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Ch
 // Đăng bài ở giữa là nút tròn xanh lớn nhô lên khỏi thanh; cuộn xuống thì thanh thụt bớt, cuộn lên hiện đủ.
 const CONG = '<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 export function veTab(dangMo, soTin = 0) {
+  // Thanh nổi dạng viên thuốc: chỉ biểu tượng; mục đang mở có nền xanh nhạt, biểu tượng đặc và hiện chữ; Đăng bài là nút tròn xanh
   const nav = document.createElement("nav");
   nav.className = "tab"; nav.setAttribute("aria-label", "Mục chính");
   nav.innerHTML = MUC_TAB.map(([k, ten, href]) => k === "dang-bai"
-    ? `<a href="${href}" class="tab-giua"${k === dangMo ? ' aria-current="page"' : ""}><span class="fab">${CONG}</span><span>${ten}</span></a>`
-    : `<a href="${href}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span>${ten}${k === "tin-nhan" && soTin ? `<span class="an-chu"> (${soTin} tin mới)</span>` : ""}</span></a>`).join("");
+    ? `<a href="${href}" class="tab-giua" aria-label="${ten}"${k === dangMo ? ' aria-current="page"' : ""}><span class="fab">${CONG}</span></a>`
+    : `<a href="${href}" aria-label="${ten}${k === "tin-nhan" && soTin ? ` (${soTin} tin mới)` : ""}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span class="nhan">${ten}</span></a>`).join("");
   document.querySelector(".trang").appendChild(nav);
   giuThamSo(nav);
   // Cuộn xuống: thanh thụt vào; cuộn lên hoặc gần đầu trang: hiện đủ

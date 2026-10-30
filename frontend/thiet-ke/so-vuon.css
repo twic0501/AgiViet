@@ -244,3 +244,16 @@ p { margin: 0; text-wrap: pretty; }
   opacity: 0; pointer-events: none; transition: opacity 200ms var(--cham); touch-action: none; cursor: grab; }
 .nut-cuon.hien { opacity: 1; pointer-events: auto; }
 .nut-cuon.dang-keo { background: var(--la); color: var(--tren-la); cursor: grabbing; }
+
+/* ===== Thanh menu nổi kiểu viên thuốc (thay thanh cũ) ===== */
+.tab { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom)); margin: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 2px;
+  padding: 6px; background: var(--giay-noi); border-radius: 30px; box-shadow: 0 0 0 1px var(--ke), 0 10px 28px rgba(31, 77, 58, 0.16); grid-template-columns: none; }
+.tab a { flex: 0 0 auto; height: 50px; min-height: 0; min-width: 50px; flex-direction: row; gap: 6px; padding: 0 13px; border-radius: 25px; color: var(--muc-phu);
+  transition: background-color 200ms var(--cham), padding 200ms var(--cham); }
+.tab a .nhan { display: none; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.tab a[aria-current="page"] { background: var(--la-nhat); color: var(--la-dam); padding: 0 16px 0 13px; }
+.tab a[aria-current="page"] .nhan { display: inline; }
+.tab .tab-giua { padding: 0; min-width: 0; }
+.tab .tab-giua[aria-current="page"] { background: none; padding: 0; }
+.tab .fab { width: 50px; height: 50px; margin-top: 0; box-shadow: 0 6px 14px rgba(31, 77, 58, 0.32); }
+.tab.thu .fab { transform: scale(0.84); box-shadow: 0 3px 8px rgba(31, 77, 58, 0.25); }
