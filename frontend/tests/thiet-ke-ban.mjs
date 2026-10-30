@@ -53,6 +53,18 @@ async function loDangBan(sdt) {
 async function kiemChung(p) {
   const tran = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   assert.equal(tran, false, "tràn ngang");
+  // Tràn bên trong khối có cuộn riêng (tấm nổi, thẻ…): trừ dải lọc và dải tin cố ý cuộn ngang
+  const tranTrong = await p.evaluate(() => [...document.querySelectorAll("body *")].filter((e) => {
+    if (!e.offsetParent || e.closest(".loc, .khung-tin, .bang-tin, .tl-goi-y")) return false;
+    const cs = getComputedStyle(e), ox = cs.overflowX;
+    if (cs.textOverflow === "ellipsis" || cs.webkitLineClamp !== "none") return false;   // cắt chữ có dấu … là cố ý
+    return (ox === "auto" || ox === "scroll" || ox === "hidden") && e.scrollWidth > e.clientWidth + 1;
+  }).map((e) => `${e.tagName.toLowerCase()}.${[...e.classList].join(".")} ${e.scrollWidth}>${e.clientWidth}`));
+  assert.deepEqual(tranTrong, [], "tràn ngang bên trong khối");
+  // Mọi thứ hiện ra phải nằm trong bề ngang màn hình
+  const loRa = await p.evaluate(() => [...document.querySelectorAll(".tam *, .man-che *")].filter((e) => e.offsetParent && e.getBoundingClientRect().right > innerWidth + 1)
+    .map((e) => `${e.tagName.toLowerCase()} ${(e.textContent || "").trim().slice(0, 16)}`));
+  assert.deepEqual(loRa, [], "phần tử trong tấm nổi lòi ra ngoài màn hình");
   const nho = await p.evaluate(() => [...document.querySelectorAll("button, .tab a")].filter((b) => b.offsetParent && b.getBoundingClientRect().height < 44)
     .map((b) => `${b.textContent.trim().slice(0, 20)}=${Math.round(b.getBoundingClientRect().height)}`));
   assert.deepEqual(nho, [], "vùng bấm < 44px");

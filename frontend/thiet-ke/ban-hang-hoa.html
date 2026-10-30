@@ -66,7 +66,11 @@
   .tam .muc-tam p { font-size: 13px; color: var(--muc-nhat); line-height: 1.4; }
   .tam .hai-o { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .tam .nut-do { background: var(--dau-do-nen); color: var(--dau-do); box-shadow: none; }
-  .tam { max-height: 88vh; overflow-y: auto; }
+  /* Tấm nổi: không bao giờ rộng hơn màn hình; cuộn dọc khi dài, ẩn thanh cuộn */
+  .tam { max-height: 88vh; overflow-y: auto; overflow-x: hidden; grid-template-columns: minmax(0, 1fr); scrollbar-width: none; overscroll-behavior: contain; }
+  .tam::-webkit-scrollbar { display: none; }
+  .tam label, .tam .muc-tam, .tam .hai-o > * { min-width: 0; }
+  .tam input, .tam select { width: 100%; min-width: 0; box-sizing: border-box; }
   /* Cung cầu trong vùng */
   .cung-cau { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
   .cung-cau > div { padding: 10px 12px; border-radius: 14px; background: var(--giay-noi); border: 1px solid var(--ke); }
@@ -86,7 +90,10 @@
   .can .dong button:disabled { background: var(--ke); color: var(--muc-nhat); cursor: default; }
   .trong { text-align: center; padding: 28px 16px; color: var(--muc-phu); }
   /* Tấm chào hàng */
-  .man-che { position: fixed; inset: 0; background: rgba(20, 30, 25, .4); z-index: 30; display: flex; align-items: flex-end; justify-content: center; }
+  /* Khi mở tấm: lớp phủ trên cùng, ẩn nút cuộn nhanh và thanh menu */
+  body:has(.man-che) .nut-cuon, body:has(.man-che) .tab { visibility: hidden; }
+  .tam input:disabled, .tam button:disabled { opacity: .45; cursor: not-allowed; }
+  .man-che { position: fixed; inset: 0; background: rgba(20, 30, 25, .45); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
   .tam { width: 100%; max-width: 480px; background: var(--giay); border-radius: 22px 22px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); display: grid; gap: 12px; animation: len 260ms cubic-bezier(.2,.8,.2,1); }
   @keyframes len { from { transform: translateY(100%); } }
   .tam h2 { font-size: 18px; }
