@@ -103,9 +103,9 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
         duoi = f'<g id="{ten}-duoi{lop}" transform="translate(0 {lt:.2f}) rotate({goc_khuyu})">{tay}{phan_duoi}</g>'
         return f'<g id="{ten}-tren{lop}" transform="rotate({goc_vai})">{phan_tren}{duoi}</g>'
     ban_tay_lop = chuoi('', '', '', do + ban)
-    mo = f'<g id="{ten}{"-ban-noi" if chi_ban else ""}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
+    mo = f'<g id="{ten}{"-noi" if chi_ban else ""}" data-goc="{vai[0]} {vai[1]}" transform="translate({vai[0]} {vai[1]}) scale({sx} 1)">'
     if chi_ban:  # chỉ bàn tay, đặt ở lớp trên đầu (gãi đầu, khum tai): cùng bộ khớp nên dính đúng cổ tay
-        return mo + ban_tay_lop + '</g>'
+        return mo + chuoi('-noi', '', '', do + ban) + '</g>'
     vien = chuoi('-vien', vien_ong(lt, R_VAI, R_KHUYU), vien_ong(ld, R_KHUYU, R_CO))
     mau = chuoi('-mau', ong(lt, R_VAI, R_KHUYU), ong(ld, R_KHUYU, R_CO, nep=True))
     return mo + (ban_tay_lop if not ban_noi else '') + vien + mau + '</g>'
@@ -173,7 +173,8 @@ def dung(svg_path, tu_the, ra):
             do_svg = dao_cu(d[0], d[1] if len(d) > 1 else 0.5, d[2] if len(d) > 2 else 0.0,
                             (d[3] if len(d) > 3 else 0.0, d[4] if len(d) > 4 else 0.0), guong) if d else ''
             moi = ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, ban_noi=noi, do=do_svg) + '</g>')[0]
-            if noi:  # bàn tay nổi lên trên đầu: thêm nhóm chỉ-bàn-tay ở cuối gốc SVG (cùng bộ khớp)
+            # Bản dựng cho Rive ("_rive"): luôn có bàn tay nổi (ẩn), hoạt ảnh bật/tắt theo dáng.
+            if noi or p.get('_rive'):
                 r.append(ET.fromstring(f'<g xmlns="{NS}">' + canh_tay(side, vai, q[0], q[1], q[2], ban, guong, keo, keo_duoi, chi_ban=True) + '</g>')[0])
             pa.remove(g)
             # Tay đưa ra trước thân (ôm/cầm đồ trước ngực) thì vẽ sau thân.

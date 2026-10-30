@@ -218,7 +218,7 @@ def bo_phan(g, ke):
         # bỏ translate ngoài cùng (vị trí đã là data-goc), giữ các bước còn lại (scale lật gương…)
         g2 = copy.copy(g); g2.attrib = dict(g.attrib)
         g2.set('transform', ' '.join(f'{l}({" ".join(str(x) for x in v)})' for l, v in bd if l != 'translate') or 'translate(0 0)')
-        g2.attrib.pop('id', None)
+        # giữ id: nút trong cùng được ghi vào KHOP (bật/tắt cả nhóm, vd bàn tay nổi)
         return gx, gy, nhom_bien_doi(g2, a, g.get('id') + '-goc', lambda a2: ruot_nhom(g, a2, 0.0, 0.0, g.get('id')))
     con = [c for c in g if c.tag.replace(NS, '') in ('path', 'ellipse', 'rect', 'g')]
     phan = []
@@ -355,7 +355,7 @@ def main():
         k = []
         for ben in ('tay-trai', 'tay-phai'):
             for j, khop in enumerate(('tren', 'duoi', 'ban')):
-                for lop in ('', '-vien', '-mau'):
+                for lop in ('', '-vien', '-mau', '-noi'):
                     nid = KHOP.get(f'{ben}-{khop}{lop}')
                     if nid is None:
                         continue
@@ -372,13 +372,26 @@ def main():
                 q = tt[ma][ben]
                 kt = q[3] if len(q) > 3 else 1.0
                 return kt if i == 0 else (q[4] if len(q) > 4 else kt)
-            for lop in ('', '-vien', '-mau'):
+            for lop in ('', '-vien', '-mau', '-noi'):
                 for i, (ong, khop, L) in enumerate((('ongtren', 'duoi', L_TREN), ('ongduoi', 'ban', L_DUOI))):
                     o, d = KHOP.get(f'{ben}-{ong}{lop}'), KHOP.get(f'{ben}-{khop}{lop}#dich')
                     if o is not None:
                         k.append(khung(o, 'scaleY', sum(([(n * doan, keo(m, i)), (n * doan + 30, keo(m, i))] for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
                     if d is not None:
                         k.append(khung(d, 'y', sum(([(n * doan, L * keo(m, i)), (n * doan + 30, L * keo(m, i))] for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
+            # Bàn tay nổi trên đầu (gãi đầu, khum tai): bật bản nổi, tắt bàn tay gốc; dáng khác thì ngược lại.
+            # Đổi tức thì ở giữa đoạn chuyển (khung +15) để không thấy hai bàn tay cùng lúc.
+            noi, goc_ban = KHOP.get(f'{ben}-noi'), KHOP.get(f'{ben}-ban')
+            for nid, khi_noi in ((noi, 1.0), (goc_ban, 0.0)):
+                if nid is None:
+                    continue
+                diem = []
+                for n, m in enumerate(thu_tu):
+                    bat = bool(tt[m].get(ben + '-ban-noi'))
+                    v = khi_noi if bat else 1.0 - khi_noi
+                    diem += [(n * doan + 15, v), (n * doan + 30, v)]
+                diem = [(0, diem[0][1])] + diem
+                k.append(khung(nid, 'opacity', diem, '0 0 1 1'))
         hoat.append(('Đổi dáng thử', doan * len(thu_tu), ''.join(k)))
     # Nhìn theo kiểu xoay đầu thật (như Muza 'cat x'/'cat y'): Joystick đọc vị trí "điểm nhìn" (chạy theo con trỏ)
     # và tua hai dòng thời gian tư thế. Mỗi lớp lệch theo độ sâu: mõm nhiều nhất, mắt vừa (mắt phía xa co hẹp),
