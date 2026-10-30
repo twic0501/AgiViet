@@ -142,6 +142,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - **Vươn vai:** tay giơ cao (66°), mắt nheo, mày nhướng.
   - **Tay:** góc chính diện vung cao hết cỡ. Ở góc ¾ và nghiêng, tay vẽ cho dáng buông nên giơ cao sẽ lộ ống tay phẳng, vì vậy hiện chỉ cho vung khoảng 40 %. **Muốn giơ cao ở ¾ và nghiêng phải vẽ thêm tư thế tay giơ** (làm ở chặng hành động).
   - Góc nghiêng: đã đồ thêm phần áo và đường gấu sau bàn tay (`chen_dau_nhom`), góc ¾ và nghiêng có lót áo (`lot['than']`), nên khi tay vung không còn lộ lỗ.
+  - **Bắp vai phình** (người sáng lập: "tay phải phình, cắt lộ liễu không logic"): ở góc chính diện, tay V4g là khối cứng nằm sau thân, giơ lên thì sườn áo cắt ngang ống tay. Mình thêm `tay-*-vai`, là bầu dục màu áo nằm trên thân, và `tay-*-vaivien`, là viền đen nằm dưới tay và thân. Cả hai cùng điểm xoay và nhận mọi hoạt ảnh của tay. Kết quả: vai tròn liền ống tay khi giơ; lúc buông tay không hiện thêm viền (`khop_vai()` trong `dung-v3.py`).
   - **Kiểm thử:** `AGV_THU=<0–8> AGV_HUONG=<h> python3 dung-v3.py` ép chạy một động tác ngay. Bảng cảm xúc ở 3 góc: `docs/trau/chang-2/cam-xuc-3-goc.png`.
 - **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
 - **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.

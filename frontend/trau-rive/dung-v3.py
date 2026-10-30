@@ -74,6 +74,8 @@ class Goc:
             gx, gy, ruot = tc.bo_phan(g, {})
             self.bp[g.get('id')] = (gx, gy, ruot, moi_id())
         self.long = dict(tc.LONG)                          # chuỗi khớp khăn dài (V4g)
+        if ten == 'chinh':
+            self.khop_vai()
         dk = self.bp.get('dau-khoi')
         self.co_xy = (dk[0], dk[1]) if dk else (256, 300)  # điểm xoay đầu = cổ
         self.id = {k: moi_id() for k in ('goc', 'nghich', 'nhun', 'hong', 'vai', 'than', 'dau', 'dau-quanh',
@@ -111,6 +113,28 @@ class Goc:
             elif t.startswith('tay-') or t == 'duoi':
                 self.boc[t] = {'nghich': moi_id()}
 
+    def khop_vai(self):
+        """Bắp vai phình (chính diện, nơi tay giơ cao): tay V4g là khối cứng nằm sau thân, giơ lên thì ống tay mỏng
+        đều, sườn áo cắt ngang → trông như bị chặt. Thêm "tay-*-vai": bầu dục màu áo có viền ở gốc ống tay, nằm TRÊN
+        thân áo (dưới khăn), cùng điểm xoay và nhận cùng mọi hoạt ảnh của tay (tên bắt đầu bằng tay-) → vai tròn
+        liền ống tay ở mọi góc giơ."""
+        for t in [x for x in self.thu_tu if x in ('tay-trai', 'tay-phai')]:
+            gx, gy, _, _ = self.bp[t]
+            s = -1 if t == 'tay-trai' else 1
+            goc = math.atan2(53, 34 * s)                     # hướng ống tay lúc buông
+            cx, cy = gx + 11 * math.cos(goc), gy + 11 * math.sin(goc)
+            quay = f'rotate({math.degrees(goc):.1f} {cx:.2f} {cy:.2f})'
+            # viền: bầu dục đen to hơn 2,8 nằm DƯỚI tay và thân → chỉ lộ ở mép ngoài hình bóng
+            vien = ET.Element(NS + 'ellipse', {'cx': f'{cx:.2f}', 'cy': f'{cy:.2f}', 'rx': '23.8', 'ry': '20.3',
+                                               'transform': quay, 'fill': '#24190f', 'stroke': 'none'})
+            # mảng áo không viền nằm TRÊN thân → che đường cắt sườn áo / gốc ống tay
+            ao = ET.Element(NS + 'ellipse', {'cx': f'{cx:.2f}', 'cy': f'{cy:.2f}', 'rx': '21', 'ry': '17.5',
+                                             'transform': quay, 'fill': '#c48f65', 'stroke': 'none'})
+            self.bp[f'{t}-vaivien'] = (gx, gy, tc.hinh(vien, {}, gx, gy, f'{t}-vaivien-h'), moi_id())
+            self.bp[f'{t}-vai'] = (gx, gy, tc.hinh(ao, {}, gx, gy, f'{t}-vai-h'), moi_id())
+            self.thu_tu.insert(self.thu_tu.index(t), f'{t}-vaivien')
+            self.thu_tu.insert(self.thu_tu.index('than') + 1, f'{t}-vai')
+
     def tai(self):
         """[(id giat, id nghich, chiều 'vểnh lên')]: tai chĩa trái (tai-trai V4g) vểnh lên = xoay dương."""
         return [(self.boc[t]['giat'], self.boc[t]['nghich'], 1 if t == 'tai-trai' else -1)
@@ -119,7 +143,7 @@ class Goc:
     def tay(self):
         """[(id nghich, chiều 'dang ra')]: tay bên trái màn hình / tay góc nghiêng dang ra = xoay dương."""
         def chieu(t):
-            if t == 'tay-phai':
+            if t.startswith('tay-phai'):
                 return -1
             # ¾ và nghiêng: tay vẽ cho dáng buông, giơ cao sẽ lộ ống tay phẳng → chỉ vung vừa (≈ 40 %);
             # giơ cao ở các góc này cần vẽ thêm tư thế tay giơ (làm ở chặng hành động).
