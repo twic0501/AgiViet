@@ -94,6 +94,11 @@ def canh_tay(ten, vai, goc_vai, goc_khuyu, goc_co, ban, guong=False, keo=1.0, ke
     # Ba chuỗi cùng một bộ khớp (cùng góc): bàn tay → viền ống áo → màu ống áo (sau nằm trên).
     # Màu đè lên viền nên chỗ hai đoạn chồng nhau ở khuỷu không còn nét giữa: tay liền một ống.
     def chuoi(lop, phan_tren, phan_duoi, phan_ban=''):
+        # Ống áo bọc trong nhóm co giãn riêng (Rive kéo dài ống khi giơ tay mà bàn tay không bị méo).
+        if phan_tren:
+            phan_tren = f'<g id="{ten}-ongtren{lop}" transform="scale(1 1)">{phan_tren}</g>'
+        if phan_duoi:
+            phan_duoi = f'<g id="{ten}-ongduoi{lop}" transform="scale(1 1)">{phan_duoi}</g>'
         tay = (f'<g id="{ten}-ban{lop}" transform="translate(0 {ld:.2f}) rotate({goc_co})">{phan_ban}</g>') if phan_ban else ''
         duoi = f'<g id="{ten}-duoi{lop}" transform="translate(0 {lt:.2f}) rotate({goc_khuyu})">{tay}{phan_duoi}</g>'
         return f'<g id="{ten}-tren{lop}" transform="rotate({goc_vai})">{phan_tren}{duoi}</g>'

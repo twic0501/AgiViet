@@ -185,6 +185,8 @@ def nhom_bien_doi(c, a, ten, ruot_fn):
         if trong_cung and c.get('id'):
             KHOP[c.get('id')] = nid
         if loai == 'translate':
+            if c.get('id'):  # nút dời của khớp (khuỷu/cổ tay) — dời theo độ dài ống khi kéo dài tay
+                KHOP[c.get('id') + '#dich'] = nid
             thuoc = f'x="{v[0]:.2f}" y="{(v[1] if len(v) > 1 else 0):.2f}"'
         elif loai == 'rotate':
             thuoc = f'rotation="{math.radians(v[0]):.5f}"'
@@ -362,6 +364,21 @@ def main():
                         goc = tt[ma][ben][j]
                         diem += [(i * doan, math.radians(goc)), (i * doan + 30, math.radians(goc))]
                     k.append(khung(nid, 'rotation', diem, '0.45 0 0.25 1'))
+            # Kéo dài ống tay theo dáng: ống co giãn dọc, khuỷu/cổ tay dời theo (bàn tay giữ nguyên cỡ).
+            ts = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tham-so-tay.json')))
+            L_TREN, L_DUOI = ts.get('L_TREN', 30.0), ts.get('L_DUOI', 36.0)
+
+            def keo(ma, i):
+                q = tt[ma][ben]
+                kt = q[3] if len(q) > 3 else 1.0
+                return kt if i == 0 else (q[4] if len(q) > 4 else kt)
+            for lop in ('', '-vien', '-mau'):
+                for i, (ong, khop, L) in enumerate((('ongtren', 'duoi', L_TREN), ('ongduoi', 'ban', L_DUOI))):
+                    o, d = KHOP.get(f'{ben}-{ong}{lop}'), KHOP.get(f'{ben}-{khop}{lop}#dich')
+                    if o is not None:
+                        k.append(khung(o, 'scaleY', sum(([(n * doan, keo(m, i)), (n * doan + 30, keo(m, i))] for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
+                    if d is not None:
+                        k.append(khung(d, 'y', sum(([(n * doan, L * keo(m, i)), (n * doan + 30, L * keo(m, i))] for n, m in enumerate(thu_tu)), []), '0.45 0 0.25 1'))
         hoat.append(('Đổi dáng thử', doan * len(thu_tu), ''.join(k)))
     # Nhìn theo kiểu xoay đầu thật (như Muza 'cat x'/'cat y'): Joystick đọc vị trí "điểm nhìn" (chạy theo con trỏ)
     # và tua hai dòng thời gian tư thế. Mỗi lớp lệch theo độ sâu: mõm nhiều nhất, mắt vừa (mắt phía xa co hẹp),
