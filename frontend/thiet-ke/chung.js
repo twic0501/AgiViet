@@ -108,7 +108,7 @@ export function veTab(dangMo, soTin = 0) {
   const nav = document.createElement("nav");
   nav.className = "tab"; nav.setAttribute("aria-label", "Mục chính");
   nav.innerHTML = MUC_TAB.map(([k, ten, href]) => k === "dang-bai"
-    ? `<a href="${href}" class="tab-giua" aria-label="${ten}"${k === dangMo ? ' aria-current="page"' : ""}><span class="fab">${CONG}</span></a>`
+    ? `<a href="${href}" class="tab-giua" aria-label="${ten}"${k === dangMo ? ' aria-current="page"' : ""}><span class="fab">${CONG}</span><span class="nhan">${ten}</span></a>`
     : `<a href="${href}" aria-label="${ten}${k === "tin-nhan" && soTin ? ` (${soTin} tin mới)` : ""}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span class="nhan">${ten}</span></a>`).join("");
   document.querySelector(".trang").appendChild(nav);
   giuThamSo(nav);

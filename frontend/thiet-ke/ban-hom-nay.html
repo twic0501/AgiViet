@@ -21,19 +21,20 @@
   .dau-xanh .nut-tron { background: rgba(246, 242, 231, 0.12); border-color: rgba(246, 242, 231, 0.18); color: #f6f2e7; }
   .dau-xanh .cham-moi { background: #7ee0a3; box-shadow: 0 0 0 2px #1f4d3a; }
   /* Khối thông báo: chữ chiếm cả bề ngang, trâu đặt góc phải; mép dưới thẳng, thẻ tính năng đè lên nửa dưới để hai phần liền nhau */
-  .tb-xanh { position: relative; padding: 2px 16px 58px; margin-top: -1px; overflow: hidden; }
-  .tb-xanh .chu { position: relative; z-index: 1; padding-right: 84px; }
+  .tb-xanh { position: relative; padding: 2px 16px 62px; margin-top: -1px; overflow: hidden; border-radius: 0 0 50% 50% / 0 0 26px 26px; }
+  .tb-xanh .chu { position: relative; z-index: 1; padding-right: 104px; }
   .tb-xanh .chip-hero { display: inline-block; font-size: 13px; color: rgba(246, 242, 231, 0.78); white-space: nowrap; }
   .tb-xanh h2 { font-size: 20px; line-height: 1.25; font-weight: 700; letter-spacing: -0.015em; margin-top: 4px; }
   .tb-xanh #cau-phu { margin-top: 2px; font-size: 14px; line-height: 1.4; color: rgba(246, 242, 231, 0.82); }
   .tb-xanh .nut-trong { margin-top: 10px; min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 999px; border: 0; background: #f6f2e7; color: #1f4d3a; font: 600 14px/1 var(--chu); cursor: pointer; }
-  .tb-xanh #trau { position: absolute; right: 8px; bottom: 40px; width: 84px; height: 96px; cursor: pointer; touch-action: manipulation; }
+  .tb-xanh #trau { position: absolute; right: 6px; bottom: 40px; width: 108px; height: 124px; cursor: pointer; touch-action: manipulation; }
   /* Lối tắt */
   .loi-tat { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: -44px; padding: 10px 4px 8px;
     background: var(--giay-noi); border-radius: 20px; box-shadow: 0 0 0 1px var(--ke), 0 10px 24px rgba(31, 77, 58, 0.10); }
   .loi-tat a { display: grid; justify-items: center; gap: 6px; text-decoration: none; color: var(--muc); font-size: 13px; font-weight: 500; text-align: center; line-height: 1.25; padding: 6px 2px; border-radius: 14px; }
   .loi-tat a:active { background: var(--giay-lot); }
-  .loi-tat .o { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: var(--la-nhat); color: var(--la-dam); }
+  .loi-tat .o { width: 40px; height: 40px; display: grid; place-items: center; color: var(--la-dam); }
+  .loi-tat .o svg { width: 28px !important; height: 28px !important; }
   .loi-tat .o svg { width: 24px; height: 24px; }
   /* Hợp đồng: một dòng mỗi hợp đồng */
   .hd-gon { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; }
@@ -47,6 +48,19 @@
   .tom { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
   .o-tom { display: block; padding: 12px 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); text-decoration: none; color: inherit; min-width: 0; }
   .o-tom.rong { grid-column: 1 / -1; }
+  #tom-gia { position: relative; overflow: hidden; }
+  #tom-gia .anh-sp { position: absolute; right: -10px; bottom: -10px; width: 56px; height: 56px; border-radius: 50%; background: center / cover; box-shadow: 0 0 0 3px var(--giay-noi); }
+  #tom-gia .the-gd { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--la-dam); background: var(--la-nhat); padding: 2px 8px; border-radius: 999px; }
+  #tom-gia .phu, #tom-gia .lon { padding-right: 40px; }
+  /* Tin mới: chạy lần lượt từ phải sang trái */
+  #tom-tin { overflow: hidden; }
+  .khung-tin { overflow: hidden; }
+  .bang-tin { display: flex; transition: transform 600ms cubic-bezier(.2,.7,.2,1); }
+  .bang-tin > div { flex: 0 0 100%; min-width: 0; }
+  .cham-tin { display: flex; gap: 4px; margin-top: 8px; }
+  .cham-tin i { width: 6px; height: 6px; border-radius: 3px; background: var(--ke-dam); transition: width 300ms; }
+  .cham-tin i.dang { width: 16px; background: var(--la); }
+  @media (prefers-reduced-motion: reduce) { .bang-tin { transition: none; } }
   .o-tom .nhan { font-size: 13px; font-weight: 600; color: var(--muc-phu); display: flex; justify-content: space-between; }
   .o-tom .nhan::after { content: "›"; color: var(--muc-nhat); }
   .o-tom .lon { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 6px; }
@@ -83,7 +97,7 @@
       <div class="tom">
         <a class="o-tom" id="tom-troi" href="./ban-thoi-tiet.html"><p class="nhan">Thời tiết</p><p class="lon">—</p><p class="phu">Đang tải…</p></a>
         <a class="o-tom" id="tom-gia" href="./ban-tin-tuc.html#gia"><p class="nhan">Giá hôm nay</p><p class="lon">—</p><p class="phu">Đang tải…</p></a>
-        <a class="o-tom rong" id="tom-tin" href="./ban-tin-tuc.html#tin" hidden><p class="nhan">Tin mới</p><p class="tieu"></p><p class="phu"></p></a>
+        <a class="o-tom rong" id="tom-tin" href="./ban-tin-tuc.html#tin" hidden><p class="nhan">Tin mới</p><div class="khung-tin"><div class="bang-tin" id="bang-tin"></div></div><div class="cham-tin" id="cham-tin"></div></a>
       </div>
     </section>
 
@@ -190,13 +204,21 @@ async function mo() {
   if (g0?.price_vnd) {
     $("tom-gia").querySelector(".lon").innerHTML = `${Number(g0.price_vnd).toLocaleString("vi-VN")}<small>đ/kg</small>`;
     $("tom-gia").querySelector(".phu").textContent = `${tenSp.get(l0.product_code) || l0.product_code} · Loại ${l0.grade_code.replace(/^L/, "")}`;
+    $("tom-gia").insertAdjacentHTML("beforeend", `<span class="the-gd">${g0.order_count || 0} giao dịch</span>${ANH_SP(l0.product_code) ? `<span class="anh-sp" style="background-image:url(${ANH_SP(l0.product_code)})"></span>` : ""}`);
   } else $("tom-gia").querySelector(".phu").textContent = "Chưa có giá tham khảo";
   // Ô tin mới nhất
   const tin = await fetch("/v1/news", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).catch(() => null);
   if (tin?.tin?.length) {
-    const n = tin.tin[0];
-    $("tom-tin").querySelector(".tieu").textContent = n.tieu_de;
-    $("tom-tin").querySelector(".phu").textContent = `${n.nguon} · ${new Date(n.ngay).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" })}`;
+    const ds = tin.tin.slice(0, 5);
+    $("bang-tin").innerHTML = ds.map((n) => `<div><p class="tieu">${esc(n.tieu_de)}</p><p class="phu">${esc(n.nguon)} · ${new Date(n.ngay).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" })}</p></div>`).join("");
+    $("cham-tin").innerHTML = ds.map((_, i) => `<i class="${i ? "" : "dang"}"></i>`).join("");
+    let iTin = 0;
+    if (ds.length > 1) setInterval(() => {
+      if (document.hidden) return;
+      iTin = (iTin + 1) % ds.length;
+      $("bang-tin").style.transform = `translateX(-${iTin * 100}%)`;
+      $("cham-tin").querySelectorAll("i").forEach((c, i) => c.classList.toggle("dang", i === iTin));
+    }, 4000);
     $("tom-tin").hidden = false;
   }
   giuThamSo();   // liên kết vừa dựng cũng giữ phiên thử
