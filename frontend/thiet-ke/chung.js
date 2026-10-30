@@ -1,5 +1,19 @@
 // Phần dùng chung cho các màn mẫu app bán: định dạng, phiên, tải dữ liệu, ảnh sản phẩm, chặng hợp đồng.
 export const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Bên mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
+// Mã hạng (backend trả mã thô) → chữ cho bác: L1 → Loại 1, DAT → Hàng dạt, 48-52 (tôm) → Cỡ 48–52 con/kg…
+export const tenLoai = (ma) => {
+  const m = String(ma || "");
+  if (/^L\d+$/.test(m)) return `Loại ${m.slice(1)}`;
+  if (/^[A-C]$/.test(m)) return `Loại ${m}`;
+  if (m === "DAT") return "Hàng dạt";
+  if (m === "chua_tach") return "Chưa tách loại";
+  if (m === "ngoai_co") return "Ngoài cỡ";
+  if (/^\d+-\d+$/.test(m)) return `Cỡ ${m.replace("-", "–")} con/kg`;
+  if (/^\d+(\.\d+)?-\d+(\.\d+)?$/.test(m)) return `Cỡ ${m.replace("-", "–").replace(/\./g, ",")} kg/con`;
+  const am = m.match(/^(.+)-am(\d+)$/);
+  if (am) return `Giống ${am[1]}, ẩm ≤ ${am[2]}%`;
+  return m;
+};
 export const CHANG = ["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"];
 
 // Tiền gọn cho thẻ ("41,4 triệu đ"); tienDu cho số đầy đủ (đặt ở title/aria để bác xem chính xác)

@@ -31,11 +31,12 @@
   /* Thẻ lô */
   .lo { display: block; padding: 12px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); color: inherit; }
   .lo + .lo { margin-top: 12px; }
-  .lo .dau-lo { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; }
+  .lo .dau-lo { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; }
+  .lo .loai { font-size: 14px; font-weight: 600; color: var(--muc-phu); margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .lo .anh { width: 64px; height: 64px; border-radius: 12px; background: var(--giay-lot) center / cover no-repeat; }
   .lo .ten { font-weight: 600; font-size: 16px; }
   .lo .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
-  .lo .tt { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); white-space: nowrap; align-self: start; }
+  .lo .tt { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); white-space: nowrap; }
   .lo .tt.cho { background: var(--cho-nen); color: var(--cho); }
   .lo .tt.gap { background: var(--dau-do-nen); color: var(--dau-do); }
   .lo .tt.vang { background: var(--chin-nen); color: var(--chin); }
@@ -76,18 +77,30 @@
   .cung-cau > div { padding: 10px 12px; border-radius: 14px; background: var(--giay-noi); border: 1px solid var(--ke); }
   .cung-cau b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
   .cung-cau span { font-size: 12.5px; color: var(--muc-nhat); }
+  .the-nc .sp-nc { font-size: 15px; font-weight: 700; margin-top: 2px; }
+  .the-nc .sp-nc span { font-weight: 500; color: var(--muc-phu); font-size: 14px; }
+  .the-nc .khop { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); white-space: nowrap; }
+  .the-nc .dong { border-bottom: 0; }
+  .the-nc .dong:last-child { padding-bottom: 0; }
+  .the-nc .tt-dong { font-size: 13px; font-weight: 600; color: var(--muc-nhat); text-align: right; max-width: 120px; line-height: 1.3; }
+  .the-nc .tt-dong.da { color: var(--la-dam); }
+  .nc-khac { margin-top: 16px; }
+  .nc-khac summary { min-height: 44px; display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--muc-phu); cursor: pointer; list-style: none; }
+  .nc-khac summary::before { content: "›"; display: inline-block; transition: transform 200ms; font-size: 20px; }
+  .nc-khac[open] summary::before { transform: rotate(90deg); }
+  .nc-khac summary small { font-weight: 700; color: var(--la); }
+  .nc-khac .the-nc { margin-top: 12px; }
   .tieu-nho { font-size: 13px; font-weight: 600; color: var(--muc-phu); margin: 18px 0 8px; }
   /* Bên mua đang cần */
-  .can { display: block; padding: 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); }
-  .can + .can { margin-top: 12px; }
-  .can .tren { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
-  .can .ben { font-weight: 600; }
-  .can .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
-  .can .khop { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); white-space: nowrap; }
-  .can .dong { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 10px 0 0; margin-top: 10px; border-top: 1px dashed var(--ke-dam); }
-  .can .dong .sl { font-weight: 600; font-variant-numeric: tabular-nums; }
-  .can .dong button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--la); color: var(--tren-la); font: 600 14px/1 var(--chu); cursor: pointer; }
-  .can .dong button:disabled { background: var(--ke); color: var(--muc-nhat); cursor: default; }
+  .the-nc { display: block; padding: 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); }
+  .the-nc + .the-nc { margin-top: 12px; }
+  .the-nc .tren { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
+  .the-nc .ben { font-weight: 600; }
+  .the-nc .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
+  .the-nc .dong { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 10px 0 0; margin-top: 10px; border-top: 1px dashed var(--ke-dam); }
+  .the-nc .dong .sl { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .the-nc .dong button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--la); color: var(--tren-la); font: 600 14px/1 var(--chu); cursor: pointer; }
+  .the-nc .dong button:disabled { background: var(--ke); color: var(--muc-nhat); cursor: default; }
   .trong { text-align: center; padding: 28px 16px; color: var(--muc-phu); }
   /* Tấm chào hàng */
   /* Khi mở tấm: lớp phủ trên cùng, ẩn nút cuộn nhanh và thanh menu */
@@ -99,7 +112,11 @@
   .tam h2 { font-size: 18px; }
   .tam label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--muc-phu); }
   .tam select, .tam input { min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); padding: 0 12px; font: 500 16px/1 var(--chu); color: var(--muc); }
-  .tam .goi-y-gia { font-size: 13px; color: var(--muc-nhat); font-weight: 400; }
+  .tam .goi-y-gia { display: block; font-size: 13px; color: var(--muc-nhat); font-weight: 400; }
+  .tam .thanh-tien { padding: 10px 12px; border-radius: 12px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 14px; }
+  .tam .thanh-tien:empty { display: none; }
+  .tam .thanh-tien b { font-size: 17px; }
+  .tam .thanh-tien small { display: block; font-size: 12.5px; opacity: .8; }
   .tam .hang-nut { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
   .tam .bao-ket { font-size: 14px; }
 </style>
@@ -111,14 +128,14 @@
   <main class="noi" id="noi" aria-busy="true" style="gap:14px">
     <div class="ngan" role="tablist" aria-label="Chợ">
       <button type="button" role="tab" id="ngan-hang" aria-selected="true" aria-controls="p-hang">Hàng của tôi</button>
-      <button type="button" role="tab" id="ngan-can" aria-selected="false" aria-controls="p-can">Bên mua đang cần<small id="so-can"></small></button>
+      <button type="button" role="tab" id="ngan-can" aria-selected="false" aria-controls="p-can">Bên mua cần<small id="so-can"></small></button>
     </div>
 
     <section id="p-hang" role="tabpanel" aria-labelledby="ngan-hang" style="display:grid;gap:14px">
       <div class="tong-quan">
         <div><b id="so-lo">—</b><span>lô đang bán</span></div>
         <div><b id="tong-con">—</b><span id="dv-con">còn bán</span></div>
-        <a href="./ban-tin-nhan.html"><b id="so-chao">—</b><span>lời chào đang mở ›</span></a>
+        <a href="./ban-tin-nhan.html"><b id="so-chao">—</b><span>lời chào mở</span></a>
       </div>
       <div class="nhac" id="nhac" hidden></div>
       <div class="loc" role="group" aria-label="Lọc theo trạng thái" id="loc"></div>
@@ -135,7 +152,7 @@
 </div>
 
 <script type="module">
-import { can, esc, phien, ANH_SP, giuThamSo, veDau, veTab } from "./chung.js";
+import { can, esc, phien, ANH_SP, giuThamSo, veDau, veTab, tenLoai } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 giuThamSo();
 veTab("cho");
@@ -188,7 +205,7 @@ const dongChao = (c, coMaLo = true) => {
 // Quản lý lô: sửa giá (1 lần/24 giờ), bán nhanh 3 ngày, ngừng bán
 async function moQuanLy(l) {
   const che = document.createElement("div"); che.className = "man-che";
-  const ten = `${tenSp.get(l.product_code) || l.product_code} · Loại ${l.grade_code.replace(/^L/, "")}`;
+  const ten = `${tenSp.get(l.product_code) || l.product_code} · ${tenLoai(l.grade_code)}`;
   che.innerHTML = `<div class="tam" role="dialog" aria-modal="true" aria-labelledby="ql-t"><h2 id="ql-t">${esc(ten)} · ${esc(l.code)}</h2><div class="khung-tai"></div></div>`;
   document.body.appendChild(che);
   const dong_ = () => che.remove();
@@ -304,9 +321,9 @@ async function moHang() {
       const lauChuaXn = l.status === "on_sale" && (!l.last_confirmed_at || (Date.now() - new Date(l.last_confirmed_at)) / 864e5 > NGAY_NHAC);
       return `<article class="lo" data-lo="${esc(l.code)}">
         <div class="dau-lo"><span class="anh" ${anh ? `style="background-image:url(${anh})"` : ""}></span>
-          <span style="min-width:0"><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</p>
-            <p class="phu">${esc(l.code)} · ${l.qty_basis === "estimated" ? "ước tính" : "đã cân"}${l.last_confirmed_at ? ` · còn hàng ${ngayVN(l.last_confirmed_at)}` : ""}</p></span>
-          <span class="tt ${lop}">${esc(tt)}</span></div>
+          <span style="min-width:0"><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</p>
+            <p class="loai">${esc(tenLoai(l.grade_code))} <span class="tt ${lop}">${esc(tt)}</span></p>
+            <p class="phu">${esc(l.code)} · ${l.qty_basis === "estimated" ? "lượng ước tính" : "đã cân"}${l.last_confirmed_at ? ` · báo còn hàng ${ngayVN(l.last_confirmed_at)}` : ""}</p></span></div>
         <div class="luong" role="img" aria-label="${phan.filter(([, , g]) => g).map(([, ten, g]) => `${ten} ${can(g).join(" ")}`).join(", ")}">${phan.filter(([, , g]) => g).map(([k, , g]) => `<i class="${k}" style="width:${(g / tong * 100).toFixed(1)}%"></i>`).join("")}</div>
         <div class="chu-luong">${phan.filter(([k, , g]) => g || k === "con").map(([, ten, g, mau]) => `<span style="--c:${mau}">${ten} <b>${can(g).join(" ")}</b></span>`).join("")}</div>
         ${chaoLo.length ? `<div class="chao-lo">${chaoLo.map((c) => dongChao(c, false)).join("")}</div>` : ""}
@@ -347,17 +364,21 @@ async function moCan() {
   const daChao = dsChaoMo.filter((c) => c.direction === "seller_quote");
   if (daChao.length) { $("ds-da-chao").innerHTML = daChao.map((c) => dongChao(c)).join(""); $("khoi-da-chao").hidden = false; }
   $("so-can").textContent = soKhop ? soKhop : "";
-  $("ds-can").innerHTML = mo.length ? mo.map((n) => {
+  const veNc = (n) => {
     const khop = diem(n) === 0;
-    return `<article class="can">
+    return `<article class="the-nc">
       <p class="ben">${esc(n.buyer_name)}</p>
-      <p class="phu">${esc(NHOM_MUA[n.segment_code] || n.segment_code)} · cần <b style="color:var(--muc)">${esc(tenSp.get(n.product_code) || n.product_code)}</b> · <span style="white-space:nowrap">${ngayVN(n.needed_from)}–${ngayVN(n.needed_to)}</span></p>
-      ${khop ? '<span class="khop" style="display:inline-block;margin-top:6px">Khớp hàng của bác</span>' : ""}
-      ${n.lines.map((x) => { const k = loKhop(n.product_code, x.grade_code, n.buyer_org_id), daChao = dsChaoMo.some((c) => c.demand_line_id === x.id); return `<div class="dong">
-        <span>Loại ${esc(x.grade_code.replace(/^L/, ""))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
-        <button type="button" data-nc="${n.id}" data-dong="${x.id}" ${k.length && !daChao ? "" : "disabled"} aria-label="Chào hàng cho ${esc(n.buyer_name)}">${daChao ? "Đã chào" : k.length ? "Chào hàng" : loKhop(n.product_code, x.grade_code).length ? "Đang chào" : "Chưa có hàng"}</button></div>`; }).join("")}
+      <p class="sp-nc">${esc(tenSp.get(n.product_code) || n.product_code)} <span>· cần ${ngayVN(n.needed_from)}–${ngayVN(n.needed_to)}</span></p>
+      <p class="phu">${esc(NHOM_MUA[n.segment_code] || n.segment_code)}${khop ? ' · <span class="khop">Khớp hàng của bác</span>' : ""}</p>
+      ${n.lines.map((x) => { const k = loKhop(n.product_code, x.grade_code, n.buyer_org_id), daChao = dsChaoMo.some((c) => c.demand_line_id === x.id);
+        const nhan = daChao ? ["Bác đã chào", "da"] : !k.length && loKhop(n.product_code, x.grade_code).length ? ["Đang có lời chào", "da"] : !k.length ? ["Bác chưa có hàng này", "chua"] : null;
+        return `<div class="dong"><span>${esc(tenLoai(x.grade_code))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
+          ${nhan ? `<span class="tt-dong ${nhan[1]}">${nhan[0]}</span>` : `<button type="button" data-nc="${n.id}" data-dong="${x.id}" aria-label="Chào hàng cho ${esc(n.buyer_name)}">Chào hàng</button>`}</div>`; }).join("")}
     </article>`;
-  }).join("") : `<div class="trong">Hiện chưa có bên mua nào đăng nhu cầu.</div>`;
+  };
+  const lienQuan = mo.filter((n) => diem(n) < 2), khac = mo.filter((n) => diem(n) === 2);
+  $("ds-can").innerHTML = (lienQuan.length ? lienQuan.map(veNc).join("") : `<div class="trong">Chưa có bên mua nào cần mặt hàng bác đang bán.</div>`)
+    + (khac.length ? `<details class="nc-khac"><summary>Nhu cầu mặt hàng khác <small>${khac.length}</small></summary>${khac.map(veNc).join("")}</details>` : "");
   $("ds-can").querySelectorAll("button[data-dong]").forEach((b) => (b.onclick = () => {
     const n = mo.find((x) => x.id === b.dataset.nc), dong = n.lines.find((x) => x.id === b.dataset.dong);
     moTam(n, dong, loKhop(n.product_code, dong.grade_code, n.buyer_org_id));
@@ -373,15 +394,19 @@ function moTam(n, dong, dsLo) {
     <label>Lô của bác<select name="lo">${dsLo.map((l) => `<option value="${l.id}">${esc(l.code)} · còn ${can(l.available_g).join(" ")}</option>`).join("")}</select></label>
     <label>Lượng (kg)<input name="kg" type="number" inputmode="numeric" min="1" required></label>
     <label>Giá (đồng/kg) <span class="goi-y-gia" id="gy-gia"></span><input name="gia" type="number" inputmode="numeric" min="1000" step="100" required></label>
+    <p class="thanh-tien" id="thanh-tien" aria-live="polite"></p>
     <p class="bao-ket" id="tam-bao" role="status"></p>
     <div class="hang-nut"><button type="button" class="nut phu-nut" id="tam-huy">Đóng</button><button type="submit" class="nut chinh-nut" id="tam-gui">Gửi chào hàng</button></div>
   </form>`;
   document.body.appendChild(che);
   const f = che.querySelector("form");
   const capNhat = () => { const l = dsLo.find((x) => x.id === f.lo.value); f.kg.max = toiDaKg(l); if (!f.kg.value || Number(f.kg.value) > toiDaKg(l)) f.kg.value = toiDaKg(l); };
-  f.lo.onchange = capNhat; capNhat();
+  const tinhTien = () => { const k = Number(f.kg.value), g = Number(f.gia.value);
+    $("thanh-tien").innerHTML = k > 0 && g > 0 ? `Thành tiền: <b>${(k * g).toLocaleString("vi-VN")} đ</b> <small>(${k.toLocaleString("vi-VN")} kg × ${g.toLocaleString("vi-VN")} đ)</small>` : ""; };
+  f.kg.oninput = tinhTien; f.gia.oninput = tinhTien;
+  f.lo.onchange = () => { capNhat(); tinhTien(); }; capNhat(); tinhTien();
   get(`/v1/reference-prices?product=${encodeURIComponent(n.product_code)}&grade=${encodeURIComponent(dong.grade_code)}`).then((g) => {
-    if (g?.price_vnd) { $("gy-gia").textContent = `· giá tham khảo ${Number(g.price_vnd).toLocaleString("vi-VN")}`; f.gia.value = g.price_vnd; }
+    if (g?.price_vnd) { $("gy-gia").textContent = `Giá tham khảo ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg`; f.gia.value = g.price_vnd; tinhTien(); }
   }).catch(() => {});
   const dong_ = () => che.remove();
   che.addEventListener("pointerdown", (e) => { if (e.target === che) dong_(); });

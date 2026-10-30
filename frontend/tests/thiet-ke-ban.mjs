@@ -199,20 +199,28 @@ await trang("hang-hoa", async (p) => {
   await p.locator("#ql-dong").click();
   // Ngăn Bên mua đang cần → chào hàng vào một nhu cầu khớp
   await p.locator("#ngan-can").click();
-  await p.locator("#p-can .can").first().waitFor({ timeout: 8000 });
+  await p.locator("#p-can .the-nc").first().waitFor({ timeout: 8000 });
   assert.ok(await p.locator("#p-can .khop").count() > 0, "có nhu cầu khớp hàng của bác");
+  // Không lộ mã hạng thô; nhu cầu mặt hàng bác không bán được gom vào mục riêng; chữ trong thẻ không phóng to bất thường
+  const chu = await p.locator("#p-can").innerText();
+  assert.ok(!/Loại L\d|OM18-am|\bDAT\b|ngoai_co|chua_tach/.test(chu), "còn mã hạng thô");
+  assert.equal(await p.locator("#p-can > #ds-can > .the-nc .khop").count(), await p.locator("#p-can > #ds-can > .the-nc").filter({ has: p.locator(".khop") }).count());
+  const to = await p.evaluate(() => [...document.querySelectorAll("#p-can .the-nc *")].filter((e) => e.offsetParent && parseFloat(getComputedStyle(e).fontSize) > 18).map((e) => e.textContent.trim().slice(0, 20)));
+  assert.deepEqual(to, [], "chữ trong thẻ nhu cầu bị phóng to");
   const conChao = p.locator("#p-can button[data-dong]:not([disabled])");
   if (await conChao.count()) {
     await conChao.first().click();
     await p.locator(".tam").waitFor({ timeout: 3000 });
     await p.locator('.tam input[name="gia"]').fill("24000");
+    const kg = Number(await p.locator('.tam input[name="kg"]').inputValue());
+    assert.equal((await p.locator("#thanh-tien b").innerText()).trim(), `${(kg * 24000).toLocaleString("vi-VN")} đ`, "thành tiền = lượng × giá");
     await kiemChung(p);
     await p.locator("#tam-gui").click();
     await p.getByText("Đã gửi chào hàng").waitFor({ timeout: 8000 });
   } else {
     // Chạy lại trên cùng dữ liệu: mọi dòng khớp đã chào → nút phải ghi rõ lý do, không cho chào trùng
-    const nhan = await p.locator("#p-can button[data-dong]").allInnerTexts();
-    assert.ok(nhan.every((t) => /Đã chào|Đang chào|Chưa có hàng/.test(t)), `nút khóa phải có lý do: ${nhan.join(", ")}`);
+    const nhan = await p.locator("#p-can .tt-dong").allTextContents();
+    assert.ok(nhan.length && nhan.every((t) => /Bác đã chào|Đang có lời chào|chưa có hàng/.test(t)), `dòng không chào được phải ghi lý do: ${nhan.join(", ")}`);
   }
   await p.screenshot({ path: `${ANH}05b-cho-chao-hang.png` });
 });
@@ -272,9 +280,16 @@ await trang("tin-nhan-thong-bao", async (p) => {
   // Trước khi xem: chuông có chấm mới; xem xong quay về Trang chủ: hết chấm
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
-  // số thông báo tải sau khi trang hiện; chờ tới 8 s (stack vừa khởi động thì sự kiện được ghi chậm hơn)
+  // Chấm chuông theo đúng dữ liệu backend: có thông báo (bộ gửi chạy 30 s/lần nên stack vừa khởi động có thể chưa có) thì có chấm
+  const tk = (await (await fetch(`${GOC}/v1/test/impersonate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const demTb = async () => (await (await fetch(`${GOC}/v1/notifications?limit=50`, { headers: { authorization: "Bearer " + tk } })).json()).length;
+  // Stack vừa khởi động: bộ gửi thông báo chạy 30 s/lần → chờ tới khi backend có thông báo rồi tải lại
+  let soTb = await demTb();
+  for (let i = 0; !soTb && i < 20; i++) { await p.waitForTimeout(2000); soTb = await demTb(); }
+  assert.ok(soTb > 0, "backend chưa có thông báo nào sau 40 s");
+  await p.reload(); await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
   await p.locator('#dau a[href*="#thong-bao"] .cham-moi').waitFor({ timeout: 8000 }).catch(() => {});
-  assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 1, "chưa xem thì chuông có chấm");
+  assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 1, `chưa xem thì chuông có chấm (backend có ${soTb} thông báo)`);
   await p.locator('#dau a[href*="#thong-bao"]').click();
   await p.waitForURL(/ban-thong-bao\.html/);
   await p.locator("#ds-tb .tb").first().waitFor({ timeout: 8000 });
