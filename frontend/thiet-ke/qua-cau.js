@@ -1,98 +1,98 @@
-// Quả cầu nông sản 3D thật: ảnh nông sản ghép thành một tấm bản đồ, bọc quanh khối cầu WebGL (ảnh cong theo mặt cầu),
-// xoay chậm, có ánh sáng để thấy độ cong. Không thư viện ngoài (chạy được khi ngoại tuyến). Tôn trọng prefers-reduced-motion.
-export async function quaCau(canvas, { anh, tocDo = 0.22, nghieng = 0.38, cot = 8, hang = 4 } = {}) {
-  const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: true, alpha: true });
-  if (!gl) return false;
+// Quả cầu kết nối nông sản: ảnh tròn nhỏ là các điểm nằm trên mặt cầu 3D, nối nhau bằng đường thẳng (mạng lưới mua bán),
+// chấm sáng chạy dọc đường như hàng đang đi. Cầu xoay; điểm phía trước to/rõ, phía sau nhỏ/mờ.
+// Canvas 2D, không thư viện ngoài (chạy được khi ngoại tuyến). Tôn trọng prefers-reduced-motion.
+export function quaCau(canvas, { anh, so = 42, noi = 3, tocDo = 0.2, nghieng = 0.35 } = {}) {
+  const ctx = canvas.getContext("2d");
   const giam = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // 1) Tấm bản đồ: lưới cot×hang ô ảnh, xếp lệch để các loại xen nhau, viền mảnh màu giấy giữa các ô
-  const anhTai = await Promise.all(anh.map((src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; })));
-  const ds = anhTai.filter(Boolean);
-  const TW = 2048, TH = 1024, ban = document.createElement("canvas"); ban.width = TW; ban.height = TH;
-  const g = ban.getContext("2d");
-  g.fillStyle = "#f6f2e7"; g.fillRect(0, 0, TW, TH);
-  const ow = TW / cot, oh = TH / hang, ke = 6;
-  for (let r = 0; r < hang; r++) for (let c = 0; c < cot; c++) {
-    const img = ds[(c + r * 3) % ds.length]; if (!img) continue;
-    // Ô gần cực bị kéo ngang khi bọc cầu → cắt ảnh hẹp lại theo tỉ lệ để bù méo
-    const vi = ((r + 0.5) / hang - 0.5) * Math.PI, bu = Math.max(0.35, Math.cos(vi));
-    const x = c * ow + ke / 2, y = r * oh + ke / 2, w = ow - ke, h = oh - ke;
-    const tl = (w * bu) / h, iw = img.width, ih = img.height;
-    let sw = iw, sh = iw / tl; if (sh > ih) { sh = ih; sw = ih * tl; }
-    const sx = (iw - sw) / 2, sy = (ih - sh) / 2;
-    g.save(); g.beginPath(); g.roundRect(x, y, w, h, 18); g.clip();
-    g.drawImage(img, sx, sy, sw, sh, x, y, w, h); g.restore();
-  }
-
-  // 2) Lưới cầu
-  const VD = 48, KD = 96, vt = [], ch = [];
-  for (let i = 0; i <= VD; i++) {
-    const v = i / VD, th = v * Math.PI;
-    for (let j = 0; j <= KD; j++) {
-      const u = j / KD, ph = u * Math.PI * 2;
-      const x = -Math.cos(ph) * Math.sin(th), y = Math.cos(th), z = Math.sin(ph) * Math.sin(th);
-      vt.push(x, y, z, u, v);
-    }
-  }
-  for (let i = 0; i < VD; i++) for (let j = 0; j < KD; j++) {
-    const a = i * (KD + 1) + j, b = a + KD + 1;
-    ch.push(a, b, a + 1, b, b + 1, a + 1);
-  }
-  const vs = `attribute vec3 p; attribute vec2 t; uniform mat4 m; uniform float s; varying vec2 vt; varying vec3 n;
-    void main(){ vec4 q = m * vec4(p, 1.0); n = q.xyz; vt = t; gl_Position = vec4(q.x * s, q.y * s, -q.z * 0.5, 1.0); }`;
-  const fs = `precision mediump float; uniform sampler2D tx; uniform float a; varying vec2 vt; varying vec3 n;
-    void main(){ vec3 N = normalize(n); vec3 L = normalize(vec3(-0.45, 0.55, 0.7));
-      float d = max(dot(N, L), 0.0); float rim = pow(1.0 - max(N.z, 0.0), 2.2);
-      vec3 c = texture2D(tx, vt).rgb * (0.55 + 0.6 * d) - rim * 0.18;
-      gl_FragColor = vec4(c * a, a); }`;
-  const sh = (k, src) => { const o = gl.createShader(k); gl.shaderSource(o, src); gl.compileShader(o); return o; };
-  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
-  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return false;
-  gl.useProgram(pr);
-  const bv = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, bv); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vt), gl.STATIC_DRAW);
-  const bi = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bi); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(ch), gl.STATIC_DRAW);
-  const ap = gl.getAttribLocation(pr, "p"), at = gl.getAttribLocation(pr, "t");
-  gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 20, 0);
-  gl.enableVertexAttribArray(at); gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 20, 12);
-  const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, ban);
-  gl.generateMipmap(gl.TEXTURE_2D);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-  gl.enable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
-  const um = gl.getUniformLocation(pr, "m"), us = gl.getUniformLocation(pr, "s"), ua = gl.getUniformLocation(pr, "a");
-
   const dpr = Math.min(2, devicePixelRatio || 1);
-  let W = 0, H = 0;
+  let W = 0, H = 0, R = 0;
   const doKich = () => {
-    const r = canvas.getBoundingClientRect(); W = r.width; H = r.height;
-    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); gl.viewport(0, 0, canvas.width, canvas.height);
+    const r = canvas.getBoundingClientRect(); W = r.width; H = r.height; R = Math.min(W, H) * 0.38;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   doKich(); addEventListener("resize", doKich);
 
-  const t0 = performance.now(), NHAP = giam ? 0 : 1800;
+  // Ảnh tròn có viền trắng, cắt sẵn
+  const tron = [];
+  anh.forEach((src, i) => {
+    const img = new Image();
+    img.onload = () => {
+      const s = 128, c = document.createElement("canvas"); c.width = c.height = s;
+      const g = c.getContext("2d"); g.beginPath(); g.arc(s / 2, s / 2, s / 2 - 4, 0, Math.PI * 2); g.save(); g.clip();
+      const k = Math.max(s / img.width, s / img.height) * 1.4;
+      g.drawImage(img, (s - img.width * k) / 2, (s - img.height * k) / 2, img.width * k, img.height * k); g.restore();
+      g.lineWidth = 7; g.strokeStyle = "#fff"; g.stroke();
+      tron[i] = c;
+    };
+    img.src = src;
+  });
+
+  // Điểm trên mặt cầu (xoắn Fibonacci) + cạnh nối tới các điểm gần nhất
+  const vang = Math.PI * (3 - Math.sqrt(5));
+  const diem = Array.from({ length: so }, (_, i) => {
+    const y = 1 - (i / (so - 1)) * 2, r = Math.sqrt(1 - y * y), t = vang * i;
+    return { x: Math.cos(t) * r, y, z: Math.sin(t) * r, anh: i % anh.length };
+  });
+  const canh = new Set();
+  diem.forEach((a, i) => {
+    diem.map((b, j) => [j, (a.x - b.x) ** 2 + (a.y - b.y) ** 2 + (a.z - b.z) ** 2]).filter(([j]) => j !== i)
+      .sort((p, q) => p[1] - q[1]).slice(0, noi).forEach(([j]) => canh.add(i < j ? `${i}-${j}` : `${j}-${i}`));
+  });
+  const dsCanh = [...canh].map((k) => k.split("-").map(Number));
+  // Chấm chạy: mỗi chấm đi trên một cạnh, vị trí 0→1
+  const cham = Array.from({ length: 14 }, () => ({ c: Math.floor(Math.random() * dsCanh.length), p: Math.random(), v: 0.18 + Math.random() * 0.22 }));
+
+  const t0 = performance.now(), NHAP = giam ? 0 : 1600;
   const ra = (x) => 1 - Math.pow(1 - x, 3);
-  let chay = true, id = 0;
+  let truoc = t0, chay = true, id = 0;
   const ve = (now) => {
-    const t = now - t0, k = NHAP ? ra(Math.min(1, t / NHAP)) : 1;
-    // Lúc mở: quay nhanh rồi chậm dần, phóng từ nhỏ ra
-    const y = (giam ? 0.9 : (t / 1000) * tocDo) + (1 - k) * -2.2, x = nghieng;
-    const cy = Math.cos(y), sy = Math.sin(y), cx = Math.cos(x), sx = Math.sin(x);
-    // m = Rx(x) * Ry(y)
-    const m = [cy, sx * sy, -cx * sy, 0, 0, cx, sx, 0, sy, -sx * cy, cx * cy, 0, 0, 0, 0, 1];
-    gl.uniformMatrix4fv(um, false, new Float32Array(m));
-    const canh = Math.min(W, H), tile = (canh / Math.max(W, H)) * 0.86;
-    gl.uniform1f(us, tile * (0.55 + 0.45 * k)); gl.uniform1f(ua, Math.min(1, k * 1.3 + (NHAP ? 0 : 1)));
-    // giữ cầu tròn khi khung không vuông
-    gl.viewport(Math.round((canvas.width - canh * dpr) / 2), Math.round((canvas.height - canh * dpr) / 2), Math.round(canh * dpr), Math.round(canh * dpr));
-    gl.uniform1f(us, 0.9 * (0.55 + 0.45 * k));
-    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawElements(gl.TRIANGLES, ch.length, gl.UNSIGNED_SHORT, 0);
+    const t = now - t0, dt = Math.min(0.05, (now - truoc) / 1000); truoc = now;
+    const k = NHAP ? ra(Math.min(1, t / NHAP)) : 1;
+    const quay = (giam ? 0.9 : (t / 1000) * tocDo) - (1 - k) * 2.4;
+    const cq = Math.cos(quay), sq = Math.sin(quay), cn = Math.cos(nghieng), sn = Math.sin(nghieng);
+    const RR = R * (0.6 + 0.4 * k);
+    // Chiếu 3D → 2D (phối cảnh nhẹ)
+    const ch = diem.map((p) => {
+      let x = p.x * cq + p.z * sq, z = -p.x * sq + p.z * cq, y = p.y;
+      const y2 = y * cn - z * sn; z = y * sn + z * cn; y = y2;
+      const pc = 1 / (1 - z * 0.18);
+      return { X: W / 2 + x * RR * pc, Y: H / 2 + y * RR * pc, z, pc, anh: p.anh };
+    });
+    ctx.clearRect(0, 0, W, H);
+    // Vành cầu rất mảnh để mắt đọc ra hình cầu (không tô nền)
+    ctx.globalAlpha = 0.5 * k; ctx.strokeStyle = "rgba(31,77,58,.18)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(W / 2, H / 2, RR, 0, Math.PI * 2); ctx.stroke();
+    // Đường nối: mặt sau mờ, mặt trước đậm
+    for (const [i, j] of dsCanh) {
+      const a = ch[i], b = ch[j], zz = (a.z + b.z) / 2;
+      ctx.globalAlpha = k * (zz > 0 ? 0.55 + zz * 0.35 : 0.12 + (zz + 1) * 0.1);
+      ctx.strokeStyle = "#1f4d3a"; ctx.lineWidth = zz > 0 ? 1.4 : 0.8;
+      ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+    }
+    // Chấm sáng chạy dọc đường (vàng xoài)
+    for (const c of cham) {
+      if (!giam) c.p += c.v * dt;
+      if (c.p > 1) { c.p = 0; c.c = Math.floor(Math.random() * dsCanh.length); }
+      const [i, j] = dsCanh[c.c], a = ch[i], b = ch[j], zz = a.z + (b.z - a.z) * c.p;
+      if (zz < -0.1) continue;
+      const x = a.X + (b.X - a.X) * c.p, y = a.Y + (b.Y - a.Y) * c.p;
+      ctx.globalAlpha = k * (0.6 + zz * 0.4); ctx.fillStyle = "#e8b53a";
+      ctx.beginPath(); ctx.arc(x, y, 2.6 + zz * 1.2, 0, Math.PI * 2); ctx.fill();
+    }
+    // Điểm ảnh: vẽ từ sau ra trước
+    for (const p of [...ch].sort((a, b) => a.z - b.z)) {
+      const img = tron[p.anh]; if (!img) continue;
+      const kt = RR * (p.z > 0 ? 0.2 + p.z * 0.07 : 0.13 + (p.z + 1) * 0.07) * p.pc;
+      ctx.globalAlpha = k * (p.z > 0 ? 1 : 0.25 + (p.z + 1) * 0.35);
+      ctx.drawImage(img, p.X - kt / 2, p.Y - kt / 2, kt, kt);
+    }
+    ctx.globalAlpha = 1;
     if (chay && !giam) id = requestAnimationFrame(ve);
   };
   id = requestAnimationFrame(ve);
+  if (giam) setTimeout(() => requestAnimationFrame(ve), 600);   // vẽ lại khi ảnh đã tải
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) { chay = false; cancelAnimationFrame(id); } else if (!chay) { chay = true; id = requestAnimationFrame(ve); }
+    if (document.hidden) { chay = false; cancelAnimationFrame(id); } else if (!chay && !giam) { chay = true; truoc = performance.now(); id = requestAnimationFrame(ve); }
   });
   return true;
 }
