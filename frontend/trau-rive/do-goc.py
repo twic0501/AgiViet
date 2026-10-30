@@ -42,8 +42,8 @@ def nghieng():
             if tam[1] < 175:
                 return [('sung-gan', m, '#ecd3b6')]
             return 'mom' if trong(tam, 135, 190, 235, 290) and m.sum() > 2000 else None
-        if trong(tam, 244, 362, 328, 416) and t in ('long', 'khan-vua', 'khan-sang'):
-            return [('tay-gan', m, LONG)]
+        if trong(tam, 244, 370, 328, 420) and t in ('long', 'khan-vua', 'khan-sang', 'quan'):
+            return None                                          # bàn tay đồ tay (BAN_TAY_A)
         if t == 'ao':
             return [('tay-gan', m & tay, None), ('than', m, None)]
         if t == 'long':
@@ -80,11 +80,12 @@ def nghieng():
                    'khan-co': KHAN_VUA, 'khan-dai': KHAN_VUA},
               them_vung=[('khan-co', khan_co, KHAN_VUA), ('khan-dai', khan_dai, KHAN_VUA),
                          ('chan-gan', anh.da_giac(phang(CHAN_GAN_A['ong'])[0]), '#45423d')],
-              bo_net=do.no(vung_khan, 6) | anh.da_giac([(214, 404), (352, 404), (352, 500), (214, 500)]))
+              bo_net=do.no(vung_khan, 6) | anh.da_giac([(214, 404), (352, 404), (352, 500), (214, 500)])
+              | anh.da_giac([(254, 379), (322, 387), (322, 420), (254, 420)]))
     thay_nhom(svg, {'khan-co': khan_tay(KHAN_CO_A), 'khan-dai': khan_tay(KHAN_DAI_A, TUA_A),
                     'chan-gan': chan_tay(**CHAN_GAN_A)})
     chen_nhom(svg, 'than', 'co', (272, 285), [
-        '<path d="M214 258Q276 248 338 256Q346 280 338 300Q276 310 216 304Q208 280 214 258Z" fill="#84736b" '
+        '<path d="M214 252Q276 242 336 248Q344 274 336 300Q276 312 216 306Q206 280 214 252Z" fill="#84736b" '
         'stroke="none" data-role="co-lien"/>'], 'Cổ lông sau đầu và khăn: che khe khi đầu nhún')
     chen_nhom(svg, 'mat-gan', 'long-may-gan', (213, 163), [
         '<path d="M204 168Q213 159 223 164" fill="none" stroke="#24190f" stroke-width="3.7" stroke-linecap="round" '
@@ -94,6 +95,13 @@ def nghieng():
         f'<path d="{DUOI_A}" fill="none" stroke="#84736b" stroke-width="2.3" stroke-linecap="round" data-role="long-duoi"/>',
         f'<path d="{CHUM_DUOI_A}" fill="#292b27" stroke="#24190f" stroke-width="5.0" stroke-linejoin="round" '
         'data-role="chum-long-duoi"/>'], 'Đuôi phía sau (theo hình trái của bảng a)')
+    them_vao_nhom(svg, {'tay-gan': [
+        f'<path d="{BAN_TAY_A}" fill="#84736b" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" '
+        'data-role="mong-tay"/>',
+        '<path d="M262 400Q285 405 308 398" fill="none" stroke="#6b5d5b" stroke-width="3" opacity=".3" '
+        'data-role="bong-tay"/>',
+        '<path d="M254 374L318 383" fill="none" stroke="#24190f" stroke-width="5.6" stroke-linecap="round" '
+        'data-role="co-tay-phang"/>']})
     them_vao_nhom(svg, {'than': [
         '<path d="M226 365L254 365L255 383Q240 386 227 383Z" fill="none" stroke="#aa7652" stroke-width="1.9" '
         'stroke-linejoin="round" data-role="tui"/>']})
@@ -349,7 +357,10 @@ CHAN_GAN_NG = dict(ong='M211 406L306 406Q304 440 300 467Q266 470 231 467L223 428
 # nghiêng trái theo bảng Higgsfield a (hình giữa) — toạ độ đọc trên lưới (khung 512)
 DUOI_A = 'M332 414C344 426 358 430 374 423'
 CHUM_DUOI_A = 'M371 421Q372 407 385 401Q393 398 397 400Q396 412 388 420Q380 427 371 424Z'
-KHAN_CO_A = 'M207 278Q206 268 216 266L332 262Q342 262 341 272L340 292Q300 294 270 300Q236 308 212 310Q205 300 207 278Z'
+KHAN_CO_A = ('M210 266Q214 254 232 252L332 248Q345 250 344 266L341 292Q306 295 274 302Q242 311 220 317'
+             'Q198 316 196 298Q195 278 210 266Z')
+BAN_TAY_A = ('M258 378L312 385Q313 399 307 406Q300 414 291 413Q283 411 281 401Q278 411 270 411Q261 410 259 400'
+             'Q256 389 258 378Z')
 KHAN_DAI_A = 'M200 312L210 312Q207 350 205 398L185 400Q186 360 192 335Q195 320 200 312Z'
 TUA_A = 'M188 401L187 412M193 401L192 413M198 401L198 413M203 400L203 411'
 CHAN_GAN_A = dict(ong='M218 400L348 400Q340 412 330 424Q325 440 322 458Q286 462 250 458Q246 440 241 425Q228 414 218 400Z',
