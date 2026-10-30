@@ -118,20 +118,27 @@ await trang("dang-ky", async (p) => {
 
 await trang("hom-nay", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
-  await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
-  assert.equal(await p.locator(".the-hd").count(), 2, "2 hợp đồng");
+  await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
+  assert.equal(await p.locator(".hd-gon").count(), 2, "2 hợp đồng, mỗi cái một dòng");
   assert.equal(await p.locator(".the-lo").count(), 0, "Trang chủ không còn mục Hàng đang bán");
-  assert.equal(await p.locator("#tong-hd").count(), 0, "Trang chủ không còn mục Tiền");
-  await p.locator("#khoi-gia").waitFor({ state: "visible", timeout: 8000 }).catch(() => {});
-  assert.ok(await p.locator(".gia-tt").count() > 0, "có giá thị trường hôm nay cho mặt hàng đang bán");
+  assert.equal(await p.locator("#tong-hd, #khoi-viec, .gia-tt, .ngay-troi").count(), 0, "chi tiết nằm ở màn riêng, Trang chủ chỉ tóm tắt");
   assert.equal(await p.locator(".qua").count(), 0, "đã bỏ quạ");
-  assert.equal(await p.locator(".ngay-troi").count(), 4, "4 ngày thời tiết");
-  // Câu chính theo dữ liệu thật: có lời chào giá chờ bác thì báo số lời chào, không thì "chưa có việc gấp"
+  await p.waitForFunction(() => /\d/.test(document.querySelector("#tom-troi .lon")?.textContent || ""), null, { timeout: 8000 });
+  await p.waitForFunction(() => /\d/.test(document.querySelector("#tom-gia .lon")?.textContent || ""), null, { timeout: 8000 });
   assert.match(await p.locator("#cau-chinh").textContent(), /chưa có việc gấp|lời chào giá chờ bác|việc cần làm/);
-  assert.deepEqual((await p.locator(".loi-tat a").allInnerTexts()).map((t) => t.replace(/\s+/g, " ").trim()), ["Nhật ký canh tác", "Thời tiết", "Tin tức", "Học kỹ thuật", "Cài đặt & Hỗ trợ"]);
-  if (!(await p.locator("#khoi-viec").isHidden())) assert.ok(await p.locator("#ds-viec .viec").count() > 0, "Cần bác làm có mục");
+  assert.deepEqual((await p.locator(".loi-tat a").allInnerTexts()).map((t) => t.replace(/\s+/g, " ").trim()), ["Thời tiết", "Nhật ký canh tác", "Giá & tin tức", "Học kỹ thuật", "Cài đặt & Hỗ trợ"]);
   assert.equal(await p.locator(".dau").count(), 1, "chỉ một header");
-  assert.equal(await p.locator(".chang i.dang").count(), 2, "mỗi hợp đồng một chặng đang làm");
+  // Bấm ô tóm tắt → màn chi tiết
+  await p.locator("#tom-troi").click(); await p.waitForURL(/ban-thoi-tiet\.html\?thu=/);
+  await p.locator(".ngay-dai").first().waitFor({ timeout: 8000 });
+  assert.ok(await p.locator(".ngay-dai").count() >= 4, "màn Thời tiết có nhiều ngày");
+  await kiemChung(p);
+  await p.goto(`${GOC}/thiet-ke/ban-tin-tuc.html?thu=0918000421`);
+  await p.locator(".gia-tt").first().waitFor({ timeout: 8000 });
+  await p.locator(".tin").first().waitFor({ timeout: 8000 });
+  await kiemChung(p);
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}04-hom-nay.png`, fullPage: true });
 });
@@ -193,7 +200,7 @@ await trang("dang-bai", async (p) => {
 await trang("tin-nhan-thong-bao", async (p) => {
   // Trước khi xem: chuông có chấm mới; xem xong quay về Trang chủ: hết chấm
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
-  await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
+  await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
   assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 1, "chưa xem thì chuông có chấm");
   await p.locator('#dau a[href*="#thong-bao"]').click();
   await p.waitForURL(/ban-thong-bao\.html/);
@@ -203,7 +210,7 @@ await trang("tin-nhan-thong-bao", async (p) => {
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}11-tin-nhan.png` });
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
-  await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
+  await p.locator(".hd-gon").first().waitFor({ timeout: 8000 });
   assert.equal(await p.locator('#dau a[href*="#thong-bao"] .cham-moi').count(), 0, "đã xem thì hết chấm");
 });
 
@@ -244,6 +251,7 @@ await trang("menu-va-dang-bai", async (p) => {
   assert.equal(await p.locator(".tab a").count(), 5, "menu 5 mục");
   const fab = await p.locator(".tab .fab").boundingBox(), thanh = await p.locator(".tab").boundingBox();
   assert.ok(fab.y >= thanh.y - 1 && fab.y + fab.height <= thanh.y + thanh.height + 1, "nút Đăng bài nằm gọn trong thanh menu nổi");
+  await p.goto(`${GOC}/thiet-ke/ban-tin-tuc.html?thu=0918000421`); await p.locator(".tin").first().waitFor({ timeout: 8000 });
   await p.mouse.wheel(0, 600); await p.waitForTimeout(500);
   assert.ok(await p.locator(".tab.thu").count() === 1, "cuộn xuống thì thanh thụt vào");
   await p.mouse.wheel(0, -300); await p.waitForTimeout(500);
@@ -255,7 +263,7 @@ await trang("menu-va-dang-bai", async (p) => {
 });
 
 await trang("nut-cuon-nhanh", async (p) => {
-  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.goto(`${GOC}/thiet-ke/ban-tin-tuc.html?thu=0918000421`);
   await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 8000 });
   assert.equal(await p.locator(".nut-cuon.hien").count(), 0, "chưa cuộn thì ẩn");
   await p.mouse.wheel(0, 500); await p.waitForTimeout(300);

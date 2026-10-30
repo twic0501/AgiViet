@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thời tiết · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .dau-lui { position: sticky; top: 0; z-index: 12; display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; background: var(--giay); border-bottom: 1px solid var(--ke); }
+  .dau-lui a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: var(--muc); text-decoration: none; }
+  .dau-lui h1 { font-size: 18px; font-weight: 700; }
+  .ngay-dai { display: grid; grid-template-columns: 96px 36px 1fr auto; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--ke); }
+  .ngay-dai svg { width: 36px; height: 36px; }
+  .ngay-dai .thu { font-weight: 600; white-space: nowrap; }
+  .ngay-dai .mua { height: 6px; border-radius: 3px; background: var(--ke); overflow: hidden; }
+  .ngay-dai .mua span { display: block; height: 100%; background: var(--tap-trung); }
+  .ngay-dai .so { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+  .ngay-dai .so small { display: block; font-size: 12px; font-weight: 400; color: var(--muc-nhat); }
+  .khuyen { margin-top: 10px; padding: 12px 14px; border-radius: 14px; background: var(--la-nhat); color: var(--la-dam); font-size: 14px; line-height: 1.45; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau-lui"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1>Thời tiết</h1></header>
+  <main class="noi" id="noi" aria-busy="true">
+    <section class="muc" aria-labelledby="t-troi">
+      <h3 id="t-troi"><span id="tinh">Các ngày tới</span></h3>
+      <div id="ds-ngay"></div>
+    </section>
+    <section class="muc" aria-labelledby="t-khuyen" id="khoi-khuyen" hidden>
+      <h3 id="t-khuyen"><span>Lời khuyên cho ruộng vườn</span></h3>
+      <div id="ds-khuyen"></div>
+    </section>
+  </main>
+</div>
+<script type="module">
+import { esc, so, phien, layDuLieu, ANH_SP, giuThamSo, veTab } from "./chung.js";
+veTab("trang-chu");
+const $ = (id) => document.getElementById(id);
+const iconTroi = (p) => p >= 70
+  ? `<svg viewBox="0 0 36 36" fill="none"><path d="M10 20a6 6 0 0 1 1-12 8 8 0 0 1 15 2 5 5 0 0 1 0 10z" fill="#c9d3dc"/><path d="M13 24l-2 5M19 24l-2 5M25 24l-2 5" stroke="#2b6cb0" stroke-width="2.4" stroke-linecap="round"/></svg>`
+  : p >= 30
+  ? `<svg viewBox="0 0 36 36" fill="none"><circle cx="13" cy="13" r="6" fill="#e8b53a"/><path d="M12 24a6 6 0 0 1 1-12 8 8 0 0 1 15 2 5 5 0 0 1 0 10z" fill="#dfe4e8"/></svg>`
+  : `<svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="7" fill="#e8b53a"/><path d="M18 4v4M18 28v4M4 18h4M28 18h4M8 8l3 3M25 25l3 3M8 28l3-3M25 11l3-3" stroke="#e8b53a" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+
+async function mo() {
+  const { troi } = await layDuLieu(await phien());
+  if (!troi || troi.__loi || !troi.ngay?.length) { $("ds-ngay").innerHTML = `<p class="bao" style="margin-top:12px">${troi?.__loi ? "Chưa tải được thời tiết." : "Chưa có dữ liệu thời tiết."}</p>`; return; }
+  $("tinh").textContent = `Các ngày tới · ${troi.tinh?.ten || ""}`;
+  $("ds-ngay").innerHTML = troi.ngay.map((n, i) => {
+    const thu = i === 0 ? "Hôm nay" : new Date(n.ngay).toLocaleDateString("vi-VN", { weekday: "short", day: "numeric", month: "numeric" });
+    const mua = so(n.kha_nang_mua_phan_tram, 0, 100), cao = so(n.nhiet_do_cao_c), thap = so(n.nhiet_do_thap_c);
+    return `<div class="ngay-dai"><span class="thu">${esc(thu)}</span>${iconTroi(mua ?? 0)}<span><div class="mua" title="Khả năng mưa ${mua ?? "?"}%"><span style="width:${mua ?? 0}%"></span></div><small style="font-size:12px;color:var(--muc-nhat)">Mưa ${mua ?? "—"}%</small></span>
+      <span class="so">${cao === null ? "—" : Math.round(cao) + "°"}${thap === null ? "" : `<small>${Math.round(thap)}°</small>`}</span></div>`;
+  }).join("");
+  const kh = [...new Set(troi.ngay.flatMap((n) => n.loi_khuyen || []))];
+  if (kh.length) { $("ds-khuyen").innerHTML = kh.slice(0, 4).map((k) => `<p class="khuyen">${esc(k)}</p>`).join(""); $("khoi-khuyen").hidden = false; }
+}
+
+mo().catch((e) => { $("noi").insertAdjacentHTML("afterbegin", `<p class="bao loi" style="margin-top:12px">Không tải được: ${esc(e.message)}</p>`); }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });
+</script>
+</body>
+</html>

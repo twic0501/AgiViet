@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Giá &amp; tin tức · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .dau-lui { position: sticky; top: 0; z-index: 12; display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; background: var(--giay); border-bottom: 1px solid var(--ke); }
+  .dau-lui a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: var(--muc); text-decoration: none; }
+  .dau-lui h1 { font-size: 18px; font-weight: 700; }
+  .gia-tt { display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--ke); }
+  .gia-tt .anh { width: 48px; height: 48px; border-radius: 12px; background: var(--giay-lot) center / cover; }
+  .gia-tt .ten { font-weight: 600; }
+  .gia-tt .phu { font-size: 13px; color: var(--muc-nhat); }
+  .gia-tt .so { text-align: right; font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; }
+  .gia-tt .so small { display: block; font-size: 12px; font-weight: 400; color: var(--muc-nhat); }
+  .tin { display: block; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; }
+  .tin .tieu { font-weight: 600; line-height: 1.35; }
+  .tin .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau-lui"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1>Giá &amp; tin tức</h1></header>
+  <main class="noi" id="noi" aria-busy="true">
+    <section class="muc" aria-labelledby="t-gia" id="gia">
+      <h3 id="t-gia"><span>Giá thị trường hôm nay</span><span style="font-weight:400">đ/kg</span></h3>
+      <div id="ds-gia"><div class="khung-tai"></div></div>
+    </section>
+    <section class="muc" aria-labelledby="t-tin" id="tin">
+      <h3 id="t-tin"><span>Tin tức nông nghiệp</span><span id="tin-tinh" style="font-weight:400"></span></h3>
+      <div id="ds-tin"><div class="khung-tai"></div></div>
+    </section>
+  </main>
+</div>
+<script type="module">
+import { esc, so, phien, layDuLieu, ANH_SP, giuThamSo, veTab } from "./chung.js";
+veTab("trang-chu");
+const $ = (id) => document.getElementById(id);
+async function mo() {
+  const token = await phien();
+  const { lo: tatCa, tenSp } = await layDuLieu(token);
+  const lo = tatCa.filter((l) => l.status === "on_sale");
+  const h = { headers: { authorization: "Bearer " + token } };
+  const cap = [...new Map(lo.map((l) => [`${l.product_code}|${l.grade_code}`, l])).values()];
+  const gia = await Promise.all(cap.map((l) => fetch(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`, h).then((x) => (x.ok ? x.json() : null)).catch(() => null)));
+  const dong = cap.map((l, i) => ({ l, g: gia[i] })).filter((x) => x.g?.price_vnd);
+  $("ds-gia").innerHTML = dong.length ? dong.map(({ l, g }) => { const a = ANH_SP(l.product_code); return `<div class="gia-tt"><span class="anh" style="${a ? `background-image:url(${a})` : ""}"></span>
+    <span><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</p><p class="phu">Từ ${esc(String(g.order_count || 0))} giao dịch gần đây · ${esc(g.scope === "DBSCL" ? "ĐBSCL" : g.scope || "")}</p></span>
+    <span class="so">${Number(g.price_vnd).toLocaleString("vi-VN")}<small>đ/kg</small></span></div>`; }).join("") : `<p class="bao" style="margin-top:12px">Chưa có giá tham khảo cho mặt hàng bác đang bán.</p>`;
+  const tin = await fetch("/v1/news", h).then((x) => (x.ok ? x.json() : null)).catch(() => null);
+  $("tin-tinh").textContent = tin?.tinh || "";
+  $("ds-tin").innerHTML = tin?.tin?.length ? tin.tin.map((n) => `<a class="tin" href="${esc(n.link)}" target="_blank" rel="noopener noreferrer"><p class="tieu">${esc(n.tieu_de)}</p>
+    <p class="phu">${esc(n.nguon)} · ${new Date(n.ngay).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" })}${n.theo_tinh ? " · trong tỉnh" : ""}</p></a>`).join("") : `<p class="bao" style="margin-top:12px">Chưa tải được tin.</p>`;
+}
+
+mo().catch((e) => { $("noi").insertAdjacentHTML("afterbegin", `<p class="bao loi" style="margin-top:12px">Không tải được: ${esc(e.message)}</p>`); }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });
+</script>
+</body>
+</html>
