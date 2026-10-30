@@ -72,6 +72,15 @@ class RaoChan(unittest.TestCase):
         self.assertNotIn("DỮ LIỆU", kq.van_ban)
         self.assertIn("mục Lô hàng", kq.van_ban)
 
+    def test_khong_lo_nhan_quy_trinh(self):
+        kq = tra_loi("Lô tự ẩn khi nào?", "ban", ncc=GiaNcc("Theo quy trình đã chốt, lô tự ẩn sau 14 ngày nếu bác không xác nhận còn hàng."))
+        self.assertNotRegex(kq.van_ban.lower(), "quy trình đã chốt")
+        self.assertEqual(kq.loai, "mo_hinh")   # số 14 có trong quy trình đã chốt → không bị coi là số lạ
+
+    def test_cuc_bo_so_ngoai_quy_trinh_bi_chan(self):
+        kq = tra_loi("Bên mua cọc bao nhiêu?", "ban", ncc=GiaNcc("Bên mua cọc 50% giá trị đơn."))
+        self.assertEqual(kq.loai, "so_la")
+
     def test_hong_het_tra_soan_san(self):
         kq = tra_loi("Hợp đồng ở đâu?", "ban", ncc=GiaNcc(CAU_SOAN_SAN, "soan_san"))
         self.assertEqual(kq.loai, "soan_san")

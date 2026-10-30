@@ -169,13 +169,19 @@ await trang("hang-hoa", async (p) => {
   await p.locator("#ngan-can").click();
   await p.locator("#p-can .can").first().waitFor({ timeout: 8000 });
   assert.ok(await p.locator("#p-can .khop").count() > 0, "có nhu cầu khớp hàng của bác");
-  await p.locator("#p-can button[data-dong]:not([disabled])").first().click();
-  await p.locator(".tam").waitFor({ timeout: 3000 });
-  await p.locator('.tam input[name="gia"]').fill("24000");
-  await kiemChung(p);
-  await p.locator("#tam-gui").click();
-  // Gửi được, hoặc (chạy lại trên cùng dữ liệu) báo rõ lô đã có lời chào đang mở với bên mua đó
-  await p.waitForFunction(() => /Đã gửi chào hàng|đã có lời chào đang mở/.test(document.querySelector(".tam")?.textContent || ""), null, { timeout: 8000 });
+  const conChao = p.locator("#p-can button[data-dong]:not([disabled])");
+  if (await conChao.count()) {
+    await conChao.first().click();
+    await p.locator(".tam").waitFor({ timeout: 3000 });
+    await p.locator('.tam input[name="gia"]').fill("24000");
+    await kiemChung(p);
+    await p.locator("#tam-gui").click();
+    await p.getByText("Đã gửi chào hàng").waitFor({ timeout: 8000 });
+  } else {
+    // Chạy lại trên cùng dữ liệu: mọi dòng khớp đã chào → nút phải ghi rõ lý do, không cho chào trùng
+    const nhan = await p.locator("#p-can button[data-dong]").allInnerTexts();
+    assert.ok(nhan.every((t) => /Đã chào|Đang chào|Chưa có hàng/.test(t)), `nút khóa phải có lý do: ${nhan.join(", ")}`);
+  }
   await p.screenshot({ path: `${ANH}05b-cho-chao-hang.png` });
 });
 

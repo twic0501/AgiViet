@@ -20,7 +20,8 @@ HE_THONG = {
         "Chỉ hướng dẫn các việc trong app: đăng lô hàng, chụp ảnh, chào giá, hợp đồng, cọc qua ngân hàng, giao nhận, quyết toán. "
         "Tối đa 4 câu. Chỉ dùng con số có trong DỮ LIỆU; không có thì nói chưa có số và chỉ chỗ xem trong app. "
         "Chỉ nhắc tới các mục có thật trong app: " + "{MUC}" + ". Không tự đặt tên mục khác. "
-        "Không tự kể quy trình hay chính sách; chỉ nói điều có trong DỮ LIỆU, còn lại bảo bác xem mục Hỗ trợ. "
+        "Hỏi cách làm, quy trình, cọc, ký, giao nhận thì chỉ giải thích theo QUY TRÌNH ĐÃ CHỐT, không thêm gì ngoài đó; "
+        "điều không có trong DỮ LIỆU hay QUY TRÌNH ĐÃ CHỐT thì bảo bác hỏi nhân viên ở mục Hỏi AgiViet. "
         "Chỉ nhắc tài khoản đảm bảo ngân hàng khi câu hỏi về tiền. Không bao giờ hỏi mã OTP, mật khẩu, số tài khoản."
     ),
     "mua": (
@@ -28,7 +29,8 @@ HE_THONG = {
         "Scope only: sourcing, offers, contracts, deposits via the bank escrow, delivery, inspection, settlement, disputes. "
         "Max 4 sentences, prefer short bullet points for steps. Use only numbers present in DỮ LIỆU; if missing, say the figure is "
         "not available yet and where to find it. Only mention these app sections: " + "{MUC}" + "; never invent other menu names. "
-        "Never describe a procedure or policy unless it is in DỮ LIỆU; otherwise refer to Hỗ trợ. Mention the bank escrow only "
+        "Explain procedures only as written in QUY TRÌNH ĐÃ CHỐT, adding nothing; anything not in DỮ LIỆU or QUY TRÌNH ĐÃ CHỐT "
+        "goes to Hỗ trợ. Mention the bank escrow only "
         "for payment questions. Never ask for OTP, passwords or bank account numbers."
     ),
 }
@@ -36,6 +38,16 @@ HE_THONG = {
 MUC_APP = {"ban": "Trang chủ, Chợ (hàng đang bán), Đăng bài, Tin nhắn (chào giá), Tiền, Thông báo, Hỏi AgiViet",
            "mua": "Tổng quan, Nguồn hàng, Báo giá, Hợp đồng, Thanh toán, Giao nhận, Hỗ trợ"}
 HE_THONG = {v: t.replace("{MUC}", MUC_APP[v]) for v, t in HE_THONG.items()}
+
+# Quy trình đã chốt (brief app bán 22/10/2026, mục 3 và 7.1) — nguồn duy nhất để trợ lý giải thích cách làm
+QUY_TRINH = """1. Đăng lô: người bán đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, bên mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng.
+2. Ghép: người bán thấy bên mua đang cần hàng của mình và có thể chào hàng.
+3. Chào giá: đồng ý, trả giá hoặc không bán. Mỗi lượt 24 giờ; mỗi bên trả giá tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng.
+4. Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút.
+5. Cọc: bên mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở.
+6. Phần tiền còn lại hai bên tự trả cho nhau theo hợp đồng (tiền mặt hoặc chuyển khoản; trước khi bốc, khi nhận hàng hoặc sau số ngày đã thỏa thuận). App chỉ ghi nhận và đối soát, không giữ khoản này. Người bán xác nhận đúng số đã nhận; im lặng không bao giờ bị coi là đã nhận.
+7. Giao nhận: đủ thẻ Sẵn sàng giao mới bốc; quét mã, bốc hàng, lập biên bản; người bán xác nhận số cân trong 24 giờ, quá hạn thì người vận hành đối chiếu, cọc vẫn giữ.
+8. Xong: cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được người bán xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."""
 
 CAU_NGOAI_LE = {
     "ban": "AgiViet chỉ hỗ trợ việc mua bán trong app thôi bác ạ. Bác cần hỏi về lô hàng, giá, hợp đồng hay giao nhận không?",
@@ -116,13 +128,15 @@ def tra_loi(cau: str, vai: str = "ban", du_lieu: str = "", ncc: NhaCungCap | Non
     if not trong_pham_vi(cau):
         return TraLoi(CAU_NGOAI_LE[vai], "ngoai_le")
     ncc = ncc or NhaCungCap()
-    kq = ncc.goi(HE_THONG[vai], f"DỮ LIỆU:\n{du_lieu or '(trống)'}\n\nCÂU HỎI:\n{cau}", loai="truc_tiep", toi_da=300)
+    kq = ncc.goi(HE_THONG[vai], f"QUY TRÌNH ĐÃ CHỐT:\n{QUY_TRINH}\n\nDỮ LIỆU:\n{du_lieu or '(trống)'}\n\nCÂU HỎI:\n{cau}",
+                 loai="truc_tiep", timeout_s=6.0, toi_da=300)
     if kq.nguon == "soan_san":
         return TraLoi(CAU_SOAN_SAN, "soan_san", kq.nguon)
-    la = so_la(kq.van_ban, du_lieu + " " + cau)
+    la = so_la(kq.van_ban, du_lieu + " " + cau + " " + QUY_TRINH)
     if la:
         return TraLoi(CAU_KHONG_SO[vai], "so_la", kq.nguon, la)
     if la_lua(kq.van_ban) and not re.search(r"khong|đừng|dung|chua bao gio|never", bo_dau(kq.van_ban)):
         return TraLoi(CAU_LUA[vai], "lua", kq.nguon)
-    sach = re.sub(r"\s*\b(trong|theo|ở)?\s*(phần )?DỮ LIỆU\b", "", kq.van_ban)   # nhãn nội bộ không lộ ra người dùng
-    return TraLoi(re.sub(r"\n{3,}", "\n\n", sach).strip(), "mo_hinh", kq.nguon)
+    sach = re.sub(r"\s*\b(trong|theo|ở)?\s*(phần )?(DỮ LIỆU|QUY TRÌNH ĐÃ CHỐT)\b,?", "", kq.van_ban, flags=re.I)   # nhãn nội bộ không lộ ra người dùng
+    sach = re.sub(r"\n{3,}", "\n\n", sach).strip()
+    return TraLoi(sach[:1].upper() + sach[1:], "mo_hinh", kq.nguon)
