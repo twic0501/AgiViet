@@ -1,7 +1,8 @@
 // Quả cầu kết nối nông sản: ảnh tròn nhỏ là các điểm nằm trên mặt cầu 3D, nối nhau bằng đường thẳng (mạng lưới mua bán),
 // chấm sáng chạy dọc đường như hàng đang đi. Cầu xoay; điểm phía trước to/rõ, phía sau nhỏ/mờ.
 // Canvas 2D, không thư viện ngoài (chạy được khi ngoại tuyến). Tôn trọng prefers-reduced-motion.
-export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0.35 } = {}) {
+// mauDuong/mauVanh/mauCham: đổi màu khi đặt trên nền tối (vd. khối xanh)
+export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0.35, mauDuong = "#1f4d3a", mauVanh = "rgba(31,77,58,.18)", mauCham = "#e8b53a" } = {}) {
   const ctx = canvas.getContext("2d");
   const giam = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const dpr = Math.min(2, devicePixelRatio || 1);
@@ -62,13 +63,13 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
     });
     ctx.clearRect(0, 0, W, H);
     // Vành cầu rất mảnh để mắt đọc ra hình cầu (không tô nền)
-    ctx.globalAlpha = 0.5 * k; ctx.strokeStyle = "rgba(31,77,58,.18)"; ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.5 * k; ctx.strokeStyle = mauVanh; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(W / 2, H / 2, RR, 0, Math.PI * 2); ctx.stroke();
     // Đường nối: mặt sau mờ, mặt trước đậm
     for (const [i, j] of dsCanh) {
       const a = ch[i], b = ch[j], zz = (a.z + b.z) / 2;
       ctx.globalAlpha = k * (zz > 0 ? 0.55 + zz * 0.35 : 0.12 + (zz + 1) * 0.1);
-      ctx.strokeStyle = "#1f4d3a"; ctx.lineWidth = zz > 0 ? 1.4 : 0.8;
+      ctx.strokeStyle = mauDuong; ctx.lineWidth = zz > 0 ? 1.4 : 0.8;
       ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
     }
     // Chấm sáng chạy dọc đường (vàng xoài)
@@ -78,7 +79,7 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
       const [i, j] = dsCanh[c.c], a = ch[i], b = ch[j], zz = a.z + (b.z - a.z) * c.p;
       if (zz < -0.1) continue;
       const x = a.X + (b.X - a.X) * c.p, y = a.Y + (b.Y - a.Y) * c.p;
-      ctx.globalAlpha = k * (0.6 + zz * 0.4); ctx.fillStyle = "#e8b53a";
+      ctx.globalAlpha = k * (0.6 + zz * 0.4); ctx.fillStyle = mauCham;
       ctx.beginPath(); ctx.arc(x, y, 2.6 + zz * 1.2, 0, Math.PI * 2); ctx.fill();
     }
     // Điểm ảnh: vẽ từ sau ra trước
