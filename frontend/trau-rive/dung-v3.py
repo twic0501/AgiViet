@@ -438,7 +438,7 @@ def main():
         khung(g.id['nghich'], 'scaleX', [(0, 1), (16, 1.03), (46, .97), (100, .97), (120, 1.015), (136, 1), (160, 1)]),
         khung(g.id['dau-nghich'], 'y', [(0, 0), (16, 2), (46, -5), (100, -5), (124, 1), (160, 0)]),
         khung(g.id['dau-nghich'], 'rotation', [(0, 0), (46, -.06), (100, -.06), (128, .015), (160, 0)]),
-        *[khung(nid, 'rotation', [(0, 0), (16, -.08 * d), (50, 1.15 * d), (100, 1.15 * d), (126, -.08 * d), (140, .03 * d),
+        *[khung(nid, 'rotation', [(0, 0), (16, -.08 * d), (50, .5 * d), (100, .5 * d), (126, -.08 * d), (140, .03 * d),
                                   (160, 0)]) for nid, d in g.tay()],
         *mat(g, 'scaleY', [(0, 1), (40, .45), (104, .45), (124, 1), (160, 1)]),
         *may(g, 'y', [(0, 0), (46, -2), (100, -2), (124, 0), (160, 0)]),
@@ -479,7 +479,7 @@ def main():
                *duoi_theo(g, [(f, .3 * math.sin(2 * math.pi * f / 20)) for f in range(0, 161, 5)] + [(170, 0), (180, 0)])]
         for j, (nid, d) in enumerate(g.tay()):
             pha = 0 if j == 0 else 20
-            out.append(khung(nid, 'rotation', [(0, 0)] + [(f, d * (.55 + .45 * math.sin(2 * math.pi * (f - pha) / 40)))
+            out.append(khung(nid, 'rotation', [(0, 0)] + [(f, d * (.28 + .22 * math.sin(2 * math.pi * (f - pha) / 40)))
                                                          for f in range(10, 151, 10)] + [(166, 0), (180, 0)]))
         return out
     vui = nghich('Cảm xúc: vui hớn hở', 180, vui_fn)
@@ -506,17 +506,19 @@ def main():
                 khung(g.id['nghich'], 'rotation', [(0, 0), (6, .04), (40, .03), (70, -.008), (90, 0), (110, 0)]),
                 khung(g.id['nghich'], 'scaleY', [(0, 1), (3, .95), (6, 1.06), (13, .95), (20, 1.02), (60, 1.01),
                                                  (72, .97), (90, 1), (110, 1)]),
-                *[khung(nid, 'rotation', [(0, 0), (5, .6 * d), (40, .5 * d), (68, -.05 * d), (86, 0), (110, 0)])
+                *[khung(nid, 'rotation', [(0, 0), (5, .45 * d), (40, .38 * d), (68, -.05 * d), (86, 0), (110, 0)])
                   for nid, d in g.tay()],
                 *duoi_theo(g, [(0, 0), (6, .5), (40, .4), (70, -.1), (90, 0), (110, 0)])]
     giat_minh = nghich('Cảm xúc: giật mình', 110, giat_minh_fn)
 
+    # Tay chỉ xoay tối đa ~30° (0,5 rad): tay V4g vẽ cho dáng buông, quá 40° ống tay thành thanh dẹt cứng.
+    # Tay giơ cao thật cần hình vẽ riêng cho tư thế tay giơ (đổi hình), chưa có.
     def chao_fn(g):  # vẫy tay chào thân thiện: một tay giơ cao vẫy, người nghiêng về phía tay kia, mắt cười, đầu nghiêng
         tay = g.tay()
         nid, d = tay[-1]
-        out = [khung(nid, 'rotation', [(0, 0), (10, -.1 * d), (28, 1.75 * d)] +
-                     [(28 + 10 * i, (1.75 + (.28 if i % 2 else -.05)) * d) for i in range(1, 9)] +
-                     [(128, 1.75 * d), (148, -.08 * d), (160, .03 * d), (176, 0)]),
+        out = [khung(nid, 'rotation', [(0, 0), (10, -.1 * d), (28, .48 * d)] +
+                     [(28 + 10 * i, (.48 + (.1 if i % 2 else -.06)) * d) for i in range(1, 9)] +
+                     [(128, .48 * d), (148, -.08 * d), (160, .03 * d), (176, 0)]),
                *mat_cuoi(g, 24, 120),
                khung(g.id['nghich'], 'rotation', [(0, 0), (10, .01 * d), (28, -.03 * d), (128, -.03 * d), (156, .005 * d),
                                                   (176, 0)]),
