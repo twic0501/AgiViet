@@ -74,3 +74,35 @@ export async function layDuLieu(token) {
   const tenSp = new Map((sp.__loi ? [] : Array.isArray(sp) ? sp : sp.items || []).map((p) => [p.code, p.name_vi || p.name]));
   return { me, don, lo, tienTom, troi, tenSp };
 }
+
+// ---- Biểu tượng nét (viền rỗng) / đặc (đang chọn). Không hiệu ứng rê chuột. ----
+const IC = {
+  "trang-chu": ['<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>', '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" fill="currentColor"/>'],
+  cho: ['<path d="M4 9h16l-1.2 11.1a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9z"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/>', '<path d="M4 9h16l-1.2 11.1a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9z" fill="currentColor"/><path d="M8.5 9V7a3.5 3.5 0 0 1 7 0v2"/>'],
+  "dang-bai": ['<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/>', '<rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="currentColor"/><path d="M12 8v8M8 12h8" stroke="#f6f2e7"/>'],
+  "tin-nhan": ['<path d="M4 5h16v11H9l-5 4z"/>', '<path d="M4 5h16v11H9l-5 4z" fill="currentColor"/>'],
+  tien: ['<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M16 14.5h2"/>', '<rect x="3" y="6" width="18" height="13" rx="2.5" fill="currentColor"/><path d="M3 10h18M16 14.5h2" stroke="#f6f2e7"/>'],
+  "ho-tro": ['<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13.5" width="4.5" height="6" rx="1.5"/><rect x="16.5" y="13.5" width="4.5" height="6" rx="1.5"/><path d="M19 19.5a3 3 0 0 1-3 2.5h-3"/>', ""],
+  chuong: ['<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>', ""],
+};
+export const bieuTuong = (ten, dac = false) => `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[ten][dac && IC[ten][1] ? 1 : 0]}</svg>`;
+
+// Thanh menu dưới dùng chung: Trang chủ · Chợ · Đăng bài · Tin nhắn · Tiền
+const MUC_TAB = [["trang-chu", "Trang chủ", "./ban-hom-nay.html"], ["cho", "Chợ", "./ban-hang-hoa.html"], ["dang-bai", "Đăng bài", "#dang-bai"],
+  ["tin-nhan", "Tin nhắn", "#tin-nhan"], ["tien", "Tiền", "#tien"]];
+export function veTab(dangMo, soTin = 0) {
+  const nav = document.createElement("nav");
+  nav.className = "tab"; nav.setAttribute("aria-label", "Mục chính");
+  nav.innerHTML = MUC_TAB.map(([k, ten, href]) => `<a href="${href}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span>${ten}${k === "tin-nhan" && soTin ? `<span class="an-chu"> (${soTin} tin mới)</span>` : ""}</span></a>`).join("");
+  document.querySelector(".trang").appendChild(nav);
+  giuThamSo(nav);
+}
+
+// Header dùng chung: ảnh đại diện + tên bên trái; Hỗ trợ (tai nghe) + Thông báo (chuông, chấm xanh) bên phải
+export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
+  goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${esc(chuDau)}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
+    <div class="dau-phai">
+      <a class="nut-tron" href="#ho-tro" aria-label="Hỗ trợ: gọi hoặc nhắn AgiViet">${bieuTuong("ho-tro")}</a>
+      <a class="nut-tron" href="#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>
+    </div>`;
+}

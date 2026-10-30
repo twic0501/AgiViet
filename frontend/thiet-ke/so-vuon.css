@@ -55,9 +55,13 @@ p { margin: 0; text-wrap: pretty; }
 
 /* Khung app */
 .trang { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
-.dau { padding: var(--k4) var(--k4) var(--k3); display: flex; align-items: baseline; justify-content: space-between; gap: var(--k3); }
+.dau { padding: var(--k3) var(--k4); display: flex; align-items: center; justify-content: space-between; gap: var(--k3); position: sticky; top: 0; z-index: 5; background: var(--giay); border-bottom: 1px solid var(--ke); }
 .dau .chao { font-size: var(--c-ghi); color: var(--muc-nhat); }
-.dau h1 { font-size: var(--c-tieu); font-weight: 600; letter-spacing: -0.01em; }
+.dau h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+.dau-phai { display: flex; gap: 4px; }
+.nut-tron { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--muc); position: relative; background: var(--giay-noi); border: 1px solid var(--ke); }
+.cham-moi { position: absolute; top: 9px; right: 10px; width: 9px; height: 9px; border-radius: 50%; background: #2f9e5b; box-shadow: 0 0 0 2px var(--giay-noi); }
+.an-chu { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .nut-chu { font: 600 var(--c-ghi)/1 var(--chu); color: var(--la); background: none; border: 0; padding: var(--k3) var(--k2); margin: calc(-1 * var(--k3)) calc(-1 * var(--k2)); min-height: 44px; cursor: pointer; }
 .noi { flex: 1; padding: 0 var(--k4) var(--k8); display: flex; flex-direction: column; gap: var(--k6); }
 
@@ -110,9 +114,10 @@ p { margin: 0; text-wrap: pretty; }
 
 /* Tab dưới: chữ, không biểu tượng */
 .tab { position: sticky; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--giay); border-top: 1px solid var(--ke-dam); padding-bottom: env(safe-area-inset-bottom); }
-.tab a { min-height: 56px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: var(--c-ghi); font-weight: 600; color: var(--muc-nhat); text-decoration: none; line-height: 1.2; padding: 0 2px; position: relative; }
-.tab a[aria-current="page"] { color: var(--la); }
-.tab a[aria-current="page"]::before { content: ""; position: absolute; top: 0; left: 25%; right: 25%; height: 3px; background: var(--la); border-radius: 0 0 3px 3px; }
+.tab a { min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; font-size: var(--c-ghi); font-weight: 500; color: var(--muc-nhat); text-decoration: none; line-height: 1.15; padding: 6px 2px; position: relative; -webkit-tap-highlight-color: transparent; }
+.tab .ic { position: relative; display: grid; place-items: center; }
+.tab .ic .cham-moi { top: -2px; right: -4px; box-shadow: 0 0 0 2px var(--giay); }
+.tab a[aria-current="page"] { color: var(--la); font-weight: 600; }
 
 /* Trạng thái tải / trống / lỗi */
 .khung-tai { height: 64px; border-bottom: 1px solid var(--ke); background: linear-gradient(90deg, transparent, var(--giay-lot), transparent) 0 0 / 200% 100%; animation: tai 1.2s linear infinite; }
@@ -185,3 +190,13 @@ p { margin: 0; text-wrap: pretty; }
 .anh-trong { background: repeating-linear-gradient(135deg, var(--giay-lot) 0 10px, var(--giay) 10px 20px) !important; }
 .nhan-minh-hoa { position: absolute; right: 8px; top: 8px; font-size: 13px; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,.85); color: var(--muc-phu); }
 .chua-co { opacity: .6; }
+
+/* Lô hàng: lưới 2 cột, không cuộn ngang */
+.luoi-lo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: var(--k3); }
+.luoi-lo .the-lo { flex: none; }
+.luoi-lo .the-lo .anh { aspect-ratio: 4 / 3; }
+.luoi-lo .the-lo .than { padding: 10px 12px 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
+.luoi-lo .so-con { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.luoi-lo .so-con small { font-weight: 400; color: var(--muc-nhat); margin-left: 2px; }
+.thanh-con { height: 6px; border-radius: 3px; background: var(--ke); width: 100%; overflow: hidden; }
+.thanh-con span { display: block; height: 100%; background: var(--la); }

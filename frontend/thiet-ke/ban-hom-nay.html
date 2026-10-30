@@ -9,13 +9,7 @@
 </head>
 <body>
 <div class="trang">
-  <header class="dau">
-    <div class="dau-trai">
-      <span class="anh-dai-dien" id="chu-dau">AV</span>
-      <div><p class="chao" id="chao">AgiViet</p><h1 id="ten-ho" style="font-size:18px">Hôm nay</h1></div>
-    </div>
-    <button class="nut-chu" type="button">Hỗ trợ</button>
-  </header>
+  <header class="dau" id="dau"></header>
 
   <main class="noi" id="noi" aria-busy="true">
     <section class="chinh co-trau" aria-live="polite">
@@ -35,7 +29,7 @@
 
     <section class="muc" aria-labelledby="t-lo">
       <h3 id="t-lo"><span>Hàng đang bán</span><a href="./ban-hang-hoa.html">Xem hết</a></h3>
-      <div class="ke-ngang" id="ds-lo"><div class="khung-tai" style="flex:0 0 72%"></div></div>
+      <div class="luoi-lo" id="ds-lo"><div class="khung-tai"></div><div class="khung-tai"></div></div>
     </section>
 
     <section class="muc" aria-labelledby="t-tien">
@@ -55,19 +49,13 @@
     </section>
   </main>
 
-  <nav class="tab" aria-label="Mục chính">
-    <a href="#" aria-current="page">Hôm nay</a>
-    <a href="./ban-hang-hoa.html">Hàng hóa</a>
-    <a href="#">Bên mua</a>
-    <a href="#">Hợp đồng</a>
-    <a href="#">Tiền</a>
-  </nav>
 </div>
 
 <script src="/assets/vendor/rive/rive.js"></script>
 <script type="module">
-import { tien, tienDu, can, esc, so, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT, dangLam, giuThamSo } from "./chung.js";
-giuThamSo();
+import { tien, tienDu, can, esc, so, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT, dangLam, giuThamSo, veDau, veTab } from "./chung.js";
+veTab("trang-chu");
+veDau(document.getElementById("dau"), { chao: "Chào bác", ten: "AgiViet", chuDau: "·" });
 const $ = (id) => document.getElementById(id);
 try {
   rive.RuntimeLoader.setWasmUrl("/assets/vendor/rive/rive.wasm");
@@ -89,9 +77,10 @@ async function mo() {
   const { me, tienTom, troi, tenSp } = d;
   const don = d.don.filter(dangLam);                       // chỉ hợp đồng còn đang chạy
   const lo = d.lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);   // lô bên mua đang thấy
-  $("chao").textContent = `Chào ${me.name.split(" ").at(-1)}`;
-  $("ten-ho").textContent = me.org.name;
-  $("chu-dau").textContent = me.name.split(" ").at(-1).charAt(0).toUpperCase();
+  // Số thông báo chưa đọc lấy từ backend (lỗi tải thì không hiện chấm)
+  const tb = await fetch("/v1/notifications", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : [])).catch(() => []);
+  const chuaDoc = (Array.isArray(tb) ? tb : tb.items || []).filter((n) => !n.read_at && !n.da_doc).length;
+  veDau($("dau"), { chao: `Chào ${me.name.split(" ").at(-1)}`, ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase(), soThongBao: chuaDoc });
   $("ngay").textContent = new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric" });
 
   const toiBac = don.filter((d) => d.hien_thi?.toi_luot?.phia === d.phia_cua_ban);
@@ -120,19 +109,17 @@ async function mo() {
       <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div></a>`;
   }).join("") : `<p class="bao" style="margin-top:12px">Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
 
-  $("ds-lo").innerHTML = lo.length ? lo.map((l) => {
+  $("ds-lo").innerHTML = lo.length ? lo.slice(0, 4).map((l) => {
     const [soKg, dvKg] = can(l.available_g);
-    // Trong vòng tròn nhỏ ghi gọn theo tấn; số kg đầy đủ ở nhãn đọc màn hình
-    const kg = Number(l.available_g || 0) / 1000;
-    const [so, dv] = kg >= 1000 ? [(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }), "tấn"] : [soKg, dvKg];
     const ti = Math.max(0, Math.min(1, Number(l.available_g) / Number(l.declared_qty_g || l.available_g || 1)));
-    const C = 2 * Math.PI * 24;
     const anh = ANH_SP(l.product_code);
     return `<a class="the-lo" href="./ban-hang-hoa.html">
-      <div class="anh ${anh ? "" : "anh-trong"}" ${anh ? `style="background-image:url(${anh})"` : ""}>${anh ? '<span class="nhan-minh-hoa">Ảnh minh họa</span>' : ""}<span class="nhan-lo">${esc(l.code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</span></div>
-      <div class="than"><div><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</p><p class="phu">${l.qty_basis === "estimated" ? "Lượng ước tính" : "Đã cân"}</p></div>
-        <span class="vong" role="img" aria-label="Còn ${soKg} ${dvKg}" title="Còn ${soKg} ${dvKg}"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--ke-dam)" stroke-width="5"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--la)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C * ti} ${C}"/></svg><b>${so}<small>${dv}</small></b></span></div></a>`;
-  }).join("") : `<p class="bao">Bác chưa có lô nào đang bán.</p>`;
+      <div class="anh ${anh ? "" : "anh-trong"}" ${anh ? `style="background-image:url(${anh})"` : ""}><span class="nhan-lo">${esc(l.code)}</span></div>
+      <div class="than"><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</p>
+        <p class="so-con">${soKg}<small>${dvKg} còn</small></p>
+        <span class="thanh-con" role="img" aria-label="Còn ${(ti * 100).toFixed(0)}% lượng đăng"><span style="width:${(ti * 100).toFixed(0)}%"></span></span>
+        <p class="phu">Loại ${esc(l.grade_code.replace(/^L/, ""))} · ${l.qty_basis === "estimated" ? "ước tính" : "đã cân"}</p></div></a>`;
+  }).join("") : `<p class="bao" style="grid-column:1/-1">Bác chưa có lô nào đang bán.</p>`;
 
   const tongHd = don.reduce((s, d) => s + Number(d.contract_value_vnd || 0), 0);
   const t = tienTom.tong, coc = +t.coc_dang_giu || 0, nhan = (+t.da_nhan_truc_tiep || 0) + (+t.ngan_hang_da_chuyen_den || 0), con = +t.con_phai_nhan || 0;

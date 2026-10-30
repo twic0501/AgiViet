@@ -8,11 +8,16 @@
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
   body { overflow: hidden; }
-  .vao { height: 100dvh; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; position: relative;
+  .vao { height: 100dvh; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; position: relative;
     background: radial-gradient(120% 70% at 50% 38%, #fbf8f1 0%, var(--giay) 60%, #eee7d3 100%); }
-  .cau { flex: 1; min-height: 0; position: relative; }
+  .cau { height: min(56dvh, 400px); position: relative; flex: none; }
+  .tren { padding: env(safe-area-inset-top) 24px 0; text-align: center; }
+  .tren .hieu { display: inline-flex; align-items: center; gap: 10px; }
+  .tren .hieu img { width: 40px; height: 40px; }
+  .tren .hieu b { font-size: 30px; font-weight: 700; color: var(--la); letter-spacing: -0.02em; }
+  .tren .cau-ngan { margin-top: 6px; color: var(--muc-phu); font-size: 16px; }
   .cau canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .chan { padding: 0 24px calc(24px + env(safe-area-inset-bottom)); text-align: center; }
+  .chan { padding: 4px 24px calc(24px + env(safe-area-inset-bottom)); text-align: center; }
   .chan .hieu { display: inline-flex; align-items: center; gap: 10px; }
   .chan .hieu img { width: 36px; height: 36px; }
   .chan .hieu b { font-size: 26px; font-weight: 700; color: var(--la); letter-spacing: -0.02em; }
@@ -54,10 +59,12 @@
 </head>
 <body>
 <div class="vao">
+  <div class="tren">
+    <h1 class="hieu"><img src="/assets/logo.svg" alt=""><b>AgiViet</b></h1>
+    <p class="cau-ngan">Kết nối nông sản Việt</p>
+  </div>
   <div class="cau"><canvas id="cau" aria-label="Quả cầu ghép từ ảnh nông sản Việt Nam"></canvas></div>
   <div class="chan">
-    <div class="hieu"><img src="/assets/logo.svg" alt=""><b>AgiViet</b></div>
-    <p class="cau-ngan">Kết nối nông sản Việt</p>
     <div class="hai-nut">
       <button class="nut chinh-nut" type="button" data-mo="dang-nhap">Đăng nhập</button>
       <button class="nut vien" type="button" data-mo="dang-ky">Đăng ký bán hàng</button>

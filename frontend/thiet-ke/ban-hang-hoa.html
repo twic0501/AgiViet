@@ -34,7 +34,7 @@
   .nhan-nho { font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: var(--la-nhat); color: var(--la-dam); }
   .nhan-nho.cho { background: var(--cho-nen); color: var(--cho); }
   .nhan-nho.vang { background: var(--chin-nen); color: var(--chin); }
-  .nut-noi { position: sticky; bottom: 72px; display: flex; justify-content: flex-end; pointer-events: none; padding-right: 16px; margin-top: -8px; }
+  .nut-noi { position: sticky; bottom: 76px; display: flex; justify-content: flex-end; pointer-events: none; padding-right: 16px; margin-top: -8px; }
   .nut-noi .nut { pointer-events: auto; box-shadow: 0 6px 20px rgba(31, 77, 58, .28); border-radius: 999px; gap: 8px; }
   .nut-noi svg { width: 20px; height: 20px; }
   .trong { text-align: center; padding: 32px 16px; }
@@ -43,10 +43,7 @@
 </head>
 <body>
 <div class="trang">
-  <header class="dau">
-    <div><p class="chao">Hàng hóa</p><h1 id="ten-ho" style="font-size:18px">Hàng của bác</h1></div>
-    <button class="nut-chu" type="button">Nhật ký vườn</button>
-  </header>
+  <header class="dau" id="dau"></header>
 
   <main class="noi" id="noi" aria-busy="true" style="gap:16px">
     <div class="tong-quan">
@@ -62,19 +59,14 @@
 
   <div class="nut-noi"><button class="nut chinh-nut" type="button" style="width:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Đăng hàng</button></div>
 
-  <nav class="tab" aria-label="Mục chính">
-    <a href="./ban-hom-nay.html">Hôm nay</a>
-    <a href="#" aria-current="page">Hàng hóa</a>
-    <a href="#">Bên mua</a>
-    <a href="#">Hợp đồng</a>
-    <a href="#">Tiền</a>
-  </nav>
 </div>
 
 <script type="module">
-import { can, esc, phien, ANH_SP, giuThamSo } from "./chung.js";
+import { can, esc, phien, ANH_SP, giuThamSo, veDau, veTab } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 giuThamSo();
+veTab("cho");
+veDau($("dau"), { chao: "Chợ của bác", ten: "Hàng đang bán", chuDau: "·" });
 
 const TT = {
   on_sale: ["Đang bán", ""], draft: ["Nháp", "cho"], reserved: ["Đã giữ cho đơn", "vang"],
@@ -86,7 +78,7 @@ async function mo() {
   const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
   const [me, lo, sp, chao] = await Promise.all([get("/v1/me"), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => null)]);
   const tenSp = new Map((Array.isArray(sp) ? sp : sp.items || []).map((p) => [p.code, p.name_vi || p.name]));
-  $("ten-ho").textContent = me.org.name;
+  veDau($("dau"), { chao: "Chợ của bác", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase() });
 
   const dangBan = lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);
   const [tc, dv] = can(dangBan.reduce((s, l) => s + Number(l.available_g || 0), 0));
