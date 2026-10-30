@@ -144,6 +144,12 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - Góc nghiêng: đã đồ thêm phần áo và đường gấu sau bàn tay (`chen_dau_nhom`), góc ¾ và nghiêng có lót áo (`lot['than']`), nên khi tay vung không còn lộ lỗ.
   - **Bắp vai phình** (người sáng lập: "tay phải phình, cắt lộ liễu không logic"): ở góc chính diện, tay V4g là khối cứng nằm sau thân, giơ lên thì sườn áo cắt ngang ống tay. Mình thêm `tay-*-vai`, là bầu dục màu áo nằm trên thân, và `tay-*-vaivien`, là viền đen nằm dưới tay và thân. Cả hai cùng điểm xoay và nhận mọi hoạt ảnh của tay. Kết quả: vai tròn liền ống tay khi giơ; lúc buông tay không hiện thêm viền (`khop_vai()` trong `dung-v3.py`).
   - **Giới hạn tay khoảng 30°** (người sáng lập: "vẫn lỗi cánh tay" khi tay dang ngang). Tay V4g vẽ cho dáng buông, xoay quá khoảng 40° thì ống tay thành thanh dẹt cứng, bắp vai cũng không cứu được. Vì vậy mọi động tác đều giữ tay ≤ 0,5 rad. **Muốn tay giơ cao phải có hình vẽ riêng cho tư thế tay giơ** (đổi hình khi giơ, giống cách đổi góc nhìn); việc này chưa làm.
+  - **Tay giơ cao bằng đổi hình** (người sáng lập đồng ý dùng Higgsfield, 2 credit, còn 1): bảng `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` có 3 tư thế (dang ngang, vẫy một tay, giơ hai tay). `do-tay.py` đồ 4 tay (trái/phải × ngang/cao) → `nguon/goc/tay-chinh.svg`; vai áo phình liền ống tay, cổ tay phẳng. Trong `dung-v3.py`, góc chính diện có thêm nút `gio-<bên>-<tư thế>` → `hien` → `xoay`, nằm trên thân, dưới khăn. Hàm `doi_tay()` ẩn tay buông (cả bắp vai) rồi hiện tay giơ, và tay mới đi nốt đoạn xoay quanh vai.
+    - Vươn vai: hai tay giơ cao.
+    - Giật mình: hai tay dang ngang; vào động tác không trộn, để không thấy hai tay chồng nhau.
+    - Vẫy chào: tay phải giơ cao và vẫy thật.
+    - Ảnh chuỗi khung: `docs/trau/chang-2/tay-gio-cao.png`.
+    - Góc ¾ và nghiêng chưa có tay giơ (cần sinh thêm). Hiện hai góc đó vẫn vung tay vừa phải.
   - **Kiểm thử:** `AGV_THU=<0–8> AGV_HUONG=<h> python3 dung-v3.py` ép chạy một động tác ngay. Bảng cảm xúc ở 3 góc: `docs/trau/chang-2/cam-xuc-3-goc.png`.
 - **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
 - **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.
