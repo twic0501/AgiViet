@@ -170,7 +170,7 @@ def ba_tu():
         'khan-co': khan_tay(KHAN_CO_34), 'khan-dai': khan_tay(KHAN_DAI_34, TUA_34),
         'chan-xa': chan_tay(**CHAN_XA_34), 'chan-gan': chan_tay(**CHAN_GAN_34)})
     chen_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), 'than', 'co', (256, 300), [
-        '<path d="M198 262Q256 252 312 262Q318 290 310 318Q256 328 200 318Q192 290 198 262Z" fill="#84736b" '
+        '<path d="M198 262Q260 250 326 256Q336 280 328 304Q260 326 200 318Q192 290 198 262Z" fill="#84736b" '
         'stroke="none" data-role="co-lien"/>'], 'Cổ lông sau đầu và khăn: che khe khi đầu nhún')
     them_vao_nhom(os.path.join(DIR, 'nguon/goc/trau-34-trai.svg'), {'than': [
         '<path d="M234 364L266 363L267 383Q251 388 235 385Z" fill="none" stroke="#aa7652" stroke-width="1.9" '
@@ -284,7 +284,7 @@ def thay_nhom(svg, moi):
 
 
 # ¾ trái — toạ độ đọc trên lưới 10 đơn vị phủ ảnh 3D Jutsu (khung 512)
-KHAN_CO_34 = ('M184 292Q188 288 198 288L300 281Q322 279 327 285Q332 293 327 302Q312 304 293 307'
+KHAN_CO_34 = ('M184 292Q188 288 198 288L300 281Q316 279 325 275Q335 282 334 292Q333 303 329 308Q312 305 293 307'
               'Q262 314 232 326Q212 334 194 335Q178 332 174 318Q173 300 184 292Z')
 KHAN_DAI_34 = ('M174 322L190 326Q191 358 189 384Q187 400 183 410L161 410Q155 378 162 352'
                'Q166 336 174 322Z')
