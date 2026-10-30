@@ -10,7 +10,7 @@
   .tong-quan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .tong-quan div { background: var(--giay-noi); border: 1px solid var(--ke); border-radius: 12px; padding: 12px; }
   .tong-quan b { display: block; font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-  .tong-quan span { font-size: 12px; color: var(--muc-nhat); }
+  .tong-quan span { font-size: 13px; color: var(--muc-nhat); }
   .loc { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
   .loc::-webkit-scrollbar { display: none; }
   .loc button { flex: none; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ke-dam); background: var(--giay-noi); color: var(--muc-phu); font: 600 14px/1 var(--chu); cursor: pointer; transition: background-color 140ms var(--cham), color 140ms var(--cham); }
@@ -19,11 +19,11 @@
   .lo { display: grid; grid-template-columns: 104px 1fr; gap: 14px; padding: 12px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); text-decoration: none; color: inherit; }
   .lo + .lo { margin-top: 10px; }
   .lo .anh { border-radius: 12px; background: var(--giay-lot) center / cover no-repeat; aspect-ratio: 1; position: relative; }
-  .lo .anh .trang-thai { position: absolute; left: 6px; bottom: 6px; font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 999px; background: var(--la); color: var(--tren-la); }
+  .lo .anh .trang-thai { position: absolute; left: 6px; bottom: 6px; font-size: 13px; font-weight: 600; padding: 3px 7px; border-radius: 999px; background: var(--la); color: var(--tren-la); }
   .lo .anh .trang-thai.gap { background: var(--dau-do); }
   .lo .tren { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
   .lo .ten { font-weight: 600; font-size: 16px; }
-  .lo .ma { font-size: 12px; }
+  .lo .ma { font-size: 13px; }
   .lo .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
   .lo .con { margin-top: 10px; }
   .lo .con .so { display: flex; justify-content: space-between; font-size: 13px; color: var(--muc-phu); }
@@ -31,7 +31,7 @@
   .thanh { height: 8px; border-radius: 4px; background: var(--ke); margin-top: 6px; overflow: hidden; }
   .thanh span { display: block; height: 100%; background: var(--la); border-radius: 4px; }
   .lo .duoi { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-  .nhan-nho { font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: var(--la-nhat); color: var(--la-dam); }
+  .nhan-nho { font-size: 13px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: var(--la-nhat); color: var(--la-dam); }
   .nhan-nho.cho { background: var(--cho-nen); color: var(--cho); }
   .nhan-nho.vang { background: var(--chin-nen); color: var(--chin); }
   .nut-noi { position: sticky; bottom: 72px; display: flex; justify-content: flex-end; pointer-events: none; padding-right: 16px; margin-top: -8px; }
@@ -52,7 +52,7 @@
     <div class="tong-quan">
       <div><b id="so-lo">—</b><span>lô đang bán</span></div>
       <div><b id="tong-con">—</b><span id="dv-con">còn bán</span></div>
-      <div><b id="so-chao">—</b><span>chào giá mới</span></div>
+      <div><b id="so-chao">—</b><span>chào giá đang mở</span></div>
     </div>
 
     <div class="loc" role="group" aria-label="Lọc theo trạng thái" id="loc"></div>
@@ -72,10 +72,9 @@
 </div>
 
 <script type="module">
-import { can, esc, phien, ANH_SP } from "./chung.js";
+import { can, esc, phien, ANH_SP, giuThamSo } from "./chung.js";
 const $ = (id) => document.getElementById(id);
-// Giữ ?thu= khi chuyển tab
-document.querySelectorAll('.tab a[href$=".html"]').forEach((a) => (a.href += location.search));
+giuThamSo();
 
 const TT = {
   on_sale: ["Đang bán", ""], draft: ["Nháp", "cho"], reserved: ["Đã giữ cho đơn", "vang"],
@@ -85,37 +84,43 @@ const TT = {
 async function mo() {
   const token = await phien();
   const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
-  const [me, lo, sp, chao] = await Promise.all([get("/v1/me"), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => [])]);
+  const [me, lo, sp, chao] = await Promise.all([get("/v1/me"), get("/v1/lots?mine=true"), get("/v1/products").catch(() => []), get("/v1/offers").catch(() => null)]);
   const tenSp = new Map((Array.isArray(sp) ? sp : sp.items || []).map((p) => [p.code, p.name_vi || p.name]));
   $("ten-ho").textContent = me.org.name;
 
-  const dangBan = lo.filter((l) => l.status === "on_sale");
+  const dangBan = lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);
   const [tc, dv] = can(dangBan.reduce((s, l) => s + Number(l.available_g || 0), 0));
   $("so-lo").textContent = dangBan.length; $("tong-con").textContent = tc; $("dv-con").textContent = `${dv} còn bán`;
-  const dsChao = Array.isArray(chao) ? chao : chao.items || [];
-  $("so-chao").textContent = dsChao.filter((c) => /open|pending|sent/.test(c.status || "")).length;
+  // Chào giá đang mở (chưa ai chốt); lỗi tải thì hiện "—" chứ không giả là 0
+  if (chao === null) { $("so-chao").textContent = "—"; $("so-chao").title = "Chưa tải được chào giá"; }
+  else $("so-chao").textContent = (Array.isArray(chao) ? chao : chao.items || []).filter((c) => /open|pending|sent|countered/.test(c.status || "")).length;
 
   const nhom = [["tat-ca", "Tất cả", lo], ...Object.entries(TT).map(([k, [ten]]) => [k, ten, lo.filter((l) => l.status === k)]).filter(([, , d]) => d.length)];
   let chon = "tat-ca";
+  $("loc").innerHTML = nhom.map(([k, ten, d]) => `<button type="button" data-k="${k}" aria-pressed="${k === chon}">${ten}<small>${d.length}</small></button>`).join("");
+  $("loc").querySelectorAll("button").forEach((b) => (b.onclick = () => { chon = b.dataset.k; ve(); }));
   const ve = () => {
-    $("loc").innerHTML = nhom.map(([k, ten, d]) => `<button type="button" data-k="${k}" aria-pressed="${k === chon}">${ten}<small>${d.length}</small></button>`).join("");
+    $("loc").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === chon)));
     const d = nhom.find(([k]) => k === chon)[2];
     $("ds").innerHTML = d.length ? d.map((l) => {
       const [so, dvi] = can(l.available_g);
       const ti = Math.max(0, Math.min(1, Number(l.available_g) / Number(l.declared_qty_g || l.available_g || 1)));
-      const [tt, lop] = l.ban_gap_den ? ["Bán gấp", "gap"] : TT[l.status] || [l.status, "cho"];
+      const conGap = l.ban_gap_den && new Date(l.ban_gap_den) > new Date() && l.status === "on_sale";
+      const [tt, lop] = l.an_tu_dong ? ["Đã ẩn", "gap"] : conGap ? ["Bán gấp", "gap"] : TT[l.status] || [l.status, "cho"];
+      const anh = ANH_SP(l.product_code);
       const ngay = l.last_confirmed_at ? new Date(l.last_confirmed_at).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" }) : null;
       return `<a class="lo" href="#">
-        <span class="anh" style="background-image:url(${ANH_SP(l.product_code)})"><span class="trang-thai ${lop}">${esc(tt)}</span></span>
+        <span class="anh ${anh ? "" : "anh-trong"}" ${anh ? `style="background-image:url(${anh})"` : ""}><span class="trang-thai ${lop}">${esc(tt)}</span></span>
         <span>
           <span class="tren"><span class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</span><span class="ma">${esc(l.code)}</span></span>
           <p class="phu">Loại ${esc(l.grade_code.replace(/^L/, ""))}${ngay ? ` · xác nhận còn hàng ${ngay}` : ""}</p>
           <span class="con" style="display:block"><span class="so"><span>Còn bán</span><span><b>${so}</b> ${dvi}</span></span>
             <span class="thanh" style="display:block"><span style="width:${(ti * 100).toFixed(0)}%"></span></span></span>
+          ${l.an_tu_dong ? `<p class="phu" style="color:var(--dau-do);margin-top:6px">Bên mua không thấy lô này${l.an_ly_do ? ` (${esc(l.an_ly_do)})` : ""}. Bác xác nhận còn hàng để hiện lại.</p>` : ""}
           <span class="duoi"><span class="nhan-nho ${l.qty_basis === "estimated" ? "vang" : ""}">${l.qty_basis === "estimated" ? "Ước tính · cam kết tối đa 80%" : "Đã cân"}</span></span>
         </span></a>`;
-    }).join("") : `<div class="trong"><img src="/assets/products/xoai-cat-chu.jpg" alt=""><p><b>Chưa có lô nào ở đây</b></p><p class="phu" style="color:var(--muc-nhat)">Bấm Đăng hàng, chụp vài tấm ảnh là bên mua thấy ngay.</p></div>`;
-    $("loc").querySelectorAll("button").forEach((b) => (b.onclick = () => { chon = b.dataset.k; ve(); }));
+    }).join("") : `<div class="trong"><img src="/assets/products/rau-cai.jpg" alt=""><p><b>Chưa có lô nào ở đây</b></p><p class="phu" style="color:var(--muc-nhat)">Bấm Đăng hàng, chụp vài tấm ảnh là bên mua thấy ngay.</p></div>`;
+    $("ds").setAttribute("aria-label", `${d.length} lô`);
   };
   ve();
   $("noi").setAttribute("aria-busy", "false");

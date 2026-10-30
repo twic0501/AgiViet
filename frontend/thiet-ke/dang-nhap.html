@@ -45,8 +45,8 @@
   .otp input { height: 60px; text-align: center; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); font: 600 24px/1 var(--chu); color: var(--muc); font-variant-numeric: tabular-nums; outline: none; min-width: 0; }
   .otp input:focus { border-color: var(--la); }
   .ghi-nho { font-size: 13px; color: var(--muc-nhat); text-align: center; margin-top: 12px; }
-  .ghi-nho button { color: var(--la); font-weight: 600; background: none; border: 0; font: inherit; padding: 8px; cursor: pointer; }
-  .ma-thu { font-size: 12px; color: var(--chin); background: var(--chin-nen); padding: 8px 12px; border-radius: 8px; margin-top: 12px; }
+  .ghi-nho button { color: var(--la); font-weight: 600; background: none; border: 0; font: inherit; padding: 0 12px; min-height: 44px; cursor: pointer; }
+  .ma-thu { font-size: 13px; color: var(--chin); background: var(--chin-nen); padding: 8px 12px; border-radius: 8px; margin-top: 12px; }
   .nut:disabled { opacity: .45; cursor: not-allowed; }
   .xong { text-align: center; padding: 8px 0; }
   .xong .dau-tich { width: 64px; height: 64px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 12px; }
@@ -66,7 +66,7 @@
 </div>
 
 <div class="man-che" id="che"></div>
-<section class="tam" id="tam" role="dialog" aria-modal="true" aria-labelledby="tieu-de">
+<section class="tam" id="tam" role="dialog" aria-modal="true" aria-labelledby="tieu-de" inert>
   <div class="tay-cam"></div>
   <!-- Bước 1: số điện thoại (+ thông tin đăng ký) -->
   <div id="b1">
@@ -91,10 +91,10 @@
   </div>
   <!-- Bước 2: mã OTP -->
   <div id="b2" hidden>
-    <h2>Nhập mã 6 số</h2>
+    <h2 id="tieu-de-2">Nhập mã 6 số</h2>
     <p class="phu-de" id="gui-toi">Mã đã gửi tới số của bác.</p>
     <div class="otp" id="otp">
-      <input inputmode="numeric" maxlength="1" aria-label="Số 1"><input inputmode="numeric" maxlength="1" aria-label="Số 2"><input inputmode="numeric" maxlength="1" aria-label="Số 3"><input inputmode="numeric" maxlength="1" aria-label="Số 4"><input inputmode="numeric" maxlength="1" aria-label="Số 5"><input inputmode="numeric" maxlength="1" aria-label="Số 6">
+      <input inputmode="numeric" maxlength="6" autocomplete="one-time-code" aria-label="Số 1"><input inputmode="numeric" maxlength="1" aria-label="Số 2"><input inputmode="numeric" maxlength="1" aria-label="Số 3"><input inputmode="numeric" maxlength="1" aria-label="Số 4"><input inputmode="numeric" maxlength="1" aria-label="Số 5"><input inputmode="numeric" maxlength="1" aria-label="Số 6">
     </div>
     <p class="ma-thu" id="ma-thu" hidden></p>
     <p class="bao loi" id="loi-2" hidden style="margin-top:12px"></p>
@@ -103,53 +103,72 @@
   <!-- Bước 3: đăng ký xong, chờ xác minh -->
   <div id="b3" hidden class="xong">
     <div class="dau-tich"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></div>
-    <h2>Đã nhận đăng ký</h2>
-    <p class="phu-de">Nhân viên AgiViet sẽ gọi hẹn tới xác minh vườn. Trong lúc chờ, bác vẫn xem được app.</p>
-    <button class="nut chinh-nut" id="vao-app" type="button">Vào app</button>
+    <h2 id="tieu-de-3">Đã nhận đăng ký</h2>
+    <p class="phu-de">Nhân viên AgiViet sẽ gọi hẹn tới xác minh vườn. Xác minh xong, bác nhận tin nhắn và đăng nhập bằng số này.</p>
+    <button class="nut chinh-nut" id="vao-app" type="button">Xong</button>
   </div>
 </section>
 
 <script type="module">
 import { quaCau } from "./qua-cau.js";
+import { luuPhien } from "./chung.js";
 const $ = (id) => document.getElementById(id);
-quaCau($("cau"), { anh: ["xoai-cat-chu", "tom", "lua-gao", "ca-phe", "thanh-long", "sau-rieng", "buoi", "vai", "chuoi", "dua-hau", "rau-cai", "cu", "ho-tieu", "hat-dieu", "ca-tra", "cua"].map((n) => `/assets/products/${n}.jpg`) });
+const cau = quaCau($("cau"), { anh: ["xoai-cat-chu", "tom", "lua-gao", "ca-phe", "thanh-long", "sau-rieng", "buoi", "vai", "chuoi", "dua-hau", "rau-cai", "cu", "ho-tieu", "hat-dieu", "ca-tra", "cua"].map((n) => `/assets/products/${n}.jpg`) });
 
-let cheDo = "dang-nhap", thuThach = null, demNguoc = null;
+let cheDo = "dang-nhap", thuThach = null, demNguoc = null, nutMo = null, dangGui = false, dangXacNhan = 0;
 const chuan = (s) => s.replace(/\D/g, "");
 const sdt = () => chuan($("sdt").value);
 const hienLoi = (id, m) => { $(id).textContent = m; $(id).hidden = !m; };
 const hopLe = () => /^0\d{9}$/.test(sdt()) && (cheDo === "dang-nhap" || ($("ho-ten").value.trim() && $("ten-cs").value.trim()));
+const buoc = (n) => { for (const b of ["b1", "b2", "b3"]) $(b).hidden = b !== `b${n}`; $("tam").setAttribute("aria-labelledby", ["tieu-de", "tieu-de-2", "tieu-de-3"][n - 1]); };
 
-function moTam(che) {
-  cheDo = che;
+// Câu báo giới hạn gửi mã: "Đợi 554 giây…" → "Bác thử lại sau 10 phút nhé" + đếm ngược
+function cauGioiHan(j, r) {
+  const e = j.errors?.[0] || {};
+  const giay = Number(e.details?.retry_after_s ?? e.details?.cho_giay ?? r.headers.get("retry-after") ?? (e.message || "").match(/(\d+)\s*giây/)?.[1]);
+  if (r.status === 429 || Number.isFinite(giay)) {
+    const g = Number.isFinite(giay) ? giay : 60;
+    return { cau: g >= 90 ? `Bác gửi mã nhiều lần quá. Bác thử lại sau ${Math.ceil(g / 60)} phút nhé.` : `Bác chờ ${g} giây rồi gửi lại mã nhé.`, giay: g };
+  }
+  return { cau: e.message || "Chưa gửi được mã. Bác thử lại sau ít phút." };
+}
+
+function moTam(che, nut) {
+  cheDo = che; nutMo = nut;
   $("tieu-de").textContent = che === "dang-ky" ? "Đăng ký bán hàng" : "Đăng nhập";
   $("phu-de").textContent = che === "dang-ky" ? "Điền vài thông tin, AgiViet gửi mã 6 số để xác nhận số điện thoại." : "Nhập số điện thoại, AgiViet gửi mã 6 số.";
   $("them-dk").hidden = che !== "dang-ky";
-  for (const b of ["b1", "b2", "b3"]) $(b).hidden = b !== "b1";
-  hienLoi("loi-1", ""); $("gui").disabled = !hopLe();
-  $("tam").classList.add("mo"); $("che").classList.add("mo");
+  buoc(1); hienLoi("loi-1", ""); $("gui").disabled = !hopLe();
+  $("tam").inert = false; $("tam").classList.add("mo"); $("che").classList.add("mo");
+  document.querySelector(".vao").inert = true; cau?.dung?.();
   setTimeout(() => (che === "dang-ky" ? $("ho-ten") : $("sdt")).focus(), 320);
 }
-function dongTam() { $("tam").classList.remove("mo"); $("che").classList.remove("mo"); clearInterval(demNguoc); }
-document.querySelectorAll("[data-mo]").forEach((b) => (b.onclick = () => moTam(b.dataset.mo)));
+function dongTam() {
+  $("tam").classList.remove("mo"); $("che").classList.remove("mo"); $("tam").inert = true;
+  document.querySelector(".vao").inert = false; clearInterval(demNguoc); cau?.chay?.(); nutMo?.focus();
+}
+document.querySelectorAll("[data-mo]").forEach((b) => (b.onclick = () => moTam(b.dataset.mo, b)));
 $("che").onclick = dongTam;
-addEventListener("keydown", (e) => { if (e.key === "Escape") dongTam(); });
+addEventListener("keydown", (e) => { if (e.key === "Escape" && $("tam").classList.contains("mo")) dongTam(); });
 
 $("sdt").addEventListener("input", (e) => {
   const so = chuan(e.target.value).slice(0, 10);
   e.target.value = so.replace(/(\d{4})(\d{0,3})(\d{0,3})/, (_, a, b, c) => [a, b, c].filter(Boolean).join(" "));
-  $("gui").disabled = !hopLe();
+  $("gui").disabled = !hopLe() || dangGui;
 });
-for (const id of ["ho-ten", "ten-cs"]) $(id).addEventListener("input", () => ($("gui").disabled = !hopLe()));
+for (const id of ["ho-ten", "ten-cs"]) $(id).addEventListener("input", () => ($("gui").disabled = !hopLe() || dangGui));
 
+// Gửi mã; lỗi hiện ở bước đang mở (bước 1 lúc gửi lần đầu, bước 2 lúc gửi lại)
 async function guiMa() {
-  $("gui").disabled = true; $("gui").textContent = "Đang gửi…"; hienLoi("loi-1", "");
+  if (dangGui) return;
+  const oLoi = $("b2").hidden ? "loi-1" : "loi-2";
+  dangGui = true; $("gui").disabled = true; $("gui-lai").disabled = true; $("gui").textContent = "Đang gửi…"; hienLoi(oLoi, "");
   try {
     const r = await fetch("/v1/auth/otp/send", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt() }) });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được mã. Bác thử lại sau ít phút.");
+    if (!r.ok) { const g = cauGioiHan(j, r); if (g.giay) batDem(g.giay, oLoi, g.cau); throw new Error(g.cau); }
     thuThach = j.challenge_id;
-    $("b1").hidden = true; $("b2").hidden = false;
+    buoc(2);
     $("gui-toi").textContent = `Mã đã gửi tới ${sdt().replace(/(\d{4})(\d{3})(\d{3})/, "$1 $2 $3")}.`;
     o6.forEach((x) => (x.value = "")); o6[0].focus(); batDem(60);
     // Môi trường thử: hiện mã để kiểm (bản thật không có)
@@ -157,38 +176,61 @@ async function guiMa() {
       const ma = JSON.stringify(m || "").match(/\b\d{6}\b/)?.[0];
       if (ma) { $("ma-thu").textContent = `Môi trường thử · mã: ${ma}`; $("ma-thu").hidden = false; }
     }).catch(() => {});
-  } catch (e) { hienLoi("loi-1", e.message); }
-  $("gui").textContent = "Gửi mã"; $("gui").disabled = !hopLe();
+  } catch (e) { hienLoi(oLoi, e.message); }
+  dangGui = false; $("gui").textContent = "Gửi mã"; $("gui").disabled = !hopLe(); $("gui-lai").disabled = false;
 }
-function batDem(s) {
+// Đếm ngược: ở bước 2 là "Gửi lại sau …"; khi bị chặn thì câu báo tự cập nhật số phút/giây còn lại
+function batDem(s, oLoi = null, cau = null) {
   clearInterval(demNguoc); $("gui-lai").hidden = true;
-  const ve = () => { $("dem").textContent = s > 0 ? `Gửi lại sau ${s} giây` : ""; if (s-- <= 0) { clearInterval(demNguoc); $("gui-lai").hidden = false; } };
+  const ve = () => {
+    const con = s > 90 ? `${Math.ceil(s / 60)} phút` : `${s} giây`;
+    if (oLoi && cau) hienLoi(oLoi, s > 0 ? cau.replace(/\d+ (phút|giây)/, con) : "");
+    $("dem").textContent = !oLoi && s > 0 ? `Gửi lại sau ${con}` : "";
+    if (s-- <= 0) { clearInterval(demNguoc); if (!$("b2").hidden) $("gui-lai").hidden = false; }
+  };
   ve(); demNguoc = setInterval(ve, 1000);
 }
 $("gui").onclick = guiMa; $("gui-lai").onclick = guiMa;
-$("doi-so").onclick = () => { $("b2").hidden = true; $("b1").hidden = false; clearInterval(demNguoc); };
+$("doi-so").onclick = () => { buoc(1); clearInterval(demNguoc); $("sdt").focus(); };
 
 const o6 = [...$("otp").querySelectorAll("input")];
 const ma = () => o6.map((x) => x.value).join("");
+// Điền mã từ vị trí i (gõ, dán hoặc điện thoại tự điền); xóa phần cũ phía sau rồi đặt focus đúng chỗ
+function dien(i, chuoi) {
+  const s = chuan(chuoi).slice(0, 6 - i);
+  if (s.length > 1) for (let k = i; k < 6; k++) o6[k].value = "";
+  s.split("").forEach((c, k) => (o6[i + k].value = c));
+  const tiep = o6.findIndex((x) => !x.value);
+  (o6[tiep === -1 ? 5 : tiep]).focus();
+  if (ma().length === 6) xacNhan();
+}
 o6.forEach((o, i) => {
-  o.addEventListener("input", () => { o.value = chuan(o.value).slice(-1); if (o.value && o6[i + 1]) o6[i + 1].focus(); if (ma().length === 6) xacNhan(); });
-  o.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !o.value && o6[i - 1]) o6[i - 1].focus(); });
-  o.addEventListener("paste", (e) => { const s = chuan(e.clipboardData.getData("text")).slice(0, 6); if (s.length > 1) { e.preventDefault(); s.split("").forEach((c, k) => { if (o6[k]) o6[k].value = c; }); if (s.length === 6) xacNhan(); } });
+  o.addEventListener("input", () => { const v = o.value; o.value = ""; dien(i, v); });
+  o.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !o.value && o6[i - 1]) { o6[i - 1].value = ""; o6[i - 1].focus(); e.preventDefault(); } });
+  o.addEventListener("paste", (e) => { e.preventDefault(); dien(i, e.clipboardData.getData("text")); });
 });
-const vaoApp = () => (location.href = `./ban-hom-nay.html?thu=${sdt()}`);
+const vaoApp = () => (location.href = "./ban-hom-nay.html");
 async function xacNhan() {
-  hienLoi("loi-2", "");
+  const luot = ++dangXacNhan;               // chỉ phản hồi của lượt mới nhất được xử lý
+  hienLoi("loi-2", ""); o6.forEach((x) => (x.disabled = true)); $("gui-toi").textContent = "Đang xác nhận…";
   try {
     const than = { challenge_id: thuThach, phone: sdt(), code: ma() };
     const dk = cheDo === "dang-ky";
     const r = await fetch(dk ? "/v1/auth/register" : "/v1/auth/otp/verify", { method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify(dk ? { ...than, name: $("ho-ten").value.trim(), org: { side: "sell", kind: document.querySelector('[name="loai"]:checked').value, display_name: $("ten-cs").value.trim() } } : than) });
     const j = await r.json().catch(() => ({}));
+    if (luot !== dangXacNhan) return;
     if (!r.ok) throw new Error(j.errors?.[0]?.message || "Mã chưa đúng. Bác kiểm tra lại tin nhắn.");
-    if (dk) { $("b2").hidden = true; $("b3").hidden = false; clearInterval(demNguoc); } else vaoApp();
-  } catch (e) { hienLoi("loi-2", e.message); o6.forEach((x) => (x.value = "")); o6[0].focus(); }
+    if (j.token) luuPhien(j.token);          // phiên thật từ máy chủ, không dùng đăng nhập giả lập
+    clearInterval(demNguoc);
+    if (dk) buoc(3); else vaoApp();
+  } catch (e) {
+    if (luot !== dangXacNhan) return;
+    hienLoi("loi-2", e.message); o6.forEach((x) => { x.disabled = false; x.value = ""; }); o6[0].focus();
+    $("gui-toi").textContent = `Mã đã gửi tới ${sdt().replace(/(\d{4})(\d{3})(\d{3})/, "$1 $2 $3")}.`;
+  }
 }
-$("vao-app").onclick = vaoApp;
+$("vao-app").onclick = dongTam;
 </script>
 </body>
 </html>

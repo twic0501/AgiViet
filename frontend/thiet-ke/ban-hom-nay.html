@@ -66,11 +66,12 @@
 
 <script src="/assets/vendor/rive/rive.js"></script>
 <script type="module">
-import { tien, can, esc, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT } from "./chung.js";
+import { tien, tienDu, can, esc, so, phien, layDuLieu, ANH_SP, viecCho, CHANG, chiSoChang, LUOT, dangLam, giuThamSo } from "./chung.js";
+giuThamSo();
 const $ = (id) => document.getElementById(id);
 try {
   rive.RuntimeLoader.setWasmUrl("/assets/vendor/rive/rive.wasm");
-  const r = new rive.Rive({ src: "/assets/trau/trau.riv", canvas: $("trau"), autoplay: true, stateMachines: "trau", layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter }), onLoad: () => r.resizeDrawingSurfaceToCanvas() });
+  const r = new rive.Rive({ src: "/assets/trau/trau.riv", canvas: $("trau"), autoplay: !matchMedia("(prefers-reduced-motion: reduce)").matches, stateMachines: "trau", layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter }), onLoad: () => r.resizeDrawingSurfaceToCanvas() });
 } catch {}
 
 const iconTroi = (p) => p >= 70
@@ -84,7 +85,10 @@ const chuTat = (ten) => (ten.match(/\p{Lu}/gu) || ["?"]).slice(0, 2).join("");
 
 async function mo() {
   const token = await phien();
-  const { me, don, lo, tienTom, troi, tenSp } = await layDuLieu(token);
+  const d = await layDuLieu(token);
+  const { me, tienTom, troi, tenSp } = d;
+  const don = d.don.filter(dangLam);                       // chỉ hợp đồng còn đang chạy
+  const lo = d.lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);   // lô bên mua đang thấy
   $("chao").textContent = `Chào ${me.name.split(" ").at(-1)}`;
   $("ten-ho").textContent = me.org.name;
   $("chu-dau").textContent = me.name.split(" ").at(-1).charAt(0).toUpperCase();
@@ -110,39 +114,46 @@ async function mo() {
     const [lop, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"];
     return `<a class="the-hd" href="#">
       <div class="hang"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
-        <span class="giua"><span class="ten">${esc(d.buyer_name)}</span><span class="phu ma">${esc(d.code)}</span></span>
-        <span class="gia">${esc(tien(d.contract_value_vnd))}</span></div>
+        <span class="giua"><span class="ten">${esc(d.buyer_name)}</span><span class="phu ma">${esc(d.code)}</span><span class="gia" style="display:block;margin-top:2px" title="${esc(tienDu(d.contract_value_vnd))}">${esc(tien(d.contract_value_vnd))}</span></span></div>
       <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
       <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
       <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div></a>`;
   }).join("") : `<p class="bao" style="margin-top:12px">Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
 
   $("ds-lo").innerHTML = lo.length ? lo.map((l) => {
-    const [so, dv] = can(l.available_g);
+    const [soKg, dvKg] = can(l.available_g);
+    // Trong vòng tròn nhỏ ghi gọn theo tấn; số kg đầy đủ ở nhãn đọc màn hình
+    const kg = Number(l.available_g || 0) / 1000;
+    const [so, dv] = kg >= 1000 ? [(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }), "tấn"] : [soKg, dvKg];
     const ti = Math.max(0, Math.min(1, Number(l.available_g) / Number(l.declared_qty_g || l.available_g || 1)));
     const C = 2 * Math.PI * 24;
+    const anh = ANH_SP(l.product_code);
     return `<a class="the-lo" href="./ban-hang-hoa.html">
-      <div class="anh" style="background-image:url(${ANH_SP(l.product_code)})"><span class="nhan-lo">${esc(l.code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</span></div>
+      <div class="anh ${anh ? "" : "anh-trong"}" ${anh ? `style="background-image:url(${anh})"` : ""}>${anh ? '<span class="nhan-minh-hoa">Ảnh minh họa</span>' : ""}<span class="nhan-lo">${esc(l.code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</span></div>
       <div class="than"><div><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)}</p><p class="phu">${l.qty_basis === "estimated" ? "Lượng ước tính" : "Đã cân"}</p></div>
-        <span class="vong" aria-label="Còn ${so} ${dv}"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--ke-dam)" stroke-width="5"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--la)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C * ti} ${C}"/></svg><b>${so}<small>${dv}</small></b></span></div></a>`;
+        <span class="vong" role="img" aria-label="Còn ${soKg} ${dvKg}" title="Còn ${soKg} ${dvKg}"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="var(--ke-dam)" stroke-width="5"/><circle cx="28" cy="28" r="24" fill="none" stroke="var(--la)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C * ti} ${C}"/></svg><b>${so}<small>${dv}</small></b></span></div></a>`;
   }).join("") : `<p class="bao">Bác chưa có lô nào đang bán.</p>`;
 
   const tongHd = don.reduce((s, d) => s + Number(d.contract_value_vnd || 0), 0);
-  const t = tienTom.tong, coc = +t.coc_dang_giu, nhan = +t.da_nhan_truc_tiep + +t.ngan_hang_da_chuyen_den, con = Math.max(0, tongHd - coc - nhan);
-  $("tong-hd").textContent = tien(tongHd);
-  const phan = [["Đã nhận", nhan, "var(--la)"], ["Ngân hàng giữ cọc", coc, "var(--chin)"], ["Chưa tới hạn", con, "rgba(0,0,0,.14)"]];
+  const t = tienTom.tong, coc = +t.coc_dang_giu || 0, nhan = (+t.da_nhan_truc_tiep || 0) + (+t.ngan_hang_da_chuyen_den || 0), con = +t.con_phai_nhan || 0;
+  $("tong-hd").textContent = tien(tongHd); $("tong-hd").title = tienDu(tongHd);
+  const phan = [["Đã nhận", nhan, "var(--la)"], ["Ngân hàng giữ cọc", coc, "var(--chin)"], ["Còn phải nhận", con, "rgba(0,0,0,.14)"]];
   $("thanh-tien").innerHTML = phan.map(([, v, m]) => `<span style="flex:${v || 0.0001};background:${m}"></span>`).join("");
-  $("chu-giai").innerHTML = phan.map(([n, v, m]) => `<span><i style="background:${m}"></i>${n} <b class="so">${tien(v)}</b></span>`).join("");
+  $("chu-giai").innerHTML = phan.map(([n, v, m]) => `<span title="${tienDu(v)}"><i style="background:${m}"></i>${n} <b class="so">${tien(v)}</b></span>`).join("");
 
-  if (troi?.ngay?.length) {
-    $("tinh").textContent = `Thời tiết · ${troi.tinh.ten}`;
+  if (troi && !troi.__loi && troi.ngay?.length) {
+    $("tinh").textContent = `Thời tiết · ${troi.tinh?.ten || ""}`;
     $("troi").innerHTML = troi.ngay.slice(0, 4).map((n, i) => {
       const thu = i === 0 ? "Hôm nay" : new Date(n.ngay).toLocaleDateString("vi-VN", { weekday: "short" });
-      return `<div class="ngay-troi"><p class="thu">${thu}</p>${iconTroi(n.kha_nang_mua_phan_tram)}<p class="nhiet">${Math.round(n.nhiet_do_cao_c)}°</p><div class="mua" title="Khả năng mưa ${n.kha_nang_mua_phan_tram}%"><span style="width:${n.kha_nang_mua_phan_tram}%"></span></div></div>`;
+      const mua = so(n.kha_nang_mua_phan_tram, 0, 100), nhiet = so(n.nhiet_do_cao_c);
+      return `<div class="ngay-troi"><p class="thu">${esc(thu)}</p>${mua === null ? '<p class="phu" style="margin:14px 0">—</p>' : iconTroi(mua)}<p class="nhiet">${nhiet === null ? "—" : Math.round(nhiet) + "°"}</p>${mua === null ? "" : `<div class="mua" title="Khả năng mưa ${mua}%"><span style="width:${mua}%"></span></div>`}</div>`;
     }).join("");
     const lk = troi.ngay[0].loi_khuyen?.[0];
     if (lk) { $("loi-khuyen").innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>${esc(lk)}</span>`; $("loi-khuyen").hidden = false; }
+  } else {
+    $("troi").innerHTML = `<p class="bao" style="grid-column:1/-1">${troi?.__loi ? "Chưa tải được thời tiết." : "Chưa có dữ liệu thời tiết."}</p>`;
   }
+  giuThamSo();   // liên kết vừa dựng cũng giữ phiên thử
   $("noi").setAttribute("aria-busy", "false");
 }
 

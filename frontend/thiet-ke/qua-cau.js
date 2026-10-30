@@ -24,6 +24,7 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
       g.drawImage(img, (s - img.width * k) / 2, (s - img.height * k) / 2 - img.height * k * 0.1, img.width * k, img.height * k); g.restore();
       g.lineWidth = 7; g.strokeStyle = "#fff"; g.stroke();
       tron[i] = c;
+      if (giam || !chay) requestAnimationFrame(ve);
     };
     img.src = src;
   });
@@ -45,7 +46,7 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
 
   const t0 = performance.now(), NHAP = giam ? 0 : 1600;
   const ra = (x) => 1 - Math.pow(1 - x, 3);
-  let truoc = t0, chay = true, id = 0;
+  let truoc = t0, chay = !giam, id = 0;
   const ve = (now) => {
     const t = now - t0, dt = Math.min(0.05, (now - truoc) / 1000); truoc = now;
     const k = NHAP ? ra(Math.min(1, t / NHAP)) : 1;
@@ -91,9 +92,10 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
     if (chay && !giam) id = requestAnimationFrame(ve);
   };
   id = requestAnimationFrame(ve);
-  if (giam) setTimeout(() => requestAnimationFrame(ve), 600);   // vẽ lại khi ảnh đã tải
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) { chay = false; cancelAnimationFrame(id); } else if (!chay && !giam) { chay = true; truoc = performance.now(); id = requestAnimationFrame(ve); }
-  });
-  return true;
+  let tamDung = false;
+  const tiepTuc = () => { if (!chay && !giam && !tamDung && !document.hidden) { chay = true; truoc = performance.now(); id = requestAnimationFrame(ve); } };
+  const dung = () => { chay = false; cancelAnimationFrame(id); };
+  document.addEventListener("visibilitychange", () => (document.hidden ? dung() : tiepTuc()));
+  // Cho trang tạm dừng khi cầu bị che (vd. đang nhập OTP) để đỡ tốn pin
+  return { dung: () => { tamDung = true; dung(); }, chay: () => { tamDung = false; tiepTuc(); } };
 }

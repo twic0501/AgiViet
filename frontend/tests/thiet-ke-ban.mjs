@@ -68,7 +68,8 @@ await trang("dang-nhap-qua-cau", async (p) => {
 await trang("dang-nhap-dung-ma", async (p) => {
   await p.goto(`${GOC}/thiet-ke/dang-nhap.html`);
   await p.getByRole("button", { name: "Đăng nhập" }).click();
-  await p.locator("#sdt").pressSequentially("0918000421");
+  // Số riêng cho kiểm thử (0918000422, cùng hộ Năm) — không dùng 0918000421 người sáng lập đang thử tay
+  await p.locator("#sdt").pressSequentially("0918000422");
   await guiMa(p);
   await p.locator("#ma-thu").waitFor({ state: "visible", timeout: 5000 });
   const ma = (await p.locator("#ma-thu").textContent()).match(/\d{6}/)[0];
@@ -81,7 +82,7 @@ await trang("dang-nhap-dung-ma", async (p) => {
 await trang("dang-nhap-sai-ma", async (p) => {
   await p.goto(`${GOC}/thiet-ke/dang-nhap.html`);
   await p.getByRole("button", { name: "Đăng nhập" }).click();
-  await p.locator("#sdt").pressSequentially("0918000422");
+  await p.locator("#sdt").pressSequentially("0966000520");
   await guiMa(p);
   await p.locator("#otp input").first().pressSequentially("000000");
   await p.locator("#loi-2").waitFor({ state: "visible", timeout: 5000 });
