@@ -110,17 +110,111 @@ export function veTab(dangMo, soTin = 0) {
       cho = false;
     });
   }, { passive: true });
+  nutCuonNhanh();
   return nav;
+}
+
+// Nút cuộn nhanh: hiện khi đang cuộn, ẩn sau 1,6 giây đứng yên; nhấn giữ rồi kéo để cuộn nhanh; chạm để về đầu trang.
+function nutCuonNhanh() {
+  const n = document.createElement("button");
+  n.type = "button"; n.className = "nut-cuon"; n.setAttribute("aria-label", "Cuộn nhanh: chạm để lên đầu trang, giữ và kéo để cuộn");
+  n.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>';
+  document.body.appendChild(n);
+  const TREN = 96, DUOI = 150;   // chừa header và thanh menu
+  const toiDa = () => Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  const datViTri = () => { const ti = scrollY / toiDa(); n.style.transform = `translateY(${TREN + ti * Math.max(0, innerHeight - TREN - DUOI)}px)`; };
+  let hen = 0, keo = false, daKeo = false;
+  const hien = () => { if (toiDa() < innerHeight * 0.6) return; n.classList.add("hien"); clearTimeout(hen); hen = setTimeout(() => { if (!keo) n.classList.remove("hien"); }, 1600); };
+  addEventListener("scroll", () => { datViTri(); hien(); }, { passive: true });
+  n.addEventListener("pointerdown", (e) => { keo = true; daKeo = false; n.setPointerCapture(e.pointerId); n.classList.add("dang-keo"); });
+  n.addEventListener("pointermove", (e) => {
+    if (!keo) return; daKeo = true;
+    const ti = Math.min(1, Math.max(0, (e.clientY - TREN) / Math.max(1, innerHeight - TREN - DUOI)));
+    scrollTo({ top: ti * toiDa(), behavior: "instant" });
+  });
+  const tha = () => { if (!keo) return; keo = false; n.classList.remove("dang-keo"); if (!daKeo) scrollTo({ top: 0, behavior: "smooth" }); hien(); };
+  n.addEventListener("pointerup", tha); n.addEventListener("pointercancel", tha);
+  datViTri();
 }
 
 // Header dùng chung: ảnh đại diện + tên bên trái; Hỗ trợ (tai nghe) + Thông báo (chuông, chấm xanh) bên phải
 export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
   goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
     <div class="dau-phai">
-      <a class="nut-tron" href="./ban-thong-bao.html#ho-tro" aria-label="Hỗ trợ: nhắn AgiViet">${bieuTuong("ho-tro")}</a>
+      <button class="nut-tron" type="button" data-tro-ly aria-label="Trợ lý AgiViet: hỏi đáp, tìm tính năng">${bieuTuong("ho-tro")}</button>
       <a class="nut-tron" href="./ban-thong-bao.html#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>
     </div>`;
+  goc.querySelector("[data-tro-ly]").onclick = (e) => moTroLy(e.currentTarget);
   giuThamSo(goc);
+}
+
+// ---- Trợ lý AgiViet: dẫn đường ngay trên máy (nhanh, không cần mạng) + hỏi AI qua backend cho câu tự do ----
+const BO_DAU = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
+const DUONG = [
+  [/dang (hang|bai|lo|ban)|ban hang moi|them lo/, "Đăng hàng mới", "./ban-dang-bai.html", "Bác bấm vào đây để đăng lô hàng: chọn mặt hàng, nhập lượng, giá và chụp ảnh."],
+  [/chao gia|tra gia|tin nhan|nhan tin/, "Xem chào giá", "./ban-tin-nhan.html", "Lời chào giá của bên mua nằm ở mục Tin nhắn."],
+  // Chợ so trên chữ CÓ dấu: bỏ dấu thì "chợ" trùng "cho" ("cho tôi hỏi…" sẽ bị dẫn nhầm)
+  [/chợ|hàng đang bán|lô hàng|xem lô|sửa lô|còn bao nhiêu/, "Mở Chợ (hàng đang bán)", "./ban-hang-hoa.html", "Hàng bác đang bán nằm ở mục Chợ."],
+  [/thong bao/, "Xem thông báo", "./ban-thong-bao.html#thong-bao", "Mọi cập nhật về lô, hợp đồng, tiền nằm trong Thông báo."],
+  [/nhan vien|goi|tong dai|xac minh|gap nguoi/, "Nhắn nhân viên AgiViet", "./ban-thong-bao.html#ho-tro", "Bác nhắn cho nhân viên, họ sẽ gọi lại cho bác."],
+  [/hop dong|ky /, "Xem hợp đồng", "./ban-hom-nay.html#t-hd", "Hợp đồng đang làm nằm ở Trang chủ, có thanh chặng cho từng hợp đồng."],
+  [/thoi tiet|mua|nang/, "Xem thời tiết", "./ban-hom-nay.html#t-troi", "Thời tiết 4 ngày tới nằm ở cuối Trang chủ."],
+];
+const GOI_Y = ["Đăng hàng mới", "Xem chào giá của bên mua", "Tiền cọc của tôi ở đâu?", "Gọi nhân viên AgiViet"];
+let troLy = null, nutMoTroLy = null;
+function dungTroLy() {
+  const tam = document.createElement("div");
+  tam.innerHTML = `<div class="tl-che" data-dong></div>
+    <section class="tl-tam" role="dialog" aria-modal="true" aria-labelledby="tl-tieu" inert>
+      <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Trợ lý AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
+      <div class="tl-hoi" id="tl-hoi" aria-live="polite">
+        <div class="tl-bong ai">Chào bác, bác cần làm gì? Bác bấm câu gợi ý hoặc gõ câu hỏi nhé.</div>
+      </div>
+      <div class="tl-goi-y" id="tl-goi-y">${GOI_Y.map((g) => `<button type="button">${esc(g)}</button>`).join("")}</div>
+      <form class="tl-go" id="tl-go"><input id="tl-o" maxlength="600" autocomplete="off" placeholder="Hỏi AgiViet…" aria-label="Câu hỏi"><button type="submit" aria-label="Gửi">${'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}</button></form>
+    </section>`;
+  document.body.appendChild(tam);
+  const $t = (s) => tam.querySelector(s);
+  const hoi = $t("#tl-hoi");
+  const them = (lop, html) => { const d = document.createElement("div"); d.className = `tl-bong ${lop}`; d.innerHTML = html; hoi.appendChild(d); hoi.scrollTop = hoi.scrollHeight; return d; };
+  async function gui(cau) {
+    cau = cau.trim(); if (!cau) return;
+    them("toi", esc(cau));
+    const t = BO_DAU(cau), co = cau.toLowerCase();
+    // Câu hỏi giải thích (thế nào, làm sao, tại sao…) luôn để AI trả lời; chỉ câu muốn đi tới đâu mới dẫn đường
+    const hoiGiaiThich = /the nao|lam sao|tai sao|vi sao|co duoc|nhu nao|giai thich|bao lau|khi nao|bao nhieu|la gi/.test(t);
+    const duong = hoiGiaiThich ? null : DUONG.find(([m]) => m.test(t) || m.test(co));
+    if (duong) {   // Dẫn đường ngay, không cần gọi AI
+      const [, nhan, href, cauTra] = duong;
+      const d = them("ai", `${esc(cauTra)}<a class="tl-di" href="${href}">${esc(nhan)} ›</a>`); giuThamSo(d);
+      return;
+    }
+    const cho = them("ai cho", "Đang nghĩ…");
+    try {
+      const token = await phien();
+      const r = await fetch("/v1/assistant/ask", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ cau }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || "Trợ lý chưa trả lời được.");
+      cho.classList.remove("cho"); cho.textContent = j.tra_loi;
+    } catch (e) {
+      cho.classList.remove("cho"); cho.innerHTML = `${esc(e.message)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Nhắn nhân viên ›</a>`; giuThamSo(cho);
+    }
+  }
+  $t("#tl-goi-y").querySelectorAll("button").forEach((b) => (b.onclick = () => gui(b.textContent)));
+  $t("#tl-go").onsubmit = (e) => { e.preventDefault(); const o = $t("#tl-o"); const v = o.value; o.value = ""; gui(v); };
+  tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dongTroLy));
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && troLy?.querySelector(".tl-tam.mo")) dongTroLy(); });
+  return tam;
+}
+export function moTroLy(nut) {
+  troLy ||= dungTroLy(); nutMoTroLy = nut || null;
+  const tam = troLy.querySelector(".tl-tam");
+  tam.inert = false; tam.classList.add("mo"); troLy.querySelector(".tl-che").classList.add("mo");
+  setTimeout(() => troLy.querySelector("#tl-o").focus(), 300);
+}
+function dongTroLy() {
+  const tam = troLy.querySelector(".tl-tam");
+  tam.classList.remove("mo"); troLy.querySelector(".tl-che").classList.remove("mo"); tam.inert = true; nutMoTroLy?.focus();
 }
 
 // ---- Thông báo: backend không lưu "đã đọc" → máy nhớ seq lớn nhất đã xem ----

@@ -120,7 +120,7 @@ p { margin: 0; text-wrap: pretty; }
 
 /* Tab dưới: chữ, không biểu tượng */
 .tab { position: sticky; bottom: 0; z-index: 10; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; background: var(--giay-noi);
-  border-radius: 22px 22px 0 0; box-shadow: 0 -1px 0 var(--ke), 0 -8px 24px rgba(31, 77, 58, 0.08); padding: 4px 4px env(safe-area-inset-bottom);
+  border-radius: 0; box-shadow: 0 -1px 0 var(--ke), 0 -8px 24px rgba(31, 77, 58, 0.06); padding: 4px 4px env(safe-area-inset-bottom);
   transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1); }
 .tab.thu .fab { transform: translateY(8px) scale(0.7); box-shadow: 0 0 0 3px var(--giay-noi); }
 .tab a { min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; font-size: var(--c-ghi); font-weight: 500; color: var(--muc-nhat); text-decoration: none; line-height: 1.15; padding: 6px 2px; position: relative; -webkit-tap-highlight-color: transparent; }
@@ -214,3 +214,33 @@ p { margin: 0; text-wrap: pretty; }
 .luoi-lo .so-con small { font-weight: 400; color: var(--muc-nhat); margin-left: 2px; }
 .thanh-con { height: 6px; border-radius: 3px; background: var(--ke); width: 100%; overflow: hidden; }
 .thanh-con span { display: block; height: 100%; background: var(--la); }
+
+/* ===== Trợ lý AgiViet (tấm trượt lên từ nút tai nghe) ===== */
+.tl-che { position: fixed; inset: 0; z-index: 40; background: rgba(20, 28, 23, 0.32); opacity: 0; pointer-events: none; transition: opacity 200ms var(--cham); }
+.tl-che.mo { opacity: 1; pointer-events: auto; }
+.tl-tam { position: fixed; z-index: 41; left: 50%; bottom: 0; width: min(100%, 480px); height: min(78dvh, 640px); transform: translate(-50%, 104%);
+  background: var(--giay); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; transition: transform 300ms var(--cham); padding-bottom: env(safe-area-inset-bottom); }
+.tl-tam.mo { transform: translate(-50%, 0); }
+.tl-dau { position: relative; display: flex; align-items: center; justify-content: center; padding: 18px 16px 10px; border-bottom: 1px solid var(--ke); }
+.tl-tay { position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--ke-dam); }
+.tl-dau h2 { font-size: 17px; font-weight: 600; }
+.tl-dong { position: absolute; right: 8px; top: 8px; width: 44px; height: 44px; border: 0; background: none; font-size: 26px; color: var(--muc-phu); cursor: pointer; }
+.tl-hoi { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
+.tl-bong { max-width: 85%; padding: 10px 14px; border-radius: 16px; line-height: 1.45; font-size: 15px; }
+.tl-bong.ai { align-self: flex-start; background: var(--giay-noi); border: 1px solid var(--ke); border-bottom-left-radius: 6px; }
+.tl-bong.toi { align-self: flex-end; background: var(--la); color: var(--tren-la); border-bottom-right-radius: 6px; }
+.tl-bong.cho { color: var(--muc-nhat); }
+.tl-di { display: flex; align-items: center; min-height: 44px; margin-top: 8px; padding: 0 14px; border-radius: 12px; background: var(--la-nhat); color: var(--la-dam); font-weight: 600; text-decoration: none; }
+.tl-goi-y { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 10px; scrollbar-width: none; }
+.tl-goi-y button { flex: none; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--ke-dam); background: var(--giay-noi); color: var(--muc-phu); font: 500 14px/1 var(--chu); cursor: pointer; }
+.tl-go { display: flex; gap: 8px; padding: 8px 16px 12px; border-top: 1px solid var(--ke); }
+.tl-go input { flex: 1; min-width: 0; height: 48px; border-radius: 24px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 0 16px; font: 400 16px/1 var(--chu); color: var(--muc); outline: none; }
+.tl-go input:focus { border-color: var(--la); }
+.tl-go button { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--la); color: var(--tren-la); display: grid; place-items: center; cursor: pointer; }
+
+/* Nút cuộn nhanh (mép phải) */
+.nut-cuon { position: fixed; top: 0; right: max(6px, calc(50% - 240px + 6px)); z-index: 15; width: 44px; height: 44px; border-radius: 22px; border: 0;
+  background: var(--giay-noi); color: var(--la); box-shadow: 0 0 0 1px var(--ke-dam), 0 4px 14px rgba(0,0,0,0.12); display: grid; place-items: center;
+  opacity: 0; pointer-events: none; transition: opacity 200ms var(--cham); touch-action: none; cursor: grab; }
+.nut-cuon.hien { opacity: 1; pointer-events: auto; }
+.nut-cuon.dang-keo { background: var(--la); color: var(--tren-la); cursor: grabbing; }

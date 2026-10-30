@@ -33,7 +33,7 @@ HE_THONG = {
     ),
 }
 
-MUC_APP = {"ban": "Hôm nay, Lô hàng, Nhu cầu mua, Hợp đồng, Tiền, Hỗ trợ",
+MUC_APP = {"ban": "Trang chủ, Chợ (hàng đang bán), Đăng bài, Tin nhắn (chào giá), Tiền, Thông báo, Hỏi AgiViet",
            "mua": "Tổng quan, Nguồn hàng, Báo giá, Hợp đồng, Thanh toán, Giao nhận, Hỗ trợ"}
 HE_THONG = {v: t.replace("{MUC}", MUC_APP[v]) for v, t in HE_THONG.items()}
 

@@ -429,9 +429,9 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     const vai = nd.thanhVien.canSell ? 'ban' : 'mua';
     const duLieu = await ht.db.doc(async (t) => {
       const lo = await t.q<any>(`SELECT l.code, p.name_vi, l.grade_code, l.status, l.declared_qty::text qty_g FROM core.lots l JOIN core.products p ON p.id=l.product_id WHERE l.seller_org_id=$1 AND l.status IN ('on_sale','draft','upcoming') ORDER BY l.created_at DESC LIMIT 8`, [nd.thanhVien.orgId]);
-      const don = await t.q<any>(`SELECT code, status, contract_value_vnd::text gia FROM core.orders WHERE seller_org_id=$1 OR buyer_org_id=$1 ORDER BY created_at DESC LIMIT 6`, [nd.thanhVien.orgId]);
+      const don = await t.q<any>(`SELECT code, status FROM core.orders WHERE seller_org_id=$1 OR buyer_org_id=$1 ORDER BY created_at DESC LIMIT 6`, [nd.thanhVien.orgId]);
       return [...lo.map((l) => `Lô ${l.code}: ${l.name_vi} loại ${String(l.grade_code).replace(/^L/, '')}, ${Number(l.qty_g) / 1000} kg, trạng thái ${l.status}`),
-        ...don.map((d) => `Hợp đồng ${d.code}: trạng thái ${d.status}, giá trị ${d.gia} đồng`)].join('\n');
+        ...don.map((d) => `Hợp đồng ${d.code}: trạng thái ${d.status}`)].join('\n');
     });
     try {
       const r = await fetch(`${ht.cfg.aiUrl}/assistant/ask`, { method: 'POST', signal: AbortSignal.timeout(15000),

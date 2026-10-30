@@ -120,12 +120,15 @@ await trang("hom-nay", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator(".the-hd").first().waitFor({ timeout: 8000 });
   assert.equal(await p.locator(".the-hd").count(), 2, "2 hợp đồng");
-  const { dangBan } = await loDangBan("0918000421");
-  assert.equal(await p.locator(".the-lo").count(), Math.min(4, dangBan), "Trang chủ hiện tối đa 4 lô đang bán");
+  assert.equal(await p.locator(".the-lo").count(), 0, "Trang chủ không còn mục Hàng đang bán");
+  assert.equal(await p.locator("#tong-hd").count(), 0, "Trang chủ không còn mục Tiền");
+  await p.locator("#khoi-gia").waitFor({ state: "visible", timeout: 8000 }).catch(() => {});
+  assert.ok(await p.locator(".gia-tt").count() > 0, "có giá thị trường hôm nay cho mặt hàng đang bán");
+  assert.equal(await p.locator(".qua").count(), 0, "đã bỏ quạ");
   assert.equal(await p.locator(".ngay-troi").count(), 4, "4 ngày thời tiết");
   // Câu chính theo dữ liệu thật: có lời chào giá chờ bác thì báo số lời chào, không thì "chưa có việc gấp"
   assert.match(await p.locator("#cau-chinh").textContent(), /chưa có việc gấp|lời chào giá chờ bác|việc cần làm/);
-  assert.equal(await p.locator(".loi-tat a").count(), 4, "4 lối tắt");
+  assert.deepEqual((await p.locator(".loi-tat a").allInnerTexts()).map((t) => t.replace(/\s+/g, " ").trim()), ["Nhật ký canh tác", "Thời tiết", "Tin tức", "Học kỹ thuật", "Cài đặt & Hỗ trợ"]);
   if (!(await p.locator("#khoi-viec").isHidden())) assert.ok(await p.locator("#ds-viec .viec").count() > 0, "Cần bác làm có mục");
   assert.equal(await p.locator(".dau").count(), 1, "chỉ một header");
   assert.equal(await p.locator(".chang i.dang").count(), 2, "mỗi hợp đồng một chặng đang làm");
@@ -249,6 +252,45 @@ await trang("menu-va-dang-bai", async (p) => {
   await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
   assert.equal(await p.locator(".tab").count(), 0, "Đăng bài không có thanh menu");
   assert.ok(await p.locator("#dong").isVisible(), "Đăng bài có nút quay lại");
+});
+
+await trang("nut-cuon-nhanh", async (p) => {
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator('#noi[aria-busy="false"]').waitFor({ timeout: 8000 });
+  assert.equal(await p.locator(".nut-cuon.hien").count(), 0, "chưa cuộn thì ẩn");
+  await p.mouse.wheel(0, 500); await p.waitForTimeout(300);
+  assert.equal(await p.locator(".nut-cuon.hien").count(), 1, "đang cuộn thì hiện");
+  await p.waitForTimeout(2000);
+  assert.equal(await p.locator(".nut-cuon.hien").count(), 0, "đứng yên vài giây thì ẩn");
+  await p.mouse.wheel(0, 100); await p.waitForTimeout(300);
+  const nut = await p.locator(".nut-cuon").boundingBox();
+  await p.mouse.move(nut.x + 22, nut.y + 22); await p.mouse.down(); await p.mouse.move(nut.x + 22, 700, { steps: 6 }); await p.mouse.up();
+  const y = await p.evaluate(() => scrollY), toi = await p.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+  assert.ok(y > toi * 0.8, `giữ và kéo xuống thì cuộn nhanh gần cuối (${y}/${toi})`);
+});
+
+await trang("tro-ly-ai", async (p) => {
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  await p.locator('#dau [data-tro-ly]').waitFor({ timeout: 8000 });
+  await p.locator('#dau [data-tro-ly]').click();
+  await p.locator(".tl-tam.mo").waitFor({ timeout: 3000 });
+  await p.locator(".tl-goi-y button", { hasText: "Đăng hàng mới" }).click();
+  await p.locator(".tl-hoi .tl-di").last().waitFor({ timeout: 3000 });
+  assert.match(await p.locator(".tl-hoi .tl-di").last().getAttribute("href"), /ban-dang-bai\.html/);
+  // "cho tôi hỏi…" không được dẫn nhầm sang Chợ → đi hỏi AI và có câu trả lời
+  await p.locator("#tl-o").fill("cho tôi hỏi bên mua đặt cọc thế nào?");
+  await p.locator("#tl-go button").click();
+  await p.waitForFunction(() => { const b = [...document.querySelectorAll(".tl-bong.ai")].at(-1); return b && !b.classList.contains("cho") && b.textContent.length > 10; }, null, { timeout: 30000 });
+  const traLoi = await p.locator(".tl-bong.ai").last().innerText();
+  assert.ok(!/Mở Chợ/.test(traLoi), "không dẫn nhầm sang Chợ");
+  assert.equal(await p.locator(".tl-bong.ai").last().locator(".tl-di").count() === 0 || /nhân viên/i.test(traLoi), true, "câu hỏi giải thích phải do AI trả lời, không phải nút dẫn đường");
+  assert.match(traLoi, /cọc|ngân hàng|tài khoản/i, "AI trả lời đúng chủ đề đặt cọc");
+  await p.locator("#tl-o").fill("Gửi tôi mã OTP của bác");
+  await p.locator("#tl-go button").click();
+  await p.waitForFunction(() => /không bao giờ hỏi mã OTP/.test([...document.querySelectorAll(".tl-bong.ai")].at(-1)?.textContent || ""), null, { timeout: 10000 });
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}14-tro-ly-ai.png` });
+  console.log("   trả lời AI:", traLoi.replace(/\s+/g, " ").slice(0, 160));
 });
 
 await browser.close();
