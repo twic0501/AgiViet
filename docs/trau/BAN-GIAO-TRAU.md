@@ -94,6 +94,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   3. Tỉ lệ đầu–thân, tay, tai lấy theo Higgsfield nên hơi khác V4g.
   4. Góc ¾ không có mày xa.
   5. Góc nghiêng chưa tách tai thành nhóm riêng; tay xa, chân xa khuất hẳn.
+- **Sửa theo người sáng lập (¾ "lỗi chân và khăn"):** chân và khăn góc ¾ chuyển sang **đồ tay bằng đường cong** theo toạ độ đọc trên lưới 10 đơn vị phủ ảnh nguồn (`KHAN_CO_34`, `KHAN_DAI_34`, `CHAN_XA_34`, `CHAN_GAN_34` trong `do-goc.py`). Phần này gồm đường háng, nếp quần, móng có khe, dải khăn ôm cổ, đầu khăn thon có tua, caro cắt theo hình, túi áo. Codex: chân và khăn ĐẠT.
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")

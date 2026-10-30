@@ -217,7 +217,7 @@ def do_goc(anh, chia, thu_tu, goc, ra, tieu_de, mo_ta, day_net=5.6, toi_rieng=No
     con_lai = net.copy()
     for bo in thu_tu:
         if bo in phu:
-            m = (net_goc if bo in ('dau-khoi', 'mom') else net) & \
+            m = (net_goc if bo in ('dau-khoi', 'mom', 'duoi') else net) & \
                 no(phu[bo], int((net_rong or {}).get(bo, 14) * anh.phong / 2) + r_net)
             if bo in net_chi_vien:
                 m = np.zeros_like(m)
@@ -238,7 +238,7 @@ def do_goc(anh, chia, thu_tu, goc, ra, tieu_de, mo_ta, day_net=5.6, toi_rieng=No
         if lot and bo in lot and bo in phu:
             vien = f' stroke="{VIEN}" stroke-width="{day_net}" stroke-linejoin="round"' if bo in net_chi_vien else ''
             kin = lap_lo(no(phu[bo], nap))
-            if bo in net_chi_vien:  # làm trơn đường bao (đóng: nở rồi co) để mép không gồ vân vải
+            if bo in net_chi_vien or bo == 'dau-khoi':  # đóng (nở rồi co): mép trơn, khép khe khuyết hẹp
                 r = int(4 / anh.k)
                 kin = ~no(~no(kin, r), r)
             o.append(f'    <path d="{potrace(no(kin, 1), anh.f)}" fill="{lot[bo]}"{vien} '
