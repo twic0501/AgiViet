@@ -76,10 +76,9 @@ class Goc:
             self.bp[g.get('id')] = (gx, gy, ruot, moi_id())
         self.long = dict(tc.LONG)                          # chuỗi khớp khăn dài (V4g)
         self.bien = {}                                     # (bên, tư thế) → (id hiện, id xoay)
+        self.xuong = {}                                    # tay da bọc xương: tên → (gx, gy, id nút hình, id xương thân)
         if ten == 'chinh':
-            self.nach_theo_tay(svg)
-            self.khop_vai()
-            self.tay_gio()
+            self.tay_da(svg)
         dk = self.bp.get('dau-khoi')
         self.co_xy = (dk[0], dk[1]) if dk else (256, 300)  # điểm xoay đầu = cổ
         self.id = {k: moi_id() for k in ('goc', 'nghich', 'nhun', 'hong', 'vai', 'than', 'dau', 'dau-quanh',
@@ -116,6 +115,79 @@ class Goc:
                 self.boc[t] = {'giat': moi_id(), 'nghich': moi_id()}
             elif t.startswith('tay-') or t == 'duoi':
                 self.boc[t] = {'nghich': moi_id()}
+        for t, (_, _, _, id_c) in self.xuong.items():   # tay da: nút 'nghich' là xương con
+            self.boc[t] = {'nghich': id_c}
+
+    def tay_da(self, svg):
+        """Tay chính diện = chính nét tay V4g, uốn bằng xương (skinning) thay vì xoay cứng / đổi hình.
+        Mỗi đỉnh của đường tay (kể cả viền nách) gắn vào 2 xương: xương thân (đi theo áo, không xoay) và xương tay
+        (xoay). Trọng số theo vị trí dọc trục vai→cổ tay: gốc ống tay dính áo, phần ngoài xoay hẳn, đoạn giữa uốn.
+        Dưới tay có khối vai tròn (màu áo + viền) lấp khoảng trống giữa đỉnh tay và khăn khi giơ cao; lúc buông nó
+        bị tay/thân/khăn che kín (so V4g lệch 1 điểm ảnh).
+        Id của xương tay gốc = id cũ của nút tay (lớp Phụ), xương con = nút 'nghich' (lớp Nghịch) → hoạt ảnh giữ nguyên."""
+        import re as _re
+        S0, W0, T0, T1 = (166.0, 333.0), (138.0, 388.0), -0.05, 0.45
+        than = next(g for g in svg.iter(NS + 'g') if g.get('id') == 'than')
+        nach = {e.get('data-role').rsplit('-', 1)[1]: e for e in than
+                if (e.get('data-role') or '').startswith('vien-nach-thuot')}
+        g2 = copy.deepcopy(than)                       # thân không còn viền nách (viền nách thuộc tay)
+        for e in list(g2):
+            if (e.get('data-role') or '').startswith('vien-nach-thuot'):
+                g2.remove(e)
+        x, y, _, nid = self.bp['than']
+        self.bp['than'] = (x, y, tc.bo_phan(g2, {})[2], nid)
+        for ben in ('trai', 'phai'):
+            t = f'tay-{ben}'
+            if t not in self.bp:
+                continue
+            g = next(e for e in svg.iter(NS + 'g') if e.get('id') == t)
+            gx, gy, ruot = tc.bo_phan(g, {})
+            if ben in nach:
+                ruot = tc.hinh(nach[ben], {}, gx, gy, f'{t}-nach') + ruot   # khai báo trước = nằm trên
+            s0 = S0 if ben == 'trai' else (512 - S0[0], S0[1])
+            w0 = W0 if ben == 'trai' else (512 - W0[0], W0[1])
+            ax = (w0[0] - s0[0], w0[1] - s0[1]); L2 = ax[0] ** 2 + ax[1] ** 2
+
+            def tg(px, py):
+                u = ((px - s0[0]) * ax[0] + (py - s0[1]) * ax[1]) / L2
+                u = min(1.0, max(0.0, (u - T0) / (T1 - T0)))
+                k = round(255 * u * u * (3 - 2 * u))
+                if k <= 0:
+                    return 255, 1
+                if k >= 255:
+                    return 255, 2
+                return (255 - k) | (k << 8), 1 | (2 << 8)
+
+            def gan(m):
+                tag, attrs = m.group(1), m.group(2)
+                a = dict(_re.findall(r'(\w+)="([^"]*)"', attrs))
+                px, py = float(a['x']) + gx, float(a['y']) + gy
+                v, i = tg(px, py)
+                if tag == 'StraightVertex':
+                    return f'<StraightVertex{attrs}><Weight values="{v}" indices="{i}"/></StraightVertex>'
+                h = {}
+                for k2 in ('in', 'out'):
+                    r_, d_ = float(a[f'{k2}Rotation']), float(a[f'{k2}Distance'])
+                    h[k2] = tg(px + d_ * math.cos(r_), py + d_ * math.sin(r_))
+                return (f'<CubicDetachedVertex{attrs}><CubicWeight values="{v}" indices="{i}" inValues="{h["in"][0]}" '
+                        f'inIndices="{h["in"][1]}" outValues="{h["out"][0]}" outIndices="{h["out"][1]}"/>'
+                        f'</CubicDetachedVertex>')
+            id_than_x, id_goc = moi_id(), self.bp[t][3]
+            id_con = moi_id()
+            skin = (f'<Skin tx="{gx:.2f}" ty="{gy:.2f}" name="Skin">'
+                    f'<Tendon boneId="{id_than_x}" tx="{s0[0]:.2f}" ty="{s0[1]:.2f}" name="Than"/>'
+                    f'<Tendon boneId="{id_con}" tx="{s0[0] + 0.01:.2f}" ty="{s0[1]:.2f}" name="Tay"/></Skin>')
+            ruot = _re.sub(r'<(StraightVertex|CubicDetachedVertex)((?: \w+="[^"]*")*)/>', gan, ruot)
+            ruot = ruot.replace('</PointsPath>', skin + '</PointsPath>')
+            self.xuong[t] = (s0, id_than_x, id_goc, id_con)
+            self.bp[t] = (gx, gy, ruot, id_goc)
+            # khối vai: viền đen + mảng áo, gắn thân, nằm dưới tay
+            c = (168.0, 332.0) if ben == 'trai' else (344.0, 332.0)
+            for ten, r_, mau_ in ((f'vai-vien-{ben}', 17.8, '#24190f'), (f'vai-ao-{ben}', 15.0, '#c48f65')):
+                el = ET.Element(NS + 'ellipse', {'cx': str(c[0]), 'cy': str(c[1]), 'rx': str(r_), 'ry': str(r_),
+                                                 'fill': mau_, 'stroke': 'none'})
+                self.bp[ten] = (c[0], c[1], tc.hinh(el, {}, c[0], c[1], ten + '-h'), moi_id())
+                self.thu_tu.insert(self.thu_tu.index(t), ten)
 
     def nach_theo_tay(self, svg):
         """Viền nách (vien-nach-thuot-*) V4g nằm trong thân áo, cố định → khi tay đưa ra lộ thành vệt đen lạc trên áo.
@@ -186,6 +258,8 @@ class Goc:
     def tay(self):
         """[(id nghich, chiều 'dang ra')]: tay bên trái màn hình / tay góc nghiêng dang ra = xoay dương."""
         def chieu(t):
+            if self.xuong:                 # chính diện, tay da bọc xương: giơ cao được (×2,6 so với tay xoay cứng)
+                return -2.6 if t.startswith('tay-phai') else 2.6
             if t.startswith('tay-phai'):
                 return -1
             # ¾ và nghiêng: tay vẽ cho dáng buông, giơ cao sẽ lộ ống tay phẳng → chỉ vung vừa (≈ 40 %);
@@ -226,6 +300,9 @@ class Goc:
             out = []
             for t in reversed(ds):
                 x, y, ruot, nid = self.bp[t]
+                if t in self.xuong:              # tay da: hình đã bọc xương, nút chứa không cần hoạt ảnh
+                    out.append(node(t, moi_id(), x - cha[0], y - cha[1], ruot))
+                    continue
                 b = self.boc.get(t, {})
                 if t.startswith('mat-'):  # chấm mắt và mắt cười là anh em, bật/tắt bằng opacity
                     ruot = node(f'{t}-cuoi', b['vui'], 0, 0, self.mat_cuoi[t], ' opacity="0"') + \
@@ -240,7 +317,13 @@ class Goc:
         dau_nghich = node('dau-nghich', self.id['dau-nghich'], 0, 0, dau_nhin)
         dau_quanh = node('dau-quanh', self.id['dau-quanh'], 0, 0, dau_nghich)
         dau = node('dau', self.id['dau'], cox - hong[0], coy - hong[1], dau_quanh)
-        than = node('than-tren', self.id['than'], 0, 0, dau + ve(self.than_bp(), hong))
+        xuong = ''
+        for t, (s0, id_t, id_g, id_c) in self.xuong.items():
+            bx, by = s0[0] - hong[0], s0[1] - hong[1]
+            xuong += (f'<RootBone x="{bx:.2f}" y="{by:.2f}" length="0.01" name="xuong-than-{t}" id="{id_t}"/>'
+                      f'<RootBone x="{bx:.2f}" y="{by:.2f}" length="0.01" name="xuong-{t}" id="{id_g}">'
+                      f'<Bone length="0.01" name="xuong-{t}-nghich" id="{id_c}"/></RootBone>')
+        than = node('than-tren', self.id['than'], 0, 0, xuong + dau + ve(self.than_bp(), hong))
         vai = node('vai', self.id['vai'], 0, 0, than)
         hong_xml = node('hong', self.id['hong'], hong[0] - cx, hong[1] - CHAN_DAT, vai)
         nhun = node('nhun', self.id['nhun'], 0, 0, hong_xml + ve(self.chan_bp(), (cx, CHAN_DAT)))
