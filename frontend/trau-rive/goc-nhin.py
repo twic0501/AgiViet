@@ -173,7 +173,7 @@ def svg_moi(tieu_de, mo_ta, nhoms):
 
 def luu(s, ten):
     ET.indent(s, '  ')
-    p = os.path.join(DIR, 'nguon', 'goc', ten)
+    p = os.path.join(DIR, 'nguon', 'goc', 'cu', ten)  # bản dựng tay cũ (bị loại 30/10); bản dùng do do-goc.py đồ
     os.makedirs(os.path.dirname(p), exist_ok=True)
     ET.ElementTree(s).write(p, encoding='utf-8', xml_declaration=True)
     print(p)

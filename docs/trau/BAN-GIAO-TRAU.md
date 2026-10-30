@@ -11,7 +11,7 @@ Tài liệu này để **nhiều người/AI làm song song** (Claude tài kho�
 | 13 đạo cụ SVG (giấy chào giá, điện thoại, phiếu cân, biển gỗ, thúng, cân bàn, kho, đòn gánh, đồng hồ cát, đồng xu, nón lá, áo mưa, sổ xanh) + ghế đẩu | Vẽ xong, soi 2 nền | `frontend/trau-rive/nguon/dao-cu/` (có điểm cầm `diem-cam`); thúng đòn gánh còn nhỏ |
 | 22 dáng tay khớp nối (chào, cầm giấy, mừng, xin lỗi…) | **BỊ LOẠI** | Người sáng lập: tay gãy ở vai, tay khác V4g đã chốt, đứng cứng. Không dùng tiếp `tay-khop.py`/`trau-khop.riv` làm sản phẩm |
 | Uốn đúng nét tay V4g bằng 2 xương (`tay-da.py`) | Dừng, chưa đạt | Dáng nghỉ còn lệch V4g vùng hai tay; không giải quyết xoay người |
-| **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **¾ trái + nghiêng trái: chờ duyệt T1** (Codex soi 3 vòng: ĐẠT để gửi duyệt) · sau lưng chưa làm | `frontend/trau-rive/nguon/goc/`, ảnh duyệt `docs/trau/goc-nhin/`; xem mục 4 |
+| **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **¾ trái + nghiêng trái bản 3 (đồ từ Higgsfield): chờ người sáng lập xem** · sau lưng chưa làm | `frontend/trau-rive/nguon/goc/`, ảnh duyệt `docs/trau/goc-nhin/`; xem mục 4 |
 | Dáng ngồi / cầm đồ | Chưa đạt | Ghế bị thân che, thúng nhỏ |
 
 **Kết luận của người sáng lập (30/10):** chuyển động phải có xoay người, nghiêng, dồn trọng tâm, nhịp thân nhiều góc cho tự nhiên — "không thì khỏi làm". Bẻ tay trên một hình chính diện phẳng là không đạt.
@@ -71,6 +71,30 @@ Quy trình đề xuất:
 - **Codex** soi (`codex exec`, effort high, chỉ đọc). Bản 1: sau 3 vòng thì ĐẠT nhưng người sáng lập loại góc nghiêng. Bản 2: thêm 3 vòng (áo, trán–mõm, gốc đuôi, ¾ quay thêm một nấc), vòng cuối kết luận ¾ và nghiêng ĐẠT để gửi lại, bộ ba đồng nhất thiết kế ở mức hình tĩnh. Bài học: góc mới phải dựng từ bộ phận V4g và soi bằng bảng xoay có đường mốc, không vẽ lại theo ảnh AI.
 - **Tự soi, lỗi/điểm còn cần người sáng lập quyết:** (1) góc nghiêng chỉ thấy rõ 1 lỗ mũi, lỗ xa chỉ hé ở chóp mõm (đúng phối cảnh; luật 2 ghi "đúng 2 lỗ mũi"); (2) tai nghiêng là tai V4g xoay chĩa ra sau; (3) ¾: viền đầu gần như giữ nguyên chính diện, độ quay đọc chủ yếu qua nét mặt và mảng má; ống quần vẫn dáng V4g, hướng chân chỉ thể hiện ở móng; (4) chỉ sừng nhìn cạnh và khăn là hình vẽ mới, còn lại lấy từ V4g; Codex còn lưu ý nhẹ: mép sau mảng hồng hơi cứng, chân ¾ quay ít hơn đầu.
 - **Chưa làm (thuộc T2):** tách khớp khuỷu/cổ tay/gối/cổ chân, cha "đầu" và xương. `tao-canh.py` đã gom `*-gan`/`*-xa` vào nhóm đầu (đầu ra V4g không đổi).
+
+### Bản 3 — đồ từ Higgsfield (30/10, theo yêu cầu người sáng lập)
+Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng", nên chuyển sang **dùng Higgsfield sinh hướng xoay rồi đồ lại**.
+- **Kết nối:** Higgsfield qua MCP (`claude mcp add --scope user --transport http higgsfield https://mcp.higgsfield.ai/mcp`, đăng nhập bằng `/mcp`). Tài khoản dùng thử chỉ tạo ảnh được qua MCP, lệnh CLI `higgsfield` bị chặn. Đã dùng 4,5/10 credit.
+- **Ảnh nguồn** (sinh từ ảnh V4g):
+  - `docs/trau/tham-chieu/higgsfield-v4g-xoay-1.png`: bảng xoay 5 góc bằng Nano Banana Pro. Lấy hình nghiêng (hình 3), lật gương.
+  - `higgsfield-v4g-34-trai-1.png`: ¾ trái bằng 3D Jutsu Angles.
+  - Bản cắt dùng để đồ: `frontend/trau-rive/nguon/goc/hf/`.
+- **Đồ vector tự động:** `do-anh.py` là thư viện, `do-goc.py nghieng|34` cho từng góc.
+  1. Phân lớp màu, lọc trội.
+  2. Mảng màu đồ bằng potrace và tô màu V4g.
+  3. Nét lấy từ nét gốc làm dày ~5,6.
+  4. Mắt, mày, lỗ mũi đồ nguyên hình.
+  5. Khăn: lấy bao khăn từ ảnh, bên trong là caro đều 3 màu V4g (ô 12).
+  6. Ống quần viền bằng nét V4g (ảnh gốc có vân vải).
+  7. Chia bộ phận theo vùng khung 512 (`*-gan`/`*-xa`).
+  Đồ lại ra kết quả giống hệt; Rive `--verify` 0 lỗi.
+- **Còn mở, chờ người sáng lập quyết:**
+  1. Cổ tay ở cả hai góc bo tròn theo ảnh Higgsfield, trong khi luật 3 yêu cầu cắt phẳng.
+  2. Góc nghiêng chỉ có 1 lỗ mũi (luật 2).
+  3. Tỉ lệ đầu–thân, tay, tai lấy theo Higgsfield nên hơi khác V4g.
+  4. Góc ¾ không có mày xa.
+  5. Góc nghiêng chưa tách tai thành nhóm riêng; tay xa, chân xa khuất hẳn.
+- Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
