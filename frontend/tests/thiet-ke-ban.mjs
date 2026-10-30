@@ -159,8 +159,23 @@ await trang("hang-hoa", async (p) => {
   assert.equal(await p.locator('#loc button[data-k="on_sale"]').getAttribute("aria-pressed"), "true");
   // tab giữ ?thu= khi chuyển màn
   assert.match(await p.locator('.tab a[href*="ban-hom-nay"]').getAttribute("href"), /thu=0918000421/);
+  assert.equal(await p.locator(".nut-noi").count(), 0, "không còn nút Đăng hàng trùng với thanh menu");
+  assert.ok(await p.locator(".lo .luong i").count() > 0, "mỗi lô có thanh lượng");
+  await p.waitForFunction(() => /bên mua đang chào giá/.test(document.querySelector('.lo[data-lo="L-0412"] .hoi')?.textContent || ""), null, { timeout: 8000 });
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}05-hang-hoa.png`, fullPage: true });
+  // Ngăn Bên mua đang cần → chào hàng vào một nhu cầu khớp
+  await p.locator("#ngan-can").click();
+  await p.locator("#p-can .can").first().waitFor({ timeout: 8000 });
+  assert.ok(await p.locator("#p-can .khop").count() > 0, "có nhu cầu khớp hàng của bác");
+  await p.locator("#p-can button[data-dong]:not([disabled])").first().click();
+  await p.locator(".tam").waitFor({ timeout: 3000 });
+  await p.locator('.tam input[name="gia"]').fill("24000");
+  await kiemChung(p);
+  await p.locator("#tam-gui").click();
+  // Gửi được, hoặc (chạy lại trên cùng dữ liệu) báo rõ lô đã có lời chào đang mở với bên mua đó
+  await p.waitForFunction(() => /Đã gửi chào hàng|đã có lời chào đang mở/.test(document.querySelector(".tam")?.textContent || ""), null, { timeout: 8000 });
+  await p.screenshot({ path: `${ANH}05b-cho-chao-hang.png` });
 });
 
 await trang("thieu-phien-bao-loi", async (p) => {
@@ -253,7 +268,12 @@ await trang("menu-va-dang-bai", async (p) => {
   assert.ok(fab.y < thanh.y && fab.y > thanh.y - 30, "nút Đăng bài nhô lên một chút khỏi thanh");
   await p.goto(`${GOC}/thiet-ke/ban-tin-tuc.html?thu=0918000421`); await p.locator(".tin").first().waitFor({ timeout: 8000 });
   await p.mouse.wheel(0, 600); await p.waitForTimeout(500);
-  assert.ok(await p.locator(".tab.thu").count() === 1, "cuộn xuống thì thanh thụt vào");
+  assert.ok(await p.locator(".tab.thu").count() === 1, "cuộn xuống thì thanh trượt xuống ẩn");
+  await p.mouse.wheel(0, -200); await p.waitForTimeout(500);
+  assert.equal(await p.locator(".tab.thu").count(), 0, "kéo lên thì thanh hiện lại");
+  await p.mouse.wheel(0, 600); await p.waitForTimeout(500);
+  await p.locator(".muc h3 span").first().dispatchEvent("pointerdown"); await p.waitForTimeout(400);
+  assert.equal(await p.locator(".tab.thu").count(), 0, "chạm màn hình thì thanh hiện lại");
   await p.mouse.wheel(0, -300); await p.waitForTimeout(500);
   assert.ok(await p.locator(".tab.thu").count() === 0, "cuộn lên thì hiện đủ");
   await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);

@@ -79,7 +79,7 @@ export async function xemNhuCau(t: GiaoDich, nd: NguoiDung, id: string) {
 
 export async function danhSachNhuCau(t: GiaoDich, nd: NguoiDung, q: { mine?: boolean; product_code?: string }) {
   if (q.mine) return t.q(`SELECT d.id,d.code,p.code product_code,d.status,d.version revision FROM core.demands d JOIN core.products p ON p.id=d.product_id WHERE d.buyer_org_id=$1 ORDER BY d.code`, [nd.thanhVien.orgId]);
-  return t.q(`SELECT d.id,d.code,p.code product_code,d.segment_code,d.status,lower(d.needed_during)::text needed_from,(upper(d.needed_during)-1)::text needed_to,o.display_name buyer_name,
+  return t.q(`SELECT d.id,d.code,p.code product_code,d.segment_code,d.status,lower(d.needed_during)::text needed_from,(upper(d.needed_during)-1)::text needed_to,o.display_name buyer_name,d.buyer_org_id,
       (SELECT json_agg(json_build_object('id',l.id,'grade_code',l.grade_code,'qty_g',l.qty::text)) FROM core.demand_lines l WHERE l.demand_id=d.id) lines
       FROM core.demands d JOIN core.products p ON p.id=d.product_id JOIN core.organizations o ON o.id=d.buyer_org_id
       WHERE d.status='open' AND d.buyer_org_id<>$1 AND ($2::text IS NULL OR p.code=$2) ORDER BY d.code`, [nd.thanhVien.orgId, q.product_code ?? null]);

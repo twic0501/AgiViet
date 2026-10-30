@@ -112,7 +112,7 @@ export function veTab(dangMo, soTin = 0) {
     : `<a href="${href}" aria-label="${ten}${k === "tin-nhan" && soTin ? ` (${soTin} tin mới)` : ""}"${k === dangMo ? ' aria-current="page"' : ""}><span class="ic">${bieuTuong(k, k === dangMo)}${k === "tin-nhan" && soTin ? `<i class="cham-moi"></i>` : ""}</span><span class="nhan">${ten}</span></a>`).join("");
   document.querySelector(".trang").appendChild(nav);
   giuThamSo(nav);
-  // Cuộn xuống: thanh thụt vào; cuộn lên hoặc gần đầu trang: hiện đủ
+  // Cuộn xuống: thanh trượt xuống ẩn; cuộn lên, chạm màn hình hoặc gần đầu trang: trượt lên hiện lại
   let truoc = scrollY, cho = false;
   addEventListener("scroll", () => {
     if (cho) return; cho = true;
@@ -122,6 +122,7 @@ export function veTab(dangMo, soTin = 0) {
       cho = false;
     });
   }, { passive: true });
+  addEventListener("pointerdown", (e) => { if (!nav.contains(e.target) && !e.target.closest?.(".nut-cuon")) nav.classList.remove("thu"); }, { passive: true });
   nutCuonNhanh();
   return nav;
 }
