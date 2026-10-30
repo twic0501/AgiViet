@@ -123,7 +123,11 @@ await trang("hom-nay", async (p) => {
   const { dangBan } = await loDangBan("0918000421");
   assert.equal(await p.locator(".the-lo").count(), Math.min(4, dangBan), "Trang chủ hiện tối đa 4 lô đang bán");
   assert.equal(await p.locator(".ngay-troi").count(), 4, "4 ngày thời tiết");
-  assert.match(await p.locator("#cau-chinh").textContent(), /chưa có việc gấp/);
+  // Câu chính theo dữ liệu thật: có lời chào giá chờ bác thì báo số lời chào, không thì "chưa có việc gấp"
+  assert.match(await p.locator("#cau-chinh").textContent(), /chưa có việc gấp|lời chào giá chờ bác|việc cần làm/);
+  assert.equal(await p.locator(".loi-tat a").count(), 4, "4 lối tắt");
+  if (!(await p.locator("#khoi-viec").isHidden())) assert.ok(await p.locator("#ds-viec .viec").count() > 0, "Cần bác làm có mục");
+  assert.equal(await p.locator(".dau").count(), 1, "chỉ một header");
   assert.equal(await p.locator(".chang i.dang").count(), 2, "mỗi hợp đồng một chặng đang làm");
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}04-hom-nay.png`, fullPage: true });
