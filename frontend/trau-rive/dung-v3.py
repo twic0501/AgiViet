@@ -132,7 +132,9 @@ class Goc:
         bị tay/thân/khăn che kín (so V4g lệch 1 điểm ảnh).
         Id của xương tay gốc = id cũ của nút tay (lớp Phụ), xương con = nút 'nghich' (lớp Nghịch) → hoạt ảnh giữ nguyên."""
         import re as _re
-        S0, W0, T0, T1 = (166.0, 333.0), (138.0, 388.0), -0.05, 0.45
+        # tay kiểu Higgsfield (người sáng lập: tay V4g "chả giống Higgsfield"): nguon/goc/tay-chinh-hf.svg
+        S0, W0, T0, T1 = (170.0, 320.0), (137.0, 386.0), float(os.environ.get('AGV_T0', '-0.05')), float(os.environ.get('AGV_T1', '0.7'))
+        tay_hf = ET.parse(os.path.join(DIR, 'nguon/goc/tay-chinh-hf.svg')).getroot()
         than = next(g for g in svg.iter(NS + 'g') if g.get('id') == 'than')
         nach = {e.get('data-role').rsplit('-', 1)[1]: e for e in than
                 if (e.get('data-role') or '').startswith('vien-nach-thuot')}
@@ -146,10 +148,8 @@ class Goc:
             t = f'tay-{ben}'
             if t not in self.bp:
                 continue
-            g = next(e for e in svg.iter(NS + 'g') if e.get('id') == t)
-            gx, gy, ruot = tc.bo_phan(g, {})
-            if ben in nach:
-                ruot = tc.hinh(nach[ben], {}, gx, gy, f'{t}-nach') + ruot   # khai báo trước = nằm trên
+            g = next(e for e in tay_hf.iter(NS + 'g') if e.get('id') == t)
+            gx, gy, ruot = tc.bo_phan(g, {})   # viền nách V4g bỏ: tay mới có nếp trong riêng
             s0 = S0 if ben == 'trai' else (512 - S0[0], S0[1])
             w0 = W0 if ben == 'trai' else (512 - W0[0], W0[1])
             self.boc_xuong(t, gx, gy, ruot, s0, w0, T0, T1)
@@ -162,7 +162,7 @@ class Goc:
                 self.thu_tu.insert(self.thu_tu.index(t), ten)
 
     # tay V4g đặt vào góc ¾ / nghiêng: (nhóm V4g, điểm xoay đích, góc xoay độ, tỉ lệ, nằm dưới thân?)
-    TAY_V4G = {'34': ('tay-phai', (334.0, 326.0), 8.0, 0.95, True),
+    TAY_V4G = {'34': ('tay-phai', (330.0, 326.0), 8.0, 0.95, os.environ.get('AGV_34_DUOI', '0') == '1'),
                'ng': ('tay-trai', (290.0, 320.0), -14.0, 0.95, False)}
 
     def tay_v4g(self, ten):
@@ -174,7 +174,7 @@ class Goc:
         sp_ = _iu.spec_from_file_location('goc_nhin', os.path.join(DIR, 'goc-nhin.py'))
         gn = _iu.module_from_spec(sp_); sp_.loader.exec_module(gn)
         nhom, (px, py), deg, k, duoi_than = self.TAY_V4G[ten[:2]]
-        v4g = ET.parse(os.path.join(DIR, 'nguon/trau.svg')).getroot()
+        v4g = ET.parse(os.path.join(DIR, 'nguon/goc/tay-chinh-hf.svg')).getroot()   # cùng kiểu tay với chính diện
         g = next(e for e in v4g.iter(NS + 'g') if e.get('id') == nhom)
         ox, oy = map(float, g.get('data-goc').split())
         a = math.radians(deg); ca, sa = math.cos(a), math.sin(a)
@@ -187,10 +187,13 @@ class Goc:
         for e in g:
             g2.append(gn.bien_phan_tu(e, f))
         gx, gy, ruot = tc.bo_phan(g2, {})
-        s0v, w0v = ((166.0, 333.0), (138.0, 388.0)) if nhom == 'tay-trai' else ((346.0, 333.0), (374.0, 388.0))
+        s0v, w0v = ((170.0, 320.0), (137.0, 386.0)) if nhom == 'tay-trai' else ((342.0, 320.0), (375.0, 386.0))
         nid = self.bp['tay-gan'][3] if 'tay-gan' in self.bp else moi_id()
         self.bp['tay-gan'] = (gx, gy, ruot, nid)
-        self.boc_xuong('tay-gan', gx, gy, ruot, f(*s0v), f(*w0v), -0.05, 0.45)
+        # ¾: tay nằm trên áo, gần như xoay cả khối (gốc uốn nhẹ) → ống tay đầy, không thắt; nghiêng: uốn mềm
+        mac = '-1.0,0.3' if ten.startswith('34') else '-0.05,0.7'
+        t0, t1 = (float(v) for v in os.environ.get('AGV_T34' if ten.startswith('34') else 'AGV_TNG', mac).split(','))
+        self.boc_xuong('tay-gan', gx, gy, ruot, f(*s0v), f(*w0v), t0, t1)
         # nghiêng: đầu to nằm trên cùng che phía trước-trên → tay chỉ đưa ra trước tới ngang ngực (×1,5)
         self.dau_tay = -2.6 if nhom == 'tay-phai' else 1.5
         # thứ tự vẽ
@@ -257,9 +260,12 @@ class Goc:
         `t` nên nhận cùng mọi hoạt ảnh xoay của tay, điểm xoay = vai s0."""
         L = math.hypot(w0[0] - s0[0], w0[1] - s0[1])
         ux, uy = (w0[0] - s0[0]) / L, (w0[1] - s0[1]) / L
-        cx, cy = s0[0] + 10 * ux, s0[1] + 10 * uy
+        dv = float(os.environ.get('AGV_DV', '12'))
+        cx, cy = s0[0] + dv * ux, s0[1] + dv * uy
         quay = f'rotate({math.degrees(math.atan2(uy, ux)):.1f} {cx:.2f} {cy:.2f})'
-        for ten, rx, ry, mau_ in ((f'{t}-vaivien', 23.8, 19.3, '#24190f'), (f'{t}-vai', 21.0, 16.5, '#c48f65')):
+        kv = float(os.environ.get('AGV_KV', '1'))
+        for ten, rx, ry, mau_ in ((f'{t}-vaivien', 21.0 * kv + 2.8, 16.5 * kv + 2.8, '#24190f'),
+                                  (f'{t}-vai', 21.0 * kv, 16.5 * kv, '#c48f65')):
             el = ET.Element(NS + 'ellipse', {'cx': f'{cx:.2f}', 'cy': f'{cy:.2f}', 'rx': str(rx), 'ry': str(ry),
                                              'transform': quay, 'fill': mau_, 'stroke': 'none'})
             self.bp[ten] = (s0[0], s0[1], tc.hinh(el, {}, s0[0], s0[1], ten + '-h'), moi_id())
