@@ -66,6 +66,10 @@ GOC = [  # (tên, tệp, lật gương)
     ('34p', 'nguon/goc/trau-34-trai-khongtay.svg', True),
     ('ngp', 'nguon/goc/trau-nghieng-trai-khongtay.svg', True),
 ]
+# Tạm thời (31/10, người sáng lập chốt): chỉ dựng góc CHÍNH DIỆN; ¾ / nghiêng để nâng cấp sau.
+# Input huong vẫn giữ trong hợp đồng nối nhưng chưa đổi hình. Bật lại cả 5 góc: AGV_DU_GOC=1.
+if os.environ.get('AGV_DU_GOC') != '1':
+    GOC = GOC[:1]
 # huong: khoảng của từng góc; nấc chuẩn để đặt joystick
 NAC = [(-1.0, 'ngt'), (-0.5, '34t'), (0.0, 'chinh'), (0.5, '34p'), (1.0, 'ngp')]
 NGUONG = [-0.75, -0.25, 0.25, 0.75]
@@ -551,6 +555,8 @@ def main():
     # ---------- Xoay: 3 dòng thời gian (đầu, thân, chân); khung 0 = huong −1, 60 = 0, 120 = 1 ----------
     def nhin_thay(ten_goc, f):
         h = (f - 60) / 60
+        if len(goc) == 1:
+            return goc[0].ten
         if h < NGUONG[0]:
             return 'ngt'
         if h < NGUONG[1]:

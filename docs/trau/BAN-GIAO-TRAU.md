@@ -14,6 +14,8 @@ Tài liệu này để **nhiều người/AI làm song song** (Claude tài kho�
 | **Bộ góc nhìn** (nghiêng, ¾, sau lưng) để xoay người tự nhiên | **¾ trái + nghiêng trái: ĐÃ CHỐT T1 (31/10)** · sau lưng chưa làm | `frontend/trau-rive/nguon/goc/`, ảnh duyệt `docs/trau/goc-nhin/`; xem mục 4 |
 | Dáng ngồi / cầm đồ | Chưa đạt | Ghế bị thân che, thúng nhỏ |
 
+**Quyết định mới (31/10 tối, người sáng lập):** tạm chỉ làm **góc chính diện cơ bản**, bỏ các góc ¾ / nghiêng khỏi bản dựng; còn thời gian thì nâng cấp sau. `dung-v3.py` mặc định chỉ dựng `chinh` (`GOC = GOC[:1]`); input `huong` **vẫn có** trong hợp đồng nối nhưng chưa đổi hình (trâu luôn chính diện). Bật lại đủ 5 góc: `AGV_DU_GOC=1 ./dung-v3.sh` (mã ¾ / nghiêng, tay dò theo Higgsfield vẫn giữ nguyên). `trau-v3.riv` còn ≈254 KB. Ảnh: `docs/trau/chang-2/chinh-dien-5-dong-tac.png`.
+
 **Kết luận của người sáng lập (30/10):** chuyển động phải có xoay người, nghiêng, dồn trọng tâm, nhịp thân nhiều góc cho tự nhiên — "không thì khỏi làm". Bẻ tay trên một hình chính diện phẳng là không đạt.
 
 ## 2. Luật bắt buộc (đã chốt nhiều lần — vi phạm là bị loại)
