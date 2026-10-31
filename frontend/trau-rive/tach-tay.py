@@ -17,7 +17,9 @@ TEP = {'chinh': 'chinh', '34': '34', 'ng': 'nghieng-2'}
 # Thứ tự: R1 (gốc vai, phía ngoài) → cạnh A (cạnh ngoài: buông = phía ngoài thân, ngang = trên, cao = phía đầu)
 # → C1, cổ tay → C2 → cạnh B → R2. Cạnh gốc R2→R1 không có viền (hoà vào áo như bảng Higgsfield).
 ONG = {
- ('chinh', 0): [[(165,312),(150,322),(134,340),(121,363)], [(156,389)], [(162,360),(166,335),(170,316)]],
+ # chính diện buông (người sáng lập 31/10): tay to bằng lúc dang, gốc rộng ở vai, thả dọc hông ĐÈ lên áo
+ # (không vẽ kiểu mảnh tách cạnh thân như bảng mẫu) → cùng một form tay ở mọi dáng, giơ lên vẫn liền vai
+ ('chinh', 0): [[(166,292),(146,298),(132,318),(125,350),(122,382)], [(166,388)], [(170,360),(175,330),(182,312)]],
  ('chinh', 1): [[(165,304),(130,304),(105,305),(88,306)], [(89,359)], [(120,361),(150,362),(166,362)]],
  ('chinh', 2): [[(166,312),(150,292),(138,282),(128,272)], [(90,300)], [(115,325),(140,348),(165,365)]],
  ('34', 0): [[(288,309),(296,338),(302,367)], [(252,367)], [(247,345),(245,330)]],
@@ -27,11 +29,14 @@ ONG = {
  ('ng', 1): [[(250,296),(200,293),(143,292)], [(150,345)], [(200,342),(248,338)]],
  ('ng', 2): [[(203,310),(170,288),(150,275),(131,262)], [(117,307)], [(140,320),(164,331),(197,353)]],
 }
+# cổ tay trên ẢNH mẫu khi ONG đã vẽ lại khác ảnh: bàn tay lấy từ ảnh được xoay + dời từ cổ tay ảnh sang cổ tay mới
+CO_TAY_ANH = {('chinh', 0): ((121, 363), (156, 389))}
 # điểm nằm giữa bàn tay (vùng xám) để lấy đúng mảng bàn tay
 HAT = {('chinh', 0): (135, 392), ('chinh', 1): (70, 330), ('chinh', 2): (100, 270),
        ('34', 0): (275, 382), ('34', 1): (358, 320), ('34', 2): (318, 236),
        ('ng', 0): (255, 392), ('ng', 1): (120, 315), ('ng', 2): (105, 285)}
 NA, NC, NB, NBAN = 14, 6, 14, 52
+DAI_GOC = 20
 P = 4
 VIEN = 5.6
 
@@ -139,6 +144,14 @@ def tach(thu_muc):
     out = {}
     for (v, k), (A, C, B) in ONG.items():
         c1, c2 = A[-1], C[0]
+        if v == 'chinh' and k > 0:   # buông đã vẽ gốc sâu trong thân
+            # chính diện: tay phải lật gương không có đuôi khăn che gốc → kéo gốc ống tay sâu vào thân DAI_GOC px
+            # theo trục tay (cổ tay → vai) để tay luôn dính vai
+            mx, my = (c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2
+            rx, ry = (A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2
+            L = math.hypot(rx - mx, ry - my); ux, uy = (rx - mx) / L, (ry - my) / L
+            A = [(A[0][0] + ux * DAI_GOC, A[0][1] + uy * DAI_GOC)] + A
+            B = B + [(B[-1][0] + ux * DAI_GOC, B[-1][1] + uy * DAI_GOC)]
         ong = catmull(A, NA) + catmull([c1, c2], NC + 2)[1:-1] + catmull([c2] + B, NB)
         im = Image.open(os.path.join(thu_muc, f'{TEP[v]}-{k}.png')).convert('RGB')
         im = im.resize((512 * P, 512 * P), Image.LANCZOS)
@@ -149,6 +162,12 @@ def tach(thu_muc):
         im2 = Image.fromarray((ban * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(2 * int(VIEN / 2 * P) + 1))
         ban = np.asarray(im2) > 127                            # nới nửa nét viền → viền nằm đúng nét đen
         pts = [(x / P, y / P) for x, y in bao(ban)]
+        if (v, k) in CO_TAY_ANH:
+            (a1, a2) = CO_TAY_ANH[(v, k)]
+            g0 = math.atan2(a2[1] - a1[1], a2[0] - a1[0]); g1 = math.atan2(c2[1] - c1[1], c2[0] - c1[0])
+            co, si = math.cos(g1 - g0), math.sin(g1 - g0)
+            am = ((a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2); nm = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
+            pts = [(nm[0] + co * (x - am[0]) - si * (y - am[1]), nm[1] + si * (x - am[0]) + co * (y - am[1])) for x, y in pts]
         mc = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
         out[f'{v}-{k}'] = {'ong': ong, 'ban': lay_mau(pts, NBAN, mc),
                            'goc': [(A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2]}

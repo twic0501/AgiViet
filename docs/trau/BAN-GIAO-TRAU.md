@@ -207,6 +207,7 @@ Theo yêu cầu "làm lẹ", cả 7 hành động dựng một lượt trong `du
 - `tay_k(g, bên, [(khung, mức)])`: mức 0 buông · .42 ngang · .73 cao. `chan_k`: nhấc chân.
 - 'Hành động: về nghỉ' (20 khung): khi `hanh_dong` về 0, đưa mọi thuộc tính đã khoá về gốc rồi mới trả cho nghỉ sống; mỗi hành động cũng tự khoá gốc các thuộc tính nó không dùng → đổi thẳng 3 → 5 không sót tờ giấy. Kiểm runtime app (đổi 3 → 5 → 4 → 0): sạch, 0 lỗi.
 - Ảnh: `docs/trau/chang-2/hanh-dong-1-8.png`, `hanh-dong-doi-qua-lai.png`.
+- **Tay chính diện liền thân (31/10, người sáng lập):** tay buông vẽ kiểu bảng mẫu (mảnh tam giác tách cạnh thân) trông rời, khác tay dang. Sửa trong `tach-tay.py`: dáng buông vẽ lại tay to bằng lúc dang, gốc rộng ở vai, thả dọc hông và ĐÈ lên áo (bàn tay lấy từ ảnh rồi xoay + dời theo cổ tay mới, `CO_TAY_ANH`); dáng ngang / cao kéo gốc ống tay sâu vào thân 20 px (`DAI_GOC`), vì tay phải lật gương không có đuôi khăn che nên từng hở khe ở vai. Ảnh: `tay-chinh-dien-lien-than.png`.
 
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
