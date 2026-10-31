@@ -397,6 +397,8 @@ await trang("dang-bai", async (p) => {
   assert.match(await p.locator("#hieu").innerText(), new RegExp(`${kg} kg · đã cân`), "bóc đúng lượng đã cân");
   await kiemChung(p);
   await p.locator("#tiep").click();
+  assert.match(await p.locator("#cau-hoi").innerText(), /xịt thêm/, "luôn hỏi xịt thuốc thêm ngoài nhật ký");
+  await p.locator('#nhanh button[data-v="khong"]').click();
   assert.match(await p.locator("#cau-hoi").innerText(), /24\.300/, "nói gộp → tới thẳng câu giá kín 90%");
   await p.locator("#go-cau").fill("thấp nhất hai mươi bốn ngàn");
   await p.locator("#go-form button").click();
@@ -455,6 +457,10 @@ await trang("dang-bai-truoc-mua", async (p) => {
   await p.locator('#khi-co button[data-v="sap"]').click();
   assert.ok(await p.locator("#tiep").isDisabled(), "sắp có hàng phải chọn ngày");
   await p.locator("#ngay-co").fill("2026-11-25");
+  assert.ok(await p.locator("#tiep").isDisabled(), "chưa trả lời xịt thuốc thêm thì chưa đi tiếp");
+  await p.locator('#thuoc [data-v="co"]').click();
+  assert.ok(await p.locator("#thuoc-chan").isVisible() && await p.locator("#tiep").isDisabled(), "có xịt thêm → chặn, nhắc ghi nhật ký");
+  await p.locator('#thuoc [data-v="khong"]').click();
   await kiemChung(p);
   await p.locator("#tiep").click();
   await p.locator("#gia-muon").pressSequentially("26000");

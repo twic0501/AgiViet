@@ -29,7 +29,14 @@ assert.match(await p.locator("#cau-hoi").innerText(), /bao nhiêu/, "câu sửa 
 await go("chừng hai tạ chưa cân, có hàng ngay, muốn hai mươi bốn ngàn một ký");
 await p.locator("#hieu dl").waitFor({ timeout: 10000 });
 await p.locator("#tiep").click();
-assert.match(await p.locator("#cau-hoi").innerText(), /thấp nhất/);
+// #5 có xịt thêm ngoài nhật ký → dừng, không đi tiếp
+assert.match(await p.locator("#cau-hoi").innerText(), /xịt thêm|xịt thuốc/);
+await go("có, hôm qua mới xịt");
+await p.locator("#noi-loi").waitFor({ state: "visible" });
+assert.match(await p.locator("#noi-loi").innerText(), /ghi lần xịt/);
+assert.match(await p.locator("#cau-hoi").innerText(), /xịt/, "vẫn ở câu thuốc");
+await go("không xịt thêm");
+await p.waitForFunction(() => /thấp nhất/.test(document.querySelector("#cau-hoi").textContent));
 // #8 "dạ không, giá đó thấp quá" KHÔNG được đồng ý giá kín
 await go("dạ không, giá đó thấp quá");
 await p.waitForTimeout(2000);
@@ -45,6 +52,7 @@ await p.locator('#cach [data-cach="go"]').click();
 assert.equal(await p.locator('#co-so [data-v="estimated"]').getAttribute("aria-pressed"), "true", "Điền mặc định ước chừng");
 await p.locator("#luong").fill("1,5");
 await p.locator('#dv [data-v="tan"]').click();
+await p.locator('#thuoc [data-v="khong"]').click();
 await p.locator("#tiep").click();
 await p.locator("#gia-muon").pressSequentially("20000");
 await p.locator("#tiep").click();

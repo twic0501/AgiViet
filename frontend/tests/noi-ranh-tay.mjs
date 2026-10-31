@@ -5,7 +5,7 @@ const OUT = process.argv[2] || "/tmp", W = Number(process.argv[3] || 390);
 const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: W, height: 844 }, deviceScaleFactor: 2 });
 const loi = []; p.on("pageerror", (e) => loi.push(e.message));
 await p.addInitScript(() => {
-  const KB = ["loại một", "chừng hai tạ chưa cân, có hàng ngay, muốn hai mươi bốn ngàn một ký", "đúng rồi", "đồng ý"];
+  const KB = ["loại một", "chừng hai tạ chưa cân, có hàng ngay, muốn hai mươi bốn ngàn một ký", "đúng rồi", "không xịt thêm", "đồng ý"];
   window.__da_noi = []; window.__da_nghe = [];
   class SR { start() { const c = KB.shift(); window.__da_nghe.push(c ?? "(im)"); setTimeout(() => { if (c) this.onresult?.({ results: [[{ transcript: c }]] }); this.onend?.(); }, 250); } stop() { this.onend?.(); } abort() {} }
   window.webkitSpeechRecognition = SR; window.SpeechRecognition = SR;

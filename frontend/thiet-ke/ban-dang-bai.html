@@ -243,6 +243,11 @@
         <p class="db-ghi" id="ngay-hai-vn"></p>
       </div>
       <p class="db-the xanh" id="cach-ly" hidden></p>
+      <div class="db-cot">
+        <span class="db-nhan" style="margin:0" id="thuoc-hoi">Từ lần ghi sổ gần nhất tới giờ, bác có xịt thuốc thêm không?</span>
+        <div class="db-doan" id="thuoc"><button type="button" data-v="khong" aria-pressed="false">Không xịt thêm</button><button type="button" data-v="co" aria-pressed="false">Có xịt thêm</button></div>
+        <p class="db-the do" id="thuoc-chan" hidden>Bác ghi lần xịt đó vào nhật ký vườn trước (tên thuốc, ngày xịt, số ngày cách ly trên nhãn), app tính lại ngày được hái rồi mới đăng. Cần giúp thì bấm Hỗ trợ.</p>
+      </div>
     </section>
 
     <!-- Giá -->
@@ -316,7 +321,7 @@ const veDau = (ten = "Bán hàng mới") => {
 veDau();
 
 // Một bộ thông tin lô, ba cách nhập (nghiên cứu: docs/frontend/nghien-cuu-dang-bai-3-cach.md)
-const st = { sp: null, loai: null, dv: "kg", coSo: "estimated", khiCo: "ngay", anh: [], giaTK: null, sanSua: false, cachLy: new Map(), nk: null, cach: null, nguon: {} };
+const st = { thuoc: null, sp: null, loai: null, dv: "kg", coSo: "estimated", khiCo: "ngay", anh: [], giaTK: null, sanSua: false, cachLy: new Map(), nk: null, cach: null, nguon: {} };
 const LUONG = { noi: ["noi", "anh", "xem"], nk: ["nk", "luong", "gia", "anh", "xem"], go: ["luong", "gia", "anh", "xem"] };
 const TEN = { noi: "Trả lời", nk: "Nhật ký", luong: "Lượng, ngày", gia: "Giá", anh: "Ảnh", xem: "Xem lại" };
 let token, man = "dau", ds = [], homNay = new Date().toISOString().slice(0, 10);
@@ -345,7 +350,7 @@ function den(m) {
   if (m !== "noi" && ht.bat) tatHoiThoai();
   if (m === "noi") batDauNoi();
   if (m === "nk") veNhatKy();
-  if (m === "luong") kiemNgay();
+  if (m === "luong") { kiemNgay(); veThuoc(); }
   if (m === "gia") giaThamKhao();
   if (m === "xem") xemLai();
   kiem(); scrollTo({ top: 0 });
@@ -358,10 +363,10 @@ function kiem() {
   let ok = false;
   if (man === "noi") ok = !!noi.hieu;
   if (man === "nk") ok = !!st.nkTinh;
-  if (man === "luong") ok = luongG() > 0 && kiemNgay();
+  if (man === "luong") ok = luongG() > 0 && kiemNgay() && st.thuoc === "khong";
   if (man === "gia") ok = kiemGia();
   if (man === "anh") ok = st.anh.some((a) => a.chup);
-  if (man === "xem") ok = luongG() > 0 && so($("gia-muon").value) > 0 && so($("gia-san").value) > 0 && st.anh.some((a) => a.chup) && kiemNgay();
+  if (man === "xem") ok = luongG() > 0 && so($("gia-muon").value) > 0 && so($("gia-san").value) > 0 && st.anh.some((a) => a.chup) && kiemNgay() && st.thuoc === "khong";
   $("tiep").disabled = !ok;
 }
 
@@ -450,6 +455,14 @@ function dongBo() {
 for (const [id, khoa] of [["dv", "dv"], ["co-so", "coSo"], ["khi-co", "khiCo"]]) nhom(id).forEach((b) => (b.onclick = () => { st[khoa] = b.dataset.v; dongBo(); kiem(); }));
 $("luong").addEventListener("input", () => { datNguon("luong", ""); kiem(); });
 for (const id of ["ngay-co", "ngay-hai"]) $(id).addEventListener("input", () => { if (id === "ngay-hai") datNguon("hai", ""); kiem(); });
+// Nhật ký không ghi không có nghĩa là không xịt: luôn hỏi thuốc dùng thêm (Codex rà #5)
+function phunGanNhat() { const v = nkViec(dongXm()?.site_id).find((x) => x.activity === "spray"); return v?.occurred_on || null; }
+function veThuoc() {
+  const g = phunGanNhat();
+  $("thuoc-hoi").textContent = g ? `Từ lần ghi xịt thuốc ngày ${ngayNgan(g)} tới giờ, bác có xịt thêm không?` : "Nhật ký chưa ghi lần xịt nào. Gần đây bác có xịt thuốc không?";
+  bam("thuoc", st.thuoc); $("thuoc-chan").hidden = st.thuoc !== "co";
+}
+nhom("thuoc").forEach((b) => (b.onclick = () => { st.thuoc = b.dataset.v; veThuoc(); kiem(); }));
 function kiemNgay() {
   $("ngay-co-vn").textContent = ngayVN($("ngay-co").value);
   $("ngay-hai-vn").textContent = ngayVN($("ngay-hai").value);
@@ -503,6 +516,7 @@ const CAU = [
   { k: "loai", hoi: () => "Hàng của bác loại mấy?", goiY: "Ví dụ: loại một, hàng dạt", can: () => !st.loai, nhanh: () => ds.filter((d) => d.product_code === st.sp).map((d) => [d.grade_code, tenLoai(d.grade_code)]) },
   { k: "luong", hoi: () => "Đợt này bác còn bán bao nhiêu? Đã cân hay ước chừng?", goiY: "Ví dụ: chừng hai tạ, chưa cân · một tấn rưỡi đã cân", can: () => !luongG() },
   { k: "ngay", hoi: () => "Khi nào bên mua tới lấy được hàng?", goiY: "Ví dụ: có hàng ngay · tuần sau hái · mùng mười tháng sau", can: () => !st.noiNgay, nhanh: () => [["ngay", "Có hàng ngay"]] },
+  { k: "thuoc", hoi: () => { const g = phunGanNhat(); return g ? `Từ lần ghi xịt thuốc ngày ${ngayNgan(g)} tới giờ, bác có xịt thêm không?` : "Gần đây bác có xịt thuốc không?"; }, goiY: "Nói: không xịt thêm · hoặc: có xịt", can: () => st.thuoc !== "khong", nhanh: () => [["khong", "Không xịt thêm"], ["co", "Có xịt thêm"]] },
   { k: "gia", hoi: () => "Bác muốn bán bao nhiêu một ký?", goiY: "Ví dụ: hai mươi bốn ngàn", can: () => !so($("gia-muon").value) },
   { k: "san", hoi: () => `Giá thấp nhất giữ kín là ${vnd(so($("gia-san").value))} đ/kg, bác đồng ý không?`, goiY: "Bên mua không thấy giá này. Đồng ý thì nói \"đúng rồi\", muốn khác thì nói giá.", doc: () => "Giá thấp nhất giữ kín app ghi trên màn hình. Bác đồng ý không?", can: () => !st.sanChot, nhanh: () => [["dong-y", "Đồng ý giá này"]] },
 ];
@@ -542,6 +556,7 @@ function traLoiNhanh(k, v) {
   if (k === "loai") noi.hieu = { loai: v };
   if (k === "ngay") noi.hieu = { khiCo: "ngay" };
   if (k === "san") noi.hieu = { sanChot: true };
+  if (k === "thuoc") noi.hieu = { thuoc: v };
   veHieu(); xacNhanCau();
 }
 // Hội thoại rảnh tay: app tự đọc câu hỏi → tự nghe → đọc lại điều đã hiểu → nghe "đúng/sai" → câu kế
@@ -587,7 +602,7 @@ async function nhanCau(cau) {
   await hieuCau(cau);
   if (!ht.bat) return;
   // Câu trả lời chỉ chọn loại hoặc đồng ý giá kín: đã rõ, chốt luôn không hỏi lại
-  if (noi.hieu && Object.keys(noi.hieu).length === 1 && (noi.hieu.sanChot || noi.hieu.loai)) return xacNhanCau();
+  if (noi.hieu && Object.keys(noi.hieu).length === 1 && (noi.hieu.sanChot || noi.hieu.loai || noi.hieu.thuoc)) return xacNhanCau();
   hoiVaNghe(noi.hieu ? `Em hiểu là ${docLai(noi.hieu)}. Đúng không bác?` : ($("noi-loi").textContent || "Bác nói lại giúp em."));
 }
 function docLai(h) {
@@ -598,6 +613,7 @@ function docLai(h) {
   if (h.gia) x.push(`giá ${vnd(h.gia)} đồng một ký`);
   if (h.san) x.push("giá thấp nhất như trên màn hình");
   if (h.sanChot && !h.san) x.push("bác đồng ý giá thấp nhất");
+  if (h.thuoc) x.push(h.thuoc === "co" ? "có xịt thuốc thêm" : "không xịt thêm");
   return x.join(", ");
 }
 function tatHoiThoai(chu = "Đã tạm dừng. Bấm để nói tiếp.") {
@@ -607,7 +623,7 @@ function tatHoiThoai(chu = "Đã tạm dừng. Bấm để nói tiếp.") {
 }
 $("mic").onclick = () => { if (ht.bat) return tatHoiThoai(); ht.bat = true; ht.lanLoi = 0; $("mic").setAttribute("aria-label", "Tạm dừng"); hoiVaNghe(cauHienTai()); };
 $("nghe").onclick = () => noiRa(cauHienTai());
-$("go-form").onsubmit = (e) => { e.preventDefault(); const t = $("go-cau").value.trim(); if (!t) return; $("nghe-duoc").textContent = `“${t}”`; $("nghe-duoc").hidden = false; if (noi.hieu && dongY(t)) return xacNhanCau(); hieuCau(t).then(() => { if (noi.hieu && Object.keys(noi.hieu).length === 1 && (noi.hieu.sanChot || noi.hieu.loai)) xacNhanCau(); }); };
+$("go-form").onsubmit = (e) => { e.preventDefault(); const t = $("go-cau").value.trim(); if (!t) return; $("nghe-duoc").textContent = `“${t}”`; $("nghe-duoc").hidden = false; if (noi.hieu && dongY(t)) return xacNhanCau(); hieuCau(t).then(() => { if (noi.hieu && Object.keys(noi.hieu).length === 1 && (noi.hieu.sanChot || noi.hieu.loai || noi.hieu.thuoc)) xacNhanCau(); }); };
 function khopLoai(cau) {
   const so = { "một": 1, "nhất": 1, "hai": 2, "nhì": 2, "ba": 3, "bốn": 4 };
   // Câu có phủ định hoặc kèm lượng/giá/ngày → để AI bóc cả câu
@@ -624,6 +640,11 @@ function khopLoai(cau) {
 async function hieuCau(cau) {
   const c = CAU[noi.i];
   if (c.k === "san" && dongY(cau)) { noi.hieu = { sanChot: true }; return veHieu(); }
+  if (c.k === "thuoc") {
+    const t = cau.toLowerCase();
+    const v = /(không|chưa|hổng|hông)/.test(t) ? "khong" : /(có|rồi)/.test(t) ? "co" : null;
+    if (v) { noi.hieu = { thuoc: v }; return veHieu(); }
+  }
   // Câu ngắn chỉ nói loại ("loại một", "hàng dạt"): hiểu ngay trên máy, không cần AI
   if (c.k === "loai") { const g = khopLoai(cau); if (g) { noi.hieu = { loai: g }; return veHieu(); } }
   $("noi-loi").hidden = true; $("hieu").hidden = false; $("hieu").innerHTML = `<div class="khung-tai" style="margin:8px 0"></div>`;
@@ -651,6 +672,7 @@ function veHieu() {
   if (h.gia) d.push(["Giá mong muốn", `${vnd(h.gia)} đ/kg`, h.giaChuaChac]);
   if (h.san) d.push(["Giá thấp nhất (kín)", `${vnd(h.san)} đ/kg`]);
   if (h.sanChot && !h.san) d.push(["Giá thấp nhất (kín)", `${$("gia-san").value} đ/kg`]);
+  if (h.thuoc) d.push(["Xịt thuốc thêm", h.thuoc === "co" ? "Có" : "Không"]);
   $("hieu").innerHTML = `<dl>${d.map(([a, b, chua]) => `<dt>${esc(a)}</dt><dd class="${chua ? "chua-chac" : ""}">${esc(b)}${chua ? " ?" : ""}</dd>`).join("")}</dl>${d.some((x) => x[2]) ? `<p class="db-ghi" style="padding:0 0 8px">Chỗ có dấu ? app chưa chắc. Sai thì bác nói lại.</p>` : ""}`;
   $("hieu").hidden = false; kiem();
   $("hieu").scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -663,6 +685,16 @@ function xacNhanCau() {
   if (h.gia) { $("gia-muon").value = vnd(h.gia); goiYSan(); }
   if (h.san) { $("gia-san").value = vnd(h.san); st.sanSua = true; st.sanChot = true; }
   if (h.sanChot) st.sanChot = true;
+  if (h.thuoc) {
+    st.thuoc = h.thuoc;
+    if (h.thuoc === "co") {   // có xịt thêm: dừng, không đăng được tới khi ghi nhật ký
+      noi.hieu = null; $("hieu").hidden = true;
+      $("noi-loi").textContent = "Bác ghi lần xịt đó vào nhật ký vườn trước (tên thuốc, ngày xịt, số ngày cách ly), app tính lại ngày được hái rồi mới đăng.";
+      $("noi-loi").hidden = false; kiem();
+      if (ht.bat) { ht.bat = false; noiRa($("noi-loi").textContent); datThe("nghi", "Đã dừng: cần ghi nhật ký xịt thuốc"); }
+      return;
+    }
+  }
   dongBo();
   // Ngày vướng cách ly → hỏi lại câu ngày
   if (h.khiCo && !kiemNgay()) { noi.hieu = null; st.noiNgay = false; $("noi-loi").textContent = $("cach-ly").textContent; $("noi-loi").hidden = false; noi.i = 2; $("hieu").hidden = true; kiem(); return hoiVaNghe($("cach-ly").textContent); }
@@ -700,8 +732,10 @@ function xemLai() {
     ${dong("Vườn", esc(x?.site_name || "—"), "")}
     ${$("ngay-hai").value ? dong("Ngày hái", new Date($("ngay-hai").value + "T00:00:00").toLocaleDateString("vi-VN"), "luong") : ""}
     ${dong("Ảnh", `${st.anh.length} ảnh · ${st.anh.filter((a) => a.chup).length} chụp ngay`, "anh")}</dl>`;
+  $("chi-bac").dataset.thuoc = st.thuoc || "";
   $("chi-bac").innerHTML = `<dl>
     <dt>Giá thấp nhất</dt><dd>${vnd(san)} đ/kg</dd>
+    <dt>Xịt thuốc sau lần ghi sổ</dt><dd>${st.thuoc === "khong" ? "Không (bác xác nhận)" : "Chưa trả lời"}</dd>
     <dt>Tạm tính theo giá mong muốn</dt><dd title="${tienDu(Math.round(g / 1000 * muon))}">${vnd(Math.round(g / 1000 * muon))} đ</dd>
     ${st.coSo === "estimated" ? `<dt>Bên mua đặt tối đa</dt><dd>${esc(can(Math.floor(g * 0.8)).join(" "))} (80%)</dd>` : ""}</dl>`;
   $("xem-lai").querySelectorAll("[data-sua]").forEach((b) => (b.onclick = () => { st.cach = st.cach === "noi" ? "go" : st.cach; den(b.dataset.sua); }));
