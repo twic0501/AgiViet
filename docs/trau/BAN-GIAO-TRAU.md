@@ -220,6 +220,9 @@ Người sáng lập: "form tay không chuẩn mẫu, chuyển động ngờ ngh
 - **Động tác lúc rảnh (Nghịch) theo chuẩn mới (1/11):** vui = hai tay chụm trước ngực (bản 'giay' không giấy) + nhún + mắt cười (bỏ hai tay dang ngang vung đều); giật mình = hai tay giật về ôm ngực (bỏ dáng chữ T); chào lúc rảnh = `chao_hd_fn` (giơ tay một lần, như hành động 1 đã duyệt). Nghịch đang chờ trả bản tay chính + đưa joystick bản riêng về buông. Ảnh: `nghich-luc-ranh-v2.png`.
 - **Nhẹ tệp (1/11):** ống tay 24 điểm (10/4/10), bàn tay 36; khoá đỉnh tay thẳng mỗi 30 khung, tay gập khuỷu mỗi 20 (`BUOC_KHOA`). `trau-v3.riv` 502 → **309 KB**. Đo trình duyệt (Chromium, CPU giả lập chậm ×4, canvas 300 px @2x, hành động mừng): **60 khung/giây**. Vẫn cần đo trên điện thoại thật (Chặng 4).
 
+#### ĐÃ CHỐT T3 (1/11, người sáng lập: "oke rồi qua đi")
+Góc chính diện: đủ 8 hành động `hanh_dong` 1–8 + nghỉ sống + động tác lúc rảnh; `trau-v3.riv` 309 KB. Bước kế: gộp PR #1 vào `production-test` → Claude 1 thay `trau.riv` bằng `trau-v3.riv` và đặt `hanh_dong` theo màn. Để sau: bật lại ¾ / nghiêng (`AGV_DU_GOC=1`) và nâng cấp tay ở hai góc đó.
+
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
 - **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.
