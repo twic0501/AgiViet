@@ -1,20 +1,44 @@
-# Hệ thiết kế "Sổ vườn" — app bán AgiViet (bản mẫu E1, 30/10/2026, chờ người sáng lập duyệt)
+# Hệ thiết kế "Sổ vườn" — app bán AgiViet (cập nhật 02/11/2026 theo các lần người sáng lập chốt)
 
-Tệp: `frontend/thiet-ke/so-vuon.css`. Màn mẫu: `frontend/thiet-ke/ban-hom-nay.html?thu=0918000421` (stack thử).
+Tệp gốc: `frontend/thiet-ke/so-vuon.css` (+ `chung.js`). Màn chuẩn để đối chiếu: Trang chủ, Đăng bài, Hợp đồng (`ban-don.html`).
+**Mọi màn mới đọc tệp này trước khi viết CSS; xong chạy `node tests/kiem-trung-lop.mjs` và soi ảnh từng trạng thái.**
 
 ## Hướng
-- Người dùng: nhà vườn/HTX, mở app sáng sớm ngoài vườn, nắng chói, ngón tay to. Việc chính: biết hôm nay mình phải làm gì, đang chờ ai.
-- Cảm giác: cuốn sổ ghi chép của vựa — chắc, rõ, ấm, không màu mè. Thân thiện ở lời ("bác"), chững chạc ở hình.
-- Màu: giấy ngà `--giay`, mực lá xoài `--la`, dấu đỏ `--dau-do` (chỉ việc tới lượt bác), vàng xoài `--chin` (tiền/ngân hàng), xám `--cho` (đang chờ bên khác). Khối câu chính dùng `--nen-chinh` riêng (nền tối không dùng `--la` sáng).
-- Điểm riêng: "con dấu tới lượt" (`.dau-luot`: BÁC nghiêng, đỏ / BÊN MUA, NGÂN HÀNG thẳng, nhạt) — chỉ dùng cho ai phải làm, không dùng cho mã lô; số lượng hàng đọc như mặt cân (`.can`, chữ số đều).
-- Đã bỏ: lưới thẻ số liệu → một câu chính; nền chuyển màu → nền phẳng; tab biểu tượng → tab chữ.
+- Người dùng: nhà vườn/HTX lớn tuổi, ngoài nắng, ngón tay to, đọc chậm. Mỗi màn trả lời: *việc của bác bây giờ là gì, đang chờ ai, tiền ở đâu*.
+- Cảm giác: cuốn sổ của vựa — chắc, ấm, chững chạc; lời thân ("bác"), hình nghiêm. Có nét vàng lúa / nâu đất cho đỡ chán, không lòe loẹt.
+- Màu (một nền sáng duy nhất):
+  - Giấy ngà `--giay` (trang), `--giay-noi` (thẻ nổi), `--giay-lot` (ô nhập, vùng lõm).
+  - Lá xoài `--la` / `--la-dam` / `--la-nhat`: thương hiệu, nút chính, đã xong/an toàn.
+  - Vàng lúa `--vang-lua` / `--vang-lua-nhat`, nâu đất `--nau-dat` / `--nau-dat-nhat`: điểm nhấn nhà nông, việc của bác, mùa vụ.
+  - Vàng xoài chín `--chin` / `--chin-nen`: tiền, ngân hàng giữ, cảnh báo nhẹ.
+  - Dấu đỏ `--dau-do` / `--dau-do-nen`: chỉ việc gấp/bị chặn/quá hạn.
+  - Xám chờ `--cho`: đang chờ bên khác.
 
-## Số đo
-- Chữ: Be Vietnam Pro (tự lưu), thang 1.25 từ 16px: 13 · 16 · 18 · 20 · 25 · 32. Phân tầng bằng cỡ + đậm (400/600) + 4 mức mực.
-- Lưới 4px; lề trang 16px; khoảng giữa mục 24px; dòng sổ cao tối thiểu 64px, kẻ 1px `--ke`.
-- Độ sâu: chỉ đổi sắc nền + đường kẻ mảnh, không đổ bóng. Bo góc 8 / 12 / 16.
-- Nút: cao 48px, bo 12, ấn `scale(0.97)` 140ms `cubic-bezier(0.23,1,0.32,1)`. Tab dưới 5 mục chữ, cao 56px, mục đang mở có vạch 3px trên.
-- Lời: nói rõ ai làm ("Chờ bên mua ký và gửi" / "Bác cần …"); không hứa thao tác chưa có.
+## Bố cục (luật cứng)
+- **Header**: luôn `.dau.dau-xanh.nen-xanh`, bo góc dưới 22px (Trang chủ phẳng vì khối xanh chạy liền). Màn phụ: nút quay lại tròn + dòng nhỏ (`.chao`) + tên màn (`h1`).
+- **Khoảng dưới header 20px** do `.noi` lo — KHÔNG đặt `padding-top` riêng trong màn (trừ Trang chủ/Chợ đã canh riêng).
+- Lề trang 16px. Khoảng giữa khối 16–18px; trong thẻ 12px; dòng trong thẻ tối thiểu 44px.
+- **Một tiêu điểm mỗi màn**: thẻ "Việc của bác" (nền vàng lúa nhạt, viền vàng) + **đúng một nút vàng** `#f4c84e` chữ `#1f1503` cho việc chính. Các nút khác xanh (chính phụ) hoặc viền (lùi). Đỏ nhạt cho hành động hủy/không.
+- Thẻ thông tin: nền `--giay-noi`, viền mờ `0 0 0 1px var(--ke)`, bo 18; tiêu đề thẻ 15–16px đậm + chấm vàng lúa 8px.
+- Dòng dữ liệu trong thẻ: nhãn trái (`--muc-phu`, 14.5px) – số phải (đậm, chữ số đều); ghi chú dưới cả dòng 13px `--muc-nhat`.
+- Thanh 5 chặng hợp đồng `.chang` / `.chang-ten` (dùng chung, không vẽ lại).
+- Tấm thao tác (bottom sheet): nền mờ `rgba(15,22,17,.45)`, tấm `--giay` bo trên 22, thân cuộn riêng, đáy dính có viền trên; Escape đóng; trả focus; lớp `man-che` để ẩn thanh tab; `aria-labelledby` vào tiêu đề.
+- Thanh tab nổi 5 mục, Đăng bài giữa nhô lên; màn phụ (chi tiết, đăng bài) không có thanh tab.
 
-## Đã kiểm
-390×844 sáng + tối, dữ liệu thật (người bán có 2 hợp đồng / người bán chưa có hợp đồng / thiếu phiên → lỗi), không tràn ngang, 0 lỗi console.
+## Chữ
+- Be Vietnam Pro. Thang 1.25 từ 16: 13 · 16 · 18 · 20 · 25 · 32. Tiêu đề màn 20–22px/700; số tiền lớn 24–34px/700 chữ số đều.
+- Phân tầng bằng đậm + màu mực trước, cỡ sau. Không chữ dưới 12px.
+- Lời: nói rõ ai làm, bao giờ, hậu quả. Không lộ mã nội bộ (offer.sent, order…); không "undefined/NaN"; không hứa thao tác chưa có API.
+
+## Tên lớp (nguồn lỗi lặp lại)
+- `so-vuon.css` có lớp tên chung (`.vong`, `.dong`, `.can`, `.thanh-tien`, `.so`…). **Màn mới phải dùng tiền tố riêng** (`hd-` hợp đồng, `vu-` vườn, `to-` tôi, `db-` đăng bài, `lc-` lời chào, `nc-` nhu cầu…). `tests/kiem-trung-lop.mjs` chặn trùng.
+- Nút làm bằng `<a class="nut">`: không gạch chân (đã có trong `so-vuon.css`).
+
+## Trạng thái bắt buộc
+- Đang tải (`.khung-tai`), rỗng (câu nói vì sao + một nút làm tiếp), lỗi (khối đỏ nhạt + **Tải lại**, không giả số 0), bị chặn (nói rõ thiếu gì, ai làm), đã xong (thông báo xanh đầu trang).
+- Mọi nút ≥44px (chính 52–56px); khóa khi đang gửi; khóa chống lặp theo thao tác.
+
+## Tự soát trước khi báo
+1. `node tests/kiem-trung-lop.mjs` sạch.
+2. E2E `kiemChung` (tràn, ép, nút nhỏ, mã thô) trên mọi trạng thái mới.
+3. Chụp **từng trạng thái** 390 và 360 (cả tấm thao tác, cả dữ liệu dài/nhiều vòng), **nhìn bằng mắt**: dính header? lệch tông? chữ gãy vô lý? hai nút vàng? gạch chân? màu không có nghĩa?

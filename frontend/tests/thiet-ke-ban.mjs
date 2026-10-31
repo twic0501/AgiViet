@@ -55,7 +55,7 @@ async function kiemChung(p) {
   const tran = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   assert.equal(tran, false, "tràn ngang");
   // Chữ người dùng thấy không được lộ mã nội bộ (offer.sent, order.signed…) hay giá trị hỏng
-  const thoTho = (await p.evaluate(() => document.body.innerText)).match(/\b(offer|order|lot|delivery|payment|deposit|dispute)\.[a-z_]+\b|\bundefined\b|\bNaN\b|\[object/);
+  const thoTho = (await p.evaluate(() => document.body.innerText)).match(/\b(offer|order|lot|delivery|payment|deposit|dispute)\.[a-z_]+\b|\bundefined\b|\bNaN\b|\[object|\b(processing|pending|held|released|awaiting_[a-z_]+|payer_reported|on_sale|in_transit)\b/);
   assert.equal(thoTho, null, "lộ mã nội bộ/giá trị hỏng trên màn: " + thoTho?.[0]);
   // Tràn bên trong khối có cuộn riêng (tấm nổi, thẻ…): trừ dải lọc và dải tin cố ý cuộn ngang
   const tranTrong = await p.evaluate(() => [...document.querySelectorAll("body *")].filter((e) => {
@@ -470,6 +470,39 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await p.getByText(/Đã mở bước cân/).waitFor({ timeout: 10000 });
   const sauBg = await (await fetch(`${G}/v1/deliveries/${dotG.id}`, { headers: { authorization: "Bearer " + g.t } })).json();
   assert.equal(sauBg.status, "checking", "đợt chuyển sang đang cân");
+
+  // 5. Xin hủy (đơn hộ Bảy đã nhận tiền trả thẳng ở bước 2): xem trước hậu quả trước khi gửi
+  await mo("0988000770", b.o.id);
+  await p.locator("#xin-huy").click();
+  await p.locator('[data-r="hq"] .tien').first().waitFor({ timeout: 8000 });
+  const hq = await p.locator('[data-r="hq"]').innerText();
+  assert.match(hq, /Cọc:[\s\S]*Tiền bác đã nhận:[\s\S]*hoàn[\s\S]*Uy tín:/, "xem trước đủ cọc, tiền đã nhận phải hoàn, uy tín");
+  await p.locator('[data-ly="force_majeure"]').click();
+  assert.equal(await p.locator('[data-ly="force_majeure"]').getAttribute("aria-pressed"), "true");
+  await p.locator('[data-r="hq"] .tien').first().waitFor({ timeout: 8000 });
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}19-xin-huy.png` });
+  await p.locator('[data-r="gui"]').click();
+  await p.getByText("Bác ghi rõ lý do để bên mua hiểu.").waitFor();
+  await p.locator('[data-r="ly"]').fill("Mưa lớn làm rụng trái, chỉ còn khoảng 40% hàng");
+  await p.locator('[data-r="gui"]').click();
+  await p.getByText(/cần ít nhất một ảnh chứng cứ/).waitFor();
+  await p.locator('[data-r="anh-cc"]').setInputFiles(anhNgauNhien());
+  await p.getByText("Đã gửi 1 ảnh chứng cứ.").waitFor({ timeout: 8000 });
+  await p.locator('[data-r="gui"]').click();
+  await p.getByText(/Đã gửi yêu cầu hủy/).waitFor({ timeout: 10000 });
+  const yc = await (await fetch(`${G}/v1/orders/${b.o.id}/cancellation-requests`, { headers: { authorization: "Bearer " + b.t } })).json();
+  assert.ok(yc.some((x) => x.status === "awaiting_reply"), "server có yêu cầu hủy chờ trả lời");
+  assert.equal(await p.locator("#xin-huy").count(), 0, "đang chờ trả lời thì không xin hủy lần nữa");
+  assert.match(await p.locator("#vd").innerText(), /Bác đã xin hủy/);
+
+  // 6. Tranh chấp (demo 0009: bên mua báo khác mẫu, chờ kiểm định) hiện ở khối Có vấn đề
+  const tcd = await tim("0918000421", "0009", async (ct, tien, tk) => (await (await fetch(`${G}/v1/orders/${ct.id}/disputes`, { headers: { authorization: "Bearer " + tk } })).json()).length > 0);
+  await mo("0918000421", tcd.o.id);
+  const vd = await p.locator("#vd").innerText();
+  assert.match(vd, /Tranh chấp chất lượng[\s\S]*Chờ kết quả kiểm định[\s\S]*kiểm định 280\.000 đ/, "tranh chấp hiện rõ trạng thái + phí kiểm định");
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}20-tranh-chap.png`, fullPage: true });
 
   // Danh sách hợp đồng
   await p.goto(`${GOC}/thiet-ke/ban-hop-dong.html?thu=0939000160`);

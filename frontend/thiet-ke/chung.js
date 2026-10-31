@@ -63,7 +63,8 @@ export const viecCho = (d) => {
   const l = d.hien_thi?.toi_luot;
   if (!l) return d.hien_thi?.ten || d.status;
   const viec = l.viec.charAt(0).toLowerCase() + l.viec.slice(1);
-  return l.phia === d.phia_cua_ban ? `Bác cần ${viec}` : `Chờ ${(LUOT[l.phia]?.[1] || "bên kia").toLowerCase()} ${viec}`;
+  const ai = LUOT[l.phia]?.[1] || "bên kia";   // giữ hoa tên riêng (AgiViet, Ngân hàng), chỉ hạ "Bên mua"
+  return l.phia === d.phia_cua_ban ? `Bác cần ${viec}` : `Chờ ${ai === "Bên mua" ? "bên mua" : ai} ${viec}`;
 };
 
 // Phiên: ưu tiên token thật từ đăng nhập OTP (lưu trong sessionStorage);
