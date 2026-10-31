@@ -38,7 +38,15 @@ Tệp gốc: `frontend/thiet-ke/so-vuon.css` (+ `chung.js`). Màn chuẩn để 
 - Đang tải (`.khung-tai`), rỗng (câu nói vì sao + một nút làm tiếp), lỗi (khối đỏ nhạt + **Tải lại**, không giả số 0), bị chặn (nói rõ thiếu gì, ai làm), đã xong (thông báo xanh đầu trang).
 - Mọi nút ≥44px (chính 52–56px); khóa khi đang gửi; khóa chống lặp theo thao tác.
 
+## Cấm (Impeccable craft floor)
+- Emoji làm biểu tượng → SVG vẽ tay, nét 1.9, màu theo nghĩa.
+- Dòng chữ nhỏ viết hoa đặt trên tiêu đề (kicker/eyebrow) → bỏ, tiêu đề tự đứng; trạng thái nói bằng màu nền.
+- Vạch màu dày > 1px bên trái thẻ → dùng nền nhạt + viền mảnh.
+- Nút chữ gãy 2 dòng → nút chính có số tiền chiếm trọn hàng; hàng có "Quay lại" thì nút lùi gọn (`auto 1fr`); lựa chọn dài dùng thẻ chọn xếp dọc, không ép 2 nút ngang.
+- Tấm có hàng nút dính đáy: tấm KHÔNG chừa đệm dưới (`padding-bottom: 0`), hàng nút tự lo `calc(14px + env(safe-area-inset-bottom))`; nội dung khác đổi vào tấm cũng phải dùng lại hàng nút đáy đó.
+- Bề mặt trình duyệt theo hệ: `::selection` vàng lúa nhạt, `:focus-visible` viền vàng lúa 3px (đã có trong `so-vuon.css`).
+
 ## Tự soát trước khi báo
-1. `node tests/kiem-trung-lop.mjs` sạch.
+1. `node tests/kiem-trung-lop.mjs` sạch; `node tests/soat-giao-dien.mjs <thư mục ảnh>` sạch (mọi màn + mọi tấm ở 360/390: nút gãy dòng, đáy tấm sát mép, vùng chạm, chữ < 12px, tương phản, emoji, mã nội bộ).
 2. E2E `kiemChung` (tràn, ép, nút nhỏ, mã thô) trên mọi trạng thái mới.
 3. Chụp **từng trạng thái** 390 và 360 (cả tấm thao tác, cả dữ liệu dài/nhiều vòng), **nhìn bằng mắt**: dính header? lệch tông? chữ gãy vô lý? hai nút vàng? gạch chân? màu không có nghĩa?

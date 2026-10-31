@@ -51,7 +51,7 @@
   .vu-tam .lui { background: transparent; color: var(--muc-phu); box-shadow: inset 0 0 0 1.5px var(--ke-dam); padding: 0 18px; }
   .vu-viec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   .vu-viec button { min-height: 64px; border-radius: 14px; border: 1.5px solid var(--ke); background: var(--giay-noi); font: 600 13.5px/1.2 var(--chu); color: var(--muc); cursor: pointer; display: grid; place-items: center; gap: 2px; padding: 6px 4px; }
-  .vu-viec button span { font-size: 20px; }
+  .vu-viec button span { display: grid; place-items: center; }
   .vu-viec button[aria-pressed="true"] { border-color: var(--la); box-shadow: 0 0 0 1px var(--la); background: var(--la-nhat); }
   .vu-nhan-o { display: block; font-size: 14px; font-weight: 600; color: var(--muc-phu); margin-bottom: 8px; }
   .vu-o { width: 100%; min-height: 52px; border-radius: 14px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 0 14px; font: 500 16px/1.3 var(--chu); color: var(--muc); }
@@ -76,7 +76,20 @@
 import { esc, phien, giuThamSo, can } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 const VN = { timeZone: "Asia/Ho_Chi_Minh" };
-const VIEC = { spray: ["Phun thuốc", "🧪", "#f4e1dc"], fertilize: ["Bón phân", "🌱", "#e4eedc"], water: ["Tưới", "💧", "#dde8f0"], flower: ["Ra hoa", "🌼", "#f6e6b4"], fruit_set: ["Đậu trái", "🟢", "#dde8df"], harvest: ["Thu hoạch", "🧺", "#efe2d2"], care: ["Chăm sóc", "✂️", "#efe9d9"], pest_incident: ["Sâu bệnh", "🐛", "#f4e1dc"], weather_incident: ["Sự cố thời tiết", "⛈️", "#e6e6ee"] };
+const SVG = (d) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+// [tên, hình, nền, màu nét] — màu theo nghĩa: đỏ = thuốc/sâu (cẩn thận), lá = chăm sóc, vàng = hoa/thu hoạch
+const VIEC = {
+  spray: ["Phun thuốc", SVG('<path d="M8 8h6v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1z"/><path d="M10 8V5h3l3-2M14 5h3M16 9.5l2-1M16 12h2.5"/>'), "var(--dau-do-nen)", "var(--dau-do)"],
+  fertilize: ["Bón phân", SVG('<path d="M6 7l1.5-3h9L18 7v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/><path d="M6 7h12M10 12c0 2 4 2 4 0s-4-2-4 0"/>'), "var(--nau-dat-nhat)", "var(--nau-dat)"],
+  water: ["Tưới", SVG('<path d="M12 3.5c3 3.8 5 6.6 5 9.3a5 5 0 0 1-10 0c0-2.7 2-5.5 5-9.3z"/><path d="M9.5 13.5a2.5 2.5 0 0 0 2.5 2.5"/>'), "#dfe8ec", "#2f5d6b"],
+  flower: ["Ra hoa", SVG('<circle cx="12" cy="9" r="2"/><path d="M12 7a2.5 2.5 0 1 1 2.4-3.2M14 9a2.5 2.5 0 1 1 3.2 2.4M12 11a2.5 2.5 0 1 1-2.4 3.2M10 9a2.5 2.5 0 1 1-3.2-2.4M12 11v10M12 17c-2 0-3.5-1-4-3"/>'), "var(--vang-lua-nhat)", "var(--nau-dat)"],
+  fruit_set: ["Đậu trái", SVG('<path d="M12 8c4 0 6 3 6 6.5S15.5 21 12 21s-6-3-6-6.5S8 8 12 8z"/><path d="M12 8V4M12 5c1.5-1.5 3.5-1.5 4.5-.5"/>'), "var(--la-nhat)", "var(--la-dam)"],
+  harvest: ["Thu hoạch", SVG('<path d="M3 10h18l-2 9a1 1 0 0 1-1 .8H6a1 1 0 0 1-1-.8z"/><path d="M8 10l3-6M16 10l-3-6M7 14h10"/>'), "var(--vang-lua-nhat)", "var(--nau-dat)"],
+  care: ["Chăm sóc", SVG('<circle cx="6" cy="6.5" r="2.5"/><circle cx="6" cy="17.5" r="2.5"/><path d="M8 8l12 9M8 16l12-9"/>'), "var(--la-nhat)", "var(--la-dam)"],
+  pest_incident: ["Sâu bệnh", SVG('<ellipse cx="12" cy="13" rx="4" ry="5.5"/><path d="M12 7.5V5M10 4l2 1 2-1M8 11H5M8 15H5M16 11h3M16 15h3M12 9v9"/>'), "var(--dau-do-nen)", "var(--dau-do)"],
+  weather_incident: ["Sự cố thời tiết", SVG('<path d="M7 15a4 4 0 0 1-.3-8 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 17 15"/><path d="M12 13l-2 4h3l-2 4"/>'), "#e6e6ee", "#45466b"],
+};
+const HINH_VUON = { orchard: SVG('<path d="M12 21v-6"/><path d="M12 15c-4 0-7-2.5-7-6a7 7 0 0 1 14 0c0 3.5-3 6-7 6z"/><path d="M9 21h6"/>'), pond: SVG('<path d="M3 15c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0M3 19c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M8 10c2-2.5 5-2.5 7 0-2 2.5-5 2.5-7 0zM15 10l2-1.5v3z"/>'), field: SVG('<path d="M12 21V8M12 12c-2 0-3.5-1.5-3.5-3.5M12 10c2 0 3.5-1.5 3.5-3.5M12 15c-2 0-3.5-1.5-3.5-3.5M12 13c2 0 3.5-1.5 3.5-3.5M5 21h14"/>') };
 const LOAI_VUON = { orchard: "Vườn", pond: "Ao", field: "Ruộng" };
 let token, du, loc = "tat-ca";
 const ngayDai = (s) => new Date(s + "T00:00:00+07:00").toLocaleDateString("vi-VN", { ...VN, weekday: "long", day: "numeric", month: "numeric", year: "numeric" });
@@ -105,7 +118,7 @@ function ve() {
   const tongThu = vuNay.filter((v) => v.activity === "harvest").reduce((t, v) => t + Number(v.harvested_qty_g || 0), 0);
   $("noi").innerHTML = `
     <section class="vu-cac-vuon" aria-label="Vườn của tôi">${du.co_so.map((c) => `<div class="vu-vuon">
-      <span class="bieu" aria-hidden="true">${c.kind === "pond" ? "🐟" : c.kind === "field" ? "🌾" : "🌳"}</span>
+      <span class="bieu" aria-hidden="true">${HINH_VUON[c.kind] || HINH_VUON.orchard}</span>
       <div style="min-width:0"><b>${esc(c.name)}</b><small>${esc(LOAI_VUON[c.kind] || "Cơ sở")}${c.area_m2 ? ` · ${Number(c.area_m2).toLocaleString("vi-VN")} m²` : ""}</small></div>
       ${c.ngay_het_cach_ly_gan_nhat ? `<p class="vu-cl ${c.con_cach_ly ? "con" : "het"}">${c.con_cach_ly ? `<b>Đang cách ly thuốc</b> tới ${esc(ngayDai(c.ngay_het_cach_ly_gan_nhat))}. Chưa hái bán trước ngày này.` : `Đã hết cách ly thuốc từ ${esc(ngayNgan(c.ngay_het_cach_ly_gan_nhat))}.`}</p>` : `<p class="vu-cl het">Chưa ghi lần phun thuốc nào. Phun thì ghi ngay để app tính ngày được hái.</p>`}
     </div>`).join("") || `<p class="bao">Chưa có vườn nào. Bác bấm Hỗ trợ để nhân viên AgiViet tới khảo sát và khai báo vườn.</p>`}</section>
@@ -116,9 +129,9 @@ function ve() {
     <section class="vu-khoi" aria-label="Nhật ký" style="gap:14px">
       <h2 style="margin:0;font-size:18px">Nhật ký canh tác</h2>
       ${[...theoNgay].map(([ngay, ds]) => `<div class="vu-ngay"><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
-        const [ten, ic, nen] = VIEC[v.activity] || [v.ten_viec || v.activity, "•", "#efe9d9"];
+        const [ten, ic, nen, mau] = VIEC[v.activity] || [v.ten_viec || v.activity, VIEC.care[1], "var(--giay-lot)", "var(--muc-phu)"];
         const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, được hái từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";
-        return `<div class="vu-dong"><span class="ic" style="background:${nen}" aria-hidden="true">${ic}</span>
+        return `<div class="vu-dong"><span class="ic" style="background:${nen};color:${mau}" aria-hidden="true">${ic}</span>
           <div style="min-width:0"><b>${esc(ten)}<span class="vu-nhan ${v.source === "agiviet_confirmed" ? "xn" : "tu"}">${esc(v.nhan || "Tự ghi")}</span></b>
             ${chiTiet ? `<p><b style="display:inline;font-size:14px">${chiTiet}</b></p>` : ""}<p>${esc(v.note)}</p>
             <small>${esc(tenVuon(v.site_id))}${v.recorded_by_name ? ` · ${esc(v.recorded_by_name)} ghi` : ""}${(v.photo_document_ids || []).length ? " · có ảnh" : ""}</small></div>
@@ -142,14 +155,14 @@ function moGhi(cu) {
   const vuonDau = cu?.site_id || (loc !== "tat-ca" ? loc : coSo[0]?.id);
   document.body.insertAdjacentHTML("beforeend", `<div class="vu-che man-che" id="che"><div class="vu-tam" role="dialog" aria-modal="true" aria-labelledby="t-ghi">
     <div class="than"><h2 id="t-ghi">${cu ? "Sửa dòng nhật ký" : "Ghi việc"}</h2>
-      <div><span class="vu-nhan-o">Việc gì?</span><div class="vu-viec" role="group" aria-label="Chọn việc">${Object.entries(VIEC).map(([k, [t, ic]]) => `<button type="button" data-viec="${k}" aria-pressed="${k === viecDau}"><span aria-hidden="true">${ic}</span>${t}</button>`).join("")}</div></div>
+      <div><span class="vu-nhan-o">Việc gì?</span><div class="vu-viec" role="group" aria-label="Chọn việc">${Object.entries(VIEC).map(([k, [t, ic, , mau]]) => `<button type="button" data-viec="${k}" aria-pressed="${k === viecDau}"><span aria-hidden="true" style="color:${mau}">${ic}</span>${t}</button>`).join("")}</div></div>
       <div class="vu-hai">
         <div><label class="vu-nhan-o" for="g-ngay">Ngày</label><input class="vu-o" type="date" id="g-ngay" value="${esc(cu?.occurred_on || du.hom_nay)}" max="${esc(du.hom_nay)}"></div>
         <div><label class="vu-nhan-o" for="g-vuon">Vườn</label><select class="vu-o" id="g-vuon">${coSo.map((c) => `<option value="${esc(c.id)}" ${c.id === vuonDau ? "selected" : ""}>${esc(c.name.split(",")[0])}</option>`).join("")}</select></div>
       </div>
       <div id="g-thuoc" hidden class="vu-hai">
-        <div><label class="vu-nhan-o" for="g-ten-thuoc">Tên thuốc</label><input class="vu-o" id="g-ten-thuoc" value="${esc(cu?.medicine_name || "")}" placeholder="Ghi đúng trên nhãn"></div>
-        <div><label class="vu-nhan-o" for="g-cach-ly">Số ngày cách ly</label><input class="vu-o" id="g-cach-ly" inputmode="numeric" value="${esc(cu?.withdrawal_days ?? "")}" placeholder="Xem trên nhãn"></div>
+        <div><label class="vu-nhan-o" for="g-ten-thuoc">Tên thuốc</label><input class="vu-o" id="g-ten-thuoc" value="${esc(cu?.medicine_name || "")}" placeholder="Theo nhãn chai"></div>
+        <div><label class="vu-nhan-o" for="g-cach-ly">Số ngày cách ly</label><input class="vu-o" id="g-cach-ly" inputmode="numeric" value="${esc(cu?.withdrawal_days ?? "")}" placeholder="Ví dụ: 7"></div>
         <p class="vu-bao vang" id="g-duoc-hai" style="grid-column:1/-1" hidden></p>
       </div>
       <div id="g-thu" hidden><label class="vu-nhan-o" for="g-kg">Thu được bao nhiêu ký?</label><input class="vu-o" id="g-kg" inputmode="decimal" value="${cu?.harvested_qty_g ? Number(cu.harvested_qty_g) / 1000 : ""}" placeholder="Ví dụ: 350"></div>

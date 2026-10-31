@@ -18,10 +18,14 @@ async function trang(ten, fn, choPhep = null) {
   const p = await ctx.newPage();
   const loi = [];
   p.on("pageerror", (e) => loi.push("pageerror: " + e.message));
+  // 503 từ thời tiết/tin tức = nguồn ngoài tạm lỗi, app đã có phương án hiển thị (không tính lỗi); 5xx từ chỗ khác vẫn tính
+  let nam5Ngoai = 0, nam5Khac = 0;
+  p.on("response", (r) => { if (r.status() >= 500) /\/v1\/(weather|news)\b/.test(r.url()) ? nam5Ngoai++ : nam5Khac++; });
   p.on("console", (m) => { if (m.type() === "error" && !(choPhep && choPhep.test(m.text()))) loi.push("console: " + m.text()); });
   try {
     await fn(p);
-    assert.deepEqual(loi, [], "lỗi trình duyệt");
+    const loiThat = loi.filter((x) => !(/status of 503/.test(x) && nam5Ngoai > 0 && nam5Khac === 0));
+    assert.deepEqual(loiThat, [], "lỗi trình duyệt");
     ketQua.push([ten, "ĐẠT"]);
   } catch (e) {
     ketQua.push([ten, "LỖI: " + e.message.split("\n")[0] + (loi.length ? " · " + loi.join(" | ") : "") + (e.actual ? " · thực tế: " + JSON.stringify(e.actual) : "")]);
@@ -477,8 +481,8 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await p.locator('[data-r="hq"] .tien').first().waitFor({ timeout: 8000 });
   const hq = await p.locator('[data-r="hq"]').innerText();
   assert.match(hq, /Cọc:[\s\S]*Tiền bác đã nhận:[\s\S]*hoàn[\s\S]*Uy tín:/, "xem trước đủ cọc, tiền đã nhận phải hoàn, uy tín");
-  await p.locator('[data-ly="force_majeure"]').click();
-  assert.equal(await p.locator('[data-ly="force_majeure"]').getAttribute("aria-pressed"), "true");
+  await p.locator('[data-ly="force_majeure"]').check();
+  assert.ok(await p.locator('[data-ly="force_majeure"]').isChecked());
   await p.locator('[data-r="hq"] .tien').first().waitFor({ timeout: 8000 });
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}19-xin-huy.png` });

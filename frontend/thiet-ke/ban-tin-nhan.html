@@ -10,7 +10,7 @@
   .loc-tn { display: flex; gap: 8px; }
   .loc-tn button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: 600 14px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
   .loc-tn button[aria-pressed="true"] { background: var(--la); border-color: var(--la); color: var(--tren-la); }
-  .loc-tn small { font-weight: 400; opacity: .8; margin-left: 4px; }
+  .loc-tn small { font-size: 13px; font-weight: 600; margin-left: 4px; }
   .cuoc { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; align-items: center; }
   .cuoc .anh { width: 52px; height: 52px; border-radius: 16px; background: var(--giay-lot) center / cover; position: relative; }
   .cuoc .anh .loai { position: absolute; right: -4px; bottom: -4px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--la); color: var(--tren-la); box-shadow: 0 0 0 2px var(--giay); }
@@ -56,6 +56,10 @@
   .tam-lc .hai-o > * { min-width: 0; }
   .tam-lc .day { position: sticky; bottom: 0; margin: 0 -16px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--giay); box-shadow: 0 -8px 12px -10px rgba(0,0,0,.25); display: grid; gap: 8px; }
   .tam-lc .ba-nut { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* Nút chính có số tiền đứng đầu: chiếm trọn hàng để không gãy dòng; hàng có "Quay lại" đứng đầu: nút lùi gọn, nút chính phần còn lại */
+  .tam-lc .ba-nut:has(> .chinh-nut:first-child) { grid-template-columns: minmax(0, 1fr); }
+  .tam-lc .ba-nut:has(> [data-r="quay"]:first-child) { grid-template-columns: auto minmax(0, 1fr); }
+  .tam-lc .ba-nut > [data-r="quay"] { padding: 0 18px; }
   .tam-lc .nut-do { background: var(--dau-do-nen); color: var(--dau-do); box-shadow: none; }
   .tam-lc button:disabled { opacity: .45; cursor: not-allowed; }
   .tam-lc .bao-lc:empty { display: none; }

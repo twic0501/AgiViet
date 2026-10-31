@@ -137,7 +137,8 @@
   /* Tấm chào hàng */
   /* Khi mở tấm: lớp phủ trên cùng, ẩn nút cuộn nhanh và thanh menu */
   body:has(.man-che) .nut-cuon, body:has(.man-che) .tab { visibility: hidden; }
-  .tam input:disabled, .tam button:disabled { opacity: .45; cursor: not-allowed; }
+  .tam input:disabled, .tam button:disabled { opacity: .55; cursor: not-allowed; }
+  .tam input:disabled { background: var(--giay-lot); border-style: dashed; color: var(--muc-nhat); }
   .man-che { position: fixed; inset: 0; background: rgba(20, 30, 25, .45); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
   .tam { width: 100%; max-width: 480px; background: var(--giay); border-radius: 22px 22px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); display: grid; gap: 12px; animation: len 260ms cubic-bezier(.2,.8,.2,1); }
   @keyframes len { from { transform: translateY(100%); } }
@@ -151,6 +152,7 @@
   .tam .bao-ket { font-size: 14px; }
   .tam .bao-ket:empty, .tam .canh-bao.an, .tam .goi-y-gia:empty { display: none; }
   /* Xếp dọc bằng flex, không cho phần nào co lại: tấm dài thì cuộn, không ép bẹp ô (lưới có max-height từng nén hàng) */
+  .tam:has(> .day-tam) { padding-bottom: 0; }
   .tam-chao { display: flex; flex-direction: column; gap: 12px; padding-bottom: 0; }
   .tam-chao > * { flex-shrink: 0; }
   .tam .dau-tam h2 { font-size: 19px; }
@@ -281,8 +283,8 @@ async function moQuanLy(l) {
   tam.innerHTML = `<h2 id="ql-t">${esc(ten)} · ${esc(l.code)}</h2>
     <form class="muc-tam" id="f-gia"><h3>Sửa giá</h3>
       <p>Sửa được 1 lần mỗi 24 giờ. Giá thấp nhất giữ kín, bên mua không thấy; lời chào thấp hơn bị tự từ chối.${g?.price_vnd ? ` Giá tham khảo hiện ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg.` : ""}</p>
-      <div class="hai-o"><label>Giá mong muốn (đ/kg)<input name="ask" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.ask_price_vnd || "")}"></label>
-        <label>Giá thấp nhất (đ/kg)<input name="floor" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.floor_price_vnd || "")}"></label></div>
+      <div class="hai-o"><label>Giá muốn bán, đ/kg<input name="ask" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.ask_price_vnd || "")}"></label>
+        <label>Giá thấp nhất, đ/kg<input name="floor" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.floor_price_vnd || "")}"></label></div>
       <p class="bao-ket" id="bao-gia" role="status"></p>
       <button type="submit" class="nut chinh-nut">Lưu giá mới</button></form>
     <div class="muc-tam"><h3>Bán nhanh trong 3 ngày</h3>
@@ -293,7 +295,7 @@ async function moQuanLy(l) {
       <p>Bên mua sẽ không thấy lô nữa. Hợp đồng đã ký vẫn giữ nguyên. ${soChaoMo ? `<b>Lô đang có ${soChaoMo} lời chào mở: sau khi ngừng bán sẽ không đồng ý được nữa</b>, bác nên trả lời hoặc hủy các lời chào đó trước.` : ""} Lô đang giữ hàng cho bên mua thì chưa ngừng bán được.</p>
       <p class="bao-ket" id="bao-dong" role="status"></p>
       <button type="button" class="nut nut-do" id="nut-dong">Ngừng bán</button></div>
-    <button type="button" class="nut phu-nut" id="ql-dong">Đóng</button>`;
+    <div class="day-tam"><button type="button" class="nut phu-nut" id="ql-dong" style="width:100%">Đóng</button></div>`;
   tam.querySelector("#ql-dong").onclick = dong_;
   const f = tam.querySelector("#f-gia");
   // Chưa đủ 24 giờ từ lần sửa trước: khóa sẵn, ghi rõ giờ được sửa lại (không để bác bấm rồi mới báo lỗi)
@@ -648,7 +650,7 @@ async function moTam(n, dong, dsLo, cu = null) {
       f.innerHTML = `<div class="dau-tam"><h2>${cu ? "Đã sửa lời chào" : "Đã gửi chào hàng"}</h2><p>${esc(n.buyer_name)} có 24 giờ để trả lời.</p></div>
         <div class="o-thanh-tien"><span>Bác chào</span><b>${soVN(Math.round(Number(moi.qty_g) * Number(moi.price_vnd) / 1000))} đ</b><small>${esc(can(moi.qty_g).join(" "))} × ${soVN(moi.price_vnd)} đ/kg</small></div>
         <p class="bao-ket">Lời chào hiện ngay dưới nhu cầu này. Bên mua chưa trả lời thì bác sửa hoặc hủy được.</p>
-        <div class="hang-nut"><button type="button" class="nut phu-nut" id="tam-xong">Đóng</button><a class="nut chinh-nut" href="./ban-tin-nhan.html${location.search}">Mở Tin nhắn</a></div>`;
+        <div class="hang-nut day-tam"><button type="button" class="nut phu-nut" id="tam-xong">Đóng</button><a class="nut chinh-nut" href="./ban-tin-nhan.html${location.search}">Mở Tin nhắn</a></div>`;
       dangGui = false;
       f.querySelector("#tam-xong").onclick = () => location.reload();
     } catch (err) { if (conMo()) { moKhoa(); r("bao").textContent = err.message; } }

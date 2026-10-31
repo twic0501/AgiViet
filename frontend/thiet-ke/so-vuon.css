@@ -287,3 +287,12 @@ header.nen-xanh { border-radius: 0 0 22px 22px; }
 
 /* Nút làm bằng thẻ a: không gạch chân, chữ giữa (tránh lỗi "Mở Tin nhắn" bị gạch chân) */
 a.nut { text-decoration: none; text-align: center; }
+
+/* Bề mặt trình duyệt theo hệ màu (craft floor): bôi chọn chữ, viền focus bàn phím */
+::selection { background: var(--vang-lua-nhat); color: var(--muc); }
+:focus-visible { outline: 3px solid var(--vang-lua); outline-offset: 2px; border-radius: 6px; }
+input:focus-visible, textarea:focus-visible, select:focus-visible { outline-offset: 0; }
+
+/* Thanh chặng: nhãn không gãy dòng ở 360px */
+.chang-ten span { white-space: nowrap; font-size: 12.5px; letter-spacing: -0.01em; }
+.chang-ten span:last-child { text-align: right; }
