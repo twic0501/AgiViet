@@ -247,6 +247,25 @@ class Goc:
         ruot = ruot.replace('</PointsPath>', skin + '</PointsPath>')
         self.xuong[t] = (s0, id_than_x, id_goc, id_con, moi_id())   # id cuối: nút chứa hình (bật/tắt theo góc)
         self.bp[t] = (gx, gy, ruot, id_goc)
+        if self.ten == 'chinh':   # ¾ / nghiêng: gốc tay khuất sau áo / dưới khăn, bắp vai làm mất nét viền ống tay
+            self.bap_vai(t, s0, w0)
+
+    def bap_vai(self, t, s0, w0):
+        """Bắp vai phình xoay cứng theo tay (người sáng lập: tay dang ngang trông như dải dẹt cắm dưới khăn).
+        Tay da uốn quanh vai nên gốc ống tay bị bóp nhọn khi giơ ngang. Thêm bầu dục màu áo nằm TRÊN thân/tay
+        (dưới khăn) che chỗ bóp + bầu dục viền đen nằm DƯỚI tay và thân (chỉ lộ ở mép ngoài) — tên bắt đầu bằng
+        `t` nên nhận cùng mọi hoạt ảnh xoay của tay, điểm xoay = vai s0."""
+        L = math.hypot(w0[0] - s0[0], w0[1] - s0[1])
+        ux, uy = (w0[0] - s0[0]) / L, (w0[1] - s0[1]) / L
+        cx, cy = s0[0] + 10 * ux, s0[1] + 10 * uy
+        quay = f'rotate({math.degrees(math.atan2(uy, ux)):.1f} {cx:.2f} {cy:.2f})'
+        for ten, rx, ry, mau_ in ((f'{t}-vaivien', 23.8, 19.3, '#24190f'), (f'{t}-vai', 21.0, 16.5, '#c48f65')):
+            el = ET.Element(NS + 'ellipse', {'cx': f'{cx:.2f}', 'cy': f'{cy:.2f}', 'rx': str(rx), 'ry': str(ry),
+                                             'transform': quay, 'fill': mau_, 'stroke': 'none'})
+            self.bp[ten] = (s0[0], s0[1], tc.hinh(el, {}, s0[0], s0[1], ten + '-h'), moi_id())
+        if t in self.thu_tu:
+            self.thu_tu.insert(self.thu_tu.index(t), f'{t}-vaivien')
+        self.thu_tu.insert(self.thu_tu.index('khan-co') if 'khan-co' in self.thu_tu else len(self.thu_tu), f'{t}-vai')
 
     def tai(self):
         """[(id giat, id nghich, chiều 'vểnh lên')]: tai chĩa trái (tai-trai V4g) vểnh lên = xoay dương."""
