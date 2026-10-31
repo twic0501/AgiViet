@@ -144,16 +144,14 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
   - Góc nghiêng: đã đồ thêm phần áo và đường gấu sau bàn tay (`chen_dau_nhom`), góc ¾ và nghiêng có lót áo (`lot['than']`), nên khi tay vung không còn lộ lỗ.
   - **Bắp vai phình** (người sáng lập: "tay phải phình, cắt lộ liễu không logic"): ở góc chính diện, tay V4g là khối cứng nằm sau thân, giơ lên thì sườn áo cắt ngang ống tay. Mình thêm `tay-*-vai`, là bầu dục màu áo nằm trên thân, và `tay-*-vaivien`, là viền đen nằm dưới tay và thân. Cả hai cùng điểm xoay và nhận mọi hoạt ảnh của tay. Kết quả: vai tròn liền ống tay khi giơ; lúc buông tay không hiện thêm viền (`khop_vai()` trong `dung-v3.py`).
   - **Giới hạn tay khoảng 30°** (người sáng lập: "vẫn lỗi cánh tay" khi tay dang ngang). Tay V4g vẽ cho dáng buông, xoay quá khoảng 40° thì ống tay thành thanh dẹt cứng, bắp vai cũng không cứu được. Vì vậy mọi động tác đều giữ tay ≤ 0,5 rad. **Muốn tay giơ cao phải có hình vẽ riêng cho tư thế tay giơ** (đổi hình khi giơ, giống cách đổi góc nhìn); việc này chưa làm.
-  - **Tay giơ cao bằng đổi hình** (người sáng lập đồng ý dùng Higgsfield, 2 credit, còn 1): bảng `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` có 3 tư thế (dang ngang, vẫy một tay, giơ hai tay). `do-tay.py` đồ 4 tay (trái/phải × ngang/cao) → `nguon/goc/tay-chinh.svg`; vai áo phình liền ống tay, cổ tay phẳng. Trong `dung-v3.py`, góc chính diện có thêm nút `gio-<bên>-<tư thế>` → `hien` → `xoay`, nằm trên thân, dưới khăn. Hàm `doi_tay()` ẩn tay buông (cả bắp vai) rồi hiện tay giơ, và tay mới đi nốt đoạn xoay quanh vai.
-    - Vươn vai: hai tay giơ cao.
-    - Giật mình: hai tay dang ngang; vào động tác không trộn, để không thấy hai tay chồng nhau.
-    - Vẫy chào (người sáng lập: "tay đang quơ có giống đâu"): dùng đúng hình 2 của bảng, gồm `tay-phai-vay` (tay vẫy to, bàn tay ngang tai) và `tay-trai-tha` (tay buông sát thân), cắt riêng ở `nguon/goc/hf/tay-vay.png`.
-    - Ảnh chuỗi khung: `docs/trau/chang-2/tay-gio-cao.png`.
-    - Góc ¾ và nghiêng chưa có tay giơ (cần sinh thêm). Hiện hai góc đó vẫn vung tay vừa phải.
-  - **Soi tay toàn bộ** (người sáng lập: "đôi lúc vài khúc cánh tay vẫn lỗi form"): chụp 6 động tác có tay × 3 góc, cứ 8 khung một ảnh (351 khung, `docs/trau/chang-2/soi-tay-351-khung.png`). Đã sửa 4 lỗi:
-    - Chính diện: viền nách V4g nằm cố định trong thân áo, tay đưa ra thì lộ thành vệt đen. Đã tách viền nách thành `tay-*-nach`, đi theo tay (`nach_theo_tay()`).
-    - Tay đồ từ Higgsfield dính mẩu nét viền áo, thành chấm đen rời khi xoay. `do-anh.py` thêm `net_toi_thieu`, bỏ mẩu nét nhỏ.
-    - Giật mình: tay dang ngang hạ sâu thì mép dưới ống tay quét qua mặt áo. Giờ chỉ hạ một đoạn ngắn rồi đổi về tay buông.
+  - **Tay chính diện uốn bằng xương (skinning)**, thay cho cách đổi hình tay Higgsfield trước đó. Người sáng lập yêu cầu tay lúc nào cũng là dáng V4g ban đầu; cách đổi hình làm hai tay chồng mờ lúc chuyển và dáng tay không thống nhất.
+    - Mỗi đỉnh của nét tay V4g, kể cả viền nách, gắn vào 2 xương: **xương thân** (đi theo áo, không xoay) và **xương tay** (xoay). Trọng số tính theo vị trí dọc trục vai (166,333) → cổ tay (138,388): gốc ống tay dính áo, phần ngoài xoay hẳn, đoạn giữa uốn cong dần (`tay_da()` trong `dung-v3.py`).
+    - Dưới mỗi tay có **khối vai tròn** (màu áo, có viền), lấp khoảng trống giữa đỉnh tay và khăn khi giơ cao. Lúc buông, khối này bị che kín; so với V4g chỉ lệch 1 điểm ảnh.
+    - Xương tay dùng lại id cũ của nút tay, nên mọi hoạt ảnh vẫn chạy như trước, chỉ thêm hệ số ×2,6 vì tay uốn được nên giơ cao được. Riêng phần bật/tắt theo góc phải đặt lên **nút chứa hình** (`g.hien()`), vì xương không có độ mờ.
+    - Vươn vai giơ khoảng 1,7 rad, vẫy chào khoảng 1,6 rad (bàn tay ngang tai), giật mình và vui khoảng 1,2–1,3 rad.
+    - Đã xoá phần đổi hình (`do-tay.py`, `nguon/goc/tay-chinh.svg`, các ảnh cắt tay). Ảnh mẫu `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` giữ lại để tham khảo dáng.
+    - Góc ¾ và nghiêng vẫn là tay xoay cứng biên độ nhỏ. Có thể làm uốn xương tương tự nếu cần giơ cao.
+  - **Soi tay toàn bộ** (người sáng lập: "đôi lúc vài khúc cánh tay vẫn lỗi form"): chụp 6 động tác có tay × 3 góc, cứ 8 khung một ảnh (351 khung, `docs/trau/chang-2/soi-tay-351-khung.png`). Đã sửa: viền nách đi theo tay (nay nằm trong tay uốn xương); `do-anh.py` thêm `net_toi_thieu` để bỏ mẩu nét rời;
     - ¾ và nghiêng: biên độ vung tay giảm còn 0,25 và 0,28, vì lớn hơn thì mép sau ống tay lòi khỏi áo hoặc nét đỉnh vai tách đôi.
   - **Kiểm thử:** `AGV_THU=<0–8> AGV_HUONG=<h> python3 dung-v3.py` ép chạy một động tác ngay. Bảng cảm xúc ở 3 góc: `docs/trau/chang-2/cam-xuc-3-goc.png`.
 - **`cham`:** nhún từ bàn chân (squash & stretch) và nheo mắt. **`nhin_x`, `nhin_y`:** đầu và mắt nhìn theo.
