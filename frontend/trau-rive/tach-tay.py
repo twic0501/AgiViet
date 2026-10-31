@@ -13,22 +13,27 @@ from PIL import Image, ImageDraw, ImageFilter
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 TEP = {'chinh': 'chinh', '34': '34', 'ng': 'nghieng-2'}
-VUNG = {
- ('chinh', 0): [(178,296),(136,288),(84,322),(64,372),(74,432),(156,432),(160,372),(166,330),(178,320)],
- ('chinh', 1): [(176,296),(68,294),(54,312),(52,364),(163,366),(163,300)],
- ('chinh', 2): [(176,300),(150,300),(136,292),(132,262),(128,232),(68,234),(62,300),(100,310),(148,366),(164,366),(164,330)],
- ('34', 0): [(296,296),(305,300),(306,370),(310,412),(252,414),(246,370),(244,330),(262,310),(290,298)],
- ('34', 1): [(282,294),(345,290),(378,292),(380,356),(344,354),(300,350),(278,348)],
- ('34', 2): [(284,345),(284,300),(290,262),(298,244),(302,216),(318,205),(352,207),(354,262),(332,302),(312,345)],
- ('ng', 0): [(240,306),(286,304),(300,330),(302,392),(292,412),(228,412),(222,376),(232,330)],
- ('ng', 1): [(256,292),(232,290),(146,288),(106,286),(102,352),(146,354),(236,348),(258,342)],
- ('ng', 2): [(176,302),(172,292),(150,276),(134,256),(96,234),(80,252),(94,318),(140,328),(166,340),(178,332)],
+# Ống tay: điểm chấm tay theo tâm nét viền trên bảng mẫu (toạ độ khung 512).
+# Thứ tự: R1 (gốc vai, phía ngoài) → cạnh A (cạnh ngoài: buông = phía ngoài thân, ngang = trên, cao = phía đầu)
+# → C1, cổ tay → C2 → cạnh B → R2. Cạnh gốc R2→R1 không có viền (hoà vào áo như bảng Higgsfield).
+ONG = {
+ ('chinh', 0): [[(165,312),(150,322),(134,340),(121,363)], [(156,389)], [(162,360),(166,335),(170,316)]],
+ ('chinh', 1): [[(165,304),(130,304),(105,305),(88,306)], [(89,359)], [(120,361),(150,362),(166,362)]],
+ ('chinh', 2): [[(166,312),(150,292),(138,282),(128,272)], [(90,300)], [(115,325),(140,348),(165,365)]],
+ ('34', 0): [[(288,309),(296,338),(302,367)], [(252,367)], [(247,345),(245,330)]],
+ ('34', 1): [[(292,300),(318,299),(342,298)], [(342,350)], [(310,348),(272,345)]],
+ ('34', 2): [[(280,330),(284,280),(288,241)], [(338,262)], [(325,295),(310,332)]],
+ ('ng', 0): [[(240,318),(232,345),(224,371)], [(296,385)], [(290,345),(282,307)]],
+ ('ng', 1): [[(250,296),(200,293),(143,292)], [(150,345)], [(200,342),(248,338)]],
+ ('ng', 2): [[(203,310),(170,288),(150,275),(131,262)], [(117,307)], [(140,320),(164,331),(197,353)]],
 }
-GOC_TAY = {('chinh', 0): (176, 318), ('chinh', 1): (172, 330), ('chinh', 2): (170, 330),
-           ('34', 0): (295, 305), ('34', 1): (283, 320), ('34', 2): (292, 334),
-           ('ng', 0): (262, 308), ('ng', 1): (254, 318), ('ng', 2): (176, 318)}
-N = {'vien': 72, 'ong': 64, 'ban': 56}
-P = 4  # phóng ảnh khi tách
+# điểm nằm giữa bàn tay (vùng xám) để lấy đúng mảng bàn tay
+HAT = {('chinh', 0): (135, 392), ('chinh', 1): (70, 330), ('chinh', 2): (100, 270),
+       ('34', 0): (275, 382), ('34', 1): (358, 320), ('34', 2): (318, 236),
+       ('ng', 0): (255, 392), ('ng', 1): (120, 315), ('ng', 2): (105, 285)}
+NA, NC, NB, NBAN = 14, 6, 14, 52
+P = 4
+VIEN = 5.6
 
 
 def lop(im):
@@ -41,22 +46,10 @@ def lop(im):
     return nen, toi, nau, xam
 
 
-def thanh_phan_lon(m):
-    from collections import deque
-    h, w = m.shape; seen = np.zeros_like(m); best = None; bn = 0
-    for y0, x0 in zip(*np.nonzero(m)):
-        if seen[y0, x0]: continue
-        q = deque([(y0, x0)]); seen[y0, x0] = True; pts = []
-        while q:
-            y, x = q.popleft(); pts.append((y, x))
-            for yy, xx in ((y+1,x),(y-1,x),(y,x+1),(y,x-1)):
-                if 0 <= yy < h and 0 <= xx < w and m[yy, xx] and not seen[yy, xx]:
-                    seen[yy, xx] = True; q.append((yy, xx))
-        if len(pts) > bn: bn, best = len(pts), pts
-    o = np.zeros_like(m)
-    if best:
-        ys, xs = zip(*best); o[list(ys), list(xs)] = True
-    return o
+def thanh_phan(m, hat):
+    im = Image.fromarray((m * 255).astype(np.uint8)).copy()
+    ImageDraw.floodfill(im, hat, 128)
+    return np.asarray(im) == 128
 
 
 def lap_lo(m):
@@ -124,27 +117,42 @@ def lay_mau(pts, n, moc, ccw=True):
     return list(zip(x.round(2), y.round(2)))
 
 
+def catmull(pts, n):
+    """đường cong qua các điểm, lấy n điểm đều theo độ dài (gồm cả 2 đầu)"""
+    p = np.array(pts, float)
+    if len(p) == 2:
+        dense = np.linspace(p[0], p[1], 50)
+    else:
+        q = np.vstack([2 * p[0] - p[1], p, 2 * p[-1] - p[-2]]); dense = []
+        for a in range(1, len(q) - 2):
+            p0, p1, p2, p3 = q[a - 1], q[a], q[a + 1], q[a + 2]
+            for t in np.linspace(0, 1, 20, endpoint=False):
+                dense.append(0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t
+                                    + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3))
+        dense.append(p[-1]); dense = np.array(dense)
+    L = np.concatenate([[0], np.cumsum(np.hypot(*np.diff(dense, axis=0).T))])
+    t = np.linspace(0, L[-1], n)
+    return list(zip(np.interp(t, L, dense[:, 0]).round(2), np.interp(t, L, dense[:, 1]).round(2)))
+
+
 def tach(thu_muc):
     out = {}
-    for (v, k), poly in VUNG.items():
+    for (v, k), (A, C, B) in ONG.items():
+        c1, c2 = A[-1], C[0]
+        ong = catmull(A, NA) + catmull([c1, c2], NC + 2)[1:-1] + catmull([c2] + B, NB)
         im = Image.open(os.path.join(thu_muc, f'{TEP[v]}-{k}.png')).convert('RGB')
         im = im.resize((512 * P, 512 * P), Image.LANCZOS)
-        vm = Image.new('L', (512 * P, 512 * P), 0)
-        ImageDraw.Draw(vm).polygon([(x * P, y * P) for x, y in poly], fill=255)
-        vm = np.asarray(vm) > 0
         nen, toi, nau, xam = lop(im)
-        vien = tron(lap_lo(thanh_phan_lon(vm & ~nen)), 2 * P / 4)
-        ong = tron(lap_lo(thanh_phan_lon(vm & nau)), 1.5 * P / 4)
-        ban = tron(lap_lo(thanh_phan_lon(vm & xam)), 1.5 * P / 4)
-        goc = GOC_TAY[(v, k)]
-        ys, xs = np.nonzero(ban); cb = (xs.mean() / P, ys.mean() / P)
-        moc_ban = (goc[0], goc[1])          # điểm bàn tay gần vai nhất = phía cổ tay
-        r = {}
-        for ten, m, moc in (('vien', vien, goc), ('ong', ong, goc), ('ban', ban, moc_ban)):
-            pts = [(x / P, y / P) for x, y in bao(m)]
-            r[ten] = lay_mau(pts, N[ten], moc)
-        out[f'{v}-{k}'] = r
-    out['goc'] = {f'{v}-{k}': p for (v, k), p in GOC_TAY.items()}
+        hx, hy = HAT[(v, k)]
+        ban = thanh_phan(xam, (hx * P, hy * P))
+        ban = tron(lap_lo(ban), 1.5 * P)                     # lấp vết nếp ngón
+        im2 = Image.fromarray((ban * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(2 * int(VIEN / 2 * P) + 1))
+        ban = np.asarray(im2) > 127                            # nới nửa nét viền → viền nằm đúng nét đen
+        pts = [(x / P, y / P) for x, y in bao(ban)]
+        mc = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
+        out[f'{v}-{k}'] = {'ong': ong, 'ban': lay_mau(pts, NBAN, mc),
+                           'goc': [(A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2]}
+    out['vien'] = VIEN; out['so'] = [NA, NC, NB]
     p = os.path.join(DIR, 'nguon/goc/tay-morph.json')
     json.dump(out, open(p, 'w'))
     print(p)

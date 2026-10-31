@@ -181,6 +181,11 @@ class Goc:
         else:
             cac_ben = ('gan',)
         MAU = {'vien': 'FF24190F', 'ong': 'FFC48F65', 'ban': 'FF84736B'}
+        for kk in list(du):
+            if '-' in kk:
+                du[kk]['vien'] = du[kk]['ong']        # nét viền ống tay: cùng điểm, đường hở ở gốc vai
+        du['goc'] = {kk: du[kk]['goc'] for kk in du if '-' in kk}
+        NET = du.get('vien', 5.6)
         KHUNG = (0, 60, 120)
         for ben in cac_ben:
             t = f'tay-{ben}'
@@ -203,12 +208,18 @@ class Goc:
 
             def dung(ten_):
                 ruot_, keyed_ = '', []
-                for ly in ('ban', 'ong', 'vien'):          # Rive: khai báo trước nằm trên
+                for ly in ('vien', 'ong', 'ban'):          # Rive: khai báo trước nằm trên
                     ids = [moi_id() for _ in dang[0][ly]]
                     dinh = ''.join(f'<StraightVertex x="{a - px:.2f}" y="{b - py:.2f}" id="{i}"/>'
                                    for (a, b), i in zip(dang[0][ly], ids))
-                    ruot_ += (f'<Shape x="0" y="0" name="{ten_}-{ly}"><PointsPath isClosed="true" name="P">{dinh}'
-                              f'</PointsPath><Fill name="F"><SolidColor colorValue="{MAU[ly]}" name="C"/></Fill></Shape>')
+                    net = (f'<Stroke thickness="{NET}" cap="round" join="round" name="V">'
+                           f'<SolidColor colorValue="{MAU["vien"]}" name="C"/></Stroke>')
+                    if ly == 'vien':
+                        to = net
+                    else:
+                        to = f'<Fill name="F"><SolidColor colorValue="{MAU[ly]}" name="C"/></Fill>' + (net if ly == 'ban' else '')
+                    ruot_ += (f'<Shape x="0" y="0" name="{ten_}-{ly}"><PointsPath isClosed="{"false" if ly == "vien" else "true"}" '
+                              f'name="P">{dinh}</PointsPath>{to}</Shape>')
                     for j, vid in enumerate(ids):
                         ks = []
                         for f in range(0, 121, 10):
@@ -239,7 +250,10 @@ class Goc:
             self.bp[t] = (px, py, ruot, nid)
             if t in self.thu_tu:
                 self.thu_tu.remove(t)
-            self.thu_tu.insert(self.thu_tu.index('than') + 1, t)
+            if self.ten.startswith('ng'):     # nghiêng: tay vung ra trước nằm TRÊN đuôi khăn, dưới khăn quấn cổ
+                self.thu_tu.insert(self.thu_tu.index('khan-co'), t)
+            else:
+                self.thu_tu.insert(self.thu_tu.index('than') + 1, t)
             if self.ten.startswith('34'):
                 self.thu_tu.insert(self.thu_tu.index(t) + 1, t + '-tren')
             self.morph[ben] = keyed

@@ -150,6 +150,10 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - Xương tay dùng lại id cũ của nút tay, nên mọi hoạt ảnh vẫn chạy như trước, chỉ thêm hệ số ×2,6 vì tay uốn được nên giơ cao được. Riêng phần bật/tắt theo góc phải đặt lên **nút chứa hình** (`g.hien()`), vì xương không có độ mờ.
     - Vươn vai giơ khoảng 1,7 rad, vẫy chào khoảng 1,6 rad (bàn tay ngang tai), giật mình và vui khoảng 1,2–1,3 rad.
     - Đã xoá phần đổi hình (`do-tay.py`, `nguon/goc/tay-chinh.svg`, các ảnh cắt tay). Ảnh mẫu `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` giữ lại để tham khảo dáng.
+    - **Bản 3 (31/10): ống tay chấm điểm theo nét viền + viền hở ở vai.** Người sáng lập chụp lỗi: ở góc ¾ và nghiêng, tay đè lên áo nên bản 2 (tách theo màu) lẫn ống tay vào áo, mất viền, bàn tay xám trôi giữa áo. Sửa:
+      - `tach-tay.py`: bảng `ONG` chấm tay tâm nét viền ống tay của 9 dáng (gốc vai → cạnh ngoài → cổ tay → cạnh trong), nội suy cong, 14/6/14 điểm. Bàn tay lấy vùng xám tính từ điểm `HAT` giữa bàn tay, nới nửa nét viền rồi dò đường bao, 52 điểm.
+      - Rive: ống tay tô nâu, viền là nét 5.6 HỞ ở cạnh gốc vai (hoà vào áo như bảng mẫu); bàn tay tô xám kèm nét viền kín; ống tay nằm trên bàn tay.
+      - Góc nghiêng: tay nằm trên đuôi khăn, dưới khăn quấn cổ (bảng mẫu). Gốc tay giơ cao kéo dài vào dưới khăn để không hở.
     - **Bản 2 (31/10): dò nguyên đường bao tay từ bảng Higgsfield.** Người sáng lập nhận xét bản 8 điểm "chưa đúng" ở cả 3 góc và cả lúc chuyển động. Đã làm lại:
       - `tach-tay.py`: trong đa giác thô của từng dáng, tách theo màu 3 lớp (viền đen = cả bóng tay, ống tay nâu, bàn tay xám), dò đường bao bằng potrace, lấy mẫu 72, 64, 56 điểm theo chiều dài, bắt đầu ở điểm gần gốc vai, cùng chiều → `nguon/goc/tay-morph.json`. Nhờ vậy ống tay và bàn tay (xoè, chỉ, nắm) đúng hình bảng mẫu.
       - `tay_morph()`: khoá đỉnh mỗi 10 khung, nội suy quay quanh gốc vai (góc + bán kính), nên tay không co ngắn giữa chừng.
