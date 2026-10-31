@@ -20,6 +20,7 @@ import './tinh-huong-12.ts';
 import './tinh-huong-13.ts';
 import './tinh-huong-14.ts';
 import './tinh-huong-15.ts';
+import './tinh-huong-16.ts';
 
 process.env.LOG_LEVEL = process.env.LOG_LEVEL ?? 'silent';
 const cfg = docCauHinh();

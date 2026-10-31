@@ -712,7 +712,7 @@ async function themAnh(files, chup) {
 $("chup-anh").addEventListener("change", (e) => { themAnh(e.target.files, true); e.target.value = ""; });
 $("chon-anh").addEventListener("change", (e) => { themAnh(e.target.files, false); e.target.value = ""; });
 function veAnh() {
-  $("luoi-anh").innerHTML = st.anh.map((a, i) => `<div class="o" style="background-image:url(${a.xem})"><em>${a.chup ? "Chụp ngay" : "Có sẵn"}</em><button class="xoa" type="button" data-i="${i}" aria-label="Bỏ ảnh ${i + 1}">×</button></div>`).join("");
+  $("luoi-anh").innerHTML = st.anh.map((a, i) => `<div class="o" style="background-image:url(${a.xem})"><em>${a.lyDo ? "Ảnh cũ" : a.chup ? "Chụp ngay" : "Có sẵn"}</em><button class="xoa" type="button" data-i="${i}" aria-label="Bỏ ảnh ${i + 1}">×</button></div>`).join("");
   $("luoi-anh").querySelectorAll(".xoa").forEach((b) => (b.onclick = () => { st.anh.splice(Number(b.dataset.i), 1); veAnh(); kiem(); }));
   const coChup = st.anh.some((a) => a.chup);
   $("anh-ghi").textContent = st.anh.length && !coChup ? "Ảnh có sẵn chỉ để thêm. Bác chụp ít nhất 1 ảnh hàng hiện tại để đăng." : "";
@@ -762,10 +762,20 @@ async function dangBan() {
       if (a.xong) continue;                       // đã gửi ở lần trước
       a.khoa ||= crypto.randomUUID();
       $("tiep").textContent = `Đang gửi ảnh ${i + 1}/${st.anh.length}…`;
-      try { const f = await lenh("/v1/files", { idempotency_key: a.khoa, entity: "lot", entity_id: lo.id, captured_in_app: a.chup, mime: a.du.mime, data_base64: a.du.data_base64 }); a.xong = f.id || true; }
+      try {
+        const f = await lenh("/v1/files", { idempotency_key: a.khoa, entity: "lot", entity_id: lo.id, captured_in_app: a.chup, mime: a.du.mime, data_base64: a.du.data_base64 });
+        const d = f.data || f; a.xong = d.id || true;
+        // Server quyết ảnh nào là "chụp trong app" (ảnh trùng, PDF không tính)
+        if (a.chup && d.captured_in_app === false) { a.chup = false; a.lyDo = d.ly_do || "Ảnh này không được tính là ảnh vừa chụp"; }
+      }
       catch { loiAnh++; }
     }
-    if (!st.anh.some((a) => a.chup && a.xong)) throw new Error("Chưa gửi được ảnh chụp. Bác kiểm tra mạng rồi bấm Đăng bán lại, lô nháp vẫn được giữ.");
+    if (!st.anh.some((a) => a.chup && a.xong)) {
+      const bi = st.anh.find((a) => a.lyDo);
+      veAnh();
+      if (bi) { den("anh"); hienLoi(`${bi.lyDo}. Bác chụp ảnh mới của hàng hiện tại rồi đăng lại, lô nháp vẫn được giữ.`); return; }
+      throw new Error("Chưa gửi được ảnh chụp. Bác kiểm tra mạng rồi bấm Đăng bán lại, lô nháp vẫn được giữ.");
+    }
     khoa.dang ||= crypto.randomUUID();
     await lenh(`/v1/lots/${lo.id}/publish`, { idempotency_key: khoa.dang, expected_revision: tao.revision ?? lo.revision });
     const sapCo = st.khiCo === "sap";

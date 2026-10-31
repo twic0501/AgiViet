@@ -2,6 +2,8 @@
 import { May, Phien, SDT, TinhHuong } from './khung.ts';
 
 export const ANH_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+// Ảnh mới mỗi lần gọi (thêm byte ngẫu nhiên sau IEND): server không tính ảnh trùng là "chụp trong app"
+export const anhMoi = () => Buffer.concat([Buffer.from(ANH_PNG, 'base64'), Buffer.from(crypto.randomUUID())]).toString('base64');
 
 export interface BoiCanh {
   may: May; ha: Phien; nam: Phien; lan: Phien; phuc: Phien;

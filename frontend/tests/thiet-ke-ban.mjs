@@ -1,6 +1,7 @@
 // Kiểm đầu-cuối 3 màn giao diện mới app bán (thiet-ke/): Đăng nhập (quả cầu, đăng nhập, sai mã, đăng ký), Hôm nay, Hàng hóa.
 // Chạy trên stack thử: backend 18980 (PGlite) + frontend 18990. Dùng: node tests/thiet-ke-ban.mjs
 import { createRequire } from "node:module";
+import { anhNgauNhien } from "./anh-ngau-nhien.mjs";
 import { mkdir } from "node:fs/promises";
 import assert from "node:assert/strict";
 const { chromium } = createRequire(process.env.HOME + "/rnd idea/package.json")("playwright");
@@ -306,6 +307,40 @@ await trang("cho-chi-tiet", async (p) => {
   await p.screenshot({ path: `${ANH}05e-chi-tiet-nhu-cau.png`, fullPage: true });
 });
 
+await trang("dang-bai-anh-cu", async (p) => {
+  // Server quyết "chụp trong app": cùng một ảnh dùng cho lô thứ hai bị coi là ảnh cũ, app nhắc chụp mới
+  const X = anhNgauNhien();
+  const dangMot = async (kg, anh) => {
+    await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
+    await p.locator("#the-hang b").waitFor({ timeout: 8000 });
+    await p.locator('#ds-loai button[data-v="L1"]').click();
+    await p.locator('#cach [data-cach="go"]').click();
+    await p.locator("#luong").fill(String(kg));
+    await p.locator('#thuoc [data-v="khong"]').click();
+    await p.locator("#tiep").click();
+    await p.locator("#gia-muon").pressSequentially("22000");
+    await p.locator("#tiep").click();
+    await p.locator("#chup-anh").setInputFiles(anh);
+    await p.locator("#luoi-anh .o").first().waitFor();
+    await p.locator("#tiep").click();
+    await p.locator("#tiep").click();
+  };
+  await dangMot(410 + (Date.now() % 50), X);
+  await p.locator('[data-m="xong"]').waitFor({ state: "visible", timeout: 10000 });
+  await dangMot(470 + (Date.now() % 50), X);
+  await p.locator("#loi").waitFor({ state: "visible", timeout: 10000 });
+  assert.match(await p.locator("#loi").innerText(), /đã có trên hệ thống[\s\S]*chụp ảnh mới/, "ảnh cũ bị nhắc chụp mới");
+  assert.ok(await p.locator('[data-m="anh"]').isVisible(), "quay về bước Ảnh");
+  assert.match(await p.locator("#luoi-anh").innerText(), /Ảnh cũ/);
+  await kiemChung(p);
+  await p.locator("#luoi-anh .xoa").first().click();
+  await p.locator("#chup-anh").setInputFiles(anhNgauNhien());
+  await p.locator("#luoi-anh .o").first().waitFor();
+  await p.locator("#tiep").click();
+  await p.locator("#tiep").click();
+  await p.locator('[data-m="xong"]').waitFor({ state: "visible", timeout: 10000 });
+});
+
 await trang("tin-nhan-tra-loi", async (p) => {
   // Luồng chào giá B3 thật: bên mua chào → bác trả giá → bên mua trả lại → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
   const G = "http://127.0.0.1:18980";
@@ -408,7 +443,7 @@ await trang("dang-bai", async (p) => {
   await p.locator("#chon-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
   await p.locator("#luoi-anh .o").first().waitFor();
   assert.ok(await p.locator("#tiep").isDisabled(), "chỉ ảnh có sẵn thì chưa đăng được");
-  await p.locator("#chup-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.locator("#chup-anh").setInputFiles(anhNgauNhien());
   await p.waitForFunction(() => document.querySelectorAll("#luoi-anh .o").length === 2);
   await kiemChung(p);
   await p.locator("#tiep").click();
@@ -470,7 +505,7 @@ await trang("dang-bai-truoc-mua", async (p) => {
   await p.locator("#gia-san").fill(""); await p.locator("#gia-san").pressSequentially("23400");
   await kiemChung(p);
   await p.locator("#tiep").click();
-  await p.locator("#chup-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.locator("#chup-anh").setInputFiles(anhNgauNhien());
   await p.locator("#luoi-anh .o").first().waitFor();
   await p.locator("#tiep").click();
   assert.ok(!/23\.400/.test(await p.locator("#xem-lai").innerText()), "bên mua không thấy giá thấp nhất");

@@ -1,7 +1,7 @@
 // Tình huống tiền, hủy, quyền, tài liệu, bảo mật (docs/nghiep-vu/09).
 import { May, TinhHuong, SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
-import { ANH_PNG, baoTra, xacNhan, khoanDau, dangNhapCacBen, chaoVaDongY, lapVaKy, chuyenCoc, traThangVaXacNhan, chuanBiGiao, lenhNganHangVaDoiSoat } from './luong.ts';
+import { ANH_PNG, anhMoi, baoTra, xacNhan, khoanDau, dangNhapCacBen, chaoVaDongY, lapVaKy, chuyenCoc, traThangVaXacNhan, chuanBiGiao, lenhNganHangVaDoiSoat } from './luong.ts';
 
 /** Dựng nhanh tới bước 5 của TH-006 (đơn hiệu lực). */
 async function toiHieuLuc(may: May, th: TinhHuong | null) {
@@ -30,7 +30,7 @@ them('TH-003', 'Đăng lô: chặn cách ly, cảnh báo giá, ảnh chụp tron
   await teo.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'lot', entity_id: r2.id, captured_in_app: false });
   const r3 = await teo.post(`/v1/lots/${r2.id}/publish`, {});
   th.bang('Chỉ ảnh tải lên: chưa đăng được', r3.json.errors?.[0]?.code, 'DU_LIEU_KHONG_HOP_LE');
-  await teo.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'lot', entity_id: r2.id, captured_in_app: true });
+  await teo.ok('/v1/files', { mime: 'image/png', data_base64: anhMoi(), entity: 'lot', entity_id: r2.id, captured_in_app: true });
   const xemLo = (await teo.get(`/v1/lots/${r2.id}`)).json;
   const cu = await teo.post(`/v1/lots/${r2.id}/publish`, { expected_revision: xemLo.revision - 1 });
   th.bang('Phiên bản cũ: REVISION_XUNG_DOT', cu.json.errors?.[0]?.code, 'REVISION_XUNG_DOT');
