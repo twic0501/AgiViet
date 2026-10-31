@@ -65,9 +65,12 @@
     ["Vận hành", [["Tổng quan vận hành", "tong-quan-vh"], ["Hàng chờ xác minh", "duyet-xac-minh"], ["Duyệt hồ sơ", "chi-tiet-xac-minh&ma=XM-311"], ["Kiểm duyệt tin", "kiem-duyet-tin"], ["Lách liên lạc", "canh-bao-lach"], ["Tranh chấp", "tranh-chap"], ["Xử lý tranh chấp", "chi-tiet-tranh-chap"], ["Tiền đảm bảo", "tien-dam-bao"], ["Người dùng", "nguoi-dung"], ["Yêu cầu hỗ trợ", "yeu-cau-ho-tro"], ["Cấu hình phí", "cau-hinh-phi"]]],
   ].map(([n, ds]) => [n, ds.map(([t, m]) => [t, "van-hanh.html?man=" + m])]);
 
+  const MOTION = [
+    ["Motion v2", [["Bản mẫu gốc Motion v2 (điện thoại + bảng điều khiển)", "../tham-khao/motion-v2/motion-v2.dc.html"], ["App bán /ban dựng theo Motion v2", "../ban/index.html"]]],
+  ];
   const dem = (a) => a.reduce((t, [, ds]) => t + ds.length, 0);
   const ben = document.getElementById("ben");
-  [["App bán · Sổ vườn", BAN], ["App mua · máy tính + điện thoại", MUA], ["Trang vận hành", VH]].forEach(([ten, ds]) => {
+  [["App bán · Sổ vườn", BAN], ["App bán · Motion v2", MOTION], ["App mua · máy tính + điện thoại", MUA], ["Trang vận hành", VH]].forEach(([ten, ds]) => {
     const dt = document.createElement("details"); dt.open = true;
     dt.innerHTML = `<summary>${ten}<small>${dem(ds)} mục</small></summary>` + ds.map(([n, ms]) => `<div class="nhom">${n}</div>` + ms.map(([t, u]) => `<a href="#${u}">${t}</a>`).join("")).join("");
     ben.appendChild(dt);
@@ -78,7 +81,7 @@
     const duong = decodeURIComponent(location.hash.slice(1)) || "dang-nhap.html";
     const noi = duong.includes("?") ? "&" : "?";
     const src = `./${duong}${noi}nen=sang&t=${Date.now()}`;
-    if (/^(mua|van-hanh)\.html/.test(duong)) {
+    if (/^(mua|van-hanh)\.html|motion-v2/.test(duong)) {
       const coDt = duong.startsWith("mua");
       const ti = Math.min(1, Math.max(0.4, (innerWidth - 260 - 80 - (coDt ? 440 : 0)) / 1296));
       san.innerHTML = `<div><div class="ban-may" style="--ti:${ti.toFixed(3)}"><iframe id="khung-may" title="Máy tính"></iframe></div><p class="nhan-may">Máy tính 1280 × 820</p></div>` + (coDt ? `<div><div class="may"><iframe id="khung-dt" title="Điện thoại"></iframe></div><p class="nhan-may">Điện thoại 390 × 844 · cùng dữ liệu</p></div>` : "");
