@@ -520,6 +520,8 @@ def main():
         for k in keyed:
             m = _re.match(r'<KeyedObject objectId="([^"]+)"><KeyedProperty property="rotation">(.*)</KeyedProperty></KeyedObject>$',
                           k, _re.S)
+            if m and m.group(1) in REMAP and REMAP[m.group(1)] is None:
+                continue                  # bản tay ¾ vẽ trên đầu: đã theo dáng tay, không xoay thêm
             if m and m.group(1) in REMAP:
                 jid, dau = REMAP[m.group(1)]
                 kfs = _re.sub(r'value="([-\d.]+)"', lambda mm: f'value="{goc_sang_x(dau * float(mm.group(1))):.4f}"',
@@ -597,6 +599,8 @@ def main():
             joy_xml.append(f'<Joystick posX="256" posY="256" width="512" height="512" x="-1" xId="{a_dt}" '
                            f'yId="{a_rong_tay}" name="Dáng tay {ben}" id="{jid}"/>')
             REMAP[g.boc[f'tay-{ben}']['nghich']] = (jid, -1 if ben == 'phai' else 1)
+            if f'tay-{ben}-tren' in g.boc:
+                REMAP[g.boc[f'tay-{ben}-tren']['nghich']] = None
             dang_tay_vao_nghi.append(f'<KeyedObject objectId="{jid}"><KeyedProperty property="x">'
                                      f'<KeyFrameDouble value="-1" frame="0"/></KeyedProperty></KeyedObject>')
     for ten, aid in (('dau', a_dau), ('than', a_than), ('chan', a_chan)):

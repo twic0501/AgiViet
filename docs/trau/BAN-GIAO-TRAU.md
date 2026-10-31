@@ -154,6 +154,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
       - `tach-tay.py`: bảng `ONG` chấm tay tâm nét viền ống tay của 9 dáng (gốc vai → cạnh ngoài → cổ tay → cạnh trong), nội suy cong, 14/6/14 điểm. Bàn tay lấy vùng xám tính từ điểm `HAT` giữa bàn tay, nới nửa nét viền rồi dò đường bao, 52 điểm.
       - Rive: ống tay tô nâu, viền là nét 5.6 HỞ ở cạnh gốc vai (hoà vào áo như bảng mẫu); bàn tay tô xám kèm nét viền kín; ống tay nằm trên bàn tay.
       - Góc nghiêng: tay nằm trên đuôi khăn, dưới khăn quấn cổ (bảng mẫu). Gốc tay giơ cao kéo dài vào dưới khăn để không hở.
+      - Sửa lỗi góc ¾: bản tay vẽ trên đầu (`tay-gan-tren`) vẫn nhận góc quay của động tác → khi giơ cao bị xoay lệch ~110°, thành tay chéo xuống hông. Giờ `remap()` bỏ khoá xoay của bản này, nó chỉ đi theo dáng tay. Ảnh: `tay-34-dong-tac.png`.
     - **Bản 2 (31/10): dò nguyên đường bao tay từ bảng Higgsfield.** Người sáng lập nhận xét bản 8 điểm "chưa đúng" ở cả 3 góc và cả lúc chuyển động. Đã làm lại:
       - `tach-tay.py`: trong đa giác thô của từng dáng, tách theo màu 3 lớp (viền đen = cả bóng tay, ống tay nâu, bàn tay xám), dò đường bao bằng potrace, lấy mẫu 72, 64, 56 điểm theo chiều dài, bắt đầu ở điểm gần gốc vai, cùng chiều → `nguon/goc/tay-morph.json`. Nhờ vậy ống tay và bàn tay (xoè, chỉ, nắm) đúng hình bảng mẫu.
       - `tay_morph()`: khoá đỉnh mỗi 10 khung, nội suy quay quanh gốc vai (góc + bán kính), nên tay không co ngắn giữa chừng.
