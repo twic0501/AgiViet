@@ -1154,10 +1154,12 @@ def main():
                      f'id="{moi_id()}"><ListenerNumberChange inputId="{vao["nhin_x"]}" value="{v}"/>'
                      f'</StateMachineListenerSingle>')
     if XEM:
-        for j, (ten, v) in enumerate((('Chào', 1), ('Nghỉ', 0))):
-            sid = moi_id()
-            vung.append(f'<Shape x="{128 + 256 * j}" y="24" name="dai-{ten}" id="{sid}"><Rectangle width="256" '
-                        f'height="48" name="P"/><Fill name="F"><SolidColor colorValue="01FFFFFF" name="C"/></Fill></Shape>')
+        # dải 9 ô trên cùng: 0 nghỉ, 1 chào … 8 suy nghĩ (ô chẵn/lẻ đậm nhạt khác nhau để dễ thấy)
+        for v in range(9):
+            ten, sid, w = str(v), moi_id(), 512 / 9
+            mau = '22FFFFFF' if v % 2 else '44FFFFFF'
+            vung.append(f'<Shape x="{w * v + w / 2:.1f}" y="18" name="dai-{ten}" id="{sid}"><Rectangle width="{w:.1f}" '
+                        f'height="36" name="P"/><Fill name="F"><SolidColor colorValue="{mau}" name="C"/></Fill></Shape>')
             nghe += (f'<StateMachineListenerSingle targetId="{sid}" listenerTypeValue="down" name="Hành động {ten}" '
                      f'id="{moi_id()}"><ListenerNumberChange inputId="{vao["hanh_dong"]}" value="{v}"/>'
                      f'</StateMachineListenerSingle>')
