@@ -209,6 +209,13 @@ Theo yêu cầu "làm lẹ", cả 7 hành động dựng một lượt trong `du
 - Ảnh: `docs/trau/chang-2/hanh-dong-1-8.png`, `hanh-dong-doi-qua-lai.png`.
 - **Tay chính diện liền thân (31/10, người sáng lập):** tay buông vẽ kiểu bảng mẫu (mảnh tam giác tách cạnh thân) trông rời, khác tay dang. Sửa trong `tach-tay.py`: dáng buông vẽ lại tay to bằng lúc dang, gốc rộng ở vai, thả dọc hông và ĐÈ lên áo (bàn tay lấy từ ảnh rồi xoay + dời theo cổ tay mới, `CO_TAY_ANH`); dáng ngang / cao kéo gốc ống tay sâu vào thân 20 px (`DAI_GOC`), vì tay phải lật gương không có đuôi khăn che nên từng hở khe ở vai. Ảnh: `tay-chinh-dien-lien-than.png`.
 
+#### Làm lại tay + 8 hành động theo nhận xét Codex (31/10 tối, chờ duyệt)
+Người sáng lập: "form tay không chuẩn mẫu, chuyển động ngờ nghệch" → nhờ Codex soi từng khung (`docs/trau/chang-2/danh-gia-codex-hanh-dong.md`, 2 vòng), Higgsfield vẽ bảng dáng tay mục đích (`docs/trau/tham-chieu/higgsfield-tay-chinh-muc-dich.png`, đã duyệt).
+- Dò tay: `nguon/goc/hf/chinh-dang/d-<dáng>.png` (tay PHẢI màn hình của bảng Higgsfield lật gương — không bị đuôi khăn che); `tach-tay.py` bảng `ONG_CHINH` (buong, ngang, cao, chi, giay, nghi), bàn tay to ×1,1.
+- `dung-v3.py` → `tay_chinh()`: mỗi bên tay nhiều BẢN cùng dáng buông ở đầu: 'co' (buông→ngang→cao, joystick 'Dáng tay <bên>', Nghịch dùng), 'chi' (ngón trỏ), 'giay' (cầm giấy trước ngực, vẽ trên đầu/khăn), 'nghi' (chống má, trên đầu). Bản riêng: joystick 'Dáng tay <bên> <bản>', hành động khoá bằng `bs()`. Giấy chào giá `giay-truoc` giữa ngực.
+- 8 hành động theo chuỗi chuẩn bị → tư thế chính → giữ → thu về (nhịp trong mã). Đổi `hanh_dong` sang giá trị bất kỳ → 'về nghỉ <n>' của hành động đang chạy (tay hạ về buông rồi mới tắt bản riêng) → rỗng → hành động mới: không chồng bản tay. Runtime app đổi 2→3→0→8→2→0: sạch, 0 lỗi.
+- Ảnh: `hanh-dong-1-4-v2.png`, `hanh-dong-5-8-v2.png`, `hanh-dong-doi-qua-lai.png`. `trau-v3.riv` ≈ 500 KB.
+
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
 - **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.

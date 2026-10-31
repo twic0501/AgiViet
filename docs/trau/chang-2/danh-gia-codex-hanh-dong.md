@@ -122,3 +122,45 @@ Tay hiện tại nên gần B, chỉ đung đưa rất nhỏ. Muốn đánh tay 
 3. **Dựng chuyển trọng tâm và khóa chân trụ trước khi diễn mặt.** Che tay/mặt vẫn phải thấy hành động có lực và có điểm tựa.
 4. **Mỗi động tác có chuẩn bị → tư thế chính → giữ → thu về.** Bỏ dao động đều; chào một lần, xin lỗi một lần, mừng một cao trào rõ.
 5. **Duyệt từng hành động ở kích thước dùng thật:** xem silhouette, phát 60 fps, soi thêm khung ngay trước/sau mỗi key pose. Ưu tiên làm đạt **chào → chỉ đường → cầm giấy**, rồi mới nhân sang các động tác còn lại.
+
+---
+
+# Vòng 2 (sau khi thêm bản tay mục đích + dựng lại 8 hành động)
+
+51,028
+Đã đọc nhận xét vòng 1 và đối chiếu mẫu gốc. **Vòng 2 tiến bộ rõ về ý nghĩa dáng tay, nhưng CHƯA ĐẠT để gửi duyệt trọn bộ.** Đánh giá dựa trên ảnh tĩnh; chưa xác nhận độ mượt, đổi bản tay và khóa chân khi phát. Không sửa repo.
+
+**A. Form tay còn lệch gì**
+
+- **Buông:** đã hết kiểu tay dài sát hông. Bàn tay vẫn hơi nhỏ, các ngón thành răng cưa đều; tăng khối lòng bàn tay khoảng **10–15%**, bo ngón mềm hơn.
+- **Ngang/chỉ:** đã đọc được ngón trỏ. Ống tay còn giống thanh thẳng, cổ tay hơi vuông; làm cạnh dưới cong nhẹ và thuôn về cổ tay theo mẫu.
+- **Giơ cao:** gần mẫu hơn nhiều. Tôi chỉnh lại nhận xét vòng 1: **mẫu gốc cho phép xoè chéo, không bắt buộc chữ U**. Chỉ cần mềm đường khuỷu, tránh hai cạnh thẳng song song.
+- **Cầm giấy:** đúng bố cục hai tay trước ngực. Trong ảnh phóng to, hai bàn tay còn như hai miếng chữ nhật ép cạnh giấy; bo khối bàn tay, làm điểm kẹp rõ hơn.
+- **Chống má:** nhận ra ngay, vị trí cạnh mõm phù hợp. Cổ tay–ống tay hơi gãy; làm mềm chỗ nối, giữ tiếp xúc khi đầu nghiêng/gật.
+
+Đổi bản lúc tay buông là hợp lý, nhưng ảnh tĩnh chưa chứng minh được hết hiện tượng bật hình.
+
+**B. Từng hành động**
+
+`k` tính từ trái sang phải mỗi hàng. Các biên độ dưới đây là mức đề nghị thử.
+
+| Hành động | Khung còn yếu và sửa cụ thể |
+|---|---|
+| **1. Chào** | **k3/f56:** tay hạ gần ngang, chen vào giữa hai dáng cao khiến dễ đọc thành chỉ rồi giơ lại. Nâng cực thấp này thêm **10–15°**, giữ bàn tay cao hơn vai. **k2, k4:** dùng được cho giơ tay chào. |
+| **2. Chỉ đường** | **k2–k5/f42–110:** hướng tay rõ, nhưng đầu vẫn chủ yếu nhìn người xem; giống tạo dáng chỉ. Cho mắt dịch sang hướng chỉ khoảng **¼ bề rộng mắt**, đầu theo nhẹ. Giữ nguyên hướng ngón trỏ, không thêm nhún tay. |
+| **3. Cầm giấy** | **k2–k5/f45–120:** cầm đúng nhưng chưa đọc rõ là đang đọc; mắt vẫn hướng trước. Hướng mắt xuống giấy, tăng độ hạ đầu hiện tại khoảng **30%**, tránh ép mõm vào giấy. **k6/f145:** ngẩng lại hợp lý. |
+| **4. Mừng** | **k1/f20 → k2/f33:** có tương phản bật–nén. **k4/f61:** một tay gần ngang, tay kia còn chéo cao, nhìn hơi vung vụng. Khi thu tay, giới hạn lệch hai bên khoảng **10°**, trễ nhau tối đa **2–3f**. |
+| **5. Xin lỗi** | **k2–k4/f38–76:** vẫn giống đứng hiền, cúi chưa đủ rõ. Tăng độ hạ đầu **30–40%**, thêm mắt nhìn xuống và tai cụp nhẹ; giữ điểm thấp **20–28f**. Không tăng nghiêng đầu sang bên để thay cúi. |
+| **6. Chờ** | **k3–k4/f95–132:** nghiêng nhẹ dùng được nhưng chưa rõ chuyển trụ. Tăng dịch hông khoảng **30%**, giữ chân chịu lực cố định. **k6/f207:** chớp mắt ổn. Nhịp nhấc chân nằm giữa các ảnh, chưa đánh giá được. |
+| **7. Đi** | **k2–k4 và k6–k8:** chân chưa tách dáng đủ rõ, vẫn giống đứng lắc. Tăng độ nhấc chân khoảng **50%**, giữ chân trụ bám đất; giữ nhấp nhô thân nhỏ như hiện tại. Tay đã bớt dang vô cớ, nên giữ. |
+| **8. Suy nghĩ** | **k2–k5/f45–120:** chống má đọc tốt. **k3/f70:** nhắm mắt hợp lý. **k5/f120 → k6/f145:** đoạn nhận ra hơi chìm; giữ mắt mở, hai mày nâng **8–12f** trước cú gật. Kiểm tra tay không trượt khỏi má trong đoạn này. |
+
+**C. Kết luận: CHƯA ĐẠT**
+
+Ba việc sửa trước nhất:
+
+1. **Làm rõ xin lỗi và đọc giấy bằng hướng mắt–đầu:** hiện ý nghĩa còn phụ thuộc tên hành động.
+2. **Làm rõ bước đi:** tăng tương phản chân nhấc/chân trụ và kiểm tra bám đất khi phát.
+3. **Sửa cực thấp của chào và đoạn thu tay mừng**, rồi xem clip ở kích thước dùng thật, đặc biệt các khung đổi bản tay.
+
+**Đã sửa theo vòng 2:** chào giữ tay trên vai lúc nhấn; chỉ đường mắt liếc theo tay; cầm giấy đầu cúi thêm 30 %, mắt nhìn xuống giấy; mừng hai tay hạ gần đồng thời; xin lỗi đầu cúi sâu hơn 40 %, mắt nhìn xuống; chờ dịch hông thêm; đi nhấc chân 16 px; suy nghĩ mày nâng + mắt mở 12 khung trước cú gật; bàn tay to thêm 10 %. Đổi hành động luôn qua 'về nghỉ' (không chồng bản tay).

@@ -31,6 +31,21 @@ ONG = {
 }
 # cổ tay trên ẢNH mẫu khi ONG đã vẽ lại khác ảnh: bàn tay lấy từ ảnh được xoay + dời từ cổ tay ảnh sang cổ tay mới
 CO_TAY_ANH = {('chinh', 0): ((121, 363), (156, 389))}
+# Chính diện (31/10 tối, người sáng lập duyệt bảng dáng mục đích): dò từ nguon/goc/hf/chinh-dang/d-<dáng>.png —
+# tay PHẢI màn hình của bảng Higgsfield lật gương (không bị đuôi khăn che) → đúng form mẫu cả cạnh trong.
+# buong/ngang/cao: bản tay chính (3 dáng); chi (ngón trỏ), giay (cầm giấy trước ngực), nghi (chống má): bản tay riêng.
+ONG_CHINH = {
+ 'buong': [[(176,312),(160,326),(142,343),(129,362)], [(165,400)], [(170,375),(177,343),(181,325)]],
+ 'ngang': [[(176,303),(140,304),(110,305),(94,306)], [(94,358)], [(120,360),(150,361),(178,362)]],
+ 'cao': [[(174,300),(155,285),(133,268)], [(98,302)], [(120,322),(150,345),(176,364)]],
+ 'chi': [[(176,300),(150,298),(130,296),(115,295)], [(110,345)], [(135,352),(155,357),(176,362)]],
+ 'giay': [[(178,306),(158,318),(144,340),(146,362),(160,380),(185,386),(208,379)], [(210,343)], [(192,338),(180,334)]],
+ 'nghi': [[(182,350),(163,367),(140,371),(122,357),(120,330),(140,293)], [(187,313)], [(190,330),(188,345)]],
+}
+HAT_CHINH = {'buong': (132, 388), 'ngang': (78, 330), 'cao': (110, 270), 'chi': (97, 320), 'giay': (220, 357),
+             'nghi': (173, 280)}
+HOP_CHINH = {'chi': (50, 282, 117, 352)}   # khung giới hạn bàn tay (ngón trỏ sát tai → vùng xám dính lông đầu)
+SAU_GOC = {'buong': 16, 'ngang': 20, 'cao': 20, 'chi': 20}   # kéo gốc ống tay vào thân (px) — giay/nghi gốc đã sâu
 # điểm nằm giữa bàn tay (vùng xám) để lấy đúng mảng bàn tay
 HAT = {('chinh', 0): (135, 392), ('chinh', 1): (70, 330), ('chinh', 2): (100, 270),
        ('34', 0): (275, 382), ('34', 1): (358, 320), ('34', 2): (318, 236),
@@ -140,37 +155,50 @@ def catmull(pts, n):
     return list(zip(np.interp(t, L, dense[:, 0]).round(2), np.interp(t, L, dense[:, 1]).round(2)))
 
 
+def mot_tay(im, A, C, B, hat, sau=0, co_tay_anh=None, hop=None, to_ban=1.0):
+    """Ống tay (chấm tay A/C/B) + bàn tay (vùng xám quanh hat) trên ảnh 512 → dict ong/ban/goc."""
+    c1, c2 = A[-1], C[0]
+    if sau:
+        mx, my = (c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2
+        rx, ry = (A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2
+        L = math.hypot(rx - mx, ry - my); ux, uy = (rx - mx) / L, (ry - my) / L
+        A = [(A[0][0] + ux * sau, A[0][1] + uy * sau)] + A
+        B = B + [(B[-1][0] + ux * sau, B[-1][1] + uy * sau)]
+    ong = catmull(A, NA) + catmull([c1, c2], NC + 2)[1:-1] + catmull([c2] + B, NB)
+    im = im.resize((512 * P, 512 * P), Image.LANCZOS)
+    nen, toi, nau, xam = lop(im)
+    if hop:
+        m = np.zeros_like(xam); m[hop[1] * P:hop[3] * P, hop[0] * P:hop[2] * P] = True
+        ban = tron(xam & m | (toi & m & tron(xam & m, 3 * P)), 2 * P)   # mọi mảng xám trong khung + nét trong
+        ban = tron(lap_lo(thanh_phan(ban, (hat[0] * P, hat[1] * P)) if ban[hat[1] * P, hat[0] * P] else ban), 1.5 * P)
+    else:
+        ban = thanh_phan(xam, (hat[0] * P, hat[1] * P))
+        ban = tron(lap_lo(ban), 1.5 * P)
+    im2 = Image.fromarray((ban * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(2 * int(VIEN / 2 * P) + 1))
+    ban = np.asarray(im2) > 127
+    pts = [(x / P, y / P) for x, y in bao(ban)]
+    if co_tay_anh:
+        (a1, a2) = co_tay_anh
+        g0 = math.atan2(a2[1] - a1[1], a2[0] - a1[0]); g1 = math.atan2(c2[1] - c1[1], c2[0] - c1[0])
+        co, si = math.cos(g1 - g0), math.sin(g1 - g0)
+        am = ((a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2); nm = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
+        pts = [(nm[0] + co * (x - am[0]) - si * (y - am[1]), nm[1] + si * (x - am[0]) + co * (y - am[1])) for x, y in pts]
+    mc = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
+    if to_ban != 1:   # phóng bàn tay quanh giữa cổ tay (Codex vòng 2: bàn tay nhỏ hơn mẫu)
+        pts = [(mc[0] + (x - mc[0]) * to_ban, mc[1] + (y - mc[1]) * to_ban) for x, y in pts]
+    return {'ong': ong, 'ban': lay_mau(pts, NBAN, mc), 'goc': [(A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2]}
+
+
 def tach(thu_muc):
     out = {}
     for (v, k), (A, C, B) in ONG.items():
-        c1, c2 = A[-1], C[0]
-        if v == 'chinh' and k > 0:   # buông đã vẽ gốc sâu trong thân
-            # chính diện: tay phải lật gương không có đuôi khăn che gốc → kéo gốc ống tay sâu vào thân DAI_GOC px
-            # theo trục tay (cổ tay → vai) để tay luôn dính vai
-            mx, my = (c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2
-            rx, ry = (A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2
-            L = math.hypot(rx - mx, ry - my); ux, uy = (rx - mx) / L, (ry - my) / L
-            A = [(A[0][0] + ux * DAI_GOC, A[0][1] + uy * DAI_GOC)] + A
-            B = B + [(B[-1][0] + ux * DAI_GOC, B[-1][1] + uy * DAI_GOC)]
-        ong = catmull(A, NA) + catmull([c1, c2], NC + 2)[1:-1] + catmull([c2] + B, NB)
+        if v == 'chinh':
+            continue
         im = Image.open(os.path.join(thu_muc, f'{TEP[v]}-{k}.png')).convert('RGB')
-        im = im.resize((512 * P, 512 * P), Image.LANCZOS)
-        nen, toi, nau, xam = lop(im)
-        hx, hy = HAT[(v, k)]
-        ban = thanh_phan(xam, (hx * P, hy * P))
-        ban = tron(lap_lo(ban), 1.5 * P)                     # lấp vết nếp ngón
-        im2 = Image.fromarray((ban * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(2 * int(VIEN / 2 * P) + 1))
-        ban = np.asarray(im2) > 127                            # nới nửa nét viền → viền nằm đúng nét đen
-        pts = [(x / P, y / P) for x, y in bao(ban)]
-        if (v, k) in CO_TAY_ANH:
-            (a1, a2) = CO_TAY_ANH[(v, k)]
-            g0 = math.atan2(a2[1] - a1[1], a2[0] - a1[0]); g1 = math.atan2(c2[1] - c1[1], c2[0] - c1[0])
-            co, si = math.cos(g1 - g0), math.sin(g1 - g0)
-            am = ((a1[0] + a2[0]) / 2, (a1[1] + a2[1]) / 2); nm = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
-            pts = [(nm[0] + co * (x - am[0]) - si * (y - am[1]), nm[1] + si * (x - am[0]) + co * (y - am[1])) for x, y in pts]
-        mc = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
-        out[f'{v}-{k}'] = {'ong': ong, 'ban': lay_mau(pts, NBAN, mc),
-                           'goc': [(A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2]}
+        out[f'{v}-{k}'] = mot_tay(im, A, C, B, HAT[(v, k)])
+    for k, (A, C, B) in ONG_CHINH.items():
+        im = Image.open(os.path.join(DIR, f'nguon/goc/hf/chinh-dang/d-{k}.png')).convert('RGB')
+        out[f'chinh-{k}'] = mot_tay(im, A, C, B, HAT_CHINH[k], SAU_GOC.get(k, 0), hop=HOP_CHINH.get(k), to_ban=1.1)
     out['vien'] = VIEN; out['so'] = [NA, NC, NB]
     p = os.path.join(DIR, 'nguon/goc/tay-morph.json')
     json.dump(out, open(p, 'w'))
