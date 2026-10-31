@@ -225,8 +225,8 @@
         <label class="db-nhan" for="luong" style="margin:0">Lượng<span class="db-nguon" id="ng-luong" hidden></span></label>
         <div class="db-so"><input id="luong" inputmode="decimal" placeholder="0" autocomplete="off">
           <div class="db-doan" id="dv"><button type="button" data-v="kg" aria-pressed="true">kg</button><button type="button" data-v="tan" aria-pressed="false">tấn</button></div></div>
-        <div class="db-doan" id="co-so"><button type="button" data-v="weighed" aria-pressed="true">Đã cân</button><button type="button" data-v="estimated" aria-pressed="false">Ước chừng</button></div>
-        <p class="db-ghi" id="ghi-uoc" hidden>Hàng ước chừng: bên mua đặt tối đa 80% lượng này. Cân xong bác cập nhật lại.</p>
+        <div class="db-doan" id="co-so"><button type="button" data-v="weighed" aria-pressed="false">Đã cân</button><button type="button" data-v="estimated" aria-pressed="true">Ước chừng</button></div>
+        <p class="db-ghi" id="ghi-uoc">Hàng ước chừng: bên mua đặt tối đa 80% lượng này. Cân xong bác cập nhật lại.</p>
       </div>
       <div class="db-cot">
         <span class="db-nhan" style="margin:0">Khi nào bên mua lấy được hàng?</span>
@@ -316,7 +316,7 @@ const veDau = (ten = "Bán hàng mới") => {
 veDau();
 
 // Một bộ thông tin lô, ba cách nhập (nghiên cứu: docs/frontend/nghien-cuu-dang-bai-3-cach.md)
-const st = { sp: null, loai: null, dv: "kg", coSo: "weighed", khiCo: "ngay", anh: [], giaTK: null, sanSua: false, cachLy: new Map(), nk: null, cach: null, nguon: {} };
+const st = { sp: null, loai: null, dv: "kg", coSo: "estimated", khiCo: "ngay", anh: [], giaTK: null, sanSua: false, cachLy: new Map(), nk: null, cach: null, nguon: {} };
 const LUONG = { noi: ["noi", "anh", "xem"], nk: ["nk", "luong", "gia", "anh", "xem"], go: ["luong", "gia", "anh", "xem"] };
 const TEN = { noi: "Trả lời", nk: "Nhật ký", luong: "Lượng, ngày", gia: "Giá", anh: "Ảnh", xem: "Xem lại" };
 let token, man = "dau", ds = [], homNay = new Date().toISOString().slice(0, 10);
@@ -429,7 +429,7 @@ nhom("nk-tinh").forEach((b) => (b.onclick = () => {
   const hai = st.nkHai, x = dongXm();
   if (st.nkTinh === "da-hai") {
     st.khiCo = "ngay";
-    if (hai) { $("luong").value = String(Number(hai.harvested_qty_g) / 1000); datNguon("luong", `nhật ký ${ngayNgan(hai.occurred_on)}`); $("ngay-hai").value = hai.occurred_on; datNguon("hai", "nhật ký"); }
+    if (hai) { $("luong").value = String(Number(hai.harvested_qty_g) / 1000).replace(".", ","); datNguon("luong", `nhật ký ${ngayNgan(hai.occurred_on)}`); $("ngay-hai").value = hai.occurred_on; datNguon("hai", "nhật ký"); }
     // Lượng đã hái chưa chắc còn nguyên, chưa chắc đã cân: để bác xác nhận
     st.coSo = "estimated";
     $("nk-ghi").textContent = hai ? `App điền ${can(Number(hai.harvested_qty_g)).join(" ")} theo lần hái ${ngayNgan(hai.occurred_on)}. Bác đã bán bớt thì sửa lại, có cân thì chọn "Đã cân".` : "Bác nhập lượng còn bán ở bước sau.";
@@ -576,11 +576,13 @@ function nghe() {
   };
   try { r.start(); } catch { ht.ghi = null; }
 }
-const DONG_Y = /^(dạ )?(đúng|phải|đồng ý|ừ|ừa|ờ|ok|oke|được|vâng|rồi|chuẩn)/i, SAI = /^(dạ )?(sai|không|chưa đúng|nói lại|sửa)/i;
+const DONG_Y = /^(dạ |ừ |vâng )?(đúng|phải|đồng ý|ừ|ừa|ờ|ok|oke|được|vâng|rồi|chuẩn)/i, SAI = /^(dạ )?(sai|không|chưa đúng|nói lại|sửa)/i;
+// Câu đồng ý phải ngắn và không có phủ định/sửa ("dạ không, giá đó thấp quá", "đúng loại nhưng lượng sai" KHÔNG phải đồng ý)
+const dongY = (c) => { const t = c.trim().toLowerCase(); return t.split(/\s+/).length <= 4 && !/(không|chưa|sai|nhưng|mà|sửa|khác)/.test(t) && DONG_Y.test(t); };
 async function nhanCau(cau) {
-  if (noi.hieu && DONG_Y.test(cau)) return xacNhanCau();
+  if (noi.hieu && dongY(cau)) return xacNhanCau();
   if (noi.hieu && SAI.test(cau) && cau.split(/\s+/).length <= 3) { noi.hieu = null; $("hieu").hidden = true; kiem(); return hoiVaNghe("Dạ, bác nói lại giúp em."); }
-  if (!noi.hieu && CAU[noi.i]?.k !== "san" && DONG_Y.test(cau) && cau.split(/\s+/).length <= 2) return hoiVaNghe(cauHienTai());
+  if (!noi.hieu && CAU[noi.i]?.k !== "san" && dongY(cau)) return hoiVaNghe(cauHienTai());
   datThe("hieu", "App đang hiểu…");
   await hieuCau(cau);
   if (!ht.bat) return;
@@ -605,9 +607,11 @@ function tatHoiThoai(chu = "Đã tạm dừng. Bấm để nói tiếp.") {
 }
 $("mic").onclick = () => { if (ht.bat) return tatHoiThoai(); ht.bat = true; ht.lanLoi = 0; $("mic").setAttribute("aria-label", "Tạm dừng"); hoiVaNghe(cauHienTai()); };
 $("nghe").onclick = () => noiRa(cauHienTai());
-$("go-form").onsubmit = (e) => { e.preventDefault(); const t = $("go-cau").value.trim(); if (!t) return; $("nghe-duoc").textContent = `“${t}”`; $("nghe-duoc").hidden = false; if (noi.hieu && DONG_Y.test(t)) return xacNhanCau(); hieuCau(t); };
+$("go-form").onsubmit = (e) => { e.preventDefault(); const t = $("go-cau").value.trim(); if (!t) return; $("nghe-duoc").textContent = `“${t}”`; $("nghe-duoc").hidden = false; if (noi.hieu && dongY(t)) return xacNhanCau(); hieuCau(t).then(() => { if (noi.hieu && Object.keys(noi.hieu).length === 1 && (noi.hieu.sanChot || noi.hieu.loai)) xacNhanCau(); }); };
 function khopLoai(cau) {
   const so = { "một": 1, "nhất": 1, "hai": 2, "nhì": 2, "ba": 3, "bốn": 4 };
+  // Câu có phủ định hoặc kèm lượng/giá/ngày → để AI bóc cả câu
+  if (/(không|chưa|nhưng|ký|kg|tạ|tấn|giạ|ngàn|nghìn|triệu|giá|ngày|tuần|tháng|mai|mốt|cân)/i.test(cau)) return null;
   const t = cau.toLowerCase().replace(/\b(một|nhất|hai|nhì|ba|bốn)\b/g, (w) => so[w]);
   for (const d of ds.filter((x) => x.product_code === st.sp)) {
     const ma = d.grade_code, n = ma.match(/^L(\d)$/)?.[1];
@@ -619,7 +623,7 @@ function khopLoai(cau) {
 }
 async function hieuCau(cau) {
   const c = CAU[noi.i];
-  if (c.k === "san" && /^(ừ|ừa|ờ|đúng|được|đồng ý|ok|oke|vâng|dạ)/i.test(cau.trim())) { noi.hieu = { sanChot: true }; return veHieu(); }
+  if (c.k === "san" && dongY(cau)) { noi.hieu = { sanChot: true }; return veHieu(); }
   // Câu ngắn chỉ nói loại ("loại một", "hàng dạt"): hiểu ngay trên máy, không cần AI
   if (c.k === "loai") { const g = khopLoai(cau); if (g) { noi.hieu = { loai: g }; return veHieu(); } }
   $("noi-loi").hidden = true; $("hieu").hidden = false; $("hieu").innerHTML = `<div class="khung-tai" style="margin:8px 0"></div>`;
@@ -629,7 +633,7 @@ async function hieuCau(cau) {
     if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" "));
     const t = j.truong || {}, h = {}, chua = new Set(j.can_xac_nhan || []);
     if (t.loai && ds.some((d) => d.product_code === st.sp && d.grade_code === t.loai.gia_tri)) h.loai = t.loai.gia_tri;
-    if (t.luong_kg) { h.luongKg = Number(t.luong_kg.gia_tri); h.coSo = t.uoc_tinh?.gia_tri === false ? "weighed" : /cân/i.test(cau) && !/chưa cân/i.test(cau) ? "weighed" : "estimated"; }
+    if (t.luong_kg) { h.luongKg = Number(t.luong_kg.gia_tri); h.coSo = /(đã|có) cân|cân rồi/i.test(cau) && !/chưa cân/i.test(cau) ? "weighed" : "estimated"; }   // không nói rõ đã cân thì là ước chừng
     if (t.ngay_giao) { const d = String(t.ngay_giao.gia_tri); h.khiCo = d > homNay ? "sap" : "ngay"; h.ngay = d; h.ngayChuaChac = chua.has("ngay_giao"); }
     else if (/(có hàng ngay|có ngay|hàng sẵn|có sẵn|bây giờ|hôm nay)/i.test(cau) || (c.k === "ngay" && /(ngay|liền|sẵn)/i.test(cau))) h.khiCo = "ngay";
     if (t.gia_mong_muon) { h.gia = Number(t.gia_mong_muon.gia_tri); h.giaChuaChac = chua.has("gia_mong_muon"); }
@@ -654,7 +658,7 @@ function veHieu() {
 function xacNhanCau() {
   const h = noi.hieu; if (!h) return;
   if (h.loai) { st.loai = h.loai; bam("ds-loai", st.loai); }
-  if (h.luongKg) { st.dv = "kg"; $("luong").value = String(h.luongKg); st.coSo = h.coSo; datNguon("luong", "đã nói"); }
+  if (h.luongKg) { st.dv = "kg"; $("luong").value = String(h.luongKg).replace(".", ","); st.coSo = h.coSo; datNguon("luong", "đã nói"); }
   if (h.khiCo) { st.khiCo = h.khiCo; st.noiNgay = true; if (h.khiCo === "sap") { $("ngay-co").value = h.ngay; $("ngay-hai").value = h.ngay; datNguon("hai", "đã nói"); } }
   if (h.gia) { $("gia-muon").value = vnd(h.gia); goiYSan(); }
   if (h.san) { $("gia-san").value = vnd(h.san); st.sanSua = true; st.sanChot = true; }
@@ -721,12 +725,13 @@ async function dangBan() {
     const lo = tao.data || tao;
     let loiAnh = 0;
     for (const [i, a] of st.anh.entries()) {
+      if (a.xong) continue;                       // đã gửi ở lần trước
       a.khoa ||= crypto.randomUUID();
       $("tiep").textContent = `Đang gửi ảnh ${i + 1}/${st.anh.length}…`;
-      try { await lenh("/v1/files", { idempotency_key: a.khoa, entity: "lot", entity_id: lo.id, captured_in_app: a.chup, captured_at: a.chup ? a.luc : undefined, mime: a.du.mime, data_base64: a.du.data_base64 }); }
-      catch { loiAnh++; if (a.chup && !st.anh.some((b) => b.chup && b !== a && !b.loi)) a.loi = true; }
+      try { const f = await lenh("/v1/files", { idempotency_key: a.khoa, entity: "lot", entity_id: lo.id, captured_in_app: a.chup, mime: a.du.mime, data_base64: a.du.data_base64 }); a.xong = f.id || true; }
+      catch { loiAnh++; }
     }
-    if (!st.anh.some((a) => a.chup && !a.loi) || loiAnh === st.anh.length) throw new Error("Chưa gửi được ảnh chụp. Bác kiểm tra mạng rồi bấm Đăng bán lại, lô nháp vẫn được giữ.");
+    if (!st.anh.some((a) => a.chup && a.xong)) throw new Error("Chưa gửi được ảnh chụp. Bác kiểm tra mạng rồi bấm Đăng bán lại, lô nháp vẫn được giữ.");
     khoa.dang ||= crypto.randomUUID();
     await lenh(`/v1/lots/${lo.id}/publish`, { idempotency_key: khoa.dang, expected_revision: tao.revision ?? lo.revision });
     const sapCo = st.khiCo === "sap";
@@ -734,7 +739,7 @@ async function dangBan() {
     if (sapCo) $("xong-chu").textContent = `Bên mua thấy lô "sắp có hàng" từ ${ngayNgan($("ngay-co").value)} và có thể đặt trước.`;
     if (loiAnh) $("xong-chu").textContent += ` ${loiAnh} ảnh chưa gửi được, bác thêm lại trong chi tiết lô.`;
     const cb = tao.data?.canh_bao ?? tao.canh_bao;
-    const chuCb = Array.isArray(cb) ? cb.map((c) => (typeof c === "string" ? c : c?.thong_diep || c?.message || "")).filter(Boolean).join(" ") : typeof cb === "string" ? cb : "";
+    const chuCb = Array.isArray(cb) ? cb.map((c) => (typeof c === "string" ? c : c?.cau || c?.thong_diep || c?.message || "")).filter(Boolean).join(" ") : typeof cb === "string" ? cb : "";
     if (chuCb) { $("xong-canh-bao").textContent = `Lưu ý giá: ${chuCb}`; $("xong-canh-bao").hidden = false; }
     fetch(`/v1/demands?product=${encodeURIComponent(st.sp)}`, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : [])).then((nc) => {
       const khop = (Array.isArray(nc) ? nc : []).filter((n) => n.status === "open" && (n.lines || []).some((d) => d.grade_code === st.loai));

@@ -1,7 +1,7 @@
 // Soát hội thoại rảnh tay: micro + loa giả, không bấm gì sau "Nói để đăng"
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.HOME + "/rnd idea/package.json")("playwright");
-const OUT = process.argv[2], W = Number(process.argv[3] || 390);
+const OUT = process.argv[2] || "/tmp", W = Number(process.argv[3] || 390);
 const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: W, height: 844 }, deviceScaleFactor: 2 });
 const loi = []; p.on("pageerror", (e) => loi.push(e.message));
 await p.addInitScript(() => {
@@ -30,4 +30,5 @@ await p.screenshot({ path: `${OUT}/rt-${W}-3-cho.png` });
 await p.mouse.wheel(0, 500); await p.waitForTimeout(600);
 await p.screenshot({ path: `${OUT}/rt-${W}-4-cho-cuon.png` });
 console.log("LỖI TRANG", JSON.stringify(loi));
+if (loi.length || !(kq.man === "anh" && kq.luong === "200" && kq.gia === "24.000" && kq.san === "21.600") || kq.noi.some((t) => /21\.600/.test(t))) process.exitCode = 1;
 await b.close();

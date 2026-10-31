@@ -450,7 +450,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     try {
       const r = await fetch(`${ht.cfg.aiUrl}/voice/extract`, { method: 'POST', signal: AbortSignal.timeout(6000),
         headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) },
-        body: JSON.stringify({ van_ban: b.van_ban, da_co: b.da_co, hom_nay: ht.dongHo.now().toISOString().slice(0, 10), che_do: 'ket_hop', xung_ho: 'bác' }) });
+        body: JSON.stringify({ van_ban: b.van_ban, da_co: b.da_co, hom_nay: new Date(ht.dongHo.now().getTime() + 7 * 3600e3).toISOString().slice(0, 10), che_do: 'ket_hop', xung_ho: 'bác' }) });
       if (!r.ok) throw new Error(String(r.status));
       return await r.json();
     } catch {
