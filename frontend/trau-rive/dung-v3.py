@@ -58,10 +58,10 @@ def goc_sang_x(th):
 GOC = [  # (tên, tệp, lật gương)
     ('chinh', 'nguon/trau.svg', False),
     # ¾ / nghiêng: bản thân áo không tay (do-goc.py với AGV_KHONG_TAY=1) — tay V4g bọc xương gắn vào (tay_v4g)
-    ('34t', 'nguon/goc/trau-34-trai-khongtay.svg', False),
-    ('ngt', 'nguon/goc/trau-nghieng-trai-khongtay.svg', False),
-    ('34p', 'nguon/goc/trau-34-trai-khongtay.svg', True),
-    ('ngp', 'nguon/goc/trau-nghieng-trai-khongtay.svg', True),
+    ('34t', 'nguon/goc/trau-34-trai.svg', False),
+    ('ngt', 'nguon/goc/trau-nghieng-trai.svg', False),
+    ('34p', 'nguon/goc/trau-34-trai.svg', True),
+    ('ngp', 'nguon/goc/trau-nghieng-trai.svg', True),
 ]
 # huong: khoảng của từng góc; nấc chuẩn để đặt joystick
 NAC = [(-1.0, 'ngt'), (-0.5, '34t'), (0.0, 'chinh'), (0.5, '34p'), (1.0, 'ngp')]
@@ -99,10 +99,11 @@ class Goc:
         self.long = dict(tc.LONG)                          # chuỗi khớp khăn dài (V4g)
         self.xuong = {}                                    # tay da bọc xương: tên → (gx, gy, id nút hình, id xương thân)
         self.morph = {}                                    # tay chính diện: bên → (id joystick-anim đỉnh, …)
+        # Tay: bản ổn định (chốt T2) — tay đã duyệt của từng góc, chỉ xoay cứng biên độ nhỏ (≤ ~30°).
+        # Các cách tay giơ cao (uốn xương tay_da/tay_v4g, biến hình tay_morph) tạm tắt: chưa đạt ở mọi góc;
+        # làm lại bằng bảng tư thế tay cho cả 3 góc rồi mới bật (xem docs/trau/BAN-GIAO-TRAU.md).
         if ten == 'chinh':
-            self.tay_morph(svg)
-        else:
-            self.tay_v4g(ten)
+            self.nach_vao_tay(svg)
         # ¾ / nghiêng: đã thử bọc xương tay đồ-từ-ảnh (31/10) — không đạt: nét tay dính viền áo, bàn tay/cổ tay là
         # mảnh rời nên uốn bị tách (thừa một bàn tay ở ¾, hở tam giác ở nghiêng). Giữ tay xoay cứng biên độ nhỏ;
         # muốn giơ cao ở hai góc này cần vẽ lại tay thành ống tay liền tách khỏi thân như tay V4g, rồi dùng boc_xuong().
@@ -144,6 +145,23 @@ class Goc:
                 self.boc[t] = {'nghich': moi_id()}
         for t, (_, _, _, id_c, _) in self.xuong.items():   # tay da: nút 'nghich' là xương con
             self.boc[t] = {'nghich': id_c}
+
+    def nach_vao_tay(self, svg):
+        """Viền nách V4g (trong thân áo) chuyển sang nhóm tay cùng bên → khi tay đung đưa không lộ vệt đen trên áo."""
+        than = next(g for g in svg.iter(NS + 'g') if g.get('id') == 'than')
+        nach = {e.get('data-role').rsplit('-', 1)[1]: e for e in than
+                if (e.get('data-role') or '').startswith('vien-nach-thuot')}
+        g2 = copy.deepcopy(than)
+        for e in list(g2):
+            if (e.get('data-role') or '').startswith('vien-nach-thuot'):
+                g2.remove(e)
+        x, y, _, nid = self.bp['than']
+        self.bp['than'] = (x, y, tc.bo_phan(g2, {})[2], nid)
+        for ben, e in nach.items():
+            t = f'tay-{ben}'
+            if t in self.bp:
+                gx, gy, ruot, nid = self.bp[t]
+                self.bp[t] = (gx, gy, tc.hinh(e, {}, gx, gy, f'{t}-nach') + ruot, nid)
 
     def tay_morph(self, svg):
         """Tay chính diện biến hình giữa 3 dáng vẽ (TAY_DANG). Nút 'tay-<bên>' (Phụ: đung đưa nhỏ quanh vai) →
@@ -377,8 +395,6 @@ class Goc:
     def tay(self):
         """[(id nghich, chiều 'dang ra')]: tay bên trái màn hình / tay góc nghiêng dang ra = xoay dương."""
         def chieu(t):
-            if self.ten == 'chinh':        # tay biến hình: góc lớn (×2,6) → đổi sang dáng tay (goc_sang_x)
-                return -2.6 if t.startswith('tay-phai') else 2.6
             if self.xuong:                 # ¾ / nghiêng: tay V4g bọc xương
                 return self.dau_tay
             if t.startswith('tay-phai'):

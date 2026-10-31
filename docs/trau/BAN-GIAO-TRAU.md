@@ -150,6 +150,12 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - Xương tay dùng lại id cũ của nút tay, nên mọi hoạt ảnh vẫn chạy như trước, chỉ thêm hệ số ×2,6 vì tay uốn được nên giơ cao được. Riêng phần bật/tắt theo góc phải đặt lên **nút chứa hình** (`g.hien()`), vì xương không có độ mờ.
     - Vươn vai giơ khoảng 1,7 rad, vẫy chào khoảng 1,6 rad (bàn tay ngang tai), giật mình và vui khoảng 1,2–1,3 rad.
     - Đã xoá phần đổi hình (`do-tay.py`, `nguon/goc/tay-chinh.svg`, các ảnh cắt tay). Ảnh mẫu `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` giữ lại để tham khảo dáng.
+    - **31/10, quay về tay ổn định.** Người sáng lập nhận xét "càng ngày càng lỗi, góc nào tay cũng lỗi", và chọn quay về tay ổn định rồi làm lại bài bản. Cả 5 góc dùng tay đã duyệt (chính diện V4g, ¾ và nghiêng theo T1), chỉ xoay cứng biên độ nhỏ (≤ ~30°). Viền nách chính diện đi theo tay (`nach_vao_tay()`). Các cách giơ tay cao bên dưới (uốn xương, đổi hình, biến hình) **đã tắt**, mã giữ lại để tham khảo. Ảnh: `docs/trau/chang-2/tay-on-dinh-5-goc.png`.
+    - **Kế hoạch làm tay giơ cho đúng:**
+      1. Higgsfield sinh bảng tư thế tay (buông, dang ngang, giơ cao, vẫy) cho **cả 3 góc** (chính diện, ¾, nghiêng) từ bản đã duyệt.
+      2. Đồ cùng một kiểu tay, màu và nét V4g.
+      3. Người sáng lập **duyệt ảnh tĩnh từng góc**.
+      4. Rồi mới đưa vào Rive bằng cách biến hình đỉnh cùng cấu trúc, rồi soi toàn bộ khung ở 5 góc.
     - **Tay chính diện biến hình theo 3 dáng Higgsfield** (người sáng lập: "không đúng… giơ tay đối xứng vẽ chuẩn lên"). Uốn xương không cho ra đúng dáng giơ, nên đổi sang cách khác: vẽ 3 dáng ống tay **cùng 8 đỉnh**, đối xứng hai bên (`TAY_DANG`, `TAY_NEP` trong `dung-v3.py`):
       - buông: theo hình chính diện bảng xoay;
       - dang ngang: theo bảng tư thế tay, hình 1;
