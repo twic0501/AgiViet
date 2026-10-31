@@ -777,6 +777,43 @@ await trang("tro-ly-ai", async (p) => {
   console.log("   trả lời AI:", traLoi.replace(/\s+/g, " ").slice(0, 160));
 });
 
+// Để cuối: ghi phun thuốc làm vườn chị Năm vào cách ly (các bài đăng bán "có hàng ngay" phải chạy trước)
+await trang("vuon-nhat-ky", async (p) => {
+  // Sổ vườn: ghi phun thuốc → server tính ngày hết cách ly; sửa dòng cần lý do (dòng cũ vẫn trong lịch sử)
+  const G = "http://127.0.0.1:18980";
+  await p.goto(`${GOC}/thiet-ke/ban-vuon.html?thu=0918000421`);
+  await p.locator(".vu-vuon").first().waitFor({ timeout: 8000 });
+  assert.match(await p.locator(".vu-cac-vuon").innerText(), /cách ly/, "thẻ vườn có tình trạng cách ly");
+  assert.ok(await p.locator(".vu-dong").count() > 0, "có nhật ký mẫu");
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}17-vuon-nhat-ky.png`, fullPage: true });
+  await p.locator("#ghi").click();
+  await p.locator('[data-viec="spray"]').click();
+  await p.locator("#g-ten-thuoc").fill("Thuốc thử E2E");
+  await p.locator("#g-ghi").fill("Phun khu A, 2 bình");
+  await p.locator("#g-luu").click();
+  await p.getByText(/số ngày cách ly/).first().waitFor();
+  await p.locator("#g-cach-ly").fill("5");
+  assert.match(await p.locator("#g-duoc-hai").innerText(), /Được hái bán từ/);
+  await kiemChung(p);
+  await p.locator("#g-luu").click();
+  await p.getByText(/Đã ghi\. Vườn được hái bán từ/).waitFor({ timeout: 10000 });
+  const t = (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const nk = await (await fetch(G + "/v1/farm-diary", { headers: { authorization: "Bearer " + t } })).json();
+  const moi = nk.viec.find((v) => v.medicine_name === "Thuốc thử E2E");
+  assert.ok(moi && moi.withdrawal_days === 5, "server lưu đúng thuốc + 5 ngày cách ly");
+  // Sửa dòng vừa ghi
+  await p.locator(`[data-sua="${moi.id}"]`).click();
+  await p.locator("#g-ghi").fill("Phun khu B, 2 bình");
+  await p.locator("#g-luu").click();
+  await p.getByText("Bác ghi lý do sửa.").waitFor();
+  await p.locator("#g-ly-do").fill("Ghi nhầm khu");
+  await p.locator("#g-luu").click();
+  await p.getByText(/Đã sửa/).waitFor({ timeout: 10000 });
+  const nk2 = await (await fetch(G + "/v1/farm-diary", { headers: { authorization: "Bearer " + t } })).json();
+  assert.ok(nk2.viec.some((v) => v.supersedes_id === moi.id && /khu B/.test(v.note)), "dòng sửa thay dòng cũ");
+});
+
 await browser.close();
 for (const [t, k] of ketQua) console.log(k.startsWith("ĐẠT") ? "✔" : "✖", t, k === "ĐẠT" ? "" : k);
 const dat = ketQua.filter(([, k]) => k === "ĐẠT").length;

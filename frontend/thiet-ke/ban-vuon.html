@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vườn và nhật ký · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  /* Tiền tố vu- (màn vườn, nhật ký) */
+  .vu-khoi { display: grid; gap: 18px; }
+  .vu-cac-vuon { display: grid; gap: 10px; }
+  .vu-vuon { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px; border-radius: 18px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); }
+  .vu-vuon .bieu { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--la-nhat); color: var(--la-dam); }
+  .vu-vuon b { display: block; font-size: 16.5px; }
+  .vu-vuon small { display: block; color: var(--muc-nhat); font-size: 13.5px; margin-top: 2px; }
+  .vu-cl { grid-column: 1 / -1; padding: 10px 12px; border-radius: 12px; font-size: 14px; line-height: 1.4; }
+  .vu-cl.con { background: var(--dau-do-nen); color: var(--dau-do); }
+  .vu-cl.het { background: var(--la-nhat); color: var(--la-dam); }
+  .vu-loc { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .vu-loc button { flex: none; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: 600 14.5px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
+  .vu-loc button[aria-pressed="true"] { background: var(--la); border-color: var(--la); color: var(--tren-la); }
+  .vu-vu { border-radius: 18px; background: var(--vang-lua-nhat); padding: 14px 16px; color: #3a2a0c; }
+  .vu-vu h3 { margin: 0 0 10px; font-size: 15px; }
+  .vu-moc { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .vu-moc div { text-align: center; font-size: 12.5px; }
+  .vu-moc i { display: block; height: 6px; border-radius: 3px; background: rgba(138, 90, 43, .2); margin-bottom: 6px; }
+  .vu-moc .xong i { background: var(--nau-dat); }
+  .vu-moc .xong { font-weight: 700; }
+  .vu-vu p { margin: 10px 0 0; font-size: 14px; }
+  .vu-ngay { display: grid; gap: 8px; }
+  .vu-ngay > h4 { margin: 0; font-size: 13.5px; color: var(--muc-nhat); font-weight: 700; }
+  .vu-dong { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 14px; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); }
+  .vu-dong .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 19px; }
+  .vu-dong b { display: block; font-size: 15.5px; }
+  .vu-dong p { margin: 3px 0 0; font-size: 14px; color: var(--muc-phu); line-height: 1.4; overflow-wrap: anywhere; }
+  .vu-dong small { display: block; margin-top: 4px; font-size: 12.5px; color: var(--muc-nhat); }
+  .vu-dong .sua { min-height: 44px; min-width: 44px; border: 0; background: none; color: var(--la); font: 600 14px/1 var(--chu); cursor: pointer; }
+  .vu-nhan { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 4px; }
+  .vu-nhan.tu { background: var(--giay-lot); color: var(--muc-phu); }
+  .vu-nhan.xn { background: var(--la-nhat); color: var(--la-dam); }
+  .vu-ghi-nut { position: sticky; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 6; }
+  .vu-ghi-nut .nut { width: 100%; min-height: 56px; background: #f4c84e; color: #1f1503; box-shadow: 0 8px 18px -8px rgba(138, 90, 43, .6); }
+  /* Tấm ghi */
+  .vu-che { position: fixed; inset: 0; z-index: 40; background: rgba(15, 22, 17, .45); display: flex; align-items: flex-end; justify-content: center; }
+  .vu-tam { width: 100%; max-width: 480px; max-height: 92dvh; display: flex; flex-direction: column; background: var(--giay); border-radius: 22px 22px 0 0; }
+  .vu-tam .than { overflow: auto; padding: 18px 16px 8px; display: grid; gap: 14px; }
+  .vu-tam h2 { margin: 0; font-size: 20px; }
+  .vu-tam .day { flex-shrink: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--ke); }
+  .vu-tam .nut { min-height: 52px; }
+  .vu-tam .lui { background: transparent; color: var(--muc-phu); box-shadow: inset 0 0 0 1.5px var(--ke-dam); padding: 0 18px; }
+  .vu-viec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .vu-viec button { min-height: 64px; border-radius: 14px; border: 1.5px solid var(--ke); background: var(--giay-noi); font: 600 13.5px/1.2 var(--chu); color: var(--muc); cursor: pointer; display: grid; place-items: center; gap: 2px; padding: 6px 4px; }
+  .vu-viec button span { font-size: 20px; }
+  .vu-viec button[aria-pressed="true"] { border-color: var(--la); box-shadow: 0 0 0 1px var(--la); background: var(--la-nhat); }
+  .vu-nhan-o { display: block; font-size: 14px; font-weight: 600; color: var(--muc-phu); margin-bottom: 8px; }
+  .vu-o { width: 100%; min-height: 52px; border-radius: 14px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 0 14px; font: 500 16px/1.3 var(--chu); color: var(--muc); }
+  textarea.vu-o { padding: 12px 14px; min-height: 84px; resize: vertical; }
+  select.vu-o { appearance: auto; }
+  .vu-hai { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .vu-ghi-chu { display: grid; grid-template-columns: minmax(0, 1fr) 52px; gap: 8px; align-items: start; }
+  .vu-mic { width: 52px; height: 52px; border-radius: 14px; border: 0; background: var(--vang-lua-nhat); color: var(--nau-dat); display: grid; place-items: center; cursor: pointer; }
+  .vu-mic.dang { background: var(--vang-lua); color: #2a1d05; }
+  .vu-bao { padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.45; margin: 0; }
+  .vu-bao.do { background: var(--dau-do-nen); color: var(--dau-do); }
+  .vu-bao.xanh { background: var(--la-nhat); color: var(--la-dam); }
+  .vu-bao.vang { background: var(--vang-lua-nhat); color: #4a3510; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau dau-xanh nen-xanh" id="dau"></header>
+  <main class="noi vu-khoi" id="noi" style="padding-top:20px"><div class="khung-tai" style="height:120px"></div></main>
+</div>
+<script type="module">
+import { esc, phien, giuThamSo, can } from "./chung.js";
+const $ = (id) => document.getElementById(id);
+const VN = { timeZone: "Asia/Ho_Chi_Minh" };
+const VIEC = { spray: ["Phun thuốc", "🧪", "#f4e1dc"], fertilize: ["Bón phân", "🌱", "#e4eedc"], water: ["Tưới", "💧", "#dde8f0"], flower: ["Ra hoa", "🌼", "#f6e6b4"], fruit_set: ["Đậu trái", "🟢", "#dde8df"], harvest: ["Thu hoạch", "🧺", "#efe2d2"], care: ["Chăm sóc", "✂️", "#efe9d9"], pest_incident: ["Sâu bệnh", "🐛", "#f4e1dc"], weather_incident: ["Sự cố thời tiết", "⛈️", "#e6e6ee"] };
+const LOAI_VUON = { orchard: "Vườn", pond: "Ao", field: "Ruộng" };
+let token, du, loc = "tat-ca";
+const ngayDai = (s) => new Date(s + "T00:00:00+07:00").toLocaleDateString("vi-VN", { ...VN, weekday: "long", day: "numeric", month: "numeric", year: "numeric" });
+const ngayNgan = (s) => (s ? `${s.slice(8, 10)}/${s.slice(5, 7)}` : "");
+const congNgay = (s, n) => { const d = new Date(s + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+
+$("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div style="flex:1;min-width:0"><p class="chao">Sổ vườn</p><h1>Vườn và nhật ký</h1></div>`;
+$("dong").onclick = () => (history.length > 1 ? history.back() : (location.href = "./ban-hom-nay.html" + location.search));
+
+async function tai() {
+  token = await phien();
+  const r = await fetch("/v1/farm-diary", { headers: { authorization: "Bearer " + token } });
+  if (!r.ok) throw new Error("Chưa tải được nhật ký. Bác thử lại sau ít phút.");
+  du = await r.json();
+  ve();
+}
+
+function ve() {
+  const viec = du.viec.filter((v) => loc === "tat-ca" || v.site_id === loc);
+  const theoNgay = new Map(); for (const v of viec) theoNgay.set(v.occurred_on, [...(theoNgay.get(v.occurred_on) || []), v]);
+  const tenVuon = (id) => du.co_so.find((c) => c.id === id)?.name || "Vườn";
+  // Mùa vụ năm nay: các mốc đã ghi + sản lượng thu hoạch
+  const nam = du.hom_nay.slice(0, 4), vuNay = viec.filter((v) => v.occurred_on.startsWith(nam));
+  const coViec = (a) => vuNay.some((v) => v.activity === a);
+  const tongThu = vuNay.filter((v) => v.activity === "harvest").reduce((t, v) => t + Number(v.harvested_qty_g || 0), 0);
+  $("noi").innerHTML = `
+    <section class="vu-cac-vuon" aria-label="Vườn của tôi">${du.co_so.map((c) => `<div class="vu-vuon">
+      <span class="bieu" aria-hidden="true">${c.kind === "pond" ? "🐟" : c.kind === "field" ? "🌾" : "🌳"}</span>
+      <div style="min-width:0"><b>${esc(c.name)}</b><small>${esc(LOAI_VUON[c.kind] || "Cơ sở")}${c.area_m2 ? ` · ${Number(c.area_m2).toLocaleString("vi-VN")} m²` : ""}</small></div>
+      ${c.ngay_het_cach_ly_gan_nhat ? `<p class="vu-cl ${c.con_cach_ly ? "con" : "het"}">${c.con_cach_ly ? `<b>Đang cách ly thuốc</b> tới ${esc(ngayDai(c.ngay_het_cach_ly_gan_nhat))}. Chưa hái bán trước ngày này.` : `Đã hết cách ly thuốc từ ${esc(ngayNgan(c.ngay_het_cach_ly_gan_nhat))}.`}</p>` : `<p class="vu-cl het">Chưa ghi lần phun thuốc nào. Phun thì ghi ngay để app tính ngày được hái.</p>`}
+    </div>`).join("") || `<p class="bao">Chưa có vườn nào. Bác bấm Hỗ trợ để nhân viên AgiViet tới khảo sát và khai báo vườn.</p>`}</section>
+    ${du.co_so.length > 1 ? `<div class="vu-loc" role="group" aria-label="Lọc theo vườn"><button type="button" data-loc="tat-ca" aria-pressed="${loc === "tat-ca"}">Tất cả</button>${du.co_so.map((c) => `<button type="button" data-loc="${esc(c.id)}" aria-pressed="${loc === c.id}">${esc(c.name.split(",")[0])}</button>`).join("")}</div>` : ""}
+    <section class="vu-vu" aria-label="Mùa vụ năm ${nam}"><h3>Mùa vụ ${nam}</h3>
+      <div class="vu-moc">${[["flower", "Ra hoa"], ["fruit_set", "Đậu trái"], ["harvest", "Thu hoạch"], ["ban", "Bán"]].map(([a, t]) => `<div class="${a === "ban" ? "" : coViec(a) ? "xong" : ""}"><i></i>${t}</div>`).join("")}</div>
+      <p>${tongThu ? `Đã ghi thu hoạch <b>${esc(can(tongThu).join(" "))}</b> trong năm.` : "Chưa ghi lần thu hoạch nào năm nay."} Ghi đều tay thì bên mua tin hàng hơn.</p></section>
+    <section class="vu-khoi" aria-label="Nhật ký" style="gap:14px">
+      <h2 style="margin:0;font-size:18px">Nhật ký canh tác</h2>
+      ${[...theoNgay].map(([ngay, ds]) => `<div class="vu-ngay"><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
+        const [ten, ic, nen] = VIEC[v.activity] || [v.ten_viec || v.activity, "•", "#efe9d9"];
+        const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, được hái từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";
+        return `<div class="vu-dong"><span class="ic" style="background:${nen}" aria-hidden="true">${ic}</span>
+          <div style="min-width:0"><b>${esc(ten)}<span class="vu-nhan ${v.source === "agiviet_confirmed" ? "xn" : "tu"}">${esc(v.nhan || "Tự ghi")}</span></b>
+            ${chiTiet ? `<p><b style="display:inline;font-size:14px">${chiTiet}</b></p>` : ""}<p>${esc(v.note)}</p>
+            <small>${esc(tenVuon(v.site_id))}${v.recorded_by_name ? ` · ${esc(v.recorded_by_name)} ghi` : ""}${(v.photo_document_ids || []).length ? " · có ảnh" : ""}</small></div>
+          ${v.source === "agiviet_confirmed" ? "" : `<button class="sua" type="button" data-sua="${esc(v.id)}" aria-label="Sửa dòng ${esc(ten)} ngày ${esc(ngayNgan(ngay))}">Sửa</button>`}</div>`;
+      }).join("")}</div>`).join("") || `<p class="bao">Chưa có dòng nhật ký nào. Bấm Ghi việc hôm nay để bắt đầu.</p>`}
+      <p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:0">${esc(du.ghi_chu || "")}</p>
+    </section>
+    <div class="vu-ghi-nut"><button class="nut" type="button" id="ghi">+ Ghi việc hôm nay</button></div>`;
+  document.querySelectorAll("[data-loc]").forEach((b) => (b.onclick = () => { loc = b.dataset.loc; ve(); }));
+  document.querySelectorAll("[data-sua]").forEach((b) => (b.onclick = () => moGhi(du.viec.find((v) => v.id === b.dataset.sua))));
+  $("ghi").onclick = () => moGhi(null);
+}
+
+// ---------- Tấm ghi / sửa ----------
+let traVe = null;
+const phimThoat = (e) => { if (e.key === "Escape") dongTam(); };
+function dongTam() { $("che")?.remove(); document.removeEventListener("keydown", phimThoat); traVe?.focus?.(); }
+function moGhi(cu) {
+  traVe = document.activeElement;
+  const coSo = du.co_so, viecDau = cu?.activity || "care", khoa = crypto.randomUUID();
+  const vuonDau = cu?.site_id || (loc !== "tat-ca" ? loc : coSo[0]?.id);
+  document.body.insertAdjacentHTML("beforeend", `<div class="vu-che man-che" id="che"><div class="vu-tam" role="dialog" aria-modal="true" aria-labelledby="t-ghi">
+    <div class="than"><h2 id="t-ghi">${cu ? "Sửa dòng nhật ký" : "Ghi việc"}</h2>
+      <div><span class="vu-nhan-o">Việc gì?</span><div class="vu-viec" role="group" aria-label="Chọn việc">${Object.entries(VIEC).map(([k, [t, ic]]) => `<button type="button" data-viec="${k}" aria-pressed="${k === viecDau}"><span aria-hidden="true">${ic}</span>${t}</button>`).join("")}</div></div>
+      <div class="vu-hai">
+        <div><label class="vu-nhan-o" for="g-ngay">Ngày</label><input class="vu-o" type="date" id="g-ngay" value="${esc(cu?.occurred_on || du.hom_nay)}" max="${esc(du.hom_nay)}"></div>
+        <div><label class="vu-nhan-o" for="g-vuon">Vườn</label><select class="vu-o" id="g-vuon">${coSo.map((c) => `<option value="${esc(c.id)}" ${c.id === vuonDau ? "selected" : ""}>${esc(c.name.split(",")[0])}</option>`).join("")}</select></div>
+      </div>
+      <div id="g-thuoc" hidden class="vu-hai">
+        <div><label class="vu-nhan-o" for="g-ten-thuoc">Tên thuốc</label><input class="vu-o" id="g-ten-thuoc" value="${esc(cu?.medicine_name || "")}" placeholder="Ghi đúng trên nhãn"></div>
+        <div><label class="vu-nhan-o" for="g-cach-ly">Số ngày cách ly</label><input class="vu-o" id="g-cach-ly" inputmode="numeric" value="${esc(cu?.withdrawal_days ?? "")}" placeholder="Xem trên nhãn"></div>
+        <p class="vu-bao vang" id="g-duoc-hai" style="grid-column:1/-1" hidden></p>
+      </div>
+      <div id="g-thu" hidden><label class="vu-nhan-o" for="g-kg">Thu được bao nhiêu ký?</label><input class="vu-o" id="g-kg" inputmode="decimal" value="${cu?.harvested_qty_g ? Number(cu.harvested_qty_g) / 1000 : ""}" placeholder="Ví dụ: 350"></div>
+      <div><label class="vu-nhan-o" for="g-ghi">Ghi chú</label>
+        <div class="vu-ghi-chu"><textarea class="vu-o" id="g-ghi" maxlength="500" placeholder="Ví dụ: phun khu A sau mưa, 2 bình 16 lít">${esc(cu?.note || "")}</textarea>
+        <button class="vu-mic" type="button" id="g-mic" aria-label="Nói để ghi"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div></div>
+      ${cu ? `<div><label class="vu-nhan-o" for="g-ly-do">Vì sao sửa?</label><input class="vu-o" id="g-ly-do" placeholder="Ví dụ: ghi nhầm ngày" maxlength="200"><p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:6px 0 0">Dòng cũ vẫn được giữ trong lịch sử, bên mua thấy là đã sửa.</p></div>` : ""}
+      <p class="vu-bao do" id="g-loi" hidden></p></div>
+    <div class="day"><button class="nut lui" type="button" id="g-huy">Thôi</button><button class="nut chinh-nut" type="button" id="g-luu">Lưu vào nhật ký</button></div></div></div>`);
+  const che = $("che"); let viec = viecDau, dang = false;
+  che.addEventListener("click", (e) => { if (e.target === che) dongTam(); });
+  document.addEventListener("keydown", phimThoat);
+  const capNhat = () => {
+    che.querySelectorAll("[data-viec]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.viec === viec)));
+    $("g-thuoc").hidden = viec !== "spray"; $("g-thu").hidden = viec !== "harvest";
+    const n = Number($("g-cach-ly").value);
+    $("g-duoc-hai").hidden = !(viec === "spray" && Number.isInteger(n) && n >= 0 && $("g-cach-ly").value !== "");
+    if (!$("g-duoc-hai").hidden) $("g-duoc-hai").textContent = `Được hái bán từ ${ngayDai(congNgay($("g-ngay").value, n))}. App sẽ chặn đăng bán trước ngày này.`;
+  };
+  che.querySelectorAll("[data-viec]").forEach((b) => (b.onclick = () => { viec = b.dataset.viec; capNhat(); }));
+  $("g-cach-ly").oninput = capNhat; $("g-ngay").oninput = capNhat; capNhat();
+  $("g-huy").onclick = dongTam;
+  // Nói để ghi: chữ nghe được nối vào ghi chú
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) $("g-mic").hidden = true;
+  $("g-mic").onclick = () => {
+    const r = new SR(); r.lang = "vi-VN"; $("g-mic").classList.add("dang");
+    r.onresult = (e) => { const t = [...e.results].map((x) => x[0].transcript).join(" "); $("g-ghi").value = ($("g-ghi").value ? $("g-ghi").value + " " : "") + t; };
+    r.onend = () => $("g-mic").classList.remove("dang"); r.start();
+  };
+  $("g-luu").onclick = async () => {
+    if (dang) return; const bao = (m) => { $("g-loi").textContent = m; $("g-loi").hidden = !m; };
+    try {
+      const ghi = $("g-ghi").value.trim(), ngay = $("g-ngay").value;
+      if (!ngay || ngay > du.hom_nay) throw new Error("Bác chọn ngày làm việc (không quá hôm nay).");
+      if (!ghi) throw new Error("Bác ghi vài chữ: làm gì, ở khu nào.");
+      const than = { site_id: $("g-vuon").value, occurred_on: ngay, activity: viec, note: ghi, request_key: khoa };
+      if (viec === "spray") {
+        const n = Number($("g-cach-ly").value);
+        if (!$("g-ten-thuoc").value.trim()) throw new Error("Phun thuốc cần ghi tên thuốc trên nhãn.");
+        if (!Number.isInteger(n) || n < 0 || n > 365 || $("g-cach-ly").value === "") throw new Error("Ghi số ngày cách ly trên nhãn thuốc (0 đến 365).");
+        than.medicine_name = $("g-ten-thuoc").value.trim(); than.withdrawal_days = n;
+      }
+      if (viec === "harvest") {
+        const kg = Number(String($("g-kg").value).replace(/\./g, "").replace(",", "."));
+        if (!(kg > 0)) throw new Error("Thu hoạch cần ghi số ký thu được.");
+        than.harvested_qty_g = String(Math.round(kg * 1000));
+      }
+      if (cu) { const ly = $("g-ly-do").value.trim(); if (!ly) throw new Error("Bác ghi lý do sửa."); than.supersedes_id = cu.id; than.correction_reason = ly; }
+      dang = true; $("g-luu").disabled = true; bao("");
+      const r = await fetch("/v1/farm-diary", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: khoa, ...than }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { const e = j.errors?.[0] || {}; throw new Error([e.message, e.fix].filter(Boolean).join(" ") || "Chưa lưu được, bác thử lại."); }
+      dongTam(); await tai();
+      const b = document.createElement("p"); b.className = "vu-bao xanh"; b.setAttribute("role", "status");
+      const d = j.data || j;
+      const haiTu = viec === "spray" && d.ngay_het_cach_ly_gan_nhat ? ` Vườn được hái bán từ ${ngayDai(d.ngay_het_cach_ly_gan_nhat)}.` : "";
+      b.textContent = cu ? `Đã sửa. Dòng cũ vẫn trong lịch sử.${haiTu}` : haiTu ? `Đã ghi.${haiTu}` : "Đã ghi vào nhật ký.";
+      $("noi").prepend(b); scrollTo({ top: 0 });
+    } catch (e) { bao(e.message); dang = false; $("g-luu").disabled = false; }
+  };
+  che.querySelector("[data-viec][aria-pressed=true]")?.focus();
+}
+
+giuThamSo();
+tai().catch((e) => { $("noi").innerHTML = `<p class="bao loi">${esc(e.message)}</p>`; });
+</script>
+</body>
+</html>
