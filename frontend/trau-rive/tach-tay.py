@@ -40,7 +40,9 @@ ONG_CHINH = {
  'cao': [[(174,300),(155,285),(133,268)], [(98,302)], [(120,322),(150,345),(176,364)]],
  'chi': [[(176,300),(150,298),(130,296),(115,295)], [(110,345)], [(135,352),(155,357),(176,362)]],
  'giay': [[(178,306),(158,318),(144,340),(146,362),(160,380),(185,386),(208,379)], [(210,343)], [(192,338),(180,334)]],
- 'nghi': [[(182,350),(163,367),(140,371),(122,357),(120,330),(140,293)], [(187,313)], [(190,330),(188,345)]],
+ # chống má: chấm theo chiều cẳng tay xoay từ dáng cầm giấy (mép dưới cẳng tay → mép phải, cổ tay dưới → cổ tay phải)
+ # để nội suy giay → nghi không xoắn; cánh tay trên khuất sau cẳng tay nên gốc dồn về khuỷu
+ 'nghi': [[(130,369),(150,371),(166,366),(178,350),(187,331),(187,313)], [(140,293)], [(122,320),(119,340),(124,358),(128,367)]],
 }
 HAT_CHINH = {'buong': (132, 388), 'ngang': (78, 330), 'cao': (110, 270), 'chi': (97, 320), 'giay': (220, 357),
              'nghi': (173, 280)}
@@ -158,6 +160,7 @@ def catmull(pts, n):
 def mot_tay(im, A, C, B, hat, sau=0, co_tay_anh=None, hop=None, to_ban=1.0):
     """Ống tay (chấm tay A/C/B) + bàn tay (vùng xám quanh hat) trên ảnh 512 → dict ong/ban/goc."""
     c1, c2 = A[-1], C[0]
+    A0, B0 = list(A), list(B)        # nét viền dừng ở chỗ tay nối vai (phần kéo sâu vào thân chỉ tô, không viền)
     if sau:
         mx, my = (c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2
         rx, ry = (A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2
@@ -165,6 +168,7 @@ def mot_tay(im, A, C, B, hat, sau=0, co_tay_anh=None, hop=None, to_ban=1.0):
         A = [(A[0][0] + ux * sau, A[0][1] + uy * sau)] + A
         B = B + [(B[-1][0] + ux * sau, B[-1][1] + uy * sau)]
     ong = catmull(A, NA) + catmull([c1, c2], NC + 2)[1:-1] + catmull([c2] + B, NB)
+    vien = catmull(A0, NA) + catmull([c1, c2], NC + 2)[1:-1] + catmull([c2] + B0, NB)
     im = im.resize((512 * P, 512 * P), Image.LANCZOS)
     nen, toi, nau, xam = lop(im)
     if hop:
@@ -186,7 +190,7 @@ def mot_tay(im, A, C, B, hat, sau=0, co_tay_anh=None, hop=None, to_ban=1.0):
     mc = ((c1[0] + c2[0]) / 2, (c1[1] + c2[1]) / 2)
     if to_ban != 1:   # phóng bàn tay quanh giữa cổ tay (Codex vòng 2: bàn tay nhỏ hơn mẫu)
         pts = [(mc[0] + (x - mc[0]) * to_ban, mc[1] + (y - mc[1]) * to_ban) for x, y in pts]
-    return {'ong': ong, 'ban': lay_mau(pts, NBAN, mc), 'goc': [(A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2]}
+    return {'ong': ong, 'vien': vien, 'ban': lay_mau(pts, NBAN, mc), 'goc': [(A[0][0] + B[-1][0]) / 2, (A[0][1] + B[-1][1]) / 2]}
 
 
 def tach(thu_muc):
