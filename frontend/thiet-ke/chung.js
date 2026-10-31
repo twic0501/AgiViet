@@ -14,6 +14,13 @@ export const tenLoai = (ma) => {
   if (am) return `Giống ${am[1]}, ẩm ≤ ${am[2]}%`;
   return m;
 };
+// Cỡ chữ người dùng chọn ở màn Tôi: phóng cả trang (giữ bố cục), áp dụng ngay khi mọi màn nạp chung.js
+export const CO_CHU = [["1", "Bình thường"], ["1.12", "Lớn"], ["1.25", "Rất lớn"]];
+export function datCoChu(v) {
+  try { if (v) localStorage.setItem("agv-co-chu", v); v = localStorage.getItem("agv-co-chu") || "1"; } catch { v = v || "1"; }
+  document.documentElement.style.zoom = v === "1" ? "" : v;
+}
+datCoChu();
 export const CHANG = ["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"];
 
 // Tiền gọn cho thẻ ("41,4 triệu đ"); tienDu cho số đầy đủ (đặt ở title/aria để bác xem chính xác)

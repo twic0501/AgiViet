@@ -475,6 +475,27 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await kiemChung(p);
 }, /Failed to load resource: the server responded with a status of (409|4\d\d)/);   // 409 luật chưa đủ tiền trước bốc, 4xx mã 6 số sai: cố ý kiểm
 
+await trang("toi", async (p) => {
+  // Màn Tôi: hồ sơ, tài khoản nhận tiền, cỡ chữ áp dụng mọi màn, gửi hỗ trợ
+  await p.goto(`${GOC}/thiet-ke/ban-toi.html?thu=0918000421`);
+  await p.locator(".to-ho-so b").waitFor({ timeout: 8000 });
+  assert.match(await p.locator(".to-ho-so").innerText(), /Nguyễn Thị Năm[\s\S]*Chủ hộ/);
+  assert.match(await p.locator("#tk").innerText(), /Agribank \*{4}2186[\s\S]*Đang dùng/);
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}18-toi.png`, fullPage: true });
+  await p.locator('[data-co="1.12"]').click();
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
+  assert.equal(await p.evaluate(() => document.documentElement.style.zoom), "1.12", "cỡ chữ Lớn giữ khi sang màn khác");
+  await p.goto(`${GOC}/thiet-ke/ban-toi.html?thu=0918000421`);
+  await p.locator('[data-co="1"]').click();
+  await p.locator("#gui-ht").click();
+  await p.locator("#ht-noi").fill("Bác cần hỏi cách đổi tài khoản nhận tiền E2E");
+  await kiemChung(p);
+  await p.locator("#ht-gui").click();
+  await p.getByText("Đã gửi. AgiViet sẽ trả lời bác sớm.").waitFor({ timeout: 8000 });
+  assert.match(await p.locator("main").innerText(), /cách đổi tài khoản nhận tiền E2E[\s\S]*trả lời trước/, "yêu cầu mới có hạn phản hồi");
+});
+
 await trang("tin-nhan-tra-loi", async (p) => {
   // Luồng chào giá B3 thật: bên mua chào → bác trả giá → bên mua trả lại → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
   const G = "http://127.0.0.1:18980";

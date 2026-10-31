@@ -567,7 +567,7 @@ function noiRa(cau) {
     if (!("speechSynthesis" in window)) return xong();
     try {
       speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(cau); u.lang = "vi-VN"; u.rate = 0.95;
+      const u = new SpeechSynthesisUtterance(cau); u.lang = "vi-VN"; u.rate = (() => { try { return Number(localStorage.getItem("agv-toc-do-doc")) || 0.95; } catch { return 0.95; } })();
       const giong = speechSynthesis.getVoices().find((v) => /^vi/i.test(v.lang)); if (giong) u.voice = giong;
       const hen = setTimeout(xong, 1500 + cau.length * 90);   // có máy không báo đọc xong
       u.onend = u.onerror = () => { clearTimeout(hen); xong(); };
