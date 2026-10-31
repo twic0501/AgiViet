@@ -201,6 +201,13 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
 - **Xem thử:** `rive frontend/trau-rive/xem-v3`, bấm dải trên cùng: nửa trái là chào, nửa phải là nghỉ. Kiểm bằng ảnh: `AGV_HD=1 AGV_HUONG=<h> python3 dung-v3.py`.
 - **Còn:** 2 chỉ đường, 3 cầm giấy đọc, 4 mừng, 5 xin lỗi, 6 chờ, 7 đi, 8 suy nghĩ (theo thứ tự ưu tiên ở `docs/KE-HOACH-SONG-SONG.md`).
 
+#### Hành động 2–8 ở góc chính diện (31/10 tối, chờ duyệt)
+Theo yêu cầu "làm lẹ", cả 7 hành động dựng một lượt trong `dung-v3.py` (`HANH_DONG`), mỗi cái là một trạng thái lặp của lớp 'Hành động':
+2 chỉ đường (tay phải dang chỉ, nhấn 2 nhịp, người nghiêng + đầu quay theo) · 3 cầm giấy (giấy chào giá trong tay phải, cúi đọc gật gù) · 4 mừng (hai tay giơ cao, nhảy 2 nhịp, mắt cười) · 5 xin lỗi (khom, cúi đầu, mày chau, tai cụp) · 6 chờ (đung đưa, gõ chân, ngó quanh) · 7 đi (bước tại chỗ, chân luân phiên nhấc 14 px, nhấp nhô) · 8 suy nghĩ (ngẩng nghiêng đầu, một mày nhướng, mắt nheo).
+- `tay_k(g, bên, [(khung, mức)])`: mức 0 buông · .42 ngang · .73 cao. `chan_k`: nhấc chân.
+- 'Hành động: về nghỉ' (20 khung): khi `hanh_dong` về 0, đưa mọi thuộc tính đã khoá về gốc rồi mới trả cho nghỉ sống; mỗi hành động cũng tự khoá gốc các thuộc tính nó không dùng → đổi thẳng 3 → 5 không sót tờ giấy. Kiểm runtime app (đổi 3 → 5 → 4 → 0): sạch, 0 lỗi.
+- Ảnh: `docs/trau/chang-2/hanh-dong-1-8.png`, `hanh-dong-doi-qua-lai.png`.
+
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
 - **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.
