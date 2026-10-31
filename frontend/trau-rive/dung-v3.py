@@ -288,8 +288,14 @@ class Goc:
         MAU = {'vien': 'FF24190F', 'ong': 'FFC48F65', 'ban': 'FF84736B'}
         NET = du.get('vien', 5.6)
 
-        def bien_hinh(ten_, dang, goc_, khung, px, py, thang=False):
+        import importlib.util as _iu
+        _sp = _iu.spec_from_file_location('xuong_tay', os.path.join(DIR, 'xuong_tay.py'))
+        xt = _iu.module_from_spec(_sp); _sp.loader.exec_module(xt)
+
+        def bien_hinh(ten_, dang, goc_, khung, px, py, thang=False, xuong=None):
             def noi(k0, k1, tt, ly, j):
+                if xuong:     # tay gập khuỷu: nội suy theo khung xương (vai, khuỷu, cổ tay) → như tay thật đang gập
+                    return xt.noi_xuong(dang[k0][ly][j], dang[k1][ly][j], xuong[k0], xuong[k1], tt, ly == 'ban')
                 if (thang[k0] if isinstance(thang, tuple) else thang):   # nội suy thẳng (tay gập khuỷu: quay quanh vai làm ống tay bẹp)
                     a_, b_ = dang[k0][ly][j], dang[k1][ly][j]
                     return (a_[0] * (1 - tt) + b_[0] * tt, a_[1] * (1 - tt) + b_[1] * tt)
@@ -334,8 +340,13 @@ class Goc:
             D = {k: lay(k) for k in ('buong', 'ngang', 'cao', 'chi', 'giay', 'nghi')}
             px, py = D['buong'][1]
 
-            def ban_sao(kieu, cac, khung, thang=False):
-                return bien_hinh(f'{t}-{kieu}', [D[k][0] for k in cac], [D[k][1] for k in cac], khung, px, py, thang)
+            # khung xương (vai, khuỷu, giữa cổ tay) của từng dáng, toạ độ tay trái màn hình (bên phải lật gương)
+            XUONG = {'buong': ((178, 318), (160, 352), (147, 381)), 'giay': ((178, 318), (148, 368), (209, 361)),
+                     'nghi': ((180, 332), (136, 366), (163, 303))}
+
+            def ban_sao(kieu, cac, khung, thang=False, xuong=False):
+                xg = [tuple((X(a), b) for a, b in XUONG[k]) for k in cac] if xuong else None
+                return bien_hinh(f'{t}-{kieu}', [D[k][0] for k in cac], [D[k][1] for k in cac], khung, px, py, thang, xg)
             r_co, k_co = ban_sao('co', ('buong', 'ngang', 'cao'), (0, 60, 120))
             ids = {k: moi_id() for k in ('co', 'chi', 'giay', 'nghi')}
             ruot = node(f'{t}-co', ids['co'], 0, 0, r_co)
@@ -346,21 +357,34 @@ class Goc:
             lo = [(130, 150), (382, 150), (382, 300), (344, 305), (343, 330), (300, 350), (205, 348), (200, 440),
                   (148, 440), (165, 330), (172, 305), (130, 300)]
             ngoai = [(-400, -400), (900, -400), (900, 900), (-400, 900)]
-            che_hinh = (f'<Shape x="0" y="0" name="{t}-nguon-che" id="{nguon_che}">'
+            lo2 = [(130, 150), (382, 150), (382, 300), (344, 305), (343, 332), (310, 346), (305, 312), (207, 312),
+                   (202, 346), (172, 332), (172, 305), (130, 300)]
+            nguon_che2 = moi_id()
+
+            def nguon(nid_, lo_):
+                return (f'<Shape x="0" y="0" name="{t}-nguon-che" id="{nid_}">'
                         + ''.join(f'<PointsPath isClosed="true" name="P">'
                                   + ''.join(f'<StraightVertex x="{a_ - px:.2f}" y="{b_ - py:.2f}"/>' for a_, b_ in vg)
-                                  + '</PointsPath>' for vg in (ngoai, lo)) + '</Shape>')
-            tren = che_hinh
+                                  + '</PointsPath>' for vg in (ngoai, lo_)) + '</Shape>')
+            tren = nguon(nguon_che, lo) + nguon(nguon_che2, lo2)
             for kieu in ('chi', 'giay', 'nghi'):
                 if kieu == 'nghi':   # lên má qua dáng ôm trước ngực (không quét ngang)
-                    r_, k_ = ban_sao(kieu, ('buong', 'giay', 'nghi'), (0, 60, 120), thang=(True, True))
+                    r_, k_ = ban_sao(kieu, ('buong', 'giay', 'nghi'), (0, 60, 120), xuong=True)
                 else:
-                    r_, k_ = ban_sao(kieu, ('buong', kieu), (0, 120), thang=(kieu == 'giay'))
+                    r_, k_ = ban_sao(kieu, ('buong', kieu), (0, 120), xuong=(kieu == 'giay'))
                 if kieu != 'chi':
-                    cid = moi_id()
-                    r_ = f'<ClippingShape sourceId="{nguon_che}" fillRule="evenOdd" name="che" id="{cid}"/>' + r_
-                    k_ = k_ + [f'<KeyedObject objectId="{cid}"><KeyedProperty property="isVisible">'
-                               f'<KeyFrameBool value="true" frame="0"/><KeyFrameBool value="false" frame="22"/>'
+                    # che 1 (đầu + khăn + đuôi khăn) lúc gần buông; che 2 (đầu + hai đầu khăn quấn) lúc ôm trước ngực
+                    # → đỉnh vai luôn dưới khăn; chống má (cuối 'nghi') bỏ che để bàn tay nằm trên má
+                    c1, c2 = moi_id(), moi_id()
+                    f1, f2 = (11, 70) if kieu == 'nghi' else (22, 999)
+                    r_ = (f'<ClippingShape sourceId="{nguon_che}" fillRule="evenOdd" name="che" id="{c1}"/>'
+                          f'<ClippingShape sourceId="{nguon_che2}" fillRule="evenOdd" isVisible="false" name="che2" id="{c2}"/>' + r_)
+                    k2 = f'<KeyFrameBool value="false" frame="0"/><KeyFrameBool value="true" frame="{f1}"/>' + \
+                        (f'<KeyFrameBool value="false" frame="{f2}"/>' if f2 < 999 else '')
+                    k_ = k_ + [f'<KeyedObject objectId="{c1}"><KeyedProperty property="isVisible">'
+                               f'<KeyFrameBool value="true" frame="0"/><KeyFrameBool value="false" frame="{f1}"/>'
+                               f'</KeyedProperty></KeyedObject>',
+                               f'<KeyedObject objectId="{c2}"><KeyedProperty property="isVisible">{k2}'
                                f'</KeyedProperty></KeyedObject>']
                 n_ = node(f'{t}-{kieu}', ids[kieu], 0, 0, r_, ' opacity="0"')
                 if kieu == 'chi':
