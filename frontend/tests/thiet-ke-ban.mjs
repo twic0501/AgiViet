@@ -448,12 +448,32 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   assert.ok(dv.ket_qua.at(-1).lines.some((x) => x.status === "disputed") || dv.status !== "awaiting_seller", "dòng bị phản đối được ghi nhận");
   }
 
+  // 4. Bàn giao tại vườn: người nhận bên mua mở mã 6 số trên app của họ, bác nhập để bắt đầu cân
+  const g = await tim("0918000421", "0008", (ct) => ct.dot_giao?.some((d) => d.status === "ready"));
+  const dotG = g.ct.dot_giao.find((d) => d.status === "ready");
+  const tNhan = await dn("0903000411");
+  const ma = await (await fetch(`${G}/v1/deliveries/${dotG.id}/receipt-qr`, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tNhan }, body: JSON.stringify({ idempotency_key: crypto.randomUUID() }) })).json();
+  const ma6 = (ma.data || ma).ma_6_so;
+  assert.match(String(ma6), /^\d{6}$/, "người nhận có mã 6 số");
+  await mo("0918000421", g.o.id);
+  assert.match(await p.locator(".hd-viec").innerText(), /nhập mã 6 số/);
+  await p.locator("#viec-chinh").click();
+  await kiemChung(p);
+  await p.locator('[data-r="ma6"]').fill(ma6 === "000000" ? "111111" : "000000");
+  await p.locator('[data-r="tiep"]').click();
+  await p.getByText(/Mã không đúng đợt này|Mã 6 số không đúng/).waitFor({ timeout: 8000 });
+  await p.locator('[data-r="ma6"]').fill(ma6);
+  await p.locator('[data-r="tiep"]').click();
+  await p.getByText(/Đã mở bước cân/).waitFor({ timeout: 10000 });
+  const sauBg = await (await fetch(`${G}/v1/deliveries/${dotG.id}`, { headers: { authorization: "Bearer " + g.t } })).json();
+  assert.equal(sauBg.status, "checking", "đợt chuyển sang đang cân");
+
   // Danh sách hợp đồng
   await p.goto(`${GOC}/thiet-ke/ban-hop-dong.html?thu=0939000160`);
   await p.locator(".the-hd").first().waitFor();
   assert.match(await p.locator(".the-hd").first().getAttribute("href"), /ban-don\.html\?id=.*thu=/, "thẻ mở chi tiết, giữ tài khoản thử");
   await kiemChung(p);
-}, /Failed to load resource: the server responded with a status of 409/);   // 409 = luật chưa đủ tiền trước bốc, cố ý kiểm
+}, /Failed to load resource: the server responded with a status of (409|4\d\d)/);   // 409 luật chưa đủ tiền trước bốc, 4xx mã 6 số sai: cố ý kiểm
 
 await trang("tin-nhan-tra-loi", async (p) => {
   // Luồng chào giá B3 thật: bên mua chào → bác trả giá → bên mua trả lại → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán

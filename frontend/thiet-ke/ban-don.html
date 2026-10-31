@@ -149,6 +149,8 @@ function viecChinh() {
   if (don.hanh_dong?.includes("sign")) return { chu: "Ký hợp đồng", mo: moKy, phu: "Đọc kỹ cam kết rồi ký bằng mã OTP gửi về điện thoại." };
   const khoan = tienDon?.__loi ? null : (tienDon?.khoan_tra_thang || []).find((k) => k.direction === "buyer_to_seller" && Number(k.reported_vnd) > Number(k.confirmed_vnd || 0) && !["mismatch", "closed", "cancelled"].includes(k.status));
   if (khoan) return { chu: "Kiểm tiền và xác nhận", mo: () => moTien(khoan), phu: `Bên mua báo đã chuyển ${vnd(khoan.reported_vnd)} đ vào tài khoản ${khoan.payee_account_masked}.` };
+  const bg = don.dot.find((d) => d.hanh_dong?.includes("start_check") || d.hanh_dong?.includes("dispatch"));
+  if (bg) return { chu: "Bàn giao hàng", mo: () => moBanGiao(bg), phu: bg.hanh_dong.includes("start_check") ? `Đợt ${bg.batch_no} sẵn sàng. Người nhận của bên mua tới, bác nhập mã 6 số trên app của họ để bắt đầu cân tại chỗ.` : `Đợt ${bg.batch_no} sẵn sàng xuất. Nhập mã 6 số của người nhận, số ký đã bốc và biển số xe.` };
   const dot = don.dot.find((d) => d.hanh_dong?.includes("agree_acceptance"));
   if (dot) return { chu: "Xem kết quả cân", mo: () => moCan(dot), phu: `Đợt ${dot.batch_no}: bên mua đã nhập kết quả cân, chờ bác đồng ý hoặc báo dòng không đúng.` };
   return null;
@@ -185,6 +187,8 @@ function ve() {
   $("viec-chinh")?.addEventListener("click", viec.mo);
   $("tu-choi")?.addEventListener("click", moTuChoi);
   document.querySelectorAll("[data-tai-lai]").forEach((b) => (b.onclick = () => tai().catch((e) => alertLoi(e))));
+  document.querySelectorAll("[data-ban-giao]").forEach((b) => (b.onclick = () => moBanGiao(don.dot.find((d) => d.id === b.dataset.banGiao))));
+  document.querySelectorAll("[data-dat-xe]").forEach((b) => (b.onclick = () => moDatXe(don.dot.find((d) => d.id === b.dataset.datXe))));
   document.querySelectorAll("[data-can]").forEach((b) => (b.onclick = () => moCan(don.dot.find((d) => d.id === b.dataset.can))));
   document.querySelectorAll("[data-khoan]").forEach((b) => (b.onclick = () => moTien(tienDon.khoan_tra_thang.find((x) => x.id === b.dataset.khoan))));
 }
@@ -218,6 +222,8 @@ function veGiao() {
       ${d.the_san_sang ? `<div class="hd-ss" aria-label="Điều kiện để bốc hàng">${d.the_san_sang.map((s) => `<div><span class="${s.ok ? "ok" : "chua"}">${s.ok ? "✓" : "•"}</span><span>${esc(s.ten)}${s.ok ? "" : `<small>${esc(s.ly_do || "Chưa xong")}</small>`}</span></div>`).join("")}</div>` : ""}
       ${kq ? `<div class="hd-dong"><span>Cân được</span><b>${esc(can(kq.weighed_g).join(" "))}</b><small>${kq.seller_agreed ? "Bác đã ký biên bản nghiệm thu." : kq.buyer_agreed ? "Bên mua đã ký, chờ bác." : ""}</small></div>` : ""}
       ${d.hanh_dong?.includes("agree_acceptance") ? `<div style="padding:4px 0 14px"><button class="nut chinh-nut" type="button" data-can="${esc(d.id)}">Xem kết quả cân</button></div>` : ""}
+      ${d.hanh_dong?.some((h) => h === "start_check" || h === "dispatch") ? `<div style="padding:4px 0 14px"><button class="nut chinh-nut" type="button" data-ban-giao="${esc(d.id)}">Bàn giao hàng</button></div>` : ""}
+      ${d.the_san_sang?.some((x) => x.ma === "xe" && !x.ok) && ["seller", "partner_for_seller"].includes(don.dieu_khoan?.transport_by) ? `<div style="padding:0 0 14px"><button class="nut phu-nut" type="button" data-dat-xe="${esc(d.id)}" style="width:100%">Báo xe chở đợt này</button></div>` : ""}
     </section>`;
   }).join("");
 }
@@ -412,6 +418,67 @@ function moTien(k) {
     });
     const anh = r("anh");
     if (anh) fetch(`/v1/documents/${k.evidence_document_ids[0]}/file`, H()).then(async (f) => { if (!goc.isConnected) return; if (f.ok) anh.src = URL.createObjectURL(await f.blob()); else anh.remove(); }).catch(() => anh.isConnected && anh.remove());
+  });
+}
+
+// Bàn giao: người nhận của bên mua mở mã trên app của họ; bác đối chiếu rồi nhập 6 số (QR là cùng mã, quét bằng app người nhận)
+const LOI_MA = { QR_KHONG_DUNG_DOT: "Mã không đúng đợt này. Bác hỏi lại người nhận mã trên app của họ.", QR_BI_KHOA: "Nhập sai 3 lần nên tạm khóa 15 phút. Bác gọi bên mua hoặc AgiViet nếu cần gấp.", QR_HET_HAN: "Mã đã hết hạn hoặc đã dùng. Người nhận bấm làm mới mã trên app.", NGUOI_NHAN_KHONG_CHI_DINH: "Bên mua chưa chỉ định người nhận. Bác nhắn bên mua trước khi giao." };
+function moBanGiao(d) {
+  const taiCho = d.hanh_dong.includes("start_check");
+  moTam(`<div class="than"><h2 id="t-bg">Bàn giao đợt ${esc(d.batch_no)} · ${esc(can(d.planned_qty_g).join(" "))}</h2>
+    <ol class="hd-ls" style="padding-bottom:0">
+      <li>Người nhận của <b>${esc(don.buyer?.display_name)}</b> mở mục "Mã nhận hàng" trên app của họ.</li>
+      <li>Bác xem đúng người, đúng tên công ty, rồi nhập 6 số hiện trên máy họ.</li>
+      <li>${taiCho ? "Hai bên cùng cân tại chỗ. Bên mua nhập kết quả, bác xem rồi ký." : "Bác bốc hàng lên xe, ghi số ký và biển số. Hàng được cân lại ở nơi đến."}</li>
+    </ol>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="ma6">Mã 6 số của người nhận</label>
+      <input class="hd-otp" id="ma6" data-r="ma6" inputmode="numeric" maxlength="6" autocomplete="off"></div>
+    ${taiCho ? "" : `<div class="hd-khoi" style="gap:10px">
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="kg-boc">Số ký đã bốc lên xe</label><input class="hd-o" id="kg-boc" data-r="kg" inputmode="decimal" placeholder="Ví dụ: 1.020"></div>
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-so">Biển số xe</label><input class="hd-o" id="bien-so" data-r="bien" autocomplete="off" placeholder="Ví dụ: 66C-123.45"></div>
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="niem">Số niêm phong (nếu có)</label><input class="hd-o" id="niem" data-r="niem" autocomplete="off"></div></div>`}
+    <p class="hd-bao vang">Không đưa hàng cho người không có mã. Ai nhận hàng mà không qua mã thì AgiViet không bảo vệ được bác khi có tranh chấp.</p>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut vang" type="button" data-r="tiep">${taiCho ? "Bắt đầu cân" : "Xác nhận xuất hàng"}</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-bg");
+    let dang = false;
+    r("huy").onclick = dongTam;
+    r("tiep").onclick = async () => {
+      if (dang) return; dang = true; r("tiep").disabled = true; baoTam("");
+      try {
+        const ma6 = r("ma6").value.trim();
+        if (!/^\d{6}$/.test(ma6)) throw new Error("Bác nhập đủ 6 số người nhận đọc cho.");
+        if (taiCho) {
+          await lenh(`/v1/deliveries/${d.id}/start-check`, { ma_6_so: ma6 }, "bat-dau-can");
+          return xongViec("Đã mở bước cân. Hai bên cùng cân, bên mua nhập kết quả, bác xem rồi ký ở đây.");
+        }
+        const kg = Number(String(r("kg").value).replace(/\./g, "").replace(",", "."));
+        if (!(kg > 0)) throw new Error("Bác ghi số ký đã bốc lên xe.");
+        if (!r("bien").value.trim()) throw new Error("Bác ghi biển số xe chở hàng.");
+        await lenh(`/v1/deliveries/${d.id}/ship`, { ma_6_so: ma6, loaded_g: String(Math.round(kg * 1000)), plate_no: r("bien").value.trim().toUpperCase(), seal_code: r("niem").value.trim() || undefined }, "xuat-hang");
+        xongViec("Đã xuất hàng. Hàng được cân lại ở nơi đến, AgiViet báo kết quả cho bác.");
+      } catch (e) { baoTam(LOI_MA[e.ma] || e.message); }
+      dang = false; if (r("tiep")) r("tiep").disabled = false;
+    };
+  });
+}
+function moDatXe(d) {
+  moTam(`<div class="than"><h2 id="t-xe">Xe chở đợt ${esc(d.batch_no)}</h2>
+    <p class="hd-ghi">Hợp đồng ghi bác lo xe. Báo biển số để người nhận đối chiếu khi giao.</p>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-xe">Biển số xe</label><input class="hd-o" id="bien-xe" data-r="bien" autocomplete="off" placeholder="Ví dụ: 66C-123.45"></div>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="cuoc">Cước xe (nếu có, đồng)</label><input class="hd-o" id="cuoc" data-r="cuoc" inputmode="numeric" placeholder="0"></div>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut chinh-nut" type="button" data-r="gui">Báo xe</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-xe");
+    r("huy").onclick = dongTam;
+    r("gui").onclick = async () => {
+      r("gui").disabled = true; baoTam("");
+      try {
+        const bien = r("bien").value.trim().toUpperCase(); if (!bien) throw new Error("Bác ghi biển số xe.");
+        await lenh(`/v1/deliveries/${d.id}/trip`, { plate_no: bien, freight_vnd: r("cuoc").value.replace(/\D/g, "") || undefined }, "dat-xe");
+        xongViec(`Đã báo xe ${bien} cho đợt ${d.batch_no}.`);
+      } catch (e) { baoTam(e.ma === "DU_LIEU_KHONG_HOP_LE" ? "Biển số này chưa có trong danh sách xe. Bác nhờ AgiViet thêm xe trước." : e.message); r("gui").disabled = false; }
+    };
   });
 }
 
