@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hợp đồng của tôi · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  .hl-nhom { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
+  .hl-nhom > h2 { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; color: var(--muc-phu); }
+  .hl-nhom > h2 b { font-size: 12.5px; padding: 2px 8px; border-radius: 999px; background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  .hl-nhom .the-hd { margin-top: 0; }
+  .the-hd.bac { box-shadow: inset 4px 0 0 var(--vang-lua); }
+  .the-hd .han { margin-top: 8px; font-size: 13.5px; color: var(--chin); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .hl-trong { text-align: center; padding: 28px 12px; color: var(--muc-phu); }
+  .hl-trong a { margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="trang">
+  <header class="dau dau-xanh nen-xanh" id="dau"></header>
+  <main class="noi" id="noi" style="gap:22px;padding-top:20px"><div class="khung-tai" style="height:120px"></div></main>
+</div>
+<script type="module">
+import { esc, phien, giuThamSo, tien, tienDu, CHANG, chiSoChang, viecCho, dangLam, LUOT } from "./chung.js";
+const $ = (id) => document.getElementById(id);
+$("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div style="flex:1;min-width:0"><p class="chao">Sổ hợp đồng</p><h1>Hợp đồng của tôi</h1></div>`;
+$("dong").onclick = () => (history.length > 1 ? history.back() : (location.href = "./ban-hom-nay.html" + location.search));
+const chuTat = (s) => String(s || "").split(/\s+/).filter((w) => /^[A-ZĐÀ-Ỹ]/.test(w)).slice(-2).map((w) => w[0]).join("") || "?";
+
+function the(d) {
+  const k = chiSoChang(d), [lop, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"], bac = d.hien_thi?.toi_luot?.phia === d.phia_cua_ban;
+  return `<a class="the-hd ${bac && dangLam(d) ? "bac" : ""}" href="./ban-don.html?id=${encodeURIComponent(d.id)}">
+    <div class="hang"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
+      <span class="giua"><span class="ten">${esc(d.buyer_name)}</span><span class="phu">${esc(d.code)} · ${esc(d.hien_thi?.ten || d.status)}</span></span>
+      <span class="gia" title="${esc(tienDu(d.contract_value_vnd))}">${esc(tien(d.contract_value_vnd))}</span></div>
+    ${dangLam(d) ? `<div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
+    <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
+    <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div>` : ""}</a>`;
+}
+
+async function tai() {
+  const token = await phien();
+  const r = await fetch("/v1/orders", { headers: { authorization: "Bearer " + token } });
+  if (!r.ok) throw new Error("Chưa tải được hợp đồng. Bác kéo xuống để tải lại.");
+  const ds = await r.json();
+  const bac = ds.filter((d) => dangLam(d) && d.hien_thi?.toi_luot?.phia === d.phia_cua_ban);
+  const chay = ds.filter((d) => dangLam(d) && !bac.includes(d));
+  const xong = ds.filter((d) => !dangLam(d));
+  const nhom = (ten, ds_, nhanSo) => ds_.length ? `<section class="hl-nhom"><h2>${esc(ten)}${nhanSo ? ` <b>${ds_.length}</b>` : ""}</h2>${ds_.map(the).join("")}</section>` : "";
+  $("noi").innerHTML = ds.length ? nhom("Cần bác làm", bac, true) + nhom("Đang chạy, chờ bên kia", chay) + nhom("Đã xong / đã đóng", xong)
+    : `<div class="hl-trong"><p>Chưa có hợp đồng nào. Khi bác đồng ý một lời chào giá, hợp đồng hiện ở đây để ký.</p><a class="nut chinh-nut" href="./ban-tin-nhan.html${esc(location.search)}" style="text-decoration:none">Xem lời chào giá</a></div>`;
+  giuThamSo($("noi"));
+}
+giuThamSo();
+tai().catch((e) => { $("noi").innerHTML = `<p class="bao loi">${esc(e.message)}</p>`; });
+</script>
+</body>
+</html>

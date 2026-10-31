@@ -165,7 +165,8 @@ await trang("hom-nay", async (p) => {
 });
 
 await trang("hom-nay-chua-co-hop-dong", async (p) => {
-  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0939000120`);
+  // Hộ Đặng Thị Bích: không dùng trong các tình huống hợp đồng của E2E (0939000120 là tình huống demo 0002)
+  await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0966000520`);
   await p.getByText("Chưa có hợp đồng nào").waitFor({ timeout: 8000 });
   assert.equal(await p.locator("#nut-chinh").textContent(), "Đăng hàng");
 });
@@ -340,6 +341,100 @@ await trang("dang-bai-anh-cu", async (p) => {
   await p.locator("#tiep").click();
   await p.locator('[data-m="xong"]').waitFor({ state: "visible", timeout: 10000 });
 });
+
+await trang("hop-dong-ky-tien-can", async (p) => {
+  // Vòng đời hợp đồng phía người bán qua giao diện: ký (OTP) → xác nhận nhận tiền (OTP) → đồng ý kết quả cân (PIN).
+  // Dùng 3 tình huống demo; tình huống đã dùng thì dựng lại bằng script demo (lệnh nghiệp vụ thật).
+  const G = "http://127.0.0.1:18980";
+  const { execFileSync } = await import("node:child_process");
+  const dungLai = (so) => execFileSync("npx", ["tsx", "scripts/demo-10-so.ts", so], { cwd: new URL("../../backend/", import.meta.url).pathname, env: { ...process.env, API_ORIGIN: G, DEMO_TUA_GIO: "1" }, stdio: "pipe", timeout: 120000 });
+  const dn = async (sdt) => (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
+  const tim = async (sdt, so, dk) => {
+    for (let lan = 0; lan < 2; lan++) {
+      const t = await dn(sdt);
+      for (const o of await (await fetch(G + "/v1/orders", { headers: { authorization: "Bearer " + t } })).json()) {
+        const ct = await (await fetch(`${G}/v1/orders/${o.id}`, { headers: { authorization: "Bearer " + t } })).json();
+        const tien = await (await fetch(`${G}/v1/orders/${o.id}/money`, { headers: { authorization: "Bearer " + t } })).json();
+        if (await dk(ct, tien, t)) return { o, ct, tien, t };
+      }
+      dungLai(so);
+    }
+    assert.fail("không dựng được tình huống " + so);
+  };
+  const mo = async (sdt, id) => { await p.goto(`${GOC}/thiet-ke/ban-don.html?id=${id}&thu=${sdt}`); await p.reload(); await p.locator(".hd-viec h2").waitFor({ timeout: 10000 }); };
+
+  // 1. Ký hợp đồng
+  const a = await tim("0939000120", "0002", (ct) => ct.hanh_dong?.includes("sign"));
+  await mo("0939000120", a.o.id);
+  assert.match(await p.locator(".hd-viec").innerText(), /Bác cần ký hợp đồng[\s\S]*Hạn/);
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}15-hop-dong-cho-ky.png`, fullPage: true });
+  await p.locator("#viec-chinh").click();
+  assert.ok(await p.locator('[data-r="tiep"]').isDisabled(), "chưa tích cam kết thì chưa gửi mã");
+  await p.locator('[data-r="cam-ket"]').check();
+  await p.locator('[data-r="tiep"]').click();
+  await p.locator('[data-r="otp"]').waitFor({ state: "visible" });
+  await p.locator('[data-r="otp"]').fill("123456");
+  await p.locator('[data-r="tiep"]').click();
+  await p.getByText("Bác đã ký").waitFor({ timeout: 10000 });
+  const sauKy = await (await fetch(`${G}/v1/orders/${a.o.id}`, { headers: { authorization: "Bearer " + a.t } })).json();
+  assert.ok(!sauKy.hanh_dong?.includes("sign") && sauKy.status !== "awaiting_seller", "đơn đã qua bước người bán ký: " + sauKy.status);
+
+  // 2. Kiểm tiền: bên mua báo đã chuyển → bác xác nhận nhận đủ
+  const b = await tim("0988000770", "0003", (ct, tien) => (tien.khoan_tra_thang || []).some((k) => k.status === "payer_reported"));
+  await mo("0988000770", b.o.id);
+  await p.locator("#viec-chinh").click();
+  assert.match(await p.locator(".hd-tam").innerText(), /Mở app ngân hàng xem số dư/, "nhắc không tin ảnh chụp chuyển khoản");
+  await kiemChung(p);
+  await p.locator('[data-r="du"]').click();
+  await p.getByText(/chép mã giao dịch/).waitFor();
+  assert.ok(await p.locator('[data-r="otp"]').isHidden(), "chưa có mã giao dịch thì chưa gửi OTP");
+  await p.locator('[data-r="ma-gd"]').fill("FT2631012345");
+  await p.locator('[data-r="du"]').click();
+  await p.locator('[data-r="otp"]').waitFor({ state: "visible" });
+  await p.locator('[data-r="otp"]').fill("123456");
+  await p.locator('[data-r="xac"]').click();
+  await p.getByText(/Đã ghi nhận bác nhận đủ/).waitFor({ timeout: 10000 });
+  const k = (await (await fetch(`${G}/v1/orders/${b.o.id}/payments`, { headers: { authorization: "Bearer " + b.t } })).json())[0];
+  assert.ok(!["payer_reported", "pending"].includes(k.status), "khoản đã được xác nhận: " + k.status);
+
+  // 3. Kết quả cân: đồng ý và ký biên bản bằng PIN
+  const c = await tim("0939000160", "0004", (ct) => ct.dot_giao?.some((d) => d.status === "awaiting_seller"));
+  await mo("0939000160", c.o.id);
+  await p.locator("#viec-chinh").click();
+  const tam = await p.locator(".hd-tam").innerText();
+  assert.match(tam, /Hạ cấp[\s\S]*Trầy vỏ[\s\S]*Trả lại[\s\S]*Dập/, "hiện đủ 3 phần kèm lý do tiếng Việt");
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}16-ket-qua-can.png` });
+  await p.locator('[data-r="dong-y"]').click();
+  await p.locator('[data-r="pin"]').fill("12");
+  await p.locator('[data-r="chinh"]').click();
+  await p.getByText("Bác nhập đủ 4 số PIN.").waitFor();
+  await p.locator('[data-r="pin"]').fill("2468");
+  await p.locator('[data-r="chinh"]').click();
+  // Trả khi nhận tại vườn: bên mua chưa chuyển phần còn lại thì chưa ký được, hàng chưa rời vườn
+  await p.getByText(/trước khi hàng rời vườn/).waitFor({ timeout: 10000 });
+  await kiemChung(p);
+  // Báo dòng hạ cấp không đúng → gửi phản đối thật (lần chạy trước đã phản đối thì tình huống demo giữ nguyên: bỏ qua bước này)
+  const daPhanDoi = (await (await fetch(`${G}/v1/deliveries/${c.ct.dot_giao.find((d) => d.status === "awaiting_seller").id}`, { headers: { authorization: "Bearer " + c.t } })).json()).ket_qua.at(-1).lines.some((x) => x.status === "disputed");
+  if (!daPhanDoi) {
+  await p.keyboard.press("Escape");
+  await p.locator("#viec-chinh").click();
+  await p.locator('[data-r="sai"]').click();
+  await p.locator('[data-r="ly"]').fill("Trái chỉ trầy nhẹ ngoài vỏ, ruột vẫn đạt loại 1");
+  await p.locator('[data-r="pin"]').fill("2468");
+  await p.locator('[data-r="chinh"]').click();
+  await p.getByText(/Đã gửi phản đối dòng cân/).waitFor({ timeout: 10000 });
+  const dv = await (await fetch(`${G}/v1/deliveries/${c.ct.dot_giao.find((d) => d.status === "awaiting_seller").id}`, { headers: { authorization: "Bearer " + c.t } })).json();
+  assert.ok(dv.ket_qua.at(-1).lines.some((x) => x.status === "disputed") || dv.status !== "awaiting_seller", "dòng bị phản đối được ghi nhận");
+  }
+
+  // Danh sách hợp đồng
+  await p.goto(`${GOC}/thiet-ke/ban-hop-dong.html?thu=0939000160`);
+  await p.locator(".the-hd").first().waitFor();
+  assert.match(await p.locator(".the-hd").first().getAttribute("href"), /ban-don\.html\?id=.*thu=/, "thẻ mở chi tiết, giữ tài khoản thử");
+  await kiemChung(p);
+}, /Failed to load resource: the server responded with a status of 409/);   // 409 = luật chưa đủ tiền trước bốc, cố ý kiểm
 
 await trang("tin-nhan-tra-loi", async (p) => {
   // Luồng chào giá B3 thật: bên mua chào → bác trả giá → bên mua trả lại → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán

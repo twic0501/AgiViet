@@ -106,7 +106,7 @@
     </section>
 
     <section class="muc" aria-labelledby="t-hd">
-      <h3 id="t-hd"><span>Hợp đồng đang làm</span><a href="./ban-tin-nhan.html">Xem hết</a></h3>
+      <h3 id="t-hd"><span>Hợp đồng đang làm</span><a href="./ban-hop-dong.html">Xem hết</a></h3>
       <div id="ds-hd"><div class="khung-tai"></div></div>
     </section>
   </main>
@@ -191,7 +191,7 @@ async function mo() {
   $("ds-hd").innerHTML = don.length ? don.slice(0, 3).map((d) => {
     const k = chiSoChang(d);
     const [lop, ai] = LUOT[d.hien_thi?.toi_luot?.phia] || ["cho", "—"];
-    return `<a class="hd-wrap" href="./ban-tin-nhan.html"><div class="hd-gon"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
+    return `<a class="hd-wrap" href="./ban-don.html?id=${encodeURIComponent(d.id)}"><div class="hd-gon"><span class="logo-ben">${esc(chuTat(d.buyer_name))}</span>
       <span style="min-width:0"><p class="ten">${esc(d.buyer_name)}</p><p class="phu">${esc(d.code)}</p></span>
       <span class="gia" title="${esc(tienDu(d.contract_value_vnd))}">${esc(tien(d.contract_value_vnd))}</span></div>
       <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
