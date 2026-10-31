@@ -37,10 +37,11 @@ XEM = '--xem' in sys.argv
 
 GOC = [  # (tên, tệp, lật gương)
     ('chinh', 'nguon/trau.svg', False),
-    ('34t', 'nguon/goc/trau-34-trai.svg', False),
-    ('ngt', 'nguon/goc/trau-nghieng-trai.svg', False),
-    ('34p', 'nguon/goc/trau-34-trai.svg', True),
-    ('ngp', 'nguon/goc/trau-nghieng-trai.svg', True),
+    # ¾ / nghiêng: bản thân áo không tay (do-goc.py với AGV_KHONG_TAY=1) — tay V4g bọc xương gắn vào (tay_v4g)
+    ('34t', 'nguon/goc/trau-34-trai-khongtay.svg', False),
+    ('ngt', 'nguon/goc/trau-nghieng-trai-khongtay.svg', False),
+    ('34p', 'nguon/goc/trau-34-trai-khongtay.svg', True),
+    ('ngp', 'nguon/goc/trau-nghieng-trai-khongtay.svg', True),
 ]
 # huong: khoảng của từng góc; nấc chuẩn để đặt joystick
 NAC = [(-1.0, 'ngt'), (-0.5, '34t'), (0.0, 'chinh'), (0.5, '34p'), (1.0, 'ngp')]
@@ -79,6 +80,8 @@ class Goc:
         self.xuong = {}                                    # tay da bọc xương: tên → (gx, gy, id nút hình, id xương thân)
         if ten == 'chinh':
             self.tay_da(svg)
+        else:
+            self.tay_v4g(ten)
         # ¾ / nghiêng: đã thử bọc xương tay đồ-từ-ảnh (31/10) — không đạt: nét tay dính viền áo, bàn tay/cổ tay là
         # mảnh rời nên uốn bị tách (thừa một bàn tay ở ¾, hở tam giác ở nghiêng). Giữ tay xoay cứng biên độ nhỏ;
         # muốn giơ cao ở hai góc này cần vẽ lại tay thành ống tay liền tách khỏi thân như tay V4g, rồi dùng boc_xuong().
@@ -158,6 +161,49 @@ class Goc:
                 self.bp[ten] = (c[0], c[1], tc.hinh(el, {}, c[0], c[1], ten + '-h'), moi_id())
                 self.thu_tu.insert(self.thu_tu.index(t), ten)
 
+    # tay V4g đặt vào góc ¾ / nghiêng: (nhóm V4g, điểm xoay đích, góc xoay độ, tỉ lệ, nằm dưới thân?)
+    TAY_V4G = {'34': ('tay-phai', (334.0, 326.0), 8.0, 0.95, True),
+               'ng': ('tay-trai', (290.0, 320.0), -14.0, 0.95, False)}
+
+    def tay_v4g(self, ten):
+        """Người sáng lập: tay mọi góc phải là dáng tay V4g ban đầu. Thay tay đồ-từ-ảnh của góc ¾ / nghiêng bằng
+        nhóm tay V4g (xoay + co quanh vai, dời tới vai của góc), rồi bọc xương như chính diện.
+        ¾: tay nằm dưới thân áo (gốc tay khuất sau áo) + khối vai tròn; nghiêng: tay nằm trên áo, dưới khăn cổ
+        (gốc tay khuất dưới khăn) + khối vai tròn dưới tay."""
+        import importlib.util as _iu
+        sp_ = _iu.spec_from_file_location('goc_nhin', os.path.join(DIR, 'goc-nhin.py'))
+        gn = _iu.module_from_spec(sp_); sp_.loader.exec_module(gn)
+        nhom, (px, py), deg, k, duoi_than = self.TAY_V4G[ten[:2]]
+        v4g = ET.parse(os.path.join(DIR, 'nguon/trau.svg')).getroot()
+        g = next(e for e in v4g.iter(NS + 'g') if e.get('id') == nhom)
+        ox, oy = map(float, g.get('data-goc').split())
+        a = math.radians(deg); ca, sa = math.cos(a), math.sin(a)
+
+        def f(x, y):
+            u, v = (x - ox) * k, (y - oy) * k
+            return (px + u * ca - v * sa, py + u * sa + v * ca)
+        g2 = ET.Element(NS + 'g', {**g.attrib, 'id': 'tay-gan', 'data-goc': f'{px} {py}'})
+        g2.attrib.pop('style', None)
+        for e in g:
+            g2.append(gn.bien_phan_tu(e, f))
+        gx, gy, ruot = tc.bo_phan(g2, {})
+        s0v, w0v = ((166.0, 333.0), (138.0, 388.0)) if nhom == 'tay-trai' else ((346.0, 333.0), (374.0, 388.0))
+        nid = self.bp['tay-gan'][3] if 'tay-gan' in self.bp else moi_id()
+        self.bp['tay-gan'] = (gx, gy, ruot, nid)
+        self.boc_xuong('tay-gan', gx, gy, ruot, f(*s0v), f(*w0v), -0.05, 0.45)
+        # nghiêng: đầu to nằm trên cùng che phía trước-trên → tay chỉ đưa ra trước tới ngang ngực (×1,5)
+        self.dau_tay = -2.6 if nhom == 'tay-phai' else 1.5
+        # thứ tự vẽ
+        if 'tay-gan' in self.thu_tu:
+            self.thu_tu.remove('tay-gan')
+        self.thu_tu.insert(self.thu_tu.index('than') if duoi_than else self.thu_tu.index('khan-co'), 'tay-gan')
+        c = f(*(s0v[0] + (2 if nhom == 'tay-trai' else -2), s0v[1] - 1))
+        for ten_, r_, mau_ in (('vai-vien-gan', 17.8 * k, '#24190f'), ('vai-ao-gan', 15.0 * k, '#c48f65')):
+            el = ET.Element(NS + 'ellipse', {'cx': str(c[0]), 'cy': str(c[1]), 'rx': str(r_), 'ry': str(r_),
+                                             'fill': mau_, 'stroke': 'none'})
+            self.bp[ten_] = (c[0], c[1], tc.hinh(el, {}, c[0], c[1], ten_ + '-h'), moi_id())
+            self.thu_tu.insert(self.thu_tu.index('tay-gan'), ten_)
+
     def boc_xuong(self, t, gx, gy, ruot, s0, w0, T0, T1):
         """Bọc nét tay `ruot` (toạ độ tương đối gx, gy) vào 2 xương tại vai s0: xương thân (đi theo áo) và xương tay
         (xoay). Trọng số theo vị trí dọc trục s0→w0: <T0 dính thân, >T1 theo tay hẳn, giữa uốn mượt.
@@ -212,6 +258,8 @@ class Goc:
         def chieu(t):
             if self.xuong and self.ten == 'chinh':   # tay da bọc xương: giơ cao được (×2,6 so với tay xoay cứng)
                 return -2.6 if t.startswith('tay-phai') else 2.6
+            if self.xuong:                 # ¾ / nghiêng: tay V4g bọc xương
+                return self.dau_tay
             if t.startswith('tay-phai'):
                 return -1
             # ¾ và nghiêng: tay vẽ cho dáng buông, giơ cao sẽ lộ ống tay phẳng → chỉ vung vừa (≈ 40 %);
