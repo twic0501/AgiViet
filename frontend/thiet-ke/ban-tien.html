@@ -39,6 +39,20 @@
   .hd-tien .coc { grid-column: 1 / -1; justify-self: start; font-size: 12.5px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--cho-nen); color: var(--cho); margin-top: 4px; }
   .hd-tien .coc.giu { background: var(--la-nhat); color: var(--la-dam); }
   .hd-tien .coc.xong { background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  /* Lịch sử tiền theo tháng (tiền tố lt-) */
+  .lt-thang { margin-top: 14px; }
+  .lt-thang > h4 { margin: 0 0 6px; display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: var(--muc-phu); }
+  .lt-thang > h4 b { font-size: 15px; color: var(--la); font-variant-numeric: tabular-nums; }
+  .lt-dong { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; min-height: 56px; }
+  .lt-dong:last-child { border-bottom: 0; }
+  .lt-dong .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--la-nhat); color: var(--la-dam); }
+  .lt-dong .ic.ra { background: var(--chin-nen); color: var(--chin); }
+  .lt-dong b { display: block; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+  .lt-dong small { display: block; font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
+  .lt-dong .so { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .lt-dong .so.vao { color: var(--la); }
+  .lt-dong .so.ra { color: var(--chin); }
+  .lt-dong .so.cho { color: var(--muc-mo); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -70,6 +84,10 @@
     <section class="muc" aria-labelledby="t-hd">
       <h3 id="t-hd"><span>Tiền theo từng hợp đồng</span></h3>
       <div id="ds-hd"><div class="khung-tai"></div></div>
+    </section>
+    <section class="muc" aria-labelledby="t-ls">
+      <h3 id="t-ls"><span>Lịch sử tiền</span></h3>
+      <div id="ls-tien"><div class="khung-tai"></div></div>
     </section>
   </main>
 </div>
@@ -103,7 +121,7 @@ async function taiKy(ky) {
     const h = tenHd.get(d.id) || {};
     const [chu, lop] = COC[d.coc_trang_thai] || [d.coc_trang_thai, ""];
     const giu = BigInt(d.coc_dang_giu_vnd || 0);
-    return `<a class="hd-tien" href="./ban-tin-nhan.html${location.search}">
+    return `<a class="hd-tien" href="./ban-don.html?id=${encodeURIComponent(d.id)}">
       <span style="min-width:0"><p class="ten">${esc(h.buyer_name || "Hợp đồng")}</p><p class="phu">${esc(d.code)}${h.hien_thi?.ten ? ` · ${esc(h.hien_thi.ten)}` : ""}</p></span>
       <span class="gia" title="${esc(tienDu(h.contract_value_vnd))}">${h.contract_value_vnd ? esc(tien(h.contract_value_vnd)) : "—"}</span>
       <span class="coc ${lop}">${esc(chu)}${giu > 0n ? ` · ${esc(tien(giu))}` : ""}</span></a>`;
@@ -116,9 +134,31 @@ async function mo() {
   veDau($("dau"), { chao: "Tiền của bác", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase() });
   tenHd = new Map(don.map((d) => [d.id, d]));
   await taiKy("thang");
+  taiLichSu().catch(() => { $("ls-tien").innerHTML = `<p class="bao loi" style="margin-top:12px">Chưa tải được lịch sử tiền. Bác kéo xuống để tải lại.</p>`; });
   document.querySelectorAll(".ky button").forEach((b) => (b.onclick = () => taiKy(b.dataset.ky).catch(baoLoi)));
   giuThamSo();
   $("noi").setAttribute("aria-busy", "false");
+}
+// Lịch sử: tiền về (bên mua chuyển thẳng đã xác nhận, ngân hàng chi cọc về tài khoản bác) và tiền ra (bác hoàn), nhóm theo tháng giờ Việt Nam
+const laVao = (x) => x.loai === "money_in" || x.loai === "payout";
+const dangChuyen = (x) => x.loai === "payout" && !/settled|reconciled|done|completed/.test(x.trang_thai || "");
+const tenKhoan = (x) => x.loai === "payout" ? "Ngân hàng chuyển cọc về tài khoản bác" : x.loai === "money_in" ? "Bên mua chuyển thẳng (bác đã xác nhận)" : "Bác hoàn tiền cho bên mua";
+const VN = { timeZone: "Asia/Ho_Chi_Minh" };
+const IC_VAO = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v13M6 11l6 6 6-6M5 20h14"/></svg>';
+const IC_RA = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V7M6 13l6-6 6 6M5 4h14"/></svg>';
+async function taiLichSu() {
+  const ls = (await get("/v1/seller/history?limit=200")).filter((x) => ["money_in", "payout", "money_out", "refund"].includes(x.loai) && Number(x.so_tien_vnd));
+  if (!ls.length) { $("ls-tien").innerHTML = `<p class="bao" style="margin-top:12px">Chưa có khoản tiền nào. Khi bác xác nhận đã nhận tiền hoặc ngân hàng chuyển cọc về, khoản đó hiện ở đây.</p>`; return; }
+  const thang = new Map();
+  for (const x of ls) { const k = new Date(x.luc).toLocaleDateString("vi-VN", { ...VN, month: "numeric", year: "numeric" }); thang.set(k, [...(thang.get(k) || []), x]); }
+  $("ls-tien").innerHTML = [...thang].map(([k, ds]) => {
+    const vao = ds.filter((x) => laVao(x) && !dangChuyen(x)).reduce((t, x) => t + Number(x.so_tien_vnd), 0);
+    return `<div class="lt-thang"><h4><span>Tháng ${esc(k)}</span>${vao ? `<b>+${esc(tien(vao))}</b>` : ""}</h4>${ds.map((x) => { const ve = laVao(x), cho = dangChuyen(x);
+      return `<a class="lt-dong" href="${x.order_id ? `./ban-don.html?id=${encodeURIComponent(x.order_id)}` : "#"}"><span class="ic ${ve ? "" : "ra"}" aria-hidden="true">${ve ? IC_VAO : IC_RA}</span>
+        <span style="min-width:0"><b>${esc(tenKhoan(x))}</b><small>${esc(new Date(x.luc).toLocaleString("vi-VN", { ...VN, hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" }))}${x.ma && x.ma.length <= 20 ? ` · ${esc(x.ma)}` : ""}${cho ? " · đang chuyển, chưa tính là đã về" : ""}</small></span>
+        <span class="so ${cho ? "cho" : ve ? "vao" : "ra"}" title="${esc(tienDu(x.so_tien_vnd))}">${ve ? "+" : "−"}${esc(tien(x.so_tien_vnd))}</span></a>`; }).join("")}</div>`;
+  }).join("");
+  giuThamSo($("ls-tien"));
 }
 const baoLoi = (e) => {
   $("ds-hd").innerHTML = `<p class="bao loi" style="margin-top:12px">Chưa tải được sổ tiền (${esc(e.message)}).</p><button class="nut phu-nut" type="button" style="margin-top:12px" onclick="location.reload()">Thử lại</button>`;

@@ -79,6 +79,18 @@
   /* Nút chọn trong tấm (Chuyển khoản/Tiền mặt, lý do hủy): nút đang chọn phải nhìn ra ngay */
   .hd-tam [data-cach], .hd-tam [data-ly] { box-shadow: none; color: var(--muc-phu); }
   .hd-tam [data-cach][aria-pressed="true"], .hd-tam [data-ly][aria-pressed="true"] { background: var(--giay-noi); color: var(--la-dam); box-shadow: 0 0 0 2px var(--la); }
+  /* Quyết toán: bảng tính từng bước (tiền tố qt-) */
+  .qt-bang { display: grid; gap: 0; padding: 4px 0 8px; }
+  .qt-dong { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 8px; padding: 9px 0; border-bottom: 1px dashed var(--ke-dam); align-items: baseline; }
+  .qt-dong .qt-dau { font-weight: 700; color: var(--muc-nhat); text-align: center; }
+  .qt-dong span:nth-child(2) { font-size: 14.5px; color: var(--muc-phu); }
+  .qt-dong b { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .qt-dong.tong { border-bottom: 2px solid var(--muc); }
+  .qt-dong.tong span:nth-child(2), .qt-dong.tong b { color: var(--muc); font-weight: 700; }
+  .qt-dong.ve b { color: var(--la); }
+  .qt-dong.no b { color: var(--chin); }
+  .qt-tam { display: inline-block; margin: 4px 0 6px; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  .qt-nghe { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--la); font: 600 14px/1 var(--chu); cursor: pointer; padding: 0; }
   /* Tấm thao tác (bottom sheet) */
   .hd-che { position: fixed; inset: 0; z-index: 40; background: rgba(15, 22, 17, .45); display: flex; align-items: flex-end; justify-content: center; }
   .hd-tam { width: 100%; max-width: 480px; max-height: 92dvh; display: flex; flex-direction: column; background: var(--giay); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 30px rgba(0,0,0,.2); }
@@ -214,6 +226,7 @@ function ve() {
   $("viec-chinh")?.addEventListener("click", viec.mo);
   $("tu-choi")?.addEventListener("click", moTuChoi);
   $("xin-huy")?.addEventListener("click", moXinHuy);
+  $("nghe-qt")?.addEventListener("click", () => { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(docQT); u.lang = "vi-VN"; u.rate = Number(localStorage.getItem("agv-toc-do-doc")) || 0.95; speechSynthesis.speak(u); } catch {} });
   document.querySelectorAll("[data-dn]").forEach((b) => (b.onclick = () => traLoiDeNghi(b.dataset.dn, b.dataset.lam)));
   document.querySelectorAll("[data-huy-tl]").forEach((b) => (b.onclick = () => traLoiHuy(b.dataset.huyTl, b.dataset.lam)));
   document.querySelectorAll("[data-tai-lai]").forEach((b) => (b.onclick = () => tai().catch((e) => alertLoi(e))));
@@ -235,11 +248,39 @@ function veTien() {
       <small>${coc ? (TT_COC[coc.status] || "Ngân hàng đang xử lý tiền cọc.") : "Chưa chuyển cọc. Hợp đồng chỉ có hiệu lực khi ngân hàng nhận đủ cọc."}</small></div>
     ${khoan.map((x) => `<div class="hd-dong"><span>${esc(LOAI_KHOAN[x.kind] || "Khoản bên mua trả")}</span><b>${vnd(x.amount_due_vnd)} đ</b>
       <small>${nhan(TT_KHOAN[x.status] || [x.status, "xam"])} · vào ${esc(x.payee_bank_code || "")} ${esc(x.payee_account_masked || "")}${x.due_at ? ` · hạn ${esc(gioNgay(x.due_at))}` : ""}${Number(x.confirmed_vnd || 0) ? ` · đã xác nhận ${vnd(x.confirmed_vnd)} đ` : ""}${Number(x.reported_vnd) > Number(x.confirmed_vnd || 0) && x.status !== "mismatch" ? ` · <button class="nut-chu" type="button" data-khoan="${esc(x.id)}">Kiểm tiền</button>` : ""}</small></div>`).join("")}
+    ${veQuyetToan()}
     <div class="hd-dong"><span>Phí AgiViet (bên mua trả)</span><b>${vnd(dk.fee_vnd)} đ</b></div>
     <div class="hd-dong"><span><b style="color:var(--muc)">Bác đã thực nhận</b></span><b style="color:var(--la)">${vnd(thuc)} đ</b><small>Tính theo sổ cái, chỉ cộng khoản bác đã xác nhận nhận được.</small></div>
   </section>`;
 }
 
+// Quyết toán (04 mục 5): N = V − X_nb + X_bm; cọc chuyển bác = min(C, max(0, N − D)); phần cọc còn lại hoàn bên mua
+const LENH = { release_deposit_to_seller: "Ngân hàng chuyển cọc cho bác", refund_deposit_to_buyer: "Ngân hàng hoàn cọc bên mua" };
+const TT_LENH = { draft: "Đang lập lệnh", sent: "Đã gửi ngân hàng, chờ tiền về", accepted: "Ngân hàng đã nhận lệnh", settled: "Tiền đã về", reconciled: "Tiền đã về, đã đối soát", failed: "Ngân hàng báo lỗi, AgiViet đang xử lý", cancelled: "Đã hủy lệnh" };
+let docQT = "";
+function veQuyetToan() {
+  const qt = (tienDon?.quyet_toan || []).filter((x) => x.is_effective).at(-1); if (!qt) return "";
+  const n = (k) => Number(qt[k] || 0);
+  const dong = (dau, chu, so, lop = "") => `<div class="qt-dong ${lop}"><span class="qt-dau">${dau}</span><span>${chu}</span><b>${vnd(so)} đ</b></div>`;
+  const ds = [dong("", "Tiền hàng theo kết quả cân", n("v_vnd"))];
+  if (n("x_nb_vnd")) ds.push(dong("−", "Bác chịu bồi thường theo hợp đồng", n("x_nb_vnd")));
+  if (n("x_bm_vnd")) ds.push(dong("+", "Bên mua bù cho bác", n("x_bm_vnd")));
+  ds.push(dong("=", "Bác được nhận tổng", n("n_vnd"), "tong"));
+  ds.push(dong("−", "Bên mua đã trả thẳng (bác đã xác nhận)", n("d_vnd")));
+  ds.push(dong("→", "Ngân hàng chuyển từ cọc cho bác", n("release_vnd"), "ve"));
+  if (n("refund_vnd")) ds.push(dong("→", "Cọc hoàn lại bên mua", n("refund_vnd")));
+  if (n("t_bm_vnd")) ds.push(dong("!", "Bên mua còn phải trả thêm cho bác", n("t_bm_vnd"), "no"));
+  if (n("t_nb_vnd")) ds.push(dong("!", "Bác phải hoàn lại cho bên mua", n("t_nb_vnd"), "no"));
+  const giu = n("c_vnd") - n("release_vnd") - n("refund_vnd");
+  docQT = `Quyết toán ${qt.is_final ? "" : "tạm"}. Tiền hàng ${vnd(n("v_vnd"))} đồng. Bác được nhận tổng ${vnd(n("n_vnd"))} đồng. Bên mua đã trả thẳng ${vnd(n("d_vnd"))} đồng. Ngân hàng chuyển từ cọc cho bác ${vnd(n("release_vnd"))} đồng.`;
+  const lenh = (tienDon?.lenh_ngan_hang || []);
+  return `<div style="padding:10px 0 4px;border-bottom:1px solid var(--ke)">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px">Quyết toán${qt.is_final ? "" : " (tạm)"}</b><button class="qt-nghe" type="button" id="nghe-qt"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>Nghe</button></div>
+    ${qt.is_final ? "" : `<span class="qt-tam">Đang tranh chấp: chỉ chi phần không tranh chấp${giu > 0 ? `, ngân hàng còn giữ ${vnd(giu)} đ` : ""}</span>`}
+    <div class="qt-bang">${ds.join("")}</div>
+    ${lenh.map((l) => `<p class="hd-ghi" style="margin:0 0 8px">${esc(LENH[l.kind] || "Lệnh ngân hàng")} ${vnd(l.amount_vnd)} đ: <b>${esc(TT_LENH[l.status] || "Đang xử lý")}</b>${l.target_account_masked ? ` · về ${esc(l.target_bank_code || "")} ${esc(l.target_account_masked)}` : ""}</p>`).join("")}
+  </div>`;
+}
 function veGiao() {
   if (!don.dot.length) return `<section class="hd-the"><h3><i class="cham"></i>Giao nhận</h3><p class="hd-ghi" style="padding:4px 0 14px">Đợt giao sẽ hiện khi hợp đồng có hiệu lực (ngân hàng giữ cọc).</p></section>`;
   return don.dot.map((d) => {

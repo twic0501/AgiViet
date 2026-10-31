@@ -507,6 +507,17 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   assert.match(vd, /Tranh chấp chất lượng[\s\S]*Chờ kết quả kiểm định[\s\S]*kiểm định 280\.000 đ/, "tranh chấp hiện rõ trạng thái + phí kiểm định");
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}20-tranh-chap.png`, fullPage: true });
+  // Quyết toán tạm (đang tranh chấp): bảng tính từng bước + lệnh ngân hàng
+  const qt = await p.locator(".qt-bang").innerText();
+  assert.match(qt, /Tiền hàng theo kết quả cân[\s\S]*Bác được nhận tổng[\s\S]*Bên mua đã trả thẳng[\s\S]*Ngân hàng chuyển từ cọc cho bác/, "bảng quyết toán đủ các bước");
+  assert.match(await p.locator("body").innerText(), /Quyết toán \(tạm\)[\s\S]*ngân hàng còn giữ/);
+  // Màn Tiền: lịch sử theo tháng, chi cọc về tài khoản là tiền VÀO, chưa đối soát = đang chuyển
+  await p.goto(`${GOC}/thiet-ke/ban-tien.html?thu=0918000421`);
+  await p.locator(".lt-dong").first().waitFor({ timeout: 8000 });
+  const ls = await p.locator("#ls-tien").innerText();
+  assert.match(ls, /Tháng \d+\/\d{4}[\s\S]*Ngân hàng chuyển cọc về tài khoản bác[\s\S]*đang chuyển/, "lịch sử có chi cọc, ghi đang chuyển");
+  assert.ok(!/−/.test(await p.locator('.lt-dong:has-text("chuyển cọc về") .so').innerText()), "chi cọc về bác không bị ghi là tiền ra");
+  await kiemChung(p);
 
   // Danh sách hợp đồng
   await p.goto(`${GOC}/thiet-ke/ban-hop-dong.html?thu=0939000160`);
