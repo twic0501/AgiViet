@@ -46,6 +46,9 @@ function veMan(ma, tham = {}) {
   el.querySelectorAll("[data-di]").forEach((b) => b.addEventListener("click", () => api.di(b.dataset.di, b.dataset.tham ? JSON.parse(b.dataset.tham) : {})));
   el.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => api.tab(b.dataset.tab)));
   el.querySelectorAll(".m-loc").forEach((g) => g.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; g.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
+  // Hiệu ứng chạm (hieu-ung-app.js của Motion v2): thẻ/dòng bấm được lún nhẹ rồi bật lại
+  const HU = window.HieuUng;
+  if (HU) el.querySelectorAll(".m-hang, .m-the[role=button], .m-loi-tat button, .m-chon label").forEach((x) => HU.nhan(x));
   m.sau?.(el, s, tham, api);
   return el;
 }
@@ -54,6 +57,7 @@ const giam = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function chuyen(moi, huong) {
   const cu = goc.querySelector(".m-man:last-of-type");
   goc.appendChild(moi);
+  window.HieuUng?.noiLen(moi.querySelectorAll(".m-than > *"), 40);
   if (!cu || giam || huong === "thay") { cu?.remove(); return; }
   dangChuyen = true;
   const t = 340, e = "cubic-bezier(.23,1,.32,1)";
@@ -77,6 +81,15 @@ export const api = {
   veLai() { const t = ngan.at(-1); const cu = goc.querySelector(".m-man:last-of-type"); const cuon = cu?.querySelector(".m-cuon")?.scrollTop || 0; const moi = veMan(t.ma, t.tham); cu?.replaceWith(moi); moi.querySelector(".m-cuon").scrollTop = cuon; },
   doi(f) { f(s); luu(); },
   datLai() { s = structuredClone(DAU); luu(); },
+  // Nút xác nhận: chấm chờ → dấu tích + chữ "đã xong" (chỉ phản ánh việc đã làm)
+  async xong(btn, chu = "Đã lưu") {
+    const HU = window.HieuUng;
+    if (!HU || !btn) return;
+    HU.dangGui(btn);
+    await new Promise((r) => setTimeout(r, 550));
+    await HU.thanhCong(btn, chu);
+    await new Promise((r) => setTimeout(r, 350));
+  },
   toast(chu) {
     goc.querySelector(".m-toast")?.remove();
     const t = document.createElement("div"); t.className = "m-toast"; t.setAttribute("role", "status");
@@ -99,7 +112,9 @@ function moTheoHash() {
   const tham = Object.fromEntries([...q].filter(([k]) => k !== "man"));
   ngan = MAN[ma].tab || ma === "hom-nay" ? [{ ma, tham }] : [{ ma: MAN[ma].ve_tu || "hom-nay", tham: {} }, { ma, tham }];
   goc.innerHTML = "";
-  goc.appendChild(veMan(ma, tham));
+  const el = veMan(ma, tham);
+  goc.appendChild(el);
+  window.HieuUng?.noiLen(el.querySelectorAll(".m-than > *"), 40);
 }
 addEventListener("hashchange", () => { const q = new URLSearchParams(location.hash.slice(1).split("?")[0]); if (q.get("man") !== ngan.at(-1)?.ma) moTheoHash(); });
 moTheoHash();

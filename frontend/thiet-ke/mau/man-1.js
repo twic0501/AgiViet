@@ -91,11 +91,37 @@ export const MAN_1 = {
   "mua-vu": { tieu: "Mùa vụ", phu: "Vườn xoài ấp 3 · vụ nghịch 2026", ve: () => ({ than: `
     <ol class="m-buoc">${[["Ra hoa", "08/2026", 1], ["Bao trái", "09/2026 · 3.200 trái", 1], ["Hái đợt 1", "27/10 · 350 kg", 1], ["Hái đợt 2", "dự 12/11 · ~2.000 kg (L-0414)", 0], ["Cắt tỉa sau vụ", "12/2026", -1]].map(([t, g, k]) => `<li class="${k > 0 ? "m-b-xong" : k === 0 ? "m-b-nay" : "m-b-cho"}"><span class="m-b-vong">${k > 0 ? ic("tich", 15) : ""}</span><div><b>${t}</b><small>${g}</small></div></li>`).join("")}</ol>
     ${viec("Đợt 2 có thể bán trước", "Đăng \"sắp có hàng\" cho lô L-0414, hái từ 12/11 (sau ngày hết cách ly 09/11).", `<div>${nut("Xem lô L-0414", { ma: "sap-co-hang", lop: "m-phu m-rong" })}</div>`)}` }) },
-  "nhat-ky": { tieu: "Nhật ký canh tác", phu: "Vườn xoài ấp 3", ve: (s) => ({ than: `
-    ${viec("Nhật ký có ảnh được bên mua tin hơn", "Ảnh chụp trong app có giờ và vị trí. Nhân viên tới vườn sẽ đánh dấu \"đã kiểm\".", "", "m-cho")}
-    <div class="m-loc"><button type="button" aria-pressed="true">Tất cả</button><button type="button" aria-pressed="false">Phun thuốc</button><button type="button" aria-pressed="false">Thu hoạch</button></div>
-    ${s.nhatKy.map((n) => `<section class="m-the" style="gap:8px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b>${esc(n.ngay)} · ${esc(n.viec)}</b>${nhan(...NGUON[n.kiem ? "vh" : n.nguon])}</div><p class="m-ghi">${esc(n.chi)}</p>${n.anh ? `<div class="m-luoi-anh">${Array.from({ length: Math.min(n.anh, 3) }, () => `<span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span>`).join("")}</div>` : `<p class="m-ghi" style="color:var(--chin)">Chưa có ảnh làm chứng</p>`}</section>`).join("")}`,
-    day: `<div class="m-hang-nut">${nut("Gõ", { ma: "xac-nhan-ghi", lop: "m-phu" })}${nut("Nói để ghi", { ma: "ghi", lop: "m-vang", icon: "mic" })}</div>` }) },
+  "nhat-ky": { tieu: "Nhật ký canh tác", phu: "Vườn xoài ấp 3", ve: (s) => {
+    const LOAI = { "Phun thuốc": ["#a8392c", "canh"], "Thu hoạch": ["#c99a2e", "can"], "Bón phân": ["#1f4d3a", "la"], "Nhân viên AgiViet tới vườn": ["#2f5d7c", "khien"] };
+    const mau = (v) => (LOAI[v] || ["#5f675f", "so"])[0];
+    // Dải 7 ngày gần nhất: chấm màu = loại việc đã ghi
+    const ngay = [["27", "T2"], ["28", "T3"], ["29", "T4"], ["30", "T5"], ["31", "T6"], ["01", "T7"], ["02", "CN"]];
+    const coGhi = Object.fromEntries(s.nhatKy.map((n) => [n.ngay.slice(0, 2), n.viec]));
+    const k = s.nhatKy.length, anh = s.nhatKy.filter((n) => n.anh).length, kiem = s.nhatKy.filter((n) => n.kiem).length;
+    return { than: `
+    <section class="m-the" style="gap:10px">
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">${ngay.map(([n, t], i) => `<div style="display:grid;gap:4px;justify-items:center;padding:6px 0;border-radius:12px;${i === 6 ? "background:var(--la);color:#f4f1e8" : ""}"><small style="font-size:12px;opacity:.75">${t}</small><b style="font-size:16px">${n}</b><i style="width:7px;height:7px;border-radius:50%;background:${coGhi[n] ? (i === 6 ? "#f2c14e" : mau(coGhi[n])) : "transparent"}"></i></div>`).join("")}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;border-top:1px solid var(--ke);padding-top:10px">
+        <div><b class="m-so" style="font-size:20px">${k}</b><small class="m-ghi" style="display:block">lần ghi tháng này</small></div>
+        <div><b class="m-so" style="font-size:20px;color:var(--la)">${anh}</b><small class="m-ghi" style="display:block">có ảnh làm chứng</small></div>
+        <div><b class="m-so" style="font-size:20px;color:var(--bien)">${kiem}</b><small class="m-ghi" style="display:block">nhân viên đã kiểm</small></div>
+      </div>
+    </section>
+    ${s.nhatKy.some((n) => n.viec === "Phun thuốc" && n.ngay === "02/11") ? `<div class="m-hang" data-di="cach-ly" style="grid-template-columns:40px 1fr auto;background:var(--do-nen);box-shadow:none"><span style="color:var(--do)">${ic("canh", 26)}</span><span><b style="color:var(--do)">Còn cách ly thuốc tới 09/11</b><small>Chỉ đăng "sắp có hàng" tới ngày này</small></span>${ic("toi", 18)}</div>` : ""}
+    <div class="m-nhom-ten">Tháng 10–11</div>
+    <section class="m-the" style="padding:4px 14px">${s.nhatKy.map((n, i) => `<button type="button" class="m-nk-dong" data-nk="${i}" style="all:unset;box-sizing:border-box;display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;min-height:60px;padding:8px 0;cursor:pointer;${i ? "border-top:1px solid var(--ke)" : ""}">
+        <span style="width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:${mau(n.viec)}1f;color:${mau(n.viec)}">${ic((LOAI[n.viec] || [0, "so"])[1], 18)}</span>
+        <span style="min-width:0"><b style="display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(n.viec)}</b><small class="m-ghi" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(n.ngay)} · ${esc(n.chi)}</small></span>
+        <span style="display:grid;justify-items:end;gap:4px">${n.kiem ? nhan("Đã kiểm", "m-n-nh") : n.nguon === "chup" ? nhan("Có ảnh", "m-n-xong") : nhan("Tự ghi", "")}${n.anh ? `<small class="m-ghi">${n.anh} ảnh</small>` : ""}</span></button>`).join("")}</section>
+    ${s.nhatKyCu.map((t) => `<div class="m-hang" style="grid-template-columns:minmax(0,1fr) auto"><span><b>${esc(t.thang)} · ${t.so} lần ghi</b><small>${esc(t.tom)}</small></span><span class="m-ghi" style="text-align:right">${t.anh} có ảnh<br>${t.kiem} đã kiểm</span></div>`).join("")}`,
+    day: `<div class="m-hang-nut">${nut("Gõ", { ma: "xac-nhan-ghi", lop: "m-phu" })}${nut("Nói để ghi", { ma: "ghi", lop: "m-vang", icon: "mic" })}</div>` }; },
+    sau: (el, s, t, api) => el.querySelectorAll("[data-nk]").forEach((b) => b.addEventListener("click", () => {
+      const n = s.nhatKy[Number(b.dataset.nk)];
+      api.tam(`<div class="m-tam-than"><h2>${esc(n.ngay)} · ${esc(n.viec)}</h2><p>${esc(n.chi)}</p>
+        ${n.anh ? `<div class="m-luoi-anh">${Array.from({ length: Math.min(n.anh, 6) }, () => `<span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span>`).join("")}</div>` : `<p class="m-ghi" style="color:var(--chin)">Chưa có ảnh làm chứng. Bên mua tin dòng có ảnh chụp trong app hơn.</p>`}
+        ${dong("Cách ghi", n.nguon === "noi" ? "Nói để ghi" : n.nguon === "chup" ? "Chụp trong app" : n.nguon === "vh" ? "Nhân viên AgiViet" : "Tự gõ")}${dong("Xác minh", n.kiem ? "Nhân viên đã kiểm tại vườn" : "Chưa kiểm")}</div>
+        <div class="m-day"><div class="m-hang-nut"><button class="m-nut m-phu" type="button" data-dong>Đóng</button><button class="m-nut" type="button">${ic("anh", 20)}Thêm ảnh làm chứng</button></div></div>`);
+    })) },
   "thu-chi": { tieu: "Thu chi", phu: "Tháng 10/2026", ve: (s) => ({ than: `
     <div class="m-hai-o"><div class="m-the m-so-lon m-tien"><small>Thu</small><b style="font-size:22px">${d(27600000)}</b></div><div class="m-the m-so-lon"><small>Chi</small><b style="font-size:22px">${d(1200000)}</b></div></div>
     ${the("Các khoản", s.thuChi.map((x) => dong(`${x.ngay} · ${esc(x.noi)}`, `<span style="color:${x.vao ? "var(--la)" : "var(--do)"}">${x.vao ? "+" : "−"}${so(x.so)}</span>`)).join(""))}
@@ -114,7 +140,7 @@ export const MAN_1 = {
     ${viec("Sau khi lưu", "Lô xoài sẽ chỉ đăng được \"sắp có hàng\", hái từ 09/11 trở đi.", "", "m-cho")}
     <p class="m-ghi">Ảnh chụp trong app mới tính làm chứng. Dòng này sẽ có nhãn "Chụp trong app".</p>`,
     day: `<div class="m-hang-nut">${nut("Sửa", { ma: "ghi", lop: "m-phu" })}${nut("Lưu vào nhật ký", { id: "luu-nk", lop: "m-vang" })}</div>` }),
-    sau: (el, s, t, api) => el.querySelector("#luu-nk").addEventListener("click", () => { api.toast("Đã lưu nhật ký phun thuốc 02/11"); api.lui(); }) },
+    sau: (el, s, t, api) => el.querySelector("#luu-nk").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã lưu"); api.toast("Đã lưu nhật ký phun thuốc 02/11"); api.lui(); }) },
   "cach-ly": { tieu: "Thời gian cách ly", phu: "Vườn xoài ấp 3", ve: () => ({ than: `
     <div class="m-so-lon"><small>Còn cách ly thuốc tới</small><b style="color:var(--do)">09/11/2026</b><span class="m-ghi">7 ngày nữa · lần phun 02/11 (Abamectin)</span></div>
     ${the("Trong lúc cách ly", dong("Đăng \"có hàng ngay\"", nhan("Không được", "m-n-bac")) + dong("Đăng \"sắp có hàng\"", nhan("Được, hái từ 09/11", "m-n-xong")) + dong("Giao hàng", nhan("Từ 09/11", "m-n-tien")))}

@@ -9,7 +9,7 @@ function tienO(b) {
   const giu = b >= 4 && b < 13 ? TIEN.COC : 0;
   const cho = b >= 15 ? 0 : b >= 11 ? TIEN.COC_CHO_BAC : b >= 6 && b < 7 ? TIEN.TRA_THANG : TIEN.GIA_TRI - nhan;
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--ke);background:var(--giay-noi)">
-    ${[["Bác đã nhận", nhan, "var(--la)"], ["Ngân hàng giữ", giu, "var(--chin)"], ["Còn chờ", cho, "var(--muc-phu)"]].map(([t, v, c], i) => `<div style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" style="display:block;font-size:15px;color:${c}">${so(v)}</b></div>`).join("")}</div>`;
+    ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
 const viecDon = (s) => {
   const b = s.hd.buoc;
@@ -36,8 +36,14 @@ export const MAN_3 = {
     ${the("Có vướng mắc?", `<div class="m-hai-o">${nut("Xin đổi lịch", { ma: "doi-lich", lop: "m-phu m-nho" })}${nut("Xin thay đổi", { ma: "yeu-cau-thay-doi", lop: "m-phu m-nho" })}</div><div class="m-hai-o">${nut("Nhắn bên mua", { ma: "chat", tham: { ma: "T1" }, lop: "m-phu m-nho" })}${nut("Xin hủy", { ma: "huy-don", lop: "m-huy m-nho" })}</div>`)}
     <button class="m-nut m-chu m-rong" type="button" id="lai">Chạy lại hợp đồng từ đầu (mô phỏng)</button>` }),
     sau: (el, s, t, api) => {
+      const HU = window.HieuUng, cu = window.__tienCu, buocCu = window.__buocCu;
+      if (HU && cu) ["o-bac", "o-nh", "o-cho"].forEach((id) => { const b = el.querySelector(`#${id} b`); const moi = Number(b.dataset.v); if (cu[id] !== undefined && cu[id] !== moi) HU.demSo(b, cu[id], moi, { hau: "" }); });
+      if (HU && buocCu !== undefined && s.hd.buoc === 13 && buocCu === 12) setTimeout(() => HU.xuBay(el.querySelector("#o-nh"), el.querySelector("#o-bac"), 6), 200);
+      if (HU && buocCu !== undefined && s.hd.buoc > buocCu) { const li = el.querySelectorAll(".m-buoc li")[s.hd.buoc - 1]; const v = li?.querySelector(".m-b-vong"); if (v) HU.nayDich(v).then(() => HU.nayDich(v)); }
+      window.__tienCu = Object.fromEntries(["o-bac", "o-nh", "o-cho"].map((id) => [id, Number(el.querySelector(`#${id} b`).dataset.v)]));
+      window.__buocCu = s.hd.buoc;
       el.querySelector("#mp")?.addEventListener("click", () => { tienLen(api, BUOC[s.hd.buoc].mp.replace("Mô phỏng: ", "") ); api.veLai(); });
-      el.querySelector("#lam")?.addEventListener("click", () => { tienLen(api, `Xong: ${BUOC[s.hd.buoc].lam}`); api.veLai(); });
+      el.querySelector("#lam")?.addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã gửi"); tienLen(api, `Xong: ${BUOC[s.hd.buoc].lam}`); api.veLai(); });
       el.querySelector("#lai").addEventListener("click", () => { api.doi((x) => { x.hd.buoc = 0; }); api.veLai(); });
     } },
   "xac-nhan-don": { tieu: "Đơn mới", phu: "Bên mua gửi thỏa thuận", ve: () => ({ than: `
@@ -75,8 +81,8 @@ export const MAN_3 = {
     <div class="m-otp">${"482917".split("").map((c) => `<input aria-label="Số mã" maxlength="1" value="${c}" inputmode="numeric">`).join("")}</div>`,
     day: nut("Ký", { id: "ky", lop: "m-vang m-rong" }) }),
     sau: (el, s, t, api) => el.querySelector("#ky").addEventListener("click", () => { api.doi((x) => { if (x.hd.buoc <= 2) x.hd.buoc = 3; }); api.thay("ky-xong"); }) },
-  "ky-xong": { tieu: "Hoàn tất ký", phu: "HĐ-0018", ve: () => ({ than: `
-    <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:28px 0"><span class="m-nay" style="width:88px;height:88px;border-radius:50%;background:var(--la);color:#f4f1e8;display:grid;place-items:center">${ic("hd", 42)}</span><h2 class="m-tieu">Bác đã ký HĐ-0018</h2><p class="m-ghi">Bên mua có 48 giờ để chuyển cọc 13.938.000 đ vào ngân hàng. Chưa có cọc thì bác chưa giao.</p></div>`,
+  "ky-xong": { tieu: "Hoàn tất ký", phu: "HĐ-0018", sau: (el) => { const HU = window.HieuUng; if (!HU) return; HU.kyTen(el.querySelector("#net-ky"), 1200).then(() => HU.dongDau(el.querySelector("#dau-ky"))); }, ve: () => ({ than: `
+    <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:20px 0"><div style="position:relative;width:260px;height:150px;border-radius:16px;background:var(--giay-noi);box-shadow:0 0 0 1px var(--ke)"><svg viewBox="0 0 260 150" width="260" height="150" aria-hidden="true"><path id="net-ky" d="M30 100c18-40 30-52 38-40s-10 44 4 42 22-48 34-46-2 40 12 40 18-30 30-28 6 22 20 20 24-16 40-14" fill="none" stroke="#1c2a21" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="118" x2="236" y2="118" stroke="rgba(28,42,33,.2)"/></svg><span id="dau-ky" style="visibility:hidden;position:absolute;right:14px;top:14px;border:3px solid var(--do);color:var(--do);font-weight:800;font-size:15px;padding:4px 10px;border-radius:8px;transform:rotate(-8deg);letter-spacing:.06em">ĐÃ KÝ</span></div><h2 class="m-tieu">Bác đã ký HĐ-0018</h2><p class="m-ghi">Bên mua có 48 giờ để chuyển cọc 13.938.000 đ vào ngân hàng. Chưa có cọc thì bác chưa giao.</p></div>`,
     day: nut("Xem hợp đồng", { ma: "chi-tiet-don", lop: "m-vang m-rong" }) }) },
   "ky-giay": { tieu: "Ký giấy", phu: "Cho bác quen ký tay", ve: () => ({ than: `
     ${viec("Nhân viên mang bản in tới", "Bác ký tay 2 bản, nhân viên chụp lại và gửi lên app. Hợp đồng có hiệu lực khi app nhận ảnh.", "", "m-cho")}
@@ -96,7 +102,7 @@ export const MAN_3 = {
     ${the("Bác sẽ nhận", dong("Bên mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(TIEN.COC_CHO_BAC)) + dong("Cọc dư hoàn bên mua", d(TIEN.HOAN_BEN_MUA)))}
     <div class="m-luoi-anh"><span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span><span style="background:repeating-linear-gradient(0deg,#fbf9f3 0 18px,#e8e1cf 18px 19px)"></span><span style="background-image:url(/assets/products/xoai-cat-chu.jpg);filter:sepia(.4)"></span></div>`,
     day: `<div class="m-hang-nut">${nut("Phản đối", { ma: "tranh-chap", lop: "m-phu" })}${nut("Đồng ý kết quả", { id: "dy", lop: "m-vang" })}</div>` }),
-    sau: (el, s, t, api) => el.querySelector("#dy").addEventListener("click", () => { api.doi((x) => { if (x.hd.buoc === 11) x.hd.buoc = 12; }); api.toast("Đã đồng ý kết quả cân · chờ ngân hàng chuyển tiền"); api.lui(); }) },
+    sau: (el, s, t, api) => el.querySelector("#dy").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã đồng ý"); api.doi((x) => { if (x.hd.buoc === 11) x.hd.buoc = 12; }); api.toast("Đã đồng ý kết quả cân · chờ ngân hàng chuyển tiền"); api.lui(); }) },
   "giao-mot-phan": { tieu: "Giao đợt sau", phu: "HĐ-0011 · khung theo tuần", ve: () => ({ than: `
     ${the("Đợt 4 · thứ Năm 30/10", dong("Lượng", "50 kg") + dong("Đã giao 3 đợt", "150 kg") + dong("Còn trong khung", "250 kg"))}
     <p class="m-ghi">Mỗi đợt có mã nhận hàng riêng. Tiền đợt trước đã về mới giao đợt sau.</p>`,
@@ -128,13 +134,13 @@ export const MAN_3 = {
     ${o("Số tiền bác thấy về", "32.200.000", "", 'inputmode="numeric"')}${o("Mã giao dịch ngân hàng", "FT2630012345")}
     ${chon("kt", [["Đã nhận đủ", ""], ["Mới nhận một phần", "Ghi đúng số đã thấy"], ["Chưa thấy tiền", "Bên mua sẽ được báo kiểm lại"]])}`,
     day: nut("Xác nhận", { id: "xn", lop: "m-vang m-rong" }) }),
-    sau: (el, s, t, api) => el.querySelector("#xn").addEventListener("click", () => { api.doi((x) => { if (x.hd.buoc === 6) x.hd.buoc = 7; }); api.toast("Đã xác nhận nhận đủ 32.200.000 đ"); api.lui(); }) },
+    sau: (el, s, t, api) => el.querySelector("#xn").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã xác nhận"); api.doi((x) => { if (x.hd.buoc === 6) x.hd.buoc = 7; }); api.toast("Đã xác nhận nhận đủ 32.200.000 đ"); api.lui(); }) },
   "ban-giao": { tieu: "Bàn giao hàng", phu: "HĐ-0018 · xe 66C-123.45", ve: () => ({ than: `
     ${viec("Xe tới vườn", "Hỏi tài xế mã nhận hàng 6 số, nhập vào đây rồi mới cho bốc.")}
     <div class="m-otp">${"482917".split("").map((c) => `<input aria-label="Số mã" maxlength="1" value="${c}" inputmode="numeric">`).join("")}</div>
     ${the("Khi bốc", dong("Cân xe", "Ghi số cân, chụp phiếu") + dong("Mẫu đối chứng", "Niêm phong M-2291") + dong("Quay video", "Lúc bốc lên xe"))}`,
     day: nut("Đúng mã, bắt đầu bốc", { id: "bg", lop: "m-vang m-rong" }) }),
-    sau: (el, s, t, api) => el.querySelector("#bg").addEventListener("click", () => { api.doi((x) => { if (x.hd.buoc === 7) x.hd.buoc = 8; }); api.toast("Đã bàn giao · chờ bên mua xem video lúc bốc"); api.lui(); }) },
+    sau: (el, s, t, api) => el.querySelector("#bg").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đúng mã"); api.doi((x) => { if (x.hd.buoc === 7) x.hd.buoc = 8; }); api.toast("Đã bàn giao · chờ bên mua xem video lúc bốc"); api.lui(); }) },
   "danh-gia": { tieu: "Đánh giá bên mua", phu: "HĐ-0018 · Nhà máy sấy Đồng Xanh", ve: () => ({ than: `
     <h2 class="m-tieu">Bác thấy bên mua này thế nào?</h2>
     <div style="display:flex;gap:8px;justify-content:center;color:var(--vang)" id="sao">${[1, 2, 3, 4, 5].map((k) => `<button type="button" data-sao="${k}" aria-label="${k} sao" style="border:0;background:none;color:${k <= 5 ? "var(--vang)" : "var(--ke-dam)"};width:48px;height:48px;cursor:pointer">${ic("sao", 40)}</button>`).join("")}</div>
@@ -142,7 +148,7 @@ export const MAN_3 = {
     <label class="m-o"><span>Ghi thêm</span><textarea>Chị Hà làm việc nhanh, rõ ràng.</textarea></label>
     <p class="m-ghi">Bên mua cũng đánh giá bác. Hai bên chỉ thấy đánh giá của nhau sau khi cả hai đã gửi.</p>`,
     day: nut("Gửi đánh giá", { id: "dg", lop: "m-vang m-rong" }) }),
-    sau: (el, s, t, api) => { el.querySelectorAll("[data-sao]").forEach((b) => b.addEventListener("click", () => el.querySelectorAll("[data-sao]").forEach((x) => { x.style.color = Number(x.dataset.sao) <= Number(b.dataset.sao) ? "var(--vang)" : "var(--ke-dam)"; x.animate([{ transform: "scale(.8)" }, { transform: "scale(1.15)" }, { transform: "none" }], { duration: 260 }); }))); el.querySelector("#dg").addEventListener("click", () => { api.doi((x) => { x.hd.buoc = 15; }); api.toast("Đã gửi đánh giá · HĐ-0018 hoàn tất"); api.lui(); }); } },
+    sau: (el, s, t, api) => { el.querySelectorAll("[data-sao]").forEach((b) => b.addEventListener("click", () => el.querySelectorAll("[data-sao]").forEach((x) => { x.style.color = Number(x.dataset.sao) <= Number(b.dataset.sao) ? "var(--vang)" : "var(--ke-dam)"; x.animate([{ transform: "scale(.8)" }, { transform: "scale(1.15)" }, { transform: "none" }], { duration: 260 }); }))); el.querySelector("#dg").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã gửi"); api.doi((x) => { x.hd.buoc = 15; }); api.toast("Đã gửi đánh giá · HĐ-0018 hoàn tất"); api.lui(); }); } },
 
   // ── Tiền ──
   tien: { tieu: "Tiền hàng", phu: "Agribank •••• 2186", tab: "tien", ve: (s) => ({ than: `
@@ -151,11 +157,11 @@ export const MAN_3 = {
     ${the("Theo hợp đồng", dong("HĐ-0018 · Đồng Xanh", nhan(s.hd.buoc >= 15 ? "Đã nhận đủ" : "Đang chạy", s.hd.buoc >= 15 ? "m-n-xong" : "m-n-tien")) + dong("HĐ-0011 · Bếp Sen", nhan("Tuần 4 chờ giao", "")) + dong("HĐ-0009 · Tân Thuận", nhan("Đã nhận đủ", "m-n-xong")), lk("Quyết toán", "quyet-toan"))}
     <div class="m-hai-o">${nut("Lịch sử tiền", { ma: "lich-su-tien", lop: "m-phu m-nho" })}${nut("Nhận tiền trước", { ma: "ung-tien", lop: "m-phu m-nho" })}</div>` }) },
   "tien-ve": { tieu: "Tiền đã về", phu: "HĐ-0018", ve: () => ({ than: `
-    <div style="display:grid;justify-items:center;text-align:center;gap:10px;padding:24px 0"><span class="m-nay" style="width:96px;height:96px;border-radius:50%;background:var(--vang-nhat);color:var(--chin);display:grid;place-items:center">${ic("tien", 46)}</span><small class="m-ghi">Ngân hàng vừa chuyển</small><b class="m-so" style="font-size:34px;color:var(--chin)">${d(TIEN.COC_CHO_BAC)}</b><p class="m-ghi">vào Agribank •••• 2186 · 28/10 15:42</p></div>
+    <div style="display:grid;justify-items:center;text-align:center;gap:10px;padding:24px 0"><span class="m-nay" style="width:96px;height:96px;border-radius:50%;background:var(--vang-nhat);color:var(--chin);display:grid;place-items:center">${ic("tien", 46)}</span><small class="m-ghi">Ngân hàng vừa chuyển</small><b class="m-so" id="so-ve" style="font-size:34px;color:var(--chin);border-radius:8px">${d(TIEN.COC_CHO_BAC)}</b><p class="m-ghi">vào Agribank •••• 2186 · 28/10 15:42</p></div>
     ${the("HĐ-0018 tổng cộng", dong("Bên mua trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(TIEN.COC_CHO_BAC)) + dong("Bác nhận tổng", d(TIEN.NGHIEM_THU), "m-tong"))}
     <p class="m-ghi">Chỉ bấm khi đã thấy tiền trong tài khoản. Chưa thấy thì báo, AgiViet kiểm với ngân hàng.</p>`,
     day: `<div class="m-hang-nut">${nut("Chưa thấy", { lop: "m-phu" })}${nut("Đã thấy tiền về", { id: "ve", lop: "m-vang" })}</div>` }),
-    sau: (el, s, t, api) => el.querySelector("#ve").addEventListener("click", () => { api.doi((x) => { if (x.hd.buoc === 13) x.hd.buoc = 14; }); api.toast("Đã xác nhận tiền về"); api.thay("danh-gia"); }) },
+    sau: (el, s, t, api) => (window.HieuUng?.demSo(el.querySelector("#so-ve"), 0, TIEN.COC_CHO_BAC), el.querySelector("#ve").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã nhận tiền"); api.doi((x) => { if (x.hd.buoc === 13) x.hd.buoc = 14; }); api.toast("Đã xác nhận tiền về"); api.thay("danh-gia"); })) },
   "quyet-toan": { tieu: "Quyết toán", phu: "HĐ-0018 · từng bước", ve: () => ({ than: `
     ${the("Cách tính", dong("Tiền hàng theo kết quả cân", d(TIEN.NGHIEM_THU)) + dong("− Bác chịu bồi thường", "0 đ") + dong("= Bác được nhận tổng", d(TIEN.NGHIEM_THU), "m-tong") + dong("− Bên mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("= Ngân hàng chuyển từ cọc cho bác", d(TIEN.COC_CHO_BAC), "m-tong") + dong("Cọc dư hoàn bên mua", d(TIEN.HOAN_BEN_MUA)))}`,
     day: nut("Nghe đọc bảng tính", { lop: "m-phu m-rong", icon: "tai" }) }) },

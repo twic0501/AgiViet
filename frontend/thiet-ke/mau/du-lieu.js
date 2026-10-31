@@ -22,7 +22,7 @@ export const BUOC = [
 export const CHANG = ["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"];
 
 export const DAU = {
-  phien: "ban-mau-v1",
+  phien: "ban-mau-v2",
   chuaDoc: 2,
   ho: { ten: "Nguyễn Thị Năm", goi: "Chị Năm", vai: "nong-ho", noi: "Mỹ Xương, Cao Lãnh, Đồng Tháp", sdt: "0918 234 421", nganHang: "Agribank", stk: "•••• 2186", xacMinh: true, uyTin: 4.8, soDon: 31 },
   vuon: [{ ma: "V-01", ten: "Vườn xoài ấp 3", dt: "1,2 ha", cay: "Xoài cát Chu", soCay: 320, maVung: "VN-DT-0412", camLy: "2026-10-22" }],
@@ -71,6 +71,10 @@ export const DAU = {
     { ngay: "20/10", viec: "Nhân viên AgiViet tới vườn", chi: "Kiểm cây, chụp vườn, xác nhận nhật ký", anh: 6, nguon: "vh", kiem: true },
     { ngay: "12/10", viec: "Phun thuốc", chi: "Phun trừ rầy, cách ly 10 ngày → hết 22/10", anh: 1, nguon: "chup", kiem: false },
     { ngay: "05/10", viec: "Bón phân", chi: "Bón kali 2 bao", anh: 0, nguon: "go", kiem: false },
+  ],
+  nhatKyCu: [
+    { thang: "Tháng 9/2026", so: 14, anh: 9, kiem: 2, tom: "Bao trái 3.200 trái · bón phân 3 lần · phun thuốc 2 lần" },
+    { thang: "Tháng 8/2026", so: 11, anh: 5, kiem: 1, tom: "Ra hoa đợt 2 · tưới 6 lần · phun thuốc 1 lần" },
   ],
   thuChi: [
     { ngay: "28/10", noi: "Tiền xoài HĐ-0009", so: 27600000, vao: true },

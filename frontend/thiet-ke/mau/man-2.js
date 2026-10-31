@@ -50,7 +50,7 @@ export const MAN_2 = {
     <div class="m-loc">${[-500, -100, 100, 500].map((k) => `<button type="button" data-cong="${k}">${k > 0 ? "+" : "−"}${Math.abs(k)} kg</button>`).join("")}</div>
     ${chon("can", [["Ước chừng", "Bên mua đặt tối đa 80% lượng này"], ["Đã cân", "Bên mua đặt được hết"]])}`,
     day: nut("Lưu", { id: "luu", lop: "m-vang m-rong" }) }; },
-    sau: (el, s, t, api) => { const i = el.querySelector("#con"); el.querySelectorAll("[data-cong]").forEach((b) => b.addEventListener("click", () => { i.value = Math.max(0, Number(i.value) + Number(b.dataset.cong)); i.animate([{ transform: "scale(1.04)" }, { transform: "none" }], { duration: 200 }); })); el.querySelector("#luu").addEventListener("click", () => { api.doi((x) => { lo(x, t.lo).con = Number(i.value); }); api.toast(`Đã cập nhật ${t.lo || "L-0412"}: còn ${so(i.value)} kg`); api.lui(); }); } },
+    sau: (el, s, t, api) => { const i = el.querySelector("#con"); el.querySelectorAll("[data-cong]").forEach((b) => b.addEventListener("click", () => { i.value = Math.max(0, Number(i.value) + Number(b.dataset.cong)); i.animate([{ transform: "scale(1.04)" }, { transform: "none" }], { duration: 200 }); })); el.querySelector("#luu").addEventListener("click", async (e) => { if (!(Number(i.value) >= 0) || i.value === "") { window.HieuUng?.loiTruong(i, "Bác nhập số ký còn lại"); return; } await api.xong(e.currentTarget, "Đã lưu"); api.doi((x) => { lo(x, t.lo).con = Number(i.value); }); api.toast(`Đã cập nhật ${t.lo || "L-0412"}: còn ${so(i.value)} kg`); api.lui(); }); } },
   "sap-co-hang": { tieu: "Sắp có hàng", phu: "L-0414 · hái từ 12/11", ve_tu: "hang", ve: (s) => ({ than: `
     ${viec("Bên mua đặt trước được", "Lô hiện cho bên mua dạng \"sắp có hàng\". Cọc chỉ chuyển khi hai bên ký.", "", "m-cho")}
     ${the("Lô L-0414", dong("Dự kiến", "2.000 kg loại 1") + dong("Hái từ", "12/11 (sau cách ly 09/11)") + dong("Giá mong muốn", "24.000 đ/kg"))}
@@ -140,6 +140,11 @@ export const MAN_2 = {
         const q = h.moLienLac ? { sach: true, che: chu } : quetLienLac(chu);
         go.value = ""; go.style.height = "auto";
         them({ k: "tin", ai: "toi", t: q.che, luc: gio(), che: !q.sach });
+        if (q.sach) {
+          const go2 = document.createElement("div"); go2.className = "m-tin m-ho"; go2.setAttribute("aria-label", "Bên mua đang gõ"); go2.innerHTML = '<span class="hu-cham"><i></i><i></i><i></i></span>';
+          setTimeout(() => { el.querySelector("#chat").appendChild(go2); cuon.scrollTo({ top: cuon.scrollHeight, behavior: "smooth" }); }, 500);
+          setTimeout(() => { go2.remove(); them({ k: "tin", ai: "ho", t: h.ma === "T1" ? "Dạ em ghi nhận, cảm ơn chị." : "Dạ.", luc: gio() }); }, 2200);
+        }
         if (!q.sach) { api.doi((x) => { x.viPham = (x.viPham || 0) + 1; }); them({ k: "he", canh: true, t: `Tin có ${q.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm (lần ${viPham()}/3). ${viPham() >= 3 ? "Bác đã bị tạm khóa nhắn 24 giờ." : "Lần 3 sẽ tạm khóa nhắn 24 giờ."}`, luc: gio() }); }
       });
       el.querySelector("#gui-anh").addEventListener("click", () => them({ k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: gio() }));
