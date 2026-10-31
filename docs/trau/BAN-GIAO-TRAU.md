@@ -150,6 +150,11 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - Xương tay dùng lại id cũ của nút tay, nên mọi hoạt ảnh vẫn chạy như trước, chỉ thêm hệ số ×2,6 vì tay uốn được nên giơ cao được. Riêng phần bật/tắt theo góc phải đặt lên **nút chứa hình** (`g.hien()`), vì xương không có độ mờ.
     - Vươn vai giơ khoảng 1,7 rad, vẫy chào khoảng 1,6 rad (bàn tay ngang tai), giật mình và vui khoảng 1,2–1,3 rad.
     - Đã xoá phần đổi hình (`do-tay.py`, `nguon/goc/tay-chinh.svg`, các ảnh cắt tay). Ảnh mẫu `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` giữ lại để tham khảo dáng.
+    - **Bản 2 (31/10): dò nguyên đường bao tay từ bảng Higgsfield.** Người sáng lập nhận xét bản 8 điểm "chưa đúng" ở cả 3 góc và cả lúc chuyển động. Đã làm lại:
+      - `tach-tay.py`: trong đa giác thô của từng dáng, tách theo màu 3 lớp (viền đen = cả bóng tay, ống tay nâu, bàn tay xám), dò đường bao bằng potrace, lấy mẫu 72, 64, 56 điểm theo chiều dài, bắt đầu ở điểm gần gốc vai, cùng chiều → `nguon/goc/tay-morph.json`. Nhờ vậy ống tay và bàn tay (xoè, chỉ, nắm) đúng hình bảng mẫu.
+      - `tay_morph()`: khoá đỉnh mỗi 10 khung, nội suy quay quanh gốc vai (góc + bán kính), nên tay không co ngắn giữa chừng.
+      - Ảnh: so với Higgsfield `tay-so-sanh-higgsfield.png`, chuỗi chuyển dáng `tay-chuyen-dang.png`, 5 góc × 5 động tác `tay-gio-3-goc.png`.
+      - Đoạn mô tả bên dưới là bản 1 (8 điểm), đã thay.
     - **Tay giơ theo bảng tư thế Higgsfield cho cả 3 góc (31/10, sau khi người sáng lập duyệt ảnh tĩnh).** Bảng nguồn: `docs/trau/tham-chieu/higgsfield-tay-{chinh,34,nghieng-2}.png`. `cat-bang-tay.py` cắt từng hình theo cặp móng chân và căn về khung 512. Mỗi góc có 3 dáng (buông, dang ngang, giơ cao), mỗi dáng 8 đỉnh, lưu trong `TAY_MORPH` (`dung-v3.py`).
       - `tay_morph()` dựng ống tay (fill), viền hở ở gốc và bàn tay V4g bám theo đoạn cổ tay, tự lật để bàn tay nằm ngoài ống tay.
       - Hoạt ảnh `Dáng tay <bên>` khoá đỉnh ở khung 0, 60, 120. Joystick tua hoạt ảnh này, nên tay biến hình mượt.

@@ -162,13 +162,13 @@ class Goc:
                 self.bp[t] = (gx, gy, tc.hinh(e, {}, gx, gy, f'{t}-nach') + ruot, nid)
 
     def tay_morph(self, svg):
-        """Tay biến hình (TAY_MORPH). Nút 'tay-<bên>' (Phụ: đung đưa nhỏ) → 'nghich' (góc xoay trong động tác được đổi
-        thành vị trí joystick, xem remap trong main) → ống tay (fill) + viền hở ở gốc + bàn tay V4g ('ban', bám cổ tay).
-        Hoạt ảnh 'Dáng tay' khoá toạ độ đỉnh ở khung 0 / 60 / 120 = buông / ngang / cao. Tay nằm trên thân áo, dưới khăn."""
-        import importlib.util as _iu
-        sp_ = _iu.spec_from_file_location('goc_nhin', os.path.join(DIR, 'goc-nhin.py'))
-        gn = _iu.module_from_spec(sp_); sp_.loader.exec_module(gn)
-        du = TAY_MORPH['chinh' if self.ten == 'chinh' else self.ten[:2]]
+        """Tay biến hình theo đường bao dò từ bảng tư thế Higgsfield (nguon/goc/tay-morph.json, tach-tay.py):
+        3 lớp tô — viền (đen), ống tay (nâu), bàn tay (xám) — cùng số điểm ở 3 dáng buông / ngang / cao.
+        Hoạt ảnh 'Dáng tay' khoá đỉnh mỗi 10 khung, nội suy QUAY quanh vai (góc + bán kính) để tay không co ngắn
+        giữa chừng. Nút 'tay-<bên>' (Phụ) → 'nghich' (góc trong động tác → vị trí joystick, xem remap)."""
+        import json as _js
+        du = _js.load(open(os.path.join(DIR, 'nguon/goc/tay-morph.json')))
+        v = 'chinh' if self.ten == 'chinh' else self.ten[:2]
         if self.ten == 'chinh':               # bỏ tay V4g + viền nách trong thân áo
             than = next(g for g in svg.iter(NS + 'g') if g.get('id') == 'than')
             g2 = copy.deepcopy(than)
@@ -180,80 +180,52 @@ class Goc:
             cac_ben = ('trai', 'phai')
         else:
             cac_ben = ('gan',)
-        v4g = next(e for e in ET.parse(os.path.join(DIR, 'nguon/trau.svg')).getroot().iter(NS + 'g')
-                   if e.get('id') == 'tay-trai')
-        (a0x, a0y), (b0x, b0y) = V4G_CO_TAY
-        L0 = math.hypot(b0x - a0x, b0y - a0y); phi0 = math.atan2(b0y - a0y, b0x - a0x); K = 40.0
+        MAU = {'vien': 'FF24190F', 'ong': 'FFC48F65', 'ban': 'FF84736B'}
+        KHUNG = (0, 60, 120)
         for ben in cac_ben:
             t = f'tay-{ben}'
             X = (lambda x: x) if ben != 'phai' else (lambda x: 512 - x)
-            dang = {k: [(X(a), b) for a, b in v] for k, v in du.items()}
-            b0 = dang['buong']
-            px, py = (b0[0][0] + b0[7][0]) / 2, (b0[0][1] + b0[7][1]) / 2      # điểm xoay = giữa gốc tay
-            def dinh(pts, ids):
-                return ''.join(f'<StraightVertex x="{a - px:.2f}" y="{b - py:.2f}" id="{i}"/>' for (a, b), i in zip(pts, ids))
+            dang = [{ly: [(X(a), b) for a, b in du[f'{v}-{k}'][ly]] for ly in MAU} for k in range(3)]
+            goc_ = [(X(du['goc'][f'{v}-{k}'][0]), du['goc'][f'{v}-{k}'][1]) for k in range(3)]
+            px, py = goc_[0]
 
-            # bàn tay V4g chuẩn hoá: cổ tay A→(0,0), B→(K,0); lật nếu bàn tay rơi vào phía ống tay
-            def chuan(x, y, lat_=1):
-                u, v = x - a0x, y - a0y
-                c, s_ = math.cos(-phi0), math.sin(-phi0)
-                return ((u * c - v * s_) * K / L0, lat_ * (u * s_ + v * c) * K / L0)
-            ban_els = [e for e in v4g if e.get('data-role') in ('mong-tay', 'bong-tay')]
-            cyh = sum(chuan(*p)[1] for p in ((113, 390), (160, 410), (130, 410))) / 3
-            A1, B1 = b0[3], b0[4]
-            phi1 = math.atan2(B1[1] - A1[1], B1[0] - A1[0]); L1 = math.hypot(B1[0] - A1[0], B1[1] - A1[1])
-            mx, my = sum(p[0] for p in b0) / 8, sum(p[1] for p in b0) / 8
-            u, v = mx - A1[0], my - A1[1]
-            sy = -u * math.sin(phi1) + v * math.cos(phi1)        # phía ống tay trong hệ cổ tay
-            lat_ = -1 if (sy > 0) == (cyh > 0) else 1
-            ban = ''
-            for j, e in enumerate(ban_els):
-                e2 = gn.bien_phan_tu(e, lambda x, y: chuan(x, y, lat_))
-                if e2.get('stroke-width'):
-                    e2.set('stroke-width', f'{float(e2.get("stroke-width")) * K / L0:.2f}')
-                ban += tc.hinh(e2, {'stroke': '#24190f', 'stroke-width': f'{5.6 * K / L0:.2f}', 'stroke-linejoin': 'round',
-                                    'stroke-linecap': 'round'}, 0, 0, f'{t}-ban-{j}')
+            def noi(k0, k1, tt, ly, j):
+                """điểm j của lớp ly giữa dáng k0→k1 (tt 0..1): quay quanh gốc vai (gốc cũng trượt tuyến tính)"""
+                P0, P1 = goc_[k0], goc_[k1]
+                a0 = (dang[k0][ly][j][0] - P0[0], dang[k0][ly][j][1] - P0[1])
+                a1 = (dang[k1][ly][j][0] - P1[0], dang[k1][ly][j][1] - P1[1])
+                g0, g1 = math.atan2(a0[1], a0[0]), math.atan2(a1[1], a1[0])
+                while g1 - g0 > math.pi: g1 -= 2 * math.pi
+                while g1 - g0 < -math.pi: g1 += 2 * math.pi
+                r = math.hypot(*a0) * (1 - tt) + math.hypot(*a1) * tt
+                g = g0 * (1 - tt) + g1 * tt
+                return (P0[0] * (1 - tt) + P1[0] * tt + r * math.cos(g), P0[1] * (1 - tt) + P1[1] * tt + r * math.sin(g))
+
             def dung(ten_):
-                """Một bản tay (ống + viền + bàn tay) và các khoá đỉnh / bàn tay theo 3 dáng."""
-                ids_ong, ids_vien = [moi_id() for _ in range(8)], [moi_id() for _ in range(8)]
-                ong = (f'<Shape x="0" y="0" name="{ten_}-ong"><PointsPath isClosed="true" name="P">{dinh(b0, ids_ong)}'
-                       f'</PointsPath><Fill name="F"><SolidColor colorValue="FFC48F65" name="C"/></Fill></Shape>')
-                vien = (f'<Shape x="0" y="0" name="{ten_}-vien"><PointsPath isClosed="false" name="P">'
-                        f'{dinh(b0, ids_vien)}</PointsPath><Stroke thickness="5.60" cap="round" join="round" name="V">'
-                        f'<SolidColor colorValue="FF24190F" name="C"/></Stroke></Shape>')
-                id_ban = moi_id()
-                ruot_ = vien + ong + node(f'{ten_}-ban', id_ban, 0, 0, ban)   # Rive: khai báo trước nằm trên
-                keyed_ = []
-                for ids in (ids_ong, ids_vien):
+                ruot_, keyed_ = '', []
+                for ly in ('ban', 'ong', 'vien'):          # Rive: khai báo trước nằm trên
+                    ids = [moi_id() for _ in dang[0][ly]]
+                    dinh = ''.join(f'<StraightVertex x="{a - px:.2f}" y="{b - py:.2f}" id="{i}"/>'
+                                   for (a, b), i in zip(dang[0][ly], ids))
+                    ruot_ += (f'<Shape x="0" y="0" name="{ten_}-{ly}"><PointsPath isClosed="true" name="P">{dinh}'
+                              f'</PointsPath><Fill name="F"><SolidColor colorValue="{MAU[ly]}" name="C"/></Fill></Shape>')
                     for j, vid in enumerate(ids):
-                        for prop, k in (('x', 0), ('y', 1)):
-                            off = px if k == 0 else py
-                            kf = ''.join(f'<KeyFrameDouble value="{dang[d][j][k] - off:.2f}" frame="{f}" '
-                                         f'interpolationType="linear"/>' for d, f in (('buong', 0), ('ngang', 60), ('cao', 120)))
+                        ks = []
+                        for f in range(0, 121, 10):
+                            k0 = 0 if f < 60 else 1
+                            tt = (f - KHUNG[k0]) / 60
+                            ks.append((f, noi(k0, k0 + 1, tt, ly, j) if tt > 0 else dang[k0][ly][j]))
+                        for prop, c in (('x', 0), ('y', 1)):
+                            off = px if c == 0 else py
+                            kf = ''.join(f'<KeyFrameDouble value="{q[c] - off:.2f}" frame="{f}" interpolationType="linear"/>'
+                                         for f, q in ks)
                             keyed_.append(f'<KeyedObject objectId="{vid}"><KeyedProperty property="{prop}">{kf}'
                                           f'</KeyedProperty></KeyedObject>')
-                for prop, vals in (('x', [g_[0] for g_ in goc_]), ('y', [g_[1] for g_ in goc_]), ('rotation', rot),
-                                   ('scaleX', [g_[3] for g_ in goc_]), ('scaleY', [g_[3] for g_ in goc_])):
-                    kf = ''.join(f'<KeyFrameDouble value="{v:.4f}" frame="{f}" interpolationType="linear"/>'
-                                 for v, f in zip(vals, (0, 60, 120)))
-                    keyed_.append(f'<KeyedObject objectId="{id_ban}"><KeyedProperty property="{prop}">{kf}'
-                                  f'</KeyedProperty></KeyedObject>')
                 return ruot_, keyed_
-            goc_ = []
-            for d in ('buong', 'ngang', 'cao'):
-                A, B = dang[d][3], dang[d][4]
-                goc_.append((A[0] - px, A[1] - py, math.atan2(B[1] - A[1], B[0] - A[0]), math.hypot(B[0] - A[0], B[1] - A[1]) / K))
-            rot = [goc_[0][2]]
-            for g_ in goc_[1:]:                                 # góc liên tục
-                r = g_[2]
-                while r - rot[-1] > math.pi: r -= 2 * math.pi
-                while r - rot[-1] < -math.pi: r += 2 * math.pi
-                rot.append(r)
             ruot, keyed = dung(t)
             nid = self.bp[t][3] if t in self.bp else moi_id()
             if self.ten.startswith('34'):
                 # ¾: giơ cao thì tay nằm TRƯỚC má (bảng Higgsfield) → bản thứ hai vẽ trên đầu, đổi ở khung 85
-                # (quá ngang vai); hai bản cùng biến hình theo một joystick.
                 ruot2, keyed2 = dung(t + '-tren')
                 h1, h2 = moi_id(), moi_id()
                 ruot = node(f'{t}-duoi-dau', h1, 0, 0, ruot)
