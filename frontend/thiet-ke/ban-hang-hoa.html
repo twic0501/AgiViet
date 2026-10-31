@@ -9,9 +9,9 @@
 <style>
   /* Hai ngăn */
   /* Dải ngăn dính dưới header, có nền đệm để không sát header và che nội dung cuộn bên dưới */
-  .dai-ngan { position: sticky; top: calc(66px + env(safe-area-inset-top)); z-index: 4; margin: -14px -16px 0; padding: 12px 16px 10px; background: var(--giay); box-shadow: 0 6px 10px -8px rgba(31, 77, 58, .25); }
-  .ngan { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--giay-lot); border-radius: 14px; padding: 4px; }
-  .ngan button { min-height: 44px; border: 0; border-radius: 10px; background: transparent; font: 600 14px/1.15 var(--chu); padding: 0 4px; color: var(--muc-phu); cursor: pointer; }
+  .dai-ngan { position: sticky; top: calc(44px + env(safe-area-inset-top)); z-index: 4; margin: -14px -16px 0; padding: 34px 16px 12px; background: var(--giay); box-shadow: 0 6px 10px -8px rgba(31, 77, 58, .25); }
+  .ngan { display: grid; grid-template-columns: repeat(3, auto); justify-content: stretch; background: var(--giay-lot); border-radius: 14px; padding: 4px; }
+  .ngan button { min-height: 44px; border: 0; border-radius: 10px; background: transparent; font: 600 14px/1.15 var(--chu); padding: 0 6px; white-space: nowrap; letter-spacing: -0.01em; color: var(--muc-phu); cursor: pointer; }
   .ngan button[aria-selected="true"] { background: var(--giay-noi); color: var(--la-dam); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 0 0 1px var(--ke); }
   .ngan small { font-size: 12px; font-weight: 700; margin-left: 4px; color: var(--la); }
   /* Tóm tắt */

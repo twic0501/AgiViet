@@ -8,11 +8,27 @@
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
   /* Tiền tố db- để không đụng lớp cũ trong so-vuon.css */
-  .db-tien { display: flex; gap: 6px; }
-  .db-tien i { flex: 1; height: 5px; border-radius: 3px; background: var(--ke-dam); }
-  .db-tien i.xong { background: var(--la); }
-  .db-tien-chu { display: flex; justify-content: space-between; margin-top: 6px; font-size: 13px; color: var(--muc-nhat); }
-  .db-tien-chu b { color: var(--la); }
+  .db-tien-chu { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muc-nhat); }
+  .db-tien-chu .so { font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--la); color: var(--tren-la); }
+  .db-tien-chu b { color: var(--muc); font-size: 15px; }
+  .db-tien-chu .sau { margin-left: auto; font-size: 13px; }
+  .db-tien { height: 6px; border-radius: 3px; background: var(--ke); margin-top: 10px; overflow: hidden; }
+  .db-tien i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--vang-lua), var(--la)); transition: width 300ms; }
+  /* Thẻ tiêu đề có màu theo bước */
+  .db-dau-man { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; padding: 14px; border-radius: 18px; }
+  .db-dau-man .bieu { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: rgba(255,255,255,.65); }
+  .db-dau-man .db-tieu { font-size: 20px; }
+  .db-dau-man .db-phu { margin-top: 2px; font-size: 14px; }
+  .db-dau-man.vang { background: var(--vang-lua-nhat); color: #4a3510; }
+  .db-dau-man.chin { background: var(--chin-nen); color: var(--chin); }
+  .db-dau-man.la { background: var(--la-nhat); color: var(--la-dam); }
+  .db-dau-man.dat { background: var(--nau-dat-nhat); color: var(--nau-dat); }
+  .db-dau-man .db-tieu, .db-dau-man .db-phu { color: inherit; }
+  .db-dau-man .db-phu { opacity: .85; }
+  .db-mic[data-the="noi"] { background: var(--la); color: var(--tren-la); }
+  .db-mic[data-the="hieu"] { background: var(--chin-nen); color: var(--chin); }
+  .db-mic[data-the="nghi"] { background: var(--vang-lua-nhat); color: var(--nau-dat); box-shadow: none; }
+  .db-day .nut.vang { background: #f4c84e; color: #1f1503; }
   .db-tieu { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin: 0; }
   .db-phu { color: var(--muc-phu); margin: 6px 0 0; line-height: 1.45; }
   .db-nhan { display: block; font-size: 14px; font-weight: 600; color: var(--muc-phu); margin: 0 0 8px; }
@@ -153,7 +169,7 @@
 <div class="trang">
   <header class="dau dau-xanh nen-xanh" id="dau"></header>
   <main class="noi" id="noi" style="gap:20px;padding-top:20px;padding-bottom:0;min-height:calc(100dvh - 80px)">
-    <div id="tien-do" hidden><div class="db-tien" id="tien"></div><div class="db-tien-chu" id="tien-chu"></div></div>
+    <div id="tien-do" hidden><div class="db-tien-chu" id="tien-chu"></div><div class="db-tien" id="tien"></div></div>
 
     <!-- Màn đầu: hàng của hộ + chọn cách đăng (brief D1) -->
     <section data-m="dau" class="db-khoi">
@@ -185,7 +201,7 @@
       <p class="db-the do" id="noi-loi" hidden></p>
       <div class="db-mic-hang" id="mic-hang">
         <button class="db-mic" type="button" id="mic" aria-label="Bấm để nói"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-        <span class="db-mic-chu" id="mic-chu">Bấm rồi nói</span>
+        <span class="db-mic-chu" id="mic-chu">App sẽ hỏi, bác cứ nói</span>
       </div>
       <p class="db-nghe-duoc" id="nghe-duoc" hidden></p>
       <div class="db-cot"><span class="db-nhan" id="go-nhan">Hoặc gõ câu trả lời</span>
@@ -195,7 +211,7 @@
 
     <!-- Từ nhật ký -->
     <section data-m="nk" class="db-khoi" hidden>
-      <div><h2 class="db-tieu">Lấy từ nhật ký vườn</h2><p class="db-phu">App điền sẵn những gì nhật ký có. Bác kiểm lại rồi bổ sung phần thiếu.</p></div>
+      <div class="db-dau-man dat"><span class="bieu"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/></svg></span><div><h2 class="db-tieu">Lấy từ nhật ký vườn</h2><p class="db-phu">App điền sẵn, bác kiểm lại phần thiếu.</p></div></div>
       <div class="db-nk" id="nk-tom"><div class="khung-tai" style="margin:14px"></div></div>
       <div><span class="db-nhan">Hàng này đang thế nào?</span>
         <div class="db-doan" id="nk-tinh"><button type="button" data-v="da-hai" aria-pressed="false">Đã hái, còn bán</button><button type="button" data-v="sap-hai" aria-pressed="false">Chưa hái, sắp hái</button></div></div>
@@ -204,7 +220,7 @@
 
     <!-- Lượng, ngày -->
     <section data-m="luong" class="db-khoi" hidden>
-      <h2 class="db-tieu">Bác còn bán bao nhiêu?</h2>
+      <div class="db-dau-man vang"><span class="bieu"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M5 8h14l-2 11H7z"/><path d="M9 12h6"/></svg></span><div><h2 class="db-tieu">Bác còn bán bao nhiêu?</h2><p class="db-phu">Lượng và ngày bên mua lấy được hàng</p></div></div>
       <div class="db-cot">
         <label class="db-nhan" for="luong" style="margin:0">Lượng<span class="db-nguon" id="ng-luong" hidden></span></label>
         <div class="db-so"><input id="luong" inputmode="decimal" placeholder="0" autocomplete="off">
@@ -231,7 +247,7 @@
 
     <!-- Giá -->
     <section data-m="gia" class="db-khoi" hidden>
-      <h2 class="db-tieu">Bác muốn bán giá bao nhiêu?</h2>
+      <div class="db-dau-man chin"><span class="bieu"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/></svg></span><div><h2 class="db-tieu">Bác muốn bán giá bao nhiêu?</h2><p class="db-phu">Giá theo ký, so với giá chợ gần đây</p></div></div>
       <div class="db-tk" id="tk"><span id="tk-nhan">Đang lấy giá tham khảo…</span><b id="tk-gia"></b></div>
       <div class="db-cot">
         <label class="db-nhan" for="gia-muon" style="margin:0">Giá mong muốn</label>
@@ -250,7 +266,7 @@
 
     <!-- Ảnh (brief D4) -->
     <section data-m="anh" class="db-khoi" hidden>
-      <div><h2 class="db-tieu">Chụp hàng hiện tại</h2><p class="db-phu">Cần ít nhất 1 ảnh <b>chụp ngay</b> trong app. Bên mua tin ảnh thật hơn ảnh cũ.</p></div>
+      <div class="db-dau-man la"><span class="bieu"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><div><h2 class="db-tieu">Chụp hàng hiện tại</h2><p class="db-phu">Cần ít nhất 1 ảnh <b>chụp ngay</b>. Bên mua tin ảnh thật.</p></div></div>
       <div class="db-anh-nut">
         <label class="chup"><input type="file" accept="image/*" capture="environment" id="chup-anh" hidden><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp ngay<small>Mở máy ảnh</small></label>
         <label class="chon"><input type="file" accept="image/*" multiple id="chon-anh" hidden><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>Ảnh có sẵn<small>Thêm, không thay ảnh chụp</small></label>
@@ -261,7 +277,7 @@
 
     <!-- Xem lại & đăng (brief D8) -->
     <section data-m="xem" class="db-khoi" hidden>
-      <h2 class="db-tieu">Xem lại rồi đăng</h2>
+      <div class="db-dau-man la"><span class="bieu"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></span><div><h2 class="db-tieu">Xem lại rồi đăng</h2><p class="db-phu">Bấm Sửa ở dòng nào chưa đúng</p></div></div>
       <div><p class="db-nhom">Bên mua thấy</p><div class="db-xem" id="xem-lai"></div></div>
       <div><p class="db-nhom">Chỉ bác thấy <span class="kin">kín</span></p><div class="db-kin" id="chi-bac"></div></div>
     </section>
@@ -320,11 +336,13 @@ function den(m) {
   const ds_ = st.cach ? LUONG[st.cach] : [], k = ds_.indexOf(m);
   $("tien-do").hidden = k < 0;
   if (k >= 0) {
-    $("tien").innerHTML = ds_.map((_, i) => `<i class="${i <= k ? "xong" : ""}"></i>`).join("");
-    $("tien-chu").innerHTML = ds_.map((x, i) => (i === k ? `<b>${TEN[x]}</b>` : `<span>${TEN[x]}</span>`)).join("");
+    $("tien").innerHTML = `<i style="width:${((k + 1) / ds_.length) * 100}%"></i>`;
+    $("tien-chu").innerHTML = `<span class="so">Bước ${k + 1}/${ds_.length}</span><b>${TEN[m]}</b>${ds_[k + 1] ? `<span class="sau">Tiếp: ${TEN[ds_[k + 1]]}</span>` : ""}`;
   }
   $("day").hidden = m === "dau" || m === "xong";
   $("tiep").textContent = m === "xem" ? "Đăng bán" : "Tiếp tục";
+  $("tiep").classList.toggle("vang", m === "xem");
+  if (m !== "noi" && ht.bat) tatHoiThoai();
   if (m === "noi") batDauNoi();
   if (m === "nk") veNhatKy();
   if (m === "luong") kiemNgay();
@@ -486,17 +504,18 @@ const CAU = [
   { k: "luong", hoi: () => "Đợt này bác còn bán bao nhiêu? Đã cân hay ước chừng?", goiY: "Ví dụ: chừng hai tạ, chưa cân · một tấn rưỡi đã cân", can: () => !luongG() },
   { k: "ngay", hoi: () => "Khi nào bên mua tới lấy được hàng?", goiY: "Ví dụ: có hàng ngay · tuần sau hái · mùng mười tháng sau", can: () => !st.noiNgay, nhanh: () => [["ngay", "Có hàng ngay"]] },
   { k: "gia", hoi: () => "Bác muốn bán bao nhiêu một ký?", goiY: "Ví dụ: hai mươi bốn ngàn", can: () => !so($("gia-muon").value) },
-  { k: "san", hoi: () => `Giá thấp nhất giữ kín là ${vnd(so($("gia-san").value))} đ/kg, bác đồng ý không?`, goiY: "Bên mua không thấy giá này. Đồng ý thì bấm Đúng rồi, muốn khác thì nói giá.", can: () => !st.sanChot, nhanh: () => [["dong-y", "Đồng ý giá này"]] },
+  { k: "san", hoi: () => `Giá thấp nhất giữ kín là ${vnd(so($("gia-san").value))} đ/kg, bác đồng ý không?`, goiY: "Bên mua không thấy giá này. Đồng ý thì nói \"đúng rồi\", muốn khác thì nói giá.", doc: () => "Giá thấp nhất giữ kín app ghi trên màn hình. Bác đồng ý không?", can: () => !st.sanChot, nhanh: () => [["dong-y", "Đồng ý giá này"]] },
 ];
 const noi = { i: 0, hieu: null, ghi: null };
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function batDauNoi() {
   if (!noi.dangDo) { noi.i = CAU.findIndex((c) => c.can()); noi.dangDo = true; }
   else if (noi.i < 0) noi.i = CAU.length - 1;   // quay lại từ bước Ảnh: mở câu cuối để sửa
+  if (SR) { ht.bat = true; ht.lanLoi = 0; }       // vào màn Nói là app tự hỏi, tự nghe (bấm "Nói để đăng" là thao tác của bác nên được phép bật loa, mic)
   veCau();
 }
 function veCau() {
-  if (noi.i < 0 || noi.i >= CAU.length) return den("anh");
+  if (noi.i < 0 || noi.i >= CAU.length) { if (ht.bat) { ht.bat = false; noiRa("Xong rồi. Bác chụp ảnh hàng giúp em."); } return den("anh"); }
   const c = CAU[noi.i];
   if (c.k === "san" && !so($("gia-san").value)) goiYSan();
   noi.hieu = null; $("hieu").hidden = true; $("noi-loi").hidden = true; $("nghe-duoc").hidden = true; $("go-cau").value = "";
@@ -508,6 +527,7 @@ function veCau() {
   veDaCo();
   $("mic-hang").hidden = !SR; $("go-nhan").textContent = SR ? "Hoặc gõ câu trả lời" : "Máy này chưa nghe được giọng, bác gõ câu trả lời";
   $("tiep").textContent = "Đúng rồi"; kiem();
+  if (ht.bat) hoiVaNghe(cauHienTai());
 }
 function veDaCo() {
   const x = [];
@@ -524,21 +544,84 @@ function traLoiNhanh(k, v) {
   if (k === "san") noi.hieu = { sanChot: true };
   veHieu(); xacNhanCau();
 }
-$("nghe").onclick = () => { try { const u = new SpeechSynthesisUtterance($("cau-hoi").textContent); u.lang = "vi-VN"; u.rate = 0.9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch {} };
-$("mic").onclick = () => {
-  if (noi.ghi) { noi.ghi.stop(); return; }
-  const r = new SR(); r.lang = "vi-VN"; r.interimResults = true; noi.ghi = r;
-  $("mic").classList.add("dang"); $("mic-chu").textContent = "Đang nghe… bấm lần nữa khi nói xong";
-  let chu = "";
+// Hội thoại rảnh tay: app tự đọc câu hỏi → tự nghe → đọc lại điều đã hiểu → nghe "đúng/sai" → câu kế
+const ht = { bat: false, lanLoi: 0, ghi: null };
+function datThe(the, chu) { $("mic").dataset.the = the; $("mic-chu").textContent = chu; $("mic").classList.toggle("dang", the === "nghe"); }
+function noiRa(cau) {
+  return new Promise((xong) => {
+    if (!("speechSynthesis" in window)) return xong();
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(cau); u.lang = "vi-VN"; u.rate = 0.95;
+      const giong = speechSynthesis.getVoices().find((v) => /^vi/i.test(v.lang)); if (giong) u.voice = giong;
+      const hen = setTimeout(xong, 1500 + cau.length * 90);   // có máy không báo đọc xong
+      u.onend = u.onerror = () => { clearTimeout(hen); xong(); };
+      speechSynthesis.speak(u);
+    } catch { xong(); }
+  });
+}
+const cauHienTai = () => CAU[noi.i]?.doc?.() || $("cau-hoi").textContent;
+async function hoiVaNghe(cau) { if (!ht.bat) return; datThe("noi", "App đang nói…"); await noiRa(cau); if (ht.bat) nghe(); }
+function nghe() {
+  if (!ht.bat || ht.ghi) return;
+  const r = new SR(); r.lang = "vi-VN"; r.interimResults = true; ht.ghi = r; let chu = "";
+  datThe("nghe", "Đang nghe bác nói… (bấm để tạm dừng)");
   r.onresult = (e) => { chu = [...e.results].map((x) => x[0].transcript).join(" "); $("nghe-duoc").textContent = `“${chu}”`; $("nghe-duoc").hidden = false; };
-  r.onerror = () => { $("noi-loi").textContent = "Chưa nghe rõ. Bác bấm nói lại, hoặc gõ câu trả lời."; $("noi-loi").hidden = false; };
-  r.onend = () => { noi.ghi = null; $("mic").classList.remove("dang"); $("mic-chu").textContent = "Bấm để nói lại"; if (chu) hieuCau(chu); };
-  r.start();
-};
-$("go-form").onsubmit = (e) => { e.preventDefault(); const t = $("go-cau").value.trim(); if (t) { $("nghe-duoc").textContent = `“${t}”`; $("nghe-duoc").hidden = false; hieuCau(t); } };
+  r.onerror = (e) => { if (/not-allowed/.test(e.error)) tatHoiThoai("Máy chưa cho dùng micro. Bác gõ câu trả lời bên dưới."); };
+  r.onend = () => {
+    ht.ghi = null; if (!ht.bat) return;
+    if (chu.trim()) { ht.lanLoi = 0; nhanCau(chu.trim()); }
+    else if (++ht.lanLoi <= 2) hoiVaNghe("Em chưa nghe rõ. Bác nói lại giúp em.");
+    else tatHoiThoai("Đã tạm dừng. Bấm để nói tiếp.");
+  };
+  try { r.start(); } catch { ht.ghi = null; }
+}
+const DONG_Y = /^(dạ )?(đúng|phải|đồng ý|ừ|ừa|ờ|ok|oke|được|vâng|rồi|chuẩn)/i, SAI = /^(dạ )?(sai|không|chưa đúng|nói lại|sửa)/i;
+async function nhanCau(cau) {
+  if (noi.hieu && DONG_Y.test(cau)) return xacNhanCau();
+  if (noi.hieu && SAI.test(cau) && cau.split(/\s+/).length <= 3) { noi.hieu = null; $("hieu").hidden = true; kiem(); return hoiVaNghe("Dạ, bác nói lại giúp em."); }
+  if (!noi.hieu && CAU[noi.i]?.k !== "san" && DONG_Y.test(cau) && cau.split(/\s+/).length <= 2) return hoiVaNghe(cauHienTai());
+  datThe("hieu", "App đang hiểu…");
+  await hieuCau(cau);
+  if (!ht.bat) return;
+  // Câu trả lời chỉ chọn loại hoặc đồng ý giá kín: đã rõ, chốt luôn không hỏi lại
+  if (noi.hieu && Object.keys(noi.hieu).length === 1 && (noi.hieu.sanChot || noi.hieu.loai)) return xacNhanCau();
+  hoiVaNghe(noi.hieu ? `Em hiểu là ${docLai(noi.hieu)}. Đúng không bác?` : ($("noi-loi").textContent || "Bác nói lại giúp em."));
+}
+function docLai(h) {
+  const x = [];
+  if (h.loai) x.push(tenLoai(h.loai));
+  if (h.luongKg) x.push(`${vnd(h.luongKg)} ký ${h.coSo === "weighed" ? "đã cân" : "ước chừng"}`);
+  if (h.khiCo) x.push(h.khiCo === "ngay" ? "có hàng ngay" : `có hàng ngày ${ngayNgan(h.ngay)}`);
+  if (h.gia) x.push(`giá ${vnd(h.gia)} đồng một ký`);
+  if (h.san) x.push("giá thấp nhất như trên màn hình");
+  if (h.sanChot && !h.san) x.push("bác đồng ý giá thấp nhất");
+  return x.join(", ");
+}
+function tatHoiThoai(chu = "Đã tạm dừng. Bấm để nói tiếp.") {
+  ht.bat = false; try { ht.ghi?.abort(); } catch {} ht.ghi = null;
+  try { speechSynthesis.cancel(); } catch {}
+  datThe("nghi", chu); $("mic").setAttribute("aria-label", "Nói tiếp");
+}
+$("mic").onclick = () => { if (ht.bat) return tatHoiThoai(); ht.bat = true; ht.lanLoi = 0; $("mic").setAttribute("aria-label", "Tạm dừng"); hoiVaNghe(cauHienTai()); };
+$("nghe").onclick = () => noiRa(cauHienTai());
+$("go-form").onsubmit = (e) => { e.preventDefault(); const t = $("go-cau").value.trim(); if (!t) return; $("nghe-duoc").textContent = `“${t}”`; $("nghe-duoc").hidden = false; if (noi.hieu && DONG_Y.test(t)) return xacNhanCau(); hieuCau(t); };
+function khopLoai(cau) {
+  const so = { "một": 1, "nhất": 1, "hai": 2, "nhì": 2, "ba": 3, "bốn": 4 };
+  const t = cau.toLowerCase().replace(/\b(một|nhất|hai|nhì|ba|bốn)\b/g, (w) => so[w]);
+  for (const d of ds.filter((x) => x.product_code === st.sp)) {
+    const ma = d.grade_code, n = ma.match(/^L(\d)$/)?.[1];
+    if (n && new RegExp(`loại\\s*${n}\\b`).test(t)) return ma;
+    if (ma === "DAT" && /dạt/.test(t)) return ma;
+    if (t.includes(tenLoai(ma).toLowerCase())) return ma;
+  }
+  return null;
+}
 async function hieuCau(cau) {
   const c = CAU[noi.i];
   if (c.k === "san" && /^(ừ|ừa|ờ|đúng|được|đồng ý|ok|oke|vâng|dạ)/i.test(cau.trim())) { noi.hieu = { sanChot: true }; return veHieu(); }
+  // Câu ngắn chỉ nói loại ("loại một", "hàng dạt"): hiểu ngay trên máy, không cần AI
+  if (c.k === "loai") { const g = khopLoai(cau); if (g) { noi.hieu = { loai: g }; return veHieu(); } }
   $("noi-loi").hidden = true; $("hieu").hidden = false; $("hieu").innerHTML = `<div class="khung-tai" style="margin:8px 0"></div>`;
   try {
     const r = await fetch("/v1/voice/extract", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ van_ban: cau.slice(0, 600) }) });
@@ -578,7 +661,7 @@ function xacNhanCau() {
   if (h.sanChot) st.sanChot = true;
   dongBo();
   // Ngày vướng cách ly → hỏi lại câu ngày
-  if (h.khiCo && !kiemNgay()) { noi.hieu = null; st.noiNgay = false; $("noi-loi").textContent = $("cach-ly").textContent; $("noi-loi").hidden = false; noi.i = 2; $("hieu").hidden = true; return kiem(); }
+  if (h.khiCo && !kiemNgay()) { noi.hieu = null; st.noiNgay = false; $("noi-loi").textContent = $("cach-ly").textContent; $("noi-loi").hidden = false; noi.i = 2; $("hieu").hidden = true; kiem(); return hoiVaNghe($("cach-ly").textContent); }
   const tiep = CAU.findIndex((c) => c.can());
   noi.i = tiep; veCau();
 }

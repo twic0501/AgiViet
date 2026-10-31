@@ -282,3 +282,5 @@ p { margin: 0; text-wrap: pretty; }
 :root { --vang-lua: #d9a521; --vang-lua-nhat: #f6e6b4; --nau-dat: #8a5a2b; --nau-dat-nhat: #efe2d2; }
 /* Viền lúa vàng mảnh dưới header */
 .dau.dau-xanh { box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55); }
+/* Header xanh bo góc dưới, nội dung có khoảng thở (Trang chủ giữ thẳng vì khối xanh chạy liền xuống) */
+header.nen-xanh { border-radius: 0 0 22px 22px; }
