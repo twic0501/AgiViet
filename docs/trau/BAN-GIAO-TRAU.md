@@ -150,6 +150,13 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - Xương tay dùng lại id cũ của nút tay, nên mọi hoạt ảnh vẫn chạy như trước, chỉ thêm hệ số ×2,6 vì tay uốn được nên giơ cao được. Riêng phần bật/tắt theo góc phải đặt lên **nút chứa hình** (`g.hien()`), vì xương không có độ mờ.
     - Vươn vai giơ khoảng 1,7 rad, vẫy chào khoảng 1,6 rad (bàn tay ngang tai), giật mình và vui khoảng 1,2–1,3 rad.
     - Đã xoá phần đổi hình (`do-tay.py`, `nguon/goc/tay-chinh.svg`, các ảnh cắt tay). Ảnh mẫu `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` giữ lại để tham khảo dáng.
+    - **Tay giơ theo bảng tư thế Higgsfield cho cả 3 góc (31/10, sau khi người sáng lập duyệt ảnh tĩnh).** Bảng nguồn: `docs/trau/tham-chieu/higgsfield-tay-{chinh,34,nghieng-2}.png`. `cat-bang-tay.py` cắt từng hình theo cặp móng chân và căn về khung 512. Mỗi góc có 3 dáng (buông, dang ngang, giơ cao), mỗi dáng 8 đỉnh, lưu trong `TAY_MORPH` (`dung-v3.py`).
+      - `tay_morph()` dựng ống tay (fill), viền hở ở gốc và bàn tay V4g bám theo đoạn cổ tay, tự lật để bàn tay nằm ngoài ống tay.
+      - Hoạt ảnh `Dáng tay <bên>` khoá đỉnh ở khung 0, 60, 120. Joystick tua hoạt ảnh này, nên tay biến hình mượt.
+      - Góc xoay tay trong các động tác được tự đổi thành vị trí joystick (`goc_sang_x`, `remap`).
+      - Góc ¾ và nghiêng dùng thân áo không tay (`*-khongtay.svg`).
+      - Góc ¾ có thêm bản tay vẽ **trên đầu**, đổi sang bản này ở khung 85, nên khi giơ cao tay nằm trước má.
+      - Ảnh so sánh: `docs/trau/chang-2/tay-so-sanh-higgsfield.png` (trái là Higgsfield, phải là Rive). Ảnh 5 góc × 5 động tác: `tay-gio-3-goc.png`.
     - **31/10, quay về tay ổn định.** Người sáng lập nhận xét "càng ngày càng lỗi, góc nào tay cũng lỗi", và chọn quay về tay ổn định rồi làm lại bài bản. Cả 5 góc dùng tay đã duyệt (chính diện V4g, ¾ và nghiêng theo T1), chỉ xoay cứng biên độ nhỏ (≤ ~30°). Viền nách chính diện đi theo tay (`nach_vao_tay()`). Các cách giơ tay cao bên dưới (uốn xương, đổi hình, biến hình) **đã tắt**, mã giữ lại để tham khảo. Ảnh: `docs/trau/chang-2/tay-on-dinh-5-goc.png`.
     - **Kế hoạch làm tay giơ cho đúng:**
       1. Higgsfield sinh bảng tư thế tay (buông, dang ngang, giơ cao, vẫy) cho **cả 3 góc** (chính diện, ¾, nghiêng) từ bản đã duyệt.
