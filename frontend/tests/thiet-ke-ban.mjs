@@ -154,7 +154,7 @@ await trang("hom-nay", async (p) => {
   await p.waitForFunction(() => /\d/.test(document.querySelector("#tom-troi .lon")?.textContent || ""), null, { timeout: 8000 });
   await p.waitForFunction(() => /\d/.test(document.querySelector("#tom-gia .lon")?.textContent || ""), null, { timeout: 8000 });
   assert.match(await p.locator("#cau-chinh").textContent(), /chưa có việc gấp|lời chào giá chờ bác|việc cần làm/);
-  assert.deepEqual((await p.locator(".loi-tat a").allInnerTexts()).map((t) => t.replace(/\s+/g, " ").trim()), ["Thời tiết", "Nhật ký canh tác", "Giá & tin tức", "Học kỹ thuật", "Cài đặt & Hỗ trợ"]);
+  assert.deepEqual((await p.locator(".loi-tat a").allInnerTexts()).map((t) => t.replace(/\s+/g, " ").trim()), ["Hợp đồng", "Nhật ký canh tác", "Giá & tin tức", "Cài đặt", "Hỗ trợ"]);
   assert.equal(await p.locator(".dau").count(), 1, "chỉ một header");
   // Bấm ô tóm tắt → màn chi tiết
   await p.locator("#tom-troi").click(); await p.waitForURL(/ban-thoi-tiet\.html\?thu=/);

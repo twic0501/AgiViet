@@ -54,7 +54,9 @@
   .tam-lc input { width: 100%; min-width: 0; box-sizing: border-box; min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); padding: 0 12px; font: 500 16px/1 var(--chu); color: var(--muc); }
   .tam-lc .hai-o { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .tam-lc .hai-o > * { min-width: 0; }
-  .tam-lc .day { position: sticky; bottom: 0; margin: 0 -16px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--giay); box-shadow: 0 -8px 12px -10px rgba(0,0,0,.25); display: grid; gap: 8px; }
+  .tam-lc .day { position: sticky; bottom: 0; margin: 4px -16px 0; padding: 12px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--giay); border-top: 1px solid var(--ke); display: grid; gap: 8px; }
+  .tam-lc .lc-buoc { display: grid; gap: 10px; }
+  .tam-lc .lc-buoc:empty { display: none; }
   .tam-lc .ba-nut { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   /* Nút chính có số tiền đứng đầu: chiếm trọn hàng để không gãy dòng; hàng có "Quay lại" đứng đầu: nút lùi gọn, nút chính phần còn lại */
   .tam-lc .ba-nut:has(> .chinh-nut:first-child) { grid-template-columns: minmax(0, 1fr); }
@@ -214,16 +216,18 @@ async function moLoiChao(id) {
     ${sosanh ? `<div class="so-sanh">${sosanh}</div>` : ""}
     ${ct.rounds.length > 1 ? `<div class="lc-vong">${ct.rounds.map((r) => `<p class="${r.from_side === "seller" ? "bac" : ""}"><span>Vòng ${r.round_no} · ${r.from_side === "seller" ? "Bác" : esc(ben)}</span><b>${soVN(r.price_vnd)} đ/kg · ${esc(can(r.qty_g).join(" "))}</b></p>`).join("")}</div>` : ""}
     ${nhac}
+    <div class="lc-buoc" data-r="buoc"></div>
     <p class="bao-lc" data-r="bao" role="status"></p>
     <div class="day" data-r="day">${hanhDong}</div>`;
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
   const r = (k) => tam.querySelector(`[data-r="${k}"]`);
-  const xong = (chu) => { r("day").innerHTML = `<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
+  const xong = (chu) => { r("buoc").innerHTML = ""; r("day").innerHTML = `<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
   const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));
   // Đồng ý: xác nhận lại tổng tiền + nhắc "chưa phải hợp đồng"
   r("dong-y")?.addEventListener("click", () => {
-    r("khung").innerHTML = `<p class="nhac">Bác đồng ý bán <b>${esc(can(v.qty_g).join(" "))} × ${soVN(v.price_vnd)} đ/kg = ${soVN(thanhTien)} đ</b>. Hàng sẽ được giữ cho ${esc(ben)} 24 giờ; <b>chưa phải hợp đồng</b>, hai bên còn xem lại thỏa thuận rồi mới ký.</p>
-      <div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="chot">Xác nhận đồng ý</button></div>`;
+    r("buoc").innerHTML = `<p class="nhac">Bác đồng ý bán <b>${esc(can(v.qty_g).join(" "))} × ${soVN(v.price_vnd)} đ/kg = ${soVN(thanhTien)} đ</b>. Hàng sẽ được giữ cho ${esc(ben)} 24 giờ; <b>chưa phải hợp đồng</b>, hai bên còn xem lại thỏa thuận rồi mới ký.</p>`;
+    r("khung").innerHTML = `<div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="chot">Xác nhận đồng ý</button></div>`;
+    r("buoc").scrollIntoView({ block: "nearest", behavior: "smooth" });
     r("quay").onclick = () => moLoiChao(id);
     r("chot").onclick = async () => {
       khoa(true); r("bao").textContent = "Đang gửi…";
@@ -233,13 +237,14 @@ async function moLoiChao(id) {
   });
   // Trả giá: nhập giá (mặc định giá mong muốn của lô), lượng giữ nguyên
   r("tra-gia")?.addEventListener("click", () => {
-    r("khung").innerHTML = `<div class="hai-o"><label>Giá bác trả (đ/kg)<input name="gia" type="number" inputmode="numeric" min="1000" step="100" value="${esc(String(muon || v.price_vnd))}"></label>
+    r("buoc").innerHTML = `<div class="hai-o"><label>Giá bác trả (đ/kg)<input name="gia" type="number" inputmode="numeric" min="1000" step="100" value="${esc(String(muon || v.price_vnd))}"></label>
         <label>Lượng (kg)<input name="kg" type="number" inputmode="decimal" min="1" step="any" value="${esc(String(Number(v.qty_g) / 1000))}"></label></div>
-      <p class="nhac">Bác còn ${ct.luot_tra_gia_con} lần trả giá; sau lần này còn ${ct.luot_tra_gia_con - 1}. Bên mua có 24 giờ để trả lời.</p>
-      <div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="gui-gia">Gửi giá</button></div>`;
+      <p class="nhac">Bác còn ${ct.luot_tra_gia_con} lần trả giá; sau lần này còn ${ct.luot_tra_gia_con - 1}. Bên mua có 24 giờ để trả lời.</p>`;
+    r("khung").innerHTML = `<div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="gui-gia">Gửi giá</button></div>`;
+    r("buoc").scrollIntoView({ block: "nearest", behavior: "smooth" });
     r("quay").onclick = () => moLoiChao(id);
     r("gui-gia").onclick = async () => {
-      const gia = Number(r("khung").querySelector('[name="gia"]').value), kg = Number(r("khung").querySelector('[name="kg"]').value);
+      const gia = Number(r("buoc").querySelector('[name="gia"]').value), kg = Number(r("buoc").querySelector('[name="kg"]').value);
       if (!(gia >= 1000) || !(kg > 0)) { r("bao").textContent = "Bác nhập giá và lượng hợp lệ."; return; }
       if (Math.round(kg * 1000) > Number(v.qty_g) && l && Math.round(kg * 1000) > Number(l.available_g)) { r("bao").textContent = `Lô chỉ còn ${can(l.available_g).join(" ")}.`; return; }
       khoa(true); r("bao").textContent = "Đang gửi…";
