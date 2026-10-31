@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bắt đầu · AgiViet bán (bản mẫu)</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  body { min-height: 100dvh; }
+  .bd-trang { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+  .bd-tien { display: flex; gap: 6px; margin-top: 10px; }
+  .bd-tien i { flex: 1; height: 4px; border-radius: 2px; background: rgba(246, 242, 231, .25); }
+  .bd-tien i.bd-qua { background: #f4c84e; }
+  .bd-hoi { font-size: 22px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+  .bd-giai { color: var(--muc-phu); margin-top: -12px; }
+  .bd-chon { display: grid; gap: 10px; }
+  .bd-chon label { position: relative; display: block; }
+  .bd-chon input { position: absolute; opacity: 0; }
+  .bd-chon .bd-o { display: grid; grid-template-columns: 44px minmax(0, 1fr) 24px; gap: 12px; align-items: center; min-height: 72px; padding: 12px 14px; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); }
+  .bd-chon .bd-o b { display: block; font-size: 17px; line-height: 1.3; }
+  .bd-chon .bd-o small { display: block; color: var(--muc-nhat); font-size: 13.5px; line-height: 1.4; }
+  .bd-chon .bd-hinh { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--la-nhat); color: var(--la); }
+  .bd-chon .bd-tick { width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ke-dam); display: grid; place-items: center; color: transparent; }
+  .bd-chon input:checked + .bd-o { box-shadow: 0 0 0 2px var(--la); background: #eef4ef; }
+  .bd-chon input:checked + .bd-o .bd-tick { background: var(--la); color: #f6f2e7; box-shadow: none; }
+  .bd-chon input:focus-visible + .bd-o { outline: 3px solid #d9a92c; outline-offset: 2px; }
+  .bd-hang { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .bd-hang label { position: relative; }
+  .bd-hang input { position: absolute; opacity: 0; }
+  .bd-hang span { display: grid; place-items: center; min-height: 56px; padding: 8px; border-radius: 14px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); font-weight: 600; text-align: center; line-height: 1.3; }
+  .bd-hang input:checked + span { background: var(--la); color: #f6f2e7; box-shadow: none; }
+  .bd-hang input:focus-visible + span { outline: 3px solid #d9a92c; outline-offset: 2px; }
+  .bd-truong { display: grid; gap: 6px; }
+  .bd-truong > span { font-size: 14px; font-weight: 600; color: var(--muc-phu); }
+  .bd-truong input, .bd-truong select { height: 56px; border-radius: 14px; border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 0 16px; font: 500 17px var(--chu); color: var(--muc); width: 100%; }
+  .bd-truong input:focus, .bd-truong select:focus { border-color: var(--la); outline: none; }
+  .bd-truong small { font-size: 13px; color: var(--muc-nhat); }
+  .bd-the { padding: 16px; border-radius: 18px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); display: grid; gap: 12px; }
+  .bd-dong { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 52px; }
+  .bd-dong + .bd-dong { border-top: 1px solid var(--ke); padding-top: 10px; }
+  .bd-dong .bd-hinh { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
+  .bd-dong b { display: block; line-height: 1.3; }
+  .bd-dong small { color: var(--muc-nhat); font-size: 13.5px; }
+  .bd-xong { background: var(--la); color: #f6f2e7; }
+  .bd-dang { background: #f8ecc9; color: #85600c; }
+  .bd-chua { background: var(--giay-lot); color: var(--muc-nhat); }
+  .bd-nhan { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 12px; white-space: nowrap; }
+  .bd-nhan.bd-xong { background: var(--la-nhat); color: var(--la-dam); }
+  .bd-anh { aspect-ratio: 16 / 9; border-radius: 16px; display: grid; place-items: center; background: var(--giay-lot); box-shadow: inset 0 0 0 1.5px var(--ke-dam); color: var(--muc-phu); text-align: center; gap: 6px; }
+  .bd-ban-do { aspect-ratio: 16 / 10; border-radius: 16px; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #cfdcc4, #b9cfa9 50%, #d9cfa9); }
+  .bd-ban-do::before { content: ""; position: absolute; inset: 22% 28% 30% 24%; border: 2.5px dashed #1f4d3a; border-radius: 18% 30% 22% 26%; background: rgba(31, 77, 58, .12); }
+  .bd-ban-do i { position: absolute; left: 50%; top: 46%; width: 18px; height: 18px; border-radius: 50%; background: #a8392c; box-shadow: 0 0 0 5px rgba(168, 57, 44, .25); transform: translate(-50%, -50%); }
+  .bd-chao-mung { flex: 1; display: grid; align-content: center; justify-items: center; text-align: center; gap: 16px; padding: 32px 24px; }
+  .bd-chao-mung img { width: 76px; height: 76px; }
+  .bd-chao-mung h1 { font-size: 28px; color: var(--la); letter-spacing: -0.02em; }
+  .bd-chao-mung ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 12px; text-align: left; width: 100%; }
+  .bd-chao-mung li { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); }
+  .bd-chao-mung li span { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: #f8ecc9; color: #85600c; }
+  .bd-day { position: sticky; bottom: 0; background: var(--giay); border-top: 1px solid var(--ke); padding: 12px 16px calc(14px + env(safe-area-inset-bottom)); display: grid; gap: 8px; }
+  .bd-day .nut { width: 100%; min-height: 56px; font-size: 17px; }
+  .bd-day .bd-vang { background: #f4c84e; color: #1f1503; }
+  .bd-day .bd-lui { background: transparent; color: var(--la); min-height: 44px; }
+  .bd-goi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .bd-goi a { display: grid; place-items: center; gap: 4px; min-height: 88px; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); text-decoration: none; color: var(--muc); font-weight: 600; text-align: center; }
+  .bd-goi a span { color: var(--la); }
+  svg.bd-i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="bd-trang" id="trang"></div>
+<script>
+const I = {
+  vuon: "M12 21V11M12 11c-4 0-7-3-7-7 4 0 7 3 7 7zM12 11c4 0 7-3 7-7-4 0-7 3-7 7zM5 21h14",
+  hop: "M3 8l9-5 9 5-9 5zM3 8v8l9 5 9-5V8M12 13v8",
+  gom: "M7 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 2-5 5-5s5 2 5 5M12 20c0-3 2-5 5-5s5 2 5 5",
+  tich: "M5 12l5 5 9-10",
+  khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+  tien: "M3 7h18v10H3zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  mic: "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3",
+  may: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  dien: "M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a1 1 0 0 1-1 1A17 17 0 0 1 4 5a1 1 0 0 1 1-1z",
+  nguoi: "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 4-6 8-6s8 2 8 6",
+  dong_ho: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2",
+};
+const ic = (k) => `<svg class="bd-i" viewBox="0 0 24 24" aria-hidden="true"><path d="${I[k]}"/></svg>`;
+const THU_TU = ["vai-tro", "mat-hang", "ho-so", "khai-bao-vuon", "xac-minh"];
+const q = new URLSearchParams(location.search);
+const buoc = q.get("buoc") || "chao-mung";
+const di = (b) => { q.set("buoc", b); return "?" + q.toString(); };
+const sau = THU_TU[THU_TU.indexOf(buoc) + 1];
+const truoc = THU_TU[THU_TU.indexOf(buoc) - 1];
+
+const dau = (tieu, chao) => {
+  const i = THU_TU.indexOf(buoc);
+  return `<header class="dau dau-xanh nen-xanh"><a class="nut-tron" href="${truoc ? di(truoc) : "./dang-nhap.html"}" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <div style="flex:1;min-width:0"><p class="chao">${chao || (i >= 0 ? `Bước ${i + 1} trên 5` : "AgiViet")}</p><h1>${tieu}</h1>${i >= 0 ? `<div class="bd-tien" aria-hidden="true">${THU_TU.map((_, k) => `<i class="${k <= i ? "bd-qua" : ""}"></i>`).join("")}</div>` : ""}</div></header>`;
+};
+const day = (chu, toi, lui) => `<div class="bd-day"><a class="nut bd-vang" href="${toi}" style="text-decoration:none">${chu}</a>${lui || ""}</div>`;
+const chon = (ten, ds, mac) => `<div class="bd-chon" role="radiogroup">${ds.map(([v, t, g, h], i) => `<label><input type="radio" name="${ten}" value="${v}" ${i === mac ? "checked" : ""}><span class="bd-o"><span class="bd-hinh">${ic(h)}</span><span><b>${t}</b><small>${g}</small></span><span class="bd-tick">${ic("tich")}</span></span></label>`).join("")}</div>`;
+
+const MAN = {
+  "chao-mung": () => `<main class="bd-chao-mung"><img src="/assets/logo.svg" alt=""><h1>Chào bác tới AgiViet</h1><p style="color:var(--muc-phu)">Bán hàng có hợp đồng, có người giữ tiền cọc. Bác nói hay bấm đều được.</p>
+    <ul><li><span>${ic("khien")}</span><div><b>Tiền cọc ngân hàng giữ</b><div style="font-size:14px;color:var(--muc-nhat)">Bên mua chuyển cọc trước, bác mới giao</div></div></li>
+    <li><span>${ic("mic")}</span><div><b>Nói là đăng được hàng</b><div style="font-size:14px;color:var(--muc-nhat)">App hỏi từng câu, bác trả lời</div></div></li>
+    <li><span>${ic("nguoi")}</span><div><b>Có người giúp khi vướng</b><div style="font-size:14px;color:var(--muc-nhat)">Gọi tổng đài hoặc nhờ con cháu</div></div></li></ul></main>
+    ${day("Bắt đầu", di("vai-tro"), `<a class="nut bd-lui" href="./dang-nhap.html" style="text-decoration:none">Tôi đã có tài khoản</a>`)}`,
+  "vai-tro": () => `${dau("Bác bán thế nào?")}<main class="noi"><p class="bd-hoi">Bác bán hàng của nhà mình, hay gom của nhiều nhà?</p><p class="bd-giai">Chọn một. Đổi lại được trong phần Tôi.</p>
+    ${chon("vai", [["nong-ho", "Hàng nhà tôi trồng, nuôi", "Nông hộ, chủ vườn, chủ ao", "vuon"], ["htx", "Hợp tác xã, tổ hợp tác", "Bán chung cho nhiều thành viên", "gom"], ["gom", "Tôi gom hàng của nhiều nhà", "Thương lái, vựa đầu mối", "hop"]], 0)}</main>
+    ${day("Tiếp tục", di("mat-hang"))}`,
+  "mat-hang": () => `${dau("Mặt hàng")}<main class="noi"><p class="bd-hoi">Nhà mình bán những gì?</p><p class="bd-giai">Chọn nhiều cũng được. Đăng bài sau sẽ điền sẵn.</p>
+    <div class="bd-hang">${[["Xoài", 1], ["Sầu riêng", 0], ["Bưởi", 0], ["Thanh long", 0], ["Lúa gạo", 0], ["Cà phê", 0], ["Tôm", 0], ["Cá tra", 0], ["Rau củ", 0], ["Khác", 0]].map(([t, c]) => `<label><input type="checkbox" ${c ? "checked" : ""}><span>${t}</span></label>`).join("")}</div>
+    <label class="bd-truong"><span>Giống, loại chính</span><input value="Xoài cát Chu"><small>Ví dụ: xoài cát Chu, sầu riêng Ri6, tôm thẻ.</small></label></main>
+    ${day("Tiếp tục", di("ho-so"))}`,
+  "ho-so": () => `${dau("Hồ sơ")}<main class="noi"><p class="bd-hoi">Bên mua sẽ gọi bác bằng tên gì?</p>
+    <label class="bd-truong"><span>Họ tên</span><input value="Nguyễn Thị Năm" autocomplete="name"></label>
+    <label class="bd-truong"><span>Tên hay gọi</span><input value="Chị Năm"><small>Hiện cho bên mua thấy. Số điện thoại thì che tới khi có cọc.</small></label>
+    <label class="bd-truong"><span>Xã, huyện, tỉnh</span><input value="Mỹ Xương, Cao Lãnh, Đồng Tháp"></label>
+    <label class="bd-truong"><span>Tài khoản nhận tiền</span><select><option>Agribank</option><option>Vietcombank</option><option>VietinBank</option><option>BIDV</option></select></label>
+    <label class="bd-truong"><span>Số tài khoản</span><input value="5104 2058 2186" inputmode="numeric"><small>Phải đúng tên bác. Đổi tài khoản sau này phải chờ 24 giờ cho an toàn.</small></label></main>
+    ${day("Tiếp tục", di("khai-bao-vuon"))}`,
+  "khai-bao-vuon": () => `${dau("Khai báo vườn")}<main class="noi"><p class="bd-hoi">Vườn của bác ở đâu?</p><p class="bd-giai">Đứng trong vườn rồi bấm "Lấy vị trí". Bên mua chỉ thấy tới cấp ấp.</p>
+    <div class="bd-ban-do" role="img" aria-label="Bản đồ vườn"><i></i></div>
+    <a class="nut phu-nut" href="#" style="text-decoration:none">Lấy vị trí đang đứng</a>
+    <div class="bd-the"><label class="bd-truong"><span>Tên vườn</span><input value="Vườn xoài ấp 3"></label>
+    <label class="bd-truong"><span>Diện tích</span><input value="1,2 ha"></label>
+    <label class="bd-truong"><span>Mã vùng trồng (nếu có)</span><input placeholder="VD: VN-DT-0412"><small>Không có cũng được. Bên xuất khẩu hay hỏi mã này.</small></label></div></main>
+    ${day("Tiếp tục", di("xac-minh"))}`,
+  "xac-minh": () => `${dau("Xác minh")}<main class="noi"><p class="bd-hoi">Còn 2 việc để bác bán được</p><p class="bd-giai">Xác minh để bên mua tin, và để tiền về đúng tài khoản bác.</p>
+    <div class="bd-the">
+      <div class="bd-dong"><span class="bd-hinh bd-xong">${ic("tich")}</span><div><b>Số điện thoại</b><small>0918 234 421</small></div><span class="bd-nhan bd-xong">Xong</span></div>
+      <div class="bd-dong"><span class="bd-hinh bd-dang">${ic("may")}</span><div><b>Chụp căn cước</b><small>Mặt trước và mặt sau, đủ sáng</small></div><a class="nut phu-nut" href="#" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>
+      <div class="bd-dong"><span class="bd-hinh bd-chua">${ic("nguoi")}</span><div><b>Chụp mặt bác</b><small>Để so với ảnh căn cước</small></div><a class="nut phu-nut" href="#" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>
+    </div>
+    <div class="bd-the" style="background:#f8ecc9;box-shadow:0 0 0 1px #e3c77a"><b>Sau khi gửi</b><p style="color:var(--muc-phu)">Nhân viên AgiViet duyệt trong 24 giờ. Trong lúc chờ, bác vẫn ghi nhật ký và đăng bài nháp được.</p></div></main>
+    ${day("Gửi xác minh", "./ban-hom-nay.html?thu=0918000421", `<a class="nut bd-lui" href="./ban-hom-nay.html?thu=0918000421" style="text-decoration:none">Để sau, vào app trước</a>`)}`,
+  "tro-giup": () => `${dau("Trợ giúp đăng nhập", "Không vào được app?")}<main class="noi"><p class="bd-hoi">Bác gặp chuyện gì?</p>
+    ${chon("loi", [["ma", "Không nhận được mã", "Chờ 1 phút rồi bấm gửi lại, hoặc nhận qua cuộc gọi", "dong_ho"], ["so", "Đổi số điện thoại", "Cần chụp căn cước để giữ tài khoản cũ", "dien"], ["pin", "Quên mã PIN", "Nhận mã qua tin nhắn để đặt PIN mới", "khien"]], 0)}
+    <div class="bd-goi"><a href="tel:19001234"><span>${ic("dien")}</span>Gọi tổng đài<small style="font-weight:400;color:var(--muc-nhat)">1900 1234 · 6:00–21:00</small></a><a href="#"><span>${ic("nguoi")}</span>Nhờ người giúp<small style="font-weight:400;color:var(--muc-nhat)">Con cháu đăng nhập hộ</small></a></div></main>
+    ${day("Nhận mã qua cuộc gọi", "./dang-nhap.html")}`,
+};
+document.getElementById("trang").innerHTML = (MAN[buoc] || MAN["chao-mung"])();
+document.title = (document.querySelector("h1")?.textContent || "Bắt đầu") + " · AgiViet bán";
+</script>
+</body>
+</html>
