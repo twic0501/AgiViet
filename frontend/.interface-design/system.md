@@ -50,3 +50,33 @@ Tệp gốc: `frontend/thiet-ke/so-vuon.css` (+ `chung.js`). Màn chuẩn để 
 1. `node tests/kiem-trung-lop.mjs` sạch; `node tests/soat-giao-dien.mjs <thư mục ảnh>` sạch (mọi màn + mọi tấm ở 360/390: nút gãy dòng, đáy tấm sát mép, vùng chạm, chữ < 12px, tương phản, emoji, mã nội bộ).
 2. E2E `kiemChung` (tràn, ép, nút nhỏ, mã thô) trên mọi trạng thái mới.
 3. Chụp **từng trạng thái** 390 và 360 (cả tấm thao tác, cả dữ liệu dài/nhiều vòng), **nhìn bằng mắt**: dính header? lệch tông? chữ gãy vô lý? hai nút vàng? gạch chân? màu không có nghĩa?
+
+
+---
+
+# Nhánh "Sổ làm ăn" — app MUA và trang VẬN HÀNH (02/11/2026)
+
+Tệp gốc: `thiet-ke/so-lam-an.css` + `so-lam-an.js` (khung, menu, kho trạng thái chung giữa khung máy tính và điện thoại). Màn: `mua.js` (49), `van-hanh.js` (11). Tiền tố lớp **`sl-`**, không nạp chung với `so-vuon.css`.
+
+## Hướng
+- Người dùng: người phụ trách mua ở văn phòng (máy tính) và tại kho (điện thoại); nhân viên vận hành ở bàn làm việc. Cảm giác: sổ cái của vựa — dày thông tin, chắc, đọc nhanh.
+- Cùng thế giới màu Sổ vườn: giấy ngà; lá xoài = nút, đã xong; vàng chín `--chin` = tiền, ngân hàng giữ; đỏ `--do` = tới lượt bạn, quá hạn; xanh biển `--bien` = ngân hàng và người vận hành (bên thứ ba).
+- Độ sâu: chỉ đổi sắc nền + vòng kẻ mảnh `0 0 0 1px var(--ke)`. Không đổ bóng.
+
+## Số đo
+- Be Vietnam Pro, gốc 14px, thang 1.2: 12 · 14 · 16 · 18 · 22 · 28. Không dưới 12px.
+- Lưới 4px. Trang đệm 24/28px (máy), 16px (điện thoại). Thẻ đệm 18px, bo 14. Nút 40px máy / 44px điện thoại, bo 10. Nút lọc 36/40px.
+- Menu trái 232px cùng nền trang, kẻ phải 1px; mục 36px; mục đang mở nền lá xoài.
+- Dưới 720px: menu thành thanh tab dưới 5 mục; lưới về 1 cột (`.sl-hai-cot` cho lưới cột cố định); bảng thành thẻ (nhãn cột tự gắn `data-nhan`).
+
+## Mẫu
+- Thẻ việc tiếp theo `.sl-viec` là tiêu điểm màn, đúng một nút vàng. Biến thể: `.sl-cho` (chờ bên kia, không có nút làm thay), `.sl-chan-lai` (bị chặn, nói rõ thiếu gì), `.sl-xong`.
+- Việc của bên kia trong bản mẫu: nút `.sl-mp` "Mô phỏng: …" dạng viên thuốc xanh biển, khác hẳn nút của người dùng.
+- Dòng bước `.sl-buoc`: vòng 28px; xong = lá xoài có tích; đang = vàng có quầng; bị chặn = đỏ + dòng lý do; mỗi bước ghi ai, hạn, tiền đang ở đâu.
+- Tiền đang ở đâu `.sl-tien-o`: 3 ô Bạn / Ngân hàng / Người bán; nháy vàng 700ms khi đổi.
+- Dải số liệu `.sl-dai`: một khung, cột ngăn kẻ mảnh, số 22px. KHÔNG dùng 4 ô thẻ rời giống nhau (kiểu bảng điều khiển mặc định); dải nhẹ để nhường tiêu điểm cho bảng việc.
+- Nhãn trạng thái `.sl-nhan` (24px, chấm màu): `sl-n-ban` tới lượt bạn · `sl-n-tien` · `sl-n-xong` · `sl-n-nh` ngân hàng/vận hành · mặc định = đang chờ.
+- Chữ trên nút theo prompt app mua V2 mục 9; không dùng "ví ký quỹ", "rẻ nhất", "coi như đã nhận".
+
+## Soát
+Chụp 1280 + 390 mỗi màn, bắt: lỗi JS, tràn ngang, nút thấp, nút gãy dòng, chữ nhỏ, undefined/NaN. Rồi nhìn ảnh.

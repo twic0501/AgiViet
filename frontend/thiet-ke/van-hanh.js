@@ -25,15 +25,15 @@ const TC = [
 
 const man = {
   "tong-quan-vh": { tieuDe: "Tổng quan vận hành", phu: "Thứ Hai 27/10 · ca sáng · 3 nhân viên trực", ve: (s, { url }) => `
-    <div class="sl-luoi sl-l4">
-      <a class="sl-the sl-chiso sl-gap" href="${url("tranh-chap")}" style="text-decoration:none"><small>Tranh chấp mở</small><b>3</b><span>1 quá hạn xử lý</span></a>
-      <a class="sl-the sl-chiso" href="${url("duyet-xac-minh")}" style="text-decoration:none"><small>Chờ xác minh</small><b>${4 - Object.keys(s.duyet).length}</b><span>1 quá 24 giờ</span></a>
-      <div class="sl-the sl-chiso"><small>Đơn kẹt quá hạn</small><b>2</b><span>người bán im lặng quá 24 giờ</span></div>
-      <a class="sl-the sl-chiso sl-tien" href="${url("tien-dam-bao")}" style="text-decoration:none"><small>Ngân hàng đang giữ</small><b>412 tr</b><span>38 đơn · 2 lệnh chưa khớp</span></a>
+    <div class="sl-dai">
+      <a class="sl-gap" href="${url("tranh-chap")}"><small>Tranh chấp mở</small><b>3</b><span>1 quá hạn xử lý</span></a>
+      <a href="${url("duyet-xac-minh")}"><small>Chờ xác minh</small><b>${4 - Object.keys(s.duyet).length}</b><span>1 quá 24 giờ</span></a>
+      <div><small>Đơn kẹt quá hạn</small><b>2</b><span>người bán im lặng quá 24 giờ</span></div>
+      <a class="sl-tien" href="${url("tien-dam-bao")}"><small>Ngân hàng đang giữ</small><b>412 tr</b><span>38 đơn · 2 lệnh chưa khớp</span></a>
     </div>
     <div class="sl-luoi sl-chinh-phu">
       ${the("Việc gấp theo hạn", bang(["Việc", "Đối tượng", "Hạn", "Người nhận", ""], [
-        `<tr><td>Tranh chấp quá hạn</td><td><a href="${url("chi-tiet-tranh-chap")}">TC-017</a> · tôm thẻ</td><td>${nhan("quá 3 giờ", "sl-n-ban")}</td><td>Chưa giao</td><td><a class="sl-nut sl-vien" href="${url("chi-tiet-tranh-chap")}">Nhận việc</a></td></tr>`,
+        `<tr><td>Tranh chấp quá hạn</td><td><a href="${url("chi-tiet-tranh-chap")}">TC-017</a> · tôm thẻ</td><td>${nhan("quá 3 giờ", "sl-n-ban")}</td><td>Chưa giao</td><td><a class="sl-nut sl-vang" href="${url("chi-tiet-tranh-chap")}">Nhận việc</a></td></tr>`,
         `<tr><td>Xác minh quá 24 giờ</td><td><a href="${url("chi-tiet-xac-minh")}">XM-305</a> · Vựa Ba Cường</td><td>${nhan("quá 2 giờ", "sl-n-ban")}</td><td>Minh</td><td></td></tr>`,
         `<tr><td>Lệnh ngân hàng chưa khớp</td><td><a href="${url("tien-dam-bao")}">HĐ-0021</a> · cọc</td><td>${nhan("trong ngày")}</td><td>Lan</td><td></td></tr>`,
         `<tr><td>Tin bị gắn cờ</td><td><a href="${url("kiem-duyet-tin")}">L-0452</a> · ảnh lấy trên mạng</td><td>${nhan("còn 4 giờ")}</td><td>Chưa giao</td><td></td></tr>`,

@@ -99,6 +99,17 @@ button { font: inherit; color: inherit; }
 .sl-chiso.sl-tien b { color: var(--chin); }
 .sl-chiso.sl-gap b { color: var(--do); }
 
+/* Dải số liệu kiểu dòng đầu sổ cái: một khung, cột ngăn kẻ mảnh (không 4 ô thẻ rời) */
+.sl-dai { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); background: var(--giay-noi); border-radius: 14px; box-shadow: 0 0 0 1px var(--ke); text-decoration: none; }
+.sl-dai > * { padding: 12px 18px; display: grid; gap: 0; text-decoration: none; color: inherit; }
+.sl-dai > * + * { border-left: 1px solid var(--ke); }
+.sl-dai small { color: var(--muc-phu); font-size: 13px; font-weight: 500; }
+.sl-dai b { font-size: var(--c5); font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; line-height: 1.25; }
+.sl-dai span { font-size: var(--c1); color: var(--muc-nhat); }
+.sl-dai .sl-gap b { color: var(--do); } .sl-dai .sl-tien b { color: var(--chin); }
+.sl-dai a:hover { background: var(--giay-lot); }
+@media (max-width: 720px) { .sl-dai { grid-template-columns: 1fr 1fr; } .sl-dai > * + * { border-left: 0; } .sl-dai > :nth-child(even) { border-left: 1px solid var(--ke); } .sl-dai > :nth-child(n+3) { border-top: 1px solid var(--ke); } }
+
 /* Dòng nhãn – giá trị */
 .sl-dong { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--ke); align-items: baseline; }
 .sl-dong:last-child { border-bottom: 0; }

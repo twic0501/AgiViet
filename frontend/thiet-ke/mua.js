@@ -175,11 +175,11 @@ const man = {
   "tong-quan": { tieuDe: "Tổng quan", phu: "Thứ Hai, 27/10 · Nhà máy sấy Đồng Xanh", phai: (s) => `<span class="sl-an-dt">${timO("Tìm lô, đơn, người bán")}</span><a class="sl-nut sl-vang sl-an-dt" href="?man=tao-nhu-cau">${icon("them")}Tạo phiếu nhu cầu</a>`, ve: (s, { url }) => {
     const h = s.hd, luot = hdLuot(h);
     return `
-    <div class="sl-luoi sl-l4">
-      <div class="sl-the sl-chiso sl-gap"><small>Tới lượt bạn</small><b>${viecCan(s)}</b><span>việc cần làm hôm nay</span></div>
-      <div class="sl-the sl-chiso"><small>Đơn sắp nhận</small><b>3</b><span>trong 7 ngày · 6.800 kg</span></div>
-      <div class="sl-the sl-chiso sl-tien"><small>Tiền sắp trả</small><b>${so(h.daTra >= TRA_THANG ? 0 : TRA_THANG - h.daTra)}</b><span>đ · trả thẳng HĐ-0018 trước 5:30 28/10</span></div>
-      <div class="sl-the sl-chiso"><small>Ngân hàng đang giữ</small><b>${so(hdTien(h).nh + 12780000)}</b><span>đ · cọc của 2 đơn</span></div>
+    <div class="sl-dai">
+      <div class="sl-gap"><small>Tới lượt bạn</small><b>${viecCan(s)}</b><span>việc cần làm hôm nay</span></div>
+      <div ><small>Đơn sắp nhận</small><b>3</b><span>trong 7 ngày · 6.800 kg</span></div>
+      <div class="sl-tien"><small>Tiền sắp trả</small><b>${so(h.daTra >= TRA_THANG ? 0 : TRA_THANG - h.daTra)}</b><span>đ · trả thẳng HĐ-0018 trước 5:30 28/10</span></div>
+      <div ><small>Ngân hàng đang giữ</small><b>${so(hdTien(h).nh + 12780000)}</b><span>đ · cọc của 2 đơn</span></div>
     </div>
     <div class="sl-luoi sl-chinh-phu">
       <div style="display:grid;gap:16px">
