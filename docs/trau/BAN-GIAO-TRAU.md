@@ -158,6 +158,13 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
 - **Chưa có:** `hanh_dong` 1–8 (để làm ở Chặng 3); `nhin_x`, `nhin_y` đang chia nấc (5×3), chưa liên tục.
 - **Ảnh:** `docs/trau/chang-2/` (5 nấc hướng, chuỗi xoay, 8 khung nghỉ).
 
+### Chặng 3 — hành động (từ 31/10, mỗi hành động một lần duyệt)
+- **Cơ chế:** lớp `Hành động` trong `dung-v3.py` (`HANH_DONG = {số: (tên, dài, khung)}`). `hanh_dong = n` thì chạy trạng thái n, lặp lại; `0` là trạng thái rỗng, dáng nghỉ sống chạy như cũ. Lớp `Nghịch` (động tác ngẫu nhiên) tự tắt khi `hanh_dong ≠ 0`; động tác đang chạy dở thì làm nốt rồi mới tắt. Trộn khi vào và ra hành động 300 ms.
+- **1 chào** (chờ duyệt): nhún lấy đà, cúi đầu, giơ tay vẫy cao (tay uốn xương, góc chính diện), người nghiêng về phía tay kia, mắt cười, đầu nghiêng, tai vểnh, đuôi vẫy; mỗi vòng 216 khung, gồm 40 khung nghỉ. Đo luật 8 với mặt và tay đã che: thân và chân vẫn đổi 4–8 nghìn điểm ảnh. Ảnh: `docs/trau/chang-2/hanh-dong-1-chao.png`.
+  - Hạn chế: ở góc ¾ và nghiêng, tay chỉ vung khoảng 0,25 rad nên động tác vẫy nhìn yếu. Cần làm tay uốn xương cho hai góc này.
+- **Xem thử:** `rive frontend/trau-rive/xem-v3`, bấm dải trên cùng: nửa trái là chào, nửa phải là nghỉ. Kiểm bằng ảnh: `AGV_HD=1 AGV_HUONG=<h> python3 dung-v3.py`.
+- **Còn:** 2 chỉ đường, 3 cầm giấy đọc, 4 mừng, 5 xin lỗi, 6 chờ, 7 đi, 8 suy nghĩ (theo thứ tự ưu tiên ở `docs/KE-HOACH-SONG-SONG.md`).
+
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
 - **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.

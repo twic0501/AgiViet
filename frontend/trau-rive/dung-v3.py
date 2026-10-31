@@ -19,7 +19,8 @@ Cách dựng:
   thở (ngực, vai), dồn chân (hông lệch, vai nghiêng ngược, đầu giữ thăng bằng), nhìn quanh (đầu dẫn, vai theo trễ),
   phụ (tai, khăn, đuôi, tay đung đưa trễ nhịp), chớp mắt.
 - cham: nhún cả người (squash & stretch từ bàn chân). nhin_x/nhin_y: đầu và mắt nhìn theo.
-- hanh_dong 1–8 (chào, chỉ đường…): chưa có, giữ dáng nghỉ (làm từng hành động ở chặng 3).
+- hanh_dong 1 chào: lớp 'Hành động', lặp; Nghịch tự tắt khi hanh_dong ≠ 0. 2–8: chưa có (giữ dáng nghỉ).
+  Bản xem thử: bấm dải trên cùng — nửa trái = chào, nửa phải = nghỉ.
 """
 import copy
 import importlib.util
@@ -623,12 +624,43 @@ def main():
                    for aid, sid in dong) + \
         ('' if os.environ.get('AGV_THU') else f'<StateTransition stateToId="{s_cho2}" {het}/>')
     ve_cho = f'<StateTransition stateToId="{s_cho1}" duration="250" {het}/>'
+    # có hành động (hanh_dong ≠ 0) → Nghịch tắt (đứng ở trạng thái rỗng); động tác đang chạy thì làm nốt rồi mới tắt
+    a_tat, s_tat = ani('Nghịch: tắt', 1, []), moi_id()
+    hd = vao['hanh_dong']
+    sang_tat = (f'<StateTransition stateToId="{s_tat}" duration="200">'
+                f'<TransitionNumberCondition inputId="{hd}" opValue="notEqual" value="0"/></StateTransition>')
     lop.append(f'<StateMachineLayer name="Nghịch" id="{moi_id()}"><AnyState/><ExitState/>'
                f'<EntryState><StateTransition stateToId="{s_cho1}"/></EntryState>'
-               f'<AnimationState animationId="{a_cho1}" id="{s_cho1}" random="true">{chon}</AnimationState>'
-               f'<AnimationState animationId="{a_cho2}" id="{s_cho2}">{ve_cho}</AnimationState>'
+               f'<AnimationState animationId="{a_tat}" id="{s_tat}"><StateTransition stateToId="{s_cho1}">'
+               f'<TransitionNumberCondition inputId="{hd}" opValue="equal" value="0"/></StateTransition></AnimationState>'
+               f'<AnimationState animationId="{a_cho1}" id="{s_cho1}" random="true">{sang_tat}{chon}</AnimationState>'
+               f'<AnimationState animationId="{a_cho2}" id="{s_cho2}">{sang_tat}{ve_cho}</AnimationState>'
                + ''.join(f'<AnimationState animationId="{aid}" id="{sid}">{ve_cho}</AnimationState>' for aid, sid in dong)
                + '</StateMachineLayer>')
+
+    # ---------- Hành động (hanh_dong 1–8, chặng 3). Mỗi hành động một trạng thái lặp; 0 = rỗng (nghỉ sống chạy) ----------
+    def chao_hd_fn(g):  # 1 chào: nhún lấy đà + cúi đầu chào, rồi giơ tay vẫy (chao_fn), nghỉ một nhịp, lặp lại
+        return chao_fn(g) + [
+            khung(g.id['nghich'], 'scaleY', [(0, 1), (6, .96), (14, 1.03), (22, 1), (176, 1)]),
+            khung(g.id['nghich'], 'scaleX', [(0, 1), (6, 1.025), (14, .985), (22, 1), (176, 1)]),
+            khung(g.id['dau-nghich'], 'y', [(0, 0), (8, 3), (16, -2), (26, 0), (176, 0)])]
+    k = []
+    for g in goc:
+        k += chao_hd_fn(g)
+    HANH_DONG = {1: ('Hành động 1: chào', 216, k)}   # 2 chỉ đường … 8 suy nghĩ: thêm dần, mỗi cái một lần duyệt
+    s_khong = moi_id()
+    tt_hd, ra_hd = '', ''
+    for so, (ten, dai, keyed) in HANH_DONG.items():
+        aid, sid = ani(ten, dai, keyed), moi_id()
+        ra_hd += (f'<StateTransition stateToId="{sid}" duration="300">'
+                  f'<TransitionNumberCondition inputId="{hd}" opValue="equal" value="{so}"/></StateTransition>')
+        tt_hd += (f'<AnimationState animationId="{aid}" id="{sid}"><StateTransition stateToId="{s_khong}" duration="300">'
+                  f'<TransitionNumberCondition inputId="{hd}" opValue="notEqual" value="{so}"/></StateTransition>'
+                  f'</AnimationState>')
+    lop.append(f'<StateMachineLayer name="Hành động" id="{moi_id()}"><AnyState/><ExitState/>'
+               f'<EntryState><StateTransition stateToId="{s_khong}"/></EntryState>'
+               f'<AnimationState animationId="{ani("Hành động: không", 1, [])}" id="{s_khong}">{ra_hd}</AnimationState>'
+               f'{tt_hd}</StateMachineLayer>')
 
     # ---------- Nhìn theo nhin_x / nhin_y: joystick "Nhìn" tua 2 dòng tư thế, đặt bằng lớp chia nấc ----------
     kx, ky = [], []
@@ -684,9 +716,17 @@ def main():
                      f'<StateMachineListenerSingle targetId="{sid}" listenerTypeValue="enter" name="Nhìn {i}" '
                      f'id="{moi_id()}"><ListenerNumberChange inputId="{vao["nhin_x"]}" value="{v}"/>'
                      f'</StateMachineListenerSingle>')
+    if XEM:
+        for j, (ten, v) in enumerate((('Chào', 1), ('Nghỉ', 0))):
+            sid = moi_id()
+            vung.append(f'<Shape x="{128 + 256 * j}" y="24" name="dai-{ten}" id="{sid}"><Rectangle width="256" '
+                        f'height="48" name="P"/><Fill name="F"><SolidColor colorValue="01FFFFFF" name="C"/></Fill></Shape>')
+            nghe += (f'<StateMachineListenerSingle targetId="{sid}" listenerTypeValue="down" name="Hành động {ten}" '
+                     f'id="{moi_id()}"><ListenerNumberChange inputId="{vao["hanh_dong"]}" value="{v}"/>'
+                     f'</StateMachineListenerSingle>')
     smid = moi_id()
     goc_xml = ''.join(g.xml() for g in reversed(goc))
-    dau_vao = (f'<StateMachineNumber name="hanh_dong" value="0" id="{vao["hanh_dong"]}"/>'
+    dau_vao = (f'<StateMachineNumber name="hanh_dong" value="{os.environ.get("AGV_HD", "0")}" id="{vao["hanh_dong"]}"/>'
                f'<StateMachineNumber name="huong" value="{os.environ.get("AGV_HUONG", "0")}" id="{vao["huong"]}"/>'
                f'<StateMachineTrigger name="cham" id="{vao["cham"]}"/>'
                f'<StateMachineNumber name="nhin_x" value="{os.environ.get("AGV_NHIN_X", "0")}" id="{vao["nhin_x"]}"/>'
