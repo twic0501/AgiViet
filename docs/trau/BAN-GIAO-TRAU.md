@@ -107,7 +107,7 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
 - **Chốt T1 (31/10):** người sáng lập duyệt góc ¾ trái và góc nghiêng trái ("oke") khi xem trực tiếp trong Rive. Góc nghiêng giữ 1 lỗ mũi (lỗ xa khuất theo phối cảnh), người sáng lập duyệt nguyên trạng. Bước tiếp theo: Chặng 2, khung xương và dáng nghỉ sống (`hanh_dong=0`), chốt T2.
 - Bộ sinh cũ `goc-nhin.py` (bản 1–2, dựng tay) giờ ghi ra `nguon/goc/cu/`, không còn dùng.
 
-### Chặng 2 — khung xương, xoay theo `huong`, nghỉ sống (31/10, chờ chốt T2)
+### Chặng 2 — khung xương, xoay theo `huong`, nghỉ sống (ĐÃ CHỐT T2, 31/10)
 - **Dựng:** `frontend/trau-rive/dung-v3.sh` chạy `dung-v3.py` và ra hai bản:
   - `frontend/assets/trau/trau-v3.riv` (bản giao app, 467 KB);
   - `xem-v3/` (bản xem thử: bấm 5 cột để đổi hướng và nhún, rê chuột để nhìn theo).
