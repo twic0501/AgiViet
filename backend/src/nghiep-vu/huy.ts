@@ -37,14 +37,19 @@ export async function heQuaHuy(t: GiaoDich, nd: NguoiDung, id: string, reasonKin
   const o = await t.mot<any>(`SELECT * FROM core.orders WHERE id=$1`, [id]);
   if (!o || (o.buyer_org_id !== nd.thanhVien.orgId && o.seller_org_id !== nd.thanhVien.orgId)) throw loi('KHONG_TIM_THAY');
   const phia = o.buyer_org_id === nd.thanhVien.orgId ? 'buyer' : 'seller';
+  if (reasonKind !== undefined && !['buyer_request', 'seller_request', 'force_majeure'].includes(reasonKind)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Lý do hủy không hợp lệ.');
   const rk: LyDoHuy = (reasonKind as LyDoHuy) ?? (phia === 'buyer' ? 'buyer_request' : 'seller_request');
+  if ((rk === 'buyer_request' && phia !== 'buyer') || (rk === 'seller_request' && phia !== 'seller')) throw loi('DU_LIEU_KHONG_HOP_LE', 'Lý do hủy không đúng phía người xin.');
+  // Cùng tập trạng thái mà lệnh request_cancel (0040) chấp nhận; đơn đã xong/đã hủy không còn gì để xem trước.
+  if (!['drafting', 'internal_approval', 'awaiting_seller', 'awaiting_deposit', 'active'].includes(o.status)) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Đơn này không còn xin hủy được.');
   return tinhHeQua(t, o, rk);
 }
 
 async function tinhHeQua(t: GiaoDich, o: any, rk: LyDoHuy) {
-  const v = await t.mot<any>(`SELECT * FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [o.id, o.effective_version_no]);
+  // Đơn chưa ký (đang soạn, chờ ký) chưa có bản hiệu lực: lấy bản mới nhất; chưa có bản nào thì phí 0 (trước đây ném TypeError → 500).
+  const v = await t.mot<any>(`SELECT * FROM core.order_versions WHERE order_id=$1 AND ($2::int IS NULL OR version_no=$2) ORDER BY version_no DESC LIMIT 1`, [o.id, o.effective_version_no ?? null]);
   const C = B(await t.gtri<string>(`SELECT coalesce(sum(balance_vnd),0)::text FROM ledger.v_account_balances WHERE order_id=$1 AND account_type='deposit_escrow'`, [o.id]));
-  const F = B(v.fee_vnd);
+  const F = B(v?.fee_vnd ?? 0);
   const D = B(await t.gtri<string>(`SELECT coalesce(sum(c.amount_vnd),0)::text FROM core.direct_payment_confirmations c JOIN core.direct_payments p ON p.id=c.direct_payment_id WHERE p.order_id=$1 AND p.direction='buyer_to_seller'`, [o.id]));
   const cam = B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM ledger.qty_balances WHERE lot_id=$1 AND order_key=$2 AND bucket='committed'`, [o.lot_id, o.id]));
   const cocVeNguoiBan = rk === 'buyer_request';
