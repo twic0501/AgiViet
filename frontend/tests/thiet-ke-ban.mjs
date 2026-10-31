@@ -357,6 +357,48 @@ await trang("dang-bai", async (p) => {
   assert.equal(lo.status, "on_sale", "lô phải được đăng (đang bán), không kẹt nháp");
 });
 
+await trang("dang-bai-truoc-mua", async (p) => {
+  // Đăng trước mùa (brief D10): lô thành "sắp có hàng", ngày hết cách ly lấy từ nhật ký phun gửi kèm cho backend kiểm
+  const kg = 900 + (Date.now() % 90);
+  await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
+  await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
+  await p.locator("#ds-sp button").first().click();
+  await p.locator('#ds-loai button[data-g="L1"]').click();
+  assert.ok(!/Loại L\d/.test(await p.locator("#ds-loai").innerText()), "tên loại không còn mã thô");
+  await p.locator("#tiep").click();
+  await p.locator("#luong").fill(String(kg));
+  await p.locator("#ngay-hai").fill("2026-07-01");
+  await p.waitForFunction(() => /cách ly/.test(document.querySelector("#cach-ly")?.textContent || ""), null, { timeout: 8000 });
+  assert.ok(await p.locator("#tiep").isDisabled(), "ngày hái trước ngày hết cách ly thuốc phải bị chặn");
+  await p.locator("#ngay-hai").fill("2026-12-01");
+  await p.locator('#khi-co button[data-v="sap"]').click();
+  assert.ok(await p.locator("#tiep").isDisabled(), "sắp có hàng phải chọn ngày");
+  await p.locator("#ngay-co").fill("2026-11-25");
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  await p.locator("#gia-muon").pressSequentially("26000");
+  assert.equal(await p.locator("#gia-san").inputValue(), "23.400", "giá thấp nhất tự điền 90%");
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  await p.locator("#chon-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.locator("#anh-chon .o").first().waitFor();
+  assert.ok(!/23\.400/.test(await p.locator("#xem-lai").innerText()), "bên mua không thấy giá thấp nhất");
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  await p.locator('[data-b="5"]').waitFor({ state: "visible", timeout: 10000 });
+  assert.match(await p.locator("#xong-tieu").innerText(), /trước mùa/);
+  await p.locator("#so-ben-mua").waitFor({ state: "visible", timeout: 8000 });
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}07-dang-truoc-mua.png`, fullPage: true });
+  const t = (await (await fetch("http://127.0.0.1:18980/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
+  const lo = (await (await fetch("http://127.0.0.1:18980/v1/lots?mine=true", { headers: { authorization: "Bearer " + t } })).json()).find((l) => l.declared_qty_g === String(kg * 1000));
+  assert.ok(lo, "lô trước mùa phải có trên backend");
+  assert.equal(lo.status, "upcoming", "đăng trước mùa → lô sắp có hàng");
+  const ct = await (await fetch(`http://127.0.0.1:18980/v1/lots/${lo.id}`, { headers: { authorization: "Bearer " + t } })).json();
+  assert.equal(ct.available_from, "2026-11-25", "ngày có hàng lưu đúng");
+  assert.ok(ct.spray_clear_on, "ngày hết cách ly gửi kèm cho backend");
+});
+
 await trang("tin-nhan-thong-bao", async (p) => {
   // Trước khi xem: chuông có chấm mới; xem xong quay về Trang chủ: hết chấm
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);

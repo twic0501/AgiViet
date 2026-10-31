@@ -44,7 +44,34 @@
   .xem-lai dl { margin: 0; padding: 4px 16px 12px; display: grid; grid-template-columns: auto 1fr; gap: 0 12px; }
   .xem-lai dt { color: var(--muc-nhat); font-size: 14px; padding: 10px 0; border-bottom: 1px solid var(--ke); }
   .xem-lai dd { margin: 0; text-align: right; font-weight: 600; padding: 10px 0; border-bottom: 1px solid var(--ke); font-variant-numeric: tabular-nums; }
-  .hang-nut { display: grid; grid-template-columns: auto 1fr; gap: 10px; position: sticky; bottom: 0; z-index: 4; padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important; padding: 12px 0; margin: 0 0 -12px; background: linear-gradient(transparent, var(--giay) 22%); }
+  .hang-nut { display: grid; grid-template-columns: auto 1fr; gap: 10px; position: sticky; bottom: 0; z-index: 4; padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important; padding: 12px 16px; margin: 0 -16px -12px; background: var(--giay); box-shadow: 0 -8px 12px -10px rgba(0,0,0,.25); }
+  /* Cách ly thuốc, sắp có hàng */
+  .cach-ly { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--la-nhat); color: var(--la-dam); font-size: 13.5px; line-height: 1.45; }
+  .cach-ly.chan { background: var(--dau-do-nen); color: var(--dau-do); }
+  .ngay-vn { font-size: 13px; color: var(--muc-phu); margin-top: 6px; }
+  /* Thước giá */
+  .thuoc { margin-top: 12px; }
+  /* Thanh 80%–120% giá tham khảo; đoạn xanh 90%–110% = khoảng thường gặp (25%–75% chiều dài) */
+  .thuoc .thanh { position: relative; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #ecdcbc 0 25%, #a9cdb3 25% 75%, #ecdcbc 75% 100%); }
+  .thuoc .moc { position: absolute; top: -5px; width: 4px; height: 20px; border-radius: 2px; background: var(--la-dam); transform: translateX(-2px); transition: left 200ms; }
+  .thuoc .moc.tk { background: var(--nau-dat); opacity: .6; }
+  .thuoc .chu { font-size: 13px; color: var(--muc-phu); margin-top: 8px; font-variant-numeric: tabular-nums; }
+  .thuoc .chu b { color: var(--la-dam); }
+  .canh-bao-gia { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--chin-nen); color: var(--chin); font-size: 13.5px; line-height: 1.45; }
+  .giai-thich-kin { margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: var(--vang-lua-nhat); color: #4a3510; font-size: 13.5px; line-height: 1.45; }
+  /* Xem lại */
+  .nhom-xem { font-size: 13px; font-weight: 700; color: var(--muc-phu); margin: 18px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .nhom-xem .kin { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--vang-lua-nhat); color: var(--nau-dat); }
+  .xem-lai .nhan-sap { display: inline-block; margin: 10px 16px 0; font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); }
+  .chi-bac { border-radius: 16px; background: var(--vang-lua-nhat); padding: 4px 16px; }
+  .chi-bac dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0 12px; }
+  .chi-bac dt { color: #6b5320; font-size: 14px; padding: 10px 0; border-bottom: 1px solid rgba(138, 90, 43, .2); }
+  .chi-bac dd { margin: 0; text-align: right; font-weight: 600; white-space: nowrap; padding: 10px 0; border-bottom: 1px solid rgba(138, 90, 43, .2); font-variant-numeric: tabular-nums; color: #3a2a0c; }
+  .chi-bac dt:last-of-type, .chi-bac dd:last-of-type { border-bottom: 0; }
+  /* Đã đăng */
+  .so-ben-mua { margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: var(--la-nhat); color: var(--la-dam); text-align: left; }
+  .so-ben-mua b { font-size: 22px; }
+  .xong-hop .hai-nut { display: grid; gap: 10px; margin-top: 18px; }
   .nut.lui { background: var(--giay-noi); color: var(--muc-phu); box-shadow: inset 0 0 0 1.5px var(--ke-dam); }
   .xong-hop { text-align: center; padding: 24px 8px; }
   .xong-hop .vong-tich { width: 72px; height: 72px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 16px; }
@@ -52,11 +79,11 @@
 </head>
 <body>
 <div class="trang">
-  <header class="dau" id="dau"></header>
+  <header class="dau dau-xanh nen-xanh" id="dau"></header>
   <main class="noi" id="noi" style="gap:20px;padding-bottom:24px">
     <div>
       <div class="buoc-thanh" id="thanh"><i></i><i></i><i></i><i></i></div>
-      <div class="buoc-ten" id="ten-buoc"><span>Mặt hàng</span><span>Lượng</span><span>Giá</span><span>Ảnh</span></div>
+      <div class="buoc-ten" id="ten-buoc"><span>Mặt hàng</span><span>Lượng, ngày</span><span>Giá</span><span>Ảnh</span></div>
     </div>
 
     <!-- Bước 1 -->
@@ -77,19 +104,32 @@
       <span class="nhan-o">Lượng này là</span>
       <div class="chip" id="co-so"><button type="button" data-v="weighed" aria-pressed="true">Đã cân</button><button type="button" data-v="estimated" aria-pressed="false">Ước tính</button></div>
       <p class="ghi" id="ghi-uoc" hidden>Hàng ước tính: bên mua chỉ được đặt tối đa 80% lượng, cân thực rồi cập nhật sau.</p>
+      <span class="nhan-o">Khi nào có hàng?</span>
+      <div class="chip" id="khi-co"><button type="button" data-v="ngay" aria-pressed="true">Có hàng ngay</button><button type="button" data-v="sap" aria-pressed="false">Sắp có hàng</button></div>
+      <div id="khoi-sap" hidden>
+        <label class="nhan-o" for="ngay-co">Có hàng từ ngày</label>
+        <input class="o-ngay" type="date" id="ngay-co">
+        <p class="ngay-vn" id="ngay-co-vn"></p>
+        <p class="ghi">Đăng trước mùa: bên mua thấy "sắp có hàng" và có thể đặt trước khi hái.</p>
+      </div>
       <label class="nhan-o" for="ngay-hai">Ngày hái / thu hoạch dự kiến</label>
       <input class="o-ngay" type="date" id="ngay-hai">
+      <p class="ngay-vn" id="ngay-hai-vn"></p>
+      <p class="cach-ly" id="cach-ly" hidden></p>
     </section>
 
     <!-- Bước 3 -->
     <section data-b="3" hidden>
       <h2 class="tieu">Bác muốn bán giá bao nhiêu?</h2>
       <div class="tham-khao" id="tham-khao" hidden><span id="tk-nhan">Giá tham khảo</span><b id="tk-gia"></b></div>
+      <div class="thuoc" id="thuoc" hidden><div class="thanh"><i class="moc tk" id="moc-tk"></i><i class="moc" id="moc-gia"></i></div>
+        <p class="chu">Khoảng thường gặp <b><span id="thuoc-thap"></span> – <span id="thuoc-cao"></span> đ/kg</b> (phần xanh). Vạch đậm là giá bác nhập.</p></div>
       <label class="nhan-o" for="gia-muon">Giá mong muốn (đồng / kg)</label>
       <div class="o-so"><input id="gia-muon" inputmode="numeric" placeholder="0" autocomplete="off"><span class="don-vi">đ/kg</span></div>
-      <label class="nhan-o" for="gia-san">Giá thấp nhất bác chấp nhận (đồng / kg)</label>
+      <p class="canh-bao-gia" id="canh-bao-gia" hidden></p>
+      <label class="nhan-o" for="gia-san">Giá thấp nhất bác chịu bán (đồng / kg)</label>
       <div class="o-so"><input id="gia-san" inputmode="numeric" placeholder="0" autocomplete="off"><span class="don-vi">đ/kg</span></div>
-      <p class="ghi">Bên mua chỉ thấy giá mong muốn. Giá thấp nhất để AgiViet lọc lời chào quá thấp.</p>
+      <p class="giai-thich-kin"><b>Giá thấp nhất luôn giữ kín</b>, bên mua không thấy. Lời chào thấp hơn mức này bị app tự từ chối. Mặc định 90% giá mong muốn, bác sửa được.</p>
       <p class="ghi canh-bao" id="loi-gia" hidden></p>
     </section>
 
@@ -100,8 +140,10 @@
       <div class="anh-chon" id="anh-chon" style="margin-top:16px">
         <label><input type="file" accept="image/*" capture="environment" multiple id="chon-anh" hidden><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp / chọn ảnh</span></label>
       </div>
-      <h3 class="nhan-o" style="margin-top:24px">Xem lại trước khi đăng</h3>
+      <p class="nhom-xem" style="margin-top:24px">Bên mua thấy tin như sau</p>
       <div class="xem-lai" id="xem-lai"></div>
+      <p class="nhom-xem">Chỉ bác thấy <span class="kin">kín</span></p>
+      <div class="chi-bac" id="chi-bac"></div>
     </section>
 
     <!-- Xong -->
@@ -109,7 +151,13 @@
       <div class="vong-tich"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></div>
       <h2 class="tieu" id="xong-tieu">Đã đăng lên chợ</h2>
       <p class="goi-y" id="xong-chu">Bên mua đã thấy lô hàng của bác. Có lời chào giá, AgiViet báo ngay.</p>
-      <a class="nut chinh-nut" href="./ban-hang-hoa.html" style="margin-top:20px;text-decoration:none">Xem hàng đang bán</a>
+      <p class="canh-bao-gia" id="xong-canh-bao" hidden></p>
+      <div class="so-ben-mua" id="so-ben-mua" hidden></div>
+      <div class="hai-nut">
+        <a class="nut chinh-nut" id="xong-di-can" href="./ban-hang-hoa.html#can" style="text-decoration:none" hidden>Xem bên mua đang cần</a>
+        <a class="nut phu-nut" href="./ban-hang-hoa.html" style="text-decoration:none">Xem hàng đang bán</a>
+        <a class="nut phu-nut" href="./ban-dang-bai.html" style="text-decoration:none">Đăng thêm lô khác</a>
+      </div>
     </section>
 
     <p class="bao loi" id="loi" hidden></p>
@@ -121,7 +169,7 @@
 </div>
 
 <script type="module">
-import { esc, phien, ANH_SP, giuThamSo, tienDu } from "./chung.js";
+import { esc, phien, ANH_SP, giuThamSo, tienDu, tenLoai, can } from "./chung.js";
 import { anhThanhBase64 } from "/shared/ngoai-tuyen.js";
 const $ = (id) => document.getElementById(id);
 // Đăng bài là màn làm việc tập trung: không có thanh menu, chỉ có nút quay lại
@@ -132,7 +180,7 @@ const veDauDang = (ten = "Bán hàng mới") => {
 };
 veDauDang();
 
-const st = { sp: null, loai: null, dv: "kg", coSo: "weighed", anh: [] };
+const st = { sp: null, loai: null, dv: "kg", coSo: "weighed", khiCo: "ngay", anh: [], giaTK: null, sanSua: false, cachLy: new Map() };
 let token, buoc = 1, ds = [];
 const so = (s) => Number(String(s).replace(/\./g, "").replace(",", "."));
 const dinhDangTien = (el) => el.addEventListener("input", () => { const n = el.value.replace(/\D/g, ""); el.value = n ? Number(n).toLocaleString("vi-VN") : ""; kiem(); });
@@ -142,12 +190,17 @@ const hienLoi = (m) => { $("loi").textContent = m; $("loi").hidden = !m; };
 function kiem() {
   let ok = false;
   if (buoc === 1) ok = !!(st.sp && st.loai);
-  if (buoc === 2) ok = luongG() > 0;
+  if (buoc === 2) ok = luongG() > 0 && kiemNgay();
   if (buoc === 3) {
     const muon = so($("gia-muon").value), san = so($("gia-san").value);
     const sai = muon > 0 && san > 0 && san > muon ? "Giá thấp nhất không được cao hơn giá mong muốn." : "";
     $("loi-gia").textContent = sai; $("loi-gia").hidden = !sai;
     ok = muon > 0 && san > 0 && !sai;
+    veThuoc(muon);
+    // Cảnh báo, không chặn: dưới 80% giá tham khảo (brief D6)
+    const thap = st.giaTK && muon > 0 && muon < st.giaTK * 0.8;
+    $("canh-bao-gia").textContent = thap ? `Giá này thấp hơn 80% giá tham khảo (${Number(st.giaTK).toLocaleString("vi-VN")} đ/kg). Bác vẫn đăng được, nhưng có thể đang bán rẻ.` : "";
+    $("canh-bao-gia").hidden = !thap;
   }
   if (buoc === 4) ok = st.anh.length > 0;
   $("tiep").disabled = !ok;
@@ -175,6 +228,11 @@ async function mo() {
   const r = await fetch("/v1/seller/verified-products", { headers: { authorization: "Bearer " + token } });
   if (!r.ok) throw new Error("Chưa tải được mặt hàng của bác.");
   ds = (await r.json()).filter((x) => x.trang_thai === "hieu_luc");
+  // Ngày hết cách ly thuốc theo vườn (nhật ký phun); lỗi tải thì không chặn nhưng backend vẫn kiểm
+  fetch("/v1/farm-diary", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).then((nk) => {
+    for (const c of nk?.co_so || []) if (c.ngay_het_cach_ly_gan_nhat) st.cachLy.set(c.id, c.ngay_het_cach_ly_gan_nhat);
+    if (buoc === 2) kiem();
+  }).catch(() => {});
   const theoSp = new Map();
   for (const x of ds) { if (!theoSp.has(x.product_code)) theoSp.set(x.product_code, []); theoSp.get(x.product_code).push(x); }
   $("ds-sp").innerHTML = theoSp.size ? [...theoSp].map(([ma, ls]) => {
@@ -186,12 +244,52 @@ async function mo() {
     $("ds-sp").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     const loai = theoSp.get(st.sp);
     $("nhan-loai").hidden = false;
-    $("ds-loai").innerHTML = loai.map((x) => `<button type="button" data-g="${esc(x.grade_code)}" aria-pressed="false">Loại ${esc(x.grade_label.replace(/^L/, ""))}</button>`).join("");
+    $("ds-loai").innerHTML = loai.map((x) => `<button type="button" data-g="${esc(x.grade_code)}" aria-pressed="false">${esc(tenLoai(x.grade_code))}</button>`).join("");
     $("ds-loai").querySelectorAll("button").forEach((g) => (g.onclick = () => { st.loai = g.dataset.g; $("ds-loai").querySelectorAll("button").forEach((y) => y.setAttribute("aria-pressed", String(y === g))); kiem(); }));
     if (loai.length === 1) $("ds-loai").querySelector("button").click();
     kiem();
   }));
 }
+
+// Ngày: hiện kiểu Việt Nam (dd/mm/yyyy) cạnh ô ngày; ô ngày của máy có thể hiện mm/dd
+const ngayVN = (s) => (s ? new Date(s + "T00:00:00").toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }) : "");
+const homNay = () => new Date().toISOString().slice(0, 10);
+function kiemNgay() {
+  $("ngay-co-vn").textContent = ngayVN($("ngay-co").value);
+  $("ngay-hai-vn").textContent = ngayVN($("ngay-hai").value);
+  const x = ds.find((d) => d.product_code === st.sp && d.grade_code === st.loai);
+  const het = x ? st.cachLy.get(x.site_id) : null;   // ngày hết cách ly thuốc của vườn (nhật ký phun)
+  const hai = $("ngay-hai").value, co = st.khiCo === "sap" ? $("ngay-co").value : "";
+  let chan = "";
+  if (st.khiCo === "sap" && !co) chan = "Bác chọn ngày có hàng.";
+  else if (st.khiCo === "sap" && co <= homNay()) chan = "Ngày có hàng phải sau hôm nay (nếu có hàng rồi, bác chọn Có hàng ngay).";
+  else if (het && hai && hai < het) chan = `Ngày hái trước ngày hết cách ly thuốc (${ngayVN(het)}). Bác chọn ngày hái từ ${ngayVN(het)} trở đi.`;
+  $("cach-ly").hidden = !(het || chan);
+  $("cach-ly").className = "cach-ly" + (chan ? " chan" : "");
+  $("cach-ly").textContent = chan || (het && het > homNay() ? `Vườn đang trong thời gian cách ly thuốc tới ${ngayVN(het)} (theo nhật ký phun). Ngày hái phải từ ngày này trở đi.`
+    : het ? `Vườn đã hết cách ly thuốc từ ${ngayVN(het)} (theo nhật ký phun).` : "");
+  return !chan;
+}
+$("khi-co").querySelectorAll("button").forEach((b) => (b.onclick = () => {
+  st.khiCo = b.dataset.v; $("khi-co").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  $("khoi-sap").hidden = st.khiCo !== "sap"; kiem();
+}));
+for (const id of ["ngay-co", "ngay-hai"]) $(id).addEventListener("input", kiem);
+// Thước giá: khoảng thường gặp ±10% quanh giá tham khảo, mốc giá bác đang nhập
+function veThuoc(muon) {
+  if (!st.giaTK) { $("thuoc").hidden = true; return; }
+  const thap = st.giaTK * 0.8, cao = st.giaTK * 1.2, vt = (v) => `${Math.max(0, Math.min(100, (v - thap) / (cao - thap) * 100))}%`;
+  $("thuoc-thap").textContent = Math.round(st.giaTK * 0.9).toLocaleString("vi-VN"); $("thuoc-cao").textContent = Math.round(st.giaTK * 1.1).toLocaleString("vi-VN");
+  $("moc-tk").style.left = vt(st.giaTK); $("moc-gia").style.left = vt(muon || st.giaTK); $("moc-gia").hidden = !muon;
+  $("thuoc").hidden = false;
+}
+// Giá thấp nhất tự điền 90% giá mong muốn cho tới khi bác tự sửa
+$("gia-san").addEventListener("input", () => { st.sanSua = !!$("gia-san").value; });
+$("gia-muon").addEventListener("input", () => {
+  if (st.sanSua) return;
+  const m = so($("gia-muon").value);
+  $("gia-san").value = m > 0 ? (Math.round(m * 0.9 / 100) * 100).toLocaleString("vi-VN") : ""; kiem();
+});
 
 // Chọn đơn vị / cơ sở lượng
 for (const [id, khoa] of [["dv", "dv"], ["co-so", "coSo"]]) $(id).querySelectorAll("button").forEach((b) => (b.onclick = () => {
@@ -206,12 +304,13 @@ async function giaThamKhao() {
     const r = await fetch(`/v1/reference-prices?product=${encodeURIComponent(st.sp)}&grade=${encodeURIComponent(st.loai)}`, { headers: { authorization: "Bearer " + token } });
     const j = r.ok ? await r.json() : null;
     if (j?.price_vnd) {
+      st.giaTK = Number(j.price_vnd); kiem();
       $("tk-gia").textContent = `${Number(j.price_vnd).toLocaleString("vi-VN")} đ/kg`;
       $("tk-nhan").textContent = `Giá tham khảo · ${j.order_count || 0} đơn gần đây`;
       $("tham-khao").hidden = false;
     } else chuaCo();
   } catch { chuaCo(); }
-  function chuaCo() { $("tk-nhan").textContent = "Chưa có giá tham khảo cho loại này"; $("tk-gia").textContent = ""; $("tham-khao").hidden = false; }
+  function chuaCo() { st.giaTK = null; $("tk-nhan").textContent = "Chưa có giá tham khảo cho loại này"; $("tk-gia").textContent = ""; $("tham-khao").hidden = false; }
 }
 
 // Ảnh: thu nhỏ trên máy trước khi gửi
@@ -229,14 +328,20 @@ function veAnh() {
 function xemLai() {
   const x = ds.find((d) => d.product_code === st.sp && d.grade_code === st.loai);
   const anh = st.anh[0]?.xem || ANH_SP(st.sp);
-  const kg = luongG() / 1000;
-  $("xem-lai").innerHTML = `<div class="anh" style="${anh ? `background-image:url(${anh})` : ""}"></div><dl>
-    <dt>Mặt hàng</dt><dd>${esc(x?.product_name || st.sp)} · Loại ${esc((st.loai || "").replace(/^L/, ""))}</dd>
-    <dt>Lượng</dt><dd>${kg.toLocaleString("vi-VN")} kg · ${st.coSo === "estimated" ? "ước tính" : "đã cân"}</dd>
-    <dt>Giá mong muốn</dt><dd>${esc($("gia-muon").value)} đ/kg</dd>
-    <dt>Giá thấp nhất</dt><dd>${esc($("gia-san").value)} đ/kg</dd>
-    <dt>Ước tính tổng</dt><dd title="${tienDu(kg * so($("gia-muon").value))}">${Math.round(kg * so($("gia-muon").value)).toLocaleString("vi-VN")} đ</dd>
+  const g = luongG(), muon = so($("gia-muon").value), san = so($("gia-san").value);
+  const sap = st.khiCo === "sap" && $("ngay-co").value;
+  // Phần bên mua thấy: KHÔNG có giá thấp nhất (brief D8)
+  $("xem-lai").innerHTML = `<div class="anh" style="${anh ? `background-image:url(${anh})` : ""}"></div>${sap ? `<span class="nhan-sap">Sắp có hàng · từ ${new Date($("ngay-co").value + "T00:00:00").toLocaleDateString("vi-VN")}</span>` : ""}<dl>
+    <dt>Mặt hàng</dt><dd>${esc(x?.product_name || st.sp)} · ${esc(tenLoai(st.loai))}</dd>
+    <dt>Lượng</dt><dd>${esc(can(g).join(" "))} · ${st.coSo === "estimated" ? "ước tính" : "đã cân"}</dd>
+    <dt>Giá mong muốn</dt><dd>${muon.toLocaleString("vi-VN")} đ/kg</dd>
+    <dt>Vườn</dt><dd>${esc(x?.site_name || "—")}</dd>
+    ${$("ngay-hai").value ? `<dt>Ngày hái</dt><dd>${new Date($("ngay-hai").value + "T00:00:00").toLocaleDateString("vi-VN")}</dd>` : ""}
     <dt>Ảnh</dt><dd>${st.anh.length ? `${st.anh.length} ảnh` : "Chưa có"}</dd></dl>`;
+  $("chi-bac").innerHTML = `<dl>
+    <dt>Giá thấp nhất</dt><dd>${san.toLocaleString("vi-VN")} đ/kg</dd>
+    <dt>Ước tính tổng theo giá mong muốn</dt><dd title="${tienDu(Math.round(g / 1000 * muon))}">${Math.round(g / 1000 * muon).toLocaleString("vi-VN")} đ</dd>
+    ${st.coSo === "estimated" ? `<dt>Bên mua đặt tối đa</dt><dd>${esc(can(Math.floor(g * 0.8)).join(" "))} (80%)</dd>` : ""}</dl>`;
 }
 
 // Gửi lệnh có khóa chống lặp (bấm 2 lần không tạo 2 lô)
@@ -252,7 +357,7 @@ async function dangBan() {
   try {
     const x = ds.find((d) => d.product_code === st.sp && d.grade_code === st.loai);
     const tao = await lenh("/v1/lots", { idempotency_key: khoa.tao, product_code: st.sp, grade_code: st.loai, site_id: x?.site_id, qty_g: String(luongG()), qty_basis: st.coSo,
-      harvest_on: $("ngay-hai").value || undefined, ask_price_vnd: String(so($("gia-muon").value)), floor_price_vnd: String(so($("gia-san").value)) });
+      harvest_on: $("ngay-hai").value || undefined, available_from: st.khiCo === "sap" ? $("ngay-co").value : undefined, spray_clear_on: st.cachLy.get(x?.site_id) || undefined, ask_price_vnd: String(so($("gia-muon").value)), floor_price_vnd: String(so($("gia-san").value)) });
     const lo = tao.data || tao;
     // Quy tắc: lô cần ít nhất 1 ảnh chụp trong app mới đăng được → gửi ảnh trước, rồi mới đăng
     let loiAnh = 0;
@@ -264,7 +369,20 @@ async function dangBan() {
     if (loiAnh === st.anh.length) throw new Error("Chưa gửi được ảnh. Bác kiểm tra mạng rồi bấm Đăng bán lại, lô nháp vẫn được giữ.");
     khoa.dang ||= crypto.randomUUID();
     await lenh(`/v1/lots/${lo.id}/publish`, { idempotency_key: khoa.dang, expected_revision: tao.revision ?? lo.revision });
-    $("xong-tieu").textContent = `Đã đăng lô ${lo.code || ""}`.trim();
+    const sapCo = st.khiCo === "sap";
+    $("xong-tieu").textContent = `${sapCo ? "Đã đăng trước mùa" : "Đã đăng"} lô ${lo.code || ""}`.trim();
+    if (sapCo) $("xong-chu").textContent = `Bên mua thấy lô "sắp có hàng" từ ${new Date($("ngay-co").value + "T00:00:00").toLocaleDateString("vi-VN")} và có thể đặt trước.`;
+    const cb = tao.data?.canh_bao ?? tao.canh_bao;
+    const chuCb = Array.isArray(cb) ? cb.map((c) => (typeof c === "string" ? c : c?.thong_diep || c?.message || "")).filter(Boolean).join(" ") : typeof cb === "string" ? cb : "";
+    if (chuCb) { $("xong-canh-bao").textContent = `Lưu ý giá: ${chuCb}`; $("xong-canh-bao").hidden = false; }
+    // Số bên mua đang cần đúng mặt hàng + loại này
+    fetch(`/v1/demands?product=${encodeURIComponent(st.sp)}`, { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : [])).then((nc) => {
+      const khop = (Array.isArray(nc) ? nc : []).filter((n) => n.status === "open" && (n.lines || []).some((d) => d.grade_code === st.loai));
+      const tong = khop.flatMap((n) => n.lines.filter((d) => d.grade_code === st.loai)).reduce((t, d) => t + Number(d.qty_g), 0);
+      $("so-ben-mua").innerHTML = khop.length ? `<b>${khop.length}</b> bên mua đang cần ${esc(tenLoai(st.loai)).toLowerCase()} này, tổng ${esc(can(tong).join(" "))}. Bác chào hàng để được trả lời sớm.`
+        : "Hiện chưa có bên mua nào đăng nhu cầu cho loại này. Có lời chào giá, AgiViet báo ngay.";
+      $("so-ben-mua").hidden = false; $("xong-di-can").hidden = !khop.length;
+    }).catch(() => {});
     if (loiAnh) $("xong-chu").textContent = `Lô đã lên chợ. ${loiAnh} ảnh chưa gửi được, bác thêm lại trong chi tiết lô.`;
     den(5);
   } catch (e) { hienLoi(e.message); $("tiep").disabled = false; $("tiep").textContent = "Đăng bán"; }
