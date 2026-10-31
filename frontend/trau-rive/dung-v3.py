@@ -75,6 +75,7 @@ if os.environ.get('AGV_DU_GOC') != '1':
 NAC = [(-1.0, 'ngt'), (-0.5, '34t'), (0.0, 'chinh'), (0.5, '34p'), (1.0, 'ngp')]
 NGUONG = [-0.75, -0.25, 0.25, 0.75]
 CHAN_DAT = 490
+BUOC_KHOA = int(os.environ.get("AGV_BUOC_KHOA", "20"))   # bước khoá đỉnh tay biến hình
 
 
 def la_dau(t):
@@ -319,7 +320,7 @@ class Goc:
                           f'name="P">{dinh}</PointsPath>{to}</Shape>')
                 for j, vid in enumerate(ids):
                     ks = []
-                    for f in range(0, khung[-1] + 1, 10):
+                    for f in range(0, khung[-1] + 1, BUOC_KHOA if xuong else 30):   # khoá đỉnh (tay thẳng 30 khung, gập khuỷu 20) — nhẹ tệp
                         k0 = max(i for i in range(len(khung) - 1) if khung[i] <= f) if f < khung[-1] else len(khung) - 2
                         tt = (f - khung[k0]) / (khung[k0 + 1] - khung[k0])
                         ks.append((f, dang[k0][ly][j] if tt == 0 else dang[k0 + 1][ly][j] if tt == 1 else noi(k0, k0 + 1, tt, ly, j)))
@@ -781,6 +782,11 @@ def main():
             g.joy_bs[(ben, kieu)] = jid
             dang_tay_vao_nghi.append(f'<KeyedObject objectId="{jid}"><KeyedProperty property="x">'
                                      f'<KeyFrameDouble value="-1" frame="0"/></KeyedProperty></KeyedObject>')
+        for (ben, kieu), bid in g.bs_id.items():   # Nghịch đang chờ: hiện bản tay chính, ẩn bản riêng
+            dang_tay_vao_nghi.append(f'<KeyedObject objectId="{bid}"><KeyedProperty property="opacity">'
+                                     f'<KeyFrameDouble value="{1 if kieu == "co" else 0}" frame="0"/></KeyedProperty></KeyedObject>')
+            dang_tay_vao_nghi.append(f'<KeyedObject objectId="{jid}"><KeyedProperty property="x">'
+                                     f'<KeyFrameDouble value="-1" frame="0"/></KeyedProperty></KeyedObject>')
     for ten, aid in (('dau', a_dau), ('than', a_than), ('chan', a_chan)):
         joy[ten] = moi_id()
         joy_xml.append(f'<Joystick posX="256" posY="256" width="512" height="512" xId="{aid}" yId="{a_rong}" '
@@ -933,145 +939,6 @@ def main():
                 out.append(khung(g.boc[t]['cx'], prop, cac))
         return out
 
-    lac_dau = nghich('Nghịch: lắc đầu đuổi ruồi', 80, lambda g: [
-        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (6, .10), (13, -.12), (20, .09), (27, -.06), (34, .03), (44, 0)]),
-        khung(g.id['nghich'], 'rotation', [(0, 0), (8, -.012), (15, .014), (22, -.01), (30, .005), (44, 0)]),
-        *tai_theo(g, [(0, 0), (9, .30), (16, -.28), (23, .24), (30, -.16), (38, .08), (50, 0)]),
-        *duoi_theo(g, [(0, 0), (10, .35), (22, -.3), (34, .18), (48, -.06), (62, 0)])])
-    vuon_vai = nghich('Nghịch: vươn vai', 160, lambda g: [
-        khung(g.id['nghich'], 'scaleY', [(0, 1), (16, .95), (46, 1.07), (100, 1.07), (120, .98), (136, 1.01), (160, 1)]),
-        khung(g.id['nghich'], 'scaleX', [(0, 1), (16, 1.03), (46, .97), (100, .97), (120, 1.015), (136, 1), (160, 1)]),
-        khung(g.id['dau-nghich'], 'y', [(0, 0), (16, 2), (46, -5), (100, -5), (124, 1), (160, 0)]),
-        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (46, -.06), (100, -.06), (128, .015), (160, 0)]),
-        *[khung(nid, 'rotation', [(0, 0), (16, -.08 * d), (50, (.72 if (g.xuong or g.morph) else .5) * d),
-                                   (100, (.72 if (g.xuong or g.morph) else .5) * d), (126, -.08 * d), (140, .03 * d),
-                                   (160, 0)]) for nid, d in g.tay()],
-        *mat(g, 'scaleY', [(0, 1), (40, .45), (104, .45), (124, 1), (160, 1)]),
-        *may(g, 'y', [(0, 0), (46, -2), (100, -2), (124, 0), (160, 0)]),
-        *tai_theo(g, [(0, 0), (20, -.1), (50, .25), (100, .25), (124, -.08), (160, 0)]),
-        *duoi_theo(g, [(0, 0), (50, .3), (100, .3), (130, -.1), (160, 0)])])
-    to_mo = nghich('Nghịch: nghiêng đầu tò mò', 170, lambda g: [
-        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (26, .17), (112, .17), (142, -.025), (170, 0)]),
-        khung(g.id['dau-nghich'], 'x', [(0, 0), (26, 3), (112, 3), (170, 0)]),
-        khung(g.id['nghich'], 'rotation', [(0, 0), (32, .022), (112, .022), (152, 0), (170, 0)]),
-        *[khung(nid, 'rotation', [(0, 0), (30, (.2 if j == 0 else -.16) * d), (112, (.2 if j == 0 else -.16) * d),
-                                  (140, 0), (170, 0)]) for j, (_, nid, d) in enumerate(g.tai())],
-        *duoi_theo(g, [(0, 0), (40, .15), (112, .15), (150, 0), (170, 0)])])
-    nhay = nghich('Nghịch: nhún nhảy hai nhịp', 72, lambda g: [
-        khung(g.id['nghich'], 'y', [(0, 0), (7, 0), (15, -9), (23, 0), (30, 0), (38, -7), (46, 0), (72, 0)], '0.3 0 0.7 1'),
-        khung(g.id['nghich'], 'scaleY', [(0, 1), (6, .94), (12, 1.05), (19, 1.04), (23, .93), (29, 1.03), (35, 1.04),
-                                         (42, 1.02), (46, .94), (54, 1.01), (64, 1), (72, 1)]),
-        khung(g.id['nghich'], 'scaleX', [(0, 1), (6, 1.04), (12, .97), (23, 1.05), (29, .98), (46, 1.04), (54, .995),
-                                         (64, 1), (72, 1)]),
-        khung(g.id['dau-nghich'], 'y', [(0, 0), (10, 2), (17, -2), (24, 3), (32, 0), (40, -2), (47, 3), (56, 0), (72, 0)]),
-        *tai_theo(g, [(0, 0), (14, -.18), (22, .28), (30, -.08), (38, -.18), (46, .28), (56, -.08), (66, 0), (72, 0)]),
-        *[khung(nid, 'rotation', [(0, 0), (15, .12 * d), (24, -.04 * d), (38, .1 * d), (47, -.04 * d), (60, 0), (72, 0)])
-          for nid, d in g.tay()],
-        *duoi_theo(g, [(0, 0), (16, -.3), (26, .3), (40, -.25), (50, .25), (64, 0), (72, 0)])])
-    vay_tai = nghich('Nghịch: vẫy tai gật đầu', 70, lambda g: [
-        *tai_theo(g, [(0, 0), (4, .35), (9, -.1), (14, .12), (20, 0), (26, .35), (31, -.1), (36, .12), (44, 0), (70, 0)]),
-        khung(g.id['dau-nghich'], 'y', [(0, 0), (10, 3), (20, -1), (30, 2), (42, 0), (70, 0)]),
-        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (10, .03), (22, -.02), (34, .01), (44, 0), (70, 0)]),
-        khung(g.id['nghich'], 'scaleY', [(0, 1), (10, .985), (22, 1.012), (34, .995), (46, 1), (70, 1)])])
-    # Cảm xúc (tính cách: hiền, chăm, tò mò, hay vui, thỉnh thoảng ngái ngủ)
-    def vui_fn(g):  # vui hớn hở: mắt cười ^^, lắc lư trái phải theo nhịp, hai tay vung lên xen kẽ, tai vểnh, đuôi vẫy
-        nhip = [(f, math.sin(2 * math.pi * f / 40)) for f in range(0, 161, 10)]
-        out = [*mat_cuoi(g, 6, 150),
-               khung(g.id['nghich'], 'rotation', [(f, .035 * v) for f, v in nhip] + [(170, 0), (180, 0)]),
-               khung(g.id['nghich'], 'y', [(f, -3 * abs(v)) for f, v in nhip] + [(170, 0), (180, 0)]),
-               khung(g.id['dau-nghich'], 'rotation', [(f, -.05 * v) for f, v in nhip] + [(170, 0), (180, 0)]),
-               *may(g, 'y', [(0, 0), (8, -3), (150, -3), (162, 0), (180, 0)]),
-               *tai_theo(g, [(0, 0), (10, .28), (150, .28), (166, 0), (180, 0)]),
-               *duoi_theo(g, [(f, .3 * math.sin(2 * math.pi * f / 20)) for f in range(0, 161, 5)] + [(170, 0), (180, 0)])]
-        for j, (nid, d) in enumerate(g.tay()):
-            pha = 0 if j == 0 else 20
-            out.append(khung(nid, 'rotation', [(0, 0)] + [(f, d * (.28 + .22 * math.sin(2 * math.pi * (f - pha) / 40)))
-                                                         for f in range(10, 151, 10)] + [(166, 0), (180, 0)]))
-        return out
-    vui = nghich('Cảm xúc: vui hớn hở', 180, vui_fn)
-
-    def ngu_fn(g):  # ngái ngủ: mắt lim dim, đầu gật gù chúi xuống, tai cụp, người chùng → giật mình tỉnh, lắc đầu
-        return [*mat(g, 'scaleY', [(0, 1), (20, .55), (60, .3), (100, .15), (128, .12), (134, 1.25), (150, 1), (200, 1)]),
-                khung(g.id['dau-nghich'], 'y', [(0, 0), (40, 3), (70, 1), (110, 7), (128, 9), (134, -3), (146, 0), (200, 0)]),
-                khung(g.id['dau-nghich'], 'rotation', [(0, 0), (60, .04), (128, .08), (134, -.03), (150, .06), (162, -.04),
-                                                       (174, .02), (186, 0), (200, 0)]),
-                khung(g.id['nghich'], 'scaleY', [(0, 1), (100, .975), (128, .97), (134, 1.04), (146, .99), (160, 1), (200, 1)]),
-                *tai_theo(g, [(0, 0), (60, -.22), (128, -.3), (134, .3), (146, -.1), (160, .1), (176, 0), (200, 0)]),
-                *may(g, 'y', [(0, 0), (60, 2), (128, 3), (134, -4), (150, 0), (200, 0)]),
-                *[khung(nid, 'rotation', [(0, 0), (100, -.05 * d), (128, -.06 * d), (136, .2 * d), (156, 0), (200, 0)])
-                  for nid, d in g.tay()],
-                *duoi_theo(g, [(0, 0), (120, -.1), (136, .35), (150, -.2), (166, 0), (200, 0)])]
-    ngu = nghich('Cảm xúc: ngái ngủ', 200, ngu_fn)
-
-    def giat_minh_fn(g):  # giật mình: mắt mở to, mày nhướng, tai dựng, người bật lùi rồi thở phào
-        return [*mat(g, 'scaleY', [(0, 1), (4, 1.3), (40, 1.3), (60, 1), (110, 1)]),
-                *mat(g, 'scaleX', [(0, 1), (4, 1.2), (40, 1.2), (60, 1), (110, 1)]),
-                *may(g, 'y', [(0, 0), (4, -6), (44, -6), (64, 0), (110, 0)]),
-                *tai_theo(g, [(0, 0), (4, .4), (40, .4), (52, -.1), (64, .05), (80, 0), (110, 0)]),
-                khung(g.id['nghich'], 'y', [(0, 0), (5, -8), (12, 0), (16, 0), (110, 0)], '0.3 0 0.7 1'),
-                khung(g.id['nghich'], 'rotation', [(0, 0), (6, .04), (40, .03), (70, -.008), (90, 0), (110, 0)]),
-                khung(g.id['nghich'], 'scaleY', [(0, 1), (3, .95), (6, 1.06), (13, .95), (20, 1.02), (60, 1.01),
-                                                 (72, .97), (90, 1), (110, 1)]),
-                *[khung(nid, 'rotation', [(0, 0), (5, .45 * d), (40, .38 * d), (68, -.05 * d), (86, 0), (110, 0)])
-                  for nid, d in g.tay()],
-                *duoi_theo(g, [(0, 0), (6, .5), (40, .4), (70, -.1), (90, 0), (110, 0)])]
-    giat_minh = nghich('Cảm xúc: giật mình', 110, giat_minh_fn)
-
-    # Tay chỉ xoay tối đa ~30° (0,5 rad): tay V4g vẽ cho dáng buông, quá 40° ống tay thành thanh dẹt cứng.
-    # Tay giơ cao thật cần hình vẽ riêng cho tư thế tay giơ (đổi hình), chưa có.
-    def chao_fn(g):  # vẫy tay chào: tay phải (chính diện) / tay gần giơ cao vẫy, người nghiêng, mắt cười, đầu nghiêng
-        ben = 'gan' if g.tay_ben('gan') else 'phai'
-        d = dict(g.tay()).get(g.tay_ben(ben)[0], -1) if g.tay_ben(ben) else -1  # hệ số của chính tay đó (tay da: −2,6)
-        out = [*mat_cuoi(g, 24, 120),
-               khung(g.id['nghich'], 'rotation', [(0, 0), (10, .01 * d), (28, -.03 * d), (128, -.03 * d), (156, .005 * d),
-                                                  (176, 0)]),
-               khung(g.id['dau-nghich'], 'rotation', [(0, 0), (28, .09), (128, .09), (160, 0), (176, 0)]),
-               *may(g, 'y', [(0, 0), (24, -3), (128, -3), (150, 0), (176, 0)]),
-               *tai_theo(g, [(0, 0), (26, .25), (126, .25), (150, -.05), (170, 0), (176, 0)]),
-               *duoi_theo(g, [(f, .25 * math.sin(2 * math.pi * f / 24)) for f in range(0, 145, 6)] + [(160, 0), (176, 0)])]
-        cao = .74 if (g.xuong or g.morph) else .48   # tay da (chính diện): bàn tay lên ngang tai như ảnh mẫu
-        for nid in g.tay_ben(ben):
-            out.append(khung(nid, 'rotation', [(0, 0), (10, -.1 * d), (28, cao * d)] +
-                             [(28 + 10 * i, (cao + (.08 if i % 2 else -.06)) * d) for i in range(1, 9)] +
-                             [(128, cao * d), (148, -.08 * d), (160, .03 * d), (176, 0)]))
-        for b2 in ('trai', 'xa'):
-            if b2 != ben:
-                for nid in g.tay_ben(b2):
-                    out.append(khung(nid, 'rotation', [(0, 0), (28, .1 * (1 if b2 == 'trai' else d)), (128, .1),
-                                                       (156, 0), (176, 0)]))
-        return out
-    chao = nghich('Cảm xúc: vẫy tay chào', 176, chao_fn)
-
-    # Lớp: Chờ (5 s) → chọn ngẫu nhiên 1 trong 5 động tác hoặc chờ thêm (4 s) → xong động tác thì về Chờ.
-    a_cho1, a_cho2 = (ani('Nghịch: chờ', 300, dang_tay_vao_nghi, lap=False),
-                      ani('Nghịch: chờ thêm', 240, dang_tay_vao_nghi, lap=False))
-    s_cho1, s_cho2 = moi_id(), moi_id()
-    dong = [(a, moi_id()) for a in (lac_dau, vuon_vai, to_mo, nhay, vay_tai, vui, ngu, giat_minh, chao)]
-    if os.environ.get('AGV_THU'):  # kiểm thử: chỉ một động tác, chờ 10 khung (dùng khi chụp soi)
-        dong = [dong[int(os.environ['AGV_THU'])]]
-        a_cho1 = ani('Nghịch: chờ (thử)', 10, dang_tay_vao_nghi, lap=False)
-    het = 'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"'
-    # vào động tác trộn 200 ms; riêng giật mình vào ngay (động tác bật đột ngột, đổi tay ở khung 5 —
-    # trộn sẽ thấy cả tay cũ lẫn tay mới mờ chồng nhau)
-    chon = ''.join(f'<StateTransition stateToId="{sid}" duration="{0 if aid == giat_minh else 200}" {het}/>'
-                   for aid, sid in dong) + \
-        ('' if os.environ.get('AGV_THU') else f'<StateTransition stateToId="{s_cho2}" {het}/>')
-    ve_cho = f'<StateTransition stateToId="{s_cho1}" duration="250" {het}/>'
-    # có hành động (hanh_dong ≠ 0) → Nghịch tắt (đứng ở trạng thái rỗng); động tác đang chạy thì làm nốt rồi mới tắt
-    a_tat, s_tat = ani('Nghịch: tắt', 1, []), moi_id()
-    hd = vao['hanh_dong']
-    sang_tat = (f'<StateTransition stateToId="{s_tat}" duration="200">'
-                f'<TransitionNumberCondition inputId="{hd}" opValue="notEqual" value="0"/></StateTransition>')
-    lop.append(f'<StateMachineLayer name="Nghịch" id="{moi_id()}"><AnyState/><ExitState/>'
-               f'<EntryState><StateTransition stateToId="{s_cho1}"/></EntryState>'
-               f'<AnimationState animationId="{a_tat}" id="{s_tat}"><StateTransition stateToId="{s_cho1}">'
-               f'<TransitionNumberCondition inputId="{hd}" opValue="equal" value="0"/></StateTransition></AnimationState>'
-               f'<AnimationState animationId="{a_cho1}" id="{s_cho1}" random="true">{sang_tat}{chon}</AnimationState>'
-               f'<AnimationState animationId="{a_cho2}" id="{s_cho2}">{sang_tat}{ve_cho}</AnimationState>'
-               + ''.join(f'<AnimationState animationId="{aid}" id="{sid}">{ve_cho}</AnimationState>' for aid, sid in dong)
-               + '</StateMachineLayer>')
-
-    # ---------- Hành động (hanh_dong 1–8, chặng 3). Mỗi hành động một trạng thái lặp; 0 = rỗng (nghỉ sống chạy) ----------
     # đơn vị tay: 0 = buông, .42 = dang ngang, .73 = giơ cao (× hệ số tay → joystick 'Dáng tay', xem remap)
     def tay_k(g, ben, cac):
         hs = dict(g.tay())
@@ -1119,6 +986,120 @@ def main():
                 *duoi_theo(g, [(0, 0), (30, 0)] + [(30 + f, .25 * math.sin(2 * math.pi * f / 24)) for f in range(6, 61, 6)]
                            + [(100, 0), (144, 0)])]
 
+    lac_dau = nghich('Nghịch: lắc đầu đuổi ruồi', 80, lambda g: [
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (6, .10), (13, -.12), (20, .09), (27, -.06), (34, .03), (44, 0)]),
+        khung(g.id['nghich'], 'rotation', [(0, 0), (8, -.012), (15, .014), (22, -.01), (30, .005), (44, 0)]),
+        *tai_theo(g, [(0, 0), (9, .30), (16, -.28), (23, .24), (30, -.16), (38, .08), (50, 0)]),
+        *duoi_theo(g, [(0, 0), (10, .35), (22, -.3), (34, .18), (48, -.06), (62, 0)])])
+    vuon_vai = nghich('Nghịch: vươn vai', 160, lambda g: [
+        khung(g.id['nghich'], 'scaleY', [(0, 1), (16, .95), (46, 1.07), (100, 1.07), (120, .98), (136, 1.01), (160, 1)]),
+        khung(g.id['nghich'], 'scaleX', [(0, 1), (16, 1.03), (46, .97), (100, .97), (120, 1.015), (136, 1), (160, 1)]),
+        khung(g.id['dau-nghich'], 'y', [(0, 0), (16, 2), (46, -5), (100, -5), (124, 1), (160, 0)]),
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (46, -.06), (100, -.06), (128, .015), (160, 0)]),
+        *[khung(nid, 'rotation', [(0, 0), (16, -.08 * d), (50, (.72 if (g.xuong or g.morph) else .5) * d),
+                                   (100, (.72 if (g.xuong or g.morph) else .5) * d), (126, -.08 * d), (140, .03 * d),
+                                   (160, 0)]) for nid, d in g.tay()],
+        *mat(g, 'scaleY', [(0, 1), (40, .45), (104, .45), (124, 1), (160, 1)]),
+        *may(g, 'y', [(0, 0), (46, -2), (100, -2), (124, 0), (160, 0)]),
+        *tai_theo(g, [(0, 0), (20, -.1), (50, .25), (100, .25), (124, -.08), (160, 0)]),
+        *duoi_theo(g, [(0, 0), (50, .3), (100, .3), (130, -.1), (160, 0)])])
+    to_mo = nghich('Nghịch: nghiêng đầu tò mò', 170, lambda g: [
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (26, .17), (112, .17), (142, -.025), (170, 0)]),
+        khung(g.id['dau-nghich'], 'x', [(0, 0), (26, 3), (112, 3), (170, 0)]),
+        khung(g.id['nghich'], 'rotation', [(0, 0), (32, .022), (112, .022), (152, 0), (170, 0)]),
+        *[khung(nid, 'rotation', [(0, 0), (30, (.2 if j == 0 else -.16) * d), (112, (.2 if j == 0 else -.16) * d),
+                                  (140, 0), (170, 0)]) for j, (_, nid, d) in enumerate(g.tai())],
+        *duoi_theo(g, [(0, 0), (40, .15), (112, .15), (150, 0), (170, 0)])])
+    nhay = nghich('Nghịch: nhún nhảy hai nhịp', 72, lambda g: [
+        khung(g.id['nghich'], 'y', [(0, 0), (7, 0), (15, -9), (23, 0), (30, 0), (38, -7), (46, 0), (72, 0)], '0.3 0 0.7 1'),
+        khung(g.id['nghich'], 'scaleY', [(0, 1), (6, .94), (12, 1.05), (19, 1.04), (23, .93), (29, 1.03), (35, 1.04),
+                                         (42, 1.02), (46, .94), (54, 1.01), (64, 1), (72, 1)]),
+        khung(g.id['nghich'], 'scaleX', [(0, 1), (6, 1.04), (12, .97), (23, 1.05), (29, .98), (46, 1.04), (54, .995),
+                                         (64, 1), (72, 1)]),
+        khung(g.id['dau-nghich'], 'y', [(0, 0), (10, 2), (17, -2), (24, 3), (32, 0), (40, -2), (47, 3), (56, 0), (72, 0)]),
+        *tai_theo(g, [(0, 0), (14, -.18), (22, .28), (30, -.08), (38, -.18), (46, .28), (56, -.08), (66, 0), (72, 0)]),
+        *[khung(nid, 'rotation', [(0, 0), (15, .12 * d), (24, -.04 * d), (38, .1 * d), (47, -.04 * d), (60, 0), (72, 0)])
+          for nid, d in g.tay()],
+        *duoi_theo(g, [(0, 0), (16, -.3), (26, .3), (40, -.25), (50, .25), (64, 0), (72, 0)])])
+    vay_tai = nghich('Nghịch: vẫy tai gật đầu', 70, lambda g: [
+        *tai_theo(g, [(0, 0), (4, .35), (9, -.1), (14, .12), (20, 0), (26, .35), (31, -.1), (36, .12), (44, 0), (70, 0)]),
+        khung(g.id['dau-nghich'], 'y', [(0, 0), (10, 3), (20, -1), (30, 2), (42, 0), (70, 0)]),
+        khung(g.id['dau-nghich'], 'rotation', [(0, 0), (10, .03), (22, -.02), (34, .01), (44, 0), (70, 0)]),
+        khung(g.id['nghich'], 'scaleY', [(0, 1), (10, .985), (22, 1.012), (34, .995), (46, 1), (70, 1)])])
+    # Cảm xúc (tính cách: hiền, chăm, tò mò, hay vui, thỉnh thoảng ngái ngủ)
+    def vui_fn(g):  # vui hớn hở: hai tay chụm trước ngực (bản tay ôm ngực, không giấy), nhún 2 nhịp, lắc lư, mắt cười
+        nhip = [(0, 0), (30, 0), (45, 1), (60, 0), (75, -1), (90, 0), (105, 1), (120, 0), (180, 0)]
+        return [*mat_cuoi(g, 14, 140),
+                *bs(g, 'phai', 'giay', [(0, 0), (10, 0), (26, .8), (130, .8), (150, 0), (180, 0)]),
+                *bs(g, 'trai', 'giay', [(0, 0), (12, 0), (28, .8), (132, .8), (152, 0), (180, 0)]),
+                khung(g.id['nghich'], 'rotation', [(f, .03 * v) for f, v in nhip]),
+                khung(g.id['nghich'], 'y', [(0, 0), (30, 0), (38, -4), (46, 0), (68, 0), (76, -4), (84, 0), (180, 0)]),
+                khung(g.id['dau-nghich'], 'rotation', [(f, -.05 * v) for f, v in nhip]),
+                *may(g, 'y', [(0, 0), (14, -3), (140, -3), (152, 0), (180, 0)]),
+                *tai_theo(g, [(0, 0), (16, .28), (140, .28), (156, 0), (180, 0)]),
+                *duoi_theo(g, [(0, 0), (20, 0)] + [(20 + f, .3 * math.sin(2 * math.pi * f / 20)) for f in range(5, 121, 5)]
+                           + [(156, 0), (180, 0)])]
+    vui = nghich('Cảm xúc: vui hớn hở', 180, vui_fn)
+
+    def ngu_fn(g):  # ngái ngủ: mắt lim dim, đầu gật gù chúi xuống, tai cụp, người chùng → giật mình tỉnh, lắc đầu
+        return [*mat(g, 'scaleY', [(0, 1), (20, .55), (60, .3), (100, .15), (128, .12), (134, 1.25), (150, 1), (200, 1)]),
+                khung(g.id['dau-nghich'], 'y', [(0, 0), (40, 3), (70, 1), (110, 7), (128, 9), (134, -3), (146, 0), (200, 0)]),
+                khung(g.id['dau-nghich'], 'rotation', [(0, 0), (60, .04), (128, .08), (134, -.03), (150, .06), (162, -.04),
+                                                       (174, .02), (186, 0), (200, 0)]),
+                khung(g.id['nghich'], 'scaleY', [(0, 1), (100, .975), (128, .97), (134, 1.04), (146, .99), (160, 1), (200, 1)]),
+                *tai_theo(g, [(0, 0), (60, -.22), (128, -.3), (134, .3), (146, -.1), (160, .1), (176, 0), (200, 0)]),
+                *may(g, 'y', [(0, 0), (60, 2), (128, 3), (134, -4), (150, 0), (200, 0)]),
+                *[khung(nid, 'rotation', [(0, 0), (100, -.05 * d), (128, -.06 * d), (136, .2 * d), (156, 0), (200, 0)])
+                  for nid, d in g.tay()],
+                *duoi_theo(g, [(0, 0), (120, -.1), (136, .35), (150, -.2), (166, 0), (200, 0)])]
+    ngu = nghich('Cảm xúc: ngái ngủ', 200, ngu_fn)
+
+    def giat_minh_fn(g):  # giật mình: hai tay giật về ôm trước ngực, mắt mở to, mày nhướng, tai dựng, người bật lùi → thở phào
+        return [*mat(g, 'scaleY', [(0, 1), (4, 1.3), (40, 1.3), (60, 1), (110, 1)]),
+                *mat(g, 'scaleX', [(0, 1), (4, 1.2), (40, 1.2), (60, 1), (110, 1)]),
+                *may(g, 'y', [(0, 0), (4, -6), (44, -6), (64, 0), (110, 0)]),
+                *tai_theo(g, [(0, 0), (4, .4), (40, .4), (52, -.1), (64, .05), (80, 0), (110, 0)]),
+                khung(g.id['nghich'], 'y', [(0, 0), (5, -8), (12, 0), (16, 0), (110, 0)], '0.3 0 0.7 1'),
+                khung(g.id['nghich'], 'rotation', [(0, 0), (6, .04), (40, .03), (70, -.008), (90, 0), (110, 0)]),
+                khung(g.id['nghich'], 'scaleY', [(0, 1), (3, .95), (6, 1.06), (13, .95), (20, 1.02), (60, 1.01),
+                                                 (72, .97), (90, 1), (110, 1)]),
+                *bs(g, 'phai', 'giay', [(0, 0), (6, .65), (44, .65), (74, 0), (110, 0)]),
+                *bs(g, 'trai', 'giay', [(0, 0), (7, .65), (45, .65), (76, 0), (110, 0)]),
+                *duoi_theo(g, [(0, 0), (6, .5), (40, .4), (70, -.1), (90, 0), (110, 0)])]
+    giat_minh = nghich('Cảm xúc: giật mình', 110, giat_minh_fn)
+
+    chao = nghich('Cảm xúc: vẫy tay chào', 144, chao_hd_fn)   # giống hành động 1 đã duyệt: giơ tay một lần
+
+    # Lớp: Chờ (5 s) → chọn ngẫu nhiên 1 trong 5 động tác hoặc chờ thêm (4 s) → xong động tác thì về Chờ.
+    a_cho1, a_cho2 = (ani('Nghịch: chờ', 300, dang_tay_vao_nghi, lap=False),
+                      ani('Nghịch: chờ thêm', 240, dang_tay_vao_nghi, lap=False))
+    s_cho1, s_cho2 = moi_id(), moi_id()
+    dong = [(a, moi_id()) for a in (lac_dau, vuon_vai, to_mo, nhay, vay_tai, vui, ngu, giat_minh, chao)]
+    if os.environ.get('AGV_THU'):  # kiểm thử: chỉ một động tác, chờ 10 khung (dùng khi chụp soi)
+        dong = [dong[int(os.environ['AGV_THU'])]]
+        a_cho1 = ani('Nghịch: chờ (thử)', 10, dang_tay_vao_nghi, lap=False)
+    het = 'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"'
+    # vào động tác trộn 200 ms; riêng giật mình vào ngay (động tác bật đột ngột, đổi tay ở khung 5 —
+    # trộn sẽ thấy cả tay cũ lẫn tay mới mờ chồng nhau)
+    chon = ''.join(f'<StateTransition stateToId="{sid}" duration="{0 if aid == giat_minh else 200}" {het}/>'
+                   for aid, sid in dong) + \
+        ('' if os.environ.get('AGV_THU') else f'<StateTransition stateToId="{s_cho2}" {het}/>')
+    ve_cho = f'<StateTransition stateToId="{s_cho1}" duration="250" {het}/>'
+    # có hành động (hanh_dong ≠ 0) → Nghịch tắt (đứng ở trạng thái rỗng); động tác đang chạy thì làm nốt rồi mới tắt
+    a_tat, s_tat = ani('Nghịch: tắt', 1, []), moi_id()
+    hd = vao['hanh_dong']
+    sang_tat = (f'<StateTransition stateToId="{s_tat}" duration="200">'
+                f'<TransitionNumberCondition inputId="{hd}" opValue="notEqual" value="0"/></StateTransition>')
+    lop.append(f'<StateMachineLayer name="Nghịch" id="{moi_id()}"><AnyState/><ExitState/>'
+               f'<EntryState><StateTransition stateToId="{s_cho1}"/></EntryState>'
+               f'<AnimationState animationId="{a_tat}" id="{s_tat}"><StateTransition stateToId="{s_cho1}">'
+               f'<TransitionNumberCondition inputId="{hd}" opValue="equal" value="0"/></StateTransition></AnimationState>'
+               f'<AnimationState animationId="{a_cho1}" id="{s_cho1}" random="true">{sang_tat}{chon}</AnimationState>'
+               f'<AnimationState animationId="{a_cho2}" id="{s_cho2}">{sang_tat}{ve_cho}</AnimationState>'
+               + ''.join(f'<AnimationState animationId="{aid}" id="{sid}">{ve_cho}</AnimationState>' for aid, sid in dong)
+               + '</StateMachineLayer>')
+
+    # ---------- Hành động (hanh_dong 1–8, chặng 3). Mỗi hành động một trạng thái lặp; 0 = rỗng (nghỉ sống chạy) ----------
     def chi_duong_fn(g):  # 2 chỉ đường: đầu nhìn hướng → thân, hông theo → tay ngón trỏ chỉ, giữ → đầu về người xem → thu
         return [khung(g.id['dau-nghich'], 'x', [(0, 0), (6, 0), (16, 5), (96, 5), (110, 1), (180, 0)]),
                 khung(g.id['dau-nghich'], 'rotation', [(0, 0), (6, 0), (16, .07), (96, .07), (110, .01), (126, 0), (180, 0)]),
