@@ -69,7 +69,7 @@ p { margin: 0; text-wrap: pretty; }
 .cham-moi { position: absolute; top: 9px; right: 10px; width: 9px; height: 9px; border-radius: 50%; background: #2f9e5b; box-shadow: 0 0 0 2px var(--giay-noi); }
 .an-chu { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .nut-chu { font: 600 var(--c-ghi)/1 var(--chu); color: var(--la); background: none; border: 0; padding: var(--k3) var(--k2); margin: calc(-1 * var(--k3)) calc(-1 * var(--k2)); min-height: 44px; cursor: pointer; }
-.noi { flex: 1; padding: 0 var(--k4) var(--k8); display: flex; flex-direction: column; gap: var(--k6); }
+.noi { flex: 1; padding: 20px var(--k4) var(--k8); display: flex; flex-direction: column; gap: var(--k6); }
 
 /* Câu chính (điểm nhìn) */
 .chinh { padding: var(--k5) var(--k4); background: var(--nen-chinh); color: var(--chu-chinh); border-radius: var(--bo-lon); }
@@ -284,3 +284,6 @@ p { margin: 0; text-wrap: pretty; }
 .dau.dau-xanh { box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55); }
 /* Header xanh bo góc dưới, nội dung có khoảng thở (Trang chủ giữ thẳng vì khối xanh chạy liền xuống) */
 header.nen-xanh { border-radius: 0 0 22px 22px; }
+
+/* Nút làm bằng thẻ a: không gạch chân, chữ giữa (tránh lỗi "Mở Tin nhắn" bị gạch chân) */
+a.nut { text-decoration: none; text-align: center; }

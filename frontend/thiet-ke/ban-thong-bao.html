@@ -104,7 +104,10 @@ function dien(n, maLo, maDon) {
   if (loai === "order") return ["hd", `Hợp đồng ${maDon.get(n.aggregate_id) || ""} ${tt ? tt : "có cập nhật"}`.replace(/\s+/g, " "), "Bấm để xem hợp đồng"];
   if (/deposit|payment|tien|bank|hold/.test(n.event_type + loai)) return ["tien", "Có cập nhật về tiền", tt ? `Trạng thái: ${tt}` : ""];
   if (loai === "organization") return ["khac", to === "active" ? "Tài khoản đã được kích hoạt" : "Tài khoản có cập nhật", "AgiViet đã xác minh tổ chức của bác"];
-  return ["khac", "Có cập nhật mới", n.event_type];
+  // Lời chào giá: câu tiếng Việt, không hiện mã sự kiện thô
+  const CHAO = { "offer.sent": "Có lời chào giá mới", "offer.countered": "Bên kia trả giá lại", "offer.accepted": "Lời chào đã được đồng ý", "offer.rejected": "Lời chào bị từ chối", "offer.withdrawn": "Một lời chào đã được rút", "offer.expired": "Một lời chào đã hết hạn", "offer.auto_rejected": "Lời chào thấp hơn giá thấp nhất, app tự từ chối" };
+  if (CHAO[n.event_type]) return ["lo", CHAO[n.event_type], "Bấm Tin nhắn để xem"];
+  return ["khac", "Có cập nhật mới", "Bấm để xem chi tiết"];
 }
 const nhom = (d) => {
   const h = new Date(); const x = new Date(d);

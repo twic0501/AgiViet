@@ -43,10 +43,10 @@
   .tam-lc .so-lon small { grid-column: 1 / -1; font-size: 13px; color: var(--muc-nhat); }
   .tam-lc .so-sanh { display: grid; gap: 4px; font-size: 13.5px; color: var(--muc-phu); }
   .tam-lc .so-sanh .thap { color: var(--dau-do); font-weight: 600; }
-  .tam-lc .vong { display: grid; gap: 6px; }
-  .tam-lc .vong p { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 13.5px; padding: 8px 10px; border-radius: 10px; background: var(--giay-lot); }
-  .tam-lc .vong p.bac { background: var(--la-nhat); }
-  .tam-lc .vong b { font-variant-numeric: tabular-nums; }
+  .tam-lc .lc-vong { display: grid; gap: 6px; }
+  .tam-lc .lc-vong p { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 13.5px; padding: 8px 10px; border-radius: 10px; background: var(--giay-lot); }
+  .tam-lc .lc-vong p.bac { background: var(--la-nhat); }
+  .tam-lc .lc-vong b { font-variant-numeric: tabular-nums; }
   .tam-lc .nhac { padding: 10px 12px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; background: var(--vang-lua-nhat); color: #4a3510; }
   .tam-lc .nhac.do { background: var(--dau-do-nen); color: var(--dau-do); }
   .tam-lc .nhac.xanh { background: var(--la-nhat); color: var(--la-dam); }
@@ -208,7 +208,7 @@ async function moLoiChao(id) {
   tam.innerHTML = `<div><h2 id="lc-t">${ct.status === "accepted" ? "Đã đồng ý giá" : v.from_side === "buyer" ? `${esc(ben)} chào giá` : "Bác chào giá"}</h2><p class="phu-lc">${tenHang}</p></div>
     <div class="so-lon"><span>${v.from_side === "buyer" ? "Bên mua trả" : "Bác chào"}</span><b>${soVN(v.price_vnd)} đ/kg</b><small>${esc(can(v.qty_g).join(" "))} · thành tiền ${soVN(thanhTien)} đ (trước phí, chi phí chở, phân loại)</small></div>
     ${sosanh ? `<div class="so-sanh">${sosanh}</div>` : ""}
-    ${ct.rounds.length > 1 ? `<div class="vong">${ct.rounds.map((r) => `<p class="${r.from_side === "seller" ? "bac" : ""}"><span>Vòng ${r.round_no} · ${r.from_side === "seller" ? "Bác" : esc(ben)}</span><b>${soVN(r.price_vnd)} đ/kg · ${esc(can(r.qty_g).join(" "))}</b></p>`).join("")}</div>` : ""}
+    ${ct.rounds.length > 1 ? `<div class="lc-vong">${ct.rounds.map((r) => `<p class="${r.from_side === "seller" ? "bac" : ""}"><span>Vòng ${r.round_no} · ${r.from_side === "seller" ? "Bác" : esc(ben)}</span><b>${soVN(r.price_vnd)} đ/kg · ${esc(can(r.qty_g).join(" "))}</b></p>`).join("")}</div>` : ""}
     ${nhac}
     <p class="bao-lc" data-r="bao" role="status"></p>
     <div class="day" data-r="day">${hanhDong}</div>`;

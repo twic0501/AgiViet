@@ -83,8 +83,8 @@
   .the-nc .sp-nc { font-size: 15px; font-weight: 700; margin-top: 2px; }
   .the-nc .sp-nc span { font-weight: 500; color: var(--muc-phu); font-size: 14px; }
   .the-nc .khop { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--la-nhat); color: var(--la-dam); white-space: nowrap; }
-  .the-nc .dong { border-bottom: 0; }
-  .the-nc .dong:last-child { padding-bottom: 0; }
+  .the-nc .nc-dong { border-bottom: 0; }
+  .the-nc .nc-dong:last-child { padding-bottom: 0; }
   .the-nc .tt-dong { font-size: 13px; font-weight: 600; color: var(--muc-nhat); text-align: right; max-width: 120px; line-height: 1.3; }
   .the-nc .tt-dong.da { color: var(--la-dam); }
   .the-nc .dau-nc { display: grid; grid-template-columns: 1fr 14px; gap: 8px; align-items: center; text-decoration: none; color: inherit; }
@@ -129,10 +129,10 @@
   .the-nc .tren { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
   .the-nc .ben { font-weight: 600; }
   .the-nc .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
-  .the-nc .dong { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 10px 0 0; margin-top: 10px; border-top: 1px dashed var(--ke-dam); }
-  .the-nc .dong .sl { font-weight: 600; font-variant-numeric: tabular-nums; }
-  .the-nc .dong button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--la); color: var(--tren-la); font: 600 14px/1 var(--chu); cursor: pointer; }
-  .the-nc .dong button:disabled { background: var(--ke); color: var(--muc-nhat); cursor: default; }
+  .the-nc .nc-dong { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 10px 0 0; margin-top: 10px; border-top: 1px dashed var(--ke-dam); }
+  .the-nc .nc-dong .sl { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .the-nc .nc-dong button { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--la); color: var(--tren-la); font: 600 14px/1 var(--chu); cursor: pointer; }
+  .the-nc .nc-dong button:disabled { background: var(--ke); color: var(--muc-nhat); cursor: default; }
   .trong { text-align: center; padding: 28px 16px; color: var(--muc-phu); }
   /* Tấm chào hàng */
   /* Khi mở tấm: lớp phủ trên cùng, ẩn nút cuộn nhanh và thanh menu */
@@ -178,7 +178,7 @@
 <div class="trang">
   <header class="dau" id="dau"></header>
 
-  <main class="noi" id="noi" aria-busy="true" style="gap:14px">
+  <main class="noi" id="noi" aria-busy="true" style="gap:14px;padding-top:0">
     <div class="dai-ngan"><div class="ngan" role="tablist" aria-label="Chợ">
       <button type="button" role="tab" id="ngan-hang" aria-selected="true" aria-controls="p-hang">Hàng của tôi</button>
       <button type="button" role="tab" id="ngan-can" aria-selected="false" aria-controls="p-can">Bên mua cần<small id="so-can"></small></button>
@@ -499,7 +499,7 @@ async function moCan() {
         const cua = moi && (moi.status === "sent" || (moi.status === "accepted" && (conGiu || !chiTiet.get(moi.id)))) ? moi : null;
         const cuDong = moi && !cua ? (moi.status === "accepted" ? "Lần trước bên mua đồng ý nhưng hết thời gian giữ hàng" : CU[moi.status]) : "";
         const nhan = !cua && !k.length && loKhop(n.product_code, x.grade_code).length ? ["Lô này đang có lời chào với bên mua", "da"] : !cua && !k.length ? ["Bác chưa có hàng này", "chua"] : null;
-        return `${cuDong ? `<p class="lan-truoc">${esc(cuDong)} (${Number(moi.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg). Bác chào lại được.</p>` : ""}<div class="dong"><span>${esc(tenLoai(x.grade_code))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
+        return `${cuDong ? `<p class="lan-truoc">${esc(cuDong)} (${Number(moi.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg). Bác chào lại được.</p>` : ""}<div class="nc-dong"><span>${esc(tenLoai(x.grade_code))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
           ${cua ? "" : nhan ? `<span class="tt-dong ${nhan[1]}">${nhan[0]}</span>` : `<button type="button" ${chaoLoiTai ? "disabled" : ""} data-nc="${n.id}" data-dong="${x.id}" aria-label="Chào hàng cho ${esc(n.buyer_name)}">Chào hàng</button>`}</div>
           ${cua ? veLoiCua(cua, chiTiet.get(cua.id), n, x) : ""}`; }).join("")}
     </article>`;

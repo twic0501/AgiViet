@@ -155,7 +155,7 @@
 
   /* Xong */
   .db-xong { text-align: center; padding: 16px 4px; display: grid; gap: 12px; }
-  .db-xong .vong { width: 72px; height: 72px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 4px; }
+  .db-xong .db-vong { width: 72px; height: 72px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 4px; }
   .db-xong .db-the { text-align: left; }
 
   /* Hàng nút đáy: đặc, sát mép */
@@ -168,7 +168,7 @@
 <body>
 <div class="trang">
   <header class="dau dau-xanh nen-xanh" id="dau"></header>
-  <main class="noi" id="noi" style="gap:20px;padding-top:20px;padding-bottom:0;min-height:calc(100dvh - 80px)">
+  <main class="noi" id="noi" style="gap:20px;padding-bottom:0;min-height:calc(100dvh - 80px)">
     <div id="tien-do" hidden><div class="db-tien-chu" id="tien-chu"></div><div class="db-tien" id="tien"></div></div>
 
     <!-- Màn đầu: hàng của hộ + chọn cách đăng (brief D1) -->
@@ -289,7 +289,7 @@
 
     <!-- Xong (brief D9) -->
     <section data-m="xong" class="db-xong" hidden>
-      <div class="vong"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></div>
+      <div class="db-vong"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></div>
       <h2 class="db-tieu" id="xong-tieu">Đã đăng lên chợ</h2>
       <p class="db-phu" id="xong-chu">Bên mua đã thấy lô hàng của bác. Có lời chào giá, AgiViet báo ngay.</p>
       <p class="db-the chin" id="xong-canh-bao" hidden></p>

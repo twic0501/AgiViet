@@ -54,6 +54,9 @@ async function loDangBan(sdt) {
 async function kiemChung(p) {
   const tran = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   assert.equal(tran, false, "tràn ngang");
+  // Chữ người dùng thấy không được lộ mã nội bộ (offer.sent, order.signed…) hay giá trị hỏng
+  const thoTho = (await p.evaluate(() => document.body.innerText)).match(/\b(offer|order|lot|delivery|payment|deposit|dispute)\.[a-z_]+\b|\bundefined\b|\bNaN\b|\[object/);
+  assert.equal(thoTho, null, "lộ mã nội bộ/giá trị hỏng trên màn: " + thoTho?.[0]);
   // Tràn bên trong khối có cuộn riêng (tấm nổi, thẻ…): trừ dải lọc và dải tin cố ý cuộn ngang
   const tranTrong = await p.evaluate(() => [...document.querySelectorAll("body *")].filter((e) => {
     if (!e.offsetParent || e.closest(".loc, .khung-tin, .bang-tin, .tl-goi-y")) return false;
@@ -529,7 +532,7 @@ await trang("tin-nhan-tra-loi", async (p) => {
   await mua.post(`/v1/offers/${id1}/counter`, { price_vnd: String(g1 + 1000) });
   await mo(id1);
   assert.match(await p.locator(".tam-lc").innerText(), /còn 1 lần trả giá/, "đã trả giá 1 lần → còn 1 lượt");
-  assert.equal(await p.locator(".tam-lc .vong p").count(), 3, "lịch sử 3 vòng");
+  assert.equal(await p.locator(".tam-lc .lc-vong p").count(), 3, "lịch sử 3 vòng");
   await p.locator('.tam-lc [data-r="dong-y"]').click();
   assert.match(await p.locator(".tam-lc").innerText(), /chưa phải hợp đồng/, "nhắc chưa phải hợp đồng trước khi chốt");
   await p.locator('.tam-lc [data-r="chot"]').click();
