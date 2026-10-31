@@ -258,7 +258,7 @@ const dongChao = (c, coMaLo = true) => {
   const bacChao = c.direction === "seller_quote";
   const toiBac = v.from_side === "buyer";
   const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" }) : "";
-  return `<a href="./ban-tin-nhan.html${location.search}">
+  return `<a href="./ban-tin-nhan.html${location.search}#chao=${esc(c.id)}">
     <span class="ai">${bacChao ? `Bác chào ${esc(c.buyer_name || "bên mua")}` : `${esc(c.buyer_name || "Bên mua")} chào`}</span>
     <span class="gia">${Number(v.price_vnd || 0).toLocaleString("vi-VN")} đ/kg</span>
     <span class="phu2">${esc(can(v.qty_g).join(" "))}${coMaLo ? ` · lô ${esc(c.lot_code)}` : ""}${han ? ` · hạn ${han}` : ""}</span>
@@ -460,25 +460,25 @@ async function moCan() {
     if (c.status === "accepted" && ct?.hold?.status === "committed") {
       return `<div class="loi-cua-bac dong-y"><p><b>Đã thành đơn ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
         <p class="phu2">Hai bên đã chuyển sang hợp đồng. Bác theo dõi các bước tiếp theo ở Tin nhắn.</p>
-        <a class="nut-sua" href="./ban-tin-nhan.html">Xem hợp đồng</a></div>`;
+        <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Xem hợp đồng</a></div>`;
     }
     if (c.status === "accepted") {
       const giu = ct?.hold?.expires_at ? ` tới ${gioVN(ct.hold.expires_at)}` : " 24 giờ";
       return `<div class="loi-cua-bac dong-y"><p><b>Bên mua đã đồng ý giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
         <p class="phu2">Hàng được giữ cho bên mua${giu}. Đây chưa phải hợp đồng: chờ bên mua gửi thỏa thuận để hai bên ký.</p>
-        <a class="nut-sua" href="./ban-tin-nhan.html">Xem ở Tin nhắn</a></div>`;
+        <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Xem ở Tin nhắn</a></div>`;
     }
     if (v.from_side === "buyer") {
       const con = ct?.luot_tra_gia_con;
       return `<div class="loi-cua-bac toi-bac"><p><b>Bên mua trả giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
         <p class="phu2">Tới lượt bác trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}${con != null ? ` · bác còn ${con} lần trả giá` : ""}. Bác đồng ý, trả giá hoặc không bán ở Tin nhắn.</p>
-        <a class="nut-sua" href="./ban-tin-nhan.html">Trả lời ở Tin nhắn</a></div>`;
+        <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Trả lời ở Tin nhắn</a></div>`;
     }
     if ((v.round_no || 1) > 1) {
       // Bác đã trả giá lại sau khi bên mua trả giá: chỉ chờ, không rút/sửa (quy trình B3; backend 0074 cũng chặn)
       return `<div class="loi-cua-bac"><p><b>Bác đã trả giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
         <p class="phu2">Chờ bên mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Hai bên đã trả giá qua lại nên không hủy hay sửa được nữa.</p>
-        <a class="nut-sua" href="./ban-tin-nhan.html">Xem ở Tin nhắn</a></div>`;
+        <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Xem ở Tin nhắn</a></div>`;
     }
     return `<div class="loi-cua-bac"><p><b>Bác đã chào ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
       <p class="phu2">Chờ bên mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Bên mua chưa trả lời thì bác sửa hoặc hủy được.</p>

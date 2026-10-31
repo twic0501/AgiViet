@@ -29,6 +29,37 @@
   .cuoc.toi-bac .ai::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2f9e5b; margin-right: 6px; vertical-align: 2px; }
   .trong-tn { text-align: center; padding: 40px 16px; color: var(--muc-phu); }
   .trong-tn svg { width: 56px; height: 56px; color: var(--muc-mo); margin: 0 auto 12px; display: block; }
+  /* Tấm chi tiết lời chào */
+  .man-che { position: fixed; inset: 0; background: rgba(20, 30, 25, .45); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
+  body:has(.man-che) .nut-cuon, body:has(.man-che) .tab { visibility: hidden; }
+  .tam-lc { width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; background: var(--giay); border-radius: 22px 22px 0 0;
+    padding: 20px 16px 0; display: flex; flex-direction: column; gap: 12px; animation: len-lc 260ms cubic-bezier(.2,.8,.2,1); }
+  .tam-lc > * { flex-shrink: 0; }
+  @keyframes len-lc { from { transform: translateY(100%); } }
+  .tam-lc h2 { font-size: 19px; }
+  .tam-lc .phu-lc { font-size: 14px; color: var(--muc-phu); }
+  .tam-lc .so-lon { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 10px; padding: 12px 14px; border-radius: 14px; background: var(--giay-noi); border: 1px solid var(--ke); }
+  .tam-lc .so-lon b { font-size: 24px; font-variant-numeric: tabular-nums; }
+  .tam-lc .so-lon small { grid-column: 1 / -1; font-size: 13px; color: var(--muc-nhat); }
+  .tam-lc .so-sanh { display: grid; gap: 4px; font-size: 13.5px; color: var(--muc-phu); }
+  .tam-lc .so-sanh .thap { color: var(--dau-do); font-weight: 600; }
+  .tam-lc .vong { display: grid; gap: 6px; }
+  .tam-lc .vong p { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 13.5px; padding: 8px 10px; border-radius: 10px; background: var(--giay-lot); }
+  .tam-lc .vong p.bac { background: var(--la-nhat); }
+  .tam-lc .vong b { font-variant-numeric: tabular-nums; }
+  .tam-lc .nhac { padding: 10px 12px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; background: var(--vang-lua-nhat); color: #4a3510; }
+  .tam-lc .nhac.do { background: var(--dau-do-nen); color: var(--dau-do); }
+  .tam-lc .nhac.xanh { background: var(--la-nhat); color: var(--la-dam); }
+  .tam-lc label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--muc-phu); }
+  .tam-lc input { width: 100%; min-width: 0; box-sizing: border-box; min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); padding: 0 12px; font: 500 16px/1 var(--chu); color: var(--muc); }
+  .tam-lc .hai-o { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tam-lc .hai-o > * { min-width: 0; }
+  .tam-lc .day { position: sticky; bottom: 0; margin: 0 -16px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); background: var(--giay); box-shadow: 0 -8px 12px -10px rgba(0,0,0,.25); display: grid; gap: 8px; }
+  .tam-lc .ba-nut { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tam-lc .nut-do { background: var(--dau-do-nen); color: var(--dau-do); box-shadow: none; }
+  .tam-lc button:disabled { opacity: .45; cursor: not-allowed; }
+  .tam-lc .bao-lc:empty { display: none; }
+  .tam-lc .bao-lc { font-size: 14px; }
 </style>
 </head>
 <body>
@@ -44,7 +75,7 @@
 </div>
 
 <script type="module">
-import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, soThongBaoMoi, viecCho, tien } from "./chung.js";
+import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, soThongBaoMoi, viecCho, tien, tenLoai, can } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 veTab("tin-nhan");
 veDau($("dau"), { chao: "Tin nhắn", ten: "Chào giá & trao đổi", chuDau: "" });
@@ -59,42 +90,45 @@ const kgTan = (g) => { const kg = Number(g) / 1000; return kg >= 1000 ? `${(kg /
 const IC_CHAO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H8M12 8l-4 4 4 4"/></svg>';
 const IC_HD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h4"/></svg>';
 
-let tatCa = [];
+let tatCa = [], dsChao = [], tokenG = null, loTheoMaG = new Map();
 async function mo() {
-  const token = await phien();
+  const token = await phien(); tokenG = token;
   const h = { headers: { authorization: "Bearer " + token } };
   const get = (d) => fetch(d, h).then((x) => (x.ok ? x.json() : Promise.reject(new Error(d))));
   const [me, chao, don, lo, tb] = await Promise.all([get("/v1/me"), get("/v1/offers"), get("/v1/orders").catch(() => []), get("/v1/lots?mine=true").catch(() => []), soThongBaoMoi(token)]);
   veDau($("dau"), { chao: "Tin nhắn", ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase(), soThongBao: tb });
-  const loTheoMa = new Map(lo.map((l) => [l.code, l]));
+  const loTheoMa = new Map(lo.map((l) => [l.code, l])); loTheoMaG = loTheoMa;
   // Lời chào giá đang mở: chi tiết từng lời chào để biết tới lượt ai
-  const dang = (Array.isArray(chao) ? chao : chao.items || []).filter((c) => /sent|countered|open/.test(c.status));
+  dsChao = Array.isArray(chao) ? chao : chao.items || [];
+  const dang = dsChao.filter((c) => /sent|countered|open|accepted/.test(c.status));
   const chiTiet = await Promise.all(dang.map((c) => get(`/v1/offers/${c.id}`).catch(() => null)));
   const cuocChao = dang.map((c, i) => {
     const ct = chiTiet[i] || {}, v = c.vong_cuoi || ct.rounds?.at(-1) || {};
     const l = loTheoMa.get(c.lot_code);
     const toiBac = ct.toi_luot_toi ?? (v.from_side === "buyer");
-    return { loai: "chao", toiBac, thoi: v.expires_at || c.updated_at, ma: c.code, anh: l ? ANH_SP(l.product_code) : null, lo: c.lot_code,
+    if (c.status === "accepted" && !(ct.hold && ct.hold.status === "active" && new Date(ct.hold.expires_at) > new Date())) return null;   // giữ hàng đã hết / thành đơn: không còn ở đây
+    return { loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", dongY: c.status === "accepted", toiBac: c.status === "sent" && toiBac, thoi: v.expires_at || c.updated_at, ma: c.code, anh: l ? ANH_SP(l.product_code) : null, lo: c.lot_code,
       ai: v.from_side === "buyer" ? "Bên mua" : "Bác", gia: v.price_vnd, luong: v.qty_g, het: v.expires_at, vong: v.round_no, con: ct.luot_tra_gia_con };
   });
   const cuocDon = don.filter((d) => d.hien_thi?.toi_luot && !/complet|cancel/.test(d.status)).map((d) => ({
     loai: "don", toiBac: d.hien_thi.toi_luot.phia === d.phia_cua_ban, ma: d.code, ai: d.buyer_name, viec: viecCho(d), gia: d.contract_value_vnd }));
-  tatCa = [...cuocChao, ...cuocDon].sort((a, b) => Number(b.toiBac) - Number(a.toiBac));
+  tatCa = [...cuocChao.filter(Boolean), ...cuocDon].sort((a, b) => Number(b.toiBac) - Number(a.toiBac));
   $("loc").querySelector('[data-k="cho-bac"]').innerHTML = `Chờ bác trả lời<small>${tatCa.filter((c) => c.toiBac).length}</small>`;
   ve("tat-ca");
   $("noi").setAttribute("aria-busy", "false");
+  const m = location.hash.match(/chao=([\w-]+)/); if (m) moLoiChao(m[1]);
 }
 
 function ve(k) {
   $("loc").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === k)));
   const ds = k === "cho-bac" ? tatCa.filter((c) => c.toiBac) : tatCa;
   $("ds").innerHTML = ds.length ? ds.map((c) => c.loai === "chao" ? `
-    <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#">
+    <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#chao=${esc(c.id)}" data-chao="${esc(c.id)}">
       <span class="anh" style="${c.anh ? `background-image:url(${c.anh})` : ""}"><span class="loai">${IC_CHAO}</span></span>
-      <span class="giua"><span class="ai">${esc(c.ai)} chào giá</span>
+      <span class="giua"><span class="ai">${c.dongY ? `Đã đồng ý giá · ${esc(c.ben)}` : c.ai === "Bác" ? `Bác chào ${esc(c.ben)}` : `${esc(c.ben)} chào giá`}</span>
         <span class="phu-dong">Lô ${esc(c.lo)} · ${esc(conLai(c.het))}${c.vong > 1 ? ` · vòng ${c.vong}` : ""}</span>
         <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt trả giá` : ""}</span></span>
-      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span></span>
+      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.dongY ? "Đang giữ hàng" : c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span></span>
     </a>` : `
     <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#">
       <span class="anh" style="background:#e3e9f4"><span class="loai hd">${IC_HD}</span></span>
@@ -103,6 +137,122 @@ function ve(k) {
     </a>`).join("") : `<div class="trong-tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
       <p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
   giuThamSo($("ds"));
+  $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); }));
+}
+
+// ===== Tấm chi tiết lời chào (brief S2 lời chào, S3 trả giá, S4 đã đồng ý) =====
+const soVN = (v) => Number(v || 0).toLocaleString("vi-VN");
+const gio = (s) => new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" });
+async function lenhLC(duong, than) {
+  const r = await fetch(duong, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tokenG }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const e = j.errors?.[0] || {}, db = e.details?.db || "";
+    if (db === "ck_offer_withdraw_replied") throw new Error("Bên mua đã trả lời nên không hủy được. Bác đồng ý, trả giá hoặc không bán.");
+    if (e.code === "HET_LUOT_TRA_GIA") throw new Error("Bác đã hết lượt trả giá cho lời chào này. Bác đồng ý hoặc không bán.");
+    if (e.code === "REVISION_XUNG_DOT") throw new Error("Bên mua vừa thay đổi lời chào. Bác đóng tấm rồi mở lại để xem giá mới.");
+    throw new Error([e.message, e.fix].filter(Boolean).join(" ") || `Lỗi ${r.status}`);
+  }
+  return j;
+}
+async function moLoiChao(id) {
+  document.querySelector(".man-che")?.remove();
+  const che = document.createElement("div"); che.className = "man-che";
+  const truoc = document.activeElement;
+  che.innerHTML = `<div class="tam-lc" role="dialog" aria-modal="true" aria-labelledby="lc-t" tabindex="-1"><h2 id="lc-t">Lời chào giá</h2><div class="khung-tai"></div></div>`;
+  document.body.appendChild(che);
+  const tam = che.querySelector(".tam-lc");
+  const dong = () => { che.remove(); document.removeEventListener("keydown", phim); history.replaceState(null, "", location.pathname + location.search); truoc?.focus?.(); };
+  const phim = (e) => { if (e.key === "Escape") dong(); };
+  document.addEventListener("keydown", phim);
+  che.addEventListener("pointerdown", (e) => { if (e.target === che) dong(); });
+  tam.focus();
+  const h = { headers: { authorization: "Bearer " + tokenG } };
+  const ct = await fetch(`/v1/offers/${encodeURIComponent(id)}`, h).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!che.isConnected) return;
+  if (!ct) { tam.innerHTML = `<h2 id="lc-t">Lời chào giá</h2><p class="bao loi">Chưa tải được lời chào này.</p><div class="day"><button type="button" class="nut phu-nut" data-dong>Đóng</button></div>`; tam.querySelector("[data-dong]").onclick = dong; return; }
+  const goc = dsChao.find((c) => c.id === id) || {};
+  const ben = goc.buyer_name || "Bên mua";
+  const l = loTheoMaG.get(ct.lot_code);
+  const loCt = l ? await fetch(`/v1/lots/${l.id}`, h).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
+  if (!che.isConnected) return;
+  const v = ct.rounds.at(-1);
+  const mo = ct.status === "sent" && new Date(v.expires_at) > new Date();
+  const toiBac = mo && ct.toi_luot_toi;
+  const cuaBac = (ct.direction === "seller_quote");
+  const thanhTien = Math.round(Number(v.qty_g) / 1000 * Number(v.price_vnd));
+  const muon = Number(loCt?.ask_price_vnd || 0), san = Number(loCt?.floor_price_vnd || 0);
+  const sosanh = [
+    muon ? `Bằng <b>${Math.round(Number(v.price_vnd) / muon * 100)}%</b> giá mong muốn của bác (${soVN(muon)} đ/kg)` : "",
+    ct.phan_tram_gia_tham_khao ? `Bằng <b>${ct.phan_tram_gia_tham_khao}%</b> giá tham khảo (${soVN(ct.gia_tham_khao_vnd)} đ/kg)` : "",
+    san && Number(v.price_vnd) < san && v.from_side === "buyer" ? `<span class="thap">Thấp hơn giá thấp nhất bác đặt (${soVN(san)} đ/kg)</span>` : "",
+  ].filter(Boolean).map((x) => `<p>${x}</p>`).join("");
+  const tenHang = l ? `${esc(loCt?.product_name || l.product_code)} · ${esc(tenLoai(l.grade_code))} · lô ${esc(ct.lot_code)}` : `Lô ${esc(ct.lot_code)}`;
+  const giu = ct.hold;
+  let hanhDong = "", nhac = "";
+  if (ct.status === "accepted") {
+    nhac = `<p class="nhac xanh"><b>Đây chưa phải hợp đồng.</b> ${giu?.expires_at ? `Hàng được giữ cho ${esc(ben)} tới ${gio(giu.expires_at)}` : "Hàng đang được giữ"} (${esc(can(giu?.qty_g || v.qty_g).join(" "))}). Chờ bên mua gửi thỏa thuận để hai bên xem lại và ký. Quá hạn giữ thì lượng tự về lô, không ai bị ghi gì.</p>`;
+    hanhDong = `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
+  } else if (!mo) {
+    nhac = `<p class="nhac">Lời chào này ${ct.status === "rejected" ? "đã bị từ chối" : ct.status === "withdrawn" ? "đã được hủy" : "đã hết hạn"}. Lô vẫn bán bình thường.</p>`;
+    hanhDong = `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
+  } else if (toiBac) {
+    nhac = `<p class="nhac">Tới lượt bác trả lời trước <b>${gio(v.expires_at)}</b>. Bác còn <b>${ct.luot_tra_gia_con}</b> lần trả giá.</p>`;
+    hanhDong = `<div data-r="khung">
+        <div class="ba-nut"><button type="button" class="nut chinh-nut" data-r="dong-y">Đồng ý ${soVN(v.price_vnd)} đ/kg</button><button type="button" class="nut phu-nut" data-r="tra-gia" ${ct.luot_tra_gia_con > 0 ? "" : "disabled"}>Trả giá</button></div>
+        <button type="button" class="nut nut-do" data-r="khong-ban" style="width:100%;margin-top:8px">Không bán</button></div>`;
+  } else {
+    nhac = `<p class="nhac">Chờ ${esc(ben)} trả lời trước <b>${gio(v.expires_at)}</b>.${cuaBac && v.round_no === 1 ? " Bên mua chưa trả lời thì bác hủy được." : ""}</p>`;
+    hanhDong = cuaBac && v.round_no === 1 ? `<div class="ba-nut"><button type="button" class="nut phu-nut" data-dong>Đóng</button><button type="button" class="nut nut-do" data-r="huy">Hủy lời chào</button></div>` : `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
+  }
+  tam.innerHTML = `<div><h2 id="lc-t">${ct.status === "accepted" ? "Đã đồng ý giá" : v.from_side === "buyer" ? `${esc(ben)} chào giá` : "Bác chào giá"}</h2><p class="phu-lc">${tenHang}</p></div>
+    <div class="so-lon"><span>${v.from_side === "buyer" ? "Bên mua trả" : "Bác chào"}</span><b>${soVN(v.price_vnd)} đ/kg</b><small>${esc(can(v.qty_g).join(" "))} · thành tiền ${soVN(thanhTien)} đ (trước phí, chi phí chở, phân loại)</small></div>
+    ${sosanh ? `<div class="so-sanh">${sosanh}</div>` : ""}
+    ${ct.rounds.length > 1 ? `<div class="vong">${ct.rounds.map((r) => `<p class="${r.from_side === "seller" ? "bac" : ""}"><span>Vòng ${r.round_no} · ${r.from_side === "seller" ? "Bác" : esc(ben)}</span><b>${soVN(r.price_vnd)} đ/kg · ${esc(can(r.qty_g).join(" "))}</b></p>`).join("")}</div>` : ""}
+    ${nhac}
+    <p class="bao-lc" data-r="bao" role="status"></p>
+    <div class="day" data-r="day">${hanhDong}</div>`;
+  tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
+  const r = (k) => tam.querySelector(`[data-r="${k}"]`);
+  const xong = (chu) => { r("day").innerHTML = `<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
+  const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));
+  // Đồng ý: xác nhận lại tổng tiền + nhắc "chưa phải hợp đồng"
+  r("dong-y")?.addEventListener("click", () => {
+    r("khung").innerHTML = `<p class="nhac">Bác đồng ý bán <b>${esc(can(v.qty_g).join(" "))} × ${soVN(v.price_vnd)} đ/kg = ${soVN(thanhTien)} đ</b>. Hàng sẽ được giữ cho ${esc(ben)} 24 giờ; <b>chưa phải hợp đồng</b>, hai bên còn xem lại thỏa thuận rồi mới ký.</p>
+      <div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="chot">Xác nhận đồng ý</button></div>`;
+    r("quay").onclick = () => moLoiChao(id);
+    r("chot").onclick = async () => {
+      khoa(true); r("bao").textContent = "Đang gửi…";
+      try { const kq = await lenhLC(`/v1/offers/${id}/accept`, { expected_revision: ct.revision }); xong(`Đã đồng ý giá. ${esc(kq.data?.thong_bao || kq.thong_bao || "Hàng đang được giữ cho bên mua.")}`); r("bao").textContent = ""; }
+      catch (err) { r("bao").textContent = err.message; khoa(false); }
+    };
+  });
+  // Trả giá: nhập giá (mặc định giá mong muốn của lô), lượng giữ nguyên
+  r("tra-gia")?.addEventListener("click", () => {
+    r("khung").innerHTML = `<div class="hai-o"><label>Giá bác trả (đ/kg)<input name="gia" type="number" inputmode="numeric" min="1000" step="100" value="${esc(String(muon || v.price_vnd))}"></label>
+        <label>Lượng (kg)<input name="kg" type="number" inputmode="decimal" min="1" step="any" value="${esc(String(Number(v.qty_g) / 1000))}"></label></div>
+      <p class="nhac">Bác còn ${ct.luot_tra_gia_con} lần trả giá; sau lần này còn ${ct.luot_tra_gia_con - 1}. Bên mua có 24 giờ để trả lời.</p>
+      <div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="gui-gia">Gửi giá</button></div>`;
+    r("quay").onclick = () => moLoiChao(id);
+    r("gui-gia").onclick = async () => {
+      const gia = Number(r("khung").querySelector('[name="gia"]').value), kg = Number(r("khung").querySelector('[name="kg"]').value);
+      if (!(gia >= 1000) || !(kg > 0)) { r("bao").textContent = "Bác nhập giá và lượng hợp lệ."; return; }
+      if (Math.round(kg * 1000) > Number(v.qty_g) && l && Math.round(kg * 1000) > Number(l.available_g)) { r("bao").textContent = `Lô chỉ còn ${can(l.available_g).join(" ")}.`; return; }
+      khoa(true); r("bao").textContent = "Đang gửi…";
+      try { await lenhLC(`/v1/offers/${id}/counter`, { price_vnd: String(gia), qty_g: String(Math.round(kg * 1000)) }); xong(`Đã gửi giá ${soVN(gia)} đ/kg. Chờ ${esc(ben)} trả lời trong 24 giờ.`); r("bao").textContent = ""; }
+      catch (err) { r("bao").textContent = err.message; khoa(false); }
+    };
+  });
+  // Không bán / Hủy: bấm 2 lần
+  for (const [k, duong, chu] of [["khong-ban", "reject", "Đã từ chối. Lô vẫn bán bình thường, không ai bị ghi gì."], ["huy", "withdraw", "Đã hủy lời chào. Bác vẫn chào lại được khi nhu cầu còn mở."]]) {
+    const b = r(k); if (!b) continue;
+    b.onclick = async () => {
+      if (b.dataset.xn !== "1") { b.dataset.xn = "1"; b.textContent = "Bấm lần nữa để xác nhận"; return; }
+      khoa(true); r("bao").textContent = "Đang gửi…";
+      try { await lenhLC(`/v1/offers/${id}/${duong}`, {}); xong(chu); r("bao").textContent = ""; }
+      catch (err) { r("bao").textContent = err.message; khoa(false); b.dataset.xn = ""; b.textContent = k === "huy" ? "Hủy lời chào" : "Không bán"; }
+    };
+  }
 }
 $("loc").querySelectorAll("button").forEach((b) => (b.onclick = () => ve(b.dataset.k)));
 giuThamSo();

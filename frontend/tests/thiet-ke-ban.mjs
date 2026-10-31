@@ -306,6 +306,59 @@ await trang("cho-chi-tiet", async (p) => {
   await p.screenshot({ path: `${ANH}05e-chi-tiet-nhu-cau.png`, fullPage: true });
 });
 
+await trang("tin-nhan-tra-loi", async (p) => {
+  // Luồng chào giá B3 thật: bên mua chào → bác trả giá → bên mua trả lại → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
+  const G = "http://127.0.0.1:18980";
+  const dn = async (sdt) => (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
+  const tBan = await dn("0918000421"), tMua = await dn("0938000610");
+  const api = (t) => ({ get: async (d) => (await fetch(G + d, { headers: { authorization: "Bearer " + t } })).json(),
+    post: async (d, b) => (await fetch(G + d, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + t }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...b }) })).json() });
+  const ban = api(tBan), mua = api(tMua);
+  const lo = await ban.get("/v1/lots?mine=true");
+  const daDung = new Set();
+  const moChao = async () => {
+    for (const l of lo.filter((x) => x.status === "on_sale" && !daDung.has(x.id))) {
+      daDung.add(l.id);
+      const g = Number((await ban.get(`/v1/lots/${l.id}`)).floor_price_vnd || 20000) + 500;
+      const j = await mua.post("/v1/offers", { direction: "buyer_bid", lot_id: l.id, qty_g: "100000", price_vnd: String(g) });
+      if (j.id) return [j.id, g];
+    }
+    assert.fail("không còn lô nào tạo được lời chào mới");
+  };
+  const [id1, g1] = await moChao();
+  const mo = async (id) => { await p.goto(`${GOC}/thiet-ke/ban-tin-nhan.html?thu=0918000421#chao=${id}`); await p.reload(); await p.locator(".tam-lc .day button").first().waitFor({ timeout: 10000 }); };
+  await mo(id1);
+  assert.match(await p.locator(".tam-lc").innerText(), /Tư Hùng chào giá[\s\S]*Tới lượt bác/);
+  assert.equal(await p.locator('.tam-lc [data-r="dong-y"]').count(), 1, "có nút Đồng ý");
+  await kiemChung(p);
+  await p.screenshot({ path: `${ANH}11b-loi-chao.png` });
+  await p.locator('.tam-lc [data-r="tra-gia"]').click();
+  await p.locator('.tam-lc [name="gia"]').fill(String(g1 + 2000));
+  await p.locator('.tam-lc [data-r="gui-gia"]').click();
+  await p.getByText("Đã gửi giá").waitFor({ timeout: 8000 });
+  await mua.post(`/v1/offers/${id1}/counter`, { price_vnd: String(g1 + 1000) });
+  await mo(id1);
+  assert.match(await p.locator(".tam-lc").innerText(), /còn 1 lần trả giá/, "đã trả giá 1 lần → còn 1 lượt");
+  assert.equal(await p.locator(".tam-lc .vong p").count(), 3, "lịch sử 3 vòng");
+  await p.locator('.tam-lc [data-r="dong-y"]').click();
+  assert.match(await p.locator(".tam-lc").innerText(), /chưa phải hợp đồng/, "nhắc chưa phải hợp đồng trước khi chốt");
+  await p.locator('.tam-lc [data-r="chot"]').click();
+  await p.getByText("Đã đồng ý giá").first().waitFor({ timeout: 8000 });
+  const ct1 = await ban.get(`/v1/offers/${id1}`);
+  assert.equal(ct1.status, "accepted"); assert.equal(ct1.hold?.status, "active", "hàng đang được giữ");
+  await mo(id1);
+  assert.match(await p.locator(".tam-lc").innerText(), /Đây chưa phải hợp đồng/);
+  await kiemChung(p);
+  // Lời chào khác → Không bán (bấm 2 lần)
+  const [id2] = await moChao();
+  await mo(id2);
+  await p.locator('.tam-lc [data-r="khong-ban"]').click();
+  await p.getByText("Bấm lần nữa để xác nhận").waitFor({ timeout: 3000 });
+  await p.locator('.tam-lc [data-r="khong-ban"]').click();
+  await p.getByText("Đã từ chối").waitFor({ timeout: 8000 });
+  assert.equal((await ban.get(`/v1/offers/${id2}`)).status, "rejected");
+});
+
 await trang("tien", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-hom-nay.html?thu=0918000421`);
   await p.locator('.tab a[href*="ban-tien"]').click();
