@@ -43,10 +43,10 @@ export const ANH_SP = (ma) => { const t = ANH.find(([m]) => m.test(ma || "")); r
 // Chặng hiện tại của hợp đồng (0 chào giá … 4 nhận tiền) theo hien_thi.chang của backend, rơi về trạng thái.
 export function chiSoChang(d) {
   const c = (d.hien_thi?.chang || "").toLowerCase();
-  const theoTen = [["chào", 0], ["ký", 1], ["cọc", 2], ["giao", 3], ["nghiệm", 3], ["quyết", 4], ["tiền", 4]].find(([k]) => c.includes(k));
+  const theoTen = [["chào", 0], ["ký", 1], ["cọc", 2], ["giao", 3], ["nghiệm", 3], ["thanh toán", 4], ["quyết", 4], ["tiền", 4]].find(([k]) => c.includes(k));
   if (theoTen) return theoTen[1];
   const s = d.status || "";
-  return /draft|sign/.test(s) ? 1 : /deposit/.test(s) ? 2 : /deliver|ship|accept/.test(s) ? 3 : /settle|complet/.test(s) ? 4 : 1;
+  return /outstanding|settl|paid/.test(s) ? 4 : /draft|sign/.test(s) ? 1 : /deposit/.test(s) ? 2 : /deliver|ship|accept/.test(s) ? 3 : /settle|complet/.test(s) ? 4 : 1;
 }
 // Hợp đồng còn đang chạy (bỏ đã xong/hủy/từ chối)
 export const dangLam = (d) => !/complet|cancel|declin|withdrawn|reject|expired|closed/.test(d.status || "");

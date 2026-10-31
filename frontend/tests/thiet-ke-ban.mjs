@@ -380,8 +380,10 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   const sauKy = await (await fetch(`${G}/v1/orders/${a.o.id}`, { headers: { authorization: "Bearer " + a.t } })).json();
   assert.ok(!sauKy.hanh_dong?.includes("sign") && sauKy.status !== "awaiting_seller", "đơn đã qua bước người bán ký: " + sauKy.status);
 
-  // 2. Kiểm tiền: bên mua báo đã chuyển → bác xác nhận nhận đủ
-  const b = await tim("0988000770", "0003", (ct, tien) => (tien.khoan_tra_thang || []).some((k) => k.status === "payer_reported"));
+  // 2. Kiểm tiền: nhận thiếu một phần → mở lại chỉ còn phần mới → nhận nốt (Codex rà #1: báo nhiều lần cộng dồn)
+  const b = await tim("0988000770", "0003", (ct, tien) => (tien.khoan_tra_thang || []).some((k) => k.status === "payer_reported" && Number(k.confirmed_vnd) === 0));
+  const k0 = b.tien.khoan_tra_thang.find((k) => k.status === "payer_reported");
+  const baoVnd = Number(k0.reported_vnd), lan1 = 10000000;
   await mo("0988000770", b.o.id);
   await p.locator("#viec-chinh").click();
   assert.match(await p.locator(".hd-tam").innerText(), /Mở app ngân hàng xem số dư/, "nhắc không tin ảnh chụp chuyển khoản");
@@ -389,14 +391,31 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await p.locator('[data-r="du"]').click();
   await p.getByText(/chép mã giao dịch/).waitFor();
   assert.ok(await p.locator('[data-r="otp"]').isHidden(), "chưa có mã giao dịch thì chưa gửi OTP");
-  await p.locator('[data-r="ma-gd"]').fill("FT2631012345");
+  await p.locator('[data-cach="cash"]').click();
+  await p.locator('[data-r="du"]').click();
+  await p.getByText(/ảnh giấy biên nhận/).first().waitFor();
+  await p.locator('[data-cach="bank_transfer"]').click();
+  await p.locator('[data-r="ma-gd"]').fill("FT" + Date.now());
+  await p.locator('[data-r="thieu"]').click();
+  await p.locator('[data-r="so"]').fill(String(lan1));
+  await p.locator('[data-r="gui"]').click();
+  await p.locator('[data-r="otp"]').waitFor({ state: "visible" });
+  await p.locator('[data-r="otp"]').fill("123456");
+  await p.locator('[data-r="xac"]').click();
+  await p.getByText(/Đã ghi nhận bác nhận .* Khoản này còn thiếu/).waitFor({ timeout: 10000 });
+  let k1 = (await (await fetch(`${G}/v1/orders/${b.o.id}/payments`, { headers: { authorization: "Bearer " + b.t } })).json()).find((k) => k.id === k0.id);
+  assert.equal(Number(k1.confirmed_vnd), lan1, "đã xác nhận đúng phần nhận thiếu");
+  await p.locator("#viec-chinh").click();
+  const tam2 = await p.locator(".hd-tam").innerText();
+  assert.match(tam2, new RegExp(`chuyển thêm ${(baoVnd - lan1).toLocaleString("vi-VN").replace(/\./g, "\\.")}`), "mở lại chỉ còn phần mới: " + tam2.slice(0, 80));
+  await p.locator('[data-r="ma-gd"]').fill("FT" + (Date.now() + 1));
   await p.locator('[data-r="du"]').click();
   await p.locator('[data-r="otp"]').waitFor({ state: "visible" });
   await p.locator('[data-r="otp"]').fill("123456");
   await p.locator('[data-r="xac"]').click();
-  await p.getByText(/Đã ghi nhận bác nhận đủ/).waitFor({ timeout: 10000 });
-  const k = (await (await fetch(`${G}/v1/orders/${b.o.id}/payments`, { headers: { authorization: "Bearer " + b.t } })).json())[0];
-  assert.ok(!["payer_reported", "pending"].includes(k.status), "khoản đã được xác nhận: " + k.status);
+  await p.getByText(/nhận đủ khoản/).waitFor({ timeout: 10000 });
+  k1 = (await (await fetch(`${G}/v1/orders/${b.o.id}/payments`, { headers: { authorization: "Bearer " + b.t } })).json()).find((k) => k.id === k0.id);
+  assert.equal(Number(k1.confirmed_vnd), baoVnd, "tổng xác nhận đúng bằng số bên mua báo");
 
   // 3. Kết quả cân: đồng ý và ký biên bản bằng PIN
   const c = await tim("0939000160", "0004", (ct) => ct.dot_giao?.some((d) => d.status === "awaiting_seller"));
