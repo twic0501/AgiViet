@@ -150,6 +150,11 @@ Người sáng lập: bản tự dựng "logic không hợp lí, vẽ chưa ưng
     - Xương tay dùng lại id cũ của nút tay, nên mọi hoạt ảnh vẫn chạy như trước, chỉ thêm hệ số ×2,6 vì tay uốn được nên giơ cao được. Riêng phần bật/tắt theo góc phải đặt lên **nút chứa hình** (`g.hien()`), vì xương không có độ mờ.
     - Vươn vai giơ khoảng 1,7 rad, vẫy chào khoảng 1,6 rad (bàn tay ngang tai), giật mình và vui khoảng 1,2–1,3 rad.
     - Đã xoá phần đổi hình (`do-tay.py`, `nguon/goc/tay-chinh.svg`, các ảnh cắt tay). Ảnh mẫu `docs/trau/tham-chieu/higgsfield-v4g-tay-1.png` giữ lại để tham khảo dáng.
+    - **Tay chính diện biến hình theo 3 dáng Higgsfield** (người sáng lập: "không đúng… giơ tay đối xứng vẽ chuẩn lên"). Uốn xương không cho ra đúng dáng giơ, nên đổi sang cách khác: vẽ 3 dáng ống tay **cùng 8 đỉnh**, đối xứng hai bên (`TAY_DANG`, `TAY_NEP` trong `dung-v3.py`):
+      - buông: theo hình chính diện bảng xoay;
+      - dang ngang: theo bảng tư thế tay, hình 1;
+      - giơ cao: theo hình 3.
+      Hoạt ảnh `Dáng tay <bên>` khoá toạ độ các đỉnh ở khung 0, 60, 120. Joystick `Dáng tay <bên>` tua hoạt ảnh này, nên tay biến hình mượt mà vẫn là một tay, không chồng mờ. Bàn tay V4g đi theo giữa cổ tay (xoay theo mép cổ tay, phóng ×1,22 khi giơ). Góc xoay tay trong các động tác được tự đổi thành vị trí joystick (`goc_sang_x`: 0 rad là buông, 1,1 rad là ngang, 1,9 rad là cao; `remap()` trong `main`). Lớp Nghịch khi chờ khoá tay về buông. Bảng so sánh với Higgsfield: `docs/trau/chang-2/tay-so-sanh-higgsfield.png`. Góc ¾ và nghiêng vẫn dùng tay uốn xương bên dưới.
     - **Tay kiểu Higgsfield cho cả 5 góc** (người sáng lập: tay V4g "chả giống Higgsfield"). Tay vẽ lại theo hình chính diện của `docs/trau/tham-chieu/higgsfield-v4g-xoay-1.png`: vai áo liền xuống ống tay loe, có nếp trong, cổ tay phẳng; bàn tay giữ nguyên V4g. Màu và nét theo V4g (`nguon/goc/tay-chinh-hf.svg`). Mỗi tay là một hình liền, uốn bằng xương, không đổi hình.
       - Chính diện: vai (170,320) → cổ tay (137,386), vùng uốn −0,05…0,7, có bắp vai.
       - ¾: tay phải, nằm trên áo, gần như xoay cả khối (−1,0…0,3).

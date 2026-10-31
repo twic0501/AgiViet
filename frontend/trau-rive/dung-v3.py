@@ -35,6 +35,26 @@ tc = importlib.util.module_from_spec(sp); sp.loader.exec_module(tc)
 moi_id, khung, NS = tc.moi_id, tc.khung, tc.NS
 XEM = '--xem' in sys.argv
 
+# Tay chính diện biến hình (morph) giữa 3 dáng vẽ theo Higgsfield: buông (hình chính diện bảng xoay), dang ngang
+# (bảng tư thế tay hình 1), giơ cao (hình 3). Cùng 8 đỉnh ống tay: 0 gốc-trên, 1–2 vai/mép ngoài, 3 cổ tay ngoài,
+# 4 cổ tay trong, 5 khuỷu trong, 6 nách, 7 gốc-dưới (gốc khuất dưới khăn/thân). Bàn tay V4g đi theo cổ tay.
+TAY_DANG = {
+    'buong': [(180, 304), (162, 309), (148, 325), (117, 377), (157, 396), (163, 372), (170, 348), (182, 336)],
+    'ngang': [(182, 304), (168, 302), (150, 305), (93, 308), (94, 355), (125, 354), (160, 352), (180, 346)],
+    'cao': [(182, 304), (166, 288), (149, 276), (128, 262), (95, 294), (122, 318), (152, 340), (180, 342)],
+}
+TAY_NEP = {  # nếp trong ống tay (3 đỉnh)
+    'buong': [(168, 348), (161, 372), (156, 392)],
+    'ngang': [(160, 349), (130, 350), (104, 351)],     # sát mép dưới (không thành vạch giữa ống tay)
+    'cao': [(149, 335), (124, 314), (103, 297)],
+}
+VAI_MORPH = (170.0, 320.0)                      # điểm xoay nhỏ (lớp Phụ) của tay
+# góc tay (rad) trong hoạt ảnh → vị trí joystick: 0 buông (−1), 1,1 ngang (0), 1,9 cao (1)
+def goc_sang_x(th):
+    th = max(0.0, th)
+    return -1 + th / 1.1 if th <= 1.1 else min(1.0, (th - 1.1) / 0.8)
+
+
 GOC = [  # (tên, tệp, lật gương)
     ('chinh', 'nguon/trau.svg', False),
     # ¾ / nghiêng: bản thân áo không tay (do-goc.py với AGV_KHONG_TAY=1) — tay V4g bọc xương gắn vào (tay_v4g)
@@ -78,8 +98,9 @@ class Goc:
             self.bp[g.get('id')] = (gx, gy, ruot, moi_id())
         self.long = dict(tc.LONG)                          # chuỗi khớp khăn dài (V4g)
         self.xuong = {}                                    # tay da bọc xương: tên → (gx, gy, id nút hình, id xương thân)
+        self.morph = {}                                    # tay chính diện: bên → (id joystick-anim đỉnh, …)
         if ten == 'chinh':
-            self.tay_da(svg)
+            self.tay_morph(svg)
         else:
             self.tay_v4g(ten)
         # ¾ / nghiêng: đã thử bọc xương tay đồ-từ-ảnh (31/10) — không đạt: nét tay dính viền áo, bàn tay/cổ tay là
@@ -123,6 +144,81 @@ class Goc:
                 self.boc[t] = {'nghich': moi_id()}
         for t, (_, _, _, id_c, _) in self.xuong.items():   # tay da: nút 'nghich' là xương con
             self.boc[t] = {'nghich': id_c}
+
+    def tay_morph(self, svg):
+        """Tay chính diện biến hình giữa 3 dáng vẽ (TAY_DANG). Nút 'tay-<bên>' (Phụ: đung đưa nhỏ quanh vai) →
+        'nghich' (hoạt ảnh tay; góc xoay được đổi thành vị trí joystick, xem remap trong main) → hình ống tay + nếp +
+        bàn tay V4g (nút 'ban', đi theo cổ tay). Đỉnh có id riêng để hoạt ảnh 'Dáng tay' khoá toạ độ."""
+        than = next(g for g in svg.iter(NS + 'g') if g.get('id') == 'than')
+        g2 = copy.deepcopy(than)                       # bỏ viền nách V4g (tay mới có nếp trong riêng)
+        for e in list(g2):
+            if (e.get('data-role') or '').startswith('vien-nach-thuot'):
+                g2.remove(e)
+        x, y, _, nid = self.bp['than']
+        self.bp['than'] = (x, y, tc.bo_phan(g2, {})[2], nid)
+        v4g_tay = {e.get('id'): e for e in svg.iter(NS + 'g') if e.get('id') in ('tay-trai', 'tay-phai')}
+        px, py = VAI_MORPH
+        for ben in ('trai', 'phai'):
+            t = f'tay-{ben}'
+            if t not in self.bp:
+                continue
+            X = (lambda x: x) if ben == 'trai' else (lambda x: 512 - x)
+            dang = {k: [(X(a), b) for a, b in v] for k, v in TAY_DANG.items()}
+            nep = {k: [(X(a), b) for a, b in v] for k, v in TAY_NEP.items()}
+            vx = px if ben == 'trai' else 512 - px
+            ids_ong = [moi_id() for _ in range(8)]
+            ids_vien = [moi_id() for _ in range(8)]
+            ids_nep = [moi_id() for _ in range(3)]
+
+            def dinh(pts, ids):
+                return ''.join(f'<StraightVertex x="{a - vx:.2f}" y="{b - py:.2f}" id="{i}"/>' for (a, b), i in zip(pts, ids))
+            ong = (f'<Shape x="0" y="0" name="{t}-ong"><PointsPath isClosed="true" name="P">{dinh(dang["buong"], ids_ong)}'
+                   f'</PointsPath><Fill name="F"><SolidColor colorValue="FFC48F65" name="C"/></Fill></Shape>')
+            vien = (f'<Shape x="0" y="0" name="{t}-vien"><PointsPath isClosed="false" name="P">'
+                    f'{dinh(dang["buong"], ids_vien)}</PointsPath><Stroke thickness="5.60" cap="round" join="round" '
+                    f'name="V"><SolidColor colorValue="FF24190F" name="C"/></Stroke></Shape>')
+            nep_s = (f'<Shape x="0" y="0" name="{t}-nep"><PointsPath isClosed="false" name="P">'
+                     f'{dinh(nep["buong"], ids_nep)}</PointsPath><Stroke thickness="4.20" cap="round" join="round" '
+                     f'name="V"><SolidColor colorValue="FF24190F" name="C"/></Stroke></Shape>')
+            # bàn tay V4g: hình mong-tay + bóng, gốc nút đặt tại giữa cổ tay dáng buông
+            def giua(pts):
+                return ((pts[3][0] + pts[4][0]) / 2, (pts[3][1] + pts[4][1]) / 2)
+
+            def huong(pts):
+                return math.atan2(pts[4][1] - pts[3][1], pts[4][0] - pts[3][0])
+            hx, hy = giua(dang['buong'])
+            g = v4g_tay[t]
+            ban = ''.join(tc.hinh(e, {'stroke': '#24190f', 'stroke-width': '5.6', 'stroke-linejoin': 'round',
+                                      'stroke-linecap': 'round'}, hx, hy, f'{t}-ban-{j}')
+                          for j, e in enumerate(g) if e.get('data-role') in ('bong-tay', 'mong-tay'))
+            id_ban = moi_id()
+            ban_n = node(f'{t}-ban', id_ban, hx - vx, hy - py, ban)
+            # Rive: khai báo trước nằm trên → viền, nếp, ống (trên bàn tay), rồi bàn tay
+            ruot = vien + nep_s + ong + ban_n
+            self.bp[t] = (vx, py, ruot, self.bp[t][3])
+            # khung hoạt ảnh 'Dáng tay': 0 buông, 60 ngang, 120 cao
+            keyed = []
+            for ids, key in ((ids_ong, 'dang'), (ids_vien, 'dang'), (ids_nep, 'nep')):
+                src = dang if key == 'dang' else nep
+                for j, vid in enumerate(ids):
+                    for prop, k in (('x', 0), ('y', 1)):
+                        off = vx if k == 0 else py
+                        kf = ''.join(f'<KeyFrameDouble value="{src[d][j][k] - off:.2f}" frame="{f}" interpolationType="linear"/>'
+                                     for d, f in (('buong', 0), ('ngang', 60), ('cao', 120)))
+                        keyed.append(f'<KeyedObject objectId="{vid}"><KeyedProperty property="{prop}">{kf}'
+                                     f'</KeyedProperty></KeyedObject>')
+            a0 = huong(dang['buong'])
+            for prop, vals in (('x', [giua(dang[d])[0] - vx for d in ('buong', 'ngang', 'cao')]),
+                               ('y', [giua(dang[d])[1] - py for d in ('buong', 'ngang', 'cao')]),
+                               ('rotation', [huong(dang[d]) - a0 for d in ('buong', 'ngang', 'cao')]),
+                               ('scaleX', [1, 1.22, 1.22]), ('scaleY', [1, 1.22, 1.22])):   # bàn tay to như Higgsfield
+                if prop == 'rotation':   # giữ góc liên tục (không nhảy ±2π)
+                    vals = [math.atan2(math.sin(v), math.cos(v)) for v in vals]
+                kf = ''.join(f'<KeyFrameDouble value="{v:.4f}" frame="{f}" interpolationType="linear"/>'
+                             for v, f in zip(vals, (0, 60, 120)))
+                keyed.append(f'<KeyedObject objectId="{id_ban}"><KeyedProperty property="{prop}">{kf}'
+                             f'</KeyedProperty></KeyedObject>')
+            self.morph[ben] = keyed
 
     def tay_da(self, svg):
         """Tay chính diện = chính nét tay V4g, uốn bằng xương (skinning) thay vì xoay cứng / đổi hình.
@@ -281,7 +377,7 @@ class Goc:
     def tay(self):
         """[(id nghich, chiều 'dang ra')]: tay bên trái màn hình / tay góc nghiêng dang ra = xoay dương."""
         def chieu(t):
-            if self.xuong and self.ten == 'chinh':   # tay da bọc xương: giơ cao được (×2,6 so với tay xoay cứng)
+            if self.ten == 'chinh':        # tay biến hình: góc lớn (×2,6) → đổi sang dáng tay (goc_sang_x)
                 return -2.6 if t.startswith('tay-phai') else 2.6
             if self.xuong:                 # ¾ / nghiêng: tay V4g bọc xương
                 return self.dau_tay
@@ -377,7 +473,25 @@ def main():
     vao = {t: moi_id() for t in ('hanh_dong', 'huong', 'cham', 'nhin_x', 'nhin_y')}
     hong_y = 412 - CHAN_DAT
 
+    REMAP = {}   # id nút 'nghich' tay chính diện → (id joystick, dấu)
+
+    def remap(keyed):
+        import re as _re
+        out = []
+        for k in keyed:
+            m = _re.match(r'<KeyedObject objectId="([^"]+)"><KeyedProperty property="rotation">(.*)</KeyedProperty></KeyedObject>$',
+                          k, _re.S)
+            if m and m.group(1) in REMAP:
+                jid, dau = REMAP[m.group(1)]
+                kfs = _re.sub(r'value="([-\d.]+)"', lambda mm: f'value="{goc_sang_x(dau * float(mm.group(1))):.4f}"',
+                              m.group(2))
+                out.append(f'<KeyedObject objectId="{jid}"><KeyedProperty property="x">{kfs}</KeyedProperty></KeyedObject>')
+            else:
+                out.append(k)
+        return out
+
     def ani(ten, dai, keyed, lap=True):
+        keyed = remap(keyed)
         aid = moi_id()
         anim.append(f'<LinearAnimation{" loopValue=\"loop\"" if lap else ""} fps="60" duration="{dai}" name="{ten}" '
                     f'id="{aid}">{"".join(keyed)}</LinearAnimation>')
@@ -435,6 +549,17 @@ def main():
     a_rong = ani('Rỗng', 120, [], lap=False)
     joy = {}
     joy_xml = []
+    a_rong_tay = ani('Dáng tay: rỗng', 120, [], lap=False)
+    dang_tay_vao_nghi = []      # khoá về buông khi Nghịch đang chờ
+    for g in goc:
+        for ben, keyed in g.morph.items():
+            jid = moi_id()
+            a_dt = ani(f'Dáng tay {ben}', 120, keyed, lap=False)
+            joy_xml.append(f'<Joystick posX="256" posY="256" width="512" height="512" x="-1" xId="{a_dt}" '
+                           f'yId="{a_rong_tay}" name="Dáng tay {ben}" id="{jid}"/>')
+            REMAP[g.boc[f'tay-{ben}']['nghich']] = (jid, 1 if ben == 'trai' else -1)
+            dang_tay_vao_nghi.append(f'<KeyedObject objectId="{jid}"><KeyedProperty property="x">'
+                                     f'<KeyFrameDouble value="-1" frame="0"/></KeyedProperty></KeyedObject>')
     for ten, aid in (('dau', a_dau), ('than', a_than), ('chan', a_chan)):
         joy[ten] = moi_id()
         joy_xml.append(f'<Joystick posX="256" posY="256" width="512" height="512" xId="{aid}" yId="{a_rong}" '
@@ -597,8 +722,8 @@ def main():
         khung(g.id['nghich'], 'scaleX', [(0, 1), (16, 1.03), (46, .97), (100, .97), (120, 1.015), (136, 1), (160, 1)]),
         khung(g.id['dau-nghich'], 'y', [(0, 0), (16, 2), (46, -5), (100, -5), (124, 1), (160, 0)]),
         khung(g.id['dau-nghich'], 'rotation', [(0, 0), (46, -.06), (100, -.06), (128, .015), (160, 0)]),
-        *[khung(nid, 'rotation', [(0, 0), (16, -.08 * d), (50, (.65 if g.xuong else .5) * d),
-                                   (100, (.65 if g.xuong else .5) * d), (126, -.08 * d), (140, .03 * d),
+        *[khung(nid, 'rotation', [(0, 0), (16, -.08 * d), (50, (.72 if (g.xuong or g.morph) else .5) * d),
+                                   (100, (.72 if (g.xuong or g.morph) else .5) * d), (126, -.08 * d), (140, .03 * d),
                                    (160, 0)]) for nid, d in g.tay()],
         *mat(g, 'scaleY', [(0, 1), (40, .45), (104, .45), (124, 1), (160, 1)]),
         *may(g, 'y', [(0, 0), (46, -2), (100, -2), (124, 0), (160, 0)]),
@@ -683,7 +808,7 @@ def main():
                *may(g, 'y', [(0, 0), (24, -3), (128, -3), (150, 0), (176, 0)]),
                *tai_theo(g, [(0, 0), (26, .25), (126, .25), (150, -.05), (170, 0), (176, 0)]),
                *duoi_theo(g, [(f, .25 * math.sin(2 * math.pi * f / 24)) for f in range(0, 145, 6)] + [(160, 0), (176, 0)])]
-        cao = .62 if g.xuong else .48   # tay da (chính diện): bàn tay lên ngang tai như ảnh mẫu
+        cao = .74 if (g.xuong or g.morph) else .48   # tay da (chính diện): bàn tay lên ngang tai như ảnh mẫu
         for nid in g.tay_ben(ben):
             out.append(khung(nid, 'rotation', [(0, 0), (10, -.1 * d), (28, cao * d)] +
                              [(28 + 10 * i, (cao + (.08 if i % 2 else -.06)) * d) for i in range(1, 9)] +
@@ -697,12 +822,13 @@ def main():
     chao = nghich('Cảm xúc: vẫy tay chào', 176, chao_fn)
 
     # Lớp: Chờ (5 s) → chọn ngẫu nhiên 1 trong 5 động tác hoặc chờ thêm (4 s) → xong động tác thì về Chờ.
-    a_cho1, a_cho2 = ani('Nghịch: chờ', 300, [], lap=False), ani('Nghịch: chờ thêm', 240, [], lap=False)
+    a_cho1, a_cho2 = (ani('Nghịch: chờ', 300, dang_tay_vao_nghi, lap=False),
+                      ani('Nghịch: chờ thêm', 240, dang_tay_vao_nghi, lap=False))
     s_cho1, s_cho2 = moi_id(), moi_id()
     dong = [(a, moi_id()) for a in (lac_dau, vuon_vai, to_mo, nhay, vay_tai, vui, ngu, giat_minh, chao)]
     if os.environ.get('AGV_THU'):  # kiểm thử: chỉ một động tác, chờ 10 khung (dùng khi chụp soi)
         dong = [dong[int(os.environ['AGV_THU'])]]
-        a_cho1 = ani('Nghịch: chờ (thử)', 10, [], lap=False)
+        a_cho1 = ani('Nghịch: chờ (thử)', 10, dang_tay_vao_nghi, lap=False)
     het = 'enableExitTime="true" exitTimeIsPercetange="true" exitTime="100"'
     # vào động tác trộn 200 ms; riêng giật mình vào ngay (động tác bật đột ngột, đổi tay ở khung 5 —
     # trộn sẽ thấy cả tay cũ lẫn tay mới mờ chồng nhau)
