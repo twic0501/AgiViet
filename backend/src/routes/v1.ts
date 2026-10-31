@@ -442,6 +442,21 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Trợ lý chưa trả lời được lúc này.', fix: 'Bác thử lại sau ít phút hoặc nhắn nhân viên AgiViet.' }] });
     }
   });
+  // Đăng bài bằng giọng nói: chữ đã nghe (trình duyệt tự chuyển giọng) → AI bóc trường; chỉ lưu nháp, không ghi gì vào DB.
+  app.post('/v1/voice/extract', async (req, reply) => {
+    await bo.xacThuc(req);
+    const b = z.object({ van_ban: z.string().min(1).max(600), da_co: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional() }).parse(req.body);
+    if (!ht.cfg.aiUrl) return reply.status(503).send({ errors: [{ code: 'AI_CHUA_BAT', message: 'Chưa nghe hiểu được lúc này.', fix: 'Bác gõ thông tin hoặc đăng theo nhật ký.' }] });
+    try {
+      const r = await fetch(`${ht.cfg.aiUrl}/voice/extract`, { method: 'POST', signal: AbortSignal.timeout(6000),
+        headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) },
+        body: JSON.stringify({ van_ban: b.van_ban, da_co: b.da_co, hom_nay: ht.dongHo.now().toISOString().slice(0, 10), che_do: 'ket_hop', xung_ho: 'bác' }) });
+      if (!r.ok) throw new Error(String(r.status));
+      return await r.json();
+    } catch {
+      return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Chưa nghe hiểu được lúc này.', fix: 'Bác gõ thông tin hoặc thử nói lại.' }] });
+    }
+  });
   app.get('/v1/notifications', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/outbox.ts'); const q: any = req.query; return bo.doc((t) => m.thongBao(t, nd, { limit: q.limit ? Number(q.limit) : undefined, after_seq: q.after_seq ? Number(q.after_seq) : undefined })); });
 
   // ---------------- Môi trường thử ----------------

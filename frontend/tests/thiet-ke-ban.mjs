@@ -383,47 +383,75 @@ await trang("thieu-phien-bao-loi", async (p) => {
 });
 
 await trang("dang-bai", async (p) => {
-  // Lượng ngẫu nhiên để nhận ra lô vừa tạo trên backend
+  // Cách 1 · Nói: app hỏi từng câu; máy thử không có mic nên gõ câu trả lời (cùng đường AI bóc trường)
   const kg = 300 + (Date.now() % 600);
   await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
-  await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
-  assert.ok(await p.locator("#tiep").isDisabled(), "chưa chọn mặt hàng thì chưa đi tiếp");
-  await p.locator("#ds-sp button").first().click();
-  await p.locator('#ds-loai button[data-g="L1"]').click();
-  await p.locator("#tiep").click();
-  await p.locator("#luong").fill(String(kg));
-  await p.locator("#tiep").click();
-  await p.locator("#gia-muon").pressSequentially("27000");
-  await p.locator("#gia-san").pressSequentially("28000");
-  assert.ok(await p.locator("#tiep").isDisabled(), "giá thấp nhất > giá mong muốn phải bị chặn");
-  await p.locator("#gia-san").fill(""); await p.locator("#gia-san").pressSequentially("24000");
-  await p.locator("#tiep").click();
-  assert.ok(await p.locator("#tiep").isDisabled(), "chưa có ảnh thì chưa đăng được");
-  await p.locator("#chon-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
-  await p.locator("#anh-chon .o").first().waitFor();
+  await p.locator("#the-hang b").waitFor({ timeout: 8000 });
+  assert.match(await p.locator("#the-hang").innerText(), /Xoài cát Chu/, "mặt hàng của hộ điền sẵn");
+  assert.ok(await p.locator('#cach [data-cach="go"]').isDisabled(), "chưa chọn loại thì Điền thông tin chờ");
+  await p.locator('#cach [data-cach="noi"]').click();
+  await p.locator('#nhanh button[data-v="L1"]').click();
+  await p.locator("#go-cau").fill(`${kg} ký đã cân, có hàng ngay, muốn hai mươi bảy ngàn một ký`);
+  await p.locator("#go-form button").click();
+  await p.locator("#hieu dl").waitFor({ timeout: 10000 });
+  assert.match(await p.locator("#hieu").innerText(), new RegExp(`${kg} kg · đã cân`), "bóc đúng lượng đã cân");
   await kiemChung(p);
   await p.locator("#tiep").click();
-  await p.locator('[data-b="5"]').waitFor({ state: "visible", timeout: 10000 });
+  assert.match(await p.locator("#cau-hoi").innerText(), /24\.300/, "nói gộp → tới thẳng câu giá kín 90%");
+  await p.locator("#go-cau").fill("thấp nhất hai mươi bốn ngàn");
+  await p.locator("#go-form button").click();
+  await p.locator("#hieu dl").waitFor({ timeout: 10000 });
+  await p.locator("#tiep").click();
+  await p.locator('[data-m="anh"]').waitFor({ state: "visible" });
+  await p.locator("#chon-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.locator("#luoi-anh .o").first().waitFor();
+  assert.ok(await p.locator("#tiep").isDisabled(), "chỉ ảnh có sẵn thì chưa đăng được");
+  await p.locator("#chup-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.waitForFunction(() => document.querySelectorAll("#luoi-anh .o").length === 2);
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  assert.match(await p.locator("#chi-bac").innerText(), /24\.000/, "giá kín bác nói được dùng");
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  await p.locator('[data-m="xong"]').waitFor({ state: "visible", timeout: 10000 });
   const t = (await (await fetch("http://127.0.0.1:18980/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
   const lo = (await (await fetch("http://127.0.0.1:18980/v1/lots?mine=true", { headers: { authorization: "Bearer " + t } })).json()).find((l) => l.declared_qty_g === String(kg * 1000));
   assert.ok(lo, "lô mới phải có trên backend");
   assert.equal(lo.status, "on_sale", "lô phải được đăng (đang bán), không kẹt nháp");
+  const ct = await (await fetch(`http://127.0.0.1:18980/v1/lots/${lo.id}`, { headers: { authorization: "Bearer " + t } })).json();
+  assert.equal(ct.photos?.filter((x) => x.captured_in_app).length, 1, "chỉ ảnh chụp ngay mới được đánh dấu chụp trong app");
+});
+
+await trang("dang-bai-nhat-ky", async (p) => {
+  // Cách 2 · Từ nhật ký: điền sẵn lần hái gần nhất, mặc định ước chừng, ghi nguồn
+  await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
+  await p.locator("#the-hang b").waitFor({ timeout: 8000 });
+  await p.locator('#ds-loai button[data-v="L1"]').click();
+  await p.locator('#cach [data-cach="nk"]').click();
+  await p.locator("#nk-tom .dong-nk").first().waitFor();
+  assert.match(await p.locator("#nk-tom").innerText(), /hết cách ly/i);
+  await p.locator('#nk-tinh [data-v="da-hai"]').click();
+  await kiemChung(p);
+  await p.locator("#tiep").click();
+  assert.ok(Number(await p.locator("#luong").inputValue()) > 0, "lượng lấy từ nhật ký");
+  assert.ok(await p.locator("#ng-luong").isVisible(), "ghi nguồn nhật ký cạnh lượng");
+  assert.equal(await p.locator('#co-so [data-v="estimated"]').getAttribute("aria-pressed"), "true", "lượng từ nhật ký mặc định ước chừng");
+  await kiemChung(p);
 });
 
 await trang("dang-bai-truoc-mua", async (p) => {
-  // Đăng trước mùa (brief D10): lô thành "sắp có hàng", ngày hết cách ly lấy từ nhật ký phun gửi kèm cho backend kiểm
+  // Cách 3 · Điền thông tin, đăng trước mùa (brief D10): lô "sắp có hàng", gửi kèm ngày hết cách ly
   const kg = 900 + (Date.now() % 90);
   await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
-  await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
-  await p.locator("#ds-sp button").first().click();
-  await p.locator('#ds-loai button[data-g="L1"]').click();
+  await p.locator("#the-hang b").waitFor({ timeout: 8000 });
+  await p.locator('#ds-loai button[data-v="L1"]').click();
   assert.ok(!/Loại L\d/.test(await p.locator("#ds-loai").innerText()), "tên loại không còn mã thô");
-  await p.locator("#tiep").click();
+  await p.locator('#cach [data-cach="go"]').click();
   await p.locator("#luong").fill(String(kg));
   await p.locator("#ngay-hai").fill("2026-07-01");
   await p.waitForFunction(() => /cách ly/.test(document.querySelector("#cach-ly")?.textContent || ""), null, { timeout: 8000 });
   assert.ok(await p.locator("#tiep").isDisabled(), "ngày hái trước ngày hết cách ly thuốc phải bị chặn");
-  await p.locator("#ngay-hai").fill("2026-12-01");
+  await p.locator("#ngay-hai").fill("2026-11-20");
   await p.locator('#khi-co button[data-v="sap"]').click();
   assert.ok(await p.locator("#tiep").isDisabled(), "sắp có hàng phải chọn ngày");
   await p.locator("#ngay-co").fill("2026-11-25");
@@ -431,14 +459,18 @@ await trang("dang-bai-truoc-mua", async (p) => {
   await p.locator("#tiep").click();
   await p.locator("#gia-muon").pressSequentially("26000");
   assert.equal(await p.locator("#gia-san").inputValue(), "23.400", "giá thấp nhất tự điền 90%");
+  await p.locator("#gia-san").fill(""); await p.locator("#gia-san").pressSequentially("28000");
+  assert.ok(await p.locator("#tiep").isDisabled(), "giá thấp nhất > giá mong muốn phải bị chặn");
+  await p.locator("#gia-san").fill(""); await p.locator("#gia-san").pressSequentially("23400");
   await kiemChung(p);
   await p.locator("#tiep").click();
-  await p.locator("#chon-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
-  await p.locator("#anh-chon .o").first().waitFor();
+  await p.locator("#chup-anh").setInputFiles(new URL("../assets/products/xoai-cat-chu.jpg", import.meta.url).pathname);
+  await p.locator("#luoi-anh .o").first().waitFor();
+  await p.locator("#tiep").click();
   assert.ok(!/23\.400/.test(await p.locator("#xem-lai").innerText()), "bên mua không thấy giá thấp nhất");
   await kiemChung(p);
   await p.locator("#tiep").click();
-  await p.locator('[data-b="5"]').waitFor({ state: "visible", timeout: 10000 });
+  await p.locator('[data-m="xong"]').waitFor({ state: "visible", timeout: 10000 });
   assert.match(await p.locator("#xong-tieu").innerText(), /trước mùa/);
   await p.locator("#so-ben-mua").waitFor({ state: "visible", timeout: 8000 });
   await kiemChung(p);
@@ -526,7 +558,7 @@ await trang("menu-va-dang-bai", async (p) => {
   await p.mouse.wheel(0, -300); await p.waitForTimeout(500);
   assert.ok(await p.locator(".tab.thu").count() === 0, "cuộn lên thì hiện đủ");
   await p.goto(`${GOC}/thiet-ke/ban-dang-bai.html?thu=0918000421`);
-  await p.locator("#ds-sp button").first().waitFor({ timeout: 8000 });
+  await p.locator("#the-hang b").waitFor({ timeout: 8000 });
   assert.equal(await p.locator(".tab").count(), 0, "Đăng bài không có thanh menu");
   assert.ok(await p.locator("#dong").isVisible(), "Đăng bài có nút quay lại");
 });
