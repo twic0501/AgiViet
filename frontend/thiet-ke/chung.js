@@ -333,6 +333,34 @@ export async function soThongBaoMoi(token) {
   } catch { return 0; }
 }
 
+// ---- Bong bóng nhắc nhỏ kèm đầu trâu (feed kiểu Motion v2): trượt lên trên thanh dưới, có Nghe + đóng; mỗi lời nhắc 1 lần/ngày ----
+// nhacTrau({ khoa: "ky-hd", mat: "lo"|"vui"|"ngac-nhien"|"ngu", chu: "...", an: 12000 })
+export function nhacTrau({ khoa, mat = "vui", chu, an = 14000, luonHien = false }) {
+  if (typeof document === "undefined" || !chu) return;
+  const ngay = new Date().toISOString().slice(0, 10), k = `agv-nhac-${khoa}`;
+  try { if (!luonHien && localStorage.getItem(k) === ngay) return; localStorage.setItem(k, ngay); } catch {}
+  if (!document.getElementById("css-nhac-trau")) {
+    const st = document.createElement("style"); st.id = "css-nhac-trau";
+    st.textContent = `.nhac-trau{position:fixed;left:12px;right:12px;bottom:96px;z-index:70;max-width:460px;margin:0 auto;display:flex;gap:10px;align-items:flex-start;background:var(--giay-noi,#fbf8f1);border:1.5px solid var(--ke-dam,rgba(29,42,34,.22));border-radius:18px;padding:10px 10px 10px 8px;box-shadow:0 10px 28px rgba(0,0,0,.18);transform:translateY(24px);opacity:0;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .32s}
+.nhac-trau.hien{transform:none;opacity:1}.nhac-trau img{flex:none;width:56px;height:56px}
+.nhac-trau p{margin:2px 0 6px;font-size:16px;line-height:1.45;color:var(--muc,#1d2a22)}
+.nhac-trau .nt-day{display:flex;gap:6px}.nhac-trau button{min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--ke-dam,rgba(29,42,34,.22));background:#fff;color:var(--la,#1f4d3a);font:700 14px var(--chu,system-ui);cursor:pointer}
+.nhac-trau .nt-dong{margin-left:auto;border:0;background:none;color:var(--muc-nhat,#5c645c);font-size:20px;min-width:40px;padding:0}
+@media (prefers-reduced-motion: reduce){.nhac-trau{transition:none}}`;
+    document.head.appendChild(st);
+  }
+  document.querySelector(".nhac-trau")?.remove();
+  const d = document.createElement("aside"); d.className = "nhac-trau"; d.setAttribute("role", "status");
+  d.innerHTML = `<img src="/assets/trau/anh/dau-${mat}@2x.webp" alt=""><div style="flex:1;min-width:0"><p>${esc(chu)}</p><div class="nt-day"><button type="button" data-nghe>Nghe</button></div></div><button type="button" class="nt-dong" aria-label="Đóng lời nhắc">✕</button>`;
+  document.body.appendChild(d);
+  requestAnimationFrame(() => d.classList.add("hien"));
+  const tat = () => { d.classList.remove("hien"); setTimeout(() => d.remove(), 350); };
+  d.querySelector(".nt-dong").onclick = tat;
+  d.querySelector("[data-nghe]").onclick = () => { clearTimeout(hen); docTo(chu); };
+  const hen = setTimeout(tat, an);
+}
+if (typeof window !== "undefined") window.nhacTrau = nhacTrau;
+
 // ---- Trâu theo khoảnh khắc (ảnh tư thế chính diện Claude 2 đã chốt, assets/trau/tu-the/*) ----
 // trauTuThe("11-mung", "Đã đồng ý giá") → ảnh trâu nhỏ + bong bóng lời; trang trí, không thay chữ (alt rỗng).
 export const trauTuThe = (ma, cau = "", co = 96) => `<div class="trau-tt"><img src="/assets/trau/tu-the/${ma}.webp" width="${co}" height="${co}" alt="" loading="lazy" decoding="async">${cau ? `<p class="trau-tt-loi">${esc(cau)}</p>` : ""}</div>`;

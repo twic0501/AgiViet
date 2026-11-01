@@ -195,7 +195,17 @@ function viecChinh() {
   return null;
 }
 
+function nhacTheoBuoc() {
+  const n = window.nhacTrau; if (!n) return;
+  const v = viecChinh();
+  if (v?.chu === "Ký hợp đồng") return n({ khoa: "ky-" + ID, mat: "lo", chu: "Trước khi ký, bác đọc kỹ lượng chắc giao, ngày giao và cách trả tiền. Mã OTP gửi về máy chỉ bác nhập, không đọc cho ai kể cả người xưng nhân viên." });
+  if (v?.chu === "Kiểm tiền và xác nhận") return n({ khoa: "tien-" + ID, mat: "lo", chu: "Chỉ bấm xác nhận khi bác thấy tiền đã vào tài khoản trong app ngân hàng. Ảnh chụp màn hình chuyển khoản có thể là giả." });
+  if (v?.chu === "Bàn giao hàng") return n({ khoa: "giao-" + ID, mat: "vui", chu: "Chỉ bốc hàng khi người nhận đưa đúng mã 6 số trên app của họ. Cân xong hai bên cùng xem số rồi mới ký." });
+  if (v?.chu === "Xem kết quả cân") return n({ khoa: "can-" + ID, mat: "ngac-nhien", chu: "Bác xem từng dòng: đạt, hạ loại, trả lại. Dòng nào không đúng thì bấm Không đúng, có ảnh làm bằng chứng." });
+  if (don.status === "awaiting_deposit") return n({ khoa: "coc-" + ID, mat: "ngu", chu: "Đang chờ bên mua chuyển cọc vào ngân hàng. Ngân hàng xác nhận cọc rồi mới hái và giao, bác chưa cần làm gì." });
+}
 function ve() {
+  setTimeout(nhacTheoBuoc, 900);
   veDau(don.code);
   const dk = don.dieu_khoan || {}, k = chiSoChang(don), luot = don.hien_thi?.toi_luot, bac = luot?.phia === don.phia_cua_ban;
   const viec = viecChinh(), han = (don.han || []).filter((h) => h.status === "open").sort((a, b) => (a.due_at < b.due_at ? -1 : 1))[0];

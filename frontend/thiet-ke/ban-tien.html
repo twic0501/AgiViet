@@ -167,6 +167,14 @@ const baoLoi = (e) => {
   $("noi").setAttribute("aria-busy", "false");
 };
 mo().catch(baoLoi);
+
+// Nhắc kèm trâu: số đang là 0 thì nói vì sao; có cọc đang giữ thì nói ai giữ
+setTimeout(() => {
+  const so = (id) => (document.getElementById(id)?.textContent || "").replace(/\D/g, "");
+  const giu = document.body.innerText.match(/Ngân hàng đang\s*giữ cọc\s*([\d.,]+\s*(triệu|đ))/);
+  if (!Number(so("da-nhan")) && !(giu && /[1-9]/.test(giu[1]))) window.nhacTrau?.({ khoa: "tien-0", mat: "ngac-nhien", chu: "Số đang là 0 vì chưa có hợp đồng nào được cọc hoặc trả tiền. Khi bên mua chuyển cọc, ngân hàng giữ và số hiện ở ô xanh." });
+  else window.nhacTrau?.({ khoa: "tien-giu", mat: "vui", chu: "Tiền cọc do ngân hàng đối tác giữ, không bên nào rút được. Giao xong và hai bên chốt số cân thì ngân hàng chuyển cho bác." });
+}, 2500);
 </script>
 </body>
 </html>
