@@ -1483,13 +1483,15 @@ def main():
 
         def chi_huong(kieu, dau_y):   # 18 / 19 chỉ xuống / lên: bản tay ngón trỏ uốn từ vai, đầu + mắt nhìn theo
             def fn(g):
-                bo = [f'objectId="{g.joy_bs[("phai", "chi")]}"'] if ('phai', 'chi') in g.joy_bs else []
+                bo = [f'objectId="{g.joy_bs[("phai", "chi")]}"', f'objectId="{g.bs_id[("phai", "chi")]}"'] if ('phai', 'chi') in g.joy_bs else []
                 if kieu == 'chi-len':        # chỉ lên: đầu giữ thẳng, ngửa nhẹ — không nghiêng / dời sang phía bàn tay
                     bo += [f'objectId="{g.id["dau-nghich"]}"']
                 out = [k_ for k_ in chi_duong_fn(g) if not any(b_ in k_ for b_ in bo)]
                 if kieu == 'chi-len':
                     out.append(khung(g.id['dau-nghich'], 'y', [(0, 0), (10, -3), (100, -3), (120, 0), (180, 0)]))
                 out += bs(g, 'phai', kieu, [(0, 0), (3, 0), (16, 1), (108, 1), (128, 0), (180, 0)])
+                if ('phai', 'chi') in g.bs_id:   # bản chỉ ngang của chỉ đường phải TẮT (không thì thừa một bàn tay buông)
+                    out.append(khung(g.bs_id[('phai', 'chi')], 'opacity', [(0, 0)]))
                 out += [*mat(g, 'y', [(0, 0), (12, 0), (20, dau_y * .8), (100, dau_y * .8), (114, 0), (180, 0)])]
                 return out
             return fn
@@ -1553,8 +1555,11 @@ def main():
             return [khung(g.do_cam[ten_do], 'opacity', sorted(dict(ks).items()))]
 
         def can_fn(g):    # 25 đứng cạnh cân, tay trái chỉ xuống mặt cân (bản tay uốn từ vai), đầu + mắt nhìn theo
-            out = [k_ for k_ in chi_trai_fn(g) if not (('trai', 'chi') in g.joy_bs and f'objectId="{g.joy_bs[("trai", "chi")]}"' in k_)]
+            bo = [f'objectId="{g.joy_bs[("trai", "chi")]}"', f'objectId="{g.bs_id[("trai", "chi")]}"'] if ('trai', 'chi') in g.joy_bs else []
+            out = [k_ for k_ in chi_trai_fn(g) if not any(b_ in k_ for b_ in bo)]
             out += bs(g, 'trai', 'chi-xuong', [(0, 0), (3, 0), (16, 1), (108, 1), (128, 0), (180, 0)])
+            if ('trai', 'chi') in g.bs_id:
+                out.append(khung(g.bs_id[('trai', 'chi')], 'opacity', [(0, 0)]))
             return out + hien_do(g, 'can', dai=180) + [*mat(g, 'y', [(0, 0), (12, 0), (20, 2.5), (100, 2.5), (114, 0), (180, 0)])]
 
         def xe_fn(g):     # 26 xe tải chạy vào từ mép phải, dừng sau lưng → trâu quay nhìn, vẫy chào → xe chạy đi về bên trái
