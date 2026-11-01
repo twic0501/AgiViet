@@ -60,7 +60,7 @@ BEGIN
  dep:=CASE n WHEN 1 THEN 12420000 ELSE 3000000 END;
  fee:=least(coalesce(plan.fee_cap_vnd,9223372036854775807),greatest(coalesce(plan.fee_floor_vnd,0),ref.div_round(plan.first_order_fee_bps::numeric*q*price,10000*1000)));
  INSERT INTO core.orders(code,contract_type,buyer_org_id,seller_org_id,segment_code,product_id,lot_id,policy_version_id,plan_code,is_first_pair_order,created_by_user_id)
- VALUES('DEMO56-'||upper(ctype),ctype,buyer,org,'processor',l.product_id,l.id,pol.id,'free',true,buyer_user) RETURNING id INTO oid;
+ VALUES('HD-260'||n,ctype,buyer,org,'processor',l.product_id,l.id,pol.id,'free',true,buyer_user) RETURNING id INTO oid;
  INSERT INTO core.seasonal_contracts(order_id,site_id,harvest_during,materials_advance_vnd) VALUES(oid,site,'[2026-11-10,2026-12-21)',CASE n WHEN 1 THEN 0 ELSE 3000000 END);
  INSERT INTO core.documents(code,doc_type,owner_org_id,order_id,series_key,version_no,content_sha256,file_sha256,canonical_content,storage_key,mime_type,size_bytes,is_test_data,created_by)
  VALUES('DEMO56-CONTRACT-'||n,'contract',buyer,oid,'DEMO56-CONTRACT-'||n,1,digest('DEMO56-CONTRACT-'||n,'sha256'),digest('DEMO56-PDF-'||n,'sha256'),jsonb_build_object('simulation',true,'note','Bản dự thảo mô phỏng chưa ký, chưa nhận cọc','contract_type',ctype),'test/demo56/no-real-contract-'||n||'.pdf','application/pdf',1,true,buyer_user) RETURNING id INTO contract;
