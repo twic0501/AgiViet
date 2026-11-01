@@ -431,7 +431,7 @@ class Goc:
         DO = {'giay': ('giay-chao-gia', '49 62', 256, 352, .82)}
         if V4 and not NHO:
             # thúng: nhóm ngoài có transform → gốc nằm ở (0,0) của tệp, đặt nút ở tâm − (78, 79)·k
-            DO.update({'thung': ('thung-trai-cay', '78 79', 170, 275, 1.1), 'dien-thoai': ('dien-thoai', '45 70', 256, 350, .62),
+            DO.update({'thung': ('thung-trai-cay', '78 79', 170, 282, 1.1), 'dien-thoai': ('dien-thoai', '45 70', 256, 350, .62),
                        'so': ('so-xanh', '80 92', 256, 362, .75)})
         self.do_cam, ruot_do, ruot_tren = {}, '', ''   # thúng ôm trước ngực vẽ TRÊN hai tay
         for ten_do, (tep_, goc_, dx, dy, k_) in DO.items():
@@ -1232,14 +1232,14 @@ def main():
     def mung_fn(g):  # 4 mừng: hạ người lấy đà → bật, hai tay lên cao → đỉnh → tiếp đất nén → hồi → hạ tay
         return [khung(g.id['nghich'], 'scaleY', [(0, 1), (8, .93), (16, 1.06), (24, 1.03), (34, .94), (40, .95), (52, 1), (110, 1)]),
                 khung(g.id['nghich'], 'scaleX', [(0, 1), (8, 1.04), (16, .97), (34, 1.04), (52, 1), (110, 1)]),
-                khung(g.id['nghich'], 'y', [(0, 0), (8, 0), (16, -6), (24, -13), (34, 0), (110, 0)], '0.3 0 0.7 1'),
+                khung(g.id['nghich'], 'y', [(0, 0), (8, 0), (16, -10), (24, -24), (34, 0), (110, 0)], '0.3 0 0.7 1'),
                 *tay_k(g, 'phai', [(0, 0), (8, .1), (16, .5), (24, .73), (52, .73), (68, 0), (110, 0)]),
                 *tay_k(g, 'trai', [(0, 0), (9, .1), (17, .5), (25, .73), (53, .73), (69, 0), (110, 0)]),
                 *mat_cuoi(g, 14, 62),
-                *chan_k(g, 'trai', [(0, 0), (14, 0), (22, 11), (28, 11), (34, 0), (110, 0)],
-                        [(0, 0), (14, 0), (22, .12), (28, .12), (34, 0), (110, 0)]),
-                *chan_k(g, 'phai', [(0, 0), (14, 0), (22, 11), (28, 11), (34, 0), (110, 0)],
-                        [(0, 0), (14, 0), (22, -.12), (28, -.12), (34, 0), (110, 0)]),
+                *chan_k(g, 'trai', [(0, 0), (14, 0), (22, 18), (28, 18), (34, 0), (110, 0)],
+                        [(0, 0), (14, 0), (22, .28), (28, .28), (34, 0), (110, 0)]),
+                *chan_k(g, 'phai', [(0, 0), (14, 0), (22, 18), (28, 18), (34, 0), (110, 0)],
+                        [(0, 0), (14, 0), (22, -.28), (28, -.28), (34, 0), (110, 0)]),
                 *may(g, 'y', [(0, 0), (16, -4), (62, -4), (72, 0), (110, 0)]),
                 *tai_theo(g, [(0, 0), (8, -.1), (26, .32), (52, .3), (70, 0), (110, 0)]),
                 *duoi_theo(g, [(0, 0), (16, 0)] + [(16 + f, .32 * math.sin(2 * math.pi * f / 14)) for f in range(4, 49, 4)]
@@ -1344,10 +1344,10 @@ def main():
             if getattr(g, 'ba_cham_id', None):
                 out.append(khung(g.ba_cham_id, 'opacity', [(0, 0), (14, 0), (22, 1), (150, 1), (160, 0), (200, 0)], '0 0 1 1'))
                 for i, c in enumerate(g.cham_id):
-                    ks = [(0, .25)]
+                    ks = [(0, .6)]
                     for f0 in range(22, 150, 30):
-                        ks += [(f0 + 8 * i, .25), (f0 + 8 * i + 8, 1), (f0 + 8 * i + 18, .25)]
-                    ks.append((200, .25))
+                        ks += [(f0 + 8 * i, .6), (f0 + 8 * i + 8, 1), (f0 + 8 * i + 18, .6)]
+                    ks.append((200, .6))
                     out.append(khung(c, 'opacity', sorted(dict(ks).items()), '0 0 1 1'))
             return out
 
@@ -1391,8 +1391,8 @@ def main():
         def vui_dang_fn(g):   # 16 vui dang tay: mắt cười, hai tay dang rộng, lắc lư nhún theo nhịp, tai vểnh, đuôi vẫy
             n = [(0, 0), (20, 0), (35, 1), (50, 0), (65, -1), (80, 0), (95, 1), (110, 0), (125, -1), (140, 0), (160, 0)]
             return [*mat_cuoi(g, 10, 140),
-                    *tay_k(g, 'phai', [(0, 0), (16, .4), (140, .4), (156, 0), (160, 0)]),
-                    *tay_k(g, 'trai', [(0, 0), (18, .4), (142, .4), (158, 0), (160, 0)]),
+                    *tay_k(g, 'phai', [(0, 0), (16, .55)] + [(16 + 15 * i, .55 + (.06 if i % 2 else -.04)) for i in range(1, 9)] + [(140, .55), (156, 0), (160, 0)]),
+                    *tay_k(g, 'trai', [(0, 0), (18, .55)] + [(18 + 15 * i, .55 + (-.04 if i % 2 else .06)) for i in range(1, 9)] + [(142, .55), (158, 0), (160, 0)]),
                     khung(g.id['nghich'], 'rotation', [(f, .03 * v) for f, v in n]),
                     khung(g.id['nghich'], 'y', [(f, -3 * abs(v)) for f, v in n]),
                     khung(g.id['dau-nghich'], 'rotation', [(f, -.05 * v) for f, v in n]),

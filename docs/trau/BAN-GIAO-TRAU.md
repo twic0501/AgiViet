@@ -232,6 +232,8 @@ Phần hướng dẫn trên `production-test` (`frontend/shared/seller.js`: rọ
 #### Sửa theo rà soát định hướng (1/11)
 Rà soát (ChatGPT/Claude 1): hình đạt C01; lệch ở cách gắn → chỉ app bán có trâu, không chép đè `tham-khao/…/trau/`, tour/bong bóng/màn trống dựng trên giao diện mới bằng `trau-v4.riv`, ảnh tĩnh chỉ dự phòng (`HOP-DONG-V4.md`). Sửa ảnh: "…" chấm ngà viền sẫm; 09 thúng to dưới hai tay (tay bám miệng, trái ló lên); 07 lo = mày chau ±0,6 rad dịch vào giữa + hai tay xoắn trước ngực (khác 05 chống má); 11 mừng co chân ở đỉnh nhảy; 06 vui = hành động 16 dang tay.
 
+Rà soát lần 2 (12/12 ảnh đúng C01) → sửa nốt: 11 mừng nhảy cao 24 px, co chân 18 px; 06 vui tay chéo lên (.55) vung lệch pha, hết cứng; "…" nền chấm .6 (không còn chấm mờ); 09 thúng hạ 7 px, trái cây cách khăn.
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.
