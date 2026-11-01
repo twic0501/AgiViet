@@ -26,6 +26,8 @@
   .cuoc .phai { text-align: right; align-self: start; padding-top: 2px; }
   .cuoc .gio { font-size: 13px; color: var(--muc-nhat); }
   /* Nhắn tin thật hai bên */
+  .cuoc .phai { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .nut-nhan { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--la); color: var(--tren-la); font: 700 14px/1 var(--chu); white-space: nowrap; }
   .cuoc .tn-cuoi { display: block; margin-top: 4px; font-size: 14px; color: var(--muc-phu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tn-khung { margin-top: 16px; border-top: 1px solid var(--ke); padding-top: 12px; }
   .tn-dau { font-weight: 700; font-size: var(--c-than); color: var(--muc); margin: 0 0 8px; }
@@ -132,6 +134,7 @@ const conLai = (iso) => {
 };
 const kgTan = (g) => { const kg = Number(g) / 1000; return kg >= 1000 ? `${(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} tấn` : `${kg.toLocaleString("vi-VN")} kg`; };
 const IC_CHAO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H8M12 8l-4 4 4 4"/></svg>';
+const IC_NHAN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>';
 const IC_HD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h4"/></svg>';
 
 let tatCa = [], dsChao = [], tokenG = null, loTheoMaG = new Map();
@@ -180,17 +183,19 @@ function ve(k) {
       <span class="giua"><span class="ai">${c.dongY ? `Đã đồng ý giá · ${esc(c.ben)}` : c.ai === "Bác" ? `Bác chào ${esc(c.ben)}` : `${esc(c.ben)} chào giá`}</span>
         <span class="phu-dong">Lô ${esc(c.lo)} · ${esc(conLai(c.het))}${c.vong > 1 ? ` · vòng ${c.vong}` : ""}</span>
         <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt trả giá` : ""}</span>${c.tinCuoi ? `<span class="tn-cuoi">${esc(c.tinCuoi)}</span>` : ""}</span>
-      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.dongY ? "Đang giữ hàng" : c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span></span>
+      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.dongY ? "Đang giữ hàng" : c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span><span class="nut-nhan" data-nhan>${IC_NHAN}Nhắn tin</span></span>
     </a>` : `
     <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#hd=${esc(c.id)}" data-hd="${esc(c.id)}">
       <span class="anh" style="background:var(--nen-phu,#e9e4d6);display:grid;place-items:center;font-weight:700;color:var(--muc,#3a3a33)">${esc(vietTat(c.ai))}<span class="loai hd">${IC_HD}</span></span>
       <span class="giua"><span class="ai">${esc(c.ai)}</span><span class="phu-dong">Hợp đồng ${esc(c.ma)}</span><span class="tin">${esc(c.viec)} · <b>${esc(tien(c.gia))}</b></span>${c.tinCuoi ? `<span class="tn-cuoi">${esc(c.tinCuoi)}</span>` : ""}</span>
-      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Đang chờ"}</span></span>
+      <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Đang chờ"}</span><span class="nut-nhan" data-nhan>${IC_NHAN}Nhắn tin</span></span>
     </a>`).join("") : `<div class="trong-tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
       ${window.anhTrong?.("chua-co-tin-nhan") || ""}<p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
   giuThamSo($("ds"));
-  $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); }));
-  $("ds").querySelectorAll("[data-hd]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#hd=${a.dataset.hd}`); moHopDong(tatCa.find((c) => c.id === a.dataset.hd)); }));
+  // Bấm "Nhắn tin" → mở tấm, cuộn tới khung chat và đặt con trỏ vào ô nhập
+  const toiChat = () => { const tim = () => { const o = document.querySelector(".man-che .tn-go input"); if (!o) return setTimeout(tim, 150); o.closest(".tn-khung").scrollIntoView({ block: "start", behavior: "smooth" }); o.focus({ preventScroll: true }); }; tim(); };
+  $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); if (e.target.closest("[data-nhan]")) toiChat(); }));
+  $("ds").querySelectorAll("[data-hd]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#hd=${a.dataset.hd}`); moHopDong(tatCa.find((c) => c.id === a.dataset.hd)); if (e.target.closest("[data-nhan]")) toiChat(); }));
 }
 
 // ===== Nhắn tin thật hai bên (backend /v1/messages, che liên lạc trước khi lưu) =====
