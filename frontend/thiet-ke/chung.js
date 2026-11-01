@@ -240,16 +240,17 @@ const DUONG = [
   [/hop dong|ky /, "Xem hợp đồng", "./ban-hom-nay.html#t-hd", "Hợp đồng đang làm nằm ở Trang chủ, có thanh chặng cho từng hợp đồng."],
   [/thoi tiet|mua|nang/, "Xem thời tiết", "./ban-hom-nay.html#t-troi", "Thời tiết 4 ngày tới nằm ở cuối Trang chủ."],
 ];
-const GOI_Y = ["Đăng hàng mới", "Xem chào giá của bên mua", "Tiền cọc của tôi ở đâu?", "Gọi nhân viên AgiViet"];
+const GOI_Y = ["Xin nhân viên gọi lại", "Tiền cọc của tôi ở đâu?", "Đăng hàng mới", "Xem chào giá của bên mua"];
+const LOI_CHAO_TL = "Dạ, con là trâu trợ lý AgiViet. Bác cần gì cứ nói với con: bấm nút micro màu vàng rồi nói, hoặc gõ chữ. Muốn gặp người thật thì bấm Xin nhân viên gọi lại.";
 let troLy = null, nutMoTroLy = null;
 function dungTroLy() {
   const tam = document.createElement("div");
   tam.innerHTML = `<div class="tl-che" data-dong></div>
     <section class="tl-tam" role="dialog" aria-modal="true" aria-labelledby="tl-tieu" inert>
-      <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Trợ lý AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
+      <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Nhân viên trâu AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
       <div class="tl-hoi" id="tl-hoi" aria-live="polite">
         ${trauTuThe("23-tai-nghe", "", 72)}
-        <div class="tl-bong ai">Chào bác, bác cần làm gì? Bác <b>bấm nút micro rồi nói</b>, hoặc gõ câu hỏi, hoặc bấm câu gợi ý nhé.</div>
+        <div class="tl-bong ai" id="tl-chao">${esc(LOI_CHAO_TL)}</div>
       </div>
       <div class="tl-goi-y" id="tl-goi-y">${GOI_Y.map((g) => `<button type="button">${esc(g)}</button>`).join("")}</div>
       <p class="tl-nghe-bao" id="tl-nghe-bao" role="status" hidden></p>
@@ -263,9 +264,23 @@ function dungTroLy() {
   const NUT_NGHE = '<button type="button" class="tl-nghe" aria-label="Nghe câu trả lời"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>Nghe</button>';
   const ganNghe = (d) => { d.insertAdjacentHTML("beforeend", NUT_NGHE); const b = d.querySelector(".tl-nghe"); b.onclick = () => docTo(d.dataset.chu || d.textContent.replace(/Nghe$/, "")); };
   const traLoi = (d, chu, noi) => { d.dataset.chu = chu; ganNghe(d); if (noi) docTo(chu); };
+  async function guiNhanVien(noiDung, noi) {
+    const cho = them("ai cho", "Đang gửi cho nhân viên…");
+    try {
+      const token = await phien();
+      const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), message: noiDung }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được.");
+      const chu = "Dạ con đã báo nhân viên AgiViet. Nhân viên sẽ gọi lại cho bác trong giờ làm việc, sáu giờ sáng tới chín giờ tối. Bác xem tiến độ ở trang hồ sơ, mục Hỗ trợ.";
+      cho.classList.remove("cho"); cho.textContent = chu; traLoi(cho, chu, noi);
+    } catch (e) { cho.classList.remove("cho"); cho.textContent = e.message + " Bác gọi tổng đài 1900 1234 nhé."; traLoi(cho, cho.textContent, noi); }
+  }
   async function gui(cau, noi = false) {
     cau = cau.trim(); if (!cau) return;
     them("toi", esc(cau));
+    const kd = BO_DAU(cau);
+    if (/goi lai|goi cho toi|gap nguoi that|gap nhan vien|noi chuyen voi nguoi/.test(kd)) return guiNhanVien("Xin nhân viên gọi lại: " + cau, noi);
+    if (/^nhan (cho )?nhan vien/.test(kd)) return guiNhanVien(cau.replace(/^\s*nhắn\s*(cho\s*)?nhân viên[:,]?\s*/i, "") || cau, noi);
     const t = BO_DAU(cau), co = cau.toLowerCase();
     // Câu hỏi giải thích (thế nào, làm sao, tại sao…) luôn để AI trả lời; chỉ câu muốn đi tới đâu mới dẫn đường
     const hoiGiaiThich = /the nao|lam sao|tai sao|vi sao|co duoc|nhu nao|giai thich|bao lau|khi nao|bao nhieu|la gi/.test(t);
@@ -314,8 +329,10 @@ export function moTroLy(nut) {
   const tam = troLy.querySelector(".tl-tam");
   tam.inert = false; tam.classList.add("mo"); troLy.querySelector(".tl-che").classList.add("mo");
   setTimeout(() => troLy.querySelector("#tl-o").focus(), 300);
+  if (!troLy.dataset.daChao) { troLy.dataset.daChao = "1"; setTimeout(() => docTo(LOI_CHAO_TL), 350); }   // nhân viên trâu nói trước: tiếng + chữ
 }
 function dongTroLy() {
+  try { speechSynthesis.cancel(); } catch {}
   const tam = troLy.querySelector(".tl-tam");
   tam.classList.remove("mo"); troLy.querySelector(".tl-che").classList.remove("mo"); tam.inert = true; nutMoTroLy?.focus();
 }
