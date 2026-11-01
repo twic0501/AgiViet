@@ -226,6 +226,9 @@ Góc chính diện: đủ 8 hành động `hanh_dong` 1–8 + nghỉ sống + đ
 #### Trâu v4 (1/11, theo danh sách của giao diện — ĐÃ DUYỆT 1/11)
 `AGV_V4=1` trong `dung-v3.py`, dựng bằng `./dung-v4.sh` → `frontend/assets/trau/trau-v4.riv` (artboard `trau` + `trau_nho`; artboard nhỏ dựng lần hai với `AGV_NHO=1 AGV_ID0=500000`, nét ×1,7, không bản tay riêng). Bảng số mới, đầu vào `vao`, chạm 3 lần có trứng; hợp đồng đầy đủ: `docs/trau/HOP-DONG-V4.md`. Ảnh tĩnh `frontend/assets/trau/anh/` xuất từ runtime (`tmp/web/anh.cjs` — chụp canvas nền trong). Chữ bong bóng nháp: `docs/trau/bong-bong-nhap.md`. "Nói" không vẽ miệng (luật 2.2) → mõm nhấp nhô. Bỏ bản tay trái 'chi'/'nghi' không dùng → v3 286 KB.
 
+#### 12 tư thế thay bộ ảnh cũ của hướng dẫn (1/11)
+Phần hướng dẫn trên `production-test` (`frontend/shared/seller.js`: rọi đèn 6 màn / 17 bước, dòng nhắc ~10 màn, màn trống ~8 chỗ) dùng bộ 12 ảnh cũ khác V4g. `xuat-tu-the.py` xuất lại cùng tên từ v4 → `frontend/assets/trau/tu-the/`: chụp đúng khung bằng Rive CLI trên nền tối + nền trắng rồi tách alpha từ hiệu hai ảnh (`AGV_CO=800` phóng cả cảnh lên artboard 800 cho nét sắc). Thêm hành động 13 bê thúng (thúng vẽ trên hai tay; nhóm ngoài SVG có transform nên đặt nút ở tâm − gốc·k), 14 điện thoại, 15 sổ — đạo cụ `nguon/dao-cu/`, bỏ nhóm con có clip-path (Rive không cắt).
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.

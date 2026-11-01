@@ -425,18 +425,41 @@ class Goc:
             self.thu_tu.insert(self.thu_tu.index('than') + 1, t)
             self.thu_tu.append(t + '-tren')
             self.morph[ben] = k_co
-        # giấy chào giá cầm trước ngực (hành động 3): nằm dưới hai bàn tay, trên khăn/thân
-        sv = ET.parse(os.path.join(DIR, 'nguon/dao-cu/giay-chao-gia.svg')).getroot()
-        g = ET.Element(NS + 'g', {'id': 'giay', 'data-goc': '49 62', 'stroke': '#24190f', 'stroke-width': '4.2',
-                                  'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'fill': 'none'})
-        for e in sv:
-            if e.tag == NS + 'path' and not e.get('clip-path'):
-                g.append(copy.deepcopy(e))
-        _, _, rg = tc.bo_phan(g, {})
-        self.giay = moi_id()
-        self.bp['giay-truoc'] = (256, 352, node('giay', self.giay, 0, 0, rg, ' opacity="0" scaleX="0.82" scaleY="0.82"'), moi_id())
+        # đồ cầm trước ngực bằng hai tay (bản tay 'giay'): giấy chào giá; v4 thêm thúng rau, điện thoại, sổ xanh.
+        # (tệp SVG, tâm đặt giữa hai bàn tay, cỡ) — điểm cầm của đạo cụ khớp khoảng cách hai bàn tay (~94 px)
+        DO = {'giay': ('giay-chao-gia', '49 62', 256, 352, .82)}
+        if V4 and not NHO:
+            # thúng: nhóm ngoài có transform → gốc nằm ở (0,0) của tệp, đặt nút ở tâm − (78, 79)·k
+            DO.update({'thung': ('thung-trai-cay', '78 79', 187, 304, .88), 'dien-thoai': ('dien-thoai', '45 70', 256, 350, .62),
+                       'so': ('so-xanh', '80 92', 256, 362, .75)})
+        self.do_cam, ruot_do, ruot_tren = {}, '', ''   # thúng ôm trước ngực vẽ TRÊN hai tay
+        for ten_do, (tep_, goc_, dx, dy, k_) in DO.items():
+            sv = ET.parse(os.path.join(DIR, f'nguon/dao-cu/{tep_}.svg')).getroot()
+            g = ET.Element(NS + 'g', dict(sv.attrib, id=ten_do, **{'data-goc': goc_}))
+            for kk in ('viewBox', 'width', 'height'):
+                g.attrib.pop(kk, None)
+            for e in sv:
+                if e.tag in (NS + 'title', NS + 'desc', NS + 'defs') or e.get('clip-path') or (e.get('id') or '').startswith('diem-cam'):
+                    continue
+                e2 = copy.deepcopy(e)
+                for cha in list(e2.iter()):          # bỏ nhóm con có clip-path (Rive không cắt → lộ mảng vuông)
+                    for con in list(cha):
+                        if con.get('clip-path'):
+                            cha.remove(con)
+                g.append(e2)
+            _, _, rg = tc.bo_phan(g, {})
+            self.do_cam[ten_do] = moi_id()
+            nut_ = node(ten_do, self.do_cam[ten_do], dx - 256, dy - 352, rg, f' opacity="0" scaleX="{k_}" scaleY="{k_}"')
+            if ten_do == 'thung':
+                ruot_tren += nut_
+            else:
+                ruot_do += nut_
+        self.giay = self.do_cam['giay']
+        self.bp['giay-truoc'] = (256, 352, ruot_do, moi_id())
         self.thu_tu.append('giay-truoc')
-        self.tren_dau = ['giay-truoc', 'tay-trai-tren', 'tay-phai-tren']
+        self.bp['do-tren'] = (256, 352, ruot_tren, moi_id())
+        self.thu_tu.append('do-tren')
+        self.tren_dau = ['giay-truoc', 'tay-trai-tren', 'tay-phai-tren', 'do-tren']
 
     def giay_trong_tay(self, ban, px, py):
         """Giấy chào giá (nguon/dao-cu) cầm dựng đứng trên bàn tay ở dáng ngang; ẩn, bật trong hành động 3."""
@@ -1197,6 +1220,14 @@ def main():
             out.append(khung(g.giay, 'opacity', [(0, 0), (20, 0), (28, 1), (144, 1), (152, 0), (200, 0)]))
         return out
 
+
+    def cam_do(ten_do):   # như cầm giấy nhưng hiện đồ khác (thúng rau, điện thoại, sổ)
+        def fn(g):
+            out = [k_ for k_ in cam_giay_fn(g) if not (g.giay and f'objectId="{g.giay}"' in k_)]
+            if ten_do in getattr(g, 'do_cam', {}):
+                out.append(khung(g.do_cam[ten_do], 'opacity', [(0, 0), (20, 0), (28, 1), (144, 1), (152, 0), (200, 0)]))
+            return out
+        return fn
     def mung_fn(g):  # 4 mừng: hạ người lấy đà → bật, hai tay lên cao → đỉnh → tiếp đất nén → hồi → hạ tay
         return [khung(g.id['nghich'], 'scaleY', [(0, 1), (8, .93), (16, 1.06), (24, 1.03), (34, .94), (40, .95), (52, 1), (110, 1)]),
                 khung(g.id['nghich'], 'scaleX', [(0, 1), (8, 1.04), (16, .97), (34, 1.04), (52, 1), (110, 1)]),
@@ -1360,8 +1391,12 @@ def main():
                      9: ('Hành động 9: tạm biệt', 200, gom(tam_biet_fn)),
                      10: ('Hành động 10: chờ', 300, gom(cho_fn)),
                      11: ('Hành động 11: đi', 48, gom(di_fn)),
-                     12: ('Hành động 12: xin lỗi', 150, gom(xin_loi_fn))}
-        BAN_SAO = {2: [('phai', 'chi')], 5: [('phai', 'nghi')], 6: [('phai', 'nghi')], 8: [('phai', 'giay'), ('trai', 'giay')]}
+                     12: ('Hành động 12: xin lỗi', 150, gom(xin_loi_fn)),
+                     13: ('Hành động 13: bê thúng rau', 200, gom(cam_do('thung'))),
+                     14: ('Hành động 14: cầm điện thoại', 200, gom(cam_do('dien-thoai'))),
+                     15: ('Hành động 15: ghi sổ', 200, gom(cam_do('so')))}
+        BAN_SAO = {2: [('phai', 'chi')], 5: [('phai', 'nghi')], 6: [('phai', 'nghi')],
+                   **{n_: [('phai', 'giay'), ('trai', 'giay')] for n_ in (8, 13, 14, 15)}}
     # 'Về nghỉ': mọi thuộc tính các hành động đã khoá đưa về giá trị gốc (hành động giữ dáng — xin lỗi, cầm giấy…
     # — không để trâu kẹt ở dáng cuối khi hanh_dong về 0), xong mới sang trạng thái rỗng cho nghỉ sống chạy.
     import re as _re
@@ -1373,8 +1408,8 @@ def main():
             if t.startswith('mat-'):
                 goc_mo[g.boc[t]['vui']] = 0
                 goc_mo[g.boc[t]['cham']] = 1
-        if getattr(g, 'giay', None):
-            goc_mo[g.giay] = 0
+        for d_ in getattr(g, 'do_cam', {}).values():
+            goc_mo[d_] = 0
         for nid_ in [getattr(g, 'ba_cham_id', None), getattr(g, 'zzz_id', None)] + list(getattr(g, 'z_id', [])):
             if nid_:
                 goc_mo[nid_] = 0
@@ -1403,6 +1438,9 @@ def main():
         HANH_DONG[so] = (ten, dai, keyed + [v for kp, v in nghi_cua.items() if kp not in co])
     # về nghỉ RIÊNG từng hành động: bản tay riêng còn hiện tới khung 22 (tay đang hạ về buông theo trộn 300 ms),
     # rồi mới trả lại bản tay chính — hai bản trùng nhau ở dáng buông nên không lộ chỗ đổi
+    co_hd = {so: {tuple(_re.match(r'<KeyedObject objectId="([^"]+)"><KeyedProperty property="([^"]+)">', kk).groups())
+                  for kk in keyed if 'opacity">' in kk and '<KeyFrameDouble value="1"' in kk}
+             for so, (ten, dai, keyed) in HANH_DONG.items()}
     a_ve = {}
     for so in HANH_DONG:
         doi = {}
@@ -1414,8 +1452,9 @@ def main():
                     continue
                 doi[(g.bs_id[(ben, kieu)], 'opacity')] = khung(g.bs_id[(ben, kieu)], 'opacity', [(0, 1), (22, 1), (24, 0)])
                 doi[(g.bs_id[(ben, 'co')], 'opacity')] = khung(g.bs_id[(ben, 'co')], 'opacity', [(0, 0), (22, 0), (24, 1)])
-            if so == 3 and g.giay:
-                doi[(g.giay, 'opacity')] = khung(g.giay, 'opacity', [(0, 1), (10, 0)])
+            for d_ in getattr(g, 'do_cam', {}).values():
+                if (d_, 'opacity') in co_hd[so]:
+                    doi[(d_, 'opacity')] = khung(d_, 'opacity', [(0, 1), (10, 0)])
         a_ve[so] = ani(f'Hành động: về nghỉ {so}', 30, [doi.get(kp, v) for kp, v in nghi_cua.items()], lap=False)
     sid_hd = {so: moi_id() for so in HANH_DONG}
 
@@ -1604,6 +1643,9 @@ def main():
                      f'<ListenerBoolChange inputId="{vao["vao"]}" value="{v_}"/></StateMachineListenerSingle>')
     smid = moi_id()
     goc_xml = ''.join(g.xml() for g in reversed(goc))
+    CO_XUAT = int(os.environ.get('AGV_CO', '0'))   # xuất ảnh: phóng cả cảnh lên artboard CO×CO (nét vẫn sắc)
+    if CO_XUAT and not NHO:
+        goc_xml = f'<Node x="0" y="0" scaleX="{CO_XUAT / 512}" scaleY="{CO_XUAT / 512}" name="khung-xuat" id="{moi_id()}">{goc_xml}</Node>'
     if NHO:   # artboard nhỏ 128: khung đầu + vai (tâm 256, 205), nét dày ×1,7 để rõ ở 48–64 px
         goc_xml = f'<Node x="{64 - 256 * .33:.2f}" y="{64 - 205 * .33:.2f}" scaleX="0.33" scaleY="0.33" name="khung-nho" id="{moi_id()}">{goc_xml}</Node>'
     dau_vao = (f'<StateMachineNumber name="hanh_dong" value="{os.environ.get("AGV_HD", "0")}" id="{vao["hanh_dong"]}"/>'
@@ -1614,7 +1656,7 @@ def main():
     if V4:
         dau_vao += f'<StateMachineBool name="vao" value="true" id="{vao["vao"]}"/>'
     ID_AB, ID_KIEU = ('0:900002', '0:900005') if NHO else ('0:2', '0:5')
-    CO, TEN_AB = (128, 'trau_nho') if NHO else (512, 'trau')
+    CO, TEN_AB = (128, 'trau_nho') if NHO else (int(os.environ.get('AGV_CO', '0')) or 512, 'trau')
     print(f'''<Rive version="1" kind="fragment">
 <Artboard defaultStateMachineId="{smid}" styleId="{ID_KIEU}" width="{CO}" height="{CO}" name="{TEN_AB}" id="{ID_AB}">
 <LayoutComponentStyle name="Kiểu" id="{ID_KIEU}"/>

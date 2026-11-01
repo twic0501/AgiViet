@@ -35,6 +35,9 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 10 | chờ (ngó quanh) | chờ bên kia |
 | 11 | đi tại chỗ | — |
 | 12 | xin lỗi (cúi đầu) | — |
+| 13 | bê thúng rau (ôm trước ngực) | đăng hàng |
+| 14 | cầm điện thoại | nhắc mở app ngân hàng, kiểm tiền |
+| 15 | ghi sổ (cầm sổ mở) | nhật ký vườn, sổ tiền |
 
 Lưu ý: số 2 hiện chỉ chỉ sang **phải màn hình**; chỉ trái/phải theo `huong` cần góc ¾ (đang gác).
 
@@ -49,4 +52,23 @@ Lưu ý: số 2 hiện chỉ chỉ sang **phải màn hình**; chỉ trái/phả
 | `trong-chua-co-tien-ve` | chờ |
 | `dau-nut-hoi`, `dau-nut-hoi-toi` | đầu trâu nút "?"; bản tối có viền ngà để nổi trên nền tối |
 
-Chưa có: ảnh tour lần đầu (bó lúa/thúng, xe, sổ, bắt tay) — cần vẽ đạo cụ mới, chờ duyệt. Âm thanh: chưa làm.
+## 12 tư thế cho hướng dẫn rọi đèn, dòng nhắc, màn trống — `frontend/assets/trau/tu-the/`
+WebP 800×800 nền trong, **cùng tên** bộ cũ `frontend/tham-khao/hieu-ung-va-linh-vat/trau/` → thay cả thư mục là đổi hết sang trâu V4g.
+Tạo lại: `python3 frontend/trau-rive/xuat-tu-the.py`.
+
+| Tệp | Lấy từ | Khi trâu cử động trong hướng dẫn (thay `LinhVatNguyen`) dùng `hanh_dong` |
+|---|---|---|
+| 01-dung | nghỉ | 0 |
+| 02-chop | nghỉ, khung chớp mắt | 0 |
+| 03-chao | chào | 1 (`chao`) |
+| 04-nghe | nghiêng đầu tò mò | 3 (`nghe` — đang giải thích) |
+| 05-nghi | suy nghĩ "…" | 6 |
+| 06-vui | vui, hai tay giơ | 4 (`vui`) |
+| 07-lo | lo, xoa má | 5 (`lo`) |
+| 08-chi | chỉ tay | 2 (`chi`) |
+| 09-be | bê thúng rau | 13 |
+| 10-dien-thoai | cầm điện thoại | 14 |
+| 11-mung | vui, đỉnh cú nhảy | 4 |
+| 12-ghi-so | cầm sổ | 15 (`ghi-so`) |
+
+Âm thanh: chưa làm.
