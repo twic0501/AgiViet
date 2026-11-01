@@ -1,12 +1,12 @@
 # Trâu v4 — hợp đồng nối với giao diện (1/11, ĐÃ DUYỆT)
 
-Tệp: `frontend/assets/trau/trau-v4.riv` (≈794 KB, hai artboard; đạo cụ vẽ chi tiết chiếm phần lớn — 60 khung/giây khi CPU giả lập chậm ×4). `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
+Tệp: `frontend/assets/trau/trau-v4.riv` (≈612 KB, hai artboard; 60 khung/giây khi CPU giả lập chậm ×4). Vào hành động tức thì — tay chỉ ra sau ~0,15 s, chỉ hẳn sau ~0,3 s. `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
 
 ## Artboard
 | Tên | Khung | Dùng |
 |---|---|---|
 | `trau` | 512×512, chân y≈490 | Trang chủ, màn chào lần đầu |
-| `trau_nho` | 128×128, đầu + vai, nét dày hơn | bong bóng feed, nút "?" (hiển thị 48–64 px) |
+| `trau_nho` | 128×128, đầu + vai, nét dày hơn | bong bóng feed, nút "?" (hiển thị 48–64 px). Không có hành động 10, 11, 13–15, 25–28, 32–35 (đồ cầm / chân) — đặt số đó thì trâu nhỏ đứng nghỉ |
 
 Cả hai có state machine `trau` với cùng đầu vào.
 
@@ -34,7 +34,7 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 9 | vẫy tạm biệt | đóng tour, đăng xuất |
 | 10 | chờ (ngó quanh) | chờ bên kia |
 | 11 | đi tại chỗ | — |
-| 12 | xin lỗi (cúi đầu) | — |
+| 12 | xin lỗi / lỗi: cúi đầu sâu, chắp tay, dấu "?" | lỗi, thử lại |
 | 13 | bê thúng rau (ôm trước ngực) | đăng hàng |
 | 14 | cầm điện thoại | nhắc mở app ngân hàng, kiểm tiền |
 | 15 | ghi sổ (cầm sổ mở) | nhật ký vườn, sổ tiền |
@@ -44,20 +44,20 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 19 | chỉ lên (tay ngón trỏ chéo lên) | tour: chuông thông báo, nút hỗ trợ |
 | 20 | cầm phong bì tiền, mắt cười, nhún | tiền đã về, ngân hàng chuyển cọc |
 | 21 | cầm giấy + bút ký | ký thoả thuận, ký bản sửa |
-| 22 | cảnh báo: tay giơ chặn, mày chau, biển "!" đỏ trên đầu | chống lừa |
+| 22 | cảnh báo: bàn tay dựng đứng "dừng" cạnh má, mày chau, biển "!" đỏ trên đầu | chống lừa |
 | 23 | ngủ gật cạnh chuông | chưa có thông báo |
 | 24 | ngạc nhiên (mắt to, mày nhướng) | bong bóng nhỏ |
 | 25 | đứng cạnh cân, tay trái chỉ mặt cân | kết quả cân, cân lại |
 | 26 | vẫy xe tải (xe chở trái cây đậu bên phải) | bàn giao, xe tới vườn |
 | 27 | cầm túi mẫu niêm phong | mẫu đối chứng, kiểm định |
-| 28 | cầm lịch, bình xịt cạnh chân | nhật ký thuốc, ngày hết cách ly |
+| 28 | tay trái cầm lịch, tay phải cầm bình xịt | nhật ký thuốc, ngày hết cách ly |
 | 29 | đeo tai nghe, đang nói | hỗ trợ, tổng đài |
 | 30 | giơ ngón cái, mắt cười | đánh giá, đơn xong |
 | 31 | hai tay xin bình tĩnh | tranh chấp, lệch tiền |
 | 32 | cầm đồng hồ cát, gõ chân | chờ bên mua ký, chờ ngân hàng |
 | 33 | đội nón lá, mắt nheo | thời tiết nắng |
 | 34 | mặc áo mưa | thời tiết mưa |
-| 35 | so sánh 2 trái (xoài to / nhỏ hai tay) | chọn loại hàng |
+| 35 | so sánh 2 quả xoài (to / nhỏ) cầm thấp trước ngực | chọn loại hàng |
 
 Lưu ý: số 2 hiện chỉ chỉ sang **phải màn hình**; chỉ trái/phải theo `huong` cần góc ¾ (đang gác).
 

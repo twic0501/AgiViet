@@ -240,6 +240,14 @@ Chốt: chỉ chính diện, bỏ hẳn ¾ / nghiêng / sau lưng. Thêm hành �
 #### YEU-CAU-THEM-0111 — ưu tiên 2 (1/11 tối)
 Hành động 25–35 + ảnh `tu-the/19…29`. Đạo cụ vẽ thêm: `xe-tai`, `tui-mau`, `lich`, `binh-xit`, `tai-nghe` (toạ độ khung 512), `ngon-cai`, `xoai`. Đạo cụ có lớp: 'sau' (sau người: cân, xe, bình xịt), 'tren' (trên tay), 'dau' (theo đầu: tai nghe, nón lá), 'ao' (khoác ngoài người, dưới khăn: áo mưa); mặc định giữa hai bàn tay. **Lỗi đã sửa:** `tao-canh` bỏ qua `<circle>` → đổi thành ellipse khi nạp đạo cụ (bánh xe, trái cây, dấu chấm "!", con dấu phong bì từng mất). `trau-v4.riv` ≈794 KB.
 
+#### Sửa theo "Rà soát lần 1 bản giao" (Claude 1, YEU-CAU-THEM-0111) — 1/11 tối
+- 28 áo mưa: bỏ `fill-opacity` 0,23 / 0,43 trong `ao-mua.svg` (hết "bóng ma"), co dọc ×0,7 để thấy đủ chân. 23 tai nghe: micro xám, đầu micro cạnh má (x 145, y 250), xa mõm.
+- 27 nón lá to ×1,12 ôm đầu + quai (`quai-non.svg`, lớp 'quai' chèn ngay dưới `mom` → quai không vắt qua mõm). 18 cảnh báo: bản tay chống má + `tay-dung.svg` (lòng bàn tay mở) trùm lên = cử chỉ "dừng".
+- 21 túi mẫu / 22 lịch lên lớp trên tay, to hơn; bình xịt cầm ở tay phải đang buông. 29 so sánh: `xoai.svg` thuôn vàng-xanh, hai tay thấp trước ngực. 25 bình tĩnh: tay hạ ~.2, nhấn nhẹ.
+- trong-loi (hành động 12): cúi sâu, chắp tay (bản 'giay'), dấu "?" (`dau-hoi.svg`). "Zzz": nét ngà viền sẫm. Thêm giọt mồ hôi (lo) và vạch sốc (ngạc nhiên) trong `them_v4` — có cả ở đầu nhỏ; đầu nhỏ khung ×0,27 (cách mép ≥ 8 px ở 144 px).
+- **Chỉ nhanh:** tay bắt đầu ở khung 3, chỉ hẳn khung 16; vào hành động tức thì (0 ms — hành động bắt đầu từ dáng nghỉ, trộn làm hai bản tay mờ chồng). Đo runtime: chỉ ra sau 0,15 s.
+- **Dung lượng 813 → 612 KB:** hành động không còn tự khoá gốc mọi thuộc tính (mọi lần đổi đều qua 'về nghỉ <n>' — giờ chỉ khoá thuộc tính của n), 'Nghịch: tắt' đưa về gốc những gì động tác lúc rảnh có thể bỏ dở; artboard nhỏ bỏ hành động đồ cầm / chân; tay gập khuỷu khoá mỗi 30 khung; bàn tay 30 điểm.
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.
