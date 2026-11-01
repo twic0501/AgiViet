@@ -2,6 +2,7 @@
 // Một người mua làm hết (chị Thu Hà, Nhà máy sấy Đồng Xanh). Máy tính + điện thoại dùng chung trạng thái.
 import { esc, d, kg, so, icon, taoKho, chayApp } from "./so-lam-an.js";
 import { BANG, bangTrang, tenAi } from "./kich-ban-bang.js";
+import { THAT, napThat, chaoGia } from "./mua-that.js";
 import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
 
 // ── Dữ liệu ──
@@ -473,7 +474,7 @@ function hieuUngDon(goc, h) {
 const nhanLuot = (l) => l === "ban" ? `<span class="sl-nhan sl-n-ban">Tới lượt bạn</span>` : l === "nb" ? `<span class="sl-nhan">Chờ người bán</span>` : l === "nh" ? `<span class="sl-nhan sl-n-nh">Chờ ngân hàng</span>` : l === "vh" ? `<span class="sl-nhan sl-n-nh">Người vận hành kiểm</span>` : `<span class="sl-nhan sl-n-xong">Hoàn tất</span>`;
 const sao = (n) => `<span class="sl-so" style="color:var(--chin);font-weight:600">${n.toFixed(1)}★</span>`;
 const theLo = (l, url) => `<a class="sl-lo" href="${url("chi-tiet-lo", "&lo=" + l.ma)}"><div class="sl-lo-anh sl-anh-${l.anh}">${l.kiem ? `<span class="sl-nhan sl-n-xong">Đã kiểm tại vườn</span>` : `<span class="sl-nhan">Người bán tự khai</span>`}</div>
-  <div class="sl-lo-than"><b>${esc(l.ten)}</b><span class="sl-ghi">${esc(l.nguoi)} · ${esc(l.noi)}</span><span class="sl-gia">${so(l.gia)} đ/kg</span><span class="sl-ghi">Còn ${kg(l.con)} · hái ${esc(l.hai)} · ${sao(l.uy)} · ${l.don} đơn</span></div></a>`;
+  <div class="sl-lo-than"><b>${esc(l.ten)}</b><span class="sl-ghi">${esc(l.nguoi)} · ${esc(l.noi)}</span><span class="sl-gia">${l.gia == null ? "Giá kín · bạn chào giá" : `${so(l.gia)} đ/kg`}</span><span class="sl-ghi">Còn ${kg(l.con)}${l.uocTinh ? " (ước tính)" : ""} · ${l.sapCo ? "sắp có hàng " : "có hàng "}${esc(l.hai)}${l.uy != null ? ` · ${sao(l.uy)} · ${l.don} đơn` : ""}${l.banGap ? ` · <b style="color:var(--do,#a8392c)">Bán gấp</b>` : ""}</span></div></a>`;
 const the = (tieu, than, phai = "") => `<section class="sl-the"><div class="sl-the-dau"><h2><span class="sl-cham"></span>${esc(tieu)}</h2>${phai}</div>${than}</section>`;
 const dong = (a, b, lop = "") => `<div class="sl-dong ${lop}"><span>${a}</span><b>${b}</b></div>`;
 const bao = (chu, loai = "") => `<div class="sl-bao ${loai}">${icon(loai === "sl-bao-do" ? "canh" : "khien")}<div>${chu}</div></div>`;
@@ -923,5 +924,50 @@ const TAB = [
   { ma: "vi-dam-bao", ten: "Tiền", icon: "tien", gom: ["cong-no", "ghi-thanh-toan"] },
   { ma: "tin-nhan", ten: "Tin nhắn", icon: "tin" },
 ];
-chayApp({ ten: "AgiViet Mua", phu: "Nhà máy sấy Đồng Xanh", menu: MENU, tab: TAB, man, kho, macDinh: "tong-quan", nguoi: { viet: "TH", ten: "Lê Thu Hà", vai: "Phụ trách mua" } });
+let NGUOI = { viet: "TH", ten: "Lê Thu Hà", vai: "Phụ trách mua" }, TEN_TC = "Nhà máy sấy Đồng Xanh";
+if (THAT) {
+  // GĐ3 bước 1: Nguồn hàng + Chi tiết lô + Chào giá chạy dữ liệu thật; các màn khác vẫn là bản mô phỏng (ghi rõ trên màn).
+  try {
+    const d = await napThat();
+    LO.length = 0; LO.push(...d.lo);
+    const ten = d.me.name || "Bên mua";
+    NGUOI = { viet: ten.split(/\s+/).slice(-2).map((x) => x[0]).join("").toUpperCase(), ten, vai: "Dữ liệu thật" }; TEN_TC = d.me.org?.name || TEN_TC;
+  } catch (e) { console.error("Chưa nạp được dữ liệu thật:", e); }
+  man["nguon-hang"].phu = "Lô đang bán trên chợ · giá người bán là giá kín, bạn chào giá";
+  man["chi-tiet-lo"] = {
+    tieuDe: () => lo(new URLSearchParams(location.search).get("lo")).ten, thuoc: "nguon-hang", lui: "nguon-hang",
+    phu: () => { const l = lo(new URLSearchParams(location.search).get("lo")); return `${l.ma} · ${l.nguoi} · ${l.noi}`; },
+    ve: () => { const l = lo(new URLSearchParams(location.search).get("lo")); return `
+    <div class="sl-luoi sl-chinh-phu">
+      <div style="display:grid;gap:16px">
+        <div class="sl-lo-anh sl-anh-${l.anh}" style="border-radius:12px;min-height:180px"></div>
+        ${the("Hàng", dong("Lượng còn bán", `${kg(l.con)}${l.uocTinh ? " (người bán ước tính)" : ""}`) + dong(l.sapCo ? "Sắp có hàng từ" : "Có hàng từ", esc(l.hai)) + dong("Người bán", esc(l.nguoi)) + dong("Tỉnh", esc(l.noi)) + dong("Ảnh chụp trong app", l.soAnh ? `${l.soAnh} ảnh` : "Chưa có") + dong("Nhãn", `<span class="sl-nhan">Người bán tự khai</span>`))}
+        ${bao("Giá người bán đặt là <b>giá kín</b>: bạn không thấy, người bán khác cũng không thấy giá bạn chào. Chào thấp hơn mức người bán chấp nhận thì lời chào tự đóng, không ai bị ghi gì.", "sl-bao-nh")}
+      </div>
+      <div style="display:grid;gap:16px;position:sticky;top:80px;align-self:start">
+        <section class="sl-the" style="display:grid;gap:12px"><h2 style="margin:0;font-size:18px">Chào giá</h2>
+          <label style="display:grid;gap:4px;font-weight:600">Giá (đ/kg)<input id="cg-gia" inputmode="numeric" placeholder="vd 23000" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Lượng (kg)<input id="cg-kg" inputmode="numeric" value="${Math.min(1000, l.con)}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <button class="sl-nut sl-vang" type="button" id="cg-gui">Gửi lời chào giá</button>
+          <p class="sl-ghi" id="cg-bao" role="status"></p>
+          <p class="sl-ghi">Người bán có 24 giờ trả lời: đồng ý, trả giá lại (tối đa 2 lượt mỗi bên) hoặc không bán. Đồng ý giá chưa phải hợp đồng.</p></section>
+      </div>
+    </div>`; },
+    sau: (g) => {
+      const l = lo(new URLSearchParams(location.search).get("lo"));
+      g.querySelector("#cg-gui").onclick = async (e) => { const nut = e.currentTarget;
+        const gia = Number(g.querySelector("#cg-gia").value.replace(/\D/g, "")), soKg = Number(g.querySelector("#cg-kg").value.replace(/\D/g, "")), bao2 = g.querySelector("#cg-bao");
+        if (!(gia >= 1000) || !(soKg > 0)) { bao2.textContent = "Nhập giá (đ/kg) và lượng (kg) hợp lệ."; return; }
+        if (soKg > l.con) { bao2.textContent = `Lô chỉ còn ${kg(l.con)}.`; return; }
+        nut.disabled = true; bao2.textContent = "Đang gửi…";
+        try {
+          const of = await chaoGia(l.id, soKg, gia);
+          bao2.innerHTML = of.status === "auto_rejected" || of.status === "rejected" ? `<b>Chưa tới mức người bán chấp nhận.</b> Lời chào đã đóng; bạn có thể chào lại giá khác.` : `<b>Đã gửi lời chào ${esc(of.code || "")}</b>: ${so(gia)} đ/kg × ${kg(soKg)}. Chờ người bán trả lời trong 24 giờ.`;
+        } catch (err) { bao2.textContent = /trùng/i.test(err.message) ? "Bạn đang có một lời chào giá chờ người bán trả lời ở lô này. Xem ở mục Lời chào giá; khi lời chào đó đóng mới chào tiếp được." : err.message; }
+        nut.disabled = false;
+      };
+    },
+  };
+}
+chayApp({ ten: "AgiViet Mua", phu: TEN_TC, menu: MENU, tab: TAB, man, kho, macDinh: THAT ? "nguon-hang" : "tong-quan", nguoi: NGUOI });
 export { man as MAN_MUA };
