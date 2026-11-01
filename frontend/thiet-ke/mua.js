@@ -179,11 +179,11 @@ function veViec(h, url) {
   // ── Tình huống theo bảng bước (kich-ban-bang.js) ──
   const bt = bangTrang(h);
   if (bt) {
-    if (bt.xong) return theViec("sl-xong", esc(bt.k.meta.xong), "", "");
+    if (bt.xong) return theViec("sl-xong", bt.k.meta.xong, "", "");
     const b = bt.b, g = esc(b.giai || "");
-    if (b.ai === "mua") return theViec("", esc(b.viec), g, nutVang(b.nut, "bang"));
-    if (b.ai === "ban") return theViec("sl-cho", `Đang chờ chị Năm: ${esc(b.viec)}`, g, "");
-    return theViec("sl-cho", `Đang chờ ${tenAi(b.ai)}: ${esc(b.viec)}`, g, nutMp(`Mô phỏng: ${b.nut}`, "bang"));
+    if (b.ai === "mua") return theViec("", b.viec, g, nutVang(b.nut, "bang"));
+    if (b.ai === "ban") return theViec("sl-cho", `Đang chờ chị Năm: ${b.viec}`, g, "");
+    return theViec("sl-cho", `Đang chờ ${tenAi(b.ai)}: ${b.viec}`, g, nutMp(`Mô phỏng: ${b.nut}`, "bang"));
   }
   // ── Bất khả kháng (v23 bat-kha-khang) ──
   if (h.kb === "bkk") {

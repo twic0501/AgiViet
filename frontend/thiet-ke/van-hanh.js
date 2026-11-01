@@ -122,6 +122,8 @@ const man = {
       </section>
     </div>` },
 
+  "tinh-huong-vh": { tieuDe: "Chạy tình huống vận hành", phu: "Theo mô hình quy trình v23 · từng bước, đúng vai", ve: () => `<div id="vh-th"><p class="sl-ghi">Đang nạp mô hình quy trình…</p></div>`,
+    sau: async (goc, kho, { q }) => { const ds = await napTH(); veTH(goc, ds, q.get("th") || docTH().id); } },
   "cau-hinh-phi": { tieuDe: "Cấu hình phí", phu: "Chỉ quản trị · đổi phí không ảnh hưởng đơn đã ký", ve: (s) => `
     <div class="sl-luoi sl-chinh-phu">
       <section class="sl-the" style="display:grid;gap:14px">
@@ -138,11 +140,48 @@ const man = {
     </div>`, sau: (g) => g.querySelector("#luu-phi")?.addEventListener("click", () => doi((s) => { s.phi.gt = Number(g.querySelector("#gt").value.replace(",", ".")) || s.phi.gt; s.phi.mq = Number(g.querySelector("#mq").value.replace(",", ".")) || s.phi.mq; s.phi.tran = Number(g.querySelector("#tran").value.replace(/\D/g, "")) || s.phi.tran; })) },
 };
 
+// ── Chạy tình huống vận hành: các tình huống v23 KHÔNG có đủ hai bên bán + mua (ngân hàng, nhân viên, quản trị, một bên).
+// Đọc thẳng /mo-phong-quy-trinh/quy-trinh.json; người vận hành xác nhận từng bước theo đúng vai, đúng thứ tự v23.
+const K_TH = "agv-vh-tinh-huong";
+const VAI_TEN = { ban: "Người bán", mua: "Bên mua", nv: "Nhân viên AgiViet", qt: "Quản trị AgiViet", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống" };
+const SO_TEN = { coc_giu: "Cọc ngân hàng giữ", phai_tra: "Còn phải trả", da_tra: "Đã trả", hoan: "Hoàn", no: "Nợ" };
+const docTH = () => { try { return JSON.parse(localStorage.getItem(K_TH)) || {}; } catch { return {}; } };
+const ghiTH = (x) => { try { localStorage.setItem(K_TH, JSON.stringify(x)); } catch {} };
+let QT_TH = null;
+async function napTH() {
+  if (!QT_TH) {
+    const qt = await fetch("/mo-phong-quy-trinh/quy-trinh.json").then((r) => r.json());
+    QT_TH = qt.tinh_huong.filter((t) => { const v = new Set((t.buoc || []).map((b) => b.vai)); return !(v.has("ban") && v.has("mua")); });
+  }
+  return QT_TH;
+}
+function veTH(goc, ds, id) {
+  const th = ds.find((t) => t.id === id) || ds[0];
+  const st = docTH(); if (st.id !== th.id) { st.id = th.id; st.pi = 0; ghiTH(st); }
+  const pi = st.pi || 0, xong = pi >= th.buoc.length, b = th.buoc[pi];
+  let so = {}; th.buoc.slice(0, Math.min(pi + 1, th.buoc.length)).forEach((x) => Object.assign(so, x.so || {}));
+  goc.querySelector("#vh-th").innerHTML = `
+    <div class="sl-luoi sl-l2" style="align-items:start">
+      <div style="display:grid;gap:12px">
+        ${the("Tình huống", `<label class="sl-o"><span>Chọn tình huống (${ds.length} tình huống chỉ có vận hành / ngân hàng / một bên)</span><select id="th-chon">${ds.map((t) => `<option value="${t.id}" ${t.id === th.id ? "selected" : ""}>${esc(t.ten)}</option>`).join("")}</select></label><p class="sl-ghi" style="margin-top:6px">${esc(th.mo_ta || "")}</p>`)}
+        ${xong ? `<section class="sl-viec sl-xong" id="th-viec" style="grid-template-columns:minmax(0,1fr)"><div><h2>Đã đi hết ${th.buoc.length} bước</h2><p>Tình huống "${esc(th.ten)}" chạy xong theo đúng thứ tự v23.</p></div><div class="sl-hang-nut" style="grid-row:auto;grid-column:auto"><button class="sl-nut sl-vien" type="button" id="th-lai">Chạy lại</button></div></section>`
+          : `<section class="sl-viec" id="th-viec" style="grid-template-columns:minmax(0,1fr)"><div><h2>Bước ${pi + 1}/${th.buoc.length} · ${esc(VAI_TEN[b.vai] || b.vai)}: ${esc(b.viec)}</h2>
+            <p>${esc(b.chi_tiet || "")}${b.dieu_kien ? ` <b>Điều kiện:</b> ${esc(b.dieu_kien)}.` : ""}${b.han ? ` <b>Hạn:</b> ${esc(b.han)}.` : ""}${b.trang_thai ? ` Trạng thái đơn: ${esc(b.trang_thai)}.` : ""}</p></div>
+            <div class="sl-hang-nut" style="grid-row:auto;grid-column:auto"><button class="sl-nut sl-vien" type="button" id="th-lai">Chạy lại</button><button class="sl-nut ${["nv", "qt"].includes(b.vai) ? "sl-vang" : "sl-mp"}" type="button" id="th-tiep">${["nv", "qt"].includes(b.vai) ? "Xác nhận đã làm" : `Mô phỏng: ${esc(VAI_TEN[b.vai] || b.vai)} xong`}</button></div></section>`}
+        ${Object.keys(so).length ? the("Số tiền ở bước này", Object.entries(so).map(([k, v]) => dong(esc(SO_TEN[k] || k.replace(/_/g, " ")), typeof v === "number" ? d(v) : esc(String(v)))).join("")) : ""}
+      </div>
+      ${the("Các bước v23", `<ol class="sl-buoc">${th.buoc.map((x, i) => `<li class="${i < pi ? "sl-b-xong" : i === pi ? "sl-b-nay" : "sl-b-cho"}"><span class="sl-b-vong">${i + 1}</span><div><small>${esc(VAI_TEN[x.vai] || x.vai)}</small><b>${esc(x.viec)}</b></div></li>`).join("")}</ol>`, `<span class="sl-ghi">${Math.min(pi, th.buoc.length)}/${th.buoc.length}</span>`)}
+    </div>`;
+  goc.querySelector("#th-chon").onchange = (e) => { history.replaceState(null, "", `?man=tinh-huong-vh&th=${e.target.value}`); ghiTH({ id: e.target.value, pi: 0 }); veTH(goc, ds, e.target.value); };
+  goc.querySelector("#th-lai").onclick = () => { ghiTH({ id: th.id, pi: 0 }); veTH(goc, ds, th.id); };
+  const n = goc.querySelector("#th-tiep"); if (n) n.onclick = () => { ghiTH({ id: th.id, pi: pi + 1 }); veTH(goc, ds, th.id); };
+}
+
 const MENU = [
   { muc: [{ ma: "tong-quan-vh", ten: "Tổng quan", icon: "nha" }] },
   { nhom: "Hàng chờ", muc: [{ ma: "duyet-xac-minh", ten: "Xác minh", icon: "khien", dem: (s) => 4 - Object.keys(s.duyet).length }, { ma: "kiem-duyet-tin", ten: "Kiểm duyệt tin", icon: "co", dem: () => 4 }, { ma: "canh-bao-lach", ten: "Lách liên lạc", icon: "canh", dem: () => 2 }, { ma: "tranh-chap", ten: "Tranh chấp", icon: "can", dem: (s) => s.tc.quyet ? 2 : 3 }, { ma: "yeu-cau-ho-tro", ten: "Hỗ trợ", icon: "tin", dem: () => 7 }] },
   { nhom: "Tiền và tài khoản", muc: [{ ma: "tien-dam-bao", ten: "Tiền đảm bảo", icon: "tien" }, { ma: "nguoi-dung", ten: "Người dùng", icon: "nguoi" }] },
-  { nhom: "Quản trị", muc: [{ ma: "cau-hinh-phi", ten: "Cấu hình phí", icon: "cai" }] },
+  { nhom: "Quản trị", muc: [{ ma: "cau-hinh-phi", ten: "Cấu hình phí", icon: "cai" }, { ma: "tinh-huong-vh", ten: "Chạy tình huống", icon: "can" }] },
 ];
 const TAB = [
   { ma: "tong-quan-vh", ten: "Tổng quan", icon: "nha" },
