@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thử quy trình trên hai app · AgiViet</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+  :root { --nen: #222b25; --noi: #2c3630; --chu: #ece8dc; --nhat: #b9bdb0; --vang: #f2c14e; --do: #e2725b; --ke: rgba(236,232,220,.12); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--nen); color: var(--chu); font: 15px/1.5 "Be Vietnam Pro", system-ui, sans-serif; }
+  button, select { font: inherit; }
+  .tq-dau { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 12px 20px; border-bottom: 1px solid var(--ke); }
+  .tq-dau h1 { font-size: 17px; margin: 0 8px 0 0; }
+  .tq-dau select { min-height: 40px; border-radius: 10px; border: 0; padding: 0 12px; background: var(--chu); color: #1c2a21; max-width: 100%; }
+  .tq-nut { min-height: 40px; border-radius: 10px; border: 0; padding: 0 14px; font-weight: 700; cursor: pointer; background: rgba(236,232,220,.14); color: var(--chu); box-shadow: 0 3px 0 rgba(0,0,0,.3); }
+  .tq-nut.vang { background: var(--vang); color: #1f1503; box-shadow: 0 3px 0 #c9952a; }
+  .tq-nut:active { transform: translateY(3px); box-shadow: none; }
+  .tq-nut:disabled { opacity: .45; cursor: default; }
+  .tq-san { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; gap: 20px; padding: 16px 20px; align-items: start; }
+  .tq-trai { position: sticky; top: 12px; display: grid; gap: 12px; max-height: calc(100vh - 90px); overflow: auto; }
+  .tq-the { background: var(--noi); border-radius: 14px; padding: 14px; box-shadow: 0 0 0 1px var(--ke); }
+  .tq-the h2 { font-size: 15px; margin: 0 0 6px; }
+  .tq-ghi { color: var(--nhat); font-size: 13px; margin: 0; }
+  .tq-bay { display: grid; gap: 8px; }
+  .tq-buoc-nay { font-size: 18px; font-weight: 700; margin: 0; }
+  .tq-lech { background: rgba(226,114,91,.16); box-shadow: 0 0 0 1px rgba(226,114,91,.5); border-radius: 10px; padding: 8px 10px; font-size: 13px; }
+  .tq-lech b { color: #f3a593; }
+  ol.tq-v23 { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .tq-v23 li { display: grid; grid-template-columns: 26px 64px 1fr; gap: 6px; align-items: baseline; padding: 4px 6px; border-radius: 8px; font-size: 13px; color: var(--nhat); }
+  .tq-v23 li.da { color: var(--chu); }
+  .tq-v23 li.nay { background: rgba(242,193,78,.18); color: var(--chu); box-shadow: 0 0 0 1px rgba(242,193,78,.5); }
+  .tq-vai { font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 6px; text-align: center; color: #12201a; }
+  .tq-may-ca { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .tq-cot { display: grid; gap: 8px; justify-items: center; transition: opacity .25s, filter .25s; }
+  .tq-cot.cho { opacity: .55; filter: saturate(.6); }
+  .tq-cot h2 { font-size: 15px; margin: 0; }
+  .tq-loi { min-height: 46px; max-width: 390px; text-align: center; font-weight: 700; padding: 8px 14px; border-radius: 12px; background: rgba(236,232,220,.08); }
+  .tq-cot.lam .tq-loi { background: var(--vang); color: #1f1503; }
+  .may { width: 390px; height: 780px; border-radius: 34px; overflow: hidden; border: 10px solid #111; background: #000; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+  .tq-cot.lam .may { box-shadow: 0 0 0 4px var(--vang), 0 20px 60px rgba(0,0,0,.4); }
+  .may iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+  .tq-hang { display: flex; gap: 8px; flex-wrap: wrap; }
+  @media (max-width: 1100px) { .tq-san { grid-template-columns: 1fr; } .tq-trai { position: static; max-height: none; } }
+  @media (max-width: 440px) { .may { width: 100%; max-width: 390px; height: 700px; } .tq-dau, .tq-san { padding-left: 16px; padding-right: 16px; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="tq-dau">
+  <h1>Thử quy trình trên hai app</h1>
+  <select id="chon" aria-label="Tình huống"></select>
+  <button class="tq-nut" id="lai" type="button">Làm lại</button>
+  <button class="tq-nut" id="lui" type="button">◀ Bước trước</button>
+  <button class="tq-nut vang" id="bam" type="button">Bấm giúp</button>
+  <button class="tq-nut" id="toi" type="button">Bước sau ▶</button>
+  <button class="tq-nut" id="chay" type="button">Tự chạy</button>
+</div>
+<div class="tq-san">
+  <aside class="tq-trai">
+    <section class="tq-the tq-bay" id="bay"></section>
+    <section class="tq-the"><h2 id="ten-v23">Các bước theo mô hình quy trình v23</h2><ol class="tq-v23" id="v23"></ol></section>
+  </aside>
+  <main class="tq-may-ca">
+    <div class="tq-cot" id="cot-ban"><h2>Chị Năm · app bán</h2><div class="tq-loi" id="loi-ban"></div><div class="may"><iframe id="ban" title="App bán"></iframe></div></div>
+    <div class="tq-cot" id="cot-mua"><h2>Chị Thu Hà · app mua</h2><div class="tq-loi" id="loi-mua"></div><div class="may"><iframe id="mua" title="App mua"></iframe></div></div>
+  </main>
+</div>
+<script type="module">
+import { KICH_BAN } from "./testquytrinhapp-kich-ban.js";
+import { K_TC } from "./giao-dich-chung.js";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const cho = (ms) => new Promise((r) => setTimeout(r, ms));
+const qt = await fetch("/mo-phong-quy-trinh/quy-trinh.json").then((r) => r.json());
+const TH = Object.fromEntries(qt.tinh_huong.map((t) => [t.id, t]));
+const VAI = Object.fromEntries(qt.vai.map((v) => [v.id, v]));
+const TEN_AI = { ban: "Chị Năm (bên bán)", mua: "Chị Thu Hà (bên mua)", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống AgiViet", nv: "Nhân viên AgiViet" };
+const ds = KICH_BAN.filter((k) => TH[k.id]);
+$("chon").innerHTML = ds.map((k) => `<option value="${k.id}">${esc(TH[k.id].ten)}</option>`).join("");
+let kb = ds[0], i = 0, dangBam = false, tuChay = false;
+
+// Mở một màn trên điện thoại; nếu chỉ khác phần # thì tải lại để màn vẽ theo dữ liệu mới
+async function mo(f, url) {
+  const moi = new URL(url, location.href).href;
+  const cu = f.contentWindow?.location?.href || "";
+  if (cu === moi) { f.contentWindow.location.reload(); }
+  else { f.src = moi; if (cu.split("#")[0] === moi.split("#")[0]) { await cho(50); f.contentWindow.location.reload(); } }
+  await new Promise((r) => { const xong = () => r(); f.addEventListener("load", xong, { once: true }); setTimeout(xong, 2500); });
+  await cho(500);
+}
+function timNut(f, n) {
+  const doc = f.contentDocument; if (!doc) return null;
+  return [...doc.querySelectorAll(n.sel)].find((el) => !n.chu || el.textContent.includes(n.chu)) || null;
+}
+function khoanh(f, el) {
+  const doc = f.contentDocument;
+  if (!doc.getElementById("tq-kieu")) doc.head.insertAdjacentHTML("beforeend", `<style id="tq-kieu">.tq-chi{outline:4px solid #f2c14e!important;outline-offset:4px;border-radius:12px;animation:tq-nhay 1.1s ease-in-out infinite}@keyframes tq-nhay{50%{outline-color:rgba(242,193,78,.35)}}@media (prefers-reduced-motion:reduce){.tq-chi{animation:none}}</style>`);
+  doc.querySelectorAll(".tq-chi").forEach((x) => x.classList.remove("tq-chi"));
+  el.classList.add("tq-chi"); el.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+async function choNut(f, n, ms = 3000) { for (let t = 0; t < ms; t += 150) { const el = timNut(f, n); if (el) return el; await cho(150); } return null; }
+
+function napDuLieu() {
+  try {
+    for (const k of ["agv-hd-0018", "agv-mua", "agv-ban-mau", ...(kb.xoaChat ? [K_TC, "agv-tro-chuyen-v1-vp"] : [])]) localStorage.removeItem(k);
+    localStorage.setItem("agv-hd-0018", JSON.stringify({ buoc: 0, daTra: 0, nbXn: 0, kb: kb.kb, phu: "", ban: 1, huy: false, ngayGiao: "28/10", ...kb.dau }));
+  } catch {}
+}
+function veTrai() {
+  const t = TH[kb.id], b = kb.buoc[i], nay = new Set(b.qt), da = new Set(kb.buoc.slice(0, i).flatMap((x) => x.qt));
+  $("ten-v23").textContent = `${t.ten} · ${t.buoc.length} bước v23`;
+  $("v23").innerHTML = t.buoc.map((x, k) => { const v = VAI[x.vai] || {}; return `<li class="${nay.has(k) ? "nay" : da.has(k) ? "da" : ""}"><span>${k + 1}</span><span class="tq-vai" style="background:${esc(v.mau || "#ccc")}">${esc(v.ten_ngan || x.vai)}</span><span>${esc(x.viec)}</span></li>`; }).join("");
+  $("v23").querySelector("li.nay")?.scrollIntoView({ block: "nearest" });
+  const nut = b.nut.length ? b.nut.map((n) => n.chu ? `"${n.chu}"` : "nút được khoanh vàng").join(" rồi ") : "";
+  const ai = TEN_AI[b.ai] || b.ai;
+  $("bay").innerHTML = `<p class="tq-ghi">Bước ${i + 1}/${kb.buoc.length} · ${esc(kb.tom)}</p>
+    <p class="tq-buoc-nay">${b.ben ? `${esc(ai)} bấm ${esc(nut)}` : esc(b.ghi || "Hệ thống tự làm")}</p>
+    ${b.qt.length ? `<p class="tq-ghi">Theo quy trình: ${b.qt.map((k) => `${k + 1}. ${esc(t.buoc[k]?.viec)}`).join(" · ")}</p>` : `<p class="tq-ghi">Bước này không có trong quy trình v23.</p>`}
+    ${b.ben && b.ghi ? `<p class="tq-ghi">${esc(b.ghi)}</p>` : ""}
+    ${b.lech ? `<div class="tq-lech"><b>Lệch so với quy trình:</b> ${esc(b.lech)}</div>` : ""}
+    ${i === 0 && kb.lechChung ? `<div class="tq-lech"><b>Lệch chung:</b> ${esc(kb.lechChung)}</div>` : ""}`;
+  $("lui").disabled = i === 0; $("toi").disabled = i >= kb.buoc.length - 1; $("bam").disabled = !b.nut.length;
+}
+async function veBuoc() {
+  const b = kb.buoc[i];
+  veTrai();
+  for (const ben of ["ban", "mua"]) { $("cot-" + ben).className = "tq-cot " + (b.ben === ben ? "lam" : b.ben ? "cho" : ""); $("loi-" + ben).textContent = "…"; }
+  await Promise.all([mo($("ban"), b.ban), mo($("mua"), b.mua)]);
+  for (const ben of ["ban", "mua"]) {
+    if (b.ben !== ben) { $("loi-" + ben).textContent = b.ben ? `Đang chờ ${b.ai === "nh" ? "ngân hàng" : b.ai === "dt" ? "phòng kiểm định" : "bên kia"}` : (b.ghi || "Xem kết quả"); continue; }
+    const n = b.nut[0], el = await choNut($(ben), n);
+    $("loi-" + ben).textContent = el ? `${b.ai === "nh" ? "Thay ngân hàng, " : b.ai === "dt" ? "Thay phòng kiểm định, " : ""}bấm: ${(n.chu || el.textContent).trim().replace(/\s+/g, " ").slice(0, 60)}` : "Không thấy nút cần bấm — kiểm lại bản mô phỏng";
+    if (el) khoanh($(ben), el);
+  }
+}
+async function bamGiup() {
+  const b = kb.buoc[i]; if (!b.nut.length || dangBam) return false;
+  dangBam = true;
+  try {
+    for (const n of b.nut) { const el = await choNut($(b.ben), n); if (!el) return false; khoanh($(b.ben), el); await cho(500); el.click(); await cho(900); }
+    await cho(1400);
+    return true;
+  } finally { dangBam = false; }
+}
+async function toi() { if (i < kb.buoc.length - 1) { i++; await veBuoc(); } }
+// Bước trước: chạy lại từ đầu tới bước đó (dữ liệu chung chỉ đi tới, nên tua lại bằng cách bấm lại)
+async function lui() { const dich = Math.max(0, i - 1); await batDau(); while (i < dich) { await bamGiup(); i++; } await veBuoc(); }
+async function batDau() { napDuLieu(); i = 0; await veBuoc(); }
+
+const boc = (f) => async () => { if (window.__tqBan) return; window.__tqBan = true; try { await f(); } finally { window.__tqBan = false; } };
+$("chon").onchange = () => { kb = ds.find((k) => k.id === $("chon").value); history.replaceState(null, "", "#" + kb.id); batDau(); };
+$("lai").onclick = batDau;
+$("toi").onclick = boc(toi);
+$("lui").onclick = boc(lui);
+$("bam").onclick = boc(async () => { if (await bamGiup()) await toi(); });
+$("chay").onclick = async () => {
+  if (tuChay) { tuChay = false; $("chay").textContent = "Tự chạy"; return; }
+  tuChay = true; $("chay").textContent = "Dừng";
+  while (tuChay) { const b = kb.buoc[i]; if (b.nut.length && !(await bamGiup())) break; await cho(800); if (i >= kb.buoc.length - 1) break; await toi(); await cho(1200); }
+  tuChay = false; $("chay").textContent = "Tự chạy";
+};
+const tuHash = ds.find((k) => k.id === location.hash.slice(1)); if (tuHash) { kb = tuHash; $("chon").value = kb.id; }
+batDau();
+</script>
+</body>
+</html>

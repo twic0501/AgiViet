@@ -94,7 +94,8 @@
   ];
   const dem = (a) => a.reduce((t, [, ds]) => t + ds.length, 0);
   const ben = document.getElementById("ben");
-  [["App bán · đã chốt (19 màn Sổ vườn) + màn mới chờ duyệt", BAN], ["App bán · đủ 80 màn theo danh mục (đã chốt + màn mới chờ duyệt)", BAN_MAU], ["App bán · Motion v2", MOTION], ["App mua · máy tính + điện thoại", MUA], ["Trang vận hành", VH]].forEach(([ten, ds]) => {
+  const THU = [["Thử giao dịch hai bên", [["Thử quy trình trên hai app: tới bước nào, ai bấm nút nào (theo mô hình quy trình v23)", "testquytrinhapp.html"], ["Hai app cạnh nhau, tự bấm", "hai-ben.html"]]]];
+  [["Thử quy trình trên hai app", THU], ["App bán · đã chốt (19 màn Sổ vườn) + màn mới chờ duyệt", BAN], ["App bán · đủ 80 màn theo danh mục (đã chốt + màn mới chờ duyệt)", BAN_MAU], ["App bán · Motion v2", MOTION], ["App mua · máy tính + điện thoại", MUA], ["Trang vận hành", VH]].forEach(([ten, ds]) => {
     const dt = document.createElement("details"); dt.open = true;
     dt.innerHTML = `<summary>${ten}<small>${dem(ds)} mục</small></summary>` + ds.map(([n, ms]) => `<div class="nhom">${n}</div>` + ms.map(([t, u]) => `<a href="#${u}">${t}</a>`).join("")).join("");
     ben.appendChild(dt);

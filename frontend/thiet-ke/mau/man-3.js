@@ -6,9 +6,12 @@ import { docHD, ghiHD, tinhTien } from "../giao-dich-chung.js";
 const AI = { bac: "Bác", mua: "Bên mua", nh: "Ngân hàng" };
 // Tiền đang ở đâu theo bước (nhìn từ phía bác)
 function tienO(b) {
-  const nhan = (b >= 7 ? TIEN.TRA_THANG : 0) + (b >= 13 ? TIEN.COC_CHO_BAC : 0);
-  const giu = b >= 4 && b < 13 ? TIEN.COC : 0;
-  const cho = b >= 15 ? 0 : b >= 11 ? TIEN.COC_CHO_BAC : b >= 6 && b < 7 ? TIEN.TRA_THANG : TIEN.GIA_TRI - nhan;
+  // Đọc HĐ dùng chung: hủy, trả một phần, hoàn dư đều phải khớp với app mua (tinhTien)
+  const h = docHD(), t = tinhTien(h);
+  let nhan = (b >= 7 ? (h.nbXn || TIEN.TRA_THANG) : (h.nbXn || 0)) + (b >= 13 ? t.cocNB : 0) - (h.nbHoanXn || h.phu === "nb-da-hoan" ? t.nbHoan : 0);
+  let giu = b >= 4 && b < 13 ? TIEN.COC : 0;
+  let cho = b >= 15 ? 0 : Math.max(0, (b >= 11 ? t.nt : TIEN.GIA_TRI) - nhan);
+  if (h.huy) { nhan = TIEN.COC; giu = 0; cho = 0; }
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--ke);background:var(--giay-noi)">
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
