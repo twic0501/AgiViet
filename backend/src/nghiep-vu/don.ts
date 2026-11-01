@@ -378,7 +378,7 @@ function hanhDongDon(nd: NguoiDung, o: any, phia: string, ky?: { duoc_ky: boolea
 }
 
 export async function danhSachDon(t: GiaoDich, nd: NguoiDung) {
-  const ds = await t.q<any>(`SELECT o.id,o.code,o.status,o.version revision,o.buyer_org_id,o.seller_org_id,o.close_reason,
+  const ds = await t.q<any>(`SELECT o.id,o.code,o.status,o.version revision,o.buyer_org_id,o.seller_org_id,o.close_reason,o.offer_id,
       (SELECT contract_value_vnd::text FROM core.order_versions v WHERE v.order_id=o.id ORDER BY version_no DESC LIMIT 1) contract_value_vnd,
       b.display_name buyer_name, s.display_name seller_name, o.created_at
       FROM core.orders o JOIN core.organizations b ON b.id=o.buyer_org_id JOIN core.organizations s ON s.id=o.seller_org_id

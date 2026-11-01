@@ -27,6 +27,8 @@ export function quetLienLacDayDu(t) {
   const goc = String(t || "").replace(/[\uFE0F\u20E3]/g, "").replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48));
   let x = BO_DAU(goc.toLowerCase());
   for (const r of KHONG_PHAI_SDT) x = x.replace(r, " ");
+  // gộp chữ cái đơn xen dấu ("z.a.l.o", "f-b") thành một từ
+  x = x.replace(/\b(?:[a-z][.\-_*](?=[a-z]\b))+[a-z]\b/g, (m) => m.replace(/[.\-_*]/g, ""));
   // tách chữ dính số ("khong9", "o9l8") để đọc từng mẩu
   x = x.replace(/([a-z])(?=\d)/g, "$1 ").replace(/(\d)(?=[a-z])/g, "$1 ");
   // đổi số đọc bằng chữ thành chữ số (bỏ dấu câu xen giữa)
@@ -40,15 +42,16 @@ export function quetLienLacDayDu(t) {
     return w;
   });
   // chuỗi liên tiếp các "từ là chữ số" ghép lại (chỉ tính khi có ít nhất 1 từ đọc bằng chữ, để không đếm trùng)
-  let chuoiChu = "", maxChu = "";
+  let chuoiChu = "", maxChu = ""; const cacChuoi = [];
   doiChu.forEach((w, i) => {
     if (/^\d+$/.test(w) && (w.length <= 4 || tu[i] in SO_CHU || /^[oli]+$/.test(tu[i]))) { chuoiChu += w; if (chuoiChu.length > maxChu.length) maxChu = chuoiChu; }
-    else chuoiChu = "";
+    else { if (chuoiChu) cacChuoi.push(chuoiChu); chuoiChu = ""; }
   });
+  if (chuoiChu) cacChuoi.push(chuoiChu);
   const coChu = thayChu || tu.some((w) => w in SO_CHU && w !== "o" && w !== "le" && w !== "tu" && w !== "nam");
   const lienSo = x.replace(/[\s.\-_/,()]+/g, "");
   const sdtSo = /(?:\+?84|0)\d{8,10}/.test(lienSo.replace(/\+/g, "+"));
-  const sdtChu = coChu && /^(?:84|0)\d{8,10}/.test(maxChu);
+  const sdtChu = coChu && cacChuoi.some((c) => /(?:84|0)\d{8,10}/.test(c));
   const stk = new RegExp(`\\b(${NGAN_HANG})\\b[^\\d]{0,12}(\\d[\\s.-]?){6,}`).test(x);
   const kenh = KENH.test(x);
   const link = new RegExp(LINK.source, "i").test(goc);
@@ -72,6 +75,7 @@ export function quetLienLacDayDu(t) {
     .replace(/(^|[^\p{L}])(zalo|za lô|za lo|dê lô|de lo|da lô|da lo|zl|facebook|fb|phây|phay|messenger|viber|telegram|tiktok|instagram)(?![\p{L}])/giu, (m, a) => `${a}•••`);
   // đã có kênh nhắn ngoài thì che luôn mẩu số đi kèm (≥ 3 chữ số), kể cả số chưa đủ dài
   if (kenh) che = che.replace(/\d[\d\s.\-]{2,}\d/g, "•••");
+  if (stk) che = che.replace(/[\d•][\d•\s.\-]*\d/g, "•••");
   if ((sdtChu || emailLach) && che.replace(/•••/g, "") === goc.replace(/•••/g, "")) che = sdtChu ? "Tin có số điện thoại đọc bằng chữ (đã che)" : "Tin có địa chỉ email viết tránh (đã che)";
   return { sach: false, che, loai };
 }

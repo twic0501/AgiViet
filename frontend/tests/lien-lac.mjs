@@ -10,6 +10,7 @@ const PHAI_BAT = [
   // 02/11: các kiểu lách khó hơn
   "z.a.l.o 0918000421", "goi o9l8 ooo 421", "sdt ０９１８０００４２１", "số mình 0️⃣9️⃣1️⃣8️⃣000421", "khong9 mot8 000 421",
   "gmail namxoai at gmail dot com", "lien he 09.18.00.04.21", "vcb 0071 000 610 610", "kb zl chị nha 0918 000 421",
+  "z.a.l.o anh Tư: khong chin bay bay khong khong khong sau mot khong",
 ];
 const KHONG_DUOC_CHE = [
   "Cọc 13.800.000 đ, trả thẳng 32.200.000 đ", "Giá 23.000 đ/kg, lô 2.000 kg", "Tổng 46 triệu", "Giao ngày 28/10 lúc 5:30", "Lô L-0412 còn 3.500 kg",

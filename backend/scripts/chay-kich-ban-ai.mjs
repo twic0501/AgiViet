@@ -27,7 +27,7 @@ const du = (d) => d?.data ?? d;
 
 async function chayMot(kb) {
   tokens.clear();
-  await ok('POST', '/v1/test/reset', {});
+  if (process.env.KHONG_DAT_LAI !== '1') await ok('POST', '/v1/test/reset', {});
   const s = { offer: null, order: null, delivery: null, qr: null };
   const ketQua = [];
   const lotTheoMa = async (code) => { const me = await vai(CHU_LO[code]); const l = (await ok('GET', '/v1/lots?mine=true', undefined, me.token)).find((x) => x.code === code); if (!l) throw new Error('Không thấy lô ' + code); return l; };
@@ -41,7 +41,7 @@ async function chayMot(kb) {
       switch (b.lam) {
         case 'chao': { const l = await lotTheoMa(b.lo); kq = du(await ok('POST', '/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: Math.round(b.kg * 1000), price_vnd: b.gia }, t)); s.offer = kq.id; break; }
         case 'bao_gia': { const chu = await vai(CHU_NC[b.nhu_cau]); const nc = (await ok('GET', '/v1/demands?mine=true', undefined, chu.token)).find((x) => x.code === b.nhu_cau);
-          const ct = await ok('GET', `/v1/demands/${nc.id}`, undefined, chu.token); const line = ct.lines?.[0]?.id ?? ct.dong?.[0]?.id; const l = await lotTheoMa(b.lo);
+          const ct = await ok('GET', `/v1/demands/${nc.id}`, undefined, chu.token); const line = ct.lines?.[0]?.id ?? ct.dong?.[0]?.id; const l = b.lo === '@moi' ? s.loMoi : await lotTheoMa(b.lo);
           kq = du(await ok('POST', '/v1/offers', { direction: 'seller_quote', lot_id: l.id, demand_line_id: line, qty_g: Math.round(b.kg * 1000), price_vnd: b.gia }, t)); s.offer = kq.id; break; }
         case 'tra_gia': { const of = await ok('GET', `/v1/offers/${s.offer}`, undefined, t); kq = du(await ok('POST', `/v1/offers/${s.offer}/counter`, { price_vnd: b.gia, qty_g: Number(b.kg ? b.kg * 1000 : of.rounds.at(-1).qty_g) }, t)); break; }
         case 'dong_y': { const of = await ok('GET', `/v1/offers/${s.offer}`, undefined, t); kq = du(await ok('POST', `/v1/offers/${s.offer}/accept`, { expected_revision: of.revision }, t)); break; }
@@ -70,6 +70,8 @@ async function chayMot(kb) {
         case 'phat_qr': { const d = await dot(t); kq = du(await ok('POST', `/v1/deliveries/${d.id}/receipt-qr`, {}, t)); s.qr = kq.qr_token ?? kq.data?.qr_token; break; }
         case 'bat_dau_can': { const d = await dot(t); const dv = await ok('GET', `/v1/deliveries/${d.id}`, undefined, t);
           await ok('POST', '/v1/test/clock', { set: new Date(new Date(dv.window_from).getTime() + 30 * 60e3).toISOString() });
+          // Ngoài đời người nhận đưa mã trên app của họ; trong thử, lấy mã phát lại từ bên mua của kịch bản (vai.mua)
+          if (!s.qr && kb.vai?.mua) s.qr = du(await ok('POST', `/v1/deliveries/${d.id}/receipt-qr`, {}, (await vai(kb.vai.mua)).token)).qr_token;
           kq = du(await ok('POST', `/v1/deliveries/${d.id}/start-check`, { qr_token: s.qr }, t)); break; }
         case 'nghiem_thu': { const d = await dot(t); const anh = du(await ok('POST', '/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'delivery', entity_id: d.id, captured_in_app: true }, t));
           kq = du(await ok('POST', `/v1/deliveries/${d.id}/acceptance`, { pin: PIN, weighed_g: Math.round(b.can_kg * 1000), seal_code: 'M-' + (1000 + i), lines: b.dong.map((x) => ({ kind: x.loai, qty_g: Math.round(x.kg * 1000), ...(x.ly_do ? { reason_code: x.ly_do, evidence_document_id: anh.id } : {}) })) }, t)); break; }
@@ -77,6 +79,21 @@ async function chayMot(kb) {
         case 'phan_doi_can': { const d = await dot(t); kq = du(await ok('POST', `/v1/deliveries/${d.id}/acceptance/dispute`, { pin: PIN, line_no: b.dong ?? 1, reason: b.ly_do ?? 'Không đúng' }, t)); break; }
         case 'tua_gio': kq = await ok('POST', '/v1/test/clock', { advance_minutes: Math.round((b.gio ?? 1) * 60) }); break;
         case 'xem': break;
+        // Chờ đối tác ảo (chạy song song trên cùng backend) phản hồi
+        case 'cho': await new Promise((ok) => setTimeout(ok, Math.round((b.giay ?? 8) * 1000))); kq = { cho_giay: b.giay ?? 8 }; break;
+        // Chọn lời chào/báo giá hiện tại theo mã lô (bán gộp: nhiều báo giá cho một nhu cầu)
+        case 'chon': { const ds = await ok('GET', '/v1/offers', undefined, t); const x = ds.find((o) => o.lot_code === b.lo && /sent|accepted/.test(o.status)) ?? ds.find((o) => o.lot_code === b.lo);
+          if (!x) throw new Error('Không thấy lời chào cho lô ' + b.lo); s.offer = x.id; s.order = null;
+          const don = (await ok('GET', '/v1/orders', undefined, t)).find((d) => d.offer_id === x.id); if (don) s.order = don.id;
+          kq = { offer: x.code, status: x.status, don: don?.code ?? null }; break; }
+        // Chọn hợp đồng theo lời chào hiện tại (sau khi bên kia lập đơn)
+        case 'chon_don': { const of = s.offer; const ds = await ok('GET', '/v1/orders', undefined, t); const d = ds.find((x) => x.offer_id === of) ?? ds.at(-1);
+          if (!d) throw new Error('Chưa có hợp đồng'); s.order = d.id; kq = { don: d.code, status: d.status }; break; }
+        // Người bán đăng lô mới (rồi mở bán)
+        case 'dang_lo': { const now = new Date((await ok('GET', '/v1/test/clock')).now); const ngay = now.toISOString().slice(0, 10);
+          const l = du(await ok('POST', '/v1/lots', { product_code: b.mat_hang, grade_code: b.loai, qty_basis: 'estimated', qty_g: Math.round(b.kg * 1000), available_from: ngay, harvest_on: ngay, ask_price_vnd: b.gia, floor_price_vnd: b.gia_kin ?? Math.round(b.gia * 0.9) }, t));
+          const ct = await ok('GET', `/v1/lots/${l.id}`, undefined, t);
+          kq = du(await ok('POST', `/v1/lots/${l.id}/publish`, { expected_revision: ct.revision }, t)); s.loMoi = { id: l.id, code: ct.code ?? l.code }; kq = { lo: s.loMoi.code, ...kq }; break; }
         default: throw new Error('Thao tác chưa hỗ trợ: ' + b.lam);
       }
       ghi.http = 200; ghi.ket_qua = JSON.stringify(kq ?? null).slice(0, 400);
