@@ -1043,5 +1043,62 @@ if (THAT) {
       try { await ve(); } catch (err) { g.querySelector("#lc-ds").textContent = err.message; }
     } };
 }
+if (THAT) {
+  // GĐ3 bước 4: Đơn bên mua thật (danh sách + chi tiết + ký OTP).
+  const maHD = (c) => String(c || "").replace(/^HD-/, "HĐ-");
+  const vnd = (x) => `${so(Number(x || 0))} đ`;
+  const TRA = { on_receipt: "Khi nhận hàng", before_loading: "Trước khi bốc hàng", after_days: "Trả sau" };
+  const qDon = () => new URLSearchParams(location.search).get("don");
+  man["don-hang"] = { tieuDe: "Đơn", phu: "Đơn của bạn · tới lượt bạn xếp trước · dữ liệu thật",
+    ve: () => `<div id="dn-ds" style="display:grid;gap:12px"><p class="sl-ghi">Đang tải…</p></div>`,
+    sau: async (g) => {
+      try {
+        const ds = await api("/v1/orders"); const a = (ds.items || ds);
+        a.sort((x, y) => (y.hien_thi?.toi_luot?.phia === "buyer") - (x.hien_thi?.toi_luot?.phia === "buyer"));
+        g.querySelector("#dn-ds").innerHTML = a.length ? a.map((d) => { const tl = d.hien_thi?.toi_luot; const toi = tl?.phia === "buyer";
+          return `<a class="sl-the" href="?man=chi-tiet-don&don=${d.id}" style="display:grid;gap:6px;text-decoration:none;color:inherit">
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(maHD(d.code))} · ${esc(d.seller_name || "")}</b><span class="sl-nhan${toi ? " sl-n-xong" : ""}">${toi ? "Tới lượt bạn" : esc(d.hien_thi?.ten || d.status)}</span></div>
+            <div>Giá trị ${vnd(d.contract_value_vnd)}${tl ? ` · ${toi ? "Bạn" : tl.phia === "seller" ? "Người bán" : "AgiViet"}: ${esc(tl.viec)}` : ""}</div></a>`; }).join("")
+          : `<p class="sl-ghi">Chưa có đơn. Lập đơn từ một lời chào đã đồng ý giá.</p>`;
+      } catch (e) { g.querySelector("#dn-ds").textContent = e.message; }
+    } };
+  man["chi-tiet-don"] = { tieuDe: "Chi tiết đơn", thuoc: "don-hang", lui: "don-hang", phu: "Dữ liệu thật",
+    ve: () => `<div id="dn-ct" style="display:grid;gap:16px"><p class="sl-ghi">Đang tải…</p></div>`,
+    sau: async (g) => {
+      const khung = g.querySelector("#dn-ct");
+      const ve = async () => {
+        const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
+        const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) * 2 < Number(k.unit_price_vnd);
+        const coKy = (d.hanh_dong || []).includes("sign") && d.ky?.duoc_ky;
+        khung.innerHTML = `
+          <section class="sl-the" style="display:grid;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:20px">${esc(maHD(d.code))}</h2><span class="sl-nhan${toi ? " sl-n-xong" : ""}">${esc(d.hien_thi?.ten || d.status)}</span></div>
+            <p style="margin:0">${tl ? `<b>${toi ? "Tới lượt bạn" : tl.phia === "seller" ? "Chờ người bán" : "Chờ AgiViet"}:</b> ${esc(tl.viec)}` : ""}</p></section>
+          ${the("Điều khoản", dong("Người bán", esc(d.seller?.display_name || d.seller?.name || "")) + dong("Lượng", kg(kg2)) + dong("Giá", `${so(Number(k.unit_price_vnd))} đ/kg`) + dong("Giá nếu xuống loại", k.downgrade_price_vnd ? `${so(Number(k.downgrade_price_vnd))} đ/kg` : "Không đặt")
+            + dong("Giá trị hợp đồng", vnd(k.contract_value_vnd)) + dong("Cọc (ngân hàng giữ)", vnd(k.deposit_vnd)) + dong("Phí AgiViet", vnd(k.fee_vnd))
+            + dong("Trả tiền hàng", `${TRA[k.payment_timing] || k.payment_timing}${k.payment_timing === "after_days" ? ` ${k.pay_after_days} ngày` : ""}`) + dong("Giao", k.delivery_mode === "at_farm" ? "Tại vườn, bạn lo xe" : esc(k.delivery_mode)) + dong("Tài khoản nhận tiền người bán", esc(`${k.seller_account?.bank_code || ""} ${k.seller_account?.masked || ""}`)))}
+          ${hcThap ? bao("Giá xuống loại thấp hơn 50% giá đơn. Người bán sẽ thấy cảnh báo đỏ khi ký.", "sl-bao-do") : ""}
+          ${coKy ? `<section class="sl-the" style="display:grid;gap:10px"><h2 style="margin:0;font-size:18px">Ký hợp đồng</h2>
+            <p class="sl-ghi">Bấm "Gửi mã" để nhận mã OTP, nhập mã rồi bấm Ký. Ký xong không sửa được điều khoản; muốn đổi phải làm phụ lục.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><button class="sl-nut sl-vien" id="ky-ma">Gửi mã</button>
+            <label style="display:grid;gap:4px;font-weight:600">Mã OTP<input id="ky-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+            <button class="sl-nut sl-vang" id="ky-gui" disabled>Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}`;
+        if (!coKy) return;
+        let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
+        khung.querySelector("#ky-ma").onclick = async (e) => {
+          const nut = e.currentTarget; nut.disabled = true;
+          try { const doc = [...(d.tai_lieu || [])].reverse().find((x) => x.doc_type === "contract");
+            ch = (await api("/v1/otp/challenges", { purpose: "contract_sign", document_id: doc?.id })).challenge_id; nutKy.disabled = false; bao2.textContent = "Đã gửi mã. Nhập mã rồi bấm Ký."; }
+          catch (err) { bao2.textContent = err.message; } nut.disabled = false;
+        };
+        nutKy.onclick = async () => {
+          const ma = khung.querySelector("#ky-otp").value.trim(); if (!/^\d{6}$/.test(ma)) { bao2.textContent = "Mã gồm 6 số."; return; }
+          nutKy.disabled = true; bao2.textContent = "Đang ký…";
+          try { await api(`/v1/orders/${d.id}/sign`, { challenge_id: ch, code: ma, expected_revision: d.revision }); await ve(); }
+          catch (err) { bao2.textContent = err.message; nutKy.disabled = false; }
+        };
+      };
+      try { await ve(); } catch (e) { khung.textContent = e.message; }
+    } };
+}
 chayApp({ ten: "AgiViet Mua", phu: TEN_TC, menu: MENU, tab: TAB, man, kho, macDinh: THAT ? "nguon-hang" : "tong-quan", nguoi: NGUOI });
 export { man as MAN_MUA };
