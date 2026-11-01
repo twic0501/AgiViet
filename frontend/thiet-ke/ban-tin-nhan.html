@@ -6,6 +6,7 @@
 <title>Tin nhắn · AgiViet bán (bản mẫu)</title>
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./so-vuon.css">
+<link rel="stylesheet" href="./tro-chuyen.css">
 <style>
   .loc-tn { display: flex; gap: 8px; }
   .loc-tn button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: 600 14px/1 var(--chu); color: var(--muc-phu); cursor: pointer; }
@@ -72,6 +73,8 @@
 <div class="trang">
   <header class="dau" id="dau"></header>
   <main class="noi" id="noi" style="gap:12px" aria-busy="true">
+    <nav class="tc-chon" id="tc-chon" aria-label="Lời chào giá hoặc trò chuyện"><a href="#" data-muc="chao" aria-current="true">Lời chào giá</a><a href="#tro" data-muc="tro" aria-current="false">Trò chuyện</a></nav>
+    <div id="tc-ds" hidden></div>
     <div class="loc-tn" id="loc" role="group" aria-label="Lọc tin nhắn">
       <button type="button" data-k="tat-ca" aria-pressed="true">Tất cả</button>
       <button type="button" data-k="cho-bac" aria-pressed="false">Chờ bác trả lời</button>
@@ -84,6 +87,22 @@
 import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, soThongBaoMoi, viecCho, tien, tenLoai, can } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 veTab("tin-nhan");
+// ── Trò chuyện trực tiếp (màn 38) nằm trong trang Tin nhắn: #tro = danh sách, #tro=T1 = khung chat ──
+import("./tro-chuyen.js").then((TC) => {
+  const nhom = $("tc-chon");
+  const chuaDoc = TC.soChuaDoc(); if (chuaDoc) nhom.querySelector('[data-muc="tro"]').insertAdjacentHTML("beforeend", `<small>${chuaDoc}</small>`);
+  const theoHash = () => {
+    const m = location.hash.match(/^#tro(?:=([\w-]+))?/);
+    if (m && m[1] && TC.timHoiThoai(m[1])) { document.querySelector(".tab")?.remove(); TC.veChat(TC.timHoiThoai(m[1])); return; }
+    const tro = !!m;
+    nhom.querySelectorAll("a").forEach((a) => a.setAttribute("aria-current", String((a.dataset.muc === "tro") === tro)));
+    $("tc-ds").hidden = !tro; $("loc").hidden = tro; $("ds").hidden = tro;
+    if (tro) TC.veDanhSach($("tc-ds"));
+  };
+  nhom.addEventListener("click", (e) => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); history.replaceState(null, "", a.dataset.muc === "tro" ? "#tro" : location.pathname + location.search); theoHash(); });
+  addEventListener("hashchange", () => { if (/^#tro=/.test(location.hash) || !document.getElementById("tc-chon")) location.reload(); else theoHash(); });
+  theoHash();
+});
 veDau($("dau"), { chao: "Tin nhắn", ten: "Chào giá & trao đổi", chuDau: "" });
 
 const conLai = (iso) => {
@@ -98,6 +117,7 @@ const IC_HD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 let tatCa = [], dsChao = [], tokenG = null, loTheoMaG = new Map();
 async function mo() {
+  if (/^#tro=/.test(location.hash)) return;   // đang mở khung trò chuyện: không vẽ đè
   const token = await phien(); tokenG = token;
   const h = { headers: { authorization: "Bearer " + token } };
   const get = (d) => fetch(d, h).then((x) => (x.ok ? x.json() : Promise.reject(new Error(d))));

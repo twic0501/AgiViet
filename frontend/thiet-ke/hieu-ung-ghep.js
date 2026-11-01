@@ -27,9 +27,9 @@ function nap() {
   @keyframes hu-vao-phai { from { opacity: 0; transform: translateX(28px); } }
   @keyframes hu-vao-trai { from { opacity: 0; transform: translateX(-28px); } }
   @keyframes hu-vao-mo { from { opacity: 0; } }
-  html.hu-toi .noi, html.hu-toi .hero { animation: hu-vao-phai 300ms ${E} both !important; }
-  html.hu-lui .noi, html.hu-lui .hero { animation: hu-vao-trai 300ms ${E} both !important; }
-  html.hu-thay .noi, html.hu-thay .hero { animation: hu-vao-mo 220ms ease-out both !important; }
+  html.hu-toi .noi, html.hu-toi .hero { animation: hu-vao-phai 220ms ${E} both !important; }
+  html.hu-lui .noi, html.hu-lui .hero { animation: hu-vao-trai 220ms ${E} both !important; }
+  html.hu-thay .noi, html.hu-thay .hero { animation: hu-vao-mo 160ms ease-out both !important; }
   @media (prefers-reduced-motion: reduce) {
     :where(.nut), .nut-tron, .nut-tron svg { transition: none !important; }
     .nut:active, .nut-tron:active { transform: none !important; }
@@ -52,8 +52,8 @@ function roi(huong, di) {
   const v = vung();
   if (!v || giam()) return di();
   const dx = huong === "toi" ? -28 : huong === "lui" ? 28 : 0;
-  v.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: `translateX(${dx}px)` }], { duration: 160, easing: "ease-in", fill: "forwards" });
-  setTimeout(di, 150);
+  v.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: `translateX(${dx}px)` }], { duration: 110, easing: "ease-in", fill: "forwards" });
+  setTimeout(di, 100);
 }
 function ganChuyenTrang() {
   // Liên kết sang màn khác trong bản thiết kế
