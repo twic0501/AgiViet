@@ -105,7 +105,7 @@ await napKb("can-lech", { buoc: 10, daTra: 32200000, nbXn: 32200000 });
 await buoc("[can-khong-dung] Cân kho 1.960 kg trong ±5%: nghiệm thu theo số cân, chị Năm đồng ý, ngân hàng chi đúng", async () => {
   await moMua("chi-tiet-don"); assert.match(await viecMua(), /1\.960 kg/);
   await muaLam(/Gửi kết quả/); assert.equal((await hd()).buoc, 11);
-  await moBan("man=ket-qua"); await ban.click("#dy"); await cho(1800); assert.equal((await hd()).buoc, 12);
+  await moBan("man=ket-qua"); assert.match(await ban.locator(".m-than").innerText(), /1\.810 kg/, "màn Kết quả cân app bán phải hiện đúng số bên mua gửi"); await ban.click("#dy"); await cho(1800); assert.equal((await hd()).buoc, 12);
   await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng chi cọc/); assert.equal((await hd()).buoc, 13);
   const t = await tienMua(); assert.equal(t[2], 1810 * 23000 + 120 * 15000, "chị Năm nhận 1.810×23.000 + 120×15.000");
 });

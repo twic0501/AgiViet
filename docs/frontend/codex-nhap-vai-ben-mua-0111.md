@@ -1,0 +1,37 @@
+Đã đối chiếu mã và chạy riêng `tinhTien`; không sửa tệp, chưa thử trên giao diện.
+
+**Mới** = chưa được ghi trong `lech/lechChung`. Bước v23 dưới đây dùng chỉ số **`qt` từ 0**, giống kịch bản.
+
+Căn cứ viết tắt: [M = mua.js](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js), [B = man-3.js](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mau/man-3.js), [T = giao-dich-chung.js](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/giao-dich-chung.js), [K = kịch bản](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/testquytrinhapp-kich-ban.js), [v23](/home/twictrn/agiviet-production-v2/frontend/mo-phong-quy-trinh/quy-trinh.json).
+
+| tình huống | bước | vấn đề | mức (cao/vừa/thấp) | căn cứ (bước v23 số mấy / dòng code) |
+|---|---|---|---|---|
+| chinh | Ký và gửi | Tôi cần điền nghĩa vụ, xem bản thống nhất rồi ký. App gộp thành một nút; **đã ghi lệch**. | vừa | v23 `chinh` qt12–21; K:19; M:192–196 |
+| chinh; mua-huy | Chuyển cọc | **Mới:** nút yêu cầu **13.938.000đ**, gồm cọc 13.800.000đ và phí 138.000đ; màn chi tiết đưa một tài khoản giữ cọc. Tôi dễ chuyển cả phí vào đó, trái quy tắc chỉ chuyển cọc, phí thu riêng. Hạn còn hiện **48 giờ**, trong khi hàng tươi là **12 giờ**. | cao | v23 `chinh` qt24–28, `mua-huy` qt2; M:7,12,153,462–464 |
+| chinh | Ghi đã trả | Tôi phải chuyển ngoài app rồi báo. Nút ghi đủ 32.200.000đ; việc chuyển sang **trả trước bốc** đã được ghi lệch với v23 trả sau nghiệm thu. | cao | v23 `chinh` qt40–42; K:23; M:153,192 |
+| chinh | Đạt khi bốc | **Mới về mốc trách nhiệm:** app nói bấm xong rủi ro đường thuộc tôi; `chinh` qt35 nói thuộc nhà xe. Nhánh v23 lấy tại vườn cho bên mua chịu từ **bốc và ký bàn giao xong**. Cần giải thích rõ mốc áp dụng cho đơn này. | cao | v23 `chinh` qt35; `lay-tai-vuon` qt15; M:17,100,153 |
+| chinh | Ký nhận → Gửi kết quả | Ký nhận bắt đầu 2 giờ là đúng. **Mới:** “Gửi kết quả” gộp nhập QC và chấp thuận hạ cấp/trả lại, nhưng không nói rõ tôi đang duyệt các thay đổi; không thể hiện hạn duyệt 12 giờ. Handler chỉ tăng bước, không đọc bảng nhập hoặc kiểm bằng chứng. | vừa | v23 `chinh` qt37–38; K:27–28; M:153,195–196,478–487 |
+| chinh | Nhận hoàn → Nhập kho | **Tiền khớp:** nghiệm thu 44.350.000đ; cọc sang chị Năm 12.150.000đ, hoàn tôi 1.650.000đ. Tôi xác nhận sau khi tiền về là đúng. Tuy nhiên “Nhập kho” dẫn tới **“hết nghĩa vụ hai bên”** dù hồ sơ hàng trả chưa có; phần thiếu hồ sơ đã ghi lệch. | vừa | T:10,15–20; M:133,153,195–196; v23 `chinh` qt45–47; K:32 |
+| mua-huy | Xin hủy | **Mới:** tôi phải gửi lý do; nút trong luồng chỉ đặt `xin-huy`, không lấy lý do và không cho xem hệ quả trước khi gửi. Quy tắc chờ 24 giờ, **im lặng không đồng ý** được giải thích đúng. | vừa | v23 `mua-huy` qt4–6; M:135,154,184 |
+| mua-huy | Chị Năm đồng ý | Chuyển toàn bộ cọc thay vì chia 50/50 **đã ghi lệch**. **Mới:** ngay khi chị Năm đồng ý, sổ tiền đã coi ngân hàng hết giữ và chị nhận đủ cọc; không tách chờ lệnh/kết quả ngân hàng. Phí không hoàn phù hợp nhánh v23 này. | cao | v23 `mua-huy` qt7–9; K:41; B:77; M:70,132 |
+| de-nghi | Đồng ý đổi ngày | Đảo vai đề nghị **đã ghi lệch**. **Mới:** tôi chỉ bấm “Đồng ý”, app đổi sang bản 2; kịch bản chỉ cho chị Năm ký lại, thiếu chữ ký lại của tôi trên bản mới. | cao | v23 `de-nghi` qt3–4; K:45–47; M:175; B:116 |
+| de-nghi | Chờ / xem lại bản mới | **Mới:** thẻ đề nghị thiếu hạn 24 giờ và xử lý hết hạn. Khi xem lại thỏa thuận, app mua vẫn hiện **bản 1, ngày 28/10**, dù trạng thái đã là bản 2, ngày 29/10. Không thấy code coi im lặng là đồng ý; vấn đề là thiếu đường hết hạn và hiển thị sai bản. | cao | v23 `de-nghi` mô tả, qt1–4; M:136,175–176,437,443–451 |
+| tra-mot-phan | Trả 20 triệu → trả nốt 12,2 triệu | Tổng **32.200.000đ khớp**; đổi số mẫu đã ghi lệch. **Mới:** mỗi lần bấm chỉ ghi đè tổng `daTra`, không lưu từng khoản với ngày, chứng từ và xác nhận riêng như v23. | vừa | v23 mô tả `tra-mot-phan`; M:173,192,547; K:51 |
+| tra-mot-phan | Sau chị Năm nhận thêm | **Mới:** kịch bản gắn qt5 nhưng dừng ở “được bốc”, vẫn tại bước app 7. Qt5 v23 là đủ tiền thì gửi lệnh chuyển cọc. Việc bỏ khoản chuyển trùng đã ghi; việc chưa đi tới quyết toán cọc chưa được ghi riêng. | vừa | v23 `tra-mot-phan` qt5–6; K:54–55; B:78; M:72 |
+| tranh-chap-mot-dong | Cân lại → kiểm định | Cân lại, đổi kết luận và chờ kiểm định mới chi cọc **đã ghi lệch**. Lưu ý `lechChung` nói “treo 900.000” dễ hiểu sai: v23 xác định đây là **khoản đòi thêm ngoài cọc**, không giữ lại 900.000đ từ cọc. | cao | v23 qt2,5–7; K:58,61,63 |
+| tranh-chap-mot-dong | Sau kiểm định | **Mới:** kết quả mới làm nghiệm thu tăng từ **44.350.000đ lên 44.478.000đ**, cọc sang chị Năm 12.278.000đ, hoàn tôi 1.522.000đ. Phép tính khớp, nhưng kết quả kiểm định chuyển thẳng sang ngân hàng; không có lượt tôi chấp thuận bảng quyết toán mới. | cao | T:10,13,15–20; M:183; v23 qt9; K:63–64 |
+| tranh-chap-mot-dong | Hoàn phí / kết thúc | **Mới:** v23 còn lượt tôi xác nhận nhận lại phí kiểm định. App chỉ nói phí **850.000đ, bên sai chịu**, không ghi khoản ứng/hoàn hoặc lượt nhận phí. Kịch bản báo “Xong” trong khi còn lượt xác nhận hoàn cọc tại bước app 13. | cao | v23 qt9–11; M:141,183,195–196; K:64–65 |
+| can-khong-dung | Gửi kết quả / cân lại | Tôi cần gửi cân kho, đối chiếu rồi cân lại có chị Năm chứng kiến. App coi trong ±5% là luồng thuận; **đã ghi lệch**. **Mới:** mở “Đọc phiếu cân” vẫn thấy **2.000kg**, trong khi kết quả nhánh là **1.960kg**. | vừa | v23 qt1–4; K:69; M:486,489–491 |
+| can-khong-dung | Chốt kết quả → chi cọc | **Mới:** app mua tính đúng **43.430.000đ**, cọc sang chị Năm **11.230.000đ**, hoàn tôi **2.570.000đ**. Nhưng màn chị Năm được yêu cầu đồng ý vẫn ghi **1.850 đạt / 120 hạ / 30 trả**, khác kết quả tôi gửi **1.810 / 120 / 30**. | cao | T:12,15–20; B:132–138; K:70 |
+| da-nhan-nhieu-hon | Gửi kết quả | **Mới về dữ liệu mẫu:** v23 là đã trả 52,5 triệu, nghiệm thu 18 triệu, hoàn dư 34,5 triệu; app đổi thành **32,2 / 29,1 / 3,1 triệu**, chưa ghi `lech`. Số app tự tính khớp, nhưng màn chị Năm chốt vẫn hiện **1.850 / 120 / 30**, khác **1.200 / 100 / 700** tôi gửi. | cao | v23 qt0–3; T:11,15–20; B:132–138; K:73–80 |
+| da-nhan-nhieu-hon | Nhận cọc → nhận chị Năm hoàn | Hai nút **13.800.000đ** và **3.100.000đ** đúng `tinhTien`; có yêu cầu kiểm tài khoản. **Mới:** thiếu hạn chị Năm hoàn **7 ngày**. Nếu mở Công nợ, dòng chị Năm vẫn ghi phải hoàn **0đ**, không phản ánh khoản 3.100.000đ đang chờ. | cao | v23 qt4–6; M:143–145,187–189,532 |
+| chinh; da-nhan-nhieu-hon | Chưa nhận | **Mới:** nút nói “bên kia và ngân hàng được báo kiểm lại”, nhưng handler chỉ đổi chữ trên màn, không ghi trạng thái hoặc phát thông báo chung. Tôi có thể tưởng đã báo thành công. | cao | M:167 |
+| can-khong-dung; tranh-chap-mot-dong; da-nhan-nhieu-hon | Xem Tài khoản đảm bảo | **Mới:** màn này vẫn dùng số luồng thuận **12.150.000đ chuyển bán / 1.650.000đ hoàn mua**. Không khớp các số tương ứng của ba nhánh: **11.230.000 / 2.570.000**, **12.278.000 / 1.522.000**, **0 / 13.800.000đ**. | cao | M:7,520–526; T:11–20 |
+
+**5 việc nên sửa trước:**
+
+1. Tách cọc và phí thành hai khoản chuyển rõ ràng; sửa hạn cọc hàng tươi thành 12 giờ.
+2. Đồng bộ kết quả, tiền và công nợ giữa hai app bằng dữ liệu chung; bỏ số luồng thuận ghi cố định.
+3. Bắt hai bên ký lại đúng bản mới; mọi màn xem hợp đồng phải hiện đúng phiên bản, ngày và hạn.
+4. Hoàn thiện tranh chấp: quyết toán phần công nhận, theo dõi phí kiểm định và xác nhận nhận lại phí.
+5. Tách “đã báo”, “ngân hàng xác nhận”, “tiền thực về”; lưu được “Chưa nhận” và chỉ đóng nghĩa vụ khi đủ điều kiện.

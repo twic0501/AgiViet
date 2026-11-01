@@ -129,12 +129,12 @@ export const MAN_3 = {
     ${viec("Ngân hàng đã giữ cọc", "Liên lạc hai bên đã mở. Vẫn nên nhắn qua app để có bằng chứng.", "", "m-xong")}
     ${the("Bên mua", dong("Người liên hệ", "Chị Thu Hà") + dong("Số điện thoại", "0277 386 210") + dong("Xe tới lấy", "66C-123.45 · anh Lộc"))}`,
     day: `<div class="m-hang-nut m-deu">${nut("Nhắn tin", { ma: "chat", tham: { ma: "T1" }, lop: "m-phu" })}${nut("Gọi", { lop: "m-vang", icon: "dien" })}</div>` }) },
-  "ket-qua": { tieu: "Kết quả cân", phu: "HĐ-0018 · kho Đồng Xanh", ve: () => ({ than: `
+  "ket-qua": { tieu: "Kết quả cân", phu: "HĐ-0018 · kho Đồng Xanh", ve: () => { const k = tinhTien(docHD()); return { than: `
     ${viec("Bên mua gửi kết quả cân", "Bác có 24 giờ để đồng ý, hoặc phản đối từng dòng. Im lặng không tính là đồng ý.")}
-    ${the("Kết quả", dong("Đạt loại 1", "1.850 kg × 23.000") + dong("Hạ cấp", "120 kg × 15.000") + dong("Trả lại", "30 kg (có ảnh)") + dong("Tiền hàng", d(TIEN.NGHIEM_THU), "m-tong"))}
-    ${the("Bác sẽ nhận", dong("Bên mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(TIEN.COC_CHO_BAC)) + dong("Cọc dư hoàn bên mua", d(TIEN.HOAN_BEN_MUA)))}
+    ${the("Kết quả", dong("Đạt loại 1", `${so(k.dat)} kg × 23.000`) + dong("Hạ cấp", `${so(k.ha)} kg × 15.000`) + dong("Trả lại", `${so(k.tra)} kg (có ảnh)`) + dong("Tiền hàng", d(k.nt), "m-tong"))}
+    ${the("Bác sẽ nhận", dong("Bên mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(k.cocNB)) + dong("Cọc dư hoàn bên mua", d(k.hoanMua)) + (k.nbHoan ? dong("Bác phải hoàn bên mua", d(k.nbHoan), "m-tong") : ""))}
     <div class="m-luoi-anh"><span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span><span style="background:repeating-linear-gradient(0deg,#fbf9f3 0 18px,#e8e1cf 18px 19px)"></span><span style="background-image:url(/assets/products/xoai-cat-chu.jpg);filter:sepia(.4)"></span></div>`,
-    day: `<div class="m-hang-nut">${nut("Phản đối", { ma: "tranh-chap", lop: "m-phu" })}${nut("Đồng ý kết quả", { id: "dy", lop: "m-vang" })}</div>` }),
+    day: `<div class="m-hang-nut">${nut("Phản đối", { ma: "tranh-chap", lop: "m-phu" })}${nut("Đồng ý kết quả", { id: "dy", lop: "m-vang" })}</div>`  }; },
     sau: (el, s, t, api) => el.querySelector("#dy").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã đồng ý"); api.doi((x) => { if (x.hd.buoc === 11) x.hd.buoc = 12; }); api.toast("Đã đồng ý kết quả cân · chờ ngân hàng chuyển tiền"); api.lui(); }) },
   "giao-mot-phan": { tieu: "Giao đợt sau", phu: "HĐ-0011 · khung theo tuần", ve: () => ({ than: `
     ${the("Đợt 4 · thứ Năm 30/10", dong("Lượng", "50 kg") + dong("Đã giao 3 đợt", "150 kg") + dong("Còn trong khung", "250 kg"))}

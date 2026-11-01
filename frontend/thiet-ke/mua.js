@@ -517,13 +517,13 @@ const man = {
   "vi-dam-bao": { tieuDe: "Tài khoản đảm bảo", phu: "Tiền do ngân hàng đối tác giữ theo từng đơn", ve: (s, { url }) => { const t = hdTien(s.hd); return `
     <div class="sl-luoi sl-l3">
       <div class="sl-the sl-chiso sl-tien"><small>Đang giữ</small><b>${d(t.nh + 12780000)}</b><span>cọc của 2 đơn</span></div>
-      <div class="sl-the sl-chiso"><small>Đã chuyển cho người bán tháng này</small><b>${d((s.hd.buoc >= 13 ? COC_CHO_NB : 0) + 10080000)}</b></div>
-      <div class="sl-the sl-chiso"><small>Hoàn về bạn tháng này</small><b>${d(s.hd.buoc >= 14 ? HOAN : 0)}</b><span>${s.hd.buoc === 13 ? "1.650.000 đ đã gửi lệnh, chờ về" : ""}</span></div>
+      <div class="sl-the sl-chiso"><small>Đã chuyển cho người bán tháng này</small><b>${d((s.hd.buoc >= 13 && !s.hd.huy ? tinhTien(s.hd).cocNB : 0) + 10080000)}</b></div>
+      <div class="sl-the sl-chiso"><small>Hoàn về bạn tháng này</small><b>${d(s.hd.buoc >= 14 || s.hd.hoanXn ? tinhTien(s.hd).hoanMua : 0)}</b><span>${s.hd.buoc === 13 && !s.hd.hoanXn ? `${so(tinhTien(s.hd).hoanMua)} đ đã gửi lệnh, chờ về` : ""}</span></div>
     </div>
     ${the("Theo đơn", `<div class="sl-bang-boc"><table class="sl-bang"><thead><tr><th>Đơn</th><th>Khoản</th><th class="sl-so">Số tiền</th><th>Trạng thái</th></tr></thead><tbody>
       <tr><td><a href="${url("chi-tiet-don")}">HĐ-0018</a></td><td>Cọc</td><td class="sl-so">${d(COC)}</td><td>${s.hd.buoc < 4 ? `<span class="sl-nhan">Chưa chuyển</span>` : s.hd.buoc === 4 ? `<span class="sl-nhan sl-n-nh">Đã chuyển · chờ ngân hàng xác nhận</span>` : s.hd.buoc < 13 ? `<span class="sl-nhan sl-n-tien">Ngân hàng đang giữ</span>` : `<span class="sl-nhan sl-n-xong">Đã xử lý</span>`}</td></tr>
       <tr><td>HĐ-0018</td><td>Phí giới thiệu</td><td class="sl-so">${d(PHI)}</td><td>${s.hd.buoc >= 4 ? `<span class="sl-nhan sl-n-xong">Đã trả · không hoàn</span>` : `<span class="sl-nhan">Chưa</span>`}</td></tr>
-      <tr><td>HĐ-0018</td><td>Hoàn cọc dư</td><td class="sl-so">${d(HOAN)}</td><td>${s.hd.buoc < 13 ? `<span class="sl-nhan">Chưa tới bước</span>` : s.hd.buoc === 13 ? `<span class="sl-nhan sl-n-nh">Đã gửi lệnh · chưa về</span>` : `<span class="sl-nhan sl-n-xong">Đã về</span>`}</td></tr>
+      <tr><td>HĐ-0018</td><td>Hoàn cọc dư</td><td class="sl-so">${d(tinhTien(s.hd).hoanMua)}</td><td>${s.hd.buoc < 13 ? `<span class="sl-nhan">Chưa tới bước</span>` : s.hd.buoc === 13 ? `<span class="sl-nhan sl-n-nh">Đã gửi lệnh · chưa về</span>` : `<span class="sl-nhan sl-n-xong">Đã về</span>`}</td></tr>
       <tr><td>HĐ-0021</td><td>Cọc</td><td class="sl-so">${d(12780000)}</td><td><span class="sl-nhan sl-n-nh">Đã chuyển · chờ ngân hàng xác nhận</span></td></tr>
     </tbody></table></div>`)}`; } },
   "cong-no": { tieuDe: "Công nợ", phu: "Theo người bán · chỉ tính khoản đã tới hạn hoặc đã chốt", phai: () => `<button class="sl-nut sl-vien" type="button">${icon("tai")}Xuất Excel</button>`, ve: (s) => `
