@@ -39,7 +39,10 @@ function nap() {
 }
 
 // Hướng vào trang (do trang trước ghi lại khi bấm)
+// Trình duyệt có chuyển cảnh giữa hai trang (chuyen-trang.js) thì để nó lo, không trượt kiểu cũ chồng lên
+const coVT = () => document.documentElement.hasAttribute("data-hu-vt");
 function huongVao() {
+  if (coVT()) return;
   let h = null;
   try { h = sessionStorage.getItem("hu-huong"); sessionStorage.removeItem("hu-huong"); } catch {}
   if (h && !giam()) document.documentElement.classList.add("hu-" + h);
@@ -56,6 +59,7 @@ function roi(huong, di) {
   setTimeout(di, 100);
 }
 function ganChuyenTrang() {
+  if (coVT()) return;
   // Liên kết sang màn khác trong bản thiết kế
   document.addEventListener("click", (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;

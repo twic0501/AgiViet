@@ -1,0 +1,47 @@
+/* Chuyển trang mượt giữa các màn (View Transitions giữa hai trang, Chrome/Edge 126+).
+   Chỉ chuyển động — không đổi giao diện. Header và thanh tab đứng yên, nội dung trượt theo hướng:
+   tới = vào từ phải · lùi = vào từ trái · đổi tab = trượt theo chiều tab (Trang chủ → Chợ trượt sang trái).
+   Hướng do chuyen-trang.js đặt (loại chuyển cảnh). Trình duyệt không hỗ trợ thì bỏ qua, giữ hiệu ứng cũ. */
+@view-transition { navigation: auto; }
+
+/* Phần đứng yên giữa hai màn (app bán: header xanh + thanh tab; app mua/vận hành: menu trái, đầu trang, tab dưới) */
+.dau { view-transition-name: hu-dau; }
+.tab { view-transition-name: hu-tab; }
+.sl-menu { view-transition-name: sl-menu; }
+.sl-dinh { view-transition-name: sl-dinh; }
+.sl-tab { view-transition-name: sl-tab; }
+::view-transition-group(hu-tab), ::view-transition-group(sl-menu), ::view-transition-group(sl-tab) { animation-duration: 0s; }
+::view-transition-old(hu-tab), ::view-transition-old(sl-menu), ::view-transition-old(sl-tab) { animation: none; opacity: 0; }
+::view-transition-new(hu-tab), ::view-transition-new(sl-menu), ::view-transition-new(sl-tab) { animation: none; }
+::view-transition-group(hu-dau), ::view-transition-group(sl-dinh) { animation-duration: 260ms; animation-timing-function: cubic-bezier(.23, 1, .32, 1); }
+
+/* Mặc định: mờ chéo nhanh */
+::view-transition-old(root) { animation: hu-vt-mo-ra 160ms ease-in both; }
+::view-transition-new(root) { animation: hu-vt-mo-vao 220ms cubic-bezier(.23, 1, .32, 1) both; }
+
+/* Tới (vào màn con) */
+html:active-view-transition-type(toi)::view-transition-old(root) { animation: hu-vt-ra-trai 220ms cubic-bezier(.4, 0, 1, 1) both; }
+html:active-view-transition-type(toi)::view-transition-new(root) { animation: hu-vt-vao-phai 300ms cubic-bezier(.23, 1, .32, 1) both; }
+/* Lùi (nút quay lại) */
+html:active-view-transition-type(lui)::view-transition-old(root) { animation: hu-vt-ra-phai 220ms cubic-bezier(.4, 0, 1, 1) both; }
+html:active-view-transition-type(lui)::view-transition-new(root) { animation: hu-vt-vao-trai 300ms cubic-bezier(.23, 1, .32, 1) both; }
+/* Đổi tab: trượt ngắn theo chiều tab */
+html:active-view-transition-type(tab-phai)::view-transition-old(root) { animation: hu-vt-tab-ra-trai 200ms ease-in both; }
+html:active-view-transition-type(tab-phai)::view-transition-new(root) { animation: hu-vt-tab-vao-phai 260ms cubic-bezier(.23, 1, .32, 1) both; }
+html:active-view-transition-type(tab-trai)::view-transition-old(root) { animation: hu-vt-tab-ra-phai 200ms ease-in both; }
+html:active-view-transition-type(tab-trai)::view-transition-new(root) { animation: hu-vt-tab-vao-trai 260ms cubic-bezier(.23, 1, .32, 1) both; }
+
+@keyframes hu-vt-mo-ra { to { opacity: 0; } }
+@keyframes hu-vt-mo-vao { from { opacity: 0; } }
+@keyframes hu-vt-ra-trai { to { opacity: 0; transform: translateX(-22%); } }
+@keyframes hu-vt-vao-phai { from { opacity: .4; transform: translateX(100%); } }
+@keyframes hu-vt-ra-phai { to { opacity: 0; transform: translateX(100%); } }
+@keyframes hu-vt-vao-trai { from { opacity: .4; transform: translateX(-22%); } }
+@keyframes hu-vt-tab-ra-trai { to { opacity: 0; transform: translateX(-40px); } }
+@keyframes hu-vt-tab-vao-phai { from { opacity: 0; transform: translateX(40px); } }
+@keyframes hu-vt-tab-ra-phai { to { opacity: 0; transform: translateX(40px); } }
+@keyframes hu-vt-tab-vao-trai { from { opacity: 0; transform: translateX(-40px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
