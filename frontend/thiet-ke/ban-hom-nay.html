@@ -198,7 +198,7 @@ async function mo() {
       <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
       <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
       <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div></a>`;
-  }).join("") : `<p class="bao" style="margin-top:12px">Khi bác đồng ý một lời chào giá, hợp đồng sẽ hiện ở đây.</p>`;
+  }).join("") : `<p class="bao" style="margin-top:12px">Sau khi bác đồng ý giá và bên mua gửi điều kiện giao, trả tiền, hợp đồng hiện ở đây để bác xem và ký.</p>`;
 
   // Ô thời tiết hôm nay
   if (troi && !troi.__loi && troi.ngay?.length) {

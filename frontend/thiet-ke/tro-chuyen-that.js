@@ -29,7 +29,7 @@ export async function tai() {
   const xem = daXem();
   ds = [
     ...don.filter((d) => !/cancel|declin|withdrawn/.test(d.status)).map((d) => ({ ma: "d-" + d.id, loai: "don", id: d.id, ben: d.buyer_name || "Bên mua", ghi: `Hợp đồng ${d.code}` })),
-    ...dsChao.filter((c) => /sent|accepted/.test(c.status) && !coDon.has(c.id)).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", ghi: `Lời chào ${c.code ?? ""} · lô ${c.lot_code} · ${TT_CHAO[c.status] ?? c.status}`.replace("  ", " ") })),
+    ...dsChao.filter((c) => /sent|accepted/.test(c.status) && !coDon.has(c.id)).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", ghi: [c.vong_cuoi ? `${Number(c.vong_cuoi.qty_g) / 1000} kg · ${Number(c.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg` : null, TT_CHAO[c.status] ?? c.status, `lô ${c.lot_code}`].filter(Boolean).join(" · ") })),
   ];
   for (const h of ds) {
     const t = tom.find((x) => (h.loai === "don" ? x.order_id === h.id : x.offer_id === h.id));
@@ -46,7 +46,7 @@ export const timHoiThoai = (ma) => ds.find((x) => x.ma === ma);
 export function veDanhSach(khoi) {
   khoi.innerHTML = `
     <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại, Zalo, số tài khoản trong tin sẽ bị che.</span></div>
-    ${ds.length ? `<div class="tc-ds">${ds.map((h) => `<a class="tc-dong ${h.chuaDoc ? "tc-moi" : ""}" href="./ban-tin-nhan.html${esc(location.search)}#tro=${h.ma}" data-tro="${h.ma}"><span class="tc-anh">${esc(vietTat(h.ben))}<span class="tc-xm" title="Đã xác minh">${SVG(I.tich, 12)}</span></span>
+    ${ds.length ? `<div class="tc-ds">${ds.map((h) => `<a class="tc-dong ${h.chuaDoc ? "tc-moi" : ""}" href="./ban-tin-nhan.html${esc(location.search)}#tro=${h.ma}" data-tro="${h.ma}"><span class="tc-anh">${esc(vietTat(h.ben))}</span>
         <span style="min-width:0"><b>${esc(h.ben)}</b><small>${esc(h.cuoi?.chu || `${h.ghi} · chưa có tin nhắn`)}</small></span>
         <span class="tc-ben"><span>${h.cuoi ? esc(gioNgan(h.cuoi.luc)) : ""}</span>${h.chuaDoc ? `<span class="tc-dem">${h.chuaDoc}</span>` : ""}</span></a>`).join("")}</div>`
       : `<p class="tc-ghi" style="padding:16px 4px">Chưa có ai để nhắn. Khi bên mua chào giá lô hàng của bác, cuộc trò chuyện sẽ hiện ở đây.</p>`}`;
@@ -78,7 +78,7 @@ export function veChat(h) {
       const tin = r.tin.map((m) => ({ k: "tin", t: m.body, cuaToi: m.la_cua_toi, luc: m.created_at, daChe: m.da_che }));
       const tat = [...tin, ...he];   // dòng hệ thống (che liên lạc, đã báo cáo) luôn ở sau tin vừa gửi — không sắp theo giờ máy
       if (tat.length !== soCu) {
-        $("tin").innerHTML = tat.length ? tat.map(veTin).join("") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác hỏi thêm về hàng, ngày hái, cách giao ở đây.</p></div>`;
+        $("tin").innerHTML = tat.length ? tat.map(veTin).join("") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác nhắn ngày hái, hỏi lịch xe và cách trả tiền ở đây.</p></div>`;
         if (cuon || soCu >= 0) scrollTo({ top: document.body.scrollHeight, behavior: soCu >= 0 ? "smooth" : "auto" });
         soCu = tat.length;
       }

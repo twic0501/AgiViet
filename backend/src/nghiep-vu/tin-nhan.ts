@@ -36,7 +36,7 @@ export async function guiTinNhan(t: GiaoDich, nd: NguoiDung, b: GuiTin) {
   // Đã có hợp đồng thì gắn tin vào hợp đồng (vẫn giữ lời chào để nối lịch sử).
   const id = await appCmd<string>(t, nd, c.phia as any, 'send_message', [c.offerId, c.orderId, q.sach ? noiDung : q.che, !q.sach, q.loai ?? []]);
   return { id, body: q.sach ? noiDung : q.che, da_che: !q.sach, loai_che: q.loai ?? [],
-    canh_bao: q.sach ? null : 'Tin có thông tin liên lạc nên đã được che. Hai bên trao đổi trong app để AgiViet giữ cọc và bảo vệ cả hai.' };
+    canh_bao: q.sach ? null : 'Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.' };
 }
 
 export async function docTinNhan(t: GiaoDich, nd: NguoiDung, x: { offer_id?: string; order_id?: string }) {

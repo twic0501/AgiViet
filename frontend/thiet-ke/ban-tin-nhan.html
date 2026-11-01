@@ -52,6 +52,7 @@
   /* Tấm chi tiết lời chào */
   .man-che { position: fixed; inset: 0; background: rgba(20, 30, 25, .45); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
   body:has(.man-che) .nut-cuon, body:has(.man-che) .tab { visibility: hidden; }
+  .dong-tam { justify-self: end; align-self: flex-end; margin-left: auto; width: auto; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: 700 15px var(--chu); color: var(--muc); cursor: pointer; margin: -4px 0 4px 8px; }
   .tam-lc { width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; background: var(--giay); border-radius: 22px 22px 0 0;
     padding: 20px 16px 0; display: flex; flex-direction: column; gap: 12px; animation: len-lc 260ms cubic-bezier(.2,.8,.2,1); }
   .tam-lc > * { flex-shrink: 0; }
@@ -211,7 +212,7 @@ async function khungTin(o, cuoc, ten) {
   const q = cuoc.order_id ? `order_id=${cuoc.order_id}` : `offer_id=${cuoc.offer_id}`;
   o.innerHTML = `<div class="tn-khung"><p class="tn-dau">Nhắn với ${esc(ten)}</p><div class="tn-ds" aria-live="polite"><p class="tn-trong">Đang tải…</p></div>
     <form class="tn-go"><input maxlength="1000" autocomplete="off" placeholder="Nhắn cho ${esc(ten)}…" aria-label="Tin nhắn"><button type="submit" class="nut chinh-nut">Gửi</button></form>
-    <p class="tn-bao" role="status"></p><p class="tn-luu">Không gửi số điện thoại, Zalo, số tài khoản: app tự che để AgiViet giữ cọc và bảo vệ hai bên.</p></div>`;
+    <p class="tn-bao" role="status"></p><p class="tn-luu">Không gửi số điện thoại, Zalo, số tài khoản: app tự che tới khi ngân hàng đối tác nhận cọc của bên mua.</p></div>`;
   const ds = o.querySelector(".tn-ds"), bao = o.querySelector(".tn-bao");
   const tai = async () => {
     if (!o.isConnected) return;
@@ -319,7 +320,7 @@ async function moLoiChao(id) {
     nhac = `<p class="nhac">Chờ ${esc(ben)} trả lời trước <b>${gio(v.expires_at)}</b>.${cuaBac && v.round_no === 1 ? " Bên mua chưa trả lời thì bác hủy được." : ""}</p>`;
     hanhDong = cuaBac && v.round_no === 1 ? `<div class="ba-nut"><button type="button" class="nut phu-nut" data-dong>Đóng</button><button type="button" class="nut nut-do" data-r="huy">Hủy lời chào</button></div>` : `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
   }
-  tam.innerHTML = `<div><h2 id="lc-t">${ct.status === "accepted" ? "Đã đồng ý giá" : v.from_side === "buyer" ? `${esc(ben)} chào giá` : "Bác chào giá"}</h2><p class="phu-lc">${tenHang}</p></div>
+  tam.innerHTML = `<button type="button" class="dong-tam" data-dong aria-label="Đóng">Đóng ✕</button><div><h2 id="lc-t">${ct.status === "accepted" ? "Đã đồng ý giá" : v.from_side === "buyer" ? `${esc(ben)} chào giá` : "Bác chào giá"}</h2><p class="phu-lc">${tenHang}</p></div>
     <div class="so-lon"><span>${v.from_side === "buyer" ? "Bên mua trả" : "Bác chào"}</span><b>${soVN(v.price_vnd)} đ/kg</b><small>${esc(can(v.qty_g).join(" "))} · thành tiền ${soVN(thanhTien)} đ (trước phí, chi phí chở, phân loại)</small></div>
     ${sosanh ? `<div class="so-sanh">${sosanh}</div>` : ""}
     ${ct.rounds.length > 1 ? `<div class="lc-vong">${ct.rounds.map((r) => `<p class="${r.from_side === "seller" ? "bac" : ""}"><span>Vòng ${r.round_no} · ${r.from_side === "seller" ? "Bác" : esc(ben)}</span><b>${soVN(r.price_vnd)} đ/kg · ${esc(can(r.qty_g).join(" "))}</b></p>`).join("")}</div>` : ""}
@@ -330,7 +331,7 @@ async function moLoiChao(id) {
     <a class="tn-sang-chat" href="#tro=o-${esc(id)}">${IC_NHAN} Nhắn tin với ${esc(ben)}</a>`;
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
   const r = (k) => tam.querySelector(`[data-r="${k}"]`);
-  const xong = (chu) => { r("buoc").innerHTML = ""; r("day").innerHTML = `${window.trauTuThe ? window.trauTuThe("11-mung", "", 88) : ""}<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
+  const xong = (chu) => { r("buoc").innerHTML = ""; tam.querySelectorAll(".nhac:not(.xanh), .lc-vong").forEach((e) => e.remove()); r("day").innerHTML = `${window.trauTuThe ? window.trauTuThe("11-mung", "", 88) : ""}<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
   const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));
   // Đồng ý: xác nhận lại tổng tiền + nhắc "chưa phải hợp đồng"
   r("dong-y")?.addEventListener("click", () => {

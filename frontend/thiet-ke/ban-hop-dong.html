@@ -52,7 +52,7 @@ async function tai() {
   const xong = ds.filter((d) => !dangLam(d));
   const nhom = (ten, ds_, nhanSo) => ds_.length ? `<section class="hl-nhom"><h2>${esc(ten)}${nhanSo ? ` <b>${ds_.length}</b>` : ""}</h2>${ds_.map(the).join("")}</section>` : "";
   $("noi").innerHTML = ds.length ? nhom("Cần bác làm", bac, true) + nhom("Đang chạy, chờ bên kia", chay) + nhom("Đã xong / đã đóng", xong)
-    : `<div class="hl-trong">${window.anhTrong?.("chua-co-don") || ""}<p>Chưa có hợp đồng nào. Khi bác đồng ý một lời chào giá, hợp đồng hiện ở đây để ký.</p><a class="nut chinh-nut" href="./ban-tin-nhan.html${esc(location.search)}" style="text-decoration:none">Xem lời chào giá</a></div>`;
+    : `<div class="hl-trong">${window.anhTrong?.("chua-co-don") || ""}<p>Chưa có hợp đồng nào. Sau khi bác đồng ý giá và bên mua gửi điều kiện giao, trả tiền, hợp đồng hiện ở đây để bác xem và ký.</p><a class="nut chinh-nut" href="./ban-tin-nhan.html${esc(location.search)}" style="text-decoration:none">Xem lời chào giá</a></div>`;
   giuThamSo($("noi"));
 }
 giuThamSo();
