@@ -321,6 +321,8 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       const anhLoCongKhai = !x.order_id && x.doc_type === 'evidence' && x.entity === 'lot' && String(x.mime_type).startsWith('image/')
         && !!(await t.mot(`SELECT 1 FROM core.lots WHERE id=$1 AND status IN ('on_sale','upcoming','reserved','sold_out')`, [x.entity_id]));
       if (anhLoCongKhai) return x;
+      // Ảnh đính kèm tin nhắn (0078): hai bên của cuộc trao đổi đều xem được (ảnh đã qua quét liên lạc khi gửi).
+      if (await t.mot(`SELECT 1 FROM core.chat_messages_of($1) m WHERE m.attachment_document_id=$2`, [nd.thanhVien.orgId, P(req).id])) return x;
       if (x.order_id) await phiaDon(t, nd, x.order_id); else if (x.owner_org_id && x.owner_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
       return x;
     });
@@ -470,7 +472,8 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.get('/v1/messages', async (req) => { const nd = await bo.xacThuc(req); const x = cuocTin.parse(req.query); const m = await TN(); return bo.doc((t) => m.docTinNhan(t, nd, x)); });
   app.get('/v1/messages/summary', async (req) => { const nd = await bo.xacThuc(req); const m = await TN(); return bo.doc((t) => m.tomTatTinNhan(t, nd)); });
   app.post('/v1/messages', async (req) => bo.lenh(req, 'gui_tin_nhan', async (t, nd) => (await TN()).phiaTinNhan(t, nd, cuocTin.parse(req.body)),
-    async (t, nd, b) => (await TN()).guiTinNhan(t, nd, cuocTin.extend({ body: z.string().min(1).max(1000) }).parse(b))));
+    async (t, nd, b) => (await TN()).guiTinNhan(t, nd, cuocTin.extend({ body: z.string().max(1000).optional().default(''), image_document_id: uuid.optional() })
+      .refine((x) => x.body.trim() || x.image_document_id, 'Tin nhắn trống').parse(b), { url: ht.cfg.aiUrl, key: ht.cfg.aiKey })));
   app.get('/v1/notifications', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/outbox.ts'); const q: any = req.query; return bo.doc((t) => m.thongBao(t, nd, { limit: q.limit ? Number(q.limit) : undefined, after_seq: q.after_seq ? Number(q.after_seq) : undefined })); });
 
   // ---------------- Môi trường thử ----------------

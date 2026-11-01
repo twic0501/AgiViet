@@ -161,6 +161,20 @@ def messages_scan(req:QuetTinRequest,request:Request):
     request.state.tom_tat={'so_can_che':len(r['can_che']),'loai':sorted({p['loai'] for p in r['phat_hien']})}
     return r
 
+class DocAnhRequest(BaseModel):
+    mime:str
+    du_lieu_b64:str
+
+@app.post('/messages/scan-image')
+def messages_scan_image(req:DocAnhRequest,request:Request):
+    """Đọc chữ/số trong ảnh tin nhắn (Gemini vision) để backend quét liên lạc. Lỗi nhà cung cấp → 503 (backend không gửi ảnh)."""
+    from agiviet_ai.nha_cung_cap import NhaCungCap, LoiNhaCungCap
+    if req.mime not in ('image/jpeg','image/png','image/webp') or len(req.du_lieu_b64)>8_000_000:raise HTTPException(422,'ANH_KHONG_HOP_LE')
+    try:kq=NhaCungCap().doc_anh(req.mime,req.du_lieu_b64)
+    except LoiNhaCungCap as e:raise HTTPException(503,f'CHUA_DOC_DUOC_ANH: {e}')
+    request.state.tom_tat={'do_dai_chu':len(kq['chu']),'qr':kq['qr'],'app':kq['app_nhan_tin']}
+    return kq
+
 STT_PY=Path(os.getenv('AGV_STT_PYTHON',str(GOC/'.venv-stt'/'bin'/'python')))
 _stt_proc=None
 

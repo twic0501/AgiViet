@@ -3,7 +3,7 @@
 import { esc, giuThamSo, phien } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 const SVG = (p, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>`;
-const I = { lui: "M15 5l-7 7 7 7", khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", canh: "M12 3l10 18H2zM12 10v5M12 18v.5", gui: "M4 12l16-8-6 16-2-7z", lich: "M4 5h16v16H4zM4 10h16M8 3v4M16 3v4", co: "M5 21V4h11l-2 4 2 4H5", giay: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM9 13h6M9 17h4", tich: "M5 12l5 5 9-10" };
+const I = { anh: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", lui: "M15 5l-7 7 7 7", khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", canh: "M12 3l10 18H2zM12 10v5M12 18v.5", gui: "M4 12l16-8-6 16-2-7z", lich: "M4 5h16v16H4zM4 10h16M8 3v4M16 3v4", co: "M5 21V4h11l-2 4 2 4H5", giay: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM9 13h6M9 17h4", tich: "M5 12l5 5 9-10" };
 const gioNgan = (s) => { const d = new Date(s), n = new Date(); return d.toDateString() === n.toDateString() ? d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : d.toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" }); };
 // Chữ viết tắt bên kia, cùng kiểu Trang chủ / Tin nhắn (NB = Nhà hàng Bếp Sen, NĐ = Nhà máy sấy Đồng Xanh)
 const vietTat = (ten = "") => { const t = ten.trim().split(/\s+/); const sau = t.slice(1).find((x) => /^\p{Lu}/u.test(x)); return (t[0]?.[0] ?? "") + (sau?.[0] ?? t[1]?.[0] ?? ""); };
@@ -56,7 +56,7 @@ export function veDanhSach(khoi) {
 // ── Khung chat ──
 const veTin = (m) => m.k === "he"
   ? `<div class="tc-he ${m.canh ? "tc-canh" : ""}">${m.trau ? `<img src="/assets/trau/tu-the/18-canh-bao.webp" width="56" height="56" alt="">` : SVG(m.canh ? I.canh : I.khien, 16)}<span>${esc(m.t)}</span></div>`
-  : `<div class="tc-tin ${m.cuaToi ? "tc-toi" : "tc-ho"}">${esc(m.t).replace(/•••[ •]*/g, (x) => `<span class="tc-che">${x}</span>`)}<small>${esc(gioNgan(m.luc))}${m.daChe ? " · đã che liên lạc" : ""}</small></div>`;
+  : `<div class="tc-tin ${m.cuaToi ? "tc-toi" : "tc-ho"}">${m.anh ? `<img data-anh="${esc(m.anh)}" alt="Ảnh trong tin nhắn" style="display:block;max-width:220px;width:100%;border-radius:12px;margin-bottom:${m.t ? "6px" : "0"};background:#0001;min-height:80px">` : ""}${esc(m.t).replace(/•••[ •]*/g, (x) => `<span class="tc-che">${x}</span>`)}<small>${esc(gioNgan(m.luc))}${m.daChe ? " · đã che liên lạc" : ""}</small></div>`;
 
 export function veChat(h) {
   const cuoc = h.loai === "don" ? { order_id: h.id } : { offer_id: h.id };
@@ -66,7 +66,7 @@ export function veChat(h) {
   $("noi").innerHTML = `<div class="tc-chat" id="chat"><div class="tc-he">${SVG(I.khien, 16)}<span>Tin nhắn lưu trong app làm bằng chứng. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc.</span></div><div id="tin"></div></div>`;
   const day = document.createElement("div"); day.className = "tc-day";
   day.innerHTML = `<div class="tc-nhanh"><a href="${esc(den)}" class="tc-nut-lk">${SVG(I.giay, 18)}${h.loai === "don" ? "Mở hợp đồng" : "Xem lời chào"}</a><button type="button" id="hen">${SVG(I.lich, 18)}Hẹn xem vườn</button><button type="button" id="bao">${SVG(I.co, 18)}Báo cáo</button></div>
-    <div class="tc-go tc-hai-cot"><textarea id="go" rows="1" placeholder="Nhắn cho ${esc(h.ben)}" aria-label="Nội dung tin nhắn" maxlength="1000"></textarea><button type="button" class="tc-gui" id="gui" aria-label="Gửi">${SVG(I.gui, 22)}</button></div>`;
+    <div class="tc-go"><label class="tc-chup" aria-label="Chụp hoặc chọn ảnh hàng">${SVG(I.anh, 22)}<input type="file" id="chup" accept="image/*" capture="environment" hidden></label><textarea id="go" rows="1" placeholder="Nhắn cho ${esc(h.ben)}" aria-label="Nội dung tin nhắn" maxlength="1000"></textarea><button type="button" class="tc-gui" id="gui" aria-label="Gửi">${SVG(I.gui, 22)}</button></div>`;
   document.querySelector(".trang").appendChild(day);
   giuThamSo(day);
   const he = []; // dòng hệ thống chỉ hiện ở máy này (cảnh báo che, đã gửi báo cáo)
@@ -75,10 +75,11 @@ export function veChat(h) {
     clearTimeout(hen);
     try {
       const r = await goi(`/v1/messages?${h.loai === "don" ? "order_id" : "offer_id"}=${h.id}`);
-      const tin = r.tin.map((m) => ({ k: "tin", t: m.body, cuaToi: m.la_cua_toi, luc: m.created_at, daChe: m.da_che }));
+      const tin = r.tin.map((m) => ({ k: "tin", t: m.anh_id && m.body === "[Ảnh]" ? "" : m.body, anh: m.anh_id, cuaToi: m.la_cua_toi, luc: m.created_at, daChe: m.da_che }));
       const tat = [...tin, ...he];   // dòng hệ thống (che liên lạc, đã báo cáo) luôn ở sau tin vừa gửi — không sắp theo giờ máy
       if (tat.length !== soCu) {
         $("tin").innerHTML = tat.length ? tat.map(veTin).join("") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác nhắn ngày hái, hỏi lịch xe và cách trả tiền ở đây.</p></div>`;
+        $("tin").querySelectorAll("[data-anh]").forEach(async (im) => { try { const b = await fetch(`/v1/documents/${im.dataset.anh}/file`, { headers: { authorization: "Bearer " + token } }); if (b.ok) im.src = URL.createObjectURL(await b.blob()); } catch {} });
         if (cuon || soCu >= 0) scrollTo({ top: document.body.scrollHeight, behavior: soCu >= 0 ? "smooth" : "auto" });
         soCu = tat.length;
       }
@@ -100,6 +101,22 @@ export function veChat(h) {
     $("gui").disabled = false; go.focus();
   };
   $("gui").addEventListener("click", () => gui(go.value));
+  let toChuc = null;
+  $("chup").addEventListener("change", async () => {
+    const f = $("chup").files[0]; $("chup").value = ""; if (!f) return;
+    $("gui").disabled = true;
+    he.push({ k: "he", t: "Đang kiểm ảnh trước khi gửi…", luc: new Date().toISOString() }); soCu = -2; await tai(true);
+    try {
+      toChuc ||= (await goi("/v1/me")).org.id;
+      const b64 = await new Promise((ok, loi) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = loi; r.readAsDataURL(f); });
+      const tep = await goi("/v1/files", { mime: f.type || "image/jpeg", data_base64: b64, entity: "organization", entity_id: toChuc, captured_in_app: true });
+      const kq = await goi("/v1/messages", { ...cuoc, body: go.value.trim(), image_document_id: (tep.data ?? tep).id });
+      he.pop();
+      if (kq.data && kq.data.gui === false) he.push({ k: "he", canh: true, trau: true, t: kq.data.canh_bao, luc: new Date().toISOString() });
+      else { go.value = ""; if (kq.data?.da_che) he.push({ k: "he", canh: true, trau: true, t: kq.data.canh_bao, luc: new Date().toISOString() }); }
+    } catch (e) { he.pop(); he.push({ k: "he", canh: true, t: e.message, luc: new Date().toISOString() }); }
+    soCu = -2; await tai(true); $("gui").disabled = false;
+  });
   go.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); gui(go.value); } });
   const tam = (html, gan) => {
     const n = document.createElement("div"); n.className = "tc-che-nen";

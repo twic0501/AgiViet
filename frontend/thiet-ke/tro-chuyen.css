@@ -41,6 +41,7 @@
   .tc-day { position: sticky; bottom: 0; background: var(--giay); border-top: 1px solid var(--ke); padding: 8px 12px calc(10px + env(safe-area-inset-bottom)); display: grid; gap: 8px; z-index: 5; }
   .tc-nhanh { display: flex; flex-wrap: wrap; gap: 8px; }
   .tc-nhanh::-webkit-scrollbar { display: none; }
+  .tc-go .tc-chup { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: var(--giay-lot); color: var(--la); }
   .tc-go.tc-hai-cot { grid-template-columns: minmax(0, 1fr) 44px; }
   .tc-nhanh .tc-nut-lk { flex: none; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid var(--ke-dam); background: var(--giay-noi); font: 600 14px var(--chu); color: var(--la); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
   .tc-nhanh button { flex: none; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid var(--ke-dam); background: var(--giay-noi); font: 600 14px var(--chu); color: var(--la); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }

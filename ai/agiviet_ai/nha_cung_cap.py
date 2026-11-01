@@ -81,6 +81,41 @@ class NhaCungCap:
         except (KeyError, IndexError, ValueError) as e:
             raise LoiNhaCungCap(f"Gemini trả sai dạng: {type(e).__name__}") from e
 
+    def doc_anh(self, mime: str, du_lieu_b64: str, timeout_s: float = 15.0) -> dict:
+        """Đọc ảnh bằng Gemini (vision): trả {chu: mọi chữ/số thấy trong ảnh, qr: bool, app_nhan_tin: bool}.
+        Chỉ ĐỌC; việc quyết che/không che do bộ quét liên lạc ở backend làm. Lỗi → LoiNhaCungCap (không có câu soạn sẵn cho ảnh)."""
+        k = self.khoa.get("GEMINI_API_KEY")
+        if not k:
+            raise LoiNhaCungCap("thiếu khóa Gemini")
+        model = self.khoa.get("AGV_GEMINI_MODEL") or "gemini-flash-lite-latest"
+        loi_nhac = ("Chép lại NGUYÊN VĂN mọi chữ và chữ số thấy trong ảnh (kể cả chữ viết tay, chữ nhỏ, số trên bảng hiệu, "
+                    "số viết cách hoặc viết bằng chữ). Không giải thích. Trả JSON đúng dạng: "
+                    '{"chu": "...", "qr": true|false, "app_nhan_tin": true|false} — qr = có mã QR/mã vạch; '
+                    "app_nhan_tin = ảnh chụp màn hình Zalo/Facebook/Messenger/Telegram hoặc danh thiếp.")
+        r = self.client.post(GEMINI_URL.format(m=model), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
+            "contents": [{"role": "user", "parts": [{"inline_data": {"mime_type": mime, "data": du_lieu_b64}}, {"text": loi_nhac}]}],
+            "generationConfig": {"temperature": 0, "maxOutputTokens": 600, "responseMimeType": "application/json"},
+        })
+        if r.status_code != 200:
+            raise LoiNhaCungCap(f"Gemini HTTP {r.status_code}")
+        try:
+            van = "".join(p.get("text", "") for p in r.json()["candidates"][0]["content"]["parts"]).strip()
+        except (KeyError, IndexError, ValueError, TypeError) as e:
+            raise LoiNhaCungCap(f"Gemini trả sai dạng: {type(e).__name__}") from e
+        import json as _json
+        try:
+            kq = _json.loads(van)
+            if isinstance(kq, list):
+                kq = kq[0] if kq and isinstance(kq[0], dict) else {"chu": " ".join(map(str, kq))}
+            if not isinstance(kq, dict):
+                kq = {"chu": str(kq)}
+        except ValueError:
+            kq = {"chu": van}   # không ra JSON: lấy nguyên văn để quét, thà quét thừa còn hơn bỏ sót số
+        chu = kq.get("chu")
+        if isinstance(chu, list):
+            chu = "\n".join(map(str, chu))
+        return {"chu": str(chu or ""), "qr": bool(kq.get("qr")), "app_nhan_tin": bool(kq.get("app_nhan_tin"))}
+
     def _nim(self, model: str, he_thong: str, nguoi_dung: str, timeout_s: float, toi_da: int) -> str:
         k = self.khoa.get("NVIDIA_API_KEY")
         if not k:
