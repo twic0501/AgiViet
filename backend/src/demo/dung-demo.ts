@@ -95,24 +95,25 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
   };
 
   // Các bên đóng vai (quản trị)
-  const quan = await vai('0903000410'); const viet = await vai('0901000710'); const thinh = await vai('0909000213');
-  const kim = await vai('0977000660'); const nam = await vai('0918000421'); const tung = null;
-  void tung;
+  // Đối tác ảo trong chợ mẫu: mỗi số có bên kia là một tổ chức khác loại trong cùng chợ.
+  const quan = await vai('0903000410'); const hanh = await vai('0909000210'); const sen = await vai('0908000510');
+  const bien = await vai('0902000810'); const cuong = await vai('0938000610');
+  const tu = await vai('0977000610'); const htx = await vai('0907000300'); const hong = await vai('0945000880');
 
   // 0001: lời chào mới cần trả lời
   await lam('0001', async (me) => {
     const ds = await ok('GET', '/v1/offers', undefined, me.token).catch(() => []);
     const con = (ds as any[]).find((x) => x.status === 'sent' && x.direction === 'buyer_bid');
     if (con) return { trang_thai: 'offer:sent', giu_nguyen: true, ids: { offer_id: con.id } };
-    const { offerId } = await chao(quan.token, me.token, 'L-0430', 1500);
+    const { offerId } = await chao(hanh.token, me.token, 'L-0412', 1500);
     return { trang_thai: 'offer:sent', giu_nguyen: false, ids: { offer_id: offerId } };
   });
   // 0002: hợp đồng chờ người bán ký
   await lam('0002', async (me) => {
     const c = (await donCua(me.token)).find((x) => x.status === 'awaiting_seller');
     if (c) return { trang_thai: 'awaiting_seller', giu_nguyen: true, ids: { order_id: c.id } };
-    const d = await lapDon(viet.token, viet.user.user_id, me.token, 'L-0431', 1200);
-    await kyHaiBen(viet.token, me.token, d, true);
+    const d = await lapDon(quan.token, quan.user.user_id, me.token, 'L-0440', 800);
+    await kyHaiBen(quan.token, me.token, d, true);
     return { trang_thai: 'awaiting_seller', giu_nguyen: false, ids: { order_id: d.orderId } };
   });
   // 0003: bên mua báo đã trả tiền trước bốc, chờ người bán xác nhận
@@ -121,11 +122,11 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
       const p = (await ok('GET', `/v1/orders/${o.id}/payments`, undefined, me.token)).find((x: any) => x.status === 'payer_reported');
       if (p) return { trang_thai: 'payment:payer_reported', giu_nguyen: true, ids: { order_id: o.id, payment_id: p.id } };
     }
-    const d = await lapDon(thinh.token, thinh.user.user_id, me.token, 'L-0460', 1000, { payment_timing: 'before_loading' });
-    await kyHaiBen(thinh.token, me.token, d); await coc(thinh.token, d.orderId, 'CONG TY NHA MAY SAY DONG XANH');
-    const p = (await ok('GET', `/v1/orders/${d.orderId}/payments`, undefined, thinh.token)).find((x: any) => x.kind === 'goods_before_loading');
-    const anh = await ok('POST', '/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, thinh.token);
-    await ok('POST', `/v1/payments/${p.id}/report`, { amount_vnd: Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, thinh.token);
+    const d = await lapDon(sen.token, sen.user.user_id, me.token, 'L-0490', 300, { payment_timing: 'before_loading' });
+    await kyHaiBen(sen.token, me.token, d); await coc(sen.token, d.orderId, 'NHA HANG BEP SEN');
+    const p = (await ok('GET', `/v1/orders/${d.orderId}/payments`, undefined, sen.token)).find((x: any) => x.kind === 'goods_before_loading');
+    const anh = await ok('POST', '/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, sen.token);
+    await ok('POST', `/v1/payments/${p.id}/report`, { amount_vnd: Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, sen.token);
     return { trang_thai: 'payment:payer_reported', giu_nguyen: false, ids: { order_id: d.orderId, payment_id: p.id } };
   });
   // 0004: kết quả cân có hạ cấp kèm ảnh, cân thiếu; chờ người bán ký hoặc "Không đúng"
@@ -135,28 +136,28 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
       const dd = od.dot_giao?.find((x: any) => x.status === 'awaiting_seller');
       if (dd) return { trang_thai: 'delivery:awaiting_seller', giu_nguyen: true, ids: { order_id: o.id, delivery_id: dd.id } };
     }
-    const d = await lapDon(quan.token, quan.user.user_id, me.token, 'L-0420', 1000);
-    await kyHaiBen(quan.token, me.token, d); await coc(quan.token, d.orderId, 'CONG TY XNK SONG TIEN');
-    const did = await sanSangVaCan(quan.token, quan.token, me.token, d.orderId);
-    await batDauCan(quan.token, me.token, did);
-    const anh = await anhDot(quan.token, did);
+    const d = await lapDon(bien.token, bien.user.user_id, me.token, 'L-0470', 800);
+    await kyHaiBen(bien.token, me.token, d); await coc(bien.token, d.orderId, 'CONG TY THUY SAN BIEN XANH');
+    const did = await sanSangVaCan(bien.token, bien.token, me.token, d.orderId);
+    await batDauCan(bien.token, me.token, did);
+    const anh = await anhDot(bien.token, did);
     const tong = d.q - 40000; // cân thiếu 40 kg so với đợt
     const ha = 60000; const tra = 20000;
     await ok('POST', `/v1/deliveries/${did}/acceptance`, { pin: PIN, weighed_g: tong, seal_code: 'M-' + String(1000 + Math.floor(Math.random() * 8999)), lines: [
-      { kind: 'accepted', qty_g: tong - ha - tra }, { kind: 'downgraded', qty_g: ha, reason_code: 'TRAY_VO', evidence_document_id: anh }, { kind: 'rejected', qty_g: tra, reason_code: 'DAP', evidence_document_id: anh }] }, quan.token);
+      { kind: 'accepted', qty_g: tong - ha - tra }, { kind: 'downgraded', qty_g: ha, reason_code: 'TRAY_VO', evidence_document_id: anh }, { kind: 'rejected', qty_g: tra, reason_code: 'DAP', evidence_document_id: anh }] }, bien.token);
     return { trang_thai: 'delivery:awaiting_seller', giu_nguyen: false, ids: { order_id: d.orderId, delivery_id: did } };
   });
   // 0005: phần trả lại thành lô con loại 2, gợi ý bán gấp
   await lam('0005', async (me) => {
     const lo = (await ok('GET', '/v1/lots?mine=true', undefined, me.token)).find((x: any) => x.goi_y_ban_gap && x.status === 'on_sale');
     if (lo) return { trang_thai: 'lot:return_on_sale', giu_nguyen: true, ids: { lot_id: lo.id } };
-    const d = await lapDon(viet.token, viet.user.user_id, me.token, 'L-0450', 800, { payment_timing: 'before_loading' });
-    await kyHaiBen(viet.token, me.token, d); await coc(viet.token, d.orderId, 'CONG TY CHE BIEN MEKONG'); await traTruocBoc(viet.token, me.token, d.orderId);
-    const did = await sanSangVaCan(viet.token, viet.token, me.token, d.orderId);
-    await batDauCan(viet.token, me.token, did);
-    const anh = await anhDot(viet.token, did);
+    const d = await lapDon(cuong.token, cuong.user.user_id, me.token, 'L-0480', 3000, { payment_timing: 'before_loading' });
+    await kyHaiBen(cuong.token, me.token, d); await coc(cuong.token, d.orderId, 'VUA NONG SAN BA CUONG'); await traTruocBoc(cuong.token, me.token, d.orderId);
+    const did = await sanSangVaCan(cuong.token, cuong.token, me.token, d.orderId);
+    await batDauCan(cuong.token, me.token, did);
+    const anh = await anhDot(cuong.token, did);
     await ok('POST', `/v1/deliveries/${did}/acceptance`, { pin: PIN, weighed_g: d.q, seal_code: 'M-5521', lines: [
-      { kind: 'accepted', qty_g: d.q - 150000 }, { kind: 'downgraded', qty_g: 50000, reason_code: 'TRAY_VO', evidence_document_id: anh }, { kind: 'rejected', qty_g: 100000, reason_code: 'DAP', evidence_document_id: anh }] }, viet.token);
+      { kind: 'accepted', qty_g: d.q - 150000 }, { kind: 'downgraded', qty_g: 50000, reason_code: 'TRAY_VO', evidence_document_id: anh }, { kind: 'rejected', qty_g: 100000, reason_code: 'DAP', evidence_document_id: anh }] }, cuong.token);
     const dy = await ok('POST', `/v1/deliveries/${did}/acceptance/agree`, { pin: PIN }, me.token);
     return { trang_thai: 'lot:return_on_sale', giu_nguyen: false, ids: { order_id: d.orderId, delivery_id: did, lot_id: dy.data?.lo_con?.id ?? '' } };
   });
@@ -171,14 +172,14 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     }
     const now = await gio();
     const ngay = (d: number) => new Date(now.getTime() + d * 86400e3).toISOString().slice(0, 10);
-    const dm = await ok('POST', '/v1/demands', { product_code: 'SAU_RIENG', segment_code: 'horeca', needed_from: ngay(5), needed_to: ngay(30), delivery_mode: 'self_pickup',
-      lines: [{ grade_code: 'A', qty_g: '600000', max_price_vnd: '95000', min_source_qty_g: '100000' }] }, me.token);
+    const dm = await ok('POST', '/v1/demands', { product_code: 'XOAI_CAT_CHU', segment_code: 'processor', needed_from: ngay(2), needed_to: ngay(10), delivery_mode: 'self_pickup',
+      lines: [{ grade_code: 'L1', qty_g: '1500000', max_price_vnd: '25000', min_source_qty_g: '200000' }] }, me.token);
     const ct = await ok('GET', `/v1/demands/${dm.id}`, undefined, me.token);
     const line = ct.lines?.[0]?.id ?? ct.dong?.[0]?.id;
     const ids: Record<string, string> = { demand_id: dm.id };
-    for (const [sdt, lo, gia] of [['0977000630', 'L-0441', 88000], ['0977000640', 'L-0442', 85000], ['0977000650', 'L-0443', 91000]] as const) {
+    for (const [sdt, lo, gia] of [['0918000421', 'L-0414', 23800], ['0907000300', 'L-0492', 24500]] as const) {
       const s = await vai(sdt); const l = await lotTheoMa(s.token, lo);
-      const q = await ok('POST', '/v1/offers', { direction: 'seller_quote', lot_id: l.id, demand_line_id: line, qty_g: 200000, price_vnd: gia }, s.token);
+      const q = await ok('POST', '/v1/offers', { direction: 'seller_quote', lot_id: l.id, demand_line_id: line, qty_g: 500000, price_vnd: gia }, s.token);
       ids[lo] = q.id;
     }
     return { trang_thai: 'demand:open_with_quotes', giu_nguyen: false, ids };
@@ -188,8 +189,8 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     const c = (await donCua(me.token)).find((x) => x.status === 'awaiting_deposit');
     if (c) return { trang_thai: 'awaiting_deposit', giu_nguyen: true, ids: { order_id: c.id } };
     const now = await gio();
-    const d = await lapDon(me.token, me.user.user_id, kim.token, 'L-0444', 300, { tu: new Date(now.getTime() + 20 * 86400e3), den: new Date(now.getTime() + 20 * 86400e3 + 8 * 3600e3) });
-    await kyHaiBen(me.token, kim.token, d);
+    const d = await lapDon(me.token, me.user.user_id, htx.token, 'L-0490', 200, { tu: new Date(now.getTime() + 20 * 86400e3), den: new Date(now.getTime() + 20 * 86400e3 + 8 * 3600e3) });
+    await kyHaiBen(me.token, htx.token, d);
     return { trang_thai: 'awaiting_deposit', giu_nguyen: false, ids: { order_id: d.orderId } };
   });
   // 0008: đến giờ giao tại vườn, người nhận mở mã rồi nhập nghiệm thu
@@ -199,9 +200,9 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
       const dd = od.dot_giao?.find((x: any) => x.status === 'ready');
       if (dd) { const dv = await ok('GET', `/v1/deliveries/${dd.id}`, undefined, me.token); if (dv.receiver_user_id === me.user.user_id) return { trang_thai: 'delivery:ready', giu_nguyen: true, ids: { order_id: o.id, delivery_id: dd.id } }; }
     }
-    const d = await lapDon(quan.token, quan.user.user_id, nam.token, 'L-0412', 800, { receiver: me.user.user_id });
-    await kyHaiBen(quan.token, nam.token, d); await coc(quan.token, d.orderId, 'CONG TY XNK SONG TIEN');
-    const did = await sanSangVaCan(quan.token, me.token, nam.token, d.orderId);
+    const d = await lapDon(quan.token, quan.user.user_id, tu.token, 'L-0441', 500, { receiver: me.user.user_id });
+    await kyHaiBen(quan.token, tu.token, d); await coc(quan.token, d.orderId, 'CONG TY XNK SONG TIEN');
+    const did = await sanSangVaCan(quan.token, me.token, tu.token, d.orderId);
     return { trang_thai: 'delivery:ready', giu_nguyen: false, ids: { order_id: d.orderId, delivery_id: did } };
   });
   // 0009: tranh chấp chất lượng khác mẫu, chờ kiểm định
@@ -211,22 +212,22 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
       const x = (tc as any[]).find((y) => y.status === 'awaiting_inspection');
       if (x) return { trang_thai: 'dispute:awaiting_inspection', giu_nguyen: true, ids: { order_id: o.id, dispute_id: x.id } };
     }
-    const d = await lapDon(me.token, me.user.user_id, nam.token, 'L-0414', 600, { payment_timing: 'before_loading' });
-    await kyHaiBen(me.token, nam.token, d); await coc(me.token, d.orderId, 'VUA LUA BA THANH'); await traTruocBoc(me.token, nam.token, d.orderId);
-    const did = await sanSangVaCan(me.token, me.token, nam.token, d.orderId);
-    await batDauCan(me.token, nam.token, did);
+    const d = await lapDon(me.token, me.user.user_id, hong.token, 'L-0470', 500, { payment_timing: 'before_loading' });
+    await kyHaiBen(me.token, hong.token, d); await coc(me.token, d.orderId, 'CONG TY THUY SAN BIEN XANH'); await traTruocBoc(me.token, hong.token, d.orderId);
+    const did = await sanSangVaCan(me.token, me.token, hong.token, d.orderId);
+    await batDauCan(me.token, hong.token, did);
     await ok('POST', `/v1/deliveries/${did}/acceptance`, { pin: PIN, weighed_g: d.q, seal_code: 'M-7710', lines: [{ kind: 'accepted', qty_g: d.q }] }, me.token);
-    await ok('POST', `/v1/deliveries/${did}/acceptance/agree`, { pin: PIN }, nam.token);
+    await ok('POST', `/v1/deliveries/${did}/acceptance/agree`, { pin: PIN }, hong.token);
     await ok('POST', `/v1/deliveries/${did}/arrival`, { weighed_g: d.q - 5000 }, me.token);
     const anh = await anhDot(me.token, did);
-    const k = await ok('POST', `/v1/deliveries/${did}/arrival/complaint`, { line_no: 1, qty_g: 100000, reason: 'Sâu cuống bên trong, khác mẫu M-7710', reason_code: 'SAU_DUC', seal_code: 'M-7710', inspection_fee_vnd: 280000, evidence_document_id: anh }, me.token);
+    const k = await ok('POST', `/v1/deliveries/${did}/arrival/complaint`, { line_no: 1, qty_g: 80000, reason: 'Tôm mềm vỏ, khác mẫu M-7710', reason_code: 'SAI_GIONG', seal_code: 'M-7710', inspection_fee_vnd: 280000, evidence_document_id: anh }, me.token);
     return { trang_thai: 'dispute:awaiting_inspection', giu_nguyen: false, ids: { order_id: d.orderId, delivery_id: did, dispute_id: k.id } };
   });
   // 0010: đặt trước khi hái, gần ngày hái, chờ chốt lượng/giá
   await lam('0010', async (me) => {
     const c = (await ok('GET', '/v1/seasonal-orders?type=pre_harvest', undefined, me.token)).find((x: any) => x.phia === 'buyer' && x.order_status === 'active');
     if (c) return { trang_thai: 'pre_harvest:active', giu_nguyen: true, ids: { order_id: c.id } };
-    const son = await vai('0977000620');
+    const son = tu;
     const lot = await lotTheoMa(son.token, 'L-0447');
     const q = Math.min(1000000, Math.floor(lot.con * 0.6 / 100000) * 100000);
     const o = await ok('POST', '/v1/offers', { direction: 'buyer_bid', lot_id: lot.id, qty_g: q, price_vnd: lot.gia }, me.token);
@@ -237,7 +238,7 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
       vu: { loai: 'pre_harvest', qty_max_g: String(Math.round(q * 1.2)), harvest_from: ngay(3).toISOString().slice(0, 10), harvest_to: ngay(12).toISOString().slice(0, 10),
         batches: [{ qty_g: String(q), from: ngay(6).toISOString(), to: new Date(ngay(6).getTime() + 10 * 3600e3).toISOString() }] } }, me.token);
     await kyHaiBen(me.token, son.token, { orderId: d.id, docId: d.data.document_id });
-    await coc(me.token, d.id, 'VUA TRAI CAY TU HUNG');
+    await coc(me.token, d.id, 'VUA NONG SAN BA CUONG');
     return { trang_thai: 'pre_harvest:active', giu_nguyen: false, ids: { order_id: d.id } };
   });
   return ra;

@@ -118,7 +118,9 @@ const EXT = { btree_gist, pgcrypto };
 
 function danhSachSql(): { ten: string; sql: string }[] {
   const out: { ten: string; sql: string }[] = [];
-  for (const thuMuc of ['migrations', 'seed']) {
+  // AGV_DU_LIEU=cho: chợ mẫu 5 bán + 5 mua (db/seed-cho, sinh bằng `tao-seed.py cho`); mặc định seed cũ cho bộ kiểm thử.
+  const seed = process.env.AGV_DU_LIEU === 'cho' ? 'seed-cho' : 'seed';
+  for (const thuMuc of ['migrations', seed]) {
     const dir = join(THU_MUC_GOC, 'db', thuMuc);
     for (const f of readdirSync(dir).filter((x) => x.endsWith('.sql')).sort()) out.push({ ten: `${thuMuc}/${f}`, sql: readFileSync(join(dir, f), 'utf8') });
   }

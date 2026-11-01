@@ -4,7 +4,11 @@ import json,hashlib,uuid
 from decimal import Decimal
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-source=ROOT/'docs/nghiep-vu/du-lieu-ao.json'
+import sys
+# Mặc định: nguồn cũ cho bộ kiểm thử. `tao-seed.py cho` → chợ mẫu 5 bán + 5 mua (db/seed-cho/).
+CHO=len(sys.argv)>1 and sys.argv[1]=='cho'
+source=ROOT/('docs/nghiep-vu/du-lieu-cho.json' if CHO else 'docs/nghiep-vu/du-lieu-ao.json')
+SKEY=source.name
 raw=source.read_bytes(); x=json.loads(raw,parse_float=Decimal)
 def ident(s): return str(uuid.uuid5(uuid.NAMESPACE_URL,'agiviet-v2:'+s))
 def q(v):
@@ -25,20 +29,21 @@ sql("PERFORM set_config('app.allow_any_initial','on',true)")
 sql("PERFORM set_config('app.actor_kind','system',true)")
 sql("PERFORM set_config('app.test_time',"+q(T)+",true)")
 # Lưu nguyên JSON bằng bản text gốc, giữ cả tỷ lệ số chứ không chuyển thành chuỗi.
-sql('INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES(\'du-lieu-ao.json\',decode('+q(digest)+",'hex'),"+q(raw.decode())+'::jsonb)')
+sql('INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('+q(SKEY)+',decode('+q(digest)+",'hex'),"+q(raw.decode())+'::jsonb)')
 for code,name in [('DT','Đồng Tháp (mã thử)'),('CT','Cần Thơ (mã thử)'),('TN','Tây Ninh (mã thử)'),('VL','Vĩnh Long (mã thử)'),('AG','An Giang (mã thử)'),('HCM','TP.HCM (mã thử)')]: ins('ref.provinces',code=code,name_vi=name)
 orgs=x['to_chuc_ban']+x['to_chuc_mua']+[dict(ma=z['ma'],ten=z['ten'],loai='doi_tac') for z in x['doi_tac'] if z['ma']!='ĐG-01']+[dict(ma='AGV',ten='AgiViet',loai='platform')]
 kind={'ho':'household','trang_trai':'household','htx':'cooperative','to_hop_tac':'coop_group','doi_tac':'service_partner','platform':'platform'}
 segment={'xuat_khau':'export','che_bien':'processor','nha_hang':'horeca','dau_moi':'wholesaler'}
 plan={'mien_phi':'free','thu_mua':'procurement','doanh_nghiep':'enterprise','bep':'kitchen'}
 for o in orgs:
- code=o['ma']; sell=code.startswith('TC-B') or code=='TC-M07'; buy=code.startswith('TC-M'); region='DT'
+ code=o['ma']; sell=code.startswith('TC-B') or code=='TC-M07' or o.get('thuong_lai',False); buy=code.startswith('TC-M'); region='DT'
  if code in ['TC-B09','TC-B10','TC-M03']:region='CT'
  if code=='TC-B07':region='TN'
  if code=='TC-B08':region='VL'
  if code=='TC-B14':region='AG'
  if code=='TC-M01':region='HCM'
- orgkind=kind.get(o.get('loai'), 'trader' if code in ['TC-M07','TC-M08'] else 'enterprise')
+ region=o.get('tinh',region)
+ orgkind=kind.get(o.get('loai'), 'trader' if code in ['TC-M07','TC-M08'] or o.get('thuong_lai') else 'enterprise')
  ins('core.organizations',id=uid(code),code=code,kind=orgkind,display_name=o['ten'],tax_code=o.get('mst'),can_sell=sell,can_buy=buy,is_platform=code=='AGV',province_code=region,verification_level=2,status='active',created_at=T)
  for seg in o.get('phan_khuc',[]):ins('core.org_buyer_segments',org_id=uid(code),segment_code=segment[seg],source='declared')
  if buy:sql('INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('+q(uid(code))+','+q(plan[o['goi']])+",tstzrange('2026-10-01','2027-01-01','[)'))")
@@ -64,7 +69,7 @@ for o in x['to_chuc_ban']:
  if bank and o.get('loai')!='to_hop_tac':
   sql('INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('+','.join([q(uid('bank:'+code)),q(uid(code)),q(bank.get('ngan_hang','TEST')), "convert_to("+q('TEST:'+bank['so'])+",'UTF8')", "digest("+q(bank['so'])+",'sha256')",q('****'+bank['so'][-4:]),q(bank.get('chu',o['ten'])), 'true',q(uid(owner)),"ARRAY['otp','in_person']","'TEST-NOT-ENCRYPTED'","'active'","'2026-10-01'","'2026-10-02'"])+')')
  # Địa bàn chưa có mã xã/toạ độ chính thức: giữ nguyên tên nguồn, không tạo tọa độ giả.
- ins('core.production_sites',id=uid('site:'+code),org_id=uid(code),kind='pond' if code in ['TC-B09','TC-B10','TC-B14'] else 'field' if code=='TC-B11' else 'orchard',name=o.get('dia_ban',o['ten']))
+ ins('core.production_sites',id=uid('site:'+code),org_id=uid(code),kind=o.get('kieu_vung','pond' if code in ['TC-B09','TC-B10','TC-B14'] else 'field' if code=='TC-B11' else 'orchard'),name=o.get('dia_ban',o['ten']))
  for i,c in enumerate(o.get('giay_to',[])):
   kinds={'ma_vung_trong':'growing_area_code','vietgap':'vietgap','nhat_ky_ao':'pond_diary'}
   if c['loai'] not in kinds:continue
@@ -82,12 +87,12 @@ for p,name,g,tier,mode,tol,reject,life,grades in products:
  sql('UPDATE core.products SET current_profile_version=1 WHERE id='+q(uid(p)))
 sql('ALTER TABLE core.policy_versions DISABLE TRIGGER a_policy_approval')
 # Snapshot chính sách lịch sử từ nguồn, không bịa quyết định duyệt quá khứ.
-ins('core.policy_versions',id=1,effective_from='2026-10-01T00:00:00+07:00',deadlines=x['chinh_sach']['han_gio'],note='Tham số thử từ du-lieu-ao.json; hạn dạng số giờ/ngày theo tên khóa.')
+ins('core.policy_versions',id=1,effective_from='2026-10-01T00:00:00+07:00',deadlines=x['chinh_sach']['han_gio'],note='Tham số thử từ '+SKEY+'; hạn dạng số giờ/ngày theo tên khóa.')
 sql('ALTER TABLE core.policy_versions ENABLE TRIGGER a_policy_approval')
 for o in orgs:
  if o['ma'].startswith('TC-M'):
-  ins('core.facilities',id=uid('facility:'+o['ma']),org_id=uid(o['ma']),kind='restaurant' if o['ma'] in ['TC-M05','TC-M06'] else 'buyer_warehouse',name=o.get('dia_chi_nhan',o['ten']))
-ins('core.facilities',id=uid('ĐG-01'),org_id=uid('TC-B03'),kind='collection_point',name='Điểm gom HTX Mỹ Xương',collection_fee_vnd_per_kg=300)
+  ins('core.facilities',id=uid('facility:'+o['ma']),org_id=uid(o['ma']),kind=o.get('kieu_co_so','restaurant' if (o['ma'] in ['TC-M05','TC-M06'] and not CHO) else 'buyer_warehouse'),name=o.get('dia_chi_nhan',o['ten']))
+ins('core.facilities',id=uid('ĐG-01'),org_id=uid('TC-B03'),kind='collection_point',name=x['to_chuc_ban'][2].get('ten_diem_gom','Điểm gom HTX Mỹ Xương'),collection_fee_vnd_per_kg=300)
 ins('core.facilities',id=uid('facility:DT-KHO'),org_id=uid('DT-KHO'),kind='cold_storage',name='Kho lạnh Tân Phú Lạnh',cold_min_dc=20,cold_max_dc=130)
 for l in x['lo']:
  ins('core.lots',id=uid(l['ma']),code=l['ma'],seller_org_id=uid(l['ban']),product_id=uid(l['mat_hang']),profile_version=1,grade_code=l['loai'],site_id=uid('site:'+l['ban']),qty_basis='estimated' if l['uoc_tinh'] else 'weighed',declared_qty=int(Decimal(l['luong_kg'])*1000),available_from=l['ngay_co_hang'],spray_clear_on=l['het_cach_ly'],ask_price_vnd=l['gia_mong_muon'],last_confirmed_at=T,status={'dang_ban':'on_sale','sap_co_hang':'upcoming','nhap':'draft'}[l['trang_thai']],created_at=T)
@@ -101,25 +106,25 @@ for n in x['nhu_cau']:
   ins('core.demand_lines',id=uid(n['ma']+':'+str(i+1)),demand_id=uid(n['ma']),grade_code=line['loai'][0],qty=int(Decimal(line['kg'])*1000),min_source_qty=line.get('kg_toi_thieu_moi_nguon',20)*1000)
   ins('core.demand_line_max_prices',demand_line_id=uid(n['ma']+':'+str(i+1)),max_price_vnd=line['gia_toi_da_kin'],set_at=T)
 for h in x['don_nen']:
- ins('core.historical_trades',id=uid(h['ma']),code=h['ma'],buyer_org_id=uid(h['mua']),seller_org_id=uid(h['ban']),product_id=uid(h['mat_hang']),grade_code=h['loai'],qty=h['kg_dat']*1000,unit_price_vnd=h['gia'],accepted_at=h['chot_ngay']+'T12:00:00+07:00',province_code='DT',excluded_from_ref_price=h.get('loai_khoi_gia_tham_khao',False),is_test_data=True,source_key='du-lieu-ao.json')
+ ins('core.historical_trades',id=uid(h['ma']),code=h['ma'],buyer_org_id=uid(h['mua']),seller_org_id=uid(h['ban']),product_id=uid(h['mat_hang']),grade_code=h['loai'],qty=h['kg_dat']*1000,unit_price_vnd=h['gia'],accepted_at=h['chot_ngay']+'T12:00:00+07:00',province_code='DT',excluded_from_ref_price=h.get('loai_khoi_gia_tham_khao',False),is_test_data=True,source_key=SKEY)
 for g in x['gia_tham_khao']:ins('mkt.external_prices',product_id=uid(g['mat_hang']),grade_code=g['loai'],unit_price_vnd=g['gia'],source_label='Giá giả định từ JSON, không dùng tính cọc',observed_on=g['den_ngay'],is_test_data=True)
 for f in x['hop_dong_khung']:
- code=f['ma'];sql('INSERT INTO core.framework_contracts(id,code,buyer_org_id,seller_org_id,segment_code,schedule,price_period,billing_period,framework_deposit_vnd,extra_credit_vnd,fee_bps,active_during,policy_version_id,status) VALUES('+','.join([q(uid(code)),q(code),q(uid(f['mua'])),q(uid(f['ban'])),"'horeca'",q({'lich':f['lich'],'mon':f['mon']}),"'week'","'week'",q(f['coc_khung']),q(f['cho_no_them']),q(100 if f['mua']=='TC-M06' else 0),"daterange('2026-10-01','2027-01-01','[)')",'1',"'running'"])+')')
+ code=f['ma'];sql('INSERT INTO core.framework_contracts(id,code,buyer_org_id,seller_org_id,segment_code,schedule,price_period,billing_period,framework_deposit_vnd,extra_credit_vnd,fee_bps,active_during,policy_version_id,status) VALUES('+','.join([q(uid(code)),q(code),q(uid(f['mua'])),q(uid(f['ban'])),"'horeca'",q({'lich':f['lich'],'mon':f['mon']}),"'week'","'week'",q(f['coc_khung']),q(f['cho_no_them']),q(f.get('phi_bps',100 if (f['mua']=='TC-M06' and not CHO) else 0)),"daterange('2026-10-01','2027-01-01','[)')",'1',"'running'"])+')')
  ins('core.deposits',id=uid('deposit:'+code),framework_id=uid(code),payer_org_id=uid(f['mua']),expected_deposit_vnd=f['coc_khung'],expected_fee_vnd=0,payment_ref='AGV '+code+' COC',virtual_account_no='THU-COC-'+code)
- sql("PERFORM ledger.post('imported_framework_deposit',NULL,"+q('imported-deposit:'+code)+","+q('Số dư đầu kỳ nhập khẩu '+code+' từ du-lieu-ao.json')+",jsonb_build_array(jsonb_build_object('type','deposit_escrow','framework',"+q(uid(code))+",'amount',"+q(f['coc_khung'])+"),jsonb_build_object('type','external','org',"+q(uid(f['mua']))+",'amount',"+q(-f['coc_khung'])+")),now(),NULL,NULL,jsonb_build_object('framework',"+q(uid(code))+"))")
+ sql("PERFORM ledger.post('imported_framework_deposit',NULL,"+q('imported-deposit:'+code)+","+q('Số dư đầu kỳ nhập khẩu '+code+' từ '+SKEY)+",jsonb_build_array(jsonb_build_object('type','deposit_escrow','framework',"+q(uid(code))+",'amount',"+q(f['coc_khung'])+"),jsonb_build_object('type','external','org',"+q(uid(f['mua']))+",'amount',"+q(-f['coc_khung'])+")),now(),NULL,NULL,jsonb_build_object('framework',"+q(uid(code))+"))")
  sql("UPDATE core.deposits SET status='held' WHERE id="+q(uid('deposit:'+code)))
- ins('core.framework_opening_exposures',framework_id=uid(code),unpaid_delivered_vnd=f.get('da_giao_chua_tra',0),scheduled_vnd=f.get('da_chot_sap_giao',0),source_key='du-lieu-ao.json',as_of=T)
+ ins('core.framework_opening_exposures',framework_id=uid(code),unpaid_delivered_vnd=f.get('da_giao_chua_tra',0),scheduled_vnd=f.get('da_chot_sap_giao',0),source_key=SKEY,as_of=T)
 for o in x['bao_tieu']:
- ins('core.imported_offtake_plans',id=uid(o['ma']),code=o['ma'],buyer_org_id=uid(o['mua']),seller_org_id=uid(o['ban']),product_id=uid(o['mat_hang']),grade_code=o['loai'],deposit_vnd=o['coc_vu'],materials_advance_vnd=o['vat_tu_ung'],formula_text=o['cong_thuc_gia'],payment_after_days=o['han_tra_dot_ngay'],source_key='du-lieu-ao.json')
+ ins('core.imported_offtake_plans',id=uid(o['ma']),code=o['ma'],buyer_org_id=uid(o['mua']),seller_org_id=uid(o['ban']),product_id=uid(o['mat_hang']),grade_code=o['loai'],deposit_vnd=o['coc_vu'],materials_advance_vnd=o['vat_tu_ung'],formula_text=o['cong_thuc_gia'],payment_after_days=o['han_tra_dot_ngay'],source_key=SKEY)
  for b in o['dot']:ins('core.imported_offtake_batches',plan_id=uid(o['ma']),batch_no=b['so'],committed_qty=b['kg_cam_ket']*1000,materials_offset_vnd=o['tru_vat_tu_moi_dot'],source_status=b['trang_thai'])
 for partner in x['doi_tac']:
  for v in partner.get('xe',[]):ins('core.vehicles',id=uid(v['bien_so']),org_id=uid(partner['ma']),plate_no=v['bien_so'],kind='reefer' if v['loai']=='lanh' else 'normal',capacity_qty=v['tai_kg']*1000)
 for o in x['to_chuc_mua']:
  for r in o.get('nhan_hang_kem_loai',[]):
-  sql('INSERT INTO core.substandard_receivers(buyer_org_id,product_id,grade_codes,min_qty,radius_km,standing_price_vnd,is_offtake_partner,floor_price_vnd,valid_during) VALUES('+','.join([q(uid(o['ma'])),q(uid(r['mat_hang'])),arr([r['loai']]),q(r.get('kg_toi_thieu',0)*1000),q(r.get('ban_kinh_km',100)),q(r.get('gia_chao_san')),q(o['ma']=='TC-M04'),q(r.get('gia_san',r.get('gia_san_bao_tieu',5000)) if o['ma']=='TC-M04' else None),"daterange('2026-10-01','2027-01-01','[)')"])+')')
+  sql('INSERT INTO core.substandard_receivers(buyer_org_id,product_id,grade_codes,min_qty,radius_km,standing_price_vnd,is_offtake_partner,floor_price_vnd,valid_during) VALUES('+','.join([q(uid(o['ma'])),q(uid(r['mat_hang'])),arr([r['loai']]),q(r.get('kg_toi_thieu',0)*1000),q(r.get('ban_kinh_km',100)),q(r.get('gia_chao_san')),q(bool(o.get('doi_tac_bao_tieu'))),q(r.get('gia_san',r.get('gia_san_bao_tieu',5000)) if o.get('doi_tac_bao_tieu') else None),"daterange('2026-10-01','2027-01-01','[)')"])+')')
 sql('REFRESH MATERIALIZED VIEW mkt.reference_prices')
 sql("PERFORM set_config('app.allow_any_initial','off',true)")
 # Không có bản PDF/đơn chi tiết quá khứ trong nguồn: bảo toàn nguyên bản bao_tieu trong seed_sources.
-header="-- Tự sinh từ du-lieu-ao.json bằng db/tools/tao-seed.py. Không sửa tay.\nDO $seed$ BEGIN\nIF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-ao.json') THEN\n IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-ao.json' AND sha256=decode('"+digest+"','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;\n RETURN; END IF;\n"
-(ROOT/'db/seed/000_du_lieu_ao.sql').write_text("SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có thương lái, người giúp (bản 23 không tạo mới)\n"+header+'\n'.join(s)+"\nEND $seed$;\nSELECT set_config('app.nap_du_lieu_cu','off',false);\n")
-print('Đã sinh db/seed/000_du_lieu_ao.sql; SHA-256 '+digest)
+header="-- Tự sinh từ "+SKEY+" bằng db/tools/tao-seed.py. Không sửa tay.\nDO $seed$ BEGIN\nIF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='"+SKEY+"') THEN\n IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='"+SKEY+"' AND sha256=decode('"+digest+"','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;\n RETURN; END IF;\n"
+out=ROOT/('db/seed-cho/000_du_lieu_cho.sql' if CHO else 'db/seed/000_du_lieu_ao.sql'); out.parent.mkdir(exist_ok=True); out.write_text("SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có thương lái, người giúp (bản 23 không tạo mới)\n"+header+'\n'.join(s)+"\nEND $seed$;\nSELECT set_config('app.nap_du_lieu_cu','off',false);\n")
+print('Đã sinh '+str(out.relative_to(ROOT))+'; SHA-256 '+digest)
