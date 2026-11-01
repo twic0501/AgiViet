@@ -34,9 +34,10 @@
   .vu-dong { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 14px; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); }
   .vu-dong .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 19px; }
   .vu-dong b { display: block; font-size: 15.5px; }
-  .vu-dong p { margin: 3px 0 0; font-size: 14px; color: var(--muc-phu); line-height: 1.4; overflow-wrap: anywhere; }
-  .vu-dong small { display: block; margin-top: 4px; font-size: 12.5px; color: var(--muc-nhat); }
-  .vu-dong .sua { min-height: 44px; min-width: 44px; border: 0; background: none; color: var(--la); font: 600 14px/1 var(--chu); cursor: pointer; }
+  .vu-dong p { margin: 3px 0 0; font-size: 15px; color: var(--muc-phu); line-height: 1.4; overflow-wrap: anywhere; }
+  .vu-dong small { display: block; margin-top: 4px; font-size: 14px; color: var(--muc-phu); }
+  .vu-dong .sua { min-height: 44px; min-width: 56px; padding: 0 12px; border: 1.5px solid var(--ke-dam, #c9bfa6); border-radius: 12px; background: var(--giay-noi, #fbf9f3); color: var(--la); font: 600 15px/1 var(--chu); cursor: pointer; align-self: start; }
+  .vu-them { min-height: 48px; border: 1.5px solid var(--ke-dam, #c9bfa6); border-radius: 12px; background: var(--giay-noi, #fbf9f3); color: var(--la); font: 600 16px/1 var(--chu); cursor: pointer; }
   .vu-nhan { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 4px; }
   .vu-nhan.tu { background: var(--giay-lot); color: var(--muc-phu); }
   .vu-nhan.xn { background: var(--la-nhat); color: var(--la-dam); }
@@ -129,7 +130,7 @@ function ve() {
       <p>${tongThu ? `Đã ghi thu hoạch <b>${esc(can(tongThu).join(" "))}</b> trong năm.` : "Chưa ghi lần thu hoạch nào năm nay."} Ghi đều tay thì bên mua tin hàng hơn.</p></section>
     <section class="vu-khoi" aria-label="Nhật ký" style="gap:14px">
       <h2 style="margin:0;font-size:18px">Nhật ký canh tác</h2>
-      ${[...theoNgay].map(([ngay, ds]) => `<div class="vu-ngay"><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
+      ${[...theoNgay].map(([ngay, ds], iNgay) => `<div class="vu-ngay" ${iNgay >= 6 ? "hidden data-cu" : ""}><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
         const [ten, ic, nen, mau] = VIEC[v.activity] || [v.ten_viec || v.activity, VIEC.care[1], "var(--giay-lot)", "var(--muc-phu)"];
         const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, được hái từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";
         return `<div class="vu-dong"><span class="ic" style="background:${nen};color:${mau}" aria-hidden="true">${ic}</span>
@@ -137,12 +138,13 @@ function ve() {
             ${chiTiet ? `<p><b style="display:inline;font-size:14px">${chiTiet}</b></p>` : ""}<p>${esc(v.note)}</p>
             <small>${esc(tenVuon(v.site_id))}${v.recorded_by_name ? ` · ${esc(v.recorded_by_name)} ghi` : ""}${(v.photo_document_ids || []).length ? " · có ảnh" : ""}</small></div>
           ${v.source === "agiviet_confirmed" ? "" : `<button class="sua" type="button" data-sua="${esc(v.id)}" aria-label="Sửa dòng ${esc(ten)} ngày ${esc(ngayNgan(ngay))}">Sửa</button>`}</div>`;
-      }).join("")}</div>`).join("") || `<p class="bao">Chưa có dòng nhật ký nào. Bấm Ghi việc hôm nay để bắt đầu.</p>`}
+      }).join("")}</div>`).join("") + (theoNgay.size > 6 ? `<button class="vu-them" type="button" id="nk-them">Xem nhật ký cũ hơn (${theoNgay.size - 6} ngày)</button>` : "") || `<p class="bao">Chưa có dòng nhật ký nào. Bấm Ghi việc hôm nay để bắt đầu.</p>`}
       <p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:0">${esc(du.ghi_chu || "")}</p>
     </section>
     <div class="vu-ghi-nut"><button class="nut" type="button" id="ghi">+ Ghi việc hôm nay</button></div>`;
   document.querySelectorAll("[data-loc]").forEach((b) => (b.onclick = () => { loc = b.dataset.loc; ve(); }));
   document.querySelectorAll("[data-sua]").forEach((b) => (b.onclick = () => moGhi(du.viec.find((v) => v.id === b.dataset.sua))));
+  const nkThem = document.getElementById("nk-them"); if (nkThem) nkThem.onclick = () => { document.querySelectorAll("[data-cu]").forEach((x) => x.hidden = false); nkThem.remove(); };
   $("ghi").onclick = () => moGhi(null);
 }
 

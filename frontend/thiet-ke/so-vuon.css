@@ -156,7 +156,7 @@ p { margin: 0; text-wrap: pretty; }
 .the-hd .logo-ben { width: 40px; height: 40px; border-radius: var(--bo-vua); background: var(--cho-nen); color: var(--muc-phu); display: grid; place-items: center; font-weight: 600; font-size: 14px; flex: none; }
 .the-hd .giua { flex: 1; min-width: 0; }
 .the-hd .ten { font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
-.the-hd .phu { font-size: var(--c-ghi); color: var(--muc-nhat); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.the-hd .phu { font-size: var(--c-ghi); color: var(--muc-nhat); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .the-hd .gia { font-size: var(--c-muc); font-weight: 600; font-variant-numeric: tabular-nums; }
 .chang { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-top: var(--k4); }
 .chang i { height: 6px; border-radius: 3px; background: var(--ke-dam); }

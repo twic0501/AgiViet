@@ -203,8 +203,8 @@ export const MAN_3 = {
     ${viecDon(s)}
     ${tienO(s.hd.buoc)}
     <section class="m-the">${chang(BUOC[Math.min(s.hd.buoc, 14)].chang, s.hd.buoc >= 15)}</section>
-    ${the("Các bước", `<ol class="m-buoc">${BUOC.map((x, i) => `<li class="${i < s.hd.buoc ? "m-b-xong" : i === s.hd.buoc ? "m-b-nay" : "m-b-cho"}"><span class="m-b-vong">${i < s.hd.buoc ? ic("tich", 15) : i + 1}</span><div><small>${AI[x.ai]}${x.han && i >= s.hd.buoc ? ` · hạn ${esc(x.han)}` : ""}</small><b>${esc(x.lam)}</b></div></li>`).join("")}</ol>`, `<span class="m-ghi">${Math.min(s.hd.buoc, 15)}/15</span>`)}
     ${the("Thỏa thuận", dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Cọc ngân hàng giữ", d(TIEN.COC)) + dong("Bên mua trả thẳng trước bốc", d(TIEN.TRA_THANG)) + dong("Tiền về tài khoản", "Agribank •••• 2186"), lk("Bản đầy đủ", "ban-day-du"))}
+    ${the("Các bước", `<details class="m-gon"><summary>Xem đủ 15 bước · đang ở bước ${Math.min(s.hd.buoc + 1, 15)}</summary><ol class="m-buoc">${BUOC.map((x, i) => `<li class="${i < s.hd.buoc ? "m-b-xong" : i === s.hd.buoc ? "m-b-nay" : "m-b-cho"}"><span class="m-b-vong">${i < s.hd.buoc ? ic("tich", 15) : i + 1}</span><div><small>${AI[x.ai]}${x.han && i >= s.hd.buoc ? ` · hạn ${esc(x.han)}` : ""}</small><b>${esc(x.lam)}</b></div></li>`).join("")}</ol></details>`, `<span class="m-ghi">${Math.min(s.hd.buoc, 15)}/15</span>`)}
     ${the("Có vướng mắc?", `<div class="m-hai-o">${nut("Xin đổi lịch", { ma: "doi-lich", lop: "m-phu m-nho" })}${nut("Xin thay đổi", { ma: "yeu-cau-thay-doi", lop: "m-phu m-nho" })}</div><div class="m-hai-o">${nut("Nhắn bên mua", { ma: "chat", tham: { ma: "T1" }, lop: "m-phu m-nho" })}${nut("Xin hủy", { ma: "huy-don", lop: "m-huy m-nho" })}</div>`)}
     <button class="m-nut m-chu m-rong" type="button" id="lai">Chạy lại hợp đồng từ đầu (mô phỏng)</button>` }),
     sau: (el, s, t, api) => {

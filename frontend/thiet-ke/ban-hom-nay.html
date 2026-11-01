@@ -45,7 +45,7 @@
   .hd-gon { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; }
   .hd-gon:last-child { border-bottom: 0; }
   .hd-gon .logo-ben { width: 40px; height: 40px; border-radius: 12px; background: var(--cho-nen); color: var(--muc-phu); display: grid; place-items: center; font-weight: 600; font-size: 14px; }
-  .hd-gon .ten { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hd-gon .ten { font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
   .hd-gon .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 2px; }
   .hd-gon .phu b { color: var(--la-dam); font-weight: 600; }
   .hd-gon .gia { font-weight: 600; font-variant-numeric: tabular-nums; }

@@ -306,3 +306,16 @@ table.sl-bang { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .sl-tab a .sl-dem { position: absolute; top: 0; left: calc(50% + 6px); min-width: 20px; height: 20px; border-radius: 10px; background: var(--do); color: #fff; font-size: 12px; display: grid; place-items: center; padding: 0 4px; }
 }
 @media (min-width: 721px) { .sl-chi-dt { display: none !important; } }
+
+/* Màn hợp đồng: dòng 15 bước gập được; trên điện thoại thỏa thuận lên trước, ba ô tiền xếp hàng dọc */
+.sl-gon > summary { cursor: pointer; font-weight: 600; color: var(--la); min-height: 44px; display: flex; align-items: center; list-style: none; }
+.sl-gon > summary::-webkit-details-marker { display: none; }
+.sl-gon > summary::before { content: "▸"; margin-right: 8px; transition: transform 160ms; }
+.sl-gon[open] > summary::before { transform: rotate(90deg); }
+@media (max-width: 720px) {
+  .hd-luoi > :first-child { order: 2; }
+  .sl-tien-o { grid-template-columns: minmax(0, 1fr); }
+  .sl-tien-o > div { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: 12px; }
+  .sl-tien-o > div + div { border-left: 0; border-top: 1px solid var(--ke); }
+  .sl-tien-o > div > :nth-child(n+3) { grid-column: 1 / -1; }
+}

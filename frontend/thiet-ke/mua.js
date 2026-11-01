@@ -691,15 +691,15 @@ const man = {
     return `
     ${veViec(h, url)}
     ${veTienO(h)}
-    <div class="sl-luoi sl-chinh-phu">
-      ${the("Dòng bước của đơn", veBuoc(h), `<span class="sl-phai sl-ghi">${Math.min(h.buoc, 15)}/15 bước</span>`)}
+    <div class="sl-luoi sl-chinh-phu hd-luoi">
+      ${the("Dòng bước của đơn", `<details class="sl-gon" open><summary>Xem đủ 15 bước · đang ở bước ${Math.min(h.buoc + 1, 15)}</summary>${veBuoc(h)}</details>`, `<span class="sl-phai sl-ghi">${Math.min(h.buoc, 15)}/15 bước</span>`)}
       <div style="display:grid;gap:16px">
         ${the(`Thỏa thuận (bản ${h.ban || 1})`, dong("Ngày giao", `${h.ngayGiao || "28/10"} · 5:30 tại vườn`) + dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Cọc qua app", d(COC)) + dong("Phí 0,3%", d(PHI)) + dong("Trả thẳng trước bốc", d(TRA_THANG)) + dong("Tài khoản người bán", "Agribank •••• 2186"), `<a href="${url("thoa-thuan")}">Xem</a>`)}
         ${the("Giao nhận", dong("Xe", "66C-123.45 · anh Lộc") + dong("Mã nhận hàng", `<span class="sl-so">482 917</span>`) + dong("Mẫu đối chứng", "M-2291 niêm phong") + dong("Nghiệm thu", "Kho Đồng Xanh · 2 giờ"))}
         ${the("Liên lạc", h.buoc >= 5 ? dong("Chị Năm", `<span class="sl-so">0918 234 421</span>`) + `<a class="sl-nut sl-vien" style="width:100%;margin-top:8px" href="${url("mo-lien-lac")}">${icon("dien")}Gọi chị Năm</a>` : `<p class="sl-ghi">Số điện thoại che tới khi ngân hàng xác nhận cọc. Trước đó nhắn hoặc gọi qua app.</p>`)}
         ${the("Kịch bản thử (mô phỏng)", `<label class="sl-o"><span>Chọn kịch bản rồi bấm Nạp</span><select id="kb-chon">${KICH_BAN.map(([k, t]) => `<option value="${k}" ${h.kb === k ? "selected" : ""}>${esc(t)}</option>`).join("")}</select></label><div class="sl-hang-nut" style="margin-top:8px"><button class="sl-nut sl-nhe" type="button" id="kb-nap">Nạp kịch bản</button><a class="sl-nut sl-vien" href="/thiet-ke/hai-ben.html">Mở 2 bên cạnh nhau</a></div><p class="sl-ghi" style="margin-top:6px">Nạp lại đơn từ bước 1. App bán (chị Năm) thấy cùng đơn này.</p>`)}
       </div>
-    </div>`; }, sau: (g, k) => { ganNutDon(g); hieuUngDon(g, k.s.hd); g.querySelector("#kb-nap")?.addEventListener("click", () => { const kb = g.querySelector("#kb-chon").value; datLaiHD(kb); kho.doi((s) => { s.hd = docHD(); s.chao.chon = null; }); }); } },
+    </div>`; }, sau: (g, k) => { if (matchMedia("(max-width: 720px)").matches) g.querySelectorAll("details.sl-gon").forEach((x) => { x.open = false; }); ganNutDon(g); hieuUngDon(g, k.s.hd); g.querySelector("#kb-nap")?.addEventListener("click", () => { const kb = g.querySelector("#kb-chon").value; datLaiHD(kb); kho.doi((s) => { s.hd = docHD(); s.chao.chon = null; }); }); } },
   "thoa-thuan": { tieuDe: "Lập thỏa thuận · HĐ-0018", thuoc: "don-hang", lui: "chi-tiet-don", phu: "Bản 1 · điền sẵn theo phân khúc Chế biến", ve: (s, { url }) => `
     <div class="sl-luoi sl-chinh-phu">
       <section class="sl-the" style="display:grid;gap:14px">
