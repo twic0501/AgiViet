@@ -20,7 +20,10 @@ VIEC_THEM = [
     ('tu-the', '13-chi-trai', 17, 60, 800, False, 'webp'), ('tu-the', '14-chi-xuong', 18, 60, 800, False, 'webp'),
     ('tu-the', '15-chi-len', 19, 60, 800, False, 'webp'), ('tu-the', '16-cam-tien', 20, 80, 800, False, 'webp'),
     ('tu-the', '17-ky-giay', 21, 80, 800, False, 'webp'), ('tu-the', '18-canh-bao', 22, 80, 800, False, 'webp'),
-] + [('anh', f'trong-{ten}@{k}x', hd, f, 200 * k, False, 'webp png') for ten, hd, f in
+] + [('tu-the', ten, hd, f, 800, False, 'webp') for ten, hd, f in (
+    ('19-can', 25, 60), ('20-xe-tai', 26, 60), ('21-tui-mau', 27, 80), ('22-binh-xit-lich', 28, 80), ('23-tai-nghe', 29, 40),
+    ('24-ngon-cai', 30, 80), ('25-binh-tinh', 31, 80), ('26-dong-ho', 32, 80), ('27-non-la', 33, 80), ('28-ao-mua', 34, 80),
+    ('29-so-sanh', 35, 110))] + [('anh', f'trong-{ten}@{k}x', hd, f, 200 * k, False, 'webp png') for ten, hd, f in
      (('chua-co-nhat-ky', 15, 80), ('chua-co-thong-bao', 23, 100), ('loi', 12, 50)) for k in (2, 3)] \
   + [('anh', f'dau-{ten}@{k}x', hd, f, 48 * k, True, 'webp png toi') for ten, hd, f in
      (('vui', 16, 50), ('lo', 5, 60), ('ngac-nhien', 24, 40), ('ngu', 7, 100)) for k in (2, 3)]

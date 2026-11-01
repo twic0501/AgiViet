@@ -1,6 +1,6 @@
 # Trâu v4 — hợp đồng nối với giao diện (1/11, ĐÃ DUYỆT)
 
-Tệp: `frontend/assets/trau/trau-v4.riv` (≈558 KB, hai artboard). `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
+Tệp: `frontend/assets/trau/trau-v4.riv` (≈794 KB, hai artboard; đạo cụ vẽ chi tiết chiếm phần lớn — 60 khung/giây khi CPU giả lập chậm ×4). `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
 
 ## Artboard
 | Tên | Khung | Dùng |
@@ -47,6 +47,17 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 22 | cảnh báo: tay giơ chặn, mày chau, biển "!" đỏ trên đầu | chống lừa |
 | 23 | ngủ gật cạnh chuông | chưa có thông báo |
 | 24 | ngạc nhiên (mắt to, mày nhướng) | bong bóng nhỏ |
+| 25 | đứng cạnh cân, tay trái chỉ mặt cân | kết quả cân, cân lại |
+| 26 | vẫy xe tải (xe chở trái cây đậu bên phải) | bàn giao, xe tới vườn |
+| 27 | cầm túi mẫu niêm phong | mẫu đối chứng, kiểm định |
+| 28 | cầm lịch, bình xịt cạnh chân | nhật ký thuốc, ngày hết cách ly |
+| 29 | đeo tai nghe, đang nói | hỗ trợ, tổng đài |
+| 30 | giơ ngón cái, mắt cười | đánh giá, đơn xong |
+| 31 | hai tay xin bình tĩnh | tranh chấp, lệch tiền |
+| 32 | cầm đồng hồ cát, gõ chân | chờ bên mua ký, chờ ngân hàng |
+| 33 | đội nón lá, mắt nheo | thời tiết nắng |
+| 34 | mặc áo mưa | thời tiết mưa |
+| 35 | so sánh 2 trái (xoài to / nhỏ hai tay) | chọn loại hàng |
 
 Lưu ý: số 2 hiện chỉ chỉ sang **phải màn hình**; chỉ trái/phải theo `huong` cần góc ¾ (đang gác).
 
@@ -91,6 +102,7 @@ Tạo lại: `python3 frontend/trau-rive/xuat-tu-the.py`.
 | 16-cam-tien | cầm phong bì tiền | 20 |
 | 17-ky-giay | ký giấy | 21 |
 | 18-canh-bao | cảnh báo | 22 |
+| 19-can · 20-xe-tai · 21-tui-mau · 22-binh-xit-lich · 23-tai-nghe · 24-ngon-cai · 25-binh-tinh · 26-dong-ho · 27-non-la · 28-ao-mua · 29-so-sanh | ưu tiên 2 | 25 … 35 |
 
 ## Thêm 1/11 (YEU-CAU-THEM-0111) trong `frontend/assets/trau/anh/`
 - Màn trống @2x/@3x WebP + PNG: `trong-chua-co-nhat-ky` (cầm sổ), `trong-chua-co-thong-bao` (ngủ cạnh chuông), `trong-loi` (cúi xin lỗi).

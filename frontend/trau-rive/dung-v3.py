@@ -81,7 +81,7 @@ BUOC_KHOA = int(os.environ.get("AGV_BUOC_KHOA", "30" if os.environ.get('AGV_NHO'
 
 
 def la_dau(t):
-    return t in ('dau-khoi', 'mom', 'vien-cam-truoc', 'ba-cham', 'zzz') or t.startswith(('sung-', 'tai-', 'mat-', 'long-may-'))
+    return t in ('dau-khoi', 'mom', 'vien-cam-truoc', 'ba-cham', 'zzz', 'do-dau') or t.startswith(('sung-', 'tai-', 'mat-', 'long-may-'))
 
 
 def la_chan(t):
@@ -434,9 +434,21 @@ class Goc:
             DO.update({'thung': ('thung-trai-cay', '78 79', 170, 282, 1.1), 'dien-thoai': ('dien-thoai', '45 70', 256, 350, .62),
                        'so': ('so-xanh', '80 92', 256, 362, .75),
                        'phong-bi': ('phong-bi', '50 40', 256, 344, 1.05), 'canh-bao': ('canh-bao', '32 30', 256, 44, 1.15), 'but': ('but', '37 9', 300, 334, .9),
-                       'chuong': ('chuong', '42 46', 136, 452, .85)})
-        self.do_cam, ruot_do, ruot_tren = {}, '', ''   # thúng ôm trước ngực vẽ TRÊN hai tay
-        for ten_do, (tep_, goc_, dx, dy, k_) in DO.items():
+                       'chuong': ('chuong', '42 46', 136, 452, .85),
+                       # ưu tiên 2 (1/11): lớp — 'sau' sau người, 'tren' trên tay, 'dau' theo đầu, 'ao' khoác ngoài người (dưới khăn, đầu)
+                       'can': ('can-ban', '80 88', 112, 448, .72, 'sau'), 'xe-tai': ('xe-tai', '105 65', 418, 430, .86, 'sau'),
+                       'binh-xit': ('binh-xit', '36 62', 128, 444, .8, 'sau'),
+                       'tui-mau': ('tui-mau', '42 56', 256, 350, .9), 'lich': ('lich', '40 46', 256, 352, .92),
+                       'dong-ho-cat': ('dong-ho-cat', '46 70', 256, 352, .62),
+                       'ngon-cai': ('ngon-cai', '28 34', 304, 348, .95, 'tren'),
+                       'tai-nghe': ('tai-nghe', '256 256', 256, 256, 1, 'dau'), 'non-la': ('non-la', '102 107', 256, 106, .84, 'dau'),
+                       'ao-mua': ('ao-mua', '123 130', 256, 396, 1.0, 'ao')})
+            _hx = sum(p_[0] for p_ in du['chinh-ngang']['ban']) / len(du['chinh-ngang']['ban'])
+            _hy = sum(p_[1] for p_ in du['chinh-ngang']['ban']) / len(du['chinh-ngang']['ban'])
+            DO.update({'xoai-to': ('xoai', '36 30', _hx, _hy - 30, 1.0, 'tren'), 'xoai-nho': ('xoai', '36 30', 512 - _hx, _hy - 24, .66, 'tren')})
+        self.do_cam, ruot_do, ruot_tren = {}, '', ''
+        ruot_lop = {'sau': '', 'dau': '', 'ao': ''}
+        for ten_do, (tep_, goc_, dx, dy, k_, *lop_) in DO.items():
             sv = ET.parse(os.path.join(DIR, f'nguon/dao-cu/{tep_}.svg')).getroot()
             g = ET.Element(NS + 'g', dict(sv.attrib, id=ten_do, **{'data-goc': goc_}))
             for kk in ('viewBox', 'width', 'height'):
@@ -445,6 +457,9 @@ class Goc:
                 if e.tag in (NS + 'title', NS + 'desc', NS + 'defs') or e.get('clip-path') or (e.get('id') or '').startswith('diem-cam'):
                     continue
                 e2 = copy.deepcopy(e)
+                for c_ in [e2] + list(e2.iter()):    # circle → ellipse (bộ chuyển tao-canh chỉ đọc ellipse)
+                    if c_.tag == NS + 'circle':
+                        c_.tag = NS + 'ellipse'; c_.set('rx', c_.get('r')); c_.set('ry', c_.get('r')); c_.attrib.pop('r', None)
                 for cha in list(e2.iter()):          # bỏ nhóm con có clip-path (Rive không cắt → lộ mảng vuông)
                     for con in list(cha):
                         if con.get('clip-path'):
@@ -454,7 +469,9 @@ class Goc:
             self.do_cam[ten_do] = moi_id()
             xoay_ = ' rotation="-0.75"' if ten_do == 'but' else ''
             nut_ = node(ten_do, self.do_cam[ten_do], dx - 256, dy - 352, rg, f' opacity="0" scaleX="{k_}" scaleY="{k_}"{xoay_}')
-            if ten_do in ('but', 'chuong', 'phong-bi', 'canh-bao'):   # bút trên bàn tay phải; chuông cạnh chân (không bị tay/khăn che)
+            if lop_ and lop_[0] in ruot_lop:
+                ruot_lop[lop_[0]] += nut_
+            elif ten_do in ('but', 'chuong', 'phong-bi', 'canh-bao') or lop_ == ['tren']:   # trên hai bàn tay
                 ruot_tren += nut_
             else:
                 ruot_do += nut_
@@ -463,6 +480,13 @@ class Goc:
         self.thu_tu.append('giay-truoc')
         self.bp['do-tren'] = (256, 352, ruot_tren, moi_id())
         self.thu_tu.append('do-tren')
+        if ruot_lop['sau']:
+            self.bp['do-sau'] = (256, 352, ruot_lop['sau'], moi_id()); self.thu_tu.insert(0, 'do-sau')
+        if ruot_lop['ao']:
+            self.bp['do-ao'] = (256, 352, ruot_lop['ao'], moi_id())
+            self.thu_tu.insert(max(self.thu_tu.index('tay-trai'), self.thu_tu.index('tay-phai')) + 1, 'do-ao')
+        if ruot_lop['dau']:
+            self.bp['do-dau'] = (256, 352, ruot_lop['dau'], moi_id()); self.thu_tu.append('do-dau')
         self.tren_dau = ['giay-truoc', 'tay-trai-tren', 'tay-phai-tren', 'do-tren']
 
     def giay_trong_tay(self, ban, px, py):
@@ -1225,7 +1249,7 @@ def main():
         return out
 
 
-    def cam_do(ten_do):   # như cầm giấy nhưng hiện đồ khác (thúng rau, điện thoại, sổ)
+    def cam_do(ten_do, soi=False):   # như cầm giấy nhưng hiện đồ khác (thúng rau, điện thoại, sổ…)
         def fn(g):
             out = [k_ for k_ in cam_giay_fn(g) if not (g.giay and f'objectId="{g.giay}"' in k_)]
             if ten_do in getattr(g, 'do_cam', {}):
@@ -1471,6 +1495,71 @@ def main():
                     *tay_k(g, 'trai', [(0, 0), (7, .25), (131, .2), (151, 0), (160, 0)]),
                     *duoi_theo(g, [(0, 0), (6, .45), (40, .35), (70, 0), (160, 0)])]
 
+        def hien_do(g, ten_do, bat=0, tat=None, dai=200):   # đạo cụ hiện suốt (hoặc từ khung bat)
+            if ten_do not in getattr(g, 'do_cam', {}):
+                return []
+            ks = [(0, 1 if bat == 0 else 0)] + ([(bat - 4, 0), (bat, 1)] if bat else []) + ([(tat, 1), (tat + 6, 0)] if tat else []) + [(dai, 0 if tat else 1)]
+            return [khung(g.do_cam[ten_do], 'opacity', sorted(dict(ks).items()))]
+
+        def can_fn(g):    # 25 đứng cạnh cân, tay trái chỉ xuống mặt cân, đầu + mắt nhìn theo
+            out = [k_ for k_ in chi_trai_fn(g)]
+            if ('trai', 'chi') in g.bs_id:
+                out.append(khung(g.bs_id[('trai', 'chi')], 'rotation', [(0, 0), (12, 0), (26, -.62), (108, -.62), (128, 0), (180, 0)]))
+            return out + hien_do(g, 'can', dai=180) + [*mat(g, 'y', [(0, 0), (12, 0), (20, 2.5), (100, 2.5), (114, 0), (180, 0)])]
+
+        def xe_fn(g):     # 26 vẫy xe tải: xe đậu bên phải, đầu quay theo, mắt cười, tay phải vẫy
+            return [k_ for k_ in tam_biet_fn(g) if 'dau-nghich' not in k_] + hien_do(g, 'xe-tai') + [
+                khung(g.id['dau-nghich'], 'x', [(0, 0), (16, 5), (130, 5), (150, 0), (200, 0)]),
+                khung(g.id['dau-nghich'], 'rotation', [(0, 0), (16, .07), (130, .07), (150, 0), (200, 0)]),
+                *mat(g, 'x', [(0, 0), (14, 3), (130, 3), (146, 0), (200, 0)])]
+
+        def xit_lich_fn(g):   # 28 cầm lịch, bình xịt đặt cạnh chân: ngày hết cách ly
+            return cam_do('lich', soi=True)(g) + hien_do(g, 'binh-xit')
+
+        def tai_nghe_fn(g):   # 29 đeo tai nghe tổng đài, đang nói
+            return noi_fn(g) + hien_do(g, 'tai-nghe', dai=120)
+
+        def ngon_cai_fn(g):   # 30 giơ ngón cái trước ngực, mắt cười, gật
+            return [*bs(g, 'phai', 'giay', [(0, 0), (10, 0), (24, 1), (130, 1), (146, 0), (160, 0)]),
+                    *hien_do(g, 'ngon-cai', 22, 132, 160), *mat_cuoi(g, 18, 136),
+                    khung(g.id['dau-nghich'], 'y', [(0, 0), (30, 0), (38, 3), (46, 0), (160, 0)]),
+                    khung(g.id['nghich'], 'y', [(0, 0), (22, 0), (28, -4), (34, 0), (160, 0)], '0.3 0 0.7 1'),
+                    *tai_theo(g, [(0, 0), (22, .22), (130, .22), (146, 0), (160, 0)]),
+                    *duoi_theo(g, [(0, 0), (24, 0)] + [(24 + f, .25 * math.sin(2 * math.pi * f / 24)) for f in range(6, 97, 6)] + [(140, 0), (160, 0)])]
+
+        def binh_tinh_fn(g):  # 31 xin bình tĩnh: hai tay đưa ra hạ xuống nhịp chậm, mắt hiền, gật nhẹ
+            nh = [(0, 0), (16, .32)] + [(16 + 24 * i, .27 if i % 2 else .33) for i in range(1, 6)] + [(150, .3), (170, 0), (200, 0)]
+            return [*tay_k(g, 'phai', nh), *tay_k(g, 'trai', nh),
+                    *mat(g, 'scaleY', [(0, 1), (12, .6), (160, .6), (176, 1), (200, 1)]),
+                    *may(g, 'y', [(0, 0), (12, -2), (160, -2), (176, 0), (200, 0)]),
+                    khung(g.id['dau-nghich'], 'y', [(0, 0), (40, 2), (64, 0), (88, 2), (112, 0), (136, 2), (160, 0), (200, 0)]),
+                    khung(g.id['nghich'], 'scaleY', [(0, 1), (60, 1.01), (120, .99), (180, 1), (200, 1)]),
+                    *tai_theo(g, [(0, 0), (20, -.08), (160, -.08), (180, 0), (200, 0)])]
+
+        def dong_ho_fn(g):    # 32 chờ: cầm đồng hồ cát, mắt ngước lên, gõ chân
+            return cam_do('dong-ho-cat')(g) + [*mat(g, 'y', [(0, 0), (30, -2), (140, -2), (160, 0), (200, 0)]),
+                    khung(g.id['dau-nghich'], 'rotation', [(0, 0), (30, .05), (140, .05), (160, 0), (200, 0)]),
+                    *chan_k(g, 'phai', [(0, 0), (60, 0), (66, 6), (72, 0), (90, 0), (96, 6), (102, 0), (200, 0)])]
+
+        def non_la_fn(g):     # 33 đội nón lá ngày nắng: mắt nheo, lắc lư thong thả
+            return hien_do(g, 'non-la') + [*mat(g, 'scaleY', [(0, .7), (200, .7)]),
+                    khung(g.id['nghich'], 'rotation', [(0, 0), (50, .015), (100, 0), (150, -.015), (200, 0)]),
+                    *tay_k(g, 'trai', [(0, 0), (200, 0)]), *tay_k(g, 'phai', [(0, 0), (200, 0)]),
+                    *duoi_theo(g, [(f, .15 * math.sin(2 * math.pi * f / 100)) for f in range(0, 201, 25)])]
+
+        def ao_mua_fn(g):     # 34 mặc áo mưa ngày mưa: tay buông trong áo, mắt ngước nhìn mưa, tai cụp
+            return hien_do(g, 'ao-mua') + [*tay_k(g, 'trai', [(0, 0), (200, 0)]), *tay_k(g, 'phai', [(0, 0), (200, 0)]),
+                    *mat(g, 'y', [(0, -2), (200, -2)]), *tai_theo(g, [(0, -.2), (200, -.2)]),
+                    khung(g.id['dau-nghich'], 'y', [(0, -2), (100, -3), (200, -2)])]
+
+        def so_sanh_fn(g):    # 35 so sánh 2 trái: hai tay dang cầm xoài to / nhỏ, mắt + đầu nhìn trái rồi phải
+            return [*tay_k(g, 'trai', [(0, 0), (14, .42), (170, .42), (186, 0), (200, 0)]),
+                    *tay_k(g, 'phai', [(0, 0), (16, .42), (170, .42), (186, 0), (200, 0)]),
+                    *hien_do(g, 'xoai-to', 16, 168), *hien_do(g, 'xoai-nho', 18, 168),
+                    *mat(g, 'x', [(0, 0), (20, -3), (70, -3), (84, 3), (140, 3), (156, 0), (200, 0)]),
+                    khung(g.id['dau-nghich'], 'rotation', [(0, 0), (22, -.06), (70, -.06), (86, .06), (140, .06), (158, 0), (200, 0)]),
+                    *may(g, 'y', [(0, 0), (80, 0), (86, -3), (140, -3), (156, 0), (200, 0)], [(0, 0), (20, -3), (70, -3), (80, 0), (200, 0)])]
+
         HANH_DONG = {1: ('Hành động 1: chào', 144, gom(chao_hd_fn)),
                      2: ('Hành động 2: chỉ', 180, gom(chi_duong_fn)),
                      3: ('Hành động 3: nói', 120, gom(noi_fn)),
@@ -1494,9 +1583,21 @@ def main():
                      21: ('Hành động 21: ký giấy', 200, gom(ky_giay_fn)),
                      22: ('Hành động 22: cảnh báo', 200, gom(canh_bao_fn)),
                      23: ('Hành động 23: ngủ cạnh chuông', 240, gom(ngu_chuong_fn)),
-                     24: ('Hành động 24: ngạc nhiên', 160, gom(ngac_nhien_fn))}
+                     24: ('Hành động 24: ngạc nhiên', 160, gom(ngac_nhien_fn)),
+                     25: ('Hành động 25: cạnh cân', 180, gom(can_fn)),
+                     26: ('Hành động 26: vẫy xe tải', 200, gom(xe_fn)),
+                     27: ('Hành động 27: túi mẫu', 200, gom(cam_do('tui-mau', soi=True))),
+                     28: ('Hành động 28: bình xịt + lịch', 200, gom(xit_lich_fn)),
+                     29: ('Hành động 29: tai nghe', 120, gom(tai_nghe_fn)),
+                     30: ('Hành động 30: ngón cái', 160, gom(ngon_cai_fn)),
+                     31: ('Hành động 31: bình tĩnh', 200, gom(binh_tinh_fn)),
+                     32: ('Hành động 32: đồng hồ chờ', 200, gom(dong_ho_fn)),
+                     33: ('Hành động 33: nón lá', 200, gom(non_la_fn)),
+                     34: ('Hành động 34: áo mưa', 200, gom(ao_mua_fn)),
+                     35: ('Hành động 35: so sánh 2 trái', 200, gom(so_sanh_fn))}
         BAN_SAO = {2: [('phai', 'chi')], 6: [('phai', 'nghi')], 17: [('trai', 'chi')], 18: [('phai', 'chi')], 19: [('phai', 'chi')],
-                   **{n_: [('phai', 'giay'), ('trai', 'giay')] for n_ in (5, 8, 13, 14, 15, 20, 21)}}
+                   25: [('trai', 'chi')], 30: [('phai', 'giay')],
+                   **{n_: [('phai', 'giay'), ('trai', 'giay')] for n_ in (5, 8, 13, 14, 15, 20, 21, 27, 28, 32)}}
     # 'Về nghỉ': mọi thuộc tính các hành động đã khoá đưa về giá trị gốc (hành động giữ dáng — xin lỗi, cầm giấy…
     # — không để trâu kẹt ở dáng cuối khi hanh_dong về 0), xong mới sang trạng thái rỗng cho nghỉ sống chạy.
     import re as _re
