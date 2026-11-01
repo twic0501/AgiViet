@@ -1,6 +1,7 @@
 // Màn 42–80: Đơn · Tiền · Tôi (+ Kiểm tiền, Bàn giao, Đánh giá bên mua)
 import { esc, d, so, kg, ic, the, dong, viec, nhan, lk, nut, chang, chon, o } from "./tien-ich.js";
 import { BUOC, TIEN } from "./du-lieu.js";
+import { docHD, ghiHD, tinhTien } from "../giao-dich-chung.js";
 
 const AI = { bac: "Bác", mua: "Bên mua", nh: "Ngân hàng" };
 // Tiền đang ở đâu theo bước (nhìn từ phía bác)
@@ -11,7 +12,26 @@ function tienO(b) {
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--ke);background:var(--giay-noi)">
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
+// Kịch bản do app mua nạp (giao-dich-chung.js): những lúc tới lượt chị Năm làm
+const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc" };
+const nutKb = (chu, lam, lop = "m-vang") => `<button class="m-nut ${lop} m-rong" type="button" data-kb="${lam}">${esc(chu)}</button>`;
+function viecKichBan() {
+  const h = docHD(), t = tinhTien(h);
+  if (h.huy) return viec("Đơn đã hủy theo thỏa thuận", `Hàng về lại lô L-0412. Cọc ${d(TIEN.COC)} ngân hàng chuyển cho bác. Phí bên mua không hoàn.`, "", "m-cho");
+  if (h.phu === "xin-huy") return viec("Bên mua xin hủy đơn", `Bác có 24 giờ để trả lời. Nếu hủy: cọc ${d(TIEN.COC)} chuyển cho bác, hàng về lại lô. Im lặng là không đồng ý.`, `<div style="display:grid;gap:8px">${nutKb("Đồng ý hủy", "huy-ok")}${nutKb("Không đồng ý", "huy-khong", "m-phu")}</div>`);
+  if (h.kb === "doi-ngay" && h.buoc === 2 && !h.daDeNghi) return viec("Bác cần đổi ngày giao?", "Mưa nhiều, bác có thể đề nghị đổi ngày giao 28/10 → 29/10 trước khi ký. Bên mua đồng ý thì sang bản 2.", `<div style="display:grid;gap:8px">${nutKb("Đề nghị đổi sang 29/10", "de-nghi", "m-phu")}${nut("Xem và ký", { ma: "ky", lop: "m-vang m-rong" })}</div>`);
+  if (h.phu === "de-nghi") return viec("Chờ bên mua trả lời đề nghị đổi ngày", "Đang đề nghị: chưa ký được tới khi bên mua trả lời.", "", "m-cho");
+  if (h.kb === "lech" && h.buoc === 6 && !h.phu) return viec("Bên mua báo đã chuyển 32.200.000 đ", "Bác kiểm tài khoản. Nếu chỉ thấy một phần thì báo đúng số bác thấy.", `<div style="display:grid;gap:8px">${nutKb("Tôi chỉ thấy 20.000.000 đ", "lech", "m-phu")}${nut("Kiểm tiền", { ma: "kiem-tien", lop: "m-vang m-rong" })}</div>`);
+  if (h.phu === "lech" || h.phu === "cho-vh") return viec("Lệch tiền, đang đối soát", "Bác thấy 20.000.000 đ, bên mua báo 32.200.000 đ. Đây là lệch, không phải vi phạm. Người vận hành đối chiếu sao kê trong 48 giờ. Chưa cho bốc.", "", "m-cho");
+  if (h.kb === "phan-doi" && h.buoc === 11 && !h.daPhanDoi) return viec("Có kết quả cân", "Đạt 1.850 · hạ cấp 120 · trả lại 30 kg. Bác thấy dòng hạ cấp không đúng thì phản đối riêng dòng đó.", `<div style="display:grid;gap:8px">${nutKb("Phản đối dòng hạ cấp 120 kg", "phan-doi", "m-phu")}${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>`);
+  if (h.phu === "phan-doi") return viec("Bác đã phản đối dòng hạ cấp", "Các dòng khác đã chốt. Bên mua đang cân lại dòng này.", "", "m-cho");
+  if (h.phu === "can-lai") return viec("Bên mua cân lại: vẫn 120 kg hạ cấp", "Bác đồng ý hoặc gửi mẫu M-2291 đi kiểm định 48 giờ. Bên sai chịu phí kiểm định.", `<div style="display:grid;gap:8px">${nutKb("Vẫn không đồng ý → kiểm định", "kd", "m-phu")}</div>`);
+  if (h.phu === "kiem-dinh") return viec("Đang kiểm định mẫu M-2291", "Kết quả trong 48 giờ.", "", "m-cho");
+  if (h.kb === "tra-lai" && h.buoc === 13 && h.phu === "cho-nb-hoan") return viec(`Bác cần hoàn ${d(t.nbHoan)} cho bên mua`, `Giá trị nghiệm thu ${d(t.nt)} thấp hơn số bác đã nhận ${d(TIEN.TRA_THANG)}. Chuyển phần dư vào tài khoản công ty Đồng Xanh, nội dung HD0018 HOAN.`, nutKb(`Tôi đã hoàn ${d(t.nbHoan)}`, "nb-hoan"));
+  return "";
+}
 const viecDon = (s) => {
+  const kb = viecKichBan(); if (kb) return kb;
   const b = s.hd.buoc;
   if (b >= 15) return viec("HĐ-0018 đã hoàn tất", `Bác đã nhận đủ ${d(TIEN.NGHIEM_THU)}. Cảm ơn chị Năm.`, "", "m-xong");
   const x = BUOC[b];
@@ -44,7 +64,13 @@ export const MAN_3 = {
       window.__buocCu = s.hd.buoc;
       el.querySelector("#mp")?.addEventListener("click", () => { tienLen(api, BUOC[s.hd.buoc].mp.replace("Mô phỏng: ", "") ); api.veLai(); });
       el.querySelector("#lam")?.addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã gửi"); tienLen(api, `Xong: ${BUOC[s.hd.buoc].lam}`); api.veLai(); });
-      el.querySelector("#lai").addEventListener("click", () => { api.doi((x) => { x.hd.buoc = 0; }); api.veLai(); });
+      el.querySelector("#lai").addEventListener("click", () => { ghiHD({ buoc: 0, daTra: 0, nbXn: 0, kb: docHD().kb, phu: "", ban: 1, huy: false, ngayGiao: "28/10" }); api.doi((x) => { x.hd.buoc = 0; }); api.veLai(); });
+      el.querySelectorAll("[data-kb]").forEach((b) => b.addEventListener("click", async () => {
+        await api.xong(b, "Đã gửi");
+        const P = { "huy-ok": { huy: true, phu: "" }, "huy-khong": { phu: "" }, "de-nghi": { phu: "de-nghi", daDeNghi: true }, lech: { phu: "lech", nbXn: 20000000 }, "phan-doi": { phu: "phan-doi", daPhanDoi: true }, kd: { phu: "kiem-dinh" }, "nb-hoan": { phu: "nb-da-hoan" } }[b.dataset.kb];
+        ghiHD((x) => ({ ...x, ...P })); api.veLai();
+      }));
+      const kbDang = docHD().kb; if (kbDang && kbDang !== "thuan") el.querySelector(".m-than").insertAdjacentHTML("afterbegin", `<p class="m-ghi">Kịch bản thử đang chạy: <b>${esc(TEN_KB[kbDang] || kbDang)}</b> (nạp từ app mua).</p>`);
     } },
   "xac-nhan-don": { tieu: "Đơn mới", phu: "Bên mua gửi thỏa thuận", ve: () => ({ than: `
     ${viec("Nhà máy sấy Đồng Xanh gửi thỏa thuận HĐ-0018", "Bác có 24 giờ để xem và ký. Không ký thì hàng hết giữ, lô bán tiếp bình thường.")}

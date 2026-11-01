@@ -1,6 +1,7 @@
 // App MUA AgiViet — bản thiết kế 49 màn (danh mục "App Thu mua"), dữ liệu mẫu theo AgiViet_prompt_app_mua_V2.md.
 // Một người mua làm hết (chị Thu Hà, Nhà máy sấy Đồng Xanh). Máy tính + điện thoại dùng chung trạng thái.
 import { esc, d, kg, so, icon, taoKho, chayApp } from "./so-lam-an.js";
+import { tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
 
 // ── Dữ liệu ──
 const TONG_CHUYEN_COC = 13938000, COC = 13800000, PHI = 138000, TRA_THANG = 32200000, NGHIEM_THU = 44350000, COC_CHO_NB = 12150000, HOAN = 1650000;
@@ -31,7 +32,11 @@ const DAU = {
   hoiChon: "PN-0042",
 };
 const kho = taoKho("agv-mua", DAU);
-const doi = (f) => kho.doi(f);
+// HĐ-0018 dùng chung với app bán (giao-dich-chung.js): đọc trước mỗi thao tác, ghi lại sau; bên kia đổi thì vẽ lại
+kho.s.hd = docHD();
+const doi = (f) => kho.doi((s) => { s.hd = docHD(); f(s); ghiHD(s.hd); });
+ngheHD(() => kho.doi((s) => { s.hd = docHD(); }));
+ngheTC(() => kho.doi(() => {}));
 
 const LO = [
   { ma: "L-0412", ten: "Xoài cát Chu loại 1", nguoi: "Chị Năm", noi: "Mỹ Xương, Cao Lãnh, Đồng Tháp", gia: 23000, con: 3500, hai: "27/10", uy: 4.8, don: 31, anh: "xoai", kiem: true },
@@ -58,70 +63,150 @@ const DON_KHAC = [
   { ma: "HĐ-0015", hang: "Bưởi da xanh · 1.200 kg", nguoi: "Anh Sáu", buoc: "Hoàn tất", luot: "xong", han: "", tien: 33600000 },
 ];
 
-// ── Trạng thái đơn HĐ-0018 ──
+// ── Trạng thái đơn HĐ-0018 (8 kịch bản, prompt app mua V2 mục 8) ──
+const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"]];
 const hdTien = (h) => {
-  const b = h.buoc;
-  const banChi = (b >= 4 ? TONG_CHUYEN_COC : 0) + h.daTra - (b >= 14 ? HOAN : 0);
+  const b = h.buoc, t = tinhTien(h);
+  if (h.huy) return { banChi: COC + PHI, nh: 0, nb: COC };
+  const banChi = (b >= 4 ? COC + PHI : 0) + (h.daTra || 0) - (h.hoanXn || b >= 14 ? t.hoanMua : 0) - (h.nbHoanXn ? t.nbHoan : 0);
   const nh = b >= 4 && b < 13 ? COC : 0;
-  const nb = h.nbXn + (b >= 13 ? COC_CHO_NB : 0);
+  const nb = (h.nbXn || 0) + (b >= 13 ? t.cocNB : 0) - (h.nbHoanXn ? t.nbHoan : 0);
   return { banChi, nh, nb };
 };
-const hdChan = (h) => (h.buoc === 7 && h.nbXn < TRA_THANG && h.nbXn > 0) ? `Chưa bốc được: người bán mới xác nhận ${so(h.nbXn)} / ${d(TRA_THANG)}` : "";
-const hdLuot = (h) => h.buoc >= BUOC.length ? "xong" : hdChan(h) ? "ban" : BUOC[h.buoc].ai;
-const hdTienSauBuoc = (i) => [
-  "Hàng được giữ 24 giờ", "", "", "Ngân hàng giữ 13.800.000 đ (chờ xác nhận)", "Ngân hàng giữ 13.800.000 đ", "Đã báo trả 32.200.000 đ", "Người bán đã nhận 32.200.000 đ",
-  "Rủi ro đường từ đây thuộc bạn", "", "", "Giá trị nghiệm thu 44.350.000 đ", "", "12.150.000 đ sang chị Năm · 1.650.000 đ hoàn bạn", "Chi ròng 44.350.000 đ", ""][i];
+const hdChan = (h) => {
+  if (h.buoc === 7 && h.nbXn < TRA_THANG && h.nbXn > 0 && h.kb !== "lech") return `Chưa bốc được: người bán mới xác nhận ${so(h.nbXn)} / ${d(TRA_THANG)}`;
+  return "";
+};
+const hdLuot = (h) => {
+  if (h.huy || h.buoc >= BUOC.length) return "xong";
+  if (h.phu === "xin-huy") return "nb";
+  if (h.phu === "de-nghi" || h.phu === "lech" || h.phu === "phan-doi" || hdChan(h)) return "ban";
+  if (h.phu === "cho-vh") return "vh";
+  if (h.phu === "can-lai" || h.phu === "kiem-dinh") return "nb";
+  if (h.kb === "tra-lai" && h.buoc === 13) return h.phu === "cho-nb-hoan" ? "nb" : "ban";
+  return BUOC[h.buoc].ai;
+};
+const lamBuoc = (i, h) => {
+  const t = tinhTien(h);
+  if (i === 10) return `Nghiệm thu 3 phần (${so(t.dat)} · ${so(t.ha)} · ${so(t.tra)} kg)`;
+  if (i === 12) return t.nbHoan ? "Ngân hàng hoàn hết cọc cho bạn" : `Ngân hàng chi ${so(t.cocNB)} đ cho người bán, hoàn ${so(t.hoanMua)} đ cho bạn`;
+  if (i === 13) return t.nbHoan ? `Nhận lại cọc ${d(t.hoanMua)} + người bán hoàn ${d(t.nbHoan)}` : `Xác nhận tiền hoàn ${d(t.hoanMua)} đã về`;
+  if (i === 5 && h.ban === 2) return `Trả thẳng ${d(TRA_THANG)} cho người bán (hạn dời theo bản 2)`;
+  return BUOC[i].lam;
+};
+const hdTienSauBuoc = (i, h) => {
+  const t = tinhTien(h);
+  return ["Hàng được giữ 24 giờ", h.ban === 2 ? "Thỏa thuận bản 2 (giao 29/10)" : "", "", "Đã chuyển cọc, chờ ngân hàng xác nhận", "Ngân hàng giữ 13.800.000 đ · liên lạc mở", `Đã báo trả ${d(h.daTra || TRA_THANG)}`, `Người bán đã nhận ${d(h.nbXn || TRA_THANG)}`,
+    "Rủi ro đường từ đây thuộc bạn", "", "", `Giá trị nghiệm thu ${d(t.nt)}`, h.kb === "phan-doi" ? "Chốt theo kiểm định: hạ cấp 104 kg" : "", t.nbHoan ? `Cọc ${d(TIEN_COC())} hoàn bạn · người bán phải hoàn ${d(t.nbHoan)}` : `${d(t.cocNB)} sang chị Năm · ${d(t.hoanMua)} hoàn bạn`, `Chi ròng cho hàng ${d(t.nt)}`, ""][i];
+};
+const TIEN_COC = () => COC;
 const viecCan = (s) => (hdLuot(s.hd) === "ban" ? 1 : 0) + DON_KHAC.filter((x) => x.luot === "ban").length + 1;
 
 function veBuoc(h, gon = false) {
   const chan = hdChan(h);
   return `<ol class="sl-buoc">${BUOC.map((b, i) => {
-    const xong = i < h.buoc, nay = i === h.buoc;
-    const lop = xong ? "sl-b-xong" : nay ? (chan && i === 7 ? "sl-b-nay sl-b-chan" : "sl-b-nay") : "sl-b-cho";
+    const xong = i < h.buoc, nay = i === h.buoc && !h.huy;
+    const lop = xong ? "sl-b-xong" : nay ? (chan && i === 7 || h.phu === "lech" ? "sl-b-nay sl-b-chan" : "sl-b-nay") : "sl-b-cho";
     if (gon && !nay && Math.abs(i - h.buoc) > 2) return "";
     return `<li class="${lop}${xong && i === h.buoc - 1 ? " sl-moi" : ""}"><span class="sl-b-vong">${xong ? icon("tich") : i + 1}</span><div>
-      <span class="sl-b-ai">${AI[b.ai]}${b.han && !xong ? ` · hạn ${esc(b.han)}` : ""}</span>
-      <b>${esc(b.lam)}</b>
-      ${xong && hdTienSauBuoc(i) ? `<div class="sl-b-tien">${esc(hdTienSauBuoc(i))}</div>` : ""}
+      <span class="sl-b-ai">${AI[b.ai]}${b.han && !xong ? ` · hạn ${esc(i === 5 && h.ban === 2 ? "trước 5:30 ngày 29/10" : b.han)}` : ""}</span>
+      <b>${esc(lamBuoc(i, h))}</b>
+      ${xong && hdTienSauBuoc(i, h) ? `<div class="sl-b-tien">${esc(hdTienSauBuoc(i, h))}</div>` : ""}
       ${nay && chan && i === 7 ? `<div class="sl-b-ly">${esc(chan)}</div>` : ""}
     </div></li>`;
   }).join("")}</ol>`;
 }
 function veTienO(h) {
-  const t = hdTien(h);
+  const t = hdTien(h), k = tinhTien(h);
   return `<div class="sl-tien-o" id="tien-o">
-    <div><small>Bạn đã chi</small><b class="sl-so">${d(t.banChi)}</b><span class="sl-ghi">${h.buoc === 13 ? "chờ hoàn 1.650.000 đ" : h.buoc >= 14 ? "đã nhận lại tiền hoàn" : "gồm phí 138.000 đ"}</span></div>
-    <div><small>Ngân hàng giữ</small><b class="sl-so" style="color:var(--chin)">${d(t.nh)}</b><span class="sl-ghi">${t.nh ? "cọc 30%" : h.buoc >= 13 ? "đã xử lý cọc" : "chưa có cọc"}</span></div>
-    <div><small>Chị Năm đã nhận</small><b class="sl-so" style="color:var(--la)">${d(t.nb)}</b><span class="sl-ghi">${h.daTra > h.nbXn ? `chờ xác nhận ${so(h.daTra - h.nbXn)} đ` : "đã xác nhận đúng số"}</span></div>
+    <div><small>Bạn đã chi</small><b class="sl-so" data-v="${t.banChi}">${d(t.banChi)}</b><span class="sl-ghi">${h.huy ? "cọc chuyển người bán, phí không hoàn" : h.buoc === 13 && !h.hoanXn ? `chờ hoàn ${so(k.hoanMua)} đ` : h.buoc >= 14 ? "đã nhận lại tiền hoàn" : "gồm phí 138.000 đ"}</span></div>
+    <div><small>Ngân hàng giữ</small><b class="sl-so" data-v="${t.nh}" style="color:var(--chin)">${d(t.nh)}</b><span class="sl-ghi">${t.nh ? (h.buoc === 4 ? "đã chuyển, chờ xác nhận" : "cọc 30%") : h.buoc >= 13 ? "đã xử lý cọc" : "chưa có cọc"}</span></div>
+    <div><small>Chị Năm đã nhận</small><b class="sl-so" data-v="${t.nb}" style="color:var(--la)">${d(t.nb)}</b><span class="sl-ghi">${h.phu === "lech" || h.phu === "cho-vh" ? "đang đối soát phần lệch" : (h.daTra || 0) > (h.nbXn || 0) ? `chờ xác nhận ${so(h.daTra - h.nbXn)} đ` : "đã xác nhận đúng số"}</span></div>
   </div>`;
 }
+const nutMp = (chu, lam) => `<button class="sl-nut sl-mp" data-lam="${lam}">${esc(chu)}</button>`;
+const nutVang = (chu, lam) => `<button class="sl-nut sl-vang" data-lam="${lam}">${esc(chu)}</button>`;
+const theViec = (lop, tieu, p, nut) => `<div class="sl-viec ${lop}"><div><h2>${esc(tieu)}</h2><p>${p}</p></div><div class="sl-hang-nut">${nut}</div></div>`;
 function veViec(h, url) {
-  const luot = hdLuot(h);
-  if (luot === "xong") return `<div class="sl-viec sl-xong"><div><h2>Hoàn tất · hết nghĩa vụ hai bên</h2><p>Đã nhập kho 1.850 kg loại 1 và 120 kg hạ cấp. Bảng kê tháng 10 đã có dòng này.</p></div><div class="sl-hang-nut"><a class="sl-nut sl-vien" href="${url("bang-ke")}">Tải bảng kê</a></div></div>`;
-  const b = BUOC[h.buoc], chan = hdChan(h);
-  if (chan) return `<div class="sl-viec sl-chan-lai"><div><h2>${esc(chan)}</h2><p>Còn thiếu ${d(TRA_THANG - h.nbXn)}. Trả nốt vào Agribank •••• 2186 (đúng tài khoản trong hợp đồng), nội dung HD0018.</p></div><div class="sl-hang-nut">${h.daTra < TRA_THANG ? `<button class="sl-nut sl-vang" data-lam="tra-not">Ghi đã trả ${d(TRA_THANG - h.daTra)}</button>` : `<button class="sl-nut sl-mp" data-lam="mp">Mô phỏng: chị Năm xác nhận phần còn lại</button>`}</div></div>`;
-  if (luot === "ban") {
-    const nut = b.nut === "Ghi đã trả" ? `Ghi đã trả ${d(h.traThieu ? 20000000 : TRA_THANG)}` : b.nut;
-    const them = h.buoc === 10 ? `<a class="sl-nut sl-vien" href="${url("nghiem-thu")}">Mở bảng nghiệm thu</a>` : h.buoc === 1 ? `<a class="sl-nut sl-vien" href="${url("thoa-thuan")}">Xem lại thỏa thuận</a>` : h.buoc === 3 ? `<a class="sl-nut sl-vien" href="${url("dat-coc")}">Xem chi tiết cọc</a>` : "";
-    const giai = { 0: "Hàng của chị Năm được giữ 24 giờ cho bạn từ lúc đồng ý.", 3: "Cọc 30% do ngân hàng đối tác giữ. Phí giới thiệu 0,3% lưu vào hợp đồng.", 5: "Chuyển thẳng cho chị Năm, chỉ vào Agribank •••• 2186, nội dung HD0018. Bạn đang chịu rủi ro 32.200.000 đ cho phần trả trước khi bốc.", 8: "Xem video bốc tại vườn. Bấm xong thì rủi ro đường thuộc bạn.", 9: "Bấm khi xe về kho. Từ lúc này bạn có 2 giờ để nghiệm thu.", 10: "Mẫu: đạt 1.850 kg · hạ cấp 120 kg · trả lại 30 kg → 44.350.000 đ.", 13: "Ngân hàng đã gửi lệnh hoàn. Chỉ bấm khi tiền đã thật sự về tài khoản.", 14: "Nhập 1.970 kg vào kho nguyên liệu, rồi đánh giá chị Năm." }[h.buoc] || "";
-    return `<div class="sl-viec"><div><h2>${esc(b.lam)}</h2><p>${esc(giai)}${b.han ? ` Hạn: ${esc(b.han)}.` : ""}</p></div><div class="sl-hang-nut">${them}<button class="sl-nut sl-vang" data-lam="lam">${esc(nut)}</button>${h.buoc === 13 ? `<button class="sl-nut sl-vien" data-lam="chua">Chưa nhận</button>` : ""}</div></div>`;
+  const luot = hdLuot(h), t = tinhTien(h);
+  if (h.huy) return theViec("sl-cho", "Đơn đã hủy theo thỏa thuận", `Hàng về lại lô L-0412 của chị Năm. Cọc ${d(COC)} chuyển cho chị Năm, phí ${d(PHI)} không hoàn (đề xuất, chờ chốt). Chưa có khoản trả thẳng.`, "");
+  if (luot === "xong") return theViec("sl-xong", "Hoàn tất · hết nghĩa vụ hai bên", `Đã nhập kho ${so(t.dat)} kg loại 1 và ${so(t.ha)} kg hạ cấp. Bảng kê tháng 10 đã có dòng này.`, `<a class="sl-nut sl-vien" href="${url("bang-ke")}">Tải bảng kê</a>`);
+  // ── Nhánh kịch bản ──
+  if (h.phu === "xin-huy") return theViec("sl-cho", "Đang chờ chị Năm trả lời yêu cầu hủy", "Chị Năm có 24 giờ. <b>Im lặng là không đồng ý</b> — đơn giữ nguyên.", nutMp("Mô phỏng: chị Năm đồng ý hủy", "huy-ok") + nutMp("Mô phỏng: hết 24 giờ, chị Năm im lặng", "huy-khong"));
+  if (h.phu === "de-nghi") return theViec("", "Chị Năm đề nghị đổi ngày giao 28/10 → 29/10", "Mục này đang <b>Đang đề nghị</b>: chưa ký, chưa chuyển cọc được. Đồng ý thì sang bản 2, hạn trả thẳng dời theo. Không đồng ý thì giữ bản 1.", `<button class="sl-nut sl-vien" data-lam="de-khong">Không đồng ý</button>` + nutVang("Đồng ý", "de-ok"));
+  if (h.phu === "lech") return theViec("sl-chan-lai", "Lệch tiền, đang đối soát", `Bạn báo đã trả ${d(TRA_THANG)}, chị Năm chỉ thấy ${d(20000000)}. Đây là <b>lệch, không phải vi phạm</b>. Chưa bốc tới khi chốt số đúng.`, nutVang("Gửi chứng từ", "gui-ct"));
+  if (h.phu === "cho-vh") return theViec("sl-cho", "Người vận hành đang đối chiếu sao kê", "Đã gửi ủy nhiệm chi 2 lần chuyển. Hạn đối soát 48 giờ.", nutMp("Mô phỏng: người vận hành chốt đúng 32.200.000 đ", "vh-ok"));
+  if (h.phu === "phan-doi") return theViec("", "Chị Năm phản đối dòng hạ cấp 120 kg", "Các dòng khác (1.850 kg loại 1, 30 kg trả lại) đã chốt. Bạn cân lại dòng hạ cấp, có chị Năm hoặc người được ủy quyền chứng kiến.", nutVang("Cân lại", "can-lai"));
+  if (h.phu === "can-lai") return theViec("sl-cho", "Cân lại vẫn 120 kg · chờ chị Năm", "Nếu chị Năm vẫn không đồng ý: gửi mẫu M-2291 đi kiểm định 48 giờ, bên sai chịu phí.", nutMp("Mô phỏng: chị Năm vẫn không đồng ý → kiểm định", "kd"));
+  if (h.phu === "kiem-dinh") return theViec("sl-cho", "Đang kiểm định mẫu M-2291 · 48 giờ", "Trung tâm kiểm định Cần Thơ. Phí 850.000 đ do bên sai chịu.", nutMp("Mô phỏng: kết quả 104/120 kg dưới chuẩn", "kd-xong"));
+  if (h.kb === "tra-lai" && h.buoc === 13) {
+    if (!h.hoanXn) return theViec("", `Ngân hàng hoàn hết cọc ${d(COC)} cho bạn`, `Giá trị nghiệm thu ${d(t.nt)} nhỏ hơn số đã trả thẳng ${d(TRA_THANG)}. Chỉ bấm khi tiền đã về.`, nutVang(`Đã nhận lại ${d(COC)}`, "hoan-xn") + `<button class="sl-nut sl-vien" data-lam="chua">Chưa nhận</button>`);
+    if (h.phu !== "nb-da-hoan") return theViec("sl-cho", `Chờ chị Năm hoàn ${d(t.nbHoan)} ngoài app`, "Phần bạn trả thẳng vượt giá trị nghiệm thu. Chị Năm hoàn vào tài khoản công ty, nội dung HD0018 HOAN.", nutMp(`Mô phỏng: chị Năm báo đã hoàn ${d(t.nbHoan)}`, "nb-hoan"));
+    return theViec("", `Chị Năm báo đã hoàn ${d(t.nbHoan)}`, "Kiểm tài khoản công ty. Chỉ bấm khi tiền đã về đúng số.", nutVang(`Đã nhận lại ${d(t.nbHoan)}`, "nb-hoan-xn") + `<button class="sl-nut sl-vien" data-lam="chua">Chưa nhận</button>`);
   }
-  return `<div class="sl-viec sl-cho"><div><h2>Đang chờ ${esc(AI[luot].toLowerCase())}: ${esc(b.lam.replace(/^Người bán |^Ngân hàng /, ""))}</h2><p>Bạn không phải làm gì lúc này${b.han ? ` · hạn ${esc(b.han)}` : ""}. Khi có kết quả, đơn tự sang bước sau.</p></div><div class="sl-hang-nut"><button class="sl-nut sl-mp" data-lam="mp">${esc(b.mp)}</button></div></div>`;
+  // ── Luồng chung ──
+  const b = BUOC[h.buoc], chan = hdChan(h);
+  if (chan) return theViec("sl-chan-lai", chan, `Còn thiếu ${d(TRA_THANG - h.nbXn)}. Trả nốt vào Agribank •••• 2186 (đúng tài khoản trong hợp đồng), nội dung HD0018.`, h.daTra < TRA_THANG ? nutVang(`Ghi đã trả ${d(TRA_THANG - h.daTra)}`, "tra-not") : nutMp("Mô phỏng: chị Năm xác nhận phần còn lại", "mp"));
+  if (luot === "ban") {
+    const nut = b.nut === "Ghi đã trả" ? `Ghi đã trả ${d(h.kb === "thieu" ? 20000000 : TRA_THANG)}` : h.buoc === 13 ? `Đã nhận lại ${d(t.hoanMua)}` : b.nut;
+    const them = h.buoc === 10 ? `<a class="sl-nut sl-vien" href="${url("nghiem-thu")}">Mở bảng nghiệm thu</a>` : h.buoc === 1 ? `<a class="sl-nut sl-vien" href="${url("thoa-thuan")}">Xem lại thỏa thuận</a>` : h.buoc === 3 ? `<a class="sl-nut sl-vien" href="${url("dat-coc")}">Xem chi tiết cọc</a>` : "";
+    const giai = { 0: "Hàng của chị Năm được giữ 24 giờ cho bạn từ lúc đồng ý.", 3: "Cọc 30% do ngân hàng đối tác giữ. Phí giới thiệu 0,3% bạn trả AgiViet riêng.", 5: `Chuyển thẳng cho chị Năm, chỉ vào Agribank •••• 2186, nội dung HD0018. Bạn đang chịu rủi ro ${d(TRA_THANG)} cho phần trả trước khi bốc.`, 8: "Xem video bốc tại vườn. Bấm xong thì rủi ro đường thuộc bạn.", 9: "Bấm khi xe về kho. Từ lúc này bạn có 2 giờ để nghiệm thu.", 10: h.kb === "can-lech" ? `Cân tại kho 1.960 kg (trong ±5% của 2.000 kg) nên luồng thuận: đạt ${so(t.dat)} · hạ cấp ${so(t.ha)} · trả lại ${so(t.tra)} kg → ${d(t.nt)}.` : `Đạt ${so(t.dat)} kg · hạ cấp ${so(t.ha)} kg · trả lại ${so(t.tra)} kg${t.tra > 100 ? " (trên 5%, phải có ảnh)" : ""} → ${d(t.nt)}.`, 13: "Ngân hàng đã gửi lệnh hoàn. Chỉ bấm khi tiền đã thật sự về tài khoản.", 14: `Nhập ${so(t.dat + t.ha)} kg vào kho nguyên liệu, rồi đánh giá chị Năm.` }[h.buoc] || "";
+    const huy = h.kb === "huy" && (h.buoc === 5 || h.buoc === 6) ? `<button class="sl-nut sl-huy" data-lam="xin-huy">Xin hủy</button>` : "";
+    return theViec("", lamBuoc(h.buoc, h), `${esc(giai)}${b.han ? ` Hạn: ${esc(h.buoc === 5 && h.ban === 2 ? "trước 5:30 ngày 29/10" : b.han)}.` : ""}`, them + huy + nutVang(nut, "lam") + (h.buoc === 13 ? `<button class="sl-nut sl-vien" data-lam="chua">Chưa nhận</button>` : ""));
+  }
+  // Chờ bên kia: nút "Mô phỏng" (+ nhánh kịch bản)
+  let mp = nutMp(b.mp, "mp");
+  if (h.kb === "doi-ngay" && h.buoc === 2 && !h.daDeNghi) mp = nutMp("Mô phỏng: chị Năm đề nghị đổi ngày giao 28/10 → 29/10", "de-nghi") + mp;
+  if (h.kb === "lech" && h.buoc === 6) mp = nutMp("Mô phỏng: chị Năm chỉ thấy 20.000.000 đ", "lech");
+  if (h.kb === "phan-doi" && h.buoc === 11 && !h.daPhanDoi) mp = nutMp("Mô phỏng: chị Năm phản đối dòng hạ cấp 120 kg", "phan-doi");
+  return theViec("sl-cho", `Đang chờ ${AI[luot].toLowerCase()}: ${lamBuoc(h.buoc, h).replace(/^Người bán |^Ngân hàng /, "")}`, `Bạn không phải làm gì lúc này${b.han ? ` · hạn ${esc(b.han)}` : ""}. Khi có kết quả, đơn tự sang bước sau.`, mp);
 }
-function ganNutDon(goc, veLai) {
-  goc.querySelectorAll("[data-lam]").forEach((n) => n.addEventListener("click", () => {
+function ganNutDon(goc) {
+  goc.querySelectorAll("[data-lam]").forEach((n) => n.addEventListener("click", async () => {
     const lam = n.dataset.lam;
-    if (lam === "chua") { n.closest(".sl-viec").querySelector("p").textContent = "Đã ghi: chưa nhận. Ngân hàng được báo kiểm lại lệnh hoàn; đơn chưa hoàn tất."; return; }
+    if (lam === "chua") { n.closest(".sl-viec").querySelector("p").textContent = "Đã ghi: chưa nhận. Bên kia và ngân hàng được báo kiểm lại; đơn chưa hoàn tất."; window.HieuUngThem?.rung(n); return; }
+    // Nút của mình (vàng): chấm chờ → tích rồi mới đổi trạng thái
+    if (n.classList.contains("sl-vang") && window.HieuUngThem) await window.HieuUngThem.nutXong(n, "Đã gửi", 450);
     doi((s) => {
       const h = s.hd;
-      if (lam === "tra-not") { h.daTra = TRA_THANG; return; }
-      if (h.buoc === 5) { h.daTra = h.traThieu ? 20000000 : TRA_THANG; h.buoc++; return; }
+      const P = {
+        "tra-not": () => { h.daTra = TRA_THANG; },
+        "de-nghi": () => { h.phu = "de-nghi"; h.daDeNghi = true; },
+        "de-ok": () => { h.phu = ""; h.ban = 2; h.ngayGiao = "29/10"; },
+        "de-khong": () => { h.phu = ""; h.ban = 1; },
+        "lech": () => { h.nbXn = 20000000; h.phu = "lech"; },
+        "gui-ct": () => { h.phu = "cho-vh"; },
+        "vh-ok": () => { h.nbXn = TRA_THANG; h.phu = ""; h.buoc = 7; },
+        "phan-doi": () => { h.phu = "phan-doi"; h.daPhanDoi = true; },
+        "can-lai": () => { h.phu = "can-lai"; },
+        "kd": () => { h.phu = "kiem-dinh"; },
+        "kd-xong": () => { h.phu = "da-kiem-dinh"; h.buoc = 12; },
+        "xin-huy": () => { h.phu = "xin-huy"; },
+        "huy-ok": () => { h.huy = true; h.phu = ""; },
+        "huy-khong": () => { h.phu = ""; },
+        "hoan-xn": () => { h.hoanXn = true; h.phu = "cho-nb-hoan"; },
+        "nb-hoan": () => { h.phu = "nb-da-hoan"; },
+        "nb-hoan-xn": () => { h.nbHoanXn = true; h.phu = ""; h.buoc = 14; },
+      };
+      if (P[lam]) return P[lam]();
+      if (h.buoc === 5) { h.daTra = h.kb === "thieu" ? 20000000 : TRA_THANG; h.buoc++; return; }
       if (h.buoc === 6 || (h.buoc === 7 && hdChan(h))) { h.nbXn = h.daTra; if (h.buoc === 6) h.buoc++; return; }
       if (h.buoc === 7 && h.nbXn < TRA_THANG) return;
+      if (h.buoc === 13) h.hoanXn = true;
       h.buoc = Math.min(BUOC.length, h.buoc + 1);
     });
-    const o = document.getElementById("tien-o"); o?.querySelectorAll("div").forEach((x) => x.classList.add("sl-nhay"));
   }));
+}
+// Hiệu ứng nghiệp vụ khi trạng thái đổi (kể cả do bên kia bấm): tiền đếm lên, ngân hàng chi cọc thì xu bay, bước vừa xong nảy
+function hieuUngDon(goc, h) {
+  const HU = window.HieuUng, cu = window.__hdCu;
+  const o = [...goc.querySelectorAll("#tien-o b[data-v]")].map((b) => Number(b.dataset.v));
+  if (HU && cu) {
+    goc.querySelectorAll("#tien-o b[data-v]").forEach((b, i) => { if (cu.o[i] !== o[i]) HU.demSo(b, cu.o[i], o[i]); });
+    if (cu.buoc === 12 && h.buoc === 13) { const ds = goc.querySelectorAll("#tien-o > div"); setTimeout(() => HU.xuBay(ds[1], ds[2], 6), 250); }
+    if (h.buoc > cu.buoc) { const v = goc.querySelectorAll(".sl-buoc .sl-b-vong")[h.buoc - 1]; if (v) HU.nayDich(v); }
+  }
+  window.__hdCu = { o, buoc: h.buoc };
 }
 
 // ── Mẫu dùng lại ──
@@ -284,20 +369,46 @@ const man = {
     </section>` },
 
   // Tin nhắn
-  "tin-nhan": { tieuDe: "Tin nhắn", ve: (s, { url }) => `
+  "tin-nhan": { tieuDe: "Tin nhắn", phu: "Trò chuyện với người bán qua AgiViet", ve: (s, { url }) => {
+    const h = docTC().find((x) => x.ma === "T1"), mo = moLienLacT1();
+    const tin = (m) => {
+      if (m.k === "he") return `<div class="sl-bao ${m.canh ? "sl-bao-do" : "sl-bao-nh"}" style="justify-self:center;max-width:92%">${icon(m.canh ? "canh" : "khien")}<div>${esc(m.t)}</div></div>`;
+      if (m.k === "buoc") return `<div class="sl-bao sl-bao-tien" style="justify-self:stretch">${icon("don")}<div>Hai bên đã đồng ý giá. <a href="${url("chi-tiet-don")}" style="font-weight:700">Soạn và ký thỏa thuận HĐ-0018</a></div></div>`;
+      const cuaToi = m.ai === "ho";   // dữ liệu lưu theo góc người bán: "ho" = bên mua = mình
+      const nen = cuaToi ? "background:var(--la);color:var(--tren-la);justify-self:end;border-radius:14px 14px 4px 14px" : "background:var(--giay-lot);justify-self:start;border-radius:14px 14px 14px 4px";
+      if (m.k === "anh") return `<div style="${nen};padding:4px;max-width:75%"><div style="width:220px;aspect-ratio:4/3;border-radius:10px;background:url(${esc(m.anh)}) center/cover"></div><small style="padding:2px 6px;opacity:.7">${esc(m.luc)}</small></div>`;
+      if (m.k === "gia") return `<div class="sl-the" style="justify-self:stretch;box-shadow:0 0 0 1.5px ${cuaToi ? "var(--la)" : "#e3c77a"};gap:4px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${cuaToi ? "Bạn trả giá" : "Chị Năm trả giá"}</b>${m.trang === "dong-y" ? `<span class="sl-nhan sl-n-xong">Hai bên đã đồng ý</span>` : m.trang === "khong" ? `<span class="sl-nhan">Người bán không bán</span>` : m.trang === "cho-bac" ? `<span class="sl-nhan">Chờ chị Năm trả lời</span>` : `<span class="sl-nhan">Đã trả lại</span>`}</div><b class="sl-so" style="font-size:var(--c5)">${so(m.gia)} đ/kg</b><span class="sl-ghi">${so(m.luong)} kg · thành tiền ${d(m.gia * m.luong)} · ${esc(m.ghi || "")}</span></div>`;
+      return `<p style="${nen};max-width:75%;padding:10px 12px">${m.che ? esc(m.t).replace(/•••[ •]*/g, (x) => `<span style="background:rgba(0,0,0,.14);border-radius:4px;padding:0 3px">${x}</span>`) : esc(m.t)}<small style="display:block;font-size:12px;opacity:.7">${esc(m.luc)}</small></p>`;
+    };
+    return `
     <div class="sl-hai-cot" style="grid-template-columns:300px minmax(0,1fr)">
-      <section class="sl-the" style="padding:8px">${[["Chị Năm", "HĐ-0018 · Dạ 5 giờ 30 xe vô được ạ", "08:12", true], ["HTX Tân Thuận", "PN-0045 · Gửi chị báo giá thanh long", "Hôm qua"], ["Anh Huỳnh Bảy", "HĐ-0024 · Em xin dời qua thứ 4", "Hôm qua"]].map(([a, b, c, m]) => `<a href="#" style="display:flex;gap:10px;padding:10px;border-radius:10px;text-decoration:none;${m ? "background:var(--giay-lot)" : ""}"><span style="width:36px;height:36px;border-radius:50%;background:var(--la-nhat);color:var(--la);display:grid;place-items:center;font-weight:700;flex:none">${a[a.length - 1] === "m" ? "N" : a[0]}</span><span style="min-width:0;flex:1"><b style="display:flex;justify-content:space-between">${a}<small class="sl-ghi">${c}</small></b><span class="sl-ghi" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b}</span></span></a>`).join("")}</section>
+      <section class="sl-the" style="padding:8px;align-content:start">${[["Chị Năm", "HĐ-0018 · L-0412", true], ["HTX Tân Thuận", "PN-0045 · báo giá thanh long"], ["Anh Huỳnh Bảy", "HĐ-0024 · xin dời ngày giao"]].map(([a, b, m]) => `<div style="display:flex;gap:10px;padding:10px;border-radius:10px;${m ? "background:var(--giay-lot)" : ""}"><span style="width:36px;height:36px;border-radius:50%;background:var(--la-nhat);color:var(--la);display:grid;place-items:center;font-weight:700;flex:none">${a.split(" ").at(-1)[0]}</span><span style="min-width:0;flex:1"><b style="display:block">${a}</b><span class="sl-ghi" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b}</span></span></div>`).join("")}</section>
       <section class="sl-the" style="display:grid;gap:12px;align-content:start">
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--ke);padding-bottom:12px"><b>Chị Năm · HĐ-0018</b><span style="margin-left:auto" class="sl-hang-nut"><button class="sl-nut sl-vien" type="button">${icon("dien")}Gọi qua app</button><a class="sl-nut sl-nhe" href="${url("hen-xem-vuon")}">Hẹn xem vườn</a></span></div>
-        <div style="display:grid;gap:8px">
-          <p style="justify-self:start;max-width:75%;background:var(--giay-lot);padding:10px 12px;border-radius:12px 12px 12px 4px">Chị ơi xe vô tới vườn được không, đường đất có mưa không?</p>
-          <p style="justify-self:end;max-width:75%;background:var(--la);color:var(--tren-la);padding:10px 12px;border-radius:12px 12px 4px 12px">Xe 66C-123.45 anh Lộc, 5 giờ 30 tới nha chị.</p>
-          <p style="justify-self:start;max-width:75%;background:var(--giay-lot);padding:10px 12px;border-radius:12px 12px 12px 4px">Dạ 5 giờ 30 xe vô được ạ</p>
-          ${bao("Một tin nhắn có dãy số giống số điện thoại đã được che. Liên lạc ngoài app chỉ mở sau khi ngân hàng xác nhận cọc.", "sl-bao-nh")}
-        </div>
-        <label class="sl-tim" style="min-height:44px">${icon("tin")}<input placeholder="Nhắn cho chị Năm" aria-label="Nhắn tin"></label>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--ke);padding-bottom:12px"><b>Chị Năm · L-0412${mo ? " · liên lạc đã mở" : ""}</b><span style="margin-left:auto" class="sl-hang-nut"><button class="sl-nut sl-vien" type="button" id="goi-nb">${icon("dien")}${mo ? "Gọi 0918 234 421" : "Gọi qua app"}</button></span></div>
+        <div style="display:grid;gap:8px" id="tn-chat">${h.tin.map(tin).join("")}</div>
+        <div class="sl-hang-nut"><button class="sl-nut sl-nhe" type="button" id="tn-tra">${icon("can")}Trả giá</button><button class="sl-nut sl-nhe" type="button" id="tn-anh">Gửi ảnh</button></div>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px"><label class="sl-tim" style="min-height:44px">${icon("tin")}<input id="tn-go" placeholder="Nhắn cho chị Năm" aria-label="Nhắn tin"></label><button class="sl-nut sl-vang" type="button" id="tn-gui">Gửi</button></div>
+        <p class="sl-ghi">Cùng cuộc trò chuyện chị Năm thấy trong app bán. Số điện thoại hai bên che tới khi ngân hàng giữ cọc.</p>
       </section>
-    </div>` },
+    </div>`; },
+    sau: (g) => {
+      const ds = docTC(), h = ds.find((x) => x.ma === "T1"), go = g.querySelector("#tn-go");
+      const them = (m) => { h.tin.push(m); h.chuaDoc = (h.chuaDoc || 0) + (m.ai === "ho" ? 1 : 0); ghiTC(ds); kho.doi(() => {}); };
+      g.querySelector("#tn-gui").addEventListener("click", () => {
+        const chu = go.value.trim(); if (!chu) return;
+        const q = moLienLacT1() ? { sach: true, che: chu } : quetLienLac(chu);
+        them({ k: "tin", ai: "ho", t: q.che, luc: gioNay(), che: !q.sach });
+        if (!q.sach) them({ k: "he", canh: true, t: `Tin của bên mua có ${q.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm.`, luc: gioNay() });
+      });
+      go.addEventListener("keydown", (e) => { if (e.key === "Enter") g.querySelector("#tn-gui").click(); });
+      g.querySelector("#tn-anh").addEventListener("click", () => them({ k: "anh", ai: "ho", anh: "/assets/products/xoai-cat-chu.jpg", luc: gioNay() }));
+      g.querySelector("#tn-tra").addEventListener("click", () => {
+        if (h.tin.some((m) => m.trang === "dong-y")) { window.HieuUngThem?.rung(g.querySelector("#tn-tra")); return; }
+        h.tin.forEach((m) => { if (m.trang === "cho-bac") m.trang = "da-tra"; });
+        them({ k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Bên mua trả giá", luc: gioNay(), trang: "cho-bac" });
+      });
+      const c = g.querySelector("#tn-chat"); c.lastElementChild?.scrollIntoView({ block: "nearest" });
+    } },
   "hen-xem-vuon": { tieuDe: "Hẹn xem vườn", thuoc: "tin-nhan", lui: "tin-nhan", phu: "Chị Năm · L-0412", ve: () => `
     <div class="sl-luoi sl-l2" style="max-width:960px">
       <section class="sl-the" style="display:grid;gap:14px">
@@ -323,12 +434,12 @@ const man = {
     <div class="sl-luoi sl-chinh-phu">
       ${the("Dòng bước của đơn", veBuoc(h), `<span class="sl-phai sl-ghi">${Math.min(h.buoc, 15)}/15 bước</span>`)}
       <div style="display:grid;gap:16px">
-        ${the("Thỏa thuận (bản 1)", dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Cọc qua app", d(COC)) + dong("Phí 0,3%", d(PHI)) + dong("Trả thẳng trước bốc", d(TRA_THANG)) + dong("Tài khoản người bán", "Agribank •••• 2186"), `<a href="${url("thoa-thuan")}">Xem</a>`)}
+        ${the(`Thỏa thuận (bản ${h.ban || 1})`, dong("Ngày giao", `${h.ngayGiao || "28/10"} · 5:30 tại vườn`) + dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Cọc qua app", d(COC)) + dong("Phí 0,3%", d(PHI)) + dong("Trả thẳng trước bốc", d(TRA_THANG)) + dong("Tài khoản người bán", "Agribank •••• 2186"), `<a href="${url("thoa-thuan")}">Xem</a>`)}
         ${the("Giao nhận", dong("Xe", "66C-123.45 · anh Lộc") + dong("Mã nhận hàng", `<span class="sl-so">482 917</span>`) + dong("Mẫu đối chứng", "M-2291 niêm phong") + dong("Nghiệm thu", "Kho Đồng Xanh · 2 giờ"))}
         ${the("Liên lạc", h.buoc >= 5 ? dong("Chị Năm", `<span class="sl-so">0918 234 421</span>`) + `<a class="sl-nut sl-vien" style="width:100%;margin-top:8px" href="${url("mo-lien-lac")}">${icon("dien")}Gọi chị Năm</a>` : `<p class="sl-ghi">Số điện thoại che tới khi ngân hàng xác nhận cọc. Trước đó nhắn hoặc gọi qua app.</p>`)}
-        ${the("Kịch bản thử", `<label style="display:flex;gap:10px;align-items:center;min-height:40px"><input type="checkbox" id="kb-thieu" ${h.traThieu ? "checked" : ""} ${h.buoc > 5 ? "disabled" : ""}> Trả thiếu rồi bổ sung (20.000.000 đ trước)</label><div class="sl-hang-nut" style="margin-top:8px"><button class="sl-nut sl-nhe" type="button" id="kb-lai">Chạy lại từ đầu</button><a class="sl-nut sl-huy" href="${url("huy-don")}">Xin hủy</a></div>`)}
+        ${the("Kịch bản thử (mô phỏng)", `<label class="sl-o"><span>Chọn kịch bản rồi bấm Nạp</span><select id="kb-chon">${KICH_BAN.map(([k, t]) => `<option value="${k}" ${h.kb === k ? "selected" : ""}>${esc(t)}</option>`).join("")}</select></label><div class="sl-hang-nut" style="margin-top:8px"><button class="sl-nut sl-nhe" type="button" id="kb-nap">Nạp kịch bản</button><a class="sl-nut sl-vien" href="/thiet-ke/hai-ben.html">Mở 2 bên cạnh nhau</a></div><p class="sl-ghi" style="margin-top:6px">Nạp lại đơn từ bước 1. App bán (chị Năm) thấy cùng đơn này.</p>`)}
       </div>
-    </div>`; }, sau: (g, k) => { ganNutDon(g); g.querySelector("#kb-thieu")?.addEventListener("change", (e) => doi((s) => { s.hd.traThieu = e.target.checked; })); g.querySelector("#kb-lai")?.addEventListener("click", () => doi((s) => { s.hd = structuredClone(DAU.hd); s.chao.chon = null; })); } },
+    </div>`; }, sau: (g, k) => { ganNutDon(g); hieuUngDon(g, k.s.hd); g.querySelector("#kb-nap")?.addEventListener("click", () => { const kb = g.querySelector("#kb-chon").value; datLaiHD(kb); kho.doi((s) => { s.hd = docHD(); s.chao.chon = null; }); }); } },
   "thoa-thuan": { tieuDe: "Lập thỏa thuận · HĐ-0018", thuoc: "don-hang", lui: "chi-tiet-don", phu: "Bản 1 · điền sẵn theo phân khúc Chế biến", ve: (s, { url }) => `
     <div class="sl-luoi sl-chinh-phu">
       <section class="sl-the" style="display:grid;gap:14px">
@@ -359,21 +470,21 @@ const man = {
     ${bao("Ngân hàng đã xác nhận cọc 13.800.000 đ. Đơn trên 3 triệu nên hiện số thật.")}
     <div class="sl-luoi sl-l2" style="max-width:960px">${the("Người bán", dong("Người liên hệ", "Nguyễn Thị Năm") + dong("Số điện thoại", `<span class="sl-so">0918 234 421</span>`) + dong("Địa chỉ vườn", "Ấp 3, xã Mỹ Xương, Cao Lãnh, Đồng Tháp") + `<div class="sl-hang-nut" style="margin-top:12px"><a class="sl-nut sl-vang" href="tel:0918234421">${icon("dien")}Gọi</a><button class="sl-nut sl-vien" type="button">Chỉ đường</button></div>`)}
     ${the("Gửi cho tài xế", dong("Xe", "66C-123.45 · anh Lộc") + dong("Mã nhận hàng", `<b class="sl-so" style="font-size:var(--c5)">482 917</b>`) + `<p class="sl-ghi">Tài xế đọc mã cho chị Năm quét khi tới vườn. Không đưa mã cho ai khác.</p>`)}</div>` },
-  "nghiem-thu": { tieuDe: "Nhập kết quả cân · HĐ-0018", thuoc: "don-hang", lui: "chi-tiet-don", phu: "Kho ký nhận 9:40 · còn 1 giờ 25 phút để gửi", ve: (s, { url }) => `
+  "nghiem-thu": { tieuDe: "Nhập kết quả cân · HĐ-0018", thuoc: "don-hang", lui: "chi-tiet-don", phu: "Kho ký nhận 9:40 · còn 1 giờ 25 phút để gửi", ve: (s, { url }) => { const t = tinhTien(s.hd); return `
     <div class="sl-luoi sl-chinh-phu">
       <section class="sl-the" style="display:grid;gap:14px">
         <div class="sl-hang-nut"><button class="sl-nut sl-nhe" type="button">Nhận đủ, đúng thỏa thuận</button><button class="sl-nut sl-vien" type="button" aria-pressed="true">Có chênh lệch</button></div>
         <div class="sl-luoi sl-l3">
-          <label class="sl-o"><span>Đạt loại 1 (kg)</span><input value="1.850"></label>
-          <label class="sl-o"><span>Hạ cấp (kg)</span><input value="120"></label>
-          <label class="sl-o"><span>Trả lại (kg)</span><input value="30"><small>Trên 5% phải có ảnh</small></label>
+          <label class="sl-o"><span>Đạt loại 1 (kg)</span><input value="${so(t.dat)}"></label>
+          <label class="sl-o"><span>Hạ cấp (kg)</span><input value="${so(t.ha)}"></label>
+          <label class="sl-o"><span>Trả lại (kg)</span><input value="${so(t.tra)}"><small>${t.tra > 100 ? "Trên 5%: bắt buộc có ảnh" : "Trên 5% phải có ảnh"}</small></label>
         </div>
         <label class="sl-o"><span>Lý do hạ cấp</span><input value="Trái dưới 350 g, dập nhẹ"></label>
         <div class="sl-the sl-the-lot" style="display:flex;gap:12px;align-items:center">${icon("phieu")}<div style="flex:1"><b>Ảnh phiếu cân và hàng</b><div class="sl-ghi">2 ảnh · 9:52</div></div><a class="sl-nut sl-vien" href="${url("doc-phieu-can")}">Đọc phiếu cân</a></div>
         <div class="sl-hang-nut" style="justify-content:flex-end"><button class="sl-nut sl-vien" type="button">Chưa kiểm được (gia hạn 1 lần)</button><a class="sl-nut sl-vang" href="${url("chi-tiet-don")}">Gửi kết quả</a></div>
       </section>
-      ${the("Thành tiền", dong("1.850 kg × 23.000", d(42550000)) + dong("120 kg × 15.000", d(1800000)) + dong("30 kg trả lại", "0 đ") + dong("Giá trị nghiệm thu", d(NGHIEM_THU), "sl-tong") + dong("Đã trả thẳng", d(TRA_THANG)) + dong("Cọc chuyển chị Năm", d(COC_CHO_NB)) + dong("Cọc hoàn bạn", d(HOAN)) + `<p class="sl-ghi" style="margin-top:8px">Tổng 2.000 kg khớp cân xe. Chị Năm có 24 giờ để đồng ý hoặc phản đối từng dòng.</p>`)}
-    </div>` },
+      ${the("Thành tiền", dong(`${so(t.dat)} kg × 23.000`, d(t.dat * 23000)) + dong(`${so(t.ha)} kg × 15.000`, d(t.ha * 15000)) + dong(`${so(t.tra)} kg trả lại`, "0 đ") + dong("Giá trị nghiệm thu", d(t.nt), "sl-tong") + dong("Đã trả thẳng", d(TRA_THANG)) + dong("Cọc chuyển chị Năm", d(t.cocNB)) + dong("Cọc hoàn bạn", d(t.hoanMua)) + (t.nbHoan ? dong("Chị Năm phải hoàn bạn", d(t.nbHoan)) : "") + `<p class="sl-ghi" style="margin-top:8px">Tổng ${so(t.dat + t.ha + t.tra)} kg ${s.hd.kb === "can-lech" ? "(cân tại kho, trong ±5%)" : "khớp cân xe"}. Chị Năm có 24 giờ để đồng ý hoặc phản đối từng dòng.</p>`)}
+    </div>`; } },
   "doc-phieu-can": { tieuDe: "Đọc phiếu cân", thuoc: "don-hang", lui: "nghiem-thu", ve: () => `
     <div class="sl-luoi sl-l2" style="max-width:960px">
       <div class="sl-lo-anh" style="border-radius:14px;aspect-ratio:3/4;background:repeating-linear-gradient(0deg,#fbf8f1 0 26px,#e8e1cf 26px 27px)"><span class="sl-nhan sl-n-xong">AI đã đọc</span></div>

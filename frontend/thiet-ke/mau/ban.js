@@ -4,6 +4,7 @@ import { MAN_1 } from "./man-1.js";
 import { MAN_2 } from "./man-2.js";
 import { MAN_3 } from "./man-3.js";
 import { DAU } from "./du-lieu.js";
+import { docHD, ghiHD, ngheHD } from "../giao-dich-chung.js";
 
 import { esc, ic } from "./tien-ich.js";
 export { esc, d, so, kg, ic } from "./tien-ich.js";
@@ -14,6 +15,9 @@ let s;
 try { s = JSON.parse(localStorage.getItem(KHOA)); } catch {}
 if (!s || s.phien !== DAU.phien) s = structuredClone(DAU);
 const luu = () => { try { localStorage.setItem(KHOA, JSON.stringify(s)); } catch {} };
+// HĐ-0018 dùng chung với app mua: bước lấy từ kho chung; chị Năm xác nhận đã nhận tiền (bước 6→7) thì ghi luôn số đã nhận
+s.hd.buoc = docHD().buoc;
+const ghiBuoc = (cu, moi) => ghiHD((x) => ({ ...x, buoc: moi, ...(cu === 6 && moi === 7 ? { nbXn: x.daTra || 32200000 } : {}) }));
 
 const MAN = { ...MAN_1, ...MAN_2, ...MAN_3 };
 export const DANH_SACH = MAN;
@@ -79,7 +83,7 @@ export const api = {
   thay(ma, tham = {}) { ngan[ngan.length - 1] = { ma, tham }; chuyen(veMan(ma, tham), "toi"); ghiHash(); },
   tab(ma) { if (dangChuyen) return; ngan = [{ ma, tham: {} }]; chuyen(veMan(ma), "thay"); ghiHash(); if (ma === "dang") { /* Đăng bài là màn phụ có nút thoát */ } },
   veLai() { const t = ngan.at(-1); const cu = goc.querySelector(".m-man:last-of-type"); const cuon = cu?.querySelector(".m-cuon")?.scrollTop || 0; const moi = veMan(t.ma, t.tham); cu?.replaceWith(moi); moi.querySelector(".m-cuon").scrollTop = cuon; },
-  doi(f) { f(s); luu(); },
+  doi(f) { const cu = docHD().buoc; s.hd.buoc = cu; f(s); luu(); if (s.hd.buoc !== cu) ghiBuoc(cu, s.hd.buoc); },
   datLai() { s = structuredClone(DAU); luu(); },
   // Nút xác nhận: chấm chờ → dấu tích + chữ "đã xong" (chỉ phản ánh việc đã làm)
   async xong(btn, chu = "Đã lưu") {
@@ -118,3 +122,4 @@ function moTheoHash() {
 }
 addEventListener("hashchange", () => { const q = new URLSearchParams(location.hash.slice(1).split("?")[0]); if (q.get("man") !== ngan.at(-1)?.ma) moTheoHash(); });
 moTheoHash();
+ngheHD((h, tuNoiKhac) => { if (tuNoiKhac || h.buoc !== s.hd.buoc) { s.hd.buoc = h.buoc; api.veLai(); } });

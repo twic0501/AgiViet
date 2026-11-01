@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giao dịch hai bên · AgiViet</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+  body { margin: 0; background: #2a332d; color: #ece8dc; font: 15px/1.5 "Be Vietnam Pro", system-ui, sans-serif; }
+  .hb-dau { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 14px 24px; border-bottom: 1px solid rgba(236,232,220,.12); }
+  .hb-dau h1 { font-size: 17px; margin: 0 12px 0 0; }
+  .hb-dau select, .hb-dau button { font: inherit; min-height: 40px; border-radius: 10px; border: 0; padding: 0 14px; }
+  .hb-dau select { background: #ece8dc; color: #1c2a21; }
+  .hb-dau button { background: #f2c14e; color: #1f1503; font-weight: 700; cursor: pointer; box-shadow: 0 3px 0 #c9952a; }
+  .hb-dau button.hb-phu { background: rgba(236,232,220,.14); color: #ece8dc; box-shadow: 0 3px 0 rgba(0,0,0,.3); }
+  .hb-dau button:active { transform: translateY(3px); box-shadow: none; }
+  .hb-ghi { color: #b9bdb0; font-size: 13px; flex-basis: 100%; }
+  .hb-san { display: flex; gap: 32px; justify-content: center; padding: 20px; flex-wrap: wrap; }
+  .hb-cot { display: grid; gap: 10px; justify-items: center; }
+  .hb-cot h2 { font-size: 15px; margin: 0; }
+  .hb-chuyen { display: flex; gap: 6px; }
+  .hb-chuyen button { min-height: 36px; padding: 0 14px; border-radius: 18px; border: 0; font: 600 13px "Be Vietnam Pro", sans-serif; background: rgba(236,232,220,.12); color: #ece8dc; cursor: pointer; }
+  .hb-chuyen button[aria-pressed="true"] { background: #1f4d3a; }
+  .may { width: 390px; height: 820px; border-radius: 36px; overflow: hidden; border: 10px solid #111; background: #000; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+  .may iframe { width: 100%; height: 100%; border: 0; display: block; }
+</style>
+</head>
+<body>
+<div class="hb-dau">
+  <h1>Thử giao dịch hai bên · HĐ-0018</h1>
+  <select id="kb" aria-label="Kịch bản"></select>
+  <button type="button" id="nap">Nạp kịch bản</button>
+  <button type="button" class="hb-phu" id="lai">Làm lại từ đầu (cả tin nhắn)</button>
+  <span class="hb-ghi">Dữ liệu mô phỏng dùng chung: chị Năm (app bán) và chị Thu Hà (app mua) cùng một đơn, cùng một cuộc trò chuyện. Bấm bên nào thì bên kia đổi ngay. Bước của ngân hàng bấm nút "Mô phỏng" ở bất kỳ bên nào.</span>
+</div>
+<div class="hb-san">
+  <div class="hb-cot"><h2>Chị Năm · app bán</h2>
+    <div class="hb-chuyen" data-khung="ban"><button type="button" data-src="./ban-tin-nhan.html?thu=0918000421#tro=T1" aria-pressed="true">Tin nhắn</button><button type="button" data-src="./mau/ban.html#man=chi-tiet-don" aria-pressed="false">HĐ-0018</button><button type="button" data-src="./mau/ban.html#man=tien" aria-pressed="false">Tiền</button></div>
+    <div class="may"><iframe id="ban" title="App bán" src="./ban-tin-nhan.html?thu=0918000421#tro=T1"></iframe></div>
+  </div>
+  <div class="hb-cot"><h2>Chị Thu Hà · app mua</h2>
+    <div class="hb-chuyen" data-khung="mua"><button type="button" data-src="./mua.html?man=tin-nhan" aria-pressed="true">Tin nhắn</button><button type="button" data-src="./mua.html?man=chi-tiet-don" aria-pressed="false">HĐ-0018</button><button type="button" data-src="./mua.html?man=vi-dam-bao" aria-pressed="false">Tiền</button></div>
+    <div class="may"><iframe id="mua" title="App mua" src="./mua.html?man=tin-nhan"></iframe></div>
+  </div>
+</div>
+<script type="module">
+import { datLaiHD, docHD, K_TC } from "./giao-dich-chung.js";
+const KB = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền"], ["tra-lai", "5 · Trả lại nhiều"], ["phan-doi", "6 · Phản đối một dòng"], ["can-lech", "7 · Cân lệch trong ±5%"], ["huy", "8 · Xin hủy sau cọc"]];
+const sel = document.getElementById("kb");
+sel.innerHTML = KB.map(([k, t]) => `<option value="${k}" ${docHD().kb === k ? "selected" : ""}>${t}</option>`).join("");
+const taiLai = () => { for (const id of ["ban", "mua"]) { const f = document.getElementById(id); f.src = f.src; } };
+document.getElementById("nap").onclick = () => { datLaiHD(sel.value); taiLai(); };
+document.getElementById("lai").onclick = () => {
+  for (const k of ["agv-hd-0018", K_TC, "agv-tro-chuyen-v1-vp", "agv-mua", "agv-ban-mau"]) { try { localStorage.removeItem(k); } catch {} }
+  datLaiHD(sel.value); taiLai();
+};
+document.querySelectorAll(".hb-chuyen").forEach((g) => g.addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  g.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  document.getElementById(g.dataset.khung).src = b.dataset.src;
+}));
+</script>
+</body>
+</html>

@@ -5,48 +5,13 @@ const so = (n) => Number(n).toLocaleString("vi-VN");
 const SVG = (p, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>`;
 const I = { lui: "M15 5l-7 7 7 7", khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", canh: "M12 3l10 18H2zM12 10v5M12 18v.5", anh: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", gui: "M4 12l16-8-6 16-2-7z", can: "M12 4v16M5 8h14M5 8l-3 6a3 3 0 0 0 6 0zM19 8l-3 6a3 3 0 0 0 6 0z", lich: "M4 5h16v16H4zM4 10h16M8 3v4M16 3v4", co: "M5 21V4h11l-2 4 2 4H5", dien: "M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a1 1 0 0 1-1 1A17 17 0 0 1 4 5a1 1 0 0 1 1-1z", tich: "M5 12l5 5 9-10" };
 
-// ── Dữ liệu mô phỏng (cùng tình huống HĐ-0018 với app mua) ──
-const KHOA = "agv-tro-chuyen-v1";
-const DAU = [
-  { ma: "T1", ben: "Nhà máy sấy Đồng Xanh", nguoi: "Chị Thu Hà", lo: "L-0412", xm: true, chuaDoc: 1, moLienLac: false, tin: [
-    { k: "he", t: "Hai bên nhắn qua AgiViet. Số điện thoại che tới khi ngân hàng giữ cọc.", luc: "08:00" },
-    { k: "tin", ai: "ho", t: "Chào chị Năm, em bên Đồng Xanh. Xoài lô L-0412 còn đủ 2 tấn loại 1 không chị?", luc: "08:02" },
-    { k: "tin", ai: "toi", t: "Dạ còn 3,5 tấn em. Trái 350–550 g, hái 27/10.", luc: "08:10" },
-    { k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: "08:11" },
-    { k: "gia", ai: "ho", gia: 22500, luong: 2000, ghi: "Giao tại vườn, bên mua lo xe", luc: "08:20", trang: "da-tra" },
-    { k: "gia", ai: "toi", gia: 23500, luong: 2000, ghi: "Bác trả lại", luc: "08:31", trang: "da-tra" },
-    { k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Lượt trả giá cuối của bên mua", luc: "09:05", trang: "cho-bac" },
-    { k: "tin", ai: "ho", t: "Chị đồng ý 23 ngàn thì em soạn thỏa thuận luôn nha.", luc: "09:06" },
-  ] },
-  { ma: "T2", ben: "Vựa Ba Cường", nguoi: "Anh Cường", lo: "L-0413", xm: false, chuaDoc: 1, moLienLac: false, tin: [
-    { k: "tin", ai: "ho", t: "Chị ơi loại 2 bao nhiêu một ký?", luc: "16:40" },
-    { k: "tin", ai: "toi", t: "15 ngàn em, có 800 ký.", luc: "16:52" },
-    { k: "tin", ai: "ho", t: "Chị gọi em số ••• ••• ••• cho lẹ", luc: "17:01", che: true },
-    { k: "he", canh: true, t: "Tin vừa rồi có số điện thoại nên đã bị che. Trao đổi liên lạc trước khi có cọc là vi phạm (lần 1/3 của bên mua).", luc: "17:01" },
-  ] },
-  { ma: "T3", ben: "Nhà hàng Bếp Sen", nguoi: "Anh Khoa", lo: "L-0412", xm: true, chuaDoc: 0, moLienLac: true, tin: [
-    { k: "he", t: "Hợp đồng khung HĐ-0011 có hiệu lực, ngân hàng đã giữ cọc. Liên lạc đã mở.", luc: "20/10" },
-    { k: "tin", ai: "ho", t: "Thứ Sáu này chị giao 50 ký như tuần trước nha.", luc: "07:30" },
-    { k: "tin", ai: "toi", t: "Dạ được em.", luc: "07:41" },
-  ] },
-];
-let ds; try { ds = JSON.parse(localStorage.getItem(KHOA)); } catch {}
-if (!Array.isArray(ds)) ds = structuredClone(DAU);
-let viPham = Number(localStorage.getItem(KHOA + "-vp")) || 0;
-const luu = () => { try { localStorage.setItem(KHOA, JSON.stringify(ds)); localStorage.setItem(KHOA + "-vp", String(viPham)); } catch {} };
-
-// Phát hiện liên lạc (mô phỏng): ≥ 8 chữ số (kể cả đọc bằng chữ), Zalo/Facebook/@
-const SO_CHU = { "không": 0, "một": 1, "mốt": 1, "hai": 2, "ba": 3, "bốn": 4, "tư": 4, "năm": 5, "lăm": 5, "sáu": 6, "bảy": 7, "tám": 8, "chín": 9 };
-function quet(t) {
-  const thap = t.toLowerCase();
-  const doi = thap.split(/\s+/).map((w) => (w in SO_CHU ? String(SO_CHU[w]) : w)).join(" ");
-  const coSo = /(\d[\s.\-_]*){8,}/.test(doi);
-  const coKenh = /\b(zalo|zl|facebook|fb|messenger|viber|telegram|sđt|sdt)\b|@[a-z0-9_.]{3,}|kết bạn/.test(thap);
-  if (!coSo && !coKenh) return { sach: true, che: t };
-  let che = t.replace(/(\d[\s.\-_]*){8,}/g, (x) => "••• ••• •••" + (/\s$/.test(x) ? " " : "")).replace(/\b(zalo|zl|facebook|fb|messenger|viber|telegram)\b/gi, "•••").replace(/@[A-Za-z0-9_.]{3,}/g, "•••");
-  if (coSo && che === t) che = "Tin có số điện thoại đọc bằng chữ (đã che)";
-  return { sach: false, che, loai: coSo ? "số điện thoại" : "kênh nhắn ngoài" };
-}
+// ── Dữ liệu dùng chung với app mua (giao-dich-chung.js): tin chị Thu Hà gửi từ app mua hiện ngay ở đây ──
+import { docTC, ghiTC, ngheTC, docHD, ghiHD, ngheHD, quetLienLac, moLienLacT1 } from "./giao-dich-chung.js";
+let ds = docTC();
+let viPham = Number(localStorage.getItem("agv-tro-chuyen-v1-vp")) || 0;
+const luu = () => { ghiTC(ds); try { localStorage.setItem("agv-tro-chuyen-v1-vp", String(viPham)); } catch {} };
+const quet = quetLienLac;
+const moLL = (h) => (h.ma === "T1" ? moLienLacT1() : h.moLienLac);
 
 const nutLui = (den) => `<button class="nut-tron" type="button" id="dong" data-den="${den}" aria-label="Quay lại">${SVG(I.lui, 22)}</button>`;
 const ganLui = () => { const b = $("dong"); b.onclick = () => { location.href = "./ban-tin-nhan.html" + location.search + b.dataset.den; }; };
@@ -88,12 +53,15 @@ const veTin = (m) => {
       <span class="tc-gia-so">${so(m.gia)} đ/kg</span><span class="tc-ghi">${so(m.luong)} kg · thành tiền ${so(m.gia * m.luong)} đ · ${esc(m.ghi || "")}</span>
       ${cho ? `<div class="tc-hai"><button type="button" class="nut phu-nut" data-gia="tra">Trả giá</button><button type="button" class="nut tc-vang" data-gia="dong-y">Đồng ý ${so(m.gia)}</button></div><button type="button" class="tc-khong" data-gia="khong">Không bán</button>` : ""}</div>`;
   }
-  if (m.k === "buoc") return `<div class="tc-buoc"><b>Bước tiếp: ký thỏa thuận</b><span class="tc-ghi">Bên mua soạn thỏa thuận theo giá đã chốt. Bác xem lại giá, lượng, ngày giao, tiền cọc rồi ký bằng mã gửi về điện thoại.</span><a class="nut tc-vang" href="./ban-hop-dong.html${esc(location.search)}" data-don-ky>Xem và ký thỏa thuận</a><span class="tc-ghi" data-don-ghi></span></div>`;
+  if (m.k === "buoc") return `<div class="tc-buoc"><b>Bước tiếp: ký thỏa thuận</b><span class="tc-ghi">Bên mua soạn thỏa thuận theo giá đã chốt. Bác xem lại giá, lượng, ngày giao, tiền cọc rồi ký bằng mã gửi về điện thoại.</span><a class="nut tc-vang" href="./mau/ban.html#man=chi-tiet-don">Xem và ký thỏa thuận HĐ-0018</a><a class="tc-ghi" href="./ban-hop-dong.html${esc(location.search)}" data-don-ky style="color:var(--la);font-weight:600;min-height:44px;display:flex;align-items:center">Xem màn hợp đồng đã chốt (dữ liệu hệ thống thử)</a></div>`;
   return `<div class="tc-tin ${m.ai === "toi" ? "tc-toi" : "tc-ho"}">${m.che ? esc(m.t).replace(/•••[ •]*/g, (x) => `<span class="tc-che">${x}</span>`) : esc(m.t)}<small>${esc(m.luc)}</small></div>`;
 };
 export function veChat(h) {
-  $("dau").innerHTML = `${nutLui("#tro")}<div style="flex:1;min-width:0"><p class="chao">${esc(h.nguoi)} · lô ${esc(h.lo)}${h.moLienLac ? " · liên lạc đã mở" : ""}</p><h1>${esc(h.ben)}</h1></div>
-    <button class="nut-tron" type="button" id="goi" aria-label="${h.moLienLac ? "Gọi" : "Gọi qua app, che số"}">${SVG(I.dien, 22)}</button>`;
+  ngheTC(() => location.reload());
+  ngheHD(() => { if (moLL(h) !== window.__moLL) location.reload(); });
+  window.__moLL = moLL(h);
+  $("dau").innerHTML = `${nutLui("#tro")}<div style="flex:1;min-width:0"><p class="chao">${esc(h.nguoi)} · lô ${esc(h.lo)}${moLL(h) ? " · liên lạc đã mở" : ""}</p><h1>${esc(h.ben)}</h1></div>
+    <button class="nut-tron" type="button" id="goi" aria-label="${moLL(h) ? "Gọi" : "Gọi qua app, che số"}">${SVG(I.dien, 22)}</button>`;
   ganLui();
   $("noi").innerHTML = `<div class="tc-chat" id="chat"><span class="tc-ngay">Hôm nay</span>${h.tin.map(veTin).join("")}</div>`;
   const day = document.createElement("div"); day.className = "tc-day";
@@ -108,12 +76,13 @@ export function veChat(h) {
   go.addEventListener("input", () => { go.style.height = "auto"; go.style.height = Math.min(120, go.scrollHeight) + "px"; });
   $("gui").addEventListener("click", () => {
     const chu = go.value.trim(); if (!chu) return;
-    if (!h.moLienLac && viPham >= 3) { them({ k: "he", canh: true, t: "Bác đang bị tạm khóa nhắn 24 giờ sau lần vi phạm thứ 3.", luc: gio() }); window.HieuUngThem?.rung($("gui")); return; }
-    const kq = h.moLienLac ? { sach: true, che: chu } : quet(chu);
+    if (!moLL(h) && viPham >= 3) { them({ k: "he", canh: true, t: "Bác đang bị tạm khóa nhắn 24 giờ sau lần vi phạm thứ 3.", luc: gio() }); window.HieuUngThem?.rung($("gui")); return; }
+    const kq = moLL(h) ? { sach: true, che: chu } : quet(chu);
     go.value = ""; go.style.height = "auto";
     them({ k: "tin", ai: "toi", t: kq.che, luc: gio(), che: !kq.sach });
     if (!kq.sach) { viPham++; luu(); them({ k: "he", canh: true, t: `Tin có ${kq.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm (lần ${viPham}/3). ${viPham >= 3 ? "Bác đã bị tạm khóa nhắn 24 giờ." : "Lần 3 sẽ tạm khóa nhắn 24 giờ."}`, luc: gio() }); return; }
-    // Bên kia đang gõ rồi trả lời (mô phỏng)
+    // Bên kia đang gõ rồi trả lời (mô phỏng) — riêng hội thoại với Đồng Xanh thì người thật trả lời từ app mua
+    if (h.ma === "T1") return;
     const g = document.createElement("div"); g.className = "tc-tin tc-ho"; g.innerHTML = '<span class="hu-cham" aria-label="Bên mua đang gõ"><i></i><i></i><i></i></span>';
     setTimeout(() => { $("chat").appendChild(g); scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }, 500);
     setTimeout(() => { g.remove(); them({ k: "tin", ai: "ho", t: "Dạ em ghi nhận, cảm ơn chị.", luc: gio() }); }, 2200);
@@ -141,7 +110,7 @@ export function veChat(h) {
       them({ k: "gia", ai: "toi", gia: g, luong: l, ghi: "Bác trả lại", luc: gio(), trang: "cho-mua" });
     }));
   $("tra-gia").addEventListener("click", () => moTraGia());
-  const noiKy = async () => { const d = await donChoKy(); document.querySelectorAll("[data-don-ky]").forEach((x) => { if (d) { x.href = d.href; const g = x.nextElementSibling; if (g) g.textContent = `Bản thử: mở hợp đồng ${d.ma} có sẵn trên hệ thống thử để xem các bước ký, cọc, giao, nhận tiền. Số liệu của hợp đồng này khác cuộc trò chuyện.`; } }); };
+  const noiKy = async () => { const d = await donChoKy(); document.querySelectorAll("[data-don-ky]").forEach((x) => { if (d) { x.href = d.href; x.textContent = `Xem màn hợp đồng đã chốt (hợp đồng thử ${d.ma}, số liệu khác)`; } }); };
   noiKy();
   $("chat").addEventListener("click", (e) => {
     const b = e.target.closest("[data-gia]"); if (!b) return;
@@ -154,8 +123,8 @@ export function veChat(h) {
       (n, dong) => n.querySelector("#chot").addEventListener("click", async (ev) => {
         await window.HieuUngThem?.nutXong(ev.currentTarget, "Đã đồng ý");
         dong(); m.trang = "dong-y";
-        h.tin.push({ k: "he", t: `Hai bên đã đồng ý ${so(m.gia)} đ/kg cho ${so(m.luong)} kg. Hàng được giữ 24 giờ.`, luc: gio() }, { k: "buoc", luc: gio() }); luu(); location.reload();
+        h.tin.push({ k: "he", t: `Hai bên đã đồng ý ${so(m.gia)} đ/kg cho ${so(m.luong)} kg. Hàng được giữ 24 giờ.`, luc: gio() }, { k: "buoc", luc: gio() }); luu(); if (h.ma === "T1") ghiHD((x) => ({ ...x, buoc: Math.max(x.buoc, 1) })); location.reload();
       }));
   });
-  $("goi").addEventListener("click", () => tam(`<h2>${h.moLienLac ? "Gọi " + esc(h.nguoi) : "Gọi qua app"}</h2><p class="tc-ghi">${h.moLienLac ? "Liên lạc đã mở vì ngân hàng đã giữ cọc." : "Cuộc gọi đi qua AgiViet, hai bên không thấy số của nhau tới khi ngân hàng giữ cọc."}</p><div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" data-dong>Gọi</button></div>`));
+  $("goi").addEventListener("click", () => tam(`<h2>${moLL(h) ? "Gọi " + esc(h.nguoi) : "Gọi qua app"}</h2><p class="tc-ghi">${moLL(h) ? "Liên lạc đã mở vì ngân hàng đã giữ cọc." : "Cuộc gọi đi qua AgiViet, hai bên không thấy số của nhau tới khi ngân hàng giữ cọc."}</p><div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" data-dong>Gọi</button></div>`));
 }

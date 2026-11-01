@@ -139,7 +139,16 @@ table.sl-bang { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 
 /* ── Nút ── */
 .sl-nut { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 0; cursor: pointer; font-weight: 600; text-decoration: none; white-space: nowrap; background: var(--la); color: var(--tren-la); transition: transform 120ms var(--cham), background 160ms; }
-.sl-nut:active { transform: scale(0.97); }
+/* Nút nhún (Motion v2): bóng đặc 3px, bấm lún xuống */
+.sl-nut { box-shadow: 0 3px 0 rgba(17, 41, 31, .3); transition: transform 110ms var(--cham), box-shadow 110ms var(--cham), background 160ms; }
+.sl-nut:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 rgba(17, 41, 31, .3); }
+.sl-nut.sl-vang { box-shadow: 0 3px 0 #c9952a; }
+.sl-nut.sl-vang:active:not(:disabled) { box-shadow: 0 0 0 #c9952a; }
+.sl-nut.sl-vien { box-shadow: inset 0 0 0 1.5px var(--ke-dam), 0 3px 0 var(--giay-sau); }
+.sl-nut.sl-vien:active:not(:disabled) { box-shadow: inset 0 0 0 1.5px var(--ke-dam), 0 0 0 var(--giay-sau); }
+.sl-nut.sl-mp { box-shadow: inset 0 0 0 1.5px #9db8c9, 0 3px 0 #b8ccd8; }
+.sl-nut.sl-mp:active:not(:disabled) { box-shadow: inset 0 0 0 1.5px #9db8c9, 0 0 0 #b8ccd8; }
+@media (prefers-reduced-motion: reduce) { .sl-nut { transition: none; } .sl-nut:active { transform: none; } }
 .sl-nut.sl-vang { background: var(--vang); color: var(--tren-vang); }
 .sl-nut.sl-vien { background: transparent; color: var(--la); box-shadow: inset 0 0 0 1.5px var(--ke-dam); }
 .sl-nut.sl-nhe { background: var(--giay-lot); color: var(--muc); }
