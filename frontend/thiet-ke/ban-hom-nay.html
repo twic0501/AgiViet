@@ -127,7 +127,7 @@ const trau = { cham: null, hanhDong: null, muon: 0 };
 const giamDong = matchMedia("(prefers-reduced-motion: reduce)").matches;
 try {
   rive.RuntimeLoader.setWasmUrl("/assets/vendor/rive/rive.wasm");
-  const r = new rive.Rive({ src: "/assets/trau/trau.riv", canvas: $("trau"), autoplay: !giamDong, stateMachines: "trau",
+  const r = new rive.Rive({ src: "/assets/trau/trau-v4.riv", canvas: $("trau"), autoplay: !giamDong, stateMachines: "trau",
     layout: new rive.Layout({ fit: rive.Fit.Contain, alignment: rive.Alignment.BottomCenter }),
     onLoad: () => {
       r.resizeDrawingSurfaceToCanvas();
@@ -187,7 +187,7 @@ async function mo() {
     $("cau-phu").textContent = `Hạn sớm nhất ${som.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })}.`;
     $("nut-chinh").textContent = "Xem chào giá"; $("nut-chinh").hidden = false; $("nut-chinh").onclick = () => (location.href = "./ban-tin-nhan.html" + location.search);
   }
-  datHanhDong(choBac.length || toiBac.length ? 6 : new Date().getHours() < 11 ? 1 : 0);
+  datHanhDong(choBac.length || toiBac.length ? 8 : new Date().getHours() < 11 ? 1 : 0);   // v4: 8 cầm giấy đọc (có việc) · 1 chào (buổi sáng) · 0 nghỉ
 
   $("ds-hd").innerHTML = don.length ? don.slice(0, 3).map((d) => {
     const k = chiSoChang(d);

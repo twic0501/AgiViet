@@ -405,7 +405,7 @@ async function moHang() {
           <span class="nut-hang">${lauChuaXn ? `<button type="button" class="xac-nhan" data-xn="${l.id}">Vẫn còn hàng</button>` : ""}${l.status === "on_sale" ? `<button type="button" class="nut-ql" data-ql="${l.id}">Quản lý lô</button>` : ""}</span></div>
         ${l.goi_y_ban_gap ? `<p class="goi-y">Lô này lâu chưa có người hỏi. Bác có thể bật bán nhanh (bên mua chỉ thấy "giao được trong 48 giờ"), hoặc nhắn AgiViet hỏi ứng tiền, kho lạnh.</p>` : ""}
       </article>`;
-    }).join("") : `<div class="trong"><p><b>Chưa có lô nào ở đây</b></p><p style="margin-top:4px">Bấm nút Đăng bài ở giữa thanh dưới để đăng hàng.</p></div>`;
+    }).join("") : `<div class="trong">${window.anhTrong?.("chua-co-lo-hang") || ""}<p><b>Chưa có lô nào ở đây</b></p><p style="margin-top:4px">Bấm nút Đăng bài ở giữa thanh dưới để đăng hàng.</p></div>`;
     $("ds").setAttribute("aria-label", `${d.length} lô`);
     $("ds").querySelectorAll("[data-ql]").forEach((b) => (b.onclick = () => moQuanLy(lo.find((x) => x.id === b.dataset.ql))));
     $("ds").querySelectorAll("[data-xn]").forEach((b) => (b.onclick = async () => {

@@ -71,6 +71,9 @@ export const viecCho = (d) => {
 
 // Phiên: ưu tiên token thật từ đăng nhập OTP (lưu trong sessionStorage);
 // chỉ khi không có mới dùng ?thu=<sđt> của môi trường thử (đăng nhập giả lập).
+// Ảnh trâu cho màn trống (chỉ app bán): chua-co-don · chua-co-lo-hang · chua-co-tien-ve · chua-co-tin-nhan · khong-co-mang · khong-tim-thay
+export const anhTrong = (loai) => `<img class="trau-trong" src="/assets/trau/anh/trong-${loai}@2x.webp" srcset="/assets/trau/anh/trong-${loai}@2x.webp 2x, /assets/trau/anh/trong-${loai}@3x.webp 3x" width="120" height="120" alt="" loading="lazy" decoding="async">`;
+if (typeof window !== "undefined") window.anhTrong = anhTrong;
 const KHOA_PHIEN = "agv-phien";
 export const luuPhien = (token) => { try { sessionStorage.setItem(KHOA_PHIEN, token); } catch {} };
 export async function phien() {

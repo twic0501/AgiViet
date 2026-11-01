@@ -149,7 +149,7 @@ const IC_VAO = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stro
 const IC_RA = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V7M6 13l6-6 6 6M5 4h14"/></svg>';
 async function taiLichSu() {
   const ls = (await get("/v1/seller/history?limit=200")).filter((x) => ["money_in", "payout", "money_out", "refund"].includes(x.loai) && Number(x.so_tien_vnd));
-  if (!ls.length) { $("ls-tien").innerHTML = `<p class="bao" style="margin-top:12px">Chưa có khoản tiền nào. Khi bác xác nhận đã nhận tiền hoặc ngân hàng chuyển cọc về, khoản đó hiện ở đây.</p>`; return; }
+  if (!ls.length) { $("ls-tien").innerHTML = `${window.anhTrong?.("chua-co-tien-ve") || ""}<p class="bao" style="margin-top:12px">Chưa có khoản tiền nào. Khi bác xác nhận đã nhận tiền hoặc ngân hàng chuyển cọc về, khoản đó hiện ở đây.</p>`; return; }
   const thang = new Map();
   for (const x of ls) { const k = new Date(x.luc).toLocaleDateString("vi-VN", { ...VN, month: "numeric", year: "numeric" }); thang.set(k, [...(thang.get(k) || []), x]); }
   $("ls-tien").innerHTML = [...thang].map(([k, ds]) => {

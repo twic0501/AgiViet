@@ -162,7 +162,7 @@ function ve(k) {
       <span class="giua"><span class="ai">${esc(c.ai)}</span><span class="phu-dong">Hợp đồng ${esc(c.ma)}</span><span class="tin">${esc(c.viec)} · <b>${esc(tien(c.gia))}</b></span></span>
       <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Đang chờ"}</span></span>
     </a>`).join("") : `<div class="trong-tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
-      <p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
+      ${window.anhTrong?.("chua-co-tin-nhan") || ""}<p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
   giuThamSo($("ds"));
   $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); }));
 }
