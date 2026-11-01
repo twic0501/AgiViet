@@ -219,6 +219,26 @@ export const KICH_BAN = [
       banKb("bt-hen-chuyen", "giữ 400 kg", [3], { lech: "Chuyến sau 400 kg chưa mô phỏng." }),
       banMan(B.bg, "#bg", "", []),
     ] },
+  { id: "nhieu-de-nghi", kb: "nhieu-de-nghi", dau: { buoc: 0 }, tom: "Hai bên mua cùng muốn một lô: so tiền ròng, không chỉ đ/kg.",
+    lechChung: "Số v23: 4 tấn, A còn 91 tr · B còn 92 tr; mô phỏng 2.000 kg, A còn 45,5 tr · B còn 46 tr. Bên mua A không có app trong bản thử.",
+    buoc: [
+      xem([1, 2], "Hai đề nghị đã gửi; bên mua chỉ thấy đề nghị của mình."),
+      banKb("chon-b", "Chọn Đồng Xanh", [3, 4, 5, 6]),
+      mua("Ký và gửi", [6]),
+    ] },
+  { id: "de-nghi-bo-cuoc", kb: "bo-cuoc", dau: { buoc: 1 }, tom: "Đã chọn B nhưng B không ký trong 24 giờ.",
+    buoc: [
+      mua("quá 24 giờ", [0, 1], { ai: "app", ghi: "Hệ thống đếm 24 giờ: bấm Mô phỏng ở app mua." }),
+      banKb("hoi-a", "Hỏi Vựa Ba Cường", [3, 4]),
+      banKb("a-con", "xác nhận còn mua", [5], { ai: "mua", ghi: "Bên mua A (Vựa Ba Cường) không có app trong bản thử: bấm Mô phỏng ở app bán." }),
+      banKb("chon-a", "Chọn Vựa Ba Cường", [6]),
+    ] },
+  { id: "den-xem-hang", kb: "xem-hang", dau: { buoc: 0 }, tom: "Bên mua đến xem vườn rồi chưa mua.",
+    buoc: [
+      mua("Gửi yêu cầu khảo sát", [0, 1]),
+      banKb("ks-ok", "Đồng ý", [2, 3]),
+      mua("chưa mua", [4], { nut: [{ sel: '.sl-viec [data-lam="ks-xong"]', chu: "" }] }),
+    ] },
   { id: "da-nhan-nhieu-hon", kb: "tra-lai", dau: { buoc: 10, daTra: 32200000, nbXn: 32200000 }, tom: "Người bán đã nhận trước nhiều hơn giá trị nghiệm thu.",
     buoc: [
       mua("Gửi kết quả", [2]),
