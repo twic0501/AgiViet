@@ -256,6 +256,8 @@ Người sáng lập xem trực tiếp (1/11 tối): bỏ áo mưa (34, ảnh 28
 
 **Người sáng lập duyệt (2/11):** bản sửa 18, 19, 25 (bỏ bàn tay thừa), 26 xe tải chạy vào/đi — "oke". Còn: gộp PR #1.
 
+Sửa 2/11 (người sáng lập chụp): 19 chỉ lên — bàn tay bị viền đầu che + mép trên tay mất nét: thủ phạm là ClippingShape (che vai cho bản 'giay') áp nhầm cho bản 'chi-xuong'/'chi-len' → bỏ che cho mọi bản 'chi…' (nằm dưới đầu, không cần), góc −0,24 rad để bàn tay ra ngoài đầu. 18 chỉ xuống — vạch cắt ngang tay là đoạn cuối viền mặt dưới (gốc nằm trong thân) bị bẻ chéo → `ban_sao(cat_vien=(0, 6))` bỏ 6 điểm cuối viền.
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.

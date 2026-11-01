@@ -391,15 +391,18 @@ class Goc:
                 return {ly: [xoay(p_) for p_ in pts] for ly, pts in dg.items()}, (gx_, gy_)
             huong_ = 1 if ben == 'phai' else -1          # tay phải chỉ sang phải: xoay dương = chúi xuống
             D['chi-xuong'] = be_vai('chi', .75 * huong_)
-            D['chi-len'] = be_vai('chi', -.32 * huong_)
+            D['chi-len'] = be_vai('chi', -.24 * huong_)
 
             # khung xương (vai, khuỷu, giữa cổ tay) của từng dáng, toạ độ tay trái màn hình (bên phải lật gương)
             XUONG = {'buong': ((178, 318), (160, 352), (147, 381)), 'giay': ((178, 318), (148, 368), (209, 361)),
                      'nghi': ((180, 332), (136, 366), (163, 303))}
 
-            def ban_sao(kieu, cac, khung, thang=False, xuong=False):
+            def ban_sao(kieu, cac, khung, thang=False, xuong=False, cat_vien=0, vien_ong=False):
                 xg = [tuple((X(a), b) for a, b in XUONG[k]) for k in cac] if xuong else None
-                return bien_hinh(f'{t}-{kieu}', [D[k][0] for k in cac], [D[k][1] for k in cac], khung, px, py, thang, xg)
+                cd_, cc_ = cat_vien if isinstance(cat_vien, tuple) else (cat_vien, cat_vien)
+                nguon_v = 'ong' if vien_ong else 'vien'   # vien_ong: nét theo đúng đường bao phần tô (kể cả đoạn gốc kéo vào thân)
+                dang_ = [dict(D[k][0], vien=D[k][0][nguon_v][cd_:len(D[k][0][nguon_v]) - cc_]) for k in cac]   # cat_vien: bỏ đoạn viền vai đầu
+                return bien_hinh(f'{t}-{kieu}', dang_, [D[k][1] for k in cac], khung, px, py, thang, xg)
             r_co, k_co = ban_sao('co', ('buong', 'ngang', 'cao'), (0, 60, 120))
             ids = {k: moi_id() for k in ('co', 'chi', 'chi-xuong', 'chi-len', 'giay', 'nghi')}
             ruot = node(f'{t}-co', ids['co'], 0, 0, r_co)
@@ -423,9 +426,16 @@ class Goc:
             for kieu in (() if NHO else ('chi', 'chi-xuong', 'chi-len', 'giay', 'nghi') if ben == 'phai' else ('chi', 'chi-xuong', 'giay')):   # tay trái chỉ cần ôm ngực; artboard nhỏ chỉ tay chính
                 if kieu == 'nghi':   # lên má qua dáng ôm trước ngực (không quét ngang)
                     r_, k_ = ban_sao(kieu, ('buong', 'giay', 'nghi'), (0, 60, 120), xuong=True)
-                else:
-                    r_, k_ = ban_sao(kieu, ('buong', kieu), (0, 120), xuong=(kieu == 'giay'))
-                if kieu != 'chi':
+                else:   # chỉ xuống / lên: bỏ 4 điểm viền vai đầu (vạch vai bẻ chéo cắt ngang tay)
+                    r_, k_ = ban_sao(kieu, ('buong', kieu), (0, 120), xuong=(kieu == 'giay'),
+                                     cat_vien={'chi-xuong': (0, 6)}.get(kieu, 0))
+                if False:
+                    # (thử 2/11, bỏ: lộ mảng tối giữa khăn và hàm) chỉ lên: tay vẽ TRÊN đầu (bàn tay không bị viền đầu che); che riêng dải khăn quấn cổ để gốc vai nằm dưới khăn
+                    nguon_che3 = moi_id()
+                    khan_ = [(150, 298), (362, 298), (352, 336), (312, 354), (204, 354), (162, 338)]
+                    tren += nguon(nguon_che3, khan_)
+                    r_ = f'<ClippingShape sourceId="{nguon_che3}" fillRule="evenOdd" name="che-khan" id="{moi_id()}"/>' + r_
+                elif not kieu.startswith('chi'):   # bản chỉ nằm dưới đầu → không cần che (che làm mất nét viền mép trên)
                     # che 1 (đầu + khăn + đuôi khăn) lúc gần buông; che 2 (đầu + hai đầu khăn quấn) lúc ôm trước ngực
                     # → đỉnh vai luôn dưới khăn; chống má (cuối 'nghi') bỏ che để bàn tay nằm trên má
                     c1, c2 = moi_id(), moi_id()
