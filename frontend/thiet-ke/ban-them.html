@@ -167,10 +167,12 @@ const MAN = {
 const m = MAN[q.get("man")];
 const quayLai = () => (history.length > 1 ? history.back() : (location.href = "./ban-hom-nay.html" + T));
 $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <div style="flex:1;min-width:0"><p class="chao">${esc(m ? m.chao : "AgiViet")}</p><h1>${esc(m ? m.tieu : "Không có màn này")}</h1></div>`;
+  <div style="flex:1;min-width:0"><p class="chao">${esc(m ? m.chao : "AgiViet")}</p><h1>${esc(m ? m.tieu : "Tiện ích")}</h1></div>`;
 $("dong").onclick = quayLai;
-$("noi").innerHTML = m ? m.ve() : `<p class="bao loi">Không có màn "${esc(q.get("man") || "")}".</p>`;
-document.title = (m ? m.tieu : "Không có màn") + " · AgiViet bán";
+// Không có tên màn (hoặc tên sai): hiện danh mục tiện ích thay vì báo lỗi thô
+$("noi").innerHTML = m ? m.ve() : `${window.trauTuThe ? window.trauTuThe("08-chi", "Bác chọn việc muốn làm nhé.", 80) : ""}
+  <nav class="them-ds" aria-label="Tiện ích" style="display:grid;gap:8px">${Object.entries(MAN).map(([k, x]) => `<a href="?${new URLSearchParams({ ...Object.fromEntries(q), man: k })}" style="display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:10px 14px;border:1px solid var(--ke);border-radius:var(--bo-vua);background:var(--giay-noi);color:var(--muc);text-decoration:none"><span><b style="display:block;font-size:16px">${esc(x.tieu)}</b><small style="color:var(--muc-nhat);font-size:13px">${esc(x.chao)}</small></span><span aria-hidden="true">›</span></a>`).join("")}</nav>`;
+document.title = (m ? m.tieu : "Tiện ích") + " · AgiViet bán";
 giuThamSo();
 
 // Tương tác mô phỏng: nút chính → chấm chờ → dấu tích → thông báo
