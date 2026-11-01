@@ -7,6 +7,8 @@
 import { createRequire } from "node:module";
 import { readFileSync, existsSync } from "node:fs";
 import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+const { BANG } = await import(pathToFileURL(new URL("../thiet-ke/kich-ban-bang.js", import.meta.url).pathname).href);
 const { chromium } = createRequire(process.env.HOME + "/rnd idea/package.json")("playwright");
 const GOC = (process.env.FRONTEND_URL || "http://127.0.0.1:18990") + "/thiet-ke/";
 const QT = process.env.QUY_TRINH || process.env.HOME + "/Documents/AgiViet/mo-phong-quy-trinh-v23-chot-2026-10-28/quy-trinh.json";
@@ -43,6 +45,7 @@ const GHEP = {
   "chua-tra": { kb: "chua-tra", kiem: "tệp này", ghi: "trên khung trả sau nghiệm thu (kb tra-sau = luồng chính v23 trả sau, cũng kiểm ở đây)" },
 };
 
+for (const [kb, v] of Object.entries(BANG)) GHEP[v.meta.v23] = { kb, kiem: "tệp này · bảng bước" };
 const b = await chromium.launch();
 const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
 const ban = await ctx.newPage(), mua = await ctx.newPage();
@@ -419,6 +422,31 @@ await buoc("[dat-truoc] Ký 8 tấn → cọc 36 tr → cập nhật vườn →
   assert.deepEqual(await tienMua2(), [135000000, 0, 135000000], "9 tấn × 15.000: bên mua chi đủ, chị Năm nhận đủ");
   await moBan("man=chi-tiet-don"); assert.equal(await ban.evaluate(() => Number(document.querySelector("#o-bac b").dataset.v)), 135000000);
 });
+
+// ── Tình huống theo bảng bước (kich-ban-bang.js): đi hết từng bước, bên tới lượt bấm ──
+for (const [kb, { meta, ds }] of Object.entries(BANG)) {
+  await napKb(kb, { buoc: 0, pi: 0 });
+  await buoc(`[${meta.v23}] ${meta.tom} (${ds.length} bước, hai bên)`, async () => {
+    for (let i = 0; i < ds.length; i++) {
+      const st = ds[i];
+      if (st.ai === "ban") {
+        await moBan("man=chi-tiet-don");
+        assert.match(await viecBan(), new RegExp(st.viec.slice(0, 20).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `bước ${i + 1}: app bán phải hiện việc của chị Năm`);
+        await ban.locator('[data-kb="bang"]').click(); await cho(1500);
+      } else {
+        await moMua("chi-tiet-don");
+        await mua.locator('.sl-viec [data-lam="bang"]').click(); await cho(1500);
+      }
+      assert.equal((await hd()).pi, i + 1, `bước ${i + 1} (${st.ai}) phải đưa đơn sang bước sau`);
+    }
+    let tien = meta.dau || [0, 0, 0]; for (const st of ds) if (st.tien) tien = st.tien;
+    await moMua("chi-tiet-don");
+    assert.match(await viecMua(), new RegExp(meta.xong.slice(0, 15).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.deepEqual(await tienMua2(), tien, "sổ tiền app mua khớp bảng");
+    await moBan("man=chi-tiet-don");
+    assert.equal(await ban.evaluate(() => Number(document.querySelector("#o-bac b").dataset.v)), tien[2], "app bán: đã nhận khớp bảng");
+  });
+}
 
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });
 await b.close();

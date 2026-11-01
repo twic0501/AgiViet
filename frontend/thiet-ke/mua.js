@@ -1,6 +1,7 @@
 // App MUA AgiViet — bản thiết kế 49 màn (danh mục "App Thu mua"), dữ liệu mẫu theo AgiViet_prompt_app_mua_V2.md.
 // Một người mua làm hết (chị Thu Hà, Nhà máy sấy Đồng Xanh). Máy tính + điện thoại dùng chung trạng thái.
 import { esc, d, kg, so, icon, taoKho, chayApp } from "./so-lam-an.js";
+import { BANG, bangTrang, tenAi } from "./kich-ban-bang.js";
 import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
 
 // ── Dữ liệu ──
@@ -71,8 +72,9 @@ const DON_KHAC = [
 ];
 
 // ── Trạng thái đơn HĐ-0018 (8 kịch bản, prompt app mua V2 mục 8) ──
-const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng: chỉ giao được 1.200 kg"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"], ["hai-can", "17 · Lấy tại vườn: hai cân lệch"], ["du-luong", "18 · Dư lượng không đạt"], ["hai-kq", "19 · Hai phòng kiểm cho kết quả khác nhau"], ["nh-cam-ket", "20 · Trả sau qua ngân hàng (cam kết thanh toán)"], ["nh-tu-choi", "21 · Trả sau qua ngân hàng: bên mua từ chối hàng đạt"], ["ung", "22 · Người bán ứng tiền từ ngân hàng"], ["bien-the", "23 · Tại vườn: sai người, đòi hạ giá, xe thiếu tải"], ["nhieu-de-nghi", "24 · Trước hợp đồng: nhiều đề nghị, so tiền ròng"], ["bo-cuoc", "25 · Trước hợp đồng: được chọn nhưng không ký"], ["xem-hang", "26 · Trước hợp đồng: đến xem vườn rồi chưa mua"], ["dang-ky", "27 · Người bán đăng ký: xác minh và phân hạng"], ["dau-ra", "28 · Không tìm được đầu ra"], ["dat-truoc", "29 · Đặt trước khi hái"]];
+const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng: chỉ giao được 1.200 kg"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"], ["hai-can", "17 · Lấy tại vườn: hai cân lệch"], ["du-luong", "18 · Dư lượng không đạt"], ["hai-kq", "19 · Hai phòng kiểm cho kết quả khác nhau"], ["nh-cam-ket", "20 · Trả sau qua ngân hàng (cam kết thanh toán)"], ["nh-tu-choi", "21 · Trả sau qua ngân hàng: bên mua từ chối hàng đạt"], ["ung", "22 · Người bán ứng tiền từ ngân hàng"], ["bien-the", "23 · Tại vườn: sai người, đòi hạ giá, xe thiếu tải"], ["nhieu-de-nghi", "24 · Trước hợp đồng: nhiều đề nghị, so tiền ròng"], ["bo-cuoc", "25 · Trước hợp đồng: được chọn nhưng không ký"], ["xem-hang", "26 · Trước hợp đồng: đến xem vườn rồi chưa mua"], ["dang-ky", "27 · Người bán đăng ký: xác minh và phân hạng"], ["dau-ra", "28 · Không tìm được đầu ra"], ["dat-truoc", "29 · Đặt trước khi hái"], ...Object.entries(BANG).map(([k, v], i) => [k, `${30 + i} · ${v.meta.tom}`])];
 const hdTien = (h) => {
+  const bt = bangTrang(h); if (bt) return { banChi: bt.tien[0], nh: bt.tien[1], nb: bt.tien[2] };
   const b = h.buoc, t = tinhTien(h);
   // Người bán vi phạm (không giao): cọc + phí hoàn bạn; người bán trả lại phần đã nhận trước (+ bồi hoàn tiền xe, ghi riêng)
   if (h.kb === "dat-truoc") { const x = dtTien(h); return { banChi: x.banChi, nh: x.nh, nb: x.nb }; }
@@ -93,6 +95,7 @@ const hdChan = (h) => {
   return "";
 };
 const hdLuot = (h) => {
+  const bt = bangTrang(h); if (bt) return bt.xong ? "xong" : ({ mua: "ban", ban: "nb", nh: "nh" }[bt.b.ai] || "vh");
   if (h.no) return "xong";
   if (h.kb === "bkk" && (h.bkkXong || h.phu)) return h.bkkXong ? "xong" : { bkk: "vh", "bkk-tl": "ban", "bkk-de": "nb", "bkk-ky": "ban", "bkk-cho-ban": "nb", "bkk-hoan": "nh" }[h.phu] || "ban";
   if (h.kb === "khac-mau" && h.phu === "km") return "vh";
@@ -173,6 +176,15 @@ const nutVang = (chu, lam) => `<button class="sl-nut sl-vang" data-lam="${lam}">
 const theViec = (lop, tieu, p, nut) => `<div class="sl-viec ${lop}"><div><h2>${esc(tieu)}</h2><p>${p}</p></div><div class="sl-hang-nut">${nut}</div></div>`;
 function veViec(h, url) {
   const luot = hdLuot(h), t = tinhTien(h);
+  // ── Tình huống theo bảng bước (kich-ban-bang.js) ──
+  const bt = bangTrang(h);
+  if (bt) {
+    if (bt.xong) return theViec("sl-xong", esc(bt.k.meta.xong), "", "");
+    const b = bt.b, g = esc(b.giai || "");
+    if (b.ai === "mua") return theViec("", esc(b.viec), g, nutVang(b.nut, "bang"));
+    if (b.ai === "ban") return theViec("sl-cho", `Đang chờ chị Năm: ${esc(b.viec)}`, g, "");
+    return theViec("sl-cho", `Đang chờ ${tenAi(b.ai)}: ${esc(b.viec)}`, g, nutMp(`Mô phỏng: ${b.nut}`, "bang"));
+  }
   // ── Bất khả kháng (v23 bat-kha-khang) ──
   if (h.kb === "bkk") {
     if (h.bkkXong) return theViec("sl-xong", "Đã sửa đơn: còn 1.200 kg (bản 2)", `Ngân hàng đã hoàn ${d(BKK_HOAN)} cọc dư cho bạn; cọc còn giữ ${d(BKK_COC)}. Nhân viên AgiViet đang tìm nguồn bù 800 kg cùng hạng. Không ai bị phạt. Phần giao 1.200 kg chạy tiếp như luồng thuận (mô phỏng dừng ở đây).`, "");
@@ -366,6 +378,7 @@ function ganNutDon(goc) {
         "huy-khong": () => { h.phu = ""; },
         "hoan-xn": () => { h.hoanXn = true; h.phu = "cho-nb-hoan"; },
         "nb-hoan": () => { h.phu = "nb-da-hoan"; },
+        "bang": () => { h.pi = (h.pi || 0) + 1; },
         "dk-xm-xong": () => { h.phu = "dk-hang"; },
         "dr-48": () => { h.phu = "dr-nv"; },
         "dr-de-xuat": () => { h.phu = "dr-tach"; },

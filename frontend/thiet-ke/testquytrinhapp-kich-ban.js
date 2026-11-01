@@ -2,6 +2,7 @@
 // được đi lại trên HAI APP thật (app bán mẫu + app mua) bằng dữ liệu mô phỏng chung HĐ-0018 (giao-dich-chung.js).
 // Mỗi bước: qt = chỉ số các bước v23 (0-based) mà bước này thể hiện · ai = vai làm · ben = điện thoại có nút bấm
 // · ban/mua = màn mở trên từng điện thoại · nut = [{ sel, chu }] nút cần bấm (lọc theo chữ nếu có) · lech = chỗ bản mô phỏng khác v23.
+import { BANG, tenAi } from "./kich-ban-bang.js";
 const B = { don: "./mau/ban.html#man=chi-tiet-don", ky: "./mau/ban.html#man=ky-otp", kt: "./mau/ban.html#man=kiem-tien", bg: "./mau/ban.html#man=ban-giao", kq: "./mau/ban.html#man=ket-qua", chat: "./ban-tin-nhan.html?thu=0918000421#tro=T1" };
 const M = { don: "./mua.html?man=chi-tiet-don", chat: "./mua.html?man=tin-nhan" };
 const VIEC_MUA = ".sl-viec [data-lam]";
@@ -279,3 +280,14 @@ export const KICH_BAN = [
       xem([6], "Xong: bên mua chi ròng đúng giá trị nghiệm thu."),
     ] },
 ];
+
+// Tình huống theo bảng bước: sinh kịch bản trình diễn từ bảng
+const NUT_MUA = '.sl-viec [data-lam="bang"]';
+for (const [kb, { meta, ds }] of Object.entries(BANG)) {
+  KICH_BAN.push({ id: meta.v23, kb, dau: { buoc: 0, pi: 0 }, tom: meta.tom, buoc: [
+    ...ds.map((st) => st.ai === "ban" ? banKb("bang", st.nut, st.qt)
+      : st.ai === "mua" ? mua(st.nut, st.qt, { nut: [{ sel: NUT_MUA, chu: "" }] })
+      : nh(st.nut, st.qt, { ai: st.ai, nut: [{ sel: NUT_MUA, chu: "" }], ghi: `${tenAi(st.ai)[0].toUpperCase() + tenAi(st.ai).slice(1)} không có app trong bản thử: bấm Mô phỏng ở app mua.` })),
+    xem([], meta.xong),
+  ] });
+}
