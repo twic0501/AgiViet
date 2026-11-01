@@ -25,6 +25,21 @@
   .cuoc .tin b { color: var(--muc); font-variant-numeric: tabular-nums; }
   .cuoc .phai { text-align: right; align-self: start; padding-top: 2px; }
   .cuoc .gio { font-size: 13px; color: var(--muc-nhat); }
+  /* Nhắn tin thật hai bên */
+  .cuoc .tn-cuoi { display: block; margin-top: 4px; font-size: 14px; color: var(--muc-phu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tn-khung { margin-top: 16px; border-top: 1px solid var(--ke); padding-top: 12px; }
+  .tn-dau { font-weight: 700; font-size: var(--c-than); color: var(--muc); margin: 0 0 8px; }
+  .tn-ds { display: flex; flex-direction: column; gap: 8px; max-height: 42vh; overflow-y: auto; padding: 4px 2px; }
+  .tn-bong { align-self: flex-start; max-width: 82%; background: var(--giay-lot); border-radius: var(--bo-vua) var(--bo-vua) var(--bo-vua) 4px; padding: 8px 12px; }
+  .tn-bong.toi { align-self: flex-end; background: var(--la-nhat); border-radius: var(--bo-vua) var(--bo-vua) 4px var(--bo-vua); }
+  .tn-bong span { display: block; font-size: var(--c-than); color: var(--muc); line-height: 1.45; overflow-wrap: anywhere; }
+  .tn-bong small { display: block; margin-top: 2px; font-size: var(--c-ghi); color: var(--muc-nhat); }
+  .tn-trong { color: var(--muc-nhat); font-size: 15px; margin: 4px 0; }
+  .tn-go { display: flex; gap: 8px; margin-top: 10px; }
+  .tn-go input { flex: 1; min-width: 0; min-height: 48px; border-radius: var(--bo-vua); border: 1.5px solid var(--ke-dam); background: var(--giay-lot); padding: 0 12px; font: 16px var(--chu); color: var(--muc); }
+  .tn-go .nut { flex: 0 0 auto; width: auto; min-height: 48px; padding: 0 18px; white-space: nowrap; }
+  .tn-bao { min-height: 1em; margin: 6px 0 0; font-size: 14px; color: var(--dau-do); }
+  .tn-luu { margin: 4px 0 0; font-size: var(--c-ghi); color: var(--muc-nhat); }
   .nhan-cho { font-size: 13px; font-weight: 600; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
   .nhan-cho.bac { background: var(--dau-do-nen); color: var(--dau-do); }
   .nhan-cho.ho { background: var(--cho-nen); color: var(--cho); }
@@ -141,12 +156,19 @@ async function mo() {
       ai: v.from_side === "buyer" ? "Bên mua" : "Bác", gia: v.price_vnd, luong: v.qty_g, het: v.expires_at, vong: v.round_no, con: ct.luot_tra_gia_con };
   });
   const cuocDon = don.filter((d) => d.hien_thi?.toi_luot && !/complet|cancel/.test(d.status)).map((d) => ({
-    loai: "don", toiBac: d.hien_thi.toi_luot.phia === d.phia_cua_ban, ma: d.code, ai: d.buyer_name, viec: viecCho(d), gia: d.contract_value_vnd }));
+    loai: "don", id: d.id, toiBac: d.hien_thi.toi_luot.phia === d.phia_cua_ban, ma: d.code, ai: d.buyer_name, viec: viecCho(d), gia: d.contract_value_vnd }));
   tatCa = [...cuocChao.filter(Boolean), ...cuocDon].sort((a, b) => Number(b.toiBac) - Number(a.toiBac));
+  // Tin nhắn mới nhất của từng cuộc: hiện dưới dòng
+  const tomTat = await get("/v1/messages/summary").catch(() => []);
+  for (const c of tatCa) {
+    const t = tomTat.find((x) => (c.loai === "don" ? x.order_id === c.id : x.offer_id === c.id && !x.order_id));
+    if (t) c.tinCuoi = `${t.la_cua_toi ? "Bác: " : ""}${t.body}`;
+  }
   $("loc").querySelector('[data-k="cho-bac"]').innerHTML = `Chờ bác trả lời<small>${tatCa.filter((c) => c.toiBac).length}</small>`;
   ve("tat-ca");
   $("noi").setAttribute("aria-busy", "false");
   const m = location.hash.match(/chao=([\w-]+)/); if (m) moLoiChao(m[1]);
+  const mh = location.hash.match(/hd=([\w-]+)/); const ch = mh && tatCa.find((c) => c.id === mh[1]); if (ch) moHopDong(ch);
 }
 
 function ve(k) {
@@ -157,17 +179,68 @@ function ve(k) {
       <span class="anh" style="${c.anh ? `background-image:url(${c.anh})` : ""}"><span class="loai">${IC_CHAO}</span></span>
       <span class="giua"><span class="ai">${c.dongY ? `Đã đồng ý giá · ${esc(c.ben)}` : c.ai === "Bác" ? `Bác chào ${esc(c.ben)}` : `${esc(c.ben)} chào giá`}</span>
         <span class="phu-dong">Lô ${esc(c.lo)} · ${esc(conLai(c.het))}${c.vong > 1 ? ` · vòng ${c.vong}` : ""}</span>
-        <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt trả giá` : ""}</span></span>
+        <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt trả giá` : ""}</span>${c.tinCuoi ? `<span class="tn-cuoi">${esc(c.tinCuoi)}</span>` : ""}</span>
       <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.dongY ? "Đang giữ hàng" : c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span></span>
     </a>` : `
-    <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#">
+    <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#hd=${esc(c.id)}" data-hd="${esc(c.id)}">
       <span class="anh" style="background:var(--nen-phu,#e9e4d6);display:grid;place-items:center;font-weight:700;color:var(--muc,#3a3a33)">${esc(vietTat(c.ai))}<span class="loai hd">${IC_HD}</span></span>
-      <span class="giua"><span class="ai">${esc(c.ai)}</span><span class="phu-dong">Hợp đồng ${esc(c.ma)}</span><span class="tin">${esc(c.viec)} · <b>${esc(tien(c.gia))}</b></span></span>
+      <span class="giua"><span class="ai">${esc(c.ai)}</span><span class="phu-dong">Hợp đồng ${esc(c.ma)}</span><span class="tin">${esc(c.viec)} · <b>${esc(tien(c.gia))}</b></span>${c.tinCuoi ? `<span class="tn-cuoi">${esc(c.tinCuoi)}</span>` : ""}</span>
       <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Đang chờ"}</span></span>
     </a>`).join("") : `<div class="trong-tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
       ${window.anhTrong?.("chua-co-tin-nhan") || ""}<p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
   giuThamSo($("ds"));
   $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); }));
+  $("ds").querySelectorAll("[data-hd]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#hd=${a.dataset.hd}`); moHopDong(tatCa.find((c) => c.id === a.dataset.hd)); }));
+}
+
+// ===== Nhắn tin thật hai bên (backend /v1/messages, che liên lạc trước khi lưu) =====
+let hen = 0;
+async function khungTin(o, cuoc, ten) {
+  clearTimeout(hen);
+  const q = cuoc.order_id ? `order_id=${cuoc.order_id}` : `offer_id=${cuoc.offer_id}`;
+  o.innerHTML = `<div class="tn-khung"><p class="tn-dau">Nhắn với ${esc(ten)}</p><div class="tn-ds" aria-live="polite"><p class="tn-trong">Đang tải…</p></div>
+    <form class="tn-go"><input maxlength="1000" autocomplete="off" placeholder="Nhắn cho ${esc(ten)}…" aria-label="Tin nhắn"><button type="submit" class="nut chinh-nut">Gửi</button></form>
+    <p class="tn-bao" role="status"></p><p class="tn-luu">Không gửi số điện thoại, Zalo, số tài khoản: app tự che để AgiViet giữ cọc và bảo vệ hai bên.</p></div>`;
+  const ds = o.querySelector(".tn-ds"), bao = o.querySelector(".tn-bao");
+  const tai = async () => {
+    if (!o.isConnected) return;
+    const r = await fetch(`/v1/messages?${q}`, { headers: { authorization: "Bearer " + tokenG } }).then((x) => (x.ok ? x.json() : null)).catch(() => null);
+    if (!r) { ds.innerHTML = `<p class="tn-trong">Chưa tải được tin nhắn.</p>`; return; }
+    const cuoi = ds.scrollTop + ds.clientHeight >= ds.scrollHeight - 8;
+    ds.innerHTML = r.tin.length ? r.tin.map((m) => `<div class="tn-bong ${m.la_cua_toi ? "toi" : ""}"><span>${esc(m.body)}</span><small>${m.la_cua_toi ? "Bác" : esc(m.nguoi_gui)} · ${gio(m.created_at)}${m.da_che ? " · đã che liên lạc" : ""}</small></div>`).join("")
+      : `<p class="tn-trong">Chưa có tin nhắn. Bác hỏi thêm về hàng, ngày hái, cách giao ở đây.</p>`;
+    if (cuoi) ds.scrollTop = ds.scrollHeight;
+    hen = setTimeout(tai, 5000);
+  };
+  o.querySelector("form").onsubmit = async (e) => {
+    e.preventDefault();
+    const o2 = e.target.querySelector("input"), nut = e.target.querySelector("button"), noi = o2.value.trim();
+    if (!noi) return;
+    nut.disabled = true; bao.textContent = "Đang gửi…";
+    try {
+      const kq = await lenhLC("/v1/messages", { ...cuoc, body: noi });
+      o2.value = ""; bao.textContent = kq.data?.canh_bao || ""; clearTimeout(hen); await tai(); ds.scrollTop = ds.scrollHeight;
+    } catch (err) { bao.textContent = err.message; }
+    nut.disabled = false;
+  };
+  await tai(); ds.scrollTop = ds.scrollHeight;
+}
+
+// Tấm hợp đồng trong Tin nhắn: tóm tắt + nhắn tin; chi tiết đầy đủ ở màn Đơn
+function moHopDong(c) {
+  document.querySelector(".man-che")?.remove();
+  const che = document.createElement("div"); che.className = "man-che";
+  che.innerHTML = `<div class="tam-lc" role="dialog" aria-modal="true" aria-labelledby="hd-t" tabindex="-1">
+    <div><h2 id="hd-t">${esc(c.ai)}</h2><p class="phu-lc">Hợp đồng ${esc(c.ma)} · ${esc(tien(c.gia))}</p></div>
+    <p class="nhac">${esc(c.viec)}</p><div data-r="tin"></div>
+    <div class="ba-nut"><button type="button" class="nut phu-nut" data-dong>Đóng</button><a class="nut chinh-nut" href="./ban-don.html#don=${esc(c.id)}">Mở hợp đồng</a></div></div>`;
+  document.body.appendChild(che); giuThamSo(che);
+  const dong = () => { clearTimeout(hen); che.remove(); history.replaceState(null, "", location.pathname + location.search); };
+  che.querySelector("[data-dong]").onclick = dong;
+  che.addEventListener("pointerdown", (e) => { if (e.target === che) dong(); });
+  addEventListener("keydown", function p(e) { if (e.key === "Escape") { dong(); removeEventListener("keydown", p); } });
+  che.querySelector(".tam-lc").focus();
+  khungTin(che.querySelector('[data-r="tin"]'), { order_id: c.id }, c.ai);
 }
 
 // ===== Tấm chi tiết lời chào (brief S2 lời chào, S3 trả giá, S4 đã đồng ý) =====
@@ -192,7 +265,7 @@ async function moLoiChao(id) {
   che.innerHTML = `<div class="tam-lc" role="dialog" aria-modal="true" aria-labelledby="lc-t" tabindex="-1"><h2 id="lc-t">Lời chào giá</h2><div class="khung-tai"></div></div>`;
   document.body.appendChild(che);
   const tam = che.querySelector(".tam-lc");
-  const dong = () => { che.remove(); document.removeEventListener("keydown", phim); history.replaceState(null, "", location.pathname + location.search); truoc?.focus?.(); };
+  const dong = () => { clearTimeout(hen); che.remove(); document.removeEventListener("keydown", phim); history.replaceState(null, "", location.pathname + location.search); truoc?.focus?.(); };
   const phim = (e) => { if (e.key === "Escape") dong(); };
   document.addEventListener("keydown", phim);
   che.addEventListener("pointerdown", (e) => { if (e.target === che) dong(); });
@@ -242,8 +315,10 @@ async function moLoiChao(id) {
     ${nhac}
     <div class="lc-buoc" data-r="buoc"></div>
     <p class="bao-lc" data-r="bao" role="status"></p>
-    <div class="day" data-r="day">${hanhDong}</div>`;
+    <div class="day" data-r="day">${hanhDong}</div>
+    <div data-r="tin"></div>`;
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
+  khungTin(tam.querySelector('[data-r="tin"]'), { offer_id: id }, ben);
   const r = (k) => tam.querySelector(`[data-r="${k}"]`);
   const xong = (chu) => { r("buoc").innerHTML = ""; r("day").innerHTML = `<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
   const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));

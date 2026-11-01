@@ -15,6 +15,16 @@ let dem = 0;
 const DA_LOI = new Set<string>();
 const khoa = () => `ao-${Date.now().toString(36)}-${(dem++).toString(36)}`;
 
+/** Câu trả lời của đối tác ảo theo từ khóa trong tin bên kia (bỏ dấu để so). */
+export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
+  const t = tin.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  if (/da che|•/.test(t)) return 'Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên.';
+  if (/gio|mai|sang|chieu|ngay|xe|toi vuon|lay hang/.test(t)) return phia === 'buyer' ? 'Dạ được, bên em cho xe tới đúng giờ hẹn trong hợp đồng, có gì em nhắn trước.' : 'Dạ được, sáng đó bên chị hái sẵn chờ xe tới cân.';
+  if (/gia|bot|tang|giam/.test(t)) return phia === 'buyer' ? 'Giá này bên em tính theo loại 1 rồi, chị xem trả giá trong lời chào giúp em nha.' : 'Giá chị để sát rồi em, em trả giá trong lời chào giúp chị nha.';
+  if (/con|du|bao nhieu|tan|kg|hang/.test(t)) return phia === 'buyer' ? 'Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết.' : 'Còn đủ em, hàng đẹp, loại 1 chiếm phần lớn.';
+  return phia === 'buyer' ? 'Dạ em nhận được rồi, có gì em báo lại nha.' : 'Dạ chị nhận được rồi nha em.';
+}
+
 export interface ViecAo { to_chuc: string; viec: string; doi_tuong: string; ket_qua: 'xong' | 'loi'; chi_tiet?: string }
 
 /** Một vòng quét. nguoiThat: số điện thoại người thật đang dùng (tổ chức của họ không bị đóng vai). */
@@ -65,6 +75,12 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
           delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: 'on_receipt', designated_receiver_user_id: me.user.user_id, silent_accept_hours: 2 }, t);
         if (r.status < 300) nhat_ky.push({ to_chuc: tc, viec: 'lập đơn', doi_tuong: of.code, ket_qua: 'xong' });
       }
+    }
+    // 1b) Tin nhắn: tin mới nhất của cuộc là của bên kia → trả lời một câu ngắn theo nội dung (luật đơn giản, không gửi liên lạc).
+    for (const s of (await get('/v1/messages/summary', t)) ?? []) {
+      if (s.la_cua_toi) continue;
+      const cau = traLoi(String(s.body ?? ''), tc.startsWith('TC-M') ? 'buyer' : 'seller');
+      await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
     }
     // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).
     for (const v of (await get('/v1/seasonal-orders?type=pre_harvest', t)) ?? []) {

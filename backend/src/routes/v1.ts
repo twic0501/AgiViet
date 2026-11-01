@@ -457,6 +457,13 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Chưa nghe hiểu được lúc này.', fix: 'Bác gõ thông tin hoặc thử nói lại.' }] });
     }
   });
+  // ---------------- Tin nhắn hai bên (0076): theo lời chào giá hoặc hợp đồng, che liên lạc trước khi lưu ----------------
+  const TN = () => import('../nghiep-vu/tin-nhan.ts');
+  const cuocTin = z.object({ offer_id: uuid.optional(), order_id: uuid.optional() });
+  app.get('/v1/messages', async (req) => { const nd = await bo.xacThuc(req); const x = cuocTin.parse(req.query); const m = await TN(); return bo.doc((t) => m.docTinNhan(t, nd, x)); });
+  app.get('/v1/messages/summary', async (req) => { const nd = await bo.xacThuc(req); const m = await TN(); return bo.doc((t) => m.tomTatTinNhan(t, nd)); });
+  app.post('/v1/messages', async (req) => bo.lenh(req, 'gui_tin_nhan', async (t, nd) => (await TN()).phiaTinNhan(t, nd, cuocTin.parse(req.body)),
+    async (t, nd, b) => (await TN()).guiTinNhan(t, nd, cuocTin.extend({ body: z.string().min(1).max(1000) }).parse(b))));
   app.get('/v1/notifications', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/outbox.ts'); const q: any = req.query; return bo.doc((t) => m.thongBao(t, nd, { limit: q.limit ? Number(q.limit) : undefined, after_seq: q.after_seq ? Number(q.after_seq) : undefined })); });
 
   // ---------------- Môi trường thử ----------------
