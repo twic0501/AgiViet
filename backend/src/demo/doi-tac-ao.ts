@@ -66,7 +66,26 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
         if (r.status < 300) nhat_ky.push({ to_chuc: tc, viec: 'lập đơn', doi_tuong: of.code, ket_qua: 'xong' });
       }
     }
-    // 2) Đơn: làm đúng việc mà backend báo là tới lượt bên mình.
+    // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).
+    for (const v of (await get('/v1/seasonal-orders?type=pre_harvest', t)) ?? []) {
+      if (v.order_status !== 'active') continue;
+      const ds = (await get(`/v1/orders/${v.id}/amendments`, t)) ?? [];
+      if (ds.length) continue;
+      const ct = await get(`/v1/orders/${v.id}`, t); const q = ct?.dot_giao?.[0]?.planned_qty_g; if (!q) continue;
+      await lam(tc, `đề nghị chốt lượng ${Number(q) / 1000} kg`, ct.code, () => post(`/v1/seasonal-orders/${v.id}/harvest-fix`, { qty_g: String(q) }, t));
+    }
+    // 3) Phụ lục: bên kia đề nghị → đồng ý; đã đồng ý → ký OTP.
+    for (const d of (await get('/v1/orders', t)) ?? []) {
+      if (!['active', 'awaiting_deposit'].includes(d.status)) continue;
+      const ds = (await get(`/v1/orders/${d.id}/amendments`, t)) ?? [];
+      const hieuLuc = ds.some((a: any) => a.status === 'accepted') ? Number((await get(`/v1/orders/${d.id}`, t))?.effective_version_no ?? 0) : 0;
+      for (const a of ds) {
+        if (a.status === 'accepted' && Number(a.resulting_version_no) <= hieuLuc) continue; // phụ lục đã có hiệu lực
+        if (a.status === 'open' && !a.la_cua_toi) await lam(tc, 'đồng ý phụ lục', `${d.code}/${a.kind}`, () => post(`/v1/amendments/${a.id}/accept`, {}, t));
+        if (a.status === 'accepted' && a.annex_document_id) await lam(tc, 'ký phụ lục', `${d.code}/${a.kind}`, async () => post(`/v1/amendments/${a.id}/sign`, { challenge_id: await otp(t, 'amendment_sign', { document_id: a.annex_document_id }), code: OTP }, t));
+      }
+    }
+    // 4) Đơn: làm đúng việc mà backend báo là tới lượt bên mình.
     for (const d of (await get('/v1/orders', t)) ?? []) {
       let luot = d.hien_thi?.toi_luot; const phia = d.phia_cua_ban;
       if (phia === 'seller' && ['active', 'completed'].includes(d.status)) { // khoản bên mua đã báo trả → người bán xác nhận trước mọi việc khác
@@ -92,12 +111,26 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
           const anh = (await post('/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, t)).json;
           return post(`/v1/payments/${p.id}/report`, { amount_vnd: Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, t);
         }); break;
-        case 'Chỉ định người nhận, đặt xe': await lam(tc, 'đặt xe', d.code, async () => {
-          const did = o.dot_giao?.[0]?.id; if (!did) return;
+        case 'Trả tiền hàng khi nhận': await lam(tc, 'báo đã trả tiền hàng', d.code, async () => {
+          const p = ((await get(`/v1/orders/${d.id}/payments`, t)) ?? []).find((x: any) => x.kind === 'goods_on_receipt' && x.status === 'due');
+          if (!p) return;
+          const anh = (await post('/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, t)).json;
+          return post(`/v1/payments/${p.id}/report`, { amount_vnd: Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, t);
+        }); break;
+        case 'Chỉ định người nhận, đặt xe': {
+          const did = o.dot_giao?.find((x: any) => x.status === 'preparing')?.id; if (!did) break;
+          const sanSang: any[] = (await get(`/v1/deliveries/${did}/readiness`, t)) ?? [];
+          const thieu = (ma: string) => sanSang.some((x) => x.ma === ma && !x.ok);
+          if (sanSang.some((x) => x.ma === 'xe' && x.ok)) { // đã có xe → chỉ còn phát QR người nhận
+            if (thieu('nguoi_nhan')) await lam(tc, 'phát QR nhận hàng', d.code, () => post(`/v1/deliveries/${did}/receipt-qr`, {}, t));
+            break;
+          }
+          await lam(tc, 'đặt xe', d.code, async () => {
           let r: any;
           for (const plate of ['DEMO-66C-001', 'DEMO-66C-002', 'DEMO-66C-003', 'DEMO-66C-004', '66C-123.45', '66C-678.90']) { r = await post(`/v1/deliveries/${did}/trip`, { plate_no: plate, freight_vnd: 1500000 }, t); if (r.status < 300) break; }
           return r;
-        }); break;
+          }); break;
+        }
         case 'Nghiệm thu': await lam(tc, 'nghiệm thu đủ', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'checking'); if (!dd) return;
           const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) return;

@@ -201,7 +201,7 @@ export async function xacNhanDaNhan(ht: HeThong, t: GiaoDich, nd: NguoiDung, id:
   await phat(t, 'direct_payment', id, 'khoan.nb_xac_nhan', { so_tien_vnd: so.toString(), status: sau.status });
 
   await lamHeThong(t);
-  await sauKhiNhanTien(ht, t, p.order_id);
+  await sauKhiNhanTien(ht, t, p.order_id, nd);
   const canhBao = method === 'cash' && so >= BigInt(CHINH_SACH.canhBaoTienMatVnd) ? [{ ma: 'TIEN_MAT_LON', cau: 'Nên chuyển khoản để có chứng từ ngân hàng.' }] : [];
   const con = B(sau.due) - B(sau.da);
   return { id, status: sau.status, received_vnd: sau.da, remaining_vnd: con.toString(), canh_bao: canhBao,
@@ -218,10 +218,12 @@ export async function baoChuaNhan(t:GiaoDich,nd:NguoiDung,id:string,b?:{reason?:
 }
 
 /** Sau khi một khoản được xác nhận: thử chuyển đợt sang sẵn sàng / hoàn tất công nợ. */
-export async function sauKhiNhanTien(ht: HeThong, t: GiaoDich, orderId: string) {
-  const { thuSanSang } = await import('./giao-nhan.ts');
+export async function sauKhiNhanTien(ht: HeThong, t: GiaoDich, orderId: string, nd?: NguoiDung) {
+  const { thuSanSang, sauNghiemThuChot } = await import('./giao-nhan.ts');
   const dots = await t.q<any>(`SELECT id FROM core.deliveries WHERE order_id=$1 AND status='preparing'`, [orderId]);
   for (const d of dots) await thuSanSang(ht, t, d.id);
+  // Trả khi nhận tại chỗ: người bán vừa xác nhận tiền hàng → đợt đã chốt số cân được đi tiếp.
+  if (nd) for (const d of await t.q<any>(`SELECT id FROM core.deliveries WHERE order_id=$1 AND status='awaiting_seller'`, [orderId])) await sauNghiemThuChot(ht, t, d.id, nd);
   const { kiemHoanTat, thuQuyetToan } = await import('./quyet-toan.ts');
   await thuQuyetToan(ht, t, orderId);
   await kiemHoanTat(t, orderId);

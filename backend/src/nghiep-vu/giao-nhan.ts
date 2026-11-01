@@ -316,7 +316,7 @@ export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliv
   const status=await sauNghiemThuChot(ht,t,deliveryId,nd);
   let loCon:any=null;
   // 0050: tại nguồn, BBNT hai chữ ký đã chuyển phần trả lại sang returned_pending ngay khi chốt (đợt còn in_transit).
-  if(status==='closed'||(status==='in_transit'&&DIEM_TAI_CHO.includes(v.acceptance_point))){
+  if(status==='closed'||(['in_transit','awaiting_seller'].includes(status)&&DIEM_TAI_CHO.includes(v.acceptance_point))){
     const qty=B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM core.acceptance_lines WHERE acceptance_id=$1 AND kind='rejected'`,[av.id]));
     if(qty>0n && DIEM_TAI_CHO.includes(v.acceptance_point))loCon=await taoLoConTraLai(t,o,qty,av.id,nd);
   }
@@ -337,6 +337,8 @@ export async function sauNghiemThuChot(ht:HeThong,t:GiaoDich,deliveryId:string,n
  const {d,o,v}=await layDot(t,deliveryId);if(d.status!=='awaiting_seller')return d.status;
  if(await t.mot(`SELECT 1 FROM core.acceptance_lines l JOIN core.acceptance_versions a ON a.id=l.acceptance_id WHERE a.delivery_id=$1 AND l.status<>'closed' AND a.version_no=(SELECT max(version_no) FROM core.acceptance_versions WHERE delivery_id=$1)`,[deliveryId]))return d.status;
  if(await t.mot(`SELECT 1 FROM core.direct_payments WHERE order_id=$1 AND blocks_loading AND status NOT IN ('fully_received','cancelled')`,[o.id]))return d.status;
+ // Trả khi nhận tại chỗ: DB chặn hàng rời đi khi chưa nhận đủ tiền hàng − cọc → đứng chờ; xác nhận tiền gọi lại hàm này.
+ if(DIEM_TAI_CHO.includes(v.acceptance_point)&&v.payment_timing==='on_receipt'&&await t.mot(`SELECT 1 FROM core.direct_payments WHERE order_id=$1 AND kind='goods_on_receipt' AND status NOT IN ('fully_received','cancelled')`,[o.id]))return d.status;
  if(!nd || nd.thanhVien.orgId!==o.seller_org_id)return d.status;
  if(DIEM_TAI_CHO.includes(v.acceptance_point))await appCmd(t,nd,'seller','dispatch_delivery',[deliveryId]);
  else {await appCmd(t,nd,'seller','finish_warehouse_delivery',[deliveryId]);if(await t.mot(`SELECT 1 FROM core.acceptance_lines l JOIN core.acceptance_versions a ON a.id=l.acceptance_id WHERE a.delivery_id=$1 AND l.kind='rejected' AND a.version_no=(SELECT max(version_no) FROM core.acceptance_versions WHERE delivery_id=$1)`,[deliveryId]))await taoViec(t,'V20',2,'delivery',deliveryId,o.id,'dispatcher',`return:${deliveryId}`,'Hàng trả lại tại kho: người bán chọn xử lý');const {thuQuyetToan}=await import('./quyet-toan.ts');await thuQuyetToan(ht,t,o.id);}

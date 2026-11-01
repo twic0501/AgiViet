@@ -286,6 +286,13 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
     const dots = await t.q<any>(`SELECT status FROM core.deliveries WHERE order_id=$1 ORDER BY batch_no`, [o.id]);
     const st = new Set(dots.map((x) => x.status));
     const chuaTraTruocBoc = Number(await t.gtri(`SELECT count(*) FROM core.direct_payments p WHERE order_id=$1 AND blocks_loading AND status NOT IN ('fully_received','cancelled')`, [o.id])) > 0;
+    // Trả khi nhận tại chỗ: người bán đã đồng ý số cân (dòng đã chốt) → hàng chờ bên mua trả tiền hàng rồi mới đi.
+    const choTraKhiNhan = st.has('awaiting_seller') && Number(await t.gtri(`SELECT count(*) FROM core.direct_payments p JOIN core.deliveries d ON d.id=p.delivery_id WHERE p.order_id=$1 AND p.kind='goods_on_receipt' AND d.status='awaiting_seller' AND p.status NOT IN ('fully_received','cancelled')`, [o.id])) > 0;
+    if (choTraKhiNhan) {
+      const baoRoi = Number(await t.gtri(`SELECT count(*) FROM core.direct_payments p WHERE p.order_id=$1 AND p.kind='goods_on_receipt' AND p.status='payer_reported'`, [o.id])) > 0;
+      return baoRoi ? { ten: 'Bên mua báo đã trả tiền hàng', chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Xác nhận đã nhận tiền hàng' } }
+        : { ten: 'Đã chốt số cân · chờ trả tiền hàng', chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Trả tiền hàng khi nhận' } };
+    }
     if (st.has('awaiting_seller')) return { ten: 'Chờ xác nhận số cân', chang: 'Giao nhận', toi_luot: { phia: 'seller', viec: 'Xác nhận kết quả nghiệm thu' } };
     if (st.has('checking') || st.has('arrival_check')) return { ten: 'Chờ nghiệm thu', chang: 'Giao nhận', toi_luot: { phia: 'buyer', viec: 'Nghiệm thu' } };
     if (st.has('in_transit') || st.has('arrived')) return { ten: 'Đang giao', chang: 'Giao nhận', toi_luot: { phia: 'buyer', viec: 'Ký nhận tại nơi đến' } };

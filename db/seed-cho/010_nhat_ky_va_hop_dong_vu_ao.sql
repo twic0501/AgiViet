@@ -49,26 +49,4 @@ BEGIN
  SELECT org_id,'DEMO-66C-'||lpad(n::text,3,'0'),'normal',10000000 FROM core.vehicles WHERE plate_no='66C-123.45'
  ON CONFLICT(plate_no) DO NOTHING;
  END LOOP;
- SELECT id INTO buyer FROM core.organizations WHERE code='TC-M04';
- SELECT m.user_id INTO buyer_user FROM core.memberships m WHERE m.org_id=buyer AND m.status='active' ORDER BY m.id LIMIT 1;
- SELECT * INTO bank FROM pii.bank_accounts WHERE org_id=org AND status='active' LIMIT 1;
- SELECT * INTO pol FROM core.policy_versions ORDER BY id DESC LIMIT 1;
- SELECT * INTO plan FROM ref.plans WHERE code='free';
- PERFORM set_config('app.user_id',buyer_user::text,true); PERFORM set_config('app.org_id',buyer::text,true); PERFORM set_config('app.actor_kind','buyer',true);
- FOR n IN 1..2 LOOP
- ctype:=CASE n WHEN 1 THEN 'pre_harvest' ELSE 'offtake' END; q:=CASE n WHEN 1 THEN 1800000 ELSE 3000000 END; price:=CASE n WHEN 1 THEN 23000 ELSE 18000 END;
- dep:=CASE n WHEN 1 THEN 12420000 ELSE 3000000 END;
- fee:=least(coalesce(plan.fee_cap_vnd,9223372036854775807),greatest(coalesce(plan.fee_floor_vnd,0),ref.div_round(plan.first_order_fee_bps::numeric*q*price,10000*1000)));
- INSERT INTO core.orders(code,contract_type,buyer_org_id,seller_org_id,segment_code,product_id,lot_id,policy_version_id,plan_code,is_first_pair_order,created_by_user_id)
- VALUES('HD-260'||n,ctype,buyer,org,'processor',l.product_id,l.id,pol.id,'free',true,buyer_user) RETURNING id INTO oid;
- INSERT INTO core.seasonal_contracts(order_id,site_id,harvest_during,materials_advance_vnd) VALUES(oid,site,'[2026-11-10,2026-12-21)',CASE n WHEN 1 THEN 0 ELSE 3000000 END);
- INSERT INTO core.documents(code,doc_type,owner_org_id,order_id,series_key,version_no,content_sha256,file_sha256,canonical_content,storage_key,mime_type,size_bytes,is_test_data,created_by)
- VALUES('DEMO56-CONTRACT-'||n,'contract',buyer,oid,'DEMO56-CONTRACT-'||n,1,digest('DEMO56-CONTRACT-'||n,'sha256'),digest('DEMO56-PDF-'||n,'sha256'),jsonb_build_object('simulation',true,'note','Bản dự thảo mô phỏng chưa ký, chưa nhận cọc','contract_type',ctype),'test/demo56/no-real-contract-'||n||'.pdf','application/pdf',1,true,buyer_user) RETURNING id INTO contract;
- INSERT INTO core.order_versions(order_id,version_no,document_id,profile_version,qty_min,qty_max,qty_tolerance_bps,price_mode,unit_price_vnd,price_formula,deposit_price_vnd,contract_value_vnd,deposit_basis_vnd,deposit_rule,deposit_bps,deposit_vnd,fee_rule,fee_bps,fee_floor_vnd,fee_cap_vnd,fee_vnd,payment_timing,pay_after_days,seller_bank_account_id,seller_bank_code,seller_account_masked,seller_account_holder,delivery_mode,acceptance_point,transport_by,delivery_window,reject_allowance_bps,shortfall_penalty_bps,created_by)
- VALUES(oid,1,contract,l.profile_version,q,CASE n WHEN 1 THEN 2200000 ELSE q END,500,CASE n WHEN 1 THEN 'fixed' ELSE 'formula' END,price,CASE n WHEN 2 THEN '{"floor":18000,"share_bps":5000,"scope":"DBSCL"}'::jsonb END,price,q*price/1000,q*price/1000,CASE n WHEN 1 THEN 'percent' ELSE 'per_unit' END,CASE n WHEN 1 THEN 3000 ELSE 0 END,dep,'standard',plan.first_order_fee_bps,plan.fee_floor_vnd,plan.fee_cap_vnd,fee,'after_days',7,bank.id,bank.bank_code,bank.account_masked,bank.holder_name,'at_farm','tai_vuon','seller','[2026-11-10 07:00+07,2026-12-20 18:00+07)',500,pol.shortfall_penalty_bps,buyer_user);
- IF n=1 THEN INSERT INTO core.seasonal_batches VALUES(oid,1,q,'[2026-11-10 07:00+07,2026-11-11 18:00+07)',0);
- ELSE
- INSERT INTO core.seasonal_batches VALUES(oid,1,1000000,'[2026-11-10 07:00+07,2026-11-11 18:00+07)',1000000),(oid,2,1000000,'[2026-11-25 07:00+07,2026-11-26 18:00+07)',1000000),(oid,3,1000000,'[2026-12-19 07:00+07,2026-12-20 18:00+07)',1000000);
- END IF;
- END LOOP;
 END $seed$;

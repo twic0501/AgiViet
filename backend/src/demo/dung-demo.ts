@@ -163,12 +163,10 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
   });
   // 0006: nhu cầu sầu riêng có 3 báo giá
   await lam('0006', async (me) => {
-    const mo = (await ok('GET', '/v1/demands?mine=true', undefined, me.token)).find((x: any) => x.status === 'open');
-    if (mo) {
+    // Tìm trong mọi nhu cầu đang mở (chợ mẫu có sẵn nhu cầu seed chưa có báo giá — không đóng chúng).
+    for (const mo of (await ok('GET', '/v1/demands?mine=true', undefined, me.token)).filter((x: any) => x.status === 'open')) {
       const so = await ok('GET', `/v1/demands/${mo.id}/offer-comparison`, undefined, me.token).catch(() => null);
-      const n = Array.isArray(so) ? so.length : 0;
-      if (n >= 2) return { trang_thai: 'demand:open_with_quotes', giu_nguyen: true, ids: { demand_id: mo.id } };
-      await ok('POST', `/v1/demands/${mo.id}/close`, {}, me.token).catch(() => null);
+      if (Array.isArray(so) && so.length >= 2) return { trang_thai: 'demand:open_with_quotes', giu_nguyen: true, ids: { demand_id: mo.id } };
     }
     const now = await gio();
     const ngay = (d: number) => new Date(now.getTime() + d * 86400e3).toISOString().slice(0, 10);
