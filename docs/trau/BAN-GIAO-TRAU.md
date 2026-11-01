@@ -223,6 +223,10 @@ Người sáng lập: "form tay không chuẩn mẫu, chuyển động ngờ ngh
 #### ĐÃ CHỐT T3 (1/11, người sáng lập: "oke rồi qua đi")
 Góc chính diện: đủ 8 hành động `hanh_dong` 1–8 + nghỉ sống + động tác lúc rảnh; `trau-v3.riv` 309 KB. Bước kế: gộp PR #1 vào `production-test` → Claude 1 thay `trau.riv` bằng `trau-v3.riv` và đặt `hanh_dong` theo màn. Để sau: bật lại ¾ / nghiêng (`AGV_DU_GOC=1`) và nâng cấp tay ở hai góc đó.
 
+#### Chặng 4 trâu — góc ¾ / nghiêng (từ 1/11, chờ duyệt bảng)
+- `AGV_DU_GOC=1` dựng lại đủ 5 góc chạy được: hành động dùng tay gần thay tay phải chính diện (`tay_k`, `bs` dự phòng); góc chưa có bản tay riêng thì bỏ phần tay đó. Ảnh: `docs/trau/chang-2/5-goc-bat-lai.png`. `trau-v3.riv` giao app vẫn chỉ chính diện.
+- Bảng dáng tay mục đích Higgsfield chờ duyệt: `tay-34-muc-dich-cho-duyet.png` (¾: chỉ + chống má bằng TAY XA → cần thêm tay xa cho ¾; cầm giấy hai tay), `tay-nghieng-muc-dich-cho-duyet.png` (nghiêng: chỉ, cầm giấy, chống má bằng tay nhìn thấy).
+
 ### Cách làm việc với Rive CLI (rút từ tài liệu Rive "Build Prototypes with AI Agents and the Rive CLI")
 - **Bật xem trực tiếp cho người sáng lập:** chạy `rive frontend/trau-rive` trong một terminal riêng — mỗi lần lưu là cửa sổ cập nhật, người sáng lập xem và góp ý ngay, không đợi cuối vòng.
 - **Làm theo tầng, mỗi lần một thứ:** góc nhìn → tách bộ phận → khung xương → 1 hành động → duyệt → hành động tiếp. Không làm cả loạt rồi mới đưa xem.

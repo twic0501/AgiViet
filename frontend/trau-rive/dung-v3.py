@@ -941,6 +941,10 @@ def main():
 
     # đơn vị tay: 0 = buông, .42 = dang ngang, .73 = giơ cao (× hệ số tay → joystick 'Dáng tay', xem remap)
     def tay_k(g, ben, cac):
+        if not g.tay_ben(ben) and g.tay_ben('gan'):
+            if ben == 'trai':
+                return []
+            ben = 'gan'                      # ¾ / nghiêng: tay gần đóng vai tay phải chính diện
         hs = dict(g.tay())
         return [khung(nid, 'rotation', [(f, a * hs[nid]) for f, a in cac]) for nid in g.tay_ben(ben)]
 
@@ -965,6 +969,12 @@ def main():
     # mỗi động tác: chuẩn bị → tư thế chính → giữ → thu về; làm MỘT lần rõ ràng; đầu dẫn, thân/hông theo 3–5 khung,
     # tai/đuôi theo đà; chân trụ không rời đất (trừ khi nhảy). Bản tay riêng: bs(g, bên, bản, [(khung, 0..1)]).
     def bs(g, ben, kieu, cac):
+        if (ben, kieu) not in g.bs_id and g.tay_ben('gan'):
+            if ben == 'trai':
+                return []                    # ¾ / nghiêng: chỉ tay gần (bên phải chính diện) diễn
+            ben = 'gan'
+        if (ben, kieu) not in getattr(g, 'joy_bs', {}):
+            return []                        # góc này chưa có bản tay riêng
         return [khung(g.joy_bs[(ben, kieu)], 'x', [(f, -1 + 2 * t) for f, t in cac]),
                 khung(g.bs_id[(ben, kieu)], 'opacity', [(0, 1)]), khung(g.bs_id[(ben, 'co')], 'opacity', [(0, 0)])]
 
@@ -1239,6 +1249,10 @@ def main():
         doi = {}
         for g in goc:
             for ben, kieu in BAN_SAO.get(so, []):
+                if (ben, kieu) not in g.bs_id and g.tay_ben('gan'):
+                    ben = 'gan'
+                if (ben, kieu) not in g.bs_id:
+                    continue
                 doi[(g.bs_id[(ben, kieu)], 'opacity')] = khung(g.bs_id[(ben, kieu)], 'opacity', [(0, 1), (22, 1), (24, 0)])
                 doi[(g.bs_id[(ben, 'co')], 'opacity')] = khung(g.bs_id[(ben, 'co')], 'opacity', [(0, 0), (22, 0), (24, 1)])
             if so == 3 and g.giay:
