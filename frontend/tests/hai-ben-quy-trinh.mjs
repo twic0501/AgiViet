@@ -32,6 +32,7 @@ const GHEP = {
   "tra-sau-ngan-hang": { kb: "nh-cam-ket", kiem: "tệp này", ghi: "hoa hồng ngân hàng trả AgiViet và việc bên mua trả gốc + lãi sau 30 ngày chỉ ghi chữ" },
   "tra-sau-mua-vi-pham": { kb: "nh-tu-choi", kiem: "tệp này", ghi: "bồi thường bằng giá trị nghiệm thu luồng thuận (v23 không nêu số)" },
   "ung-tien": { kb: "ung", kiem: "tệp này" },
+  "vuon-bien-the": { kb: "bien-the", kiem: "tệp này", ghi: "3/7 sự cố có nhánh riêng (sai người, đòi hạ giá, thiếu tải); cân lệch, chuyển thiếu, sai hàng, về kho báo hỏng đã kiểm ở hai-can, tra-mot-phan, khac-mau, tra-lai" },
   "tien-mat": { kb: "tien-mat", kiem: "tệp này", ghi: "v23 người bán tự chở tới kho; mô phỏng giữ lấy tại vườn rồi trả tiền mặt khi nhận" },
   "chua-tra": { kb: "chua-tra", kiem: "tệp này", ghi: "trên khung trả sau nghiệm thu (kb tra-sau = luồng chính v23 trả sau, cũng kiểm ở đây)" },
 };
@@ -326,6 +327,20 @@ await buoc("[ung-tien] Người bán ứng 20 tr (phí 200k) → bốc, nghiệm
   await moBan("man=chi-tiet-don"); await banKb("xn-sau"); assert.equal((await hd()).nbXn, 44150000);
   await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng/); assert.equal((await hd()).buoc, 14);
   assert.deepEqual(await tienMua2(), [44488000, 0, 44150000], "chị Năm nhận 44.350.000 − phí ứng 200.000");
+});
+
+// ── vuon-bien-the ──
+await napKb("bien-the", { buoc: 7, daTra: 32200000, nbXn: 32200000 });
+await buoc("[vuon-bien-the] Sai người → bổ sung danh sách; đòi hạ giá tại chỗ → người bán từ chối, giữ giá; xe thiếu tải → giữ 400 kg tới chuyến sau", async () => {
+  await moBan("man=chi-tiet-don"); await banKb("bt-sai-nguoi");
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /không có tên trong danh sách/); await muaLam(/Bổ sung anh Lộc/);
+  await muaLam(/đòi hạ giá/); assert.match(await viecMua(), /Không đổi giá tại chỗ/);
+  assert.equal(await mua.locator(".sl-viec [data-lam]").count(), 0, "bên mua không tự hạ giá được");
+  await moBan("man=chi-tiet-don"); await banKb("bt-tu-choi-gia");
+  await moMua("chi-tiet-don"); await muaLam(/Xe thiếu tải/);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /chỉ chở được 1\.600 kg/); await banKb("bt-hen-chuyen");
+  assert.equal((await hd()).btXong, true);
+  await moBan("man=ban-giao"); await ban.click("#bg"); await cho(1800); assert.equal((await hd()).buoc, 8);
 });
 
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });

@@ -208,6 +208,17 @@ export const KICH_BAN = [
       banKb("xn-sau", "Đã nhận", [11]),
       nh("Mô phỏng: ngân hàng chi cọc", []),
     ] },
+  { id: "vuon-bien-the", kb: "bien-the", dau: { buoc: 7, daTra: 32200000, nbXn: 32200000 }, tom: "Sự cố tại vườn: sai người, đòi hạ giá, xe thiếu tải.",
+    lechChung: "v23 gom 7 sự cố; mô phỏng có nhánh riêng cho 3. Cân lệch, chuyển thiếu, sai hàng, về kho báo hỏng xem ở các tình huống lay-tai-vuon, tra-mot-phan, khac-mau, da-nhan-nhieu-hon.",
+    buoc: [
+      banKb("bt-sai-nguoi", "không có tên", [0]),
+      mua("Bổ sung anh Lộc", [0]),
+      mua("đòi hạ giá", [1], { nut: [{ sel: '.sl-viec [data-lam="bt-ha-gia"]', chu: "" }] }),
+      banKb("bt-tu-choi-gia", "Không đồng ý hạ giá", [1]),
+      mua("Xe thiếu tải", [3], { nut: [{ sel: '.sl-viec [data-lam="bt-thieu-tai"]', chu: "" }] }),
+      banKb("bt-hen-chuyen", "giữ 400 kg", [3], { lech: "Chuyến sau 400 kg chưa mô phỏng." }),
+      banMan(B.bg, "#bg", "", []),
+    ] },
   { id: "da-nhan-nhieu-hon", kb: "tra-lai", dau: { buoc: 10, daTra: 32200000, nbXn: 32200000 }, tom: "Người bán đã nhận trước nhiều hơn giá trị nghiệm thu.",
     buoc: [
       mua("Gửi kết quả", [2]),
