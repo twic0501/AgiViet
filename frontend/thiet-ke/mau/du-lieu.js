@@ -1,5 +1,5 @@
 // Dữ liệu mô phỏng app bán — phía chị Năm (Nguyễn Thị Năm), khớp từng số với app mua (HĐ-0018, prompt app mua V2).
-export const TIEN = { COC: 13800000, PHI: 138000, TRA_THANG: 32200000, GIA_TRI: 46000000, NGHIEM_THU: 44350000, COC_CHO_BAC: 12150000, HOAN_BEN_MUA: 1650000 };
+export const TIEN = { COC: 13800000, PHI: 138000, TRA_THANG: 32200000, GIA_TRI: 46000000, NGHIEM_THU: 44350000, COC_CHO_BAC: 12150000, HOAN_BEN_MUA: 1650000, BOI_HOAN: 1200000 };
 
 // 15 bước HĐ-0018 nhìn từ phía người bán. ai: bac | mua | nh (ngân hàng)
 export const BUOC = [

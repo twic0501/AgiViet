@@ -21,6 +21,8 @@ const GHEP = {
   "tra-mot-phan": { kb: "thieu", kiem: "tệp này", ghi: "phần trả một phần; phần trả trùng chưa có. Lệch tiền (kịch bản lech) cũng kiểm ở hai-ben.mjs" },
   "tranh-chap-mot-dong": { kb: "phan-doi", kiem: "tệp này" },
   "can-khong-dung": { kb: "can-lech", kiem: "tệp này", ghi: "chỉ nhánh trong ±5%; nhánh vượt 5% chưa có" },
+  "ban-vi-pham": { kb: "khong-giao", kiem: "tệp này", ghi: "bên mua đã trả trước 32,2 tr (v23 chưa trả) nên người bán trả lại thêm phần đó" },
+  "nghiem-thu-im-lang": { kb: "im-lang", kiem: "tệp này" },
 };
 
 const b = await chromium.launch();
@@ -108,6 +110,41 @@ await buoc("[can-khong-dung] Cân kho 1.960 kg trong ±5%: nghiệm thu theo s�
   await moBan("man=ket-qua"); assert.match(await ban.locator(".m-than").innerText(), /1\.810 kg/, "màn Kết quả cân app bán phải hiện đúng số bên mua gửi"); await ban.click("#dy"); await cho(1800); assert.equal((await hd()).buoc, 12);
   await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng chi cọc/); assert.equal((await hd()).buoc, 13);
   const t = await tienMua(); assert.equal(t[2], 1810 * 23000 + 120 * 15000, "chị Năm nhận 1.810×23.000 + 120×15.000");
+});
+
+// ── ban-vi-pham: xe chờ 2 giờ không có hàng → người bán nhận không giao → hoàn cọc + phí → người bán trả lại tiền trước + bồi hoàn ──
+await napKb("khong-giao", { buoc: 7, daTra: 32200000, nbXn: 32200000 });
+await buoc("[ban-vi-pham] Người bán không giao: cọc + phí hoàn bên mua, người bán trả lại 32,2 tr + bồi hoàn 1,2 tr tiền xe", async () => {
+  await moMua("chi-tiet-don"); await muaLam(/xe chờ 2 giờ/); assert.equal((await hd()).phu, "khong-hang");
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /chờ 2 giờ ở vườn/); await banKb("khong-giao");
+  let h = await hd(); assert.equal(h.phu, "vi-pham"); assert.equal(h.vp, true);
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /vi phạm: không giao/);
+  await muaLam(/ngân hàng hoàn cọc/); h = await hd(); assert.equal(h.huy, true); assert.equal(h.phu, "cho-nb-tra");
+  assert.deepEqual(await tienMua(), [32200000, 0, 32200000], "cọc + phí đã hoàn; còn 32,2 tr người bán giữ");
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /trả lại 33\.400\.000/); await banKb("nb-tra-vp");
+  await moMua("chi-tiet-don"); await muaLam(/Đã nhận lại 33\.400\.000/);
+  assert.equal((await hd()).vpXong, true);
+  assert.deepEqual(await tienMua(), [0, 0, 0], "bên mua không mất đồng nào");
+  assert.match(await viecMua(), /nhận lại đủ/);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /đã đóng/);
+  assert.equal(await ban.evaluate(() => Number(document.querySelector("#o-bac b").dataset.v)), 0, "app bán: đã nhận 0");
+});
+
+// ── nghiem-thu-im-lang: gia hạn kiểm một lần → người bán im lặng 24 giờ → nhắc, nhân viên gọi → người bán chốt ──
+await napKb("im-lang", { buoc: 10, daTra: 32200000, nbXn: 32200000 });
+await buoc("[nghiem-thu-im-lang] Gia hạn kiểm một lần; người bán im lặng KHÔNG thành đồng ý; nhân viên gọi rồi người bán chốt", async () => {
+  await moMua("chi-tiet-don"); await muaLam(/xin gia hạn/); assert.equal((await hd()).giaHan, true);
+  assert.match(await viecMua(), /gia hạn một lần tới 8:00/);
+  await muaLam(/Gửi kết quả/); assert.equal((await hd()).buoc, 11);
+  await muaLam(/hết 24 giờ/); assert.equal((await hd()).phu, "nhac");
+  assert.match(await viecMua(), /Im lặng không phải đồng ý/);
+  assert.equal(await mua.locator(".sl-viec .sl-vang").count(), 0, "bên mua không có nút tự đi tiếp khi người bán im lặng");
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /đã nhắc 3 lần/);
+  await moMua("chi-tiet-don"); await muaLam(/nhân viên đã gọi/); assert.equal((await hd()).phu, "da-goi");
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /vừa gọi bác/);
+  await moBan("man=ket-qua"); await ban.click("#dy"); await cho(1800); assert.equal((await hd()).buoc, 12);
+  await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng chi cọc/); assert.equal((await hd()).buoc, 13);
+  assert.equal((await tienMua())[2], 44350000, "chị Năm nhận đủ theo nghiệm thu sau khi chốt");
 });
 
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });

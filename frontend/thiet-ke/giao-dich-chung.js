@@ -3,7 +3,7 @@
 // Không gọi backend. Không có hiệu ứng phụ khi nạp module.
 
 // ── Số tiền HĐ-0018 (khớp prompt app mua V2 mục 4) ──
-export const TIEN = { GIA: 23000, GIA_HA: 15000, LUONG: 2000, COC: 13800000, PHI: 138000, TRA_THANG: 32200000, GIA_TRI: 46000000 };
+export const TIEN = { GIA: 23000, GIA_HA: 15000, LUONG: 2000, COC: 13800000, PHI: 138000, TRA_THANG: 32200000, GIA_TRI: 46000000, BOI_HOAN: 1200000 };   // BOI_HOAN: tiền xe người bán vi phạm phải bồi hoàn (minh họa)
 
 // Kết quả nghiệm thu theo kịch bản
 export const NGHIEM_THU = {
