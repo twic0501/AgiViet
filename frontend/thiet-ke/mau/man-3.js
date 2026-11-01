@@ -23,6 +23,10 @@ function viecKichBan() {
   if (h.phu === "de-nghi") return viec("Chờ bên mua trả lời đề nghị đổi ngày", "Đang đề nghị: chưa ký được tới khi bên mua trả lời.", "", "m-cho");
   if (h.kb === "lech" && h.buoc === 6 && !h.phu) return viec("Bên mua báo đã chuyển 32.200.000 đ", "Bác kiểm tài khoản. Nếu chỉ thấy một phần thì báo đúng số bác thấy.", `<div style="display:grid;gap:8px">${nutKb("Tôi chỉ thấy 20.000.000 đ", "lech", "m-phu")}${nut("Kiểm tiền", { ma: "kiem-tien", lop: "m-vang m-rong" })}</div>`);
   if (h.phu === "lech" || h.phu === "cho-vh") return viec("Lệch tiền, đang đối soát", "Bác thấy 20.000.000 đ, bên mua báo 32.200.000 đ. Đây là lệch, không phải vi phạm. Người vận hành đối chiếu sao kê trong 48 giờ. Chưa cho bốc.", "", "m-cho");
+  if (h.buoc === 7 && (h.nbXn || 0) < TIEN.TRA_THANG && h.kb !== "lech") {
+    if ((h.daTra || 0) > (h.nbXn || 0)) return viec(`Bên mua báo trả thêm ${d(h.daTra - h.nbXn)}`, `Bác đã xác nhận ${d(h.nbXn)}. Mở app ngân hàng xem Agribank •••• 2186 có thêm tiền chưa. Chỉ bấm khi thấy tiền thật.`, nutKb(`Đã nhận thêm ${d(h.daTra - h.nbXn)}`, "nhan-them"));
+    return viec(`Bên mua mới trả ${d(h.nbXn)} / ${d(TIEN.TRA_THANG)}`, `Còn thiếu ${d(TIEN.TRA_THANG - h.nbXn)}. Chưa cho bốc tới khi nhận đủ. Bên mua đã được báo trả nốt.`, "", "m-cho");
+  }
   if (h.kb === "phan-doi" && h.buoc === 11 && !h.daPhanDoi) return viec("Có kết quả cân", "Đạt 1.850 · hạ cấp 120 · trả lại 30 kg. Bác thấy dòng hạ cấp không đúng thì phản đối riêng dòng đó.", `<div style="display:grid;gap:8px">${nutKb("Phản đối dòng hạ cấp 120 kg", "phan-doi", "m-phu")}${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>`);
   if (h.phu === "phan-doi") return viec("Bác đã phản đối dòng hạ cấp", "Các dòng khác đã chốt. Bên mua đang cân lại dòng này.", "", "m-cho");
   if (h.phu === "can-lai") return viec("Bên mua cân lại: vẫn 120 kg hạ cấp", "Bác đồng ý hoặc gửi mẫu M-2291 đi kiểm định 48 giờ. Bên sai chịu phí kiểm định.", `<div style="display:grid;gap:8px">${nutKb("Vẫn không đồng ý → kiểm định", "kd", "m-phu")}</div>`);
@@ -68,7 +72,7 @@ export const MAN_3 = {
       el.querySelectorAll("[data-kb]").forEach((b) => b.addEventListener("click", async () => {
         await api.xong(b, "Đã gửi");
         const P = { "huy-ok": { huy: true, phu: "" }, "huy-khong": { phu: "" }, "de-nghi": { phu: "de-nghi", daDeNghi: true }, lech: { phu: "lech", nbXn: 20000000 }, "phan-doi": { phu: "phan-doi", daPhanDoi: true }, kd: { phu: "kiem-dinh" }, "nb-hoan": { phu: "nb-da-hoan" } }[b.dataset.kb];
-        ghiHD((x) => ({ ...x, ...P })); api.veLai();
+        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : P) })); api.veLai();
       }));
       const kbDang = docHD().kb; if (kbDang && kbDang !== "thuan") el.querySelector(".m-than").insertAdjacentHTML("afterbegin", `<p class="m-ghi">Kịch bản thử đang chạy: <b>${esc(TEN_KB[kbDang] || kbDang)}</b> (nạp từ app mua).</p>`);
     } },
@@ -156,11 +160,11 @@ export const MAN_3 = {
     <p class="m-ghi">Hai bên không thống nhất thì gửi kiểm định trong 48 giờ, bên sai chịu phí.</p>`,
     day: nut("Gửi phản đối", { lop: "m-vang m-rong" }) }) },
   "kiem-tien": { tieu: "Kiểm tiền", phu: "HĐ-0018 · bên mua báo đã chuyển", ve: () => ({ than: `
-    ${viec("Bên mua báo đã chuyển 32.200.000 đ", "Bác mở app ngân hàng xem Agribank •••• 2186 đã có tiền chưa. Chỉ bấm khi thấy tiền thật.")}
-    ${o("Số tiền bác thấy về", "32.200.000", "", 'inputmode="numeric"')}${o("Mã giao dịch ngân hàng", "FT2630012345")}
+    ${viec(`Bên mua báo đã chuyển ${d(docHD().daTra || TIEN.TRA_THANG)}`, "Bác mở app ngân hàng xem Agribank •••• 2186 đã có tiền chưa. Chỉ bấm khi thấy tiền thật.")}
+    ${o("Số tiền bác thấy về", d(docHD().daTra || TIEN.TRA_THANG).replace(" đ", ""), "", 'inputmode="numeric"')}${o("Mã giao dịch ngân hàng", "FT2630012345")}
     ${chon("kt", [["Đã nhận đủ", ""], ["Mới nhận một phần", "Ghi đúng số đã thấy"], ["Chưa thấy tiền", "Bên mua sẽ được báo kiểm lại"]])}`,
     day: nut("Xác nhận", { id: "xn", lop: "m-vang m-rong" }) }),
-    sau: (el, s, t, api) => el.querySelector("#xn").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã xác nhận"); api.doi((x) => { if (x.hd.buoc === 6) x.hd.buoc = 7; }); api.toast("Đã xác nhận nhận đủ 32.200.000 đ"); api.lui(); }) },
+    sau: (el, s, t, api) => el.querySelector("#xn").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã xác nhận"); api.doi((x) => { if (x.hd.buoc === 6) x.hd.buoc = 7; }); api.toast(`Đã xác nhận nhận ${d(docHD().daTra || TIEN.TRA_THANG)}`); api.lui(); }) },
   "ban-giao": { tieu: "Bàn giao hàng", phu: "HĐ-0018 · xe 66C-123.45", ve: () => ({ than: `
     ${viec("Xe tới vườn", "Hỏi tài xế mã nhận hàng 6 số, nhập vào đây rồi mới cho bốc.")}
     <div class="m-otp">${"482917".split("").map((c) => `<input aria-label="Số mã" maxlength="1" value="${c}" inputmode="numeric">`).join("")}</div>
