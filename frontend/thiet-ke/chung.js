@@ -1,4 +1,5 @@
 import "./lich.js";
+import "./hieu-ung-ghep.js";
 // Phần dùng chung cho các màn mẫu app bán: định dạng, phiên, tải dữ liệu, ảnh sản phẩm, chặng hợp đồng.
 export const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Bên mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
 // Mã hạng (backend trả mã thô) → chữ cho bác: L1 → Loại 1, DAT → Hàng dạt, 48-52 (tôm) → Cỡ 48–52 con/kg…

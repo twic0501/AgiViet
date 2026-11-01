@@ -1,0 +1,92 @@
+/* Bộ hiệu ứng bổ sung AgiViet (thu hoạch 01/11/2026 từ bản mẫu app bán thiet-ke/mau, Sổ vườn và Motion v2).
+   Đi cùng hieu-ung-app.js/.css (có sẵn). Tiền tố hu- giống bộ cũ; tên lớp mới không trùng bộ cũ.
+   Chỉnh màu bằng biến; mọi chuyển động tôn trọng "giảm chuyển động". */
+:root {
+  --hu-la: #1f4d3a; --hu-la-bong: #11291f; --hu-vang: #f2c14e; --hu-vang-bong: #c9952a;
+  --hu-giay: #f4f1e8; --hu-giay-noi: #fbf9f3; --hu-giay-sau: #e2dcc8; --hu-ke: rgba(28, 42, 33, .11); --hu-ke-dam: rgba(28, 42, 33, .2);
+  --hu-em: cubic-bezier(.23, 1, .32, 1);      /* ra nhanh, dừng êm */
+  --hu-bat: cubic-bezier(.3, 1.3, .5, 1);     /* có độ bật như Motion v2 */
+}
+
+/* 1. Nút nhún (Motion v2): bóng đặc 3px phía dưới, bấm thì lún xuống 3px, bóng mất.
+   Dùng: <button class="hu-nut-nhun">…; nút vàng thêm hu-nut-vang; nút viền thêm hu-nut-vien. */
+.hu-nut-nhun { position: relative; border: 0; cursor: pointer; background: var(--hu-la); color: var(--hu-giay); box-shadow: 0 3px 0 var(--hu-la-bong); transition: transform 110ms var(--hu-em), box-shadow 110ms var(--hu-em); }
+.hu-nut-nhun:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--hu-la-bong); }
+.hu-nut-nhun.hu-nut-vang { background: var(--hu-vang); color: #1f1503; box-shadow: 0 3px 0 var(--hu-vang-bong); }
+.hu-nut-nhun.hu-nut-vang:active:not(:disabled) { box-shadow: 0 0 0 var(--hu-vang-bong); }
+.hu-nut-nhun.hu-nut-vien { background: var(--hu-giay-noi); color: var(--hu-la); box-shadow: inset 0 0 0 1.5px var(--hu-ke-dam), 0 3px 0 var(--hu-giay-sau); }
+.hu-nut-nhun.hu-nut-vien:active:not(:disabled) { box-shadow: inset 0 0 0 1.5px var(--hu-ke-dam), 0 0 0 var(--hu-giay-sau); }
+
+/* 2. Nút tròn thoát / quay lại (header xanh): nhún + mũi tên lùi nhẹ khi bấm.
+   Dùng: <button class="hu-lui"><svg>…mũi tên…</svg></button> */
+.hu-lui { width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer; background: rgba(244, 241, 232, .14); color: var(--hu-giay); box-shadow: 0 3px 0 var(--hu-la-bong); transition: transform 120ms var(--hu-em), box-shadow 120ms var(--hu-em); }
+.hu-lui svg { transition: transform 200ms var(--hu-bat); }
+.hu-lui:active { transform: translateY(3px); box-shadow: none; }
+.hu-lui:active svg { transform: translateX(-3px); }
+
+/* 3. Nảy khi xuất hiện (dấu tích, vòng bước vừa xong, ô mới) */
+@keyframes hu-nay-vao { 0% { transform: scale(.85); opacity: 0; } 70% { transform: scale(1.03); opacity: 1; } 100% { transform: none; } }
+.hu-nay-vao { animation: hu-nay-vao 300ms var(--hu-em) both; }
+
+/* 4. Bong bóng tin nhắn trượt lên khi tới */
+@keyframes hu-tin-vao { from { transform: translateY(8px) scale(.97); opacity: 0; } }
+.hu-tin-vao { animation: hu-tin-vao 260ms var(--hu-em) both; }
+
+/* 5. Gạch dưới mục tab đang mở bật ra */
+.hu-tab-gach { position: relative; }
+.hu-tab-gach[aria-current="page"]::after { content: ""; position: absolute; bottom: -4px; left: 50%; width: 18px; height: 3px; margin-left: -9px; border-radius: 2px; background: currentColor; animation: hu-nay-vao 260ms var(--hu-em); }
+
+/* 6. Nút giữa thanh tab (Đăng bài) nhô lên, bấm thì lún 4px */
+.hu-nut-noi { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--hu-la); color: var(--hu-giay); box-shadow: 0 4px 0 var(--hu-la-bong), 0 8px 18px -6px rgba(20, 40, 30, .5); transition: transform 110ms var(--hu-em), box-shadow 110ms var(--hu-em); }
+:active > .hu-nut-noi, .hu-nut-noi:active { transform: translateY(4px); box-shadow: 0 0 0 var(--hu-la-bong); }
+
+/* 7. Thẻ chọn (radio dạng thẻ) nhún khi bấm, viền xanh khi chọn.
+   Dùng: <label class="hu-the-chon"><input type="radio"><span class="hu-the-o">…</span></label> */
+.hu-the-chon { position: relative; display: block; cursor: pointer; }
+.hu-the-chon input { position: absolute; opacity: 0; }
+.hu-the-o { display: block; border-radius: 16px; background: var(--hu-giay-noi); box-shadow: 0 0 0 1px var(--hu-ke), 0 3px 0 var(--hu-giay-sau); transition: transform 110ms var(--hu-em), box-shadow 110ms var(--hu-em); }
+.hu-the-chon:active .hu-the-o { transform: translateY(3px); box-shadow: 0 0 0 1px var(--hu-ke); }
+.hu-the-chon input:checked + .hu-the-o { box-shadow: 0 0 0 2px var(--hu-la), 0 3px 0 var(--hu-la-bong); }
+
+/* 8. Sóng quanh nút mic khi đang nghe */
+.hu-mic-song { position: relative; border-radius: 50%; }
+.hu-mic-song::before, .hu-mic-song::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--hu-la); animation: hu-song 1600ms ease-out infinite; pointer-events: none; }
+.hu-mic-song::after { animation-delay: 800ms; }
+@keyframes hu-song { from { transform: scale(1); opacity: .7; } to { transform: scale(1.7); opacity: 0; } }
+
+/* 9. Tấm (bottom sheet) trượt lên, nền mờ hiện dần — dùng với HieuUngThem.moTam() */
+.hu-che { position: absolute; inset: 0; z-index: 40; background: rgba(15, 22, 17, .45); display: flex; align-items: flex-end; animation: hu-mo 200ms both; }
+@keyframes hu-mo { from { opacity: 0; } }
+.hu-tam { width: 100%; max-height: 90%; display: flex; flex-direction: column; background: var(--hu-giay); border-radius: 24px 24px 0 0; animation: hu-tam-len 320ms var(--hu-em) both; }
+@keyframes hu-tam-len { from { transform: translateY(100%); } }
+.hu-tam-tay { width: 40px; height: 4px; border-radius: 2px; background: var(--hu-ke-dam); margin: 10px auto 4px; }
+
+/* 10. Thông báo rơi từ trên xuống rồi tự kéo lên — dùng với HieuUngThem.thongBaoRoi() */
+.hu-toast-roi { position: absolute; left: 16px; right: 16px; top: calc(14px + env(safe-area-inset-top)); z-index: 60; background: #143326; color: var(--hu-giay); border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: center; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .5); animation: hu-roi 2600ms var(--hu-em) both; }
+@keyframes hu-roi { 0% { transform: translateY(-140%); } 12%, 85% { transform: none; } 100% { transform: translateY(-140%); } }
+
+/* 11. Nội dung trang hiện + trượt nhẹ lên khi vào (Sổ vườn) */
+@keyframes hu-vao-trang { from { opacity: 0; transform: translateY(10px); } }
+.hu-vao-trang { animation: hu-vao-trang 280ms var(--hu-em) both; }
+
+/* 12. Rung khi bị chặn (nút không làm được, sai mã) */
+@keyframes hu-rung-ngang { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+.hu-rung-ngang { animation: hu-rung-ngang 360ms; }
+
+/* 13. Nháy nền vàng khi số tiền/dòng vừa đổi (Sổ làm ăn) */
+@keyframes hu-nhay-vang { 0% { background: #f8ecc9; } 100% { background: transparent; } }
+.hu-nhay-vang { animation: hu-nhay-vang 700ms var(--hu-em); }
+
+/* 14. Vòng bước vừa xong đóng dấu (dòng bước hợp đồng) */
+@keyframes hu-dong-dau-vong { 0% { transform: scale(1.5); } 100% { transform: scale(1); } }
+.hu-dong-dau-vong { animation: hu-dong-dau-vong 500ms var(--hu-em); }
+
+/* 15. Thẻ/dòng lún nhẹ khi chạm (CSS thuần, khi không dùng HieuUng.nhan) */
+.hu-cham-lun { transition: transform 110ms var(--hu-em); }
+.hu-cham-lun:active { transform: scale(.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hu-nay-vao, .hu-tin-vao, .hu-tam, .hu-che, .hu-toast-roi, .hu-vao-trang, .hu-rung-ngang, .hu-nhay-vang, .hu-dong-dau-vong,
+  .hu-mic-song::before, .hu-mic-song::after, .hu-tab-gach[aria-current="page"]::after { animation: none !important; }
+  .hu-nut-nhun, .hu-lui, .hu-lui svg, .hu-nut-noi, .hu-the-o, .hu-cham-lun { transition: none !important; }
+}
