@@ -13,13 +13,14 @@ function tienO(b) {
   let cho = b >= 15 ? 0 : Math.max(0, (b >= 11 ? t.nt : TIEN.GIA_TRI) - nhan);
   if (h.huy) { nhan = TIEN.COC; giu = 0; cho = 0; }
   if (h.no) { nhan = TIEN.COC; giu = 0; cho = t.nt - TIEN.COC; }
+  if (h.kb === "du-luong" && h.dlHoan) { nhan = h.dlXong || h.phu === "dl-da-hoan" ? 0 : h.nbXn || 0; giu = 0; cho = 0; }
   if (h.kb === "bkk" && h.bkkXong) { nhan = 0; giu = BKK_COC; cho = 1200 * 23000; }
   if (h.vp) { nhan = h.vpXong || h.phu === "nb-da-tra-vp" ? 0 : h.nbXn || 0; giu = h.huy ? 0 : TIEN.COC; cho = 0; }
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--ke);background:var(--giay-noi)">
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
 // Kịch bản do app mua nạp (giao-dich-chung.js): những lúc tới lượt chị Năm làm
-const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả", "tien-mat": "Tiền mặt khi nhận", bkk: "Bất khả kháng", "khac-mau": "Hàng tới khác mẫu lúc bốc", "hang-tra": "Xử lý hàng bị trả lại" };
+const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả", "tien-mat": "Tiền mặt khi nhận", bkk: "Bất khả kháng", "khac-mau": "Hàng tới khác mẫu lúc bốc", "hang-tra": "Xử lý hàng bị trả lại", "hai-can": "Lấy tại vườn: hai cân lệch", "du-luong": "Dư lượng không đạt", "hai-kq": "Hai phòng kiểm cho kết quả khác nhau" };
 const BKK_COC = 1200 * 23000 * 0.3;
 const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra" || h.kb === "tien-mat";
 const nutKb = (chu, lam, lop = "m-vang") => `<button class="m-nut ${lop} m-rong" type="button" data-kb="${lam}">${esc(chu)}</button>`;
@@ -34,6 +35,30 @@ function viecKichBan() {
     if (h.phu === "bkk-ky") return viec("Chờ bên mua ký bản sửa", "Bản 2: 1.200 kg · 27.600.000 đ.", "", "m-cho");
     if (h.phu === "bkk-cho-ban") return viec("Ký bản sửa 1.200 kg", "Bên mua đã ký bản 2.", nutKb("Ký bản sửa", "bkk-ky-ban"));
     if (h.phu === "bkk-hoan") return viec("Hai bên đã ký bản sửa", "Ngân hàng đang hoàn cọc dư cho bên mua.", "", "m-cho");
+  }
+  if (h.kb === "hai-can" && h.buoc === 7 && !h.canXong) {
+    if (!h.phu) return viec("Xe bên mua đã tới vườn", "Quét mã đối chiếu người và biển số, rồi cân bằng cân của bác. Bên mua sẽ cân lại bằng cân của họ.", nutKb("Cân của tôi: 2.000 kg", "can-ban"));
+    if (h.phu === "can1") return viec("Chờ bên mua cân bằng cân của họ", "Bác đã ghi 2.000 kg.", "", "m-cho");
+    if (h.phu === "can-lech2") return viec("Hai cân lệch: 2.000 kg và 1.940 kg", "App không tự chọn, không lấy trung bình. Hai bên kiểm bì, cân lại từng sọt rồi ghi số đã thống nhất.", nutKb("Cân lại có hai bên: 1.980 kg", "can-lai"));
+    if (h.phu === "can-chot") return viec("Chờ bên mua xác nhận 1.980 kg", "", "", "m-cho");
+  }
+  if (h.kb === "du-luong" && h.buoc === 12) {
+    const tra = (h.daTra || 0) + 1500000;
+    if (h.dlXong) return viec("Đơn đóng: dư lượng không đạt", `Bên mua đã nhận lại đủ ${d(tra)}; hàng đã tiêu hủy có biên bản.`, "", "m-cho");
+    if (!h.phu) return viec("Hàng đang cách ly ở kho bên mua", "Chờ kết quả dư lượng. Cọc vẫn do ngân hàng giữ.", "", "m-cho");
+    if (h.phu === "dl-hong") return viec("Dư lượng không đạt", "Bác có quyền yêu cầu kiểm lại mẫu lưu niêm phong.", nutKb("Yêu cầu kiểm lại mẫu lưu", "dl-kiem-lai"));
+    if (h.phu === "dl-kiem-lai") return viec("Đang kiểm lại mẫu lưu", "", "", "m-cho");
+    if (h.phu === "dl-loi") return viec("Kết luận: lỗi ở hàng của bác", "Ngân hàng hoàn cọc cho bên mua. Bác hoàn tiền hàng đã nhận và phí kiểm lần đầu, nhận lại hàng để tiêu hủy có biên bản.", "", "m-cho");
+    if (h.phu === "dl-cho-nb-hoan") return viec(`Bác cần hoàn ${d(tra)}`, `Gồm ${d(h.daTra)} tiền hàng đã nhận và 1.500.000 đ phí kiểm lần đầu. Nhận lại hàng để tiêu hủy có biên bản.`, nutKb(`Tôi đã hoàn ${d(tra)}`, "dl-nb-hoan"));
+    if (h.phu === "dl-da-hoan") return viec("Chờ bên mua xác nhận đã nhận lại tiền", "", "", "m-cho");
+  }
+  if (h.kb === "hai-kq" && h.buoc === 12 && !h.hkXong) {
+    if (!h.phu) return viec("Hàng đang cách ly · chờ kết quả dư lượng", "", "", "m-cho");
+    if (h.phu === "kq1") return viec("Phòng A (bên mua đặt) báo không đạt", "Bác có quyền gửi mẫu lưu niêm phong tới phòng B.", nutKb("Yêu cầu kiểm mẫu lưu ở phòng B", "kq2"));
+    if (h.phu === "kq2-cho") return viec("Phòng B đang kiểm mẫu lưu", "", "", "m-cho");
+    if (h.phu === "trai") return viec("Hai kết quả trái nhau", "Chưa kết luận. Mẫu lưu thứ hai gửi phòng trọng tài; hai bên ứng đôi phí.", "", "m-cho");
+    if (h.phu === "hk-phi") return viec("Phòng trọng tài: đạt", "Bên mua hoàn bác 2.800.000 đ phí kiểm, rồi ngân hàng chuyển cọc.", "", "m-cho");
+    if (h.phu === "hk-phi-cho") return viec("Bên mua báo đã chuyển 2.800.000 đ phí kiểm", "Kiểm tài khoản rồi xác nhận.", nutKb("Đã nhận 2.800.000 đ", "hk-phi-xn"));
   }
   if (h.kb === "khac-mau" && h.phu === "km") return viec("Bên mua báo hàng tới khác mẫu lúc bốc", "180 kg đang giữ ở kho lạnh. Mẫu niêm phong M-2291 đang kiểm định so mẫu.", "", "m-cho");
   if (h.kb === "khac-mau" && h.phu === "km-kl" && h.buoc <= 11) return viec("Kết luận: sai từ lúc bốc (lỗi bác)", "180 kg khác mẫu bị trả lại. Bác chịu phí kho lạnh và kiểm định 1.050.000 đ (phiếu bồi hoàn).", h.buoc === 11 ? `<div>${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>` : "", h.buoc === 11 ? "" : "m-cho");
@@ -115,7 +140,7 @@ export const MAN_3 = {
       el.querySelectorAll("[data-kb]").forEach((b) => b.addEventListener("click", async () => {
         await api.xong(b, "Đã gửi");
         const P = { "huy-ok": { huy: true, phu: "" }, "huy-khong": { phu: "" }, "de-nghi": { phu: "de-nghi", daDeNghi: true }, lech: { phu: "lech", nbXn: 20000000 }, "phan-doi": { phu: "phan-doi", daPhanDoi: true }, kd: { phu: "kiem-dinh" }, "nb-hoan": { phu: "nb-da-hoan" }, "khong-giao": { phu: "vi-pham", vp: true }, "nb-tra-vp": { phu: "nb-da-tra-vp" } }[b.dataset.kb];
-        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : b.dataset.kb === "xn-sau" ? { nbXn: x.daTra, phu: "", traSauXong: true } : b.dataset.kb === "qua-han-sau" ? { phu: "qua-han" } : ({ "bao-bkk": { phu: "bkk" }, "bkk-ok": { phu: "bkk-ky", ban: 2 }, "bkk-ky-ban": { phu: "bkk-hoan" }, "ban-gap": { hangChon: "ban-gap" }, "nhan-lai": { hangChon: "nhan-lai" } })[b.dataset.kb] || P) })); api.veLai();
+        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : b.dataset.kb === "xn-sau" ? { nbXn: x.daTra, phu: "", traSauXong: true } : b.dataset.kb === "qua-han-sau" ? { phu: "qua-han" } : ({ "bao-bkk": { phu: "bkk" }, "bkk-ok": { phu: "bkk-ky", ban: 2 }, "bkk-ky-ban": { phu: "bkk-hoan" }, "ban-gap": { hangChon: "ban-gap" }, "can-ban": { phu: "can1" }, "can-lai": { phu: "can-chot" }, "dl-kiem-lai": { phu: "dl-kiem-lai" }, "dl-nb-hoan": { phu: "dl-da-hoan" }, "kq2": { phu: "kq2-cho" }, "hk-phi-xn": { phu: "", hkXong: true }, "nhan-lai": { hangChon: "nhan-lai" } })[b.dataset.kb] || P) })); api.veLai();
       }));
       const kbDang = docHD().kb; if (kbDang && kbDang !== "thuan") el.querySelector(".m-than").insertAdjacentHTML("afterbegin", `<p class="m-ghi">Kịch bản thử đang chạy: <b>${esc(TEN_KB[kbDang] || kbDang)}</b> (nạp từ app mua).</p>`);
     } },

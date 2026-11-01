@@ -69,11 +69,12 @@ const DON_KHAC = [
 ];
 
 // ── Trạng thái đơn HĐ-0018 (8 kịch bản, prompt app mua V2 mục 8) ──
-const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng: chỉ giao được 1.200 kg"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"]];
+const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng: chỉ giao được 1.200 kg"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"], ["hai-can", "17 · Lấy tại vườn: hai cân lệch"], ["du-luong", "18 · Dư lượng không đạt"], ["hai-kq", "19 · Hai phòng kiểm cho kết quả khác nhau"]];
 const hdTien = (h) => {
   const b = h.buoc, t = tinhTien(h);
   // Người bán vi phạm (không giao): cọc + phí hoàn bạn; người bán trả lại phần đã nhận trước (+ bồi hoàn tiền xe, ghi riêng)
   if (h.no) return { banChi: COC + PHI, nh: 0, nb: COC };
+  if (h.kb === "du-luong" && h.dlHoan) return { banChi: PHI + (h.dlXong ? 0 : h.daTra || 0), nh: 0, nb: h.dlXong ? 0 : h.nbXn || 0 };
   if (h.kb === "bkk" && h.bkkXong) return { banChi: COC + PHI - BKK_HOAN, nh: BKK_COC, nb: 0 };
   if (h.vp) return { banChi: (h.huy ? 0 : COC + PHI) + (h.vpXong ? 0 : h.daTra || 0), nh: h.huy ? 0 : COC, nb: h.vpXong ? 0 : h.nbXn || 0 };
   if (h.huy) return { banChi: COC + PHI, nh: 0, nb: COC };
@@ -90,6 +91,9 @@ const hdLuot = (h) => {
   if (h.no) return "xong";
   if (h.kb === "bkk" && (h.bkkXong || h.phu)) return h.bkkXong ? "xong" : { bkk: "vh", "bkk-tl": "ban", "bkk-de": "nb", "bkk-ky": "ban", "bkk-cho-ban": "nb", "bkk-hoan": "nh" }[h.phu] || "ban";
   if (h.kb === "khac-mau" && h.phu === "km") return "vh";
+  if (h.kb === "hai-can" && h.buoc === 7 && !h.canXong) return { "": "nb", can1: "ban", "can-lech2": "nb", "can-chot": "ban" }[h.phu || ""] || "nb";
+  if (h.kb === "du-luong" && h.buoc === 12) return h.dlXong ? "xong" : { "": "nh", "dl-hong": "nb", "dl-kiem-lai": "nh", "dl-loi": "nh", "dl-cho-nb-hoan": "nb", "dl-da-hoan": "ban" }[h.phu || ""] || "nh";
+  if (h.kb === "hai-kq" && h.buoc === 12 && !h.hkXong) return { "": "nh", kq1: "nb", "kq2-cho": "nh", trai: "vh", "hk-phi": "ban", "hk-phi-cho": "nb" }[h.phu || ""] || "nh";
   if (h.kb === "hang-tra" && h.buoc === 14 && !h.hangXong) return h.hangChon ? "vh" : "nb";
   if (TS(h) && h.buoc === 12 && !h.traSauXong) return h.phu === "cho-xn-sau" ? "nb" : h.phu === "xu-ly-no" ? "nh" : "ban";
   if (h.kb === "khong-giao") {
@@ -159,6 +163,33 @@ function veViec(h, url) {
     if (h.phu === "bkk-ky") return theViec("", "Ký bản sửa: 1.200 kg · 27.600.000 đ", `Cọc mới ${d(BKK_COC)}. Hai bên ký xong, ngân hàng hoàn bạn ${d(BKK_HOAN)} cọc dư.`, nutVang("Ký bản sửa", "bkk-ky-mua"));
     if (h.phu === "bkk-cho-ban") return theViec("sl-cho", "Đang chờ chị Năm ký bản sửa", "Bạn đã ký bản 2 (1.200 kg).", nutMp("Mô phỏng: chị Năm ký", "bkk-ky-ban"));
     if (h.phu === "bkk-hoan") return theViec("sl-cho", "Hai bên đã ký bản sửa · chờ ngân hàng hoàn cọc dư", `Ngân hàng hoàn ${d(BKK_HOAN)} cho bạn.`, nutMp("Mô phỏng: ngân hàng hoàn cọc dư", "bkk-hoan"));
+  }
+  // ── Lấy tại vườn: hai cân (v23 lay-tai-vuon) ──
+  if (h.kb === "hai-can" && h.buoc === 7 && !h.canXong) {
+    if (!h.phu) return theViec("sl-cho", "Xe tới vườn · chờ chị Năm cân bằng cân của người bán", "Người đến lấy hàng đã khai tên và biển số; chị Năm quét mã đối chiếu rồi cân.", "");
+    if (h.phu === "can1") return theViec("", "Chị Năm cân: 2.000 kg · tới lượt cân của bạn", "Cân bằng cân bên mua mang theo, có hai bên chứng kiến, chụp màn hình cân.", nutVang("Cân của tôi: 1.940 kg", "can-mua"));
+    if (h.phu === "can-lech2") return theViec("sl-chan-lai", "Hai cân lệch: 2.000 kg và 1.940 kg", "App ghi cả hai kết quả, <b>không tự chọn, không lấy trung bình</b>. Hai bên kiểm bì, cân lại từng sọt. Chưa bốc tới khi chốt số.", "");
+    if (h.phu === "can-chot") return theViec("", "Cân lại có hai bên: 1.980 kg", "Đã trừ bì, cân lại từng sọt. Xác nhận thì nghiệm thu theo 1.980 kg và cho bốc.", nutVang("Xác nhận 1.980 kg", "can-xn"));
+  }
+  // ── Dư lượng không đạt (v23 vuon-du-luong-khong-dat) ──
+  if (h.kb === "du-luong" && h.buoc === 12) {
+    const tra = (h.daTra || 0) + 1500000;
+    if (h.dlXong) return theViec("sl-xong", "Đơn đóng: dư lượng không đạt, bạn đã nhận lại đủ", `Cọc ${d(COC)} đã hoàn; chị Năm đã hoàn ${d(h.daTra)} tiền hàng và 1.500.000 đ phí kiểm lần đầu; hàng đã tiêu hủy có biên bản.`, "");
+    if (!h.phu) return theViec("sl-cho", "Hàng cách ly tại kho · chờ kết quả dư lượng", "Không bán, không chế biến tới khi có kết quả. Mẫu đại diện lấy theo phương pháp đã ghi; mẫu lưu niêm phong. Cọc vẫn do ngân hàng giữ.", nutMp("Mô phỏng: kết quả dư lượng KHÔNG đạt", "dl-hong"));
+    if (h.phu === "dl-hong") return theViec("sl-chan-lai", "Dư lượng không đạt", "Chị Năm có quyền yêu cầu kiểm lại mẫu lưu. Hàng tiếp tục cách ly.", nutMp("Mô phỏng: chị Năm yêu cầu kiểm lại mẫu lưu", "dl-kiem-lai"));
+    if (h.phu === "dl-kiem-lai") return theViec("sl-cho", "Đang kiểm lại mẫu lưu", "Phòng kiểm nghiệm kiểm mẫu lưu niêm phong.", nutMp("Mô phỏng: kiểm lại vẫn không đạt", "dl-loi"));
+    if (h.phu === "dl-loi") return theViec("sl-chan-lai", "Kết luận: người bán có lỗi", `Ngân hàng hoàn cọc ${d(COC)} cho bạn. Chị Năm hoàn ${d(h.daTra)} tiền hàng và 1.500.000 đ phí kiểm lần đầu, nhận lại hàng để tiêu hủy có biên bản.`, nutMp("Mô phỏng: ngân hàng hoàn cọc", "dl-hoan-coc"));
+    if (h.phu === "dl-cho-nb-hoan") return theViec("sl-cho", `Đang chờ chị Năm hoàn ${d(tra)}`, "Gồm tiền hàng đã trả trước và phí kiểm lần đầu.", nutMp("Mô phỏng: chị Năm đã hoàn", "dl-nb-hoan"));
+    if (h.phu === "dl-da-hoan") return theViec("", `Chị Năm báo đã hoàn ${d(tra)}`, "Kiểm tài khoản công ty. Chỉ bấm khi tiền đã về đúng số.", nutVang(`Đã nhận lại ${d(tra)}`, "dl-xong") + `<button class="sl-nut sl-vien" data-lam="chua">Chưa nhận</button>`);
+  }
+  // ── Hai phòng kiểm cho kết quả khác nhau (v23 hai-ket-qua-khac) ──
+  if (h.kb === "hai-kq" && h.buoc === 12 && !h.hkXong) {
+    if (!h.phu) return theViec("sl-cho", "Hàng cách ly · chờ kết quả dư lượng (phòng A, bạn đặt)", "Cọc giữ chờ kết quả.", nutMp("Mô phỏng: phòng A báo KHÔNG đạt", "kq1"));
+    if (h.phu === "kq1") return theViec("sl-cho", "Phòng A: không đạt · chờ chị Năm", "Chị Năm có quyền gửi mẫu lưu tới phòng B.", nutMp("Mô phỏng: chị Năm yêu cầu kiểm ở phòng B", "kq2"));
+    if (h.phu === "kq2-cho") return theViec("sl-cho", "Phòng B đang kiểm mẫu lưu", "", nutMp("Mô phỏng: phòng B báo ĐẠT", "trai"));
+    if (h.phu === "trai") return theViec("sl-chan-lai", "Hai kết quả trái nhau: chưa kết luận", "Hàng tiếp tục cách ly. Nhân viên AgiViet gửi mẫu lưu thứ hai tới phòng trọng tài đã thỏa thuận; hai bên ứng đôi phí.", nutMp("Mô phỏng: phòng trọng tài báo ĐẠT", "trong-tai"));
+    if (h.phu === "hk-phi") return theViec("", "Phòng trọng tài: đạt · bạn hoàn chị Năm 2.800.000 đ phí kiểm", "Theo điều khoản kết quả trái nhau: bên có kết quả sai chịu phí. Chuyển vào Agribank •••• 2186, nội dung HD0018 PHI.", nutVang("Đã chuyển 2.800.000 đ phí", "hk-phi"));
+    if (h.phu === "hk-phi-cho") return theViec("sl-cho", "Chờ chị Năm xác nhận đã nhận phí", "", nutMp("Mô phỏng: chị Năm xác nhận", "hk-phi-xn"));
   }
   // ── Hàng tới khác mẫu (v23 khac-mau) ──
   if (h.kb === "khac-mau" && h.phu === "km") return theViec("sl-cho", "Đã báo hàng tới khác mẫu lúc bốc", "Kho lạnh đối tác tạm giữ 180 kg. Mẫu niêm phong M-2291 gửi kiểm định so mẫu. Chưa nghiệm thu phần này tới khi có kết luận.", nutMp("Mô phỏng: kiểm định kết luận sai từ lúc bốc (lỗi người bán)", "km-kl"));
@@ -248,6 +279,20 @@ function ganNutDon(goc) {
         "huy-khong": () => { h.phu = ""; },
         "hoan-xn": () => { h.hoanXn = true; h.phu = "cho-nb-hoan"; },
         "nb-hoan": () => { h.phu = "nb-da-hoan"; },
+        "can-mua": () => { h.phu = "can-lech2"; },
+        "can-xn": () => { h.phu = ""; h.canXong = true; },
+        "dl-hong": () => { h.phu = "dl-hong"; },
+        "dl-kiem-lai": () => { h.phu = "dl-kiem-lai"; },
+        "dl-loi": () => { h.phu = "dl-loi"; },
+        "dl-hoan-coc": () => { h.phu = "dl-cho-nb-hoan"; h.dlHoan = true; },
+        "dl-nb-hoan": () => { h.phu = "dl-da-hoan"; },
+        "dl-xong": () => { h.phu = ""; h.dlXong = true; },
+        "kq1": () => { h.phu = "kq1"; },
+        "kq2": () => { h.phu = "kq2-cho"; },
+        "trai": () => { h.phu = "trai"; },
+        "trong-tai": () => { h.phu = "hk-phi"; },
+        "hk-phi": () => { h.phu = "hk-phi-cho"; },
+        "hk-phi-xn": () => { h.phu = ""; h.hkXong = true; },
         "bkk-xn": () => { h.phu = "bkk-tl"; },
         "bkk-de": () => { h.phu = "bkk-de"; },
         "bkk-ok": () => { h.phu = "bkk-ky"; h.ban = 2; },

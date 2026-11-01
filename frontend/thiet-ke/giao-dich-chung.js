@@ -11,10 +11,11 @@ export const NGHIEM_THU = {
   "tra-lai": { dat: 1200, ha: 100, tra: 700 },
   "can-lech": { dat: 1810, ha: 120, tra: 30 },          // cân tại kho 1.960 kg (trong ±5%)
   "phan-doi": { dat: 1866, ha: 104, tra: 30 },          // sau kiểm định: 104/120 kg hạ cấp là đúng
-  "khac-mau": { dat: 1700, ha: 120, tra: 180 },         // 180 kg khác mẫu lúc bốc (lỗi người bán) bị trả lại
+  "khac-mau": { dat: 1700, ha: 120, tra: 180 },
+  "hai-can": { dat: 1830, ha: 120, tra: 30 },           // lấy tại vườn: hai cân lệch, cân lại chốt 1.980 kg         // 180 kg khác mẫu lúc bốc (lỗi người bán) bị trả lại
 };
 export function tinhTien(h) {
-  const cho = { "phan-doi": h.phu === "da-kiem-dinh" || h.buoc >= 12, "khac-mau": h.phu === "km-kl" || h.buoc >= 11 };   // nhánh chỉ đổi số khi đã có kết luận
+  const cho = { "phan-doi": h.phu === "da-kiem-dinh" || h.buoc >= 12, "khac-mau": h.phu === "km-kl" || h.buoc >= 11, "hai-can": !!h.canXong };   // nhánh chỉ đổi số khi đã có kết luận
   const n = NGHIEM_THU[h.kb] && (!(h.kb in cho) || cho[h.kb]) ? NGHIEM_THU[h.kb] : NGHIEM_THU.thuan;
   const nt = n.dat * TIEN.GIA + n.ha * TIEN.GIA_HA;                 // giá trị nghiệm thu
   const daTra = h.nbXn || 0;                                       // phần trả thẳng người bán đã xác nhận
