@@ -2,7 +2,7 @@
 // Một người mua làm hết (chị Thu Hà, Nhà máy sấy Đồng Xanh). Máy tính + điện thoại dùng chung trạng thái.
 import { esc, d, kg, so, icon, taoKho, chayApp } from "./so-lam-an.js";
 import { BANG, bangTrang, tenAi } from "./kich-ban-bang.js";
-import { THAT, napThat, chaoGia } from "./mua-that.js";
+import { THAT, napThat, chaoGia, api } from "./mua-that.js";
 import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
 
 // ── Dữ liệu ──
@@ -968,6 +968,51 @@ if (THAT) {
       };
     },
   };
+}
+if (THAT) {
+  // GĐ3 bước 2: màn Lời chào giá thật (lời bạn chào + báo giá người bán gửi), trả lời ngay trên thẻ.
+  const TT = { sent: "Đang chờ", accepted: "Đã đồng ý giá", rejected: "Không bán / không mua", auto_rejected: "Chưa tới mức người bán chấp nhận", withdrawn: "Đã rút", expired: "Hết hạn", converted: "Đã lập đơn" };
+  let DS = [];
+  const veThe = (o) => {
+    const v = o.vong_cuoi || {}, gia = Number(v.price_vnd || 0), kgv = Number(v.qty_g || 0) / 1000;
+    const toiLuot = o.status === "sent" && v.from_side === "seller", choHo = o.status === "sent" && v.from_side === "buyer";
+    const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "";
+    return `<section class="sl-the" data-of="${o.id}" style="display:grid;gap:8px">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(o.code)} · lô ${esc(o.lot_code || "")}</b><span class="sl-nhan${toiLuot ? " sl-n-xong" : ""}">${toiLuot ? "Tới lượt bạn" : choHo ? "Chờ người bán" : esc(TT[o.status] || o.status)}</span></div>
+      <div>${v.from_side === "buyer" ? (v.round_no > 1 ? "Bạn trả giá" : "Bạn chào") : (v.round_no > 1 ? "Người bán trả giá" : "Người bán báo giá")} · vòng ${v.round_no || 1}: <b>${so(gia)} đ/kg × ${kg(kgv)}</b></div>
+      ${o.status === "sent" && han ? `<p class="sl-ghi">Hạn trả lời: ${han}</p>` : ""}
+      ${toiLuot ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sl-nut sl-vang" data-lam="accept">Đồng ý giá này</button><button class="sl-nut sl-vien" data-lam="counter">Trả giá</button><button class="sl-nut sl-vien" data-lam="reject">Không mua</button></div>
+        <div data-o-tra hidden style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><label style="display:grid;gap:4px;font-weight:600">Giá mới (đ/kg)<input inputmode="numeric" data-gia style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label><button class="sl-nut sl-vang" data-lam="gui-tra">Gửi giá</button></div>` : ""}
+      ${choHo ? `<div><button class="sl-nut sl-vien" data-lam="withdraw">Rút lời chào</button></div>` : ""}
+      ${o.status === "accepted" ? `<p class="sl-ghi">Đồng ý giá chưa phải hợp đồng. Bước sau: lập đơn và hai bên ký.</p>` : ""}
+      <p class="sl-ghi" data-bao role="status"></p></section>`;
+  };
+  man["bao-gia"] = { tieuDe: "Lời chào giá", phu: "Lời bạn chào và báo giá người bán gửi · dữ liệu thật",
+    ve: () => `<div id="lc-ds" style="display:grid;gap:12px"><p class="sl-ghi">Đang tải…</p></div>`,
+    sau: async (g) => {
+      const ve = async () => {
+        DS = (await api("/v1/offers")).filter((o) => o.la_ben_mua !== false);
+        const uu = (o) => (o.status === "sent" && o.vong_cuoi?.from_side === "seller" ? 0 : o.status === "sent" ? 1 : o.status === "accepted" ? 2 : 3);
+        DS.sort((a, b) => uu(a) - uu(b));
+        g.querySelector("#lc-ds").innerHTML = DS.length ? DS.map(veThe).join("") : `<p class="sl-ghi">Chưa có lời chào nào. Vào Nguồn hàng để chào giá một lô.</p>`;
+      };
+      g.querySelector("#lc-ds").onclick = async (e) => {
+        const b = e.target.closest("[data-lam]"); if (!b) return;
+        const the2 = b.closest("[data-of]"), o = DS.find((x) => x.id === the2.dataset.of), bao2 = the2.querySelector("[data-bao]"), lam = b.dataset.lam;
+        if (lam === "counter") { the2.querySelector("[data-o-tra]").hidden = false; return; }
+        try {
+          b.disabled = true; bao2.textContent = "Đang gửi…";
+          if (lam === "accept") await api(`/v1/offers/${o.id}/accept`, { expected_revision: o.revision });
+          else if (lam === "reject" || lam === "withdraw") await api(`/v1/offers/${o.id}/${lam}`, {});
+          else if (lam === "gui-tra") { const gia = Number(the2.querySelector("[data-gia]").value.replace(/\D/g, "")); if (!(gia >= 1000)) { bao2.textContent = "Nhập giá hợp lệ."; b.disabled = false; return; } await api(`/v1/offers/${o.id}/counter`, { price_vnd: gia, qty_g: Number(o.vong_cuoi.qty_g) }); }
+          await ve();
+        } catch (err) {
+          if (/cập nhật trước|không còn mở/i.test(err.message)) { await ve().catch(() => {}); const t3 = g.querySelector(`[data-of="${o.id}"] [data-bao]`); if (t3) t3.textContent = "Lời chào này vừa đổi trạng thái (người bán vừa trả lời). Đã tải lại, bác xem lại rồi làm tiếp."; }
+          else { bao2.textContent = err.message; b.disabled = false; }
+        }
+      };
+      try { await ve(); } catch (err) { g.querySelector("#lc-ds").textContent = err.message; }
+    } };
 }
 chayApp({ ten: "AgiViet Mua", phu: TEN_TC, menu: MENU, tab: TAB, man, kho, macDinh: THAT ? "nguon-hang" : "tong-quan", nguoi: NGUOI });
 export { man as MAN_MUA };
