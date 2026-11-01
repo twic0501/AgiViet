@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đối chiếu quy tắc · AgiViet</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+  :root { --nen: #f4f1e8; --the: #fbf9f3; --chu: #1c2a21; --nhat: #5c6a60; --ke: #e3ddcc; --la: #1f4d3a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--nen); color: var(--chu); font: 15px/1.5 "Be Vietnam Pro", system-ui, sans-serif; }
+  header { padding: 20px 24px 12px; border-bottom: 1px solid var(--ke); background: var(--the); position: sticky; top: 0; z-index: 2; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .ghi { color: var(--nhat); font-size: 13px; margin: 0; }
+  .tong { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .tong button { font: inherit; font-size: 13px; border: 0; border-radius: 999px; padding: 6px 12px; cursor: pointer; box-shadow: 0 0 0 1px var(--ke); background: #fff; color: var(--chu); }
+  .tong button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--la); font-weight: 700; }
+  main { padding: 16px 24px 40px; display: grid; gap: 18px; max-width: 1200px; }
+  section h2 { font-size: 16px; margin: 0 0 8px; }
+  .bang { width: 100%; border-collapse: collapse; background: var(--the); border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px var(--ke); }
+  .bang th, .bang td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--ke); font-size: 14px; }
+  .bang th { font-size: 12px; color: var(--nhat); font-weight: 600; background: #f1ecdf; }
+  .ma { font-weight: 700; white-space: nowrap; }
+  .tt { display: inline-block; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .t-test { background: #dcefe2; color: #17442e; }
+  .t-phan { background: #f8ecc9; color: #6b4d07; }
+  .t-lech { background: #f7dcd5; color: #8a2b17; }
+  .t-vh { background: #dde8f1; color: #1d4363; }
+  .t-chua { background: #ebe7dc; color: #4b4b44; }
+  .t-ngoai { background: #ece4f2; color: #4d2f63; }
+  .bang td small { color: var(--nhat); display: block; margin-top: 2px; }
+  @media (max-width: 720px) {
+    header, main { padding-left: 16px; padding-right: 16px; }
+    .bang thead { display: none; }
+    .bang tr { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; padding: 10px 12px; border-bottom: 1px solid var(--ke); }
+    .bang td { border: 0; padding: 0; }
+    .bang td.nd, .bang td.bc { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Đối chiếu quy tắc mô hình quy trình v23</h1>
+  <p class="ghi">Mỗi quy tắc trong quy-trinh.json (hệ thống, vận hành, dịch vụ, hoàn phí, hạn giờ) đối chiếu với bản mô phỏng hai app + trang vận hành và các bài test. Chữ quy tắc đọc thẳng từ quy-trinh.json; cột đánh giá do Claude ghi ngày 01/11/2026.</p>
+  <div class="tong" id="tong"></div>
+</header>
+<main id="noi"><p class="ghi">Đang nạp…</p></main>
+<script type="module">
+// Đánh giá: tt = test (có + có test) · phan (có một phần / chỉ ghi chữ) · lech (có nhưng khác v23) · vh (chỉ chạy bước ở trang vận hành) · chua (chưa có) · ngoai (ngoài phạm vi giao diện mô phỏng)
+const DG = {
+  HT01: ["lech", "", "Tranh chấp một dòng: mô phỏng chờ kiểm định xong mới chi, v23 trả ngay phần công nhận."],
+  HT02: ["lech", "", "Cùng chỗ lệch với HT01; khoản đòi thêm chưa ghi \"chưa được bảo đảm\"."],
+  HT03: ["test", "ban-vi-pham", "Người bán không giao: nghĩa vụ hoàn thành khoản phải trả có hạn 7 ngày."],
+  HT04: ["lech", "hang-tra-lai", "Hàng trả lại chặn nhập kho tới khi xử lý (đúng); nhưng nhiều nhánh vẫn ghi \"Hoàn tất · hết nghĩa vụ hai bên\" dù chưa tách 3 mức đóng."],
+  HT05: ["test", "nghiem-thu-thap, da-nhan-nhieu-hon", "Nghiệm thu thấp hơn cọc: cọc chia; người bán nhận dư thành nghĩa vụ hoàn 3,1 tr."],
+  HT06: ["phan", "nhieu-de-nghi, de-nghi-bo-cuoc", "Có giữ 24 giờ chờ ký; chưa có giữ để thẩm định ≤ 7 ngày và kiểm tổng giữ + cam kết."],
+  HT07: ["test", "lay-tai-vuon, khac-mau, tranh-chap-mot-dong", "Khối lượng: cân lại có hai bên; chất lượng: mẫu đối chứng + kiểm định. Hao hụt vận chuyển chưa có."],
+  HT08: ["chua", "", "Chưa có lô tự ẩn sau 14 ngày."],
+  HT09: ["chua", "", "Kho bên mua chưa tách giữ hộ / đạt / bị từ chối."],
+  HT10: ["test", "dang-ky", "Hồ sơ tách \"Đã kiểm tại vườn\" và \"Người bán tự khai\"."],
+  HT11: ["chua", "", "Chưa có uy tín bên mua."],
+  HT12: ["chua", "", "Chưa có giá tham khảo."],
+  HT13: ["phan", "nhieu-de-nghi", "Bên mua không thấy giá bên khác; chưa có giải thích vì sao ghép."],
+  HT14: ["test", "E2E dang-bai-nhat-ky (thiet-ke-ban.mjs)", "Màn đăng bài đã chốt tính ngày hết cách ly từ nhật ký thuốc."],
+  HT15: ["chua", "", "Chưa tách đã gửi / đã đọc / đã làm; chưa gọi/SMS khi việc quan trọng chưa đọc."],
+  HT16: ["vh", "lenh-ngan-hang-loi", "Chạy bước ở trang vận hành; chống chi hai lần là việc backend."],
+  HT17: ["ngoai", "", "Lưu trước xử lý sau, gửi lại cùng mã: thuộc lộ trình D (offline + idempotency)."],
+  HT18: ["vh", "lenh-ngan-hang-loi", "Chạy bước ở trang vận hành."],
+  HT19: ["phan", "", "Màn \"Hứa bán bao nhiêu\" chặn vượt 80% lô; chưa có công thức có − giữ − cam kết."],
+  HT20: ["test", "hai-ben (che số), den-xem-hang", "Che số trong trò chuyện tới khi có cọc; khảo sát vườn chỉ lộ địa chỉ + số sau khi xác nhận lịch."],
+  HT21: ["phan", "mọi tình huống tiền", "Tiền chỉ tính đã nhận khi người nhận xác nhận; nút \"Chưa nhận\" chưa lưu, chưa có đối soát có căn cứ (Codex nêu)."],
+  HT22: ["lech", "", "Nhánh minh họa vẫn ghi \"Hoàn tất\" thay vì \"Đã xong thanh toán nhánh · xem hồ sơ đơn\"."],
+  HT23: ["phan", "nhieu-de-nghi", "So tiền ròng (không chỉ đ/kg); chưa có bộ gợi ý theo phù hợp."],
+  HT24: ["test", "de-nghi-bo-cuoc", "Hết hạn không ký: ghi lịch sử, mở lại lô, không trừ uy tín."],
+  HT25: ["test", "dinh-ky", "Dự báo 30 tấn ≠ chốt 5 tấn ≠ nguồn cam kết 2 + 2 + 1."],
+  HT26: ["phan", "dinh-ky, dinh-ky-thieu-giay-to (vận hành)", "Có bước kiểm hồ sơ từng nguồn; chưa chặn \"chưa đủ điều kiện giao\"."],
+  HT27: ["test", "dinh-ky-tra-tien", "Mỗi người bán một kỳ trả; khiếu nại B không khóa A, C."],
+  HT28: ["phan", "dinh-ky-3-ngay", "Nguồn thay D có bước kiểm điều kiện giao chung (chữ)."],
+  HT29: ["test", "dinh-ky-3-ngay", "Công nợ chồng 70/80 triệu; muốn 2 tấn mà chỉ còn 10 triệu mức nợ."],
+  HT30: ["phan", "dinh-ky", "Giá tối đa 21.000 chỉ là giới hạn tự tổ chức (chữ)."],
+  HT31: ["lech", "", "Như HT22."],
+  HT32: ["phan", "dinh-ky-tra-tien", "Khiếu nại trong hạn 12 giờ mới mở nghĩa vụ hoàn (chữ); chưa có nhánh quá hạn bị từ chối."],
+  HT33: ["test", "dinh-ky-no-qua-han", "Có khoản quá hạn: dừng cam kết mới, chuyến đã chốt hỏi người bán."],
+  HT34: ["vh", "mau-hong", "Chạy bước ở trang vận hành."],
+  HT35: ["test", "khong-con-doi-tac", "Giữ hàng tại vườn trong giới hạn mặt hàng, có phương án mặc định."],
+  VH01: ["phan", "dung-dinh-ky", "Có lệnh ngoại lệ có duyệt (chữ); chưa kiểm người đề xuất ≠ người duyệt."],
+  VH02: ["test", "tranh-chap-mot-dong, khac-mau, hai-ket-qua-khac", "Kết luận theo kiểm định / trọng tài đã thỏa thuận."],
+  VH03: ["phan", "", "Màn Cấu hình phí ghi \"đổi phí không ảnh hưởng đơn đã ký\"; chưa có phiên bản chính sách."],
+  VH04: ["ngoai", "", "Tài khoản riêng, hai lớp, nhật ký thao tác: backend."],
+  VH05: ["phan", "theo-sat-don", "Hồ sơ theo sát ghi người phụ trách, mốc tiếp; chưa áp cho mọi việc."],
+  VH06: ["chua", "", "Chưa có kháng nghị 7 ngày."],
+  VH07: ["chua", "", "Chưa có tạm dừng hạn khi sự cố."],
+  VH08: ["chua", "dang-ky-mua (vận hành)", "Chưa có nhánh đăng ký không đạt."],
+  VH09: ["phan", "de-nghi, bat-kha-khang", "Không đồng ý giữ bản 1; bản sửa tính lại cọc. Màn thỏa thuận app mua vẫn hiện bản 1 sau khi đổi (Codex nêu)."],
+  VH10: ["test", "khong-con-doi-tac, theo-sat-don", "Đổi đối tác; chi khẩn trong giới hạn đã duyệt."],
+  VH11: ["test", "theo-sat-thieu-nguoi", "15 phút chưa nhận ca: báo trưởng ca, giao người dự phòng."],
+  VH12: ["chua", "", "Chưa có xem lại quyết định."],
+  VH13: ["test", "theo-sat-don", "Đổi ca 22:00 có bàn giao, người nhận ca xác nhận."],
+  VH14: ["test", "theo-sat-thieu-nguoi", "Mất liên lạc: trưởng ca tiếp quản ngay."],
+  VH15: ["test", "theo-sat-thieu-nguoi", "Thiếu người: báo trước khi ký, chọn theo sát từ xa."],
+  VH16: ["chua", "", "Chưa có điểm tải ca."],
+  DV01: ["chua", "", ""],
+  DV02: ["phan", "khong-con-doi-tac", "Phương án kèm chi phí tối đa (chữ)."],
+  DV03: ["phan", "khac-mau, mau-hong (vận hành)", "Mẫu niêm phong M-2291; chưa ghi đủ chuỗi người lấy / niêm / giữ / mở."],
+  DV04: ["chua", "", "Chưa có điều kiện hiện \"được bảo hiểm\"."],
+  DV05: ["chua", "", ""],
+  DV06: ["phan", "ban-vi-pham, khac-mau", "Bồi hoàn tiền xe vào sổ; phí kho lạnh + kiểm định ở khác mẫu chỉ ghi chữ."],
+  HP01: ["test", "ban-vi-pham", "Bên có lỗi (người bán không giao) bồi hoàn tiền xe."],
+  HP02: ["phan", "khong-con-doi-tac", "Đổi đối tác, ghi chi phí đối tác bỏ chuyến; chưa hoàn khoản đã trả."],
+  HP03: ["chua", "", ""],
+  HP04: ["chua", "", ""],
+  HG01: ["chua", "", "Chưa có phiếu nghĩa vụ hai bên điền (gộp vào nút ký)."],
+  HG02: ["test", "de-nghi-bo-cuoc", "Quá 24 giờ không ký: hủy giữ, mở lại lô."],
+  HG03: ["lech", "", "App ghi hạn cọc 48 giờ cho xoài tươi; v23 hàng tươi 12 giờ (Codex nêu). Nhánh cọc thiếu / báo trễ / tới sau khi đóng chạy ở trang vận hành."],
+  HG04: ["phan", "", "Ghi \"2 giờ nghiệm thu\"; chưa có nhánh hết 2 giờ coi như đạt."],
+  HG05: ["test", "nghiem-thu-im-lang", "Hết 24 giờ chưa chốt: nhắc 3 lần, nhân viên gọi; cọc giữ, im lặng không thành đồng ý."],
+  HG06: ["test", "chua-tra", "Chưa nhận → 48 giờ → cọc về người bán trừ vào tiền hàng, ghi nợ."],
+  HG07: ["phan", "mua-huy", "Xin hủy: im lặng là không đồng ý; đổi ngày chưa có hạn 24 giờ."],
+  HG08: ["test", "ban-vi-pham", "Hạn 7 ngày; không trả thì trừ hạng, khóa đơn mới."],
+};
+const TEN = { test: "Có + có test", phan: "Có một phần", lech: "Lệch v23", vh: "Chạy ở trang vận hành", chua: "Chưa có", ngoai: "Ngoài phạm vi giao diện" };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const chu = (x) => typeof x === "string" ? x : Array.isArray(x) ? x.join(" · ") : Object.values(x || {}).filter(Boolean).join(" · ");
+const qt = await fetch("/mo-phong-quy-trinh/quy-trinh.json").then((r) => r.json());
+const NHOM = [["HT", "Hệ thống", qt.he_thong.quy_tac], ["VH", "Nhân viên, quản trị", qt.van_hanh.quy_tac], ["DV", "Dịch vụ", qt.dich_vu.quy_tac], ["HP", "Hoàn phí dịch vụ", qt.dich_vu.hoan_phi], ["HG", "Hạn giờ", qt.han_gio]];
+const ds = NHOM.flatMap(([ma, ten, arr]) => arr.map((x, i) => { const m = ma + String(i + 1).padStart(2, "0"); const [tt, test, ghi] = DG[m] || ["chua", "", "Chưa đánh giá"]; return { m, nhom: ten, x, tt, test, ghi }; }));
+let loc = "";
+const ve = () => {
+  const dem = Object.fromEntries(Object.keys(TEN).map((k) => [k, ds.filter((d) => d.tt === k).length]));
+  document.getElementById("tong").innerHTML = `<button type="button" data-loc="" aria-pressed="${!loc}">Tất cả ${ds.length}</button>` + Object.entries(TEN).map(([k, t]) => `<button type="button" data-loc="${k}" aria-pressed="${loc === k}"><span class="tt t-${k}">${dem[k]}</span> ${t}</button>`).join("");
+  document.getElementById("noi").innerHTML = NHOM.map(([ma, ten]) => {
+    const h = ds.filter((d) => d.nhom === ten && (!loc || d.tt === loc));
+    if (!h.length) return "";
+    return `<section><h2>${esc(ten)} (${h.length})</h2><table class="bang"><thead><tr><th>Mã</th><th>Quy tắc v23</th><th>Đánh giá</th><th>Kiểm ở đâu · ghi chú</th></tr></thead><tbody>${h.map((d) => {
+      const x = d.x, tieu = Array.isArray(x) ? x[0] : x.ten || x.chu_de || "", nd = Array.isArray(x) ? x.slice(1).join(" · ") : x.noi_dung || x.mo_ta || chu(x);
+      return `<tr><td class="ma">${d.m}</td><td class="nd"><b>${esc(tieu)}</b><small>${esc(nd)}</small></td><td><span class="tt t-${d.tt}">${TEN[d.tt]}</span></td><td class="bc">${d.test ? `<b>${esc(d.test)}</b>` : ""}<small>${esc(d.ghi)}</small></td></tr>`;
+    }).join("")}</tbody></table></section>`;
+  }).join("");
+  document.querySelectorAll("[data-loc]").forEach((b) => b.onclick = () => { loc = b.dataset.loc; ve(); });
+};
+ve();
+</script>
+</body>
+</html>
