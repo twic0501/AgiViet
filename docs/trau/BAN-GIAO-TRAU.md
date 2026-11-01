@@ -223,6 +223,9 @@ Người sáng lập: "form tay không chuẩn mẫu, chuyển động ngờ ngh
 #### ĐÃ CHỐT T3 (1/11, người sáng lập: "oke rồi qua đi")
 Góc chính diện: đủ 8 hành động `hanh_dong` 1–8 + nghỉ sống + động tác lúc rảnh; `trau-v3.riv` 309 KB. Bước kế: gộp PR #1 vào `production-test` → Claude 1 thay `trau.riv` bằng `trau-v3.riv` và đặt `hanh_dong` theo màn. Để sau: bật lại ¾ / nghiêng (`AGV_DU_GOC=1`) và nâng cấp tay ở hai góc đó.
 
+#### Trâu v4 (1/11, theo danh sách của giao diện — chờ duyệt)
+`AGV_V4=1` trong `dung-v3.py`, dựng bằng `./dung-v4.sh` → `frontend/assets/trau/trau-v4.riv` (artboard `trau` + `trau_nho`; artboard nhỏ dựng lần hai với `AGV_NHO=1 AGV_ID0=500000`, nét ×1,7, không bản tay riêng). Bảng số mới, đầu vào `vao`, chạm 3 lần có trứng; hợp đồng đầy đủ: `docs/trau/HOP-DONG-V4.md`. Ảnh tĩnh `frontend/assets/trau/anh/` xuất từ runtime (`tmp/web/anh.cjs` — chụp canvas nền trong). Chữ bong bóng nháp: `docs/trau/bong-bong-nhap.md`. "Nói" không vẽ miệng (luật 2.2) → mõm nhấp nhô. Bỏ bản tay trái 'chi'/'nghi' không dùng → v3 286 KB.
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.

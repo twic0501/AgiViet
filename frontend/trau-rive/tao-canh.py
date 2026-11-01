@@ -18,7 +18,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 NS = '{http://www.w3.org/2000/svg}'
-_id = [100]
+_id = [int(os.environ.get("AGV_ID0", "100"))]   # artboard nhỏ v4 dùng dải id riêng (AGV_ID0)
 
 
 def moi_id():
