@@ -187,7 +187,17 @@ async function mo() {
     $("cau-phu").textContent = `Hạn sớm nhất ${som.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })}.`;
     $("nut-chinh").textContent = "Xem chào giá"; $("nut-chinh").hidden = false; $("nut-chinh").onclick = () => (location.href = "./ban-tin-nhan.html" + location.search);
   }
-  datHanhDong(choBac.length || toiBac.length ? 8 : new Date().getHours() < 11 ? 1 : 0);   // v4: 8 cầm giấy đọc (có việc) · 1 chào (buổi sáng) · 0 nghỉ
+  // Trâu làm đúng việc đang chờ bác (bảng hanh_dong HOP-DONG-V4): diễn động tác rồi về nghỉ, ~25 giây nhắc lại một lần.
+  // (Trước đây luôn là 8 "cầm giấy đọc" — tờ giấy nhỏ trước ngực trông như cái điện thoại, và đứng một dáng mãi.)
+  const viec = toiBac.length ? String(toiBac[0].hien_thi?.toi_luot?.viec || "") : "";
+  const dongTac = toiBac.length
+    ? (/Ký/i.test(viec) ? 21 : /tiền/i.test(viec) ? 20 : /nghiệm thu|cân/i.test(viec) ? 25 : /Giao|QR|xe/i.test(viec) ? 26 : 8)
+    : choBac.length ? 17 : new Date().getHours() < 11 ? 1 : 0;   // 17 chỉ sang trái về nút "Xem chào giá" · 1 chào buổi sáng · 0 nghỉ
+  datHanhDong(dongTac);
+  if (dongTac && !giamDong) {
+    const lap = () => { setTimeout(() => { if (!document.hidden) datHanhDong(0); setTimeout(() => { if (!document.hidden) datHanhDong(dongTac); lap(); }, 20000); }, 6000); };
+    lap();
+  }
 
   $("ds-hd").innerHTML = don.length ? don.slice(0, 3).map((d) => {
     const k = chiSoChang(d);

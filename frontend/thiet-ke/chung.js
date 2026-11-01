@@ -249,16 +249,21 @@ function dungTroLy() {
       <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Trợ lý AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
       <div class="tl-hoi" id="tl-hoi" aria-live="polite">
         ${trauTuThe("23-tai-nghe", "", 72)}
-        <div class="tl-bong ai">Chào bác, bác cần làm gì? Bác bấm câu gợi ý hoặc gõ câu hỏi nhé.</div>
+        <div class="tl-bong ai">Chào bác, bác cần làm gì? Bác <b>bấm nút micro rồi nói</b>, hoặc gõ câu hỏi, hoặc bấm câu gợi ý nhé.</div>
       </div>
       <div class="tl-goi-y" id="tl-goi-y">${GOI_Y.map((g) => `<button type="button">${esc(g)}</button>`).join("")}</div>
-      <form class="tl-go" id="tl-go"><input id="tl-o" maxlength="600" autocomplete="off" placeholder="Hỏi AgiViet…" aria-label="Câu hỏi"><button type="submit" aria-label="Gửi">${'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}</button></form>
+      <p class="tl-nghe-bao" id="tl-nghe-bao" role="status" hidden></p>
+      <form class="tl-go" id="tl-go"><button type="button" class="tl-mic" id="tl-mic" aria-label="Bấm rồi nói câu hỏi" aria-pressed="false">${'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>'}</button><input id="tl-o" maxlength="600" autocomplete="off" placeholder="Hỏi AgiViet…" aria-label="Câu hỏi"><button type="submit" aria-label="Gửi">${'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}</button></form>
     </section>`;
   document.body.appendChild(tam);
   const $t = (s) => tam.querySelector(s);
   const hoi = $t("#tl-hoi");
   const them = (lop, html) => { const d = document.createElement("div"); d.className = `tl-bong ${lop}`; d.innerHTML = html; hoi.appendChild(d); hoi.scrollTop = hoi.scrollHeight; return d; };
-  async function gui(cau) {
+  // Trả lời: hỏi bằng giọng thì đọc to luôn; câu nào cũng có nút "Nghe" để nghe lại
+  const NUT_NGHE = '<button type="button" class="tl-nghe" aria-label="Nghe câu trả lời"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>Nghe</button>';
+  const ganNghe = (d) => { d.insertAdjacentHTML("beforeend", NUT_NGHE); const b = d.querySelector(".tl-nghe"); b.onclick = () => docTo(d.dataset.chu || d.textContent.replace(/Nghe$/, "")); };
+  const traLoi = (d, chu, noi) => { d.dataset.chu = chu; ganNghe(d); if (noi) docTo(chu); };
+  async function gui(cau, noi = false) {
     cau = cau.trim(); if (!cau) return;
     them("toi", esc(cau));
     const t = BO_DAU(cau), co = cau.toLowerCase();
@@ -267,7 +272,7 @@ function dungTroLy() {
     const duong = hoiGiaiThich ? null : DUONG.find(([m]) => m.test(t) || m.test(co));
     if (duong) {   // Dẫn đường ngay, không cần gọi AI
       const [, nhan, href, cauTra] = duong;
-      const d = them("ai", `${esc(cauTra)}<a class="tl-di" href="${href}">${esc(nhan)} ›</a>`); giuThamSo(d);
+      const d = them("ai", `${esc(cauTra)}<a class="tl-di" href="${href}">${esc(nhan)} ›</a>`); giuThamSo(d); traLoi(d, cauTra, noi);
       return;
     }
     const cho = them("ai cho", "Đang nghĩ…");
@@ -276,11 +281,28 @@ function dungTroLy() {
       const r = await fetch("/v1/assistant/ask", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ cau }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || "Trợ lý chưa trả lời được.");
-      cho.classList.remove("cho"); cho.textContent = j.tra_loi;
+      cho.classList.remove("cho"); cho.textContent = j.tra_loi; traLoi(cho, j.tra_loi, noi);
     } catch (e) {
-      cho.classList.remove("cho"); cho.innerHTML = `${esc(e.message)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Nhắn nhân viên ›</a>`; giuThamSo(cho);
+      cho.classList.remove("cho"); cho.innerHTML = `${esc(e.message)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Nhắn nhân viên ›</a>`; giuThamSo(cho); traLoi(cho, e.message, noi);
     }
   }
+  // Hỏi bằng giọng: bấm micro → nói → câu nói hiện vào ô rồi tự gửi (vi-VN). Máy không hỗ trợ thì báo rõ, vẫn gõ được.
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const mic = $t("#tl-mic"), baoNghe = $t("#tl-nghe-bao");
+  const bao = (c) => { baoNghe.textContent = c; baoNghe.hidden = !c; };
+  let nghe = null;
+  mic.onclick = () => {
+    if (nghe) { nghe.stop(); return; }
+    if (!SR) { bao("Máy này chưa nghe được giọng nói. Bác gõ câu hỏi, hoặc bấm câu gợi ý ở trên nhé."); return; }
+    try { speechSynthesis.cancel(); } catch {}
+    nghe = new SR(); nghe.lang = "vi-VN"; nghe.interimResults = true; nghe.maxAlternatives = 1;
+    let cuoi = "";
+    mic.setAttribute("aria-pressed", "true"); mic.classList.add("dang-nghe"); bao("Đang nghe… bác nói đi, nói xong bấm lại micro.");
+    nghe.onresult = (e) => { cuoi = [...e.results].map((r) => r[0].transcript).join(" ").trim(); $t("#tl-o").value = cuoi; };
+    nghe.onerror = (e) => { bao(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Bác cho phép app dùng micro trong cài đặt trình duyệt rồi thử lại." : e.error === "no-speech" ? "Chưa nghe thấy gì, bác bấm micro rồi nói lại nhé." : "Chưa nghe rõ, bác thử lại hoặc gõ câu hỏi."); };
+    nghe.onend = () => { mic.setAttribute("aria-pressed", "false"); mic.classList.remove("dang-nghe"); nghe = null; if (cuoi) { bao(""); $t("#tl-o").value = ""; gui(cuoi, true); } };
+    try { nghe.start(); } catch { bao("Chưa bật được micro, bác thử lại."); nghe = null; mic.classList.remove("dang-nghe"); }
+  };
   $t("#tl-goi-y").querySelectorAll("button").forEach((b) => (b.onclick = () => gui(b.textContent)));
   $t("#tl-go").onsubmit = (e) => { e.preventDefault(); const o = $t("#tl-o"); const v = o.value; o.value = ""; gui(v); };
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dongTroLy));
