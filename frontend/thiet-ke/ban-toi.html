@@ -48,6 +48,9 @@
   .to-bao { padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.45; margin: 0; }
   .to-bao.do { background: var(--dau-do-nen); color: var(--dau-do); }
   .to-bao.xanh { background: var(--la-nhat); color: var(--la-dam); }
+  .to-hai-nut { display: grid; gap: 8px; margin: 10px 0 14px; }
+  .to-nhan-o { font-weight: 600; color: var(--muc-phu); font-size: 14px; }
+  .to-nhan.do { background: var(--dau-do-nen); color: var(--dau-do); }
 </style>
 </head>
 <body>
@@ -63,7 +66,8 @@ const gio = (s) => (s ? new Date(s).toLocaleString("vi-VN", { ...VN, hour: "2-di
 const VAI = { owner: "Chủ hộ", coop_board: "Ban quản trị HTX", member: "Thành viên", accountant: "Kế toán", field: "Người làm vườn" };
 const QUYEN = { view: "Xem đơn và hàng", "lot.draft": "Soạn tin đăng nháp", "message.send": "Nhắn tin", "diary.write": "Ghi nhật ký vườn", "lot.create": "Đăng hàng", "offer.reply": "Trả lời lời chào", "delivery.record": "Ghi giao nhận" };
 const TT_HT = { new: ["Đã nhận, chờ xử lý", "vang"], in_progress: ["Đang xử lý", "vang"], resolved: ["Đã xong", "xanh"], closed: ["Đã đóng", "xam"] };
-let token, me;
+let token, me, hoSo;
+const TT_GT = { da_xac_minh: ["Đã xác minh", "xanh"], cho_doi_chieu: ["Chờ nhân viên đối chiếu", "vang"], het_han: ["Hết hạn, cần nộp lại", "do"] };
 const H = () => ({ headers: { authorization: "Bearer " + token } });
 const doc = async (d) => { const r = await fetch(d, H()); return r.ok ? r.json() : { __loi: r.status }; };
 
@@ -73,9 +77,9 @@ $("dong").onclick = () => (history.length > 1 ? history.back() : (location.href 
 
 async function tai() {
   token = await phien();
-  const [m, tk, giup, ht, ls] = await Promise.all([doc("/v1/me"), doc("/v1/payout-accounts"), doc("/v1/org/delegations"), doc("/v1/support"), doc("/v1/seller/history?limit=50")]);
+  const [m, tk, giup, ht, ls, hs] = await Promise.all([doc("/v1/me"), doc("/v1/payout-accounts"), doc("/v1/org/delegations"), doc("/v1/support"), doc("/v1/seller/history?limit=50"), doc("/v1/seller/profile")]);
   if (m.__loi) throw new Error("Chưa tải được thông tin tài khoản.");
-  me = m;
+  me = m; hoSo = hs.__loi ? null : hs;
   const chuTat = String(me.name || "?").split(/\s+/).at(-1).charAt(0).toUpperCase();
   const lsOk = Array.isArray(ls) ? ls : [];
   const soChao = lsOk.filter((x) => x.loai === "offer").length, soDong = lsOk.filter((x) => x.trang_thai === "accepted").length, soHd = new Set(lsOk.map((x) => x.order_id).filter(Boolean)).size;
@@ -84,6 +88,15 @@ async function tai() {
   $("noi").innerHTML = `
     <section class="to-ho-so"><span class="anh" aria-hidden="true">${esc(chuTat)}</span>
       <div style="min-width:0"><b>${esc(me.name)}</b><small>${esc(me.org?.name)} · ${esc((me.roles || []).map((v) => VAI[v] || v).join(", "))}</small><small>${esc(me.phone_masked)}</small></div></section>
+
+    <section class="to-the" id="ho-so"><h2><i class="cham"></i>Hồ sơ và giấy tờ</h2>
+      ${hoSo ? `<div class="to-dong"><span><b style="text-align:left">${esc(hoSo.to_chuc.ten)}</b></span><span class="to-nhan ${hoSo.muc_xac_minh >= 2 ? "xanh" : "vang"}">Mức ${hoSo.muc_xac_minh}/2</span>
+        <small>${esc(hoSo.muc_ten)}${hoSo.to_chuc.tinh ? " · " + esc(hoSo.to_chuc.tinh) : ""}${hoSo.vuon.length ? " · " + esc(hoSo.vuon.map((v) => v.name).join(", ")) : ""}</small></div>
+      ${hoSo.giay_to.length ? hoSo.giay_to.map((g) => `<div class="to-dong"><span style="overflow-wrap:anywhere"><b style="text-align:left">${esc(g.ten)}</b></span><span class="to-nhan ${(TT_GT[g.trang_thai] || ["", "xam"])[1]}">${esc((TT_GT[g.trang_thai] || [g.trang_thai])[0])}</span>
+        <small>${g.so ? "Số " + esc(g.so) : "Chưa ghi số"}${g.thi_truong ? " · thị trường " + esc(g.thi_truong) : ""}${g.het_han ? " · hạn tới " + esc(new Date(g.het_han).toLocaleDateString("vi-VN")) : ""}</small></div>`).join("")
+        : `<p class="hd-ghi" style="padding-bottom:8px">Bác chưa có giấy tờ nào trên app. Có VietGAP, mã vùng trồng thì nộp để bên mua tin hàng và trả giá tốt hơn.</p>`}
+      <div class="to-hai-nut"><button class="nut chinh-nut to-nut" type="button" id="nop-gt">Nộp / cập nhật giấy tờ</button><button class="nut phu-nut to-nut" type="button" id="sua-hs">Đề nghị sửa thông tin</button></div>`
+      : `<p class="to-bao do" style="margin:4px 0 12px">Chưa tải được hồ sơ.</p>`}</section>
 
     <section class="to-the"><h2><i class="cham"></i>Hoạt động gần đây</h2>
       ${Array.isArray(ls) ? `<div class="to-so"><div><b>${soChao}</b><span>lời chào nhận</span></div><div><b>${soDong}</b><span>đã đồng ý</span></div><div><b>${soHd}</b><span>hợp đồng</span></div></div>
@@ -126,6 +139,8 @@ async function tai() {
   }));
   document.querySelectorAll("[data-thu-hoi]").forEach((b) => (b.onclick = () => xacNhanThuHoi(b.dataset.thuHoi, b)));
   $("gui-ht").onclick = () => moHoTro("");
+  $("nop-gt") && ($("nop-gt").onclick = moNopGiayTo);
+  $("sua-hs") && ($("sua-hs").onclick = moSuaHoSo);
   $("doi-tk").onclick = () => moHoTro("Tôi muốn đổi tài khoản nhận tiền sang: ngân hàng …, số tài khoản …, chủ tài khoản …");
   $("dang-xuat").onclick = dangXuat;
 }
@@ -152,6 +167,59 @@ function moHoTro(goiY) {
     const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: khoa, message: noi }) });
     if (!r.ok) { const j = await r.json().catch(() => ({})); $("ht-loi").textContent = j.errors?.[0]?.message || "Chưa gửi được, bác thử lại."; $("ht-loi").hidden = false; $("ht-gui").disabled = false; return; }
     dongTam(); await tai(); thongBao("Đã gửi. AgiViet sẽ trả lời bác sớm.");
+  };
+}
+// Nộp giấy tờ: chọn loại, số, hạn, chụp ảnh → chờ nhân viên đối chiếu
+function moNopGiayTo() {
+  traVe = document.activeElement; const khoa = crypto.randomUUID();
+  document.body.insertAdjacentHTML("beforeend", `<div class="to-che man-che" id="che"><div class="to-tam" role="dialog" aria-modal="true" aria-labelledby="t-gt">
+    <div class="than"><h2 id="t-gt">Nộp giấy tờ</h2>
+      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Chụp rõ cả tờ giấy. Nhân viên AgiViet đối chiếu rồi mới hiện "Đã xác minh" cho bên mua.</p>
+      <label class="to-nhan-o" for="gt-loai">Loại giấy tờ</label>
+      <select class="to-o" id="gt-loai">${hoSo.loai_giay_to.map((k) => `<option value="${esc(k.code)}">${esc(k.ten)}</option>`).join("")}</select>
+      <label class="to-nhan-o" for="gt-so">Số giấy tờ (nếu có)</label><input class="to-o" id="gt-so" maxlength="80" autocomplete="off">
+      <div id="gt-tt-khoi"><label class="to-nhan-o" for="gt-tt">Thị trường (mã vùng trồng: TQ, HQ, Mỹ…)</label><input class="to-o" id="gt-tt" maxlength="20"></div>
+      <label class="to-nhan-o" for="gt-han">Hết hạn ngày (nếu có)</label><input class="to-o" id="gt-han" type="date">
+      <label class="nut phu-nut to-nut" style="display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer">📷 <span id="gt-anh-chu">Chụp hoặc chọn ảnh giấy tờ</span><input id="gt-anh" type="file" accept="image/*" capture="environment" hidden></label>
+      <p class="to-bao do" id="gt-loi" hidden></p></div>
+    <div class="day"><button class="nut lui" type="button" id="gt-huy">Thôi</button><button class="nut chinh-nut" type="button" id="gt-gui">Nộp</button></div></div></div>`);
+  document.addEventListener("keydown", thoat);
+  $("che").addEventListener("click", (e) => { if (e.target.id === "che") dongTam(); });
+  $("gt-huy").onclick = dongTam;
+  const hienTT = () => { $("gt-tt-khoi").hidden = $("gt-loai").value !== "growing_area_code"; }; $("gt-loai").onchange = hienTT; hienTT();
+  let anh = null;
+  $("gt-anh").onchange = () => { const f = $("gt-anh").files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { anh = { mime: f.type || "image/jpeg", data: String(r.result).split(",")[1] }; $("gt-anh-chu").textContent = "Đã chọn ảnh ✓ (bấm để chụp lại)"; }; r.readAsDataURL(f); };
+  const loi = (c) => { $("gt-loi").textContent = c; $("gt-loi").hidden = false; };
+  $("gt-gui").onclick = async () => {
+    if (!anh) return loi("Bác chụp ảnh giấy tờ trước đã.");
+    $("gt-gui").disabled = true; $("gt-loi").hidden = true;
+    try {
+      const post = async (d, b) => { const r = await fetch(d, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify(b) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || "Chưa nộp được."); return j.data ?? j; };
+      const tep = await post("/v1/files", { idempotency_key: khoa + "-anh", mime: anh.mime, data_base64: anh.data, entity: "organization", entity_id: me.org.id, captured_in_app: true });
+      const kq = await post("/v1/seller/certifications", { idempotency_key: khoa, kind: $("gt-loai").value, number: $("gt-so").value.trim() || undefined, market: $("gt-tt-khoi").hidden ? undefined : $("gt-tt").value.trim() || undefined, valid_to: $("gt-han").value || undefined, evidence_document_id: tep.id });
+      dongTam(); await tai(); thongBao(kq.cau || "Đã nộp. Chờ nhân viên đối chiếu.");
+    } catch (e) { loi(e.message); $("gt-gui").disabled = false; }
+  };
+}
+// Đổi tên, địa chỉ vườn: cần nhân viên xác minh lại → gửi đề nghị
+function moSuaHoSo() {
+  traVe = document.activeElement; const khoa = crypto.randomUUID();
+  document.body.insertAdjacentHTML("beforeend", `<div class="to-che man-che" id="che"><div class="to-tam" role="dialog" aria-modal="true" aria-labelledby="t-hs">
+    <div class="than"><h2 id="t-hs">Đề nghị sửa thông tin</h2>
+      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Tên hộ, địa chỉ vườn, diện tích cần nhân viên xác minh lại nên không đổi ngay. Bác ghi điều cần sửa, nhân viên sẽ gọi cho bác.</p>
+      <textarea class="to-o" id="hs-noi" maxlength="600" placeholder="Ví dụ: vườn đã mở rộng thêm 3 công ở ấp Mỹ Thới"></textarea>
+      <p class="to-bao do" id="hs-loi" hidden></p></div>
+    <div class="day"><button class="nut lui" type="button" id="hs-huy">Thôi</button><button class="nut chinh-nut" type="button" id="hs-gui">Gửi</button></div></div></div>`);
+  document.addEventListener("keydown", thoat);
+  $("che").addEventListener("click", (e) => { if (e.target.id === "che") dongTam(); });
+  $("hs-huy").onclick = dongTam; $("hs-noi").focus();
+  $("hs-gui").onclick = async () => {
+    const noi = $("hs-noi").value.trim(); if (noi.length < 5) { $("hs-loi").textContent = "Bác ghi rõ hơn một chút."; $("hs-loi").hidden = false; return; }
+    $("hs-gui").disabled = true;
+    const r = await fetch("/v1/seller/profile-change", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: khoa, noi_dung: noi }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $("hs-loi").textContent = j.errors?.[0]?.message || "Chưa gửi được, bác thử lại."; $("hs-loi").hidden = false; $("hs-gui").disabled = false; return; }
+    dongTam(); await tai(); thongBao((j.data ?? j).cau || "Đã gửi đề nghị.");
   };
 }
 const thongBao = (chu, lop = "xanh") => { const b = document.createElement("p"); b.className = `to-bao ${lop}`; b.setAttribute("role", "status"); b.textContent = chu; $("noi").prepend(b); scrollTo({ top: 0 }); };

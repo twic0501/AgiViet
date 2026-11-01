@@ -457,6 +457,13 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Chưa nghe hiểu được lúc này.', fix: 'Bác gõ thông tin hoặc thử nói lại.' }] });
     }
   });
+  // ---------------- Hồ sơ người bán + nộp giấy tờ (0077) ----------------
+  const HS = () => import('../nghiep-vu/ho-so.ts');
+  app.get('/v1/seller/profile', async (req) => { const nd = await bo.xacThuc(req); const m = await HS(); return bo.doc((t) => m.hoSoNguoiBan(t, nd)); });
+  app.post('/v1/seller/certifications', async (req) => bo.lenh(req, 'nop_giay_to', 'seller', async (t, nd, b) => (await HS()).nopGiayTo(t, nd,
+    z.object({ kind: z.string().min(1), number: z.string().max(80).optional(), market: z.string().max(20).optional(), valid_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), evidence_document_id: uuid }).parse(b))));
+  app.post('/v1/seller/profile-change', async (req) => bo.lenh(req, 'de_nghi_sua_ho_so', 'seller', async (t, nd, b) => (await HS()).deNghiSuaHoSo(t, nd, z.object({ noi_dung: z.string().min(1).max(600) }).parse(b))));
+
   // ---------------- Tin nhắn hai bên (0076): theo lời chào giá hoặc hợp đồng, che liên lạc trước khi lưu ----------------
   const TN = () => import('../nghiep-vu/tin-nhan.ts');
   const cuocTin = z.object({ offer_id: uuid.optional(), order_id: uuid.optional() });
