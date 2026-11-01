@@ -23,6 +23,9 @@ const GHEP = {
   "can-khong-dung": { kb: "can-lech", kiem: "tệp này", ghi: "chỉ nhánh trong ±5%; nhánh vượt 5% chưa có" },
   "ban-vi-pham": { kb: "khong-giao", kiem: "tệp này", ghi: "bên mua đã trả trước 32,2 tr (v23 chưa trả) nên người bán trả lại thêm phần đó" },
   "nghiem-thu-im-lang": { kb: "im-lang", kiem: "tệp này" },
+  "bat-kha-khang": { kb: "bkk", kiem: "tệp này", ghi: "dừng sau khi ký bản sửa + hoàn cọc dư; nguồn bù 800 kg và phần giao tiếp chưa mô phỏng" },
+  "khac-mau": { kb: "khac-mau", kiem: "tệp này", ghi: "phiếu bồi hoàn chi phí dịch vụ chỉ ghi chữ, chưa vào sổ tiền" },
+  "hang-tra-lai": { kb: "hang-tra", kiem: "tệp này" },
   "tien-mat": { kb: "tien-mat", kiem: "tệp này", ghi: "v23 người bán tự chở tới kho; mô phỏng giữ lấy tại vườn rồi trả tiền mặt khi nhận" },
   "chua-tra": { kb: "chua-tra", kiem: "tệp này", ghi: "trên khung trả sau nghiệm thu (kb tra-sau = luồng chính v23 trả sau, cũng kiểm ở đây)" },
 };
@@ -190,6 +193,47 @@ await buoc("[tien-mat] Chốt số → bên mua trả tiền mặt 30.550.000 tr
   await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /đếm đủ/i); await banKb("xn-sau");
   await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng/); assert.equal((await hd()).buoc, 14);
   assert.deepEqual(await tienMua(), [44488000, 0, 44350000]);
+});
+
+// ── bat-kha-khang ──
+await napKb("bkk", { buoc: 5 });
+await buoc("[bat-kha-khang] Báo thiệt hại → nhân viên xác nhận → thương lượng → ký bản sửa 1.200 kg → hoàn cọc dư, không ai bị phạt", async () => {
+  await moBan("man=chi-tiet-don"); await banKb("bao-bkk"); assert.equal((await hd()).phu, "bkk");
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /chỉ giao được 1\.200 kg/);
+  await muaLam(/nhân viên xác nhận/); await muaLam(/Đề nghị: nhận 1\.200 kg/); assert.equal((await hd()).phu, "bkk-de");
+  await moBan("man=chi-tiet-don"); await banKb("bkk-ok"); assert.equal((await hd()).ban, 2);
+  await moMua("chi-tiet-don"); await muaLam(/Ký bản sửa/);
+  await moBan("man=chi-tiet-don"); await banKb("bkk-ky-ban"); assert.equal((await hd()).phu, "bkk-hoan");
+  await moMua("chi-tiet-don"); await muaLam(/hoàn cọc dư/); assert.equal((await hd()).bkkXong, true);
+  assert.deepEqual(await tienMua(), [8418000, 8280000, 0], "bên mua còn chi cọc 1.200 kg + phí; ngân hàng giữ 8.280.000");
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /giao 1\.200 kg/);
+  assert.equal(await ban.evaluate(() => Number(document.querySelector("#o-nh b").dataset.v)), 8280000);
+});
+
+// ── khac-mau ──
+await napKb("khac-mau", { buoc: 10, daTra: 32200000, nbXn: 32200000 });
+await buoc("[khac-mau] Báo khác mẫu → kiểm định: lỗi người bán → nghiệm thu lại 180 kg trả lại → người bán chốt theo kết luận", async () => {
+  await moMua("chi-tiet-don"); await muaLam(/khác mẫu/); assert.equal((await hd()).phu, "km");
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /khác mẫu lúc bốc/);
+  await moMua("chi-tiet-don"); await muaLam(/kiểm định kết luận/); assert.equal((await hd()).phu, "km-kl");
+  assert.match(await viecMua(), /trả lại 180 kg/);
+  await muaLam(/Gửi kết quả/); assert.equal((await hd()).buoc, 11);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /lỗi bác/);
+  await moBan("man=ket-qua"); assert.match(await ban.locator(".m-than").innerText(), /180 kg/); await ban.click("#dy"); await cho(1800);
+  assert.equal((await hd()).buoc, 12);
+  await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng/);
+  assert.equal((await tienMua())[2], 1700 * 23000 + 120 * 15000, "chị Năm nhận theo nghiệm thu lại 1.700 + 120 kg");
+});
+
+// ── hang-tra-lai ──
+await napKb("hang-tra", { buoc: 12, daTra: 32200000, nbXn: 32200000 });
+await buoc("[hang-tra-lai] 30 kg trả lại giữ ở kho bên mua → chị Năm chọn bán gấp → hồ sơ đóng → bên mua nhập kho", async () => {
+  await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng chi cọc/); await muaLam(/Đã nhận lại 1\.650\.000/); assert.equal((await hd()).buoc, 14);
+  assert.match(await viecMua(), /Chờ chị Năm chọn cách xử lý 30 kg/);
+  assert.equal(await mua.locator(".sl-viec .sl-vang").count(), 0, "chưa xử lý xong hàng trả lại thì chưa nhập kho");
+  await moBan("man=chi-tiet-don"); await banKb("ban-gap"); assert.equal((await hd()).hangChon, "ban-gap");
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /bán gấp tại chỗ/); await muaLam(/xử lý xong/);
+  await muaLam(/Nhập kho/); assert.equal((await hd()).buoc, 15);
 });
 
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });

@@ -13,16 +13,34 @@ function tienO(b) {
   let cho = b >= 15 ? 0 : Math.max(0, (b >= 11 ? t.nt : TIEN.GIA_TRI) - nhan);
   if (h.huy) { nhan = TIEN.COC; giu = 0; cho = 0; }
   if (h.no) { nhan = TIEN.COC; giu = 0; cho = t.nt - TIEN.COC; }
+  if (h.kb === "bkk" && h.bkkXong) { nhan = 0; giu = BKK_COC; cho = 1200 * 23000; }
   if (h.vp) { nhan = h.vpXong || h.phu === "nb-da-tra-vp" ? 0 : h.nbXn || 0; giu = h.huy ? 0 : TIEN.COC; cho = 0; }
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--ke);background:var(--giay-noi)">
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
 // Kịch bản do app mua nạp (giao-dich-chung.js): những lúc tới lượt chị Năm làm
-const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả", "tien-mat": "Tiền mặt khi nhận" };
+const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả", "tien-mat": "Tiền mặt khi nhận", bkk: "Bất khả kháng", "khac-mau": "Hàng tới khác mẫu lúc bốc", "hang-tra": "Xử lý hàng bị trả lại" };
+const BKK_COC = 1200 * 23000 * 0.3;
 const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra" || h.kb === "tien-mat";
 const nutKb = (chu, lam, lop = "m-vang") => `<button class="m-nut ${lop} m-rong" type="button" data-kb="${lam}">${esc(chu)}</button>`;
 function viecKichBan() {
   const h = docHD(), t = tinhTien(h);
+  if (h.kb === "bkk") {
+    if (h.bkkXong) return viec("Đơn đã sửa: giao 1.200 kg (bản 2)", "Bên mua đã nhận lại cọc dư. Không ai bị phạt. Phần giao 1.200 kg chạy tiếp như luồng thuận (mô phỏng dừng ở đây).", "", "m-cho");
+    if (!h.phu && h.buoc === 5) return viec("Vườn bị thiệt hại?", "Mưa đá, ngập, sâu bệnh làm không đủ hàng thì báo ngay kèm ảnh vườn. Nhân viên AgiViet đến xác nhận; đủ điều kiện miễn trách thì không ai bị phạt.", `<div style="display:grid;gap:8px">${nutKb("Báo bất khả kháng: chỉ giao được 1.200 kg", "bao-bkk", "m-phu")}</div>`);
+    if (h.phu === "bkk") return viec("Đã báo thiệt hại", "Chờ nhân viên AgiViet đến vườn xác nhận.", "", "m-cho");
+    if (h.phu === "bkk-tl") return viec("Thiệt hại đã được xác nhận", "Chờ bên mua đề nghị: giảm lượng, dời lịch hoặc nguồn bù.", "", "m-cho");
+    if (h.phu === "bkk-de") return viec("Bên mua đề nghị: nhận 1.200 kg + tìm nguồn bù 800 kg", "Đồng ý thì soạn bản sửa 1.200 kg. Không ai bị phạt.", nutKb("Đồng ý đề nghị", "bkk-ok"));
+    if (h.phu === "bkk-ky") return viec("Chờ bên mua ký bản sửa", "Bản 2: 1.200 kg · 27.600.000 đ.", "", "m-cho");
+    if (h.phu === "bkk-cho-ban") return viec("Ký bản sửa 1.200 kg", "Bên mua đã ký bản 2.", nutKb("Ký bản sửa", "bkk-ky-ban"));
+    if (h.phu === "bkk-hoan") return viec("Hai bên đã ký bản sửa", "Ngân hàng đang hoàn cọc dư cho bên mua.", "", "m-cho");
+  }
+  if (h.kb === "khac-mau" && h.phu === "km") return viec("Bên mua báo hàng tới khác mẫu lúc bốc", "180 kg đang giữ ở kho lạnh. Mẫu niêm phong M-2291 đang kiểm định so mẫu.", "", "m-cho");
+  if (h.kb === "khac-mau" && h.phu === "km-kl" && h.buoc <= 11) return viec("Kết luận: sai từ lúc bốc (lỗi bác)", "180 kg khác mẫu bị trả lại. Bác chịu phí kho lạnh và kiểm định 1.050.000 đ (phiếu bồi hoàn).", h.buoc === 11 ? `<div>${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>` : "", h.buoc === 11 ? "" : "m-cho");
+  if (h.kb === "hang-tra" && h.buoc >= 12 && h.buoc < 15 && !h.hangXong) {
+    if (!h.hangChon) return viec("30 kg trả lại đang giữ tại kho Đồng Xanh (Bến Lức)", "Bác chọn trong 48 giờ: bán gấp tại chỗ (AgiViet báo bên nhận hàng kém loại gần đó) hoặc nhận lại, tự lo xe. Quá hạn thì xử lý theo điều khoản.", `<div style="display:grid;gap:8px">${nutKb("Bán gấp tại chỗ", "ban-gap")}${nutKb("Nhận lại, tự lo xe", "nhan-lai", "m-phu")}</div>`);
+    return viec(h.hangChon === "ban-gap" ? "Bác chọn bán gấp tại chỗ" : h.hangChon === "nhan-lai" ? "Bác nhận lại 30 kg" : "Quá hạn chọn: xử lý theo điều khoản", "AgiViet đã báo các bên nhận hàng kém loại gần Long An.", "", "m-cho");
+  }
   if (h.no) return viec("Đơn đóng: bên mua chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(TIEN.COC)} cho bác. Bên mua còn nợ ${d(t.nt - TIEN.COC)}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho bác.`, "", "m-cho");
   if (TS(h) && h.buoc === 12 && !h.traSauXong) {
     const x = t.nt - TIEN.COC;
@@ -97,7 +115,7 @@ export const MAN_3 = {
       el.querySelectorAll("[data-kb]").forEach((b) => b.addEventListener("click", async () => {
         await api.xong(b, "Đã gửi");
         const P = { "huy-ok": { huy: true, phu: "" }, "huy-khong": { phu: "" }, "de-nghi": { phu: "de-nghi", daDeNghi: true }, lech: { phu: "lech", nbXn: 20000000 }, "phan-doi": { phu: "phan-doi", daPhanDoi: true }, kd: { phu: "kiem-dinh" }, "nb-hoan": { phu: "nb-da-hoan" }, "khong-giao": { phu: "vi-pham", vp: true }, "nb-tra-vp": { phu: "nb-da-tra-vp" } }[b.dataset.kb];
-        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : b.dataset.kb === "xn-sau" ? { nbXn: x.daTra, phu: "", traSauXong: true } : b.dataset.kb === "qua-han-sau" ? { phu: "qua-han" } : P) })); api.veLai();
+        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : b.dataset.kb === "xn-sau" ? { nbXn: x.daTra, phu: "", traSauXong: true } : b.dataset.kb === "qua-han-sau" ? { phu: "qua-han" } : ({ "bao-bkk": { phu: "bkk" }, "bkk-ok": { phu: "bkk-ky", ban: 2 }, "bkk-ky-ban": { phu: "bkk-hoan" }, "ban-gap": { hangChon: "ban-gap" }, "nhan-lai": { hangChon: "nhan-lai" } })[b.dataset.kb] || P) })); api.veLai();
       }));
       const kbDang = docHD().kb; if (kbDang && kbDang !== "thuan") el.querySelector(".m-than").insertAdjacentHTML("afterbegin", `<p class="m-ghi">Kịch bản thử đang chạy: <b>${esc(TEN_KB[kbDang] || kbDang)}</b> (nạp từ app mua).</p>`);
     } },

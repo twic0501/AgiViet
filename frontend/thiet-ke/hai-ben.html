@@ -45,7 +45,7 @@
 </div>
 <script type="module">
 import { datLaiHD, docHD, K_TC } from "./giao-dich-chung.js";
-const KB = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền"], ["tra-lai", "5 · Trả lại nhiều"], ["phan-doi", "6 · Phản đối một dòng"], ["can-lech", "7 · Cân lệch trong ±5%"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"]];
+const KB = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền"], ["tra-lai", "5 · Trả lại nhiều"], ["phan-doi", "6 · Phản đối một dòng"], ["can-lech", "7 · Cân lệch trong ±5%"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"]];
 const sel = document.getElementById("kb");
 sel.innerHTML = KB.map(([k, t]) => `<option value="${k}" ${docHD().kb === k ? "selected" : ""}>${t}</option>`).join("");
 const taiLai = () => { for (const id of ["ban", "mua"]) { const f = document.getElementById(id); f.src = f.src; } };
