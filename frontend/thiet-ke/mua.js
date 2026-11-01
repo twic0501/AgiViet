@@ -978,28 +978,57 @@ if (THAT) {
     const toiLuot = o.status === "sent" && v.from_side === "seller", choHo = o.status === "sent" && v.from_side === "buyer";
     const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "";
     return `<section class="sl-the" data-of="${o.id}" style="display:grid;gap:8px">
-      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(o.code)} · lô ${esc(o.lot_code || "")}</b><span class="sl-nhan${toiLuot ? " sl-n-xong" : ""}">${toiLuot ? "Tới lượt bạn" : choHo ? "Chờ người bán" : esc(TT[o.status] || o.status)}</span></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(o.code)} · lô ${esc(o.lot_code || "")}</b><span class="sl-nhan${toiLuot ? " sl-n-xong" : ""}">${toiLuot ? "Tới lượt bạn" : choHo ? "Chờ người bán" : o.don ? "Đã lập đơn" : esc(TT[o.status] || o.status)}</span></div>
       <div>${v.from_side === "buyer" ? (v.round_no > 1 ? "Bạn trả giá" : "Bạn chào") : (v.round_no > 1 ? "Người bán trả giá" : "Người bán báo giá")} · vòng ${v.round_no || 1}: <b>${so(gia)} đ/kg × ${kg(kgv)}</b></div>
       ${o.status === "sent" && han ? `<p class="sl-ghi">Hạn trả lời: ${han}</p>` : ""}
       ${toiLuot ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sl-nut sl-vang" data-lam="accept">Đồng ý giá này</button><button class="sl-nut sl-vien" data-lam="counter">Trả giá</button><button class="sl-nut sl-vien" data-lam="reject">Không mua</button></div>
         <div data-o-tra hidden style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><label style="display:grid;gap:4px;font-weight:600">Giá mới (đ/kg)<input inputmode="numeric" data-gia style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label><button class="sl-nut sl-vang" data-lam="gui-tra">Gửi giá</button></div>` : ""}
       ${choHo ? `<div><button class="sl-nut sl-vien" data-lam="withdraw">Rút lời chào</button></div>` : ""}
-      ${o.status === "accepted" ? `<p class="sl-ghi">Đồng ý giá chưa phải hợp đồng. Bước sau: lập đơn và hai bên ký.</p>` : ""}
+      ${o.status === "accepted" && !o.don ? `<p class="sl-ghi">Đồng ý giá chưa phải hợp đồng. Lập đơn rồi hai bên ký mới thành hợp đồng.</p>
+      <details data-lap><summary class="sl-nut sl-vang" style="list-style:none;display:inline-flex">Lập đơn từ giá này</summary>
+        <div style="display:grid;gap:10px;margin-top:10px">
+          <label style="display:grid;gap:4px;font-weight:600">Ngày nhận hàng tại vườn (bạn lo xe)<input type="date" data-ngay value="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Trả tiền hàng<select data-tra style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"><option value="on_receipt">Khi nhận hàng</option><option value="before_loading">Trước khi bốc hàng</option><option value="after_days">Trả sau (ngày)</option></select></label>
+          <label data-o-ngay hidden style="display:grid;gap:4px;font-weight:600">Số ngày trả sau<input inputmode="numeric" data-sau value="7" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Giá nếu hàng xuống loại (đ/kg)<input inputmode="numeric" data-hc value="${Math.round(gia * 0.65 / 100) * 100}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <p class="sl-ghi">Người bán thấy và chấp thuận riêng giá xuống loại khi ký. Dưới 50% giá đơn sẽ bị cảnh báo đỏ.</p>
+          <button class="sl-nut sl-vang" data-lam="lap-don">Gửi đơn cho người bán xem và ký</button>
+        </div></details>` : ""}
+      ${o.don ? `<p class="sl-ghi">Đã lập đơn <b>${esc(String(o.don.code).replace(/^HD-/, "HĐ-"))}</b>. Theo dõi ký, cọc, giao ở mục <a href="?man=don-hang">Đơn</a>.</p>` : ""}
       <p class="sl-ghi" data-bao role="status"></p></section>`;
   };
   man["bao-gia"] = { tieuDe: "Lời chào giá", phu: "Lời bạn chào và báo giá người bán gửi · dữ liệu thật",
     ve: () => `<div id="lc-ds" style="display:grid;gap:12px"><p class="sl-ghi">Đang tải…</p></div>`,
     sau: async (g) => {
       const ve = async () => {
-        DS = (await api("/v1/offers")).filter((o) => o.la_ben_mua !== false);
+        const [lc, dn] = await Promise.all([api("/v1/offers"), api("/v1/orders").catch(() => [])]);
+        const theoOf = new Map((dn.items || dn).filter((d) => d.offer_id).map((d) => [d.offer_id, d]));
+        DS = lc.filter((o) => o.la_ben_mua !== false).map((o) => ({ ...o, don: theoOf.get(o.id) }));
         const uu = (o) => (o.status === "sent" && o.vong_cuoi?.from_side === "seller" ? 0 : o.status === "sent" ? 1 : o.status === "accepted" ? 2 : 3);
         DS.sort((a, b) => uu(a) - uu(b));
         g.querySelector("#lc-ds").innerHTML = DS.length ? DS.map(veThe).join("") : `<p class="sl-ghi">Chưa có lời chào nào. Vào Nguồn hàng để chào giá một lô.</p>`;
       };
+      g.querySelector("#lc-ds").onchange = (e) => { const t = e.target.closest("[data-tra]"); if (t) t.closest("[data-of]").querySelector("[data-o-ngay]").hidden = t.value !== "after_days"; };
       g.querySelector("#lc-ds").onclick = async (e) => {
         const b = e.target.closest("[data-lam]"); if (!b) return;
         const the2 = b.closest("[data-of]"), o = DS.find((x) => x.id === the2.dataset.of), bao2 = the2.querySelector("[data-bao]"), lam = b.dataset.lam;
         if (lam === "counter") { the2.querySelector("[data-o-tra]").hidden = false; return; }
+        if (lam === "lap-don") {
+          const ngay = the2.querySelector("[data-ngay]").value, tra = the2.querySelector("[data-tra]").value, hc = Number(the2.querySelector("[data-hc]").value.replace(/\D/g, ""));
+          if (!ngay) { bao2.textContent = "Chọn ngày nhận hàng."; return; }
+          const tu = new Date(ngay + "T07:00:00+07:00");
+          if (tu.getTime() < Date.now()) { bao2.textContent = "Ngày nhận phải sau hôm nay."; return; }
+          b.disabled = true; bao2.textContent = "Đang lập đơn…";
+          try {
+            const me = await api("/v1/me");
+            const don = await api("/v1/orders", { offer_id: o.id, delivery_mode: "at_farm", transport_by: "buyer", delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(),
+              payment_timing: tra, ...(tra === "after_days" ? { pay_after_days: Number(the2.querySelector("[data-sau]").value) || 7 } : {}), ...(hc ? { downgrade_price_vnd: hc } : {}),
+              designated_receiver_user_id: me.user?.user_id ?? me.user_id, silent_accept_hours: 2 });
+            bao2.innerHTML = `<b>Đã lập đơn ${esc(don.code || "")}</b>. Người bán xem và ký trước; tới lượt bạn ký sẽ báo ở mục Đơn.`;
+            the2.querySelector("[data-lap]").remove();
+          } catch (err) { bao2.textContent = err.message; b.disabled = false; }
+          return;
+        }
         try {
           b.disabled = true; bao2.textContent = "Đang gửi…";
           if (lam === "accept") await api(`/v1/offers/${o.id}/accept`, { expected_revision: o.revision });
