@@ -39,6 +39,14 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 14 | cầm điện thoại | nhắc mở app ngân hàng, kiểm tiền |
 | 15 | ghi sổ (cầm sổ mở) | nhật ký vườn, sổ tiền |
 | 16 | vui dang tay (mắt cười, lắc lư) | đăng bài xong |
+| 17 | chỉ sang trái (tay trái ngón trỏ, đầu + mắt theo) | tour rọi đèn |
+| 18 | chỉ xuống (tay ngón trỏ chéo xuống) | tour: thanh tab dưới, nút Đăng bài |
+| 19 | chỉ lên (tay ngón trỏ chéo lên) | tour: chuông thông báo, nút hỗ trợ |
+| 20 | cầm phong bì tiền, mắt cười, nhún | tiền đã về, ngân hàng chuyển cọc |
+| 21 | cầm giấy + bút ký | ký thoả thuận, ký bản sửa |
+| 22 | cảnh báo: tay giơ chặn, mày chau, biển "!" đỏ trên đầu | chống lừa |
+| 23 | ngủ gật cạnh chuông | chưa có thông báo |
+| 24 | ngạc nhiên (mắt to, mày nhướng) | bong bóng nhỏ |
 
 Lưu ý: số 2 hiện chỉ chỉ sang **phải màn hình**; chỉ trái/phải theo `huong` cần góc ¾ (đang gác).
 
@@ -77,5 +85,15 @@ Tạo lại: `python3 frontend/trau-rive/xuat-tu-the.py`.
 | 10-dien-thoai | cầm điện thoại | 14 |
 | 11-mung | đỉnh cú nhảy, co chân, hai tay giơ | 4 |
 | 12-ghi-so | cầm sổ | 15 (`ghi-so`) |
+| 13-chi-trai | chỉ trái | 17 |
+| 14-chi-xuong | chỉ xuống | 18 |
+| 15-chi-len | chỉ lên | 19 |
+| 16-cam-tien | cầm phong bì tiền | 20 |
+| 17-ky-giay | ký giấy | 21 |
+| 18-canh-bao | cảnh báo | 22 |
+
+## Thêm 1/11 (YEU-CAU-THEM-0111) trong `frontend/assets/trau/anh/`
+- Màn trống @2x/@3x WebP + PNG: `trong-chua-co-nhat-ky` (cầm sổ), `trong-chua-co-thong-bao` (ngủ cạnh chuông), `trong-loi` (cúi xin lỗi).
+- Đầu nhỏ `trau_nho` 48 px @2x/@3x WebP + PNG, mỗi cái có bản `-toi` (viền ngà): `dau-vui`, `dau-lo`, `dau-ngac-nhien`, `dau-ngu`.
 
 Âm thanh: chưa làm.

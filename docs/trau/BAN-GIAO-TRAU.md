@@ -234,6 +234,9 @@ Rà soát (ChatGPT/Claude 1): hình đạt C01; lệch ở cách gắn → chỉ
 
 Rà soát lần 2 (12/12 ảnh đúng C01) → sửa nốt: 11 mừng nhảy cao 24 px, co chân 18 px; 06 vui tay chéo lên (.55) vung lệch pha, hết cứng; "…" nền chấm .6 (không còn chấm mờ); 09 thúng hạ 7 px, trái cây cách khăn.
 
+#### YEU-CAU-THEM-0111 — ưu tiên 1 + 3 (1/11 tối)
+Chốt: chỉ chính diện, bỏ hẳn ¾ / nghiêng / sau lưng. Thêm hành động 17–24 (chỉ trái — tay trái có bản 'chi'; chỉ xuống/lên — xoay bản 'chi' quanh vai, lên chỉ −0,45 rad để bàn tay không chui sau đầu; cầm phong bì; ký giấy — bút vẽ trên tay phải, viết qua lại; cảnh báo — tay ngang vai + biển "!"; ngủ cạnh chuông; ngạc nhiên). Đạo cụ mới vẽ tay: `nguon/dao-cu/phong-bi.svg`, `but.svg`, `chuong.svg`, `canh-bao.svg`. `xuat-tu-the.py` xuất thêm (VIEC_THEM): tư thế 13–18, màn trống, đầu nhỏ (artboard nhỏ dựng riêng, nét ×1,7, `AGV_CO` cho mọi cỡ).
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.
