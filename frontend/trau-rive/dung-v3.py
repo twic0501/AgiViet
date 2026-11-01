@@ -464,7 +464,7 @@ class Goc:
             _hy = sum(p_[1] for p_ in du['chinh-ngang']['ban']) / len(du['chinh-ngang']['ban'])
             _b = du['chinh-buong']['ban']; _bx = 512 - sum(p_[0] for p_ in _b) / len(_b); _by = sum(p_[1] for p_ in _b) / len(_b)
             _n = du['chinh-nghi']['ban']; _nx = 512 - sum(p_[0] for p_ in _n) / len(_n); _ny = sum(p_[1] for p_ in _n) / len(_n)
-            DO.update({'xoai-to': ('xoai', '42 28', 214, 330, .95, 'tren'), 'xoai-nho': ('xoai', '42 28', 300, 336, .68, 'tren'),
+            DO.update({'xoai-to': ('xoai', '42 28', 212, 344, .95, 'tren'), 'xoai-nho': ('xoai', '42 28', 302, 348, .7, 'tren'),
                        'binh-xit': ('binh-xit', '36 62', _bx + 4, _by - 30, .78, 'tren'),   # cầm ở tay phải đang buông
                        'tay-dung': ('tay-dung', '32 40', _nx + 2, _ny - 10, 1.05, 'tren')})  # bàn tay "dừng" trùm bàn tay chống má
         self.do_cam, ruot_do, ruot_tren = {}, '', ''
@@ -1581,7 +1581,7 @@ def main():
                     *chan_k(g, 'phai', [(0, 0), (60, 0), (66, 6), (72, 0), (90, 0), (96, 6), (102, 0), (200, 0)])]
 
         def non_la_fn(g):     # 33 đội nón lá ngày nắng: mắt nheo, lắc lư thong thả
-            return hien_do(g, 'non-la') + [*mat(g, 'scaleY', [(0, .7), (200, .7)]),
+            return hien_do(g, 'non-la') + hien_do(g, 'quai-non') + [*mat(g, 'scaleY', [(0, .7), (200, .7)]),
                     khung(g.id['nghich'], 'rotation', [(0, 0), (50, .015), (100, 0), (150, -.015), (200, 0)]),
                     *tay_k(g, 'trai', [(0, 0), (200, 0)]), *tay_k(g, 'phai', [(0, 0), (200, 0)]),
                     *duoi_theo(g, [(f, .15 * math.sin(2 * math.pi * f / 100)) for f in range(0, 201, 25)])]
@@ -1592,8 +1592,8 @@ def main():
                     khung(g.id['dau-nghich'], 'y', [(0, -2), (100, -3), (200, -2)])]
 
         def so_sanh_fn(g):    # 35 so sánh: hai tay đưa thấp trước ngực, mỗi tay một quả xoài (to / nhỏ); mắt + đầu nhìn trái rồi phải
-            return [*bs(g, 'trai', 'giay', [(0, 0), (4, 0), (18, .9), (170, .9), (186, 0), (200, 0)]),
-                    *bs(g, 'phai', 'giay', [(0, 0), (6, 0), (20, .9), (170, .9), (186, 0), (200, 0)]),
+            return [*bs(g, 'trai', 'giay', [(0, 0), (4, 0), (18, 1), (170, 1), (186, 0), (200, 0)]),
+                    *bs(g, 'phai', 'giay', [(0, 0), (6, 0), (20, 1), (170, 1), (186, 0), (200, 0)]),
                     *hien_do(g, 'xoai-to', 16, 168), *hien_do(g, 'xoai-nho', 18, 168),
                     *mat(g, 'x', [(0, 0), (20, -3), (70, -3), (84, 3), (140, 3), (156, 0), (200, 0)]),
                     *mat(g, 'y', [(0, 0), (20, 2), (156, 2), (170, 0), (200, 0)]),
