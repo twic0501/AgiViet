@@ -1,4 +1,4 @@
-# Trâu v4 — hợp đồng nối với giao diện (1/11, chờ duyệt)
+# Trâu v4 — hợp đồng nối với giao diện (1/11, ĐÃ DUYỆT)
 
 Tệp: `frontend/assets/trau/trau-v4.riv` (≈558 KB, hai artboard). `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
 
