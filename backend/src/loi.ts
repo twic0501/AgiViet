@@ -104,7 +104,9 @@ export function anhXaLoiDb(e: any): LoiNghiepVu | null {
   const msg: string = String(e.message ?? '');
   if (hint && HINT_MA[hint]) return new LoiNghiepVu(HINT_MA[hint], undefined, { db: hint });
   if (hint && MA_LOI[hint]) return new LoiNghiepVu(hint, undefined, { db: hint });
-  if (hint && hint.startsWith('ck_') ) return new LoiNghiepVu('TRANG_THAI_KHONG_CHO_PHEP', undefined, { db: hint, thong_bao: msg.slice(0, 160) });
+  // Lý do DB viết sẵn tiếng Việt ("Chuyến vượt tải", "Chưa đủ tiền trước bốc"…) → đưa lên câu báo chính thay câu chung chung
+  const roRang = msg && msg.length <= 160 && /[à-ỹđ]/i.test(msg) ? `${msg.replace(/[.\s]+$/, '')}.` : undefined;
+  if (hint && hint.startsWith('ck_') ) return new LoiNghiepVu('TRANG_THAI_KHONG_CHO_PHEP', roRang, { db: hint, thong_bao: msg.slice(0, 160) });
   if(e.code==='42501')return new LoiNghiepVu('CHUA_HO_TRO','Đường DB này chưa có command hoặc chưa được cấp quyền runtime; backend không chạy dự phòng bằng owner.');
   if (e.code === '23505') {
     if (/bank_txn_ref|txn/i.test(msg) || /bank_txn_ref/.test(String(e.constraint ?? ''))) return new LoiNghiepVu('MA_GIAO_DICH_TRUNG');
@@ -112,6 +114,6 @@ export function anhXaLoiDb(e: any): LoiNghiepVu | null {
   }
   if (e.code === '23514' || e.code === '23503' || e.code === '23P01') return new LoiNghiepVu('DU_LIEU_KHONG_HOP_LE', undefined, { db: e.constraint ?? e.code, thong_bao: msg.slice(0, 160) });
   if (e.code === '40001' || e.code === '40P01') return new LoiNghiepVu('REVISION_XUNG_DOT', 'Xung đột đồng thời, thử lại.');
-  if (e.code === 'P0001') return new LoiNghiepVu('TRANG_THAI_KHONG_CHO_PHEP', undefined, { db: hint ?? null, thong_bao: msg.slice(0, 160) });
+  if (e.code === 'P0001') return new LoiNghiepVu('TRANG_THAI_KHONG_CHO_PHEP', roRang, { db: hint ?? null, thong_bao: msg.slice(0, 160) });
   return null;
 }

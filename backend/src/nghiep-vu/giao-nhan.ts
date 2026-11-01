@@ -86,7 +86,11 @@ export async function theSanSang(t: GiaoDich, deliveryId: string): Promise<DongT
   const hoSoThieu: string[] = [];
   for (const need of (await t.gtri<string[]>(`SELECT required_docs FROM core.demands WHERE id=$1`, [o.demand_id])) ?? []) {
     const kind = need.startsWith('ma_vung_trong') ? 'growing_area_code' : need === 'nhat_ky_cach_ly' ? 'spray_diary' : need === 'nhat_ky_ao' ? 'pond_diary' : need === 'kiem_dinh:cadimi_vang_o' ? 'cadmium_test' : need === 'kiem_dinh:khang_sinh' ? 'antibiotic_test' : need;
-    const co = await t.mot(`SELECT 1 FROM core.certifications c WHERE c.org_id=$1 AND c.kind=$2 AND c.verified_at IS NOT NULL AND c.revoked_at IS NULL`, [o.seller_org_id, kind]);
+    // Cùng điều kiện với chốt chặn DB (0036): đã xác minh, chưa thu hồi, còn hạn tại ngày giao, đúng thị trường (mã vùng trồng).
+    const thiTruong = need.startsWith('ma_vung_trong:') ? need.split(':')[1] : null;
+    const co = await t.mot(`SELECT 1 FROM core.certifications c WHERE c.org_id=$1 AND c.kind=$2 AND c.verified_at IS NOT NULL AND c.revoked_at IS NULL
+        AND (c.valid_during IS NULL OR c.valid_during @> (upper($3::tstzrange) AT TIME ZONE 'Asia/Ho_Chi_Minh')::date) AND ($4::text IS NULL OR c.market=$4)`,
+      [o.seller_org_id, kind, d.delivery_window, thiTruong]);
     if (!co) hoSoThieu.push(need);
   }
   const deNghi = Number(await t.gtri(`SELECT count(*) FROM core.amendments WHERE order_id=$1 AND (status='open' OR (status='accepted' AND resulting_version_no>$2))`, [o.id, o.effective_version_no]));

@@ -49,7 +49,7 @@ export function quetLienLacDayDu(t) {
   });
   if (chuoiChu) cacChuoi.push(chuoiChu);
   const coChu = thayChu || tu.some((w) => w in SO_CHU && w !== "o" && w !== "le" && w !== "tu" && w !== "nam");
-  const lienSo = x.replace(/[\s.\-_/,()]+/g, "");
+  const lienSo = x.replace(/[\s.\-_/,()·・|]+/g, "");
   const sdtSo = /(?:\+?84|0)\d{8,10}/.test(lienSo.replace(/\+/g, "+"));
   const sdtChu = coChu && cacChuoi.some((c) => /(?:84|0)\d{8,10}/.test(c));
   const stk = new RegExp(`\\b(${NGAN_HANG})\\b[^\\d]{0,12}(\\d[\\s.-]?){6,}`).test(x);
@@ -70,7 +70,7 @@ export function quetLienLacDayDu(t) {
     .replace(EMAIL, "•••")
     .replace(LINK, "•••")
     .replace(HANDLE, (m, a) => `${a}•••`)
-    .replace(/(?:\+?84|0)[\s.\-_/,()]*(?:\d[\s.\-_/,()]*){8,10}/g, "••• ••• •••")
+    .replace(/(?:\+?84|0)[\s.\-_/,()·・|]*(?:\d[\s.\-_/,()·・|]*){8,10}/g, "••• ••• •••")
     .replace(new RegExp(`(\\b(?:${NGAN_HANG})\\b[^\\d]{0,12})((?:\\d[\\s.-]?){6,})`, "gi"), (m, a) => `${a}•••`)
     .replace(/(^|[^\p{L}])(zalo|za lô|za lo|dê lô|de lo|da lô|da lo|zl|facebook|fb|phây|phay|messenger|viber|telegram|tiktok|instagram)(?![\p{L}])/giu, (m, a) => `${a}•••`);
   // đã có kênh nhắn ngoài thì che luôn mẩu số đi kèm (≥ 3 chữ số), kể cả số chưa đủ dài

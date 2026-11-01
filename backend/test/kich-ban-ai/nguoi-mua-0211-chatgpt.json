@@ -1,0 +1,664 @@
+{
+  "kich_ban": [
+    {
+      "ma": "MUA-01",
+      "ten": "Chào dưới giá kín, ép giá rồi cố đổi giá đã được chấp nhận",
+      "tinh_cach": "Đồng Xanh tiết kiệm, liên tục thử hạ giá; chỉ biết ngân sách của mình, không được xem giá kín người bán.",
+      "vai": {"mua": "0909000213"},
+      "buoc": [
+        {
+          "lam": "chao",
+          "ai": "0909000213",
+          "lo": "L-0412",
+          "kg": 500,
+          "gia": 18000,
+          "mong_doi": "Lời chào dưới mức người bán chấp nhận bị tự từ chối; thông báo không tiết lộ giá kín. Chưa giữ lượng, chưa phát sinh hợp đồng.",
+          "can_cu": "quy-trinh.json v23: vai[id=mua].khong, quy tắc Ghép giấu giá; du-lieu-cho.json: lo[ma=L-0412]; backend/src/nghiep-vu/loi-chao.ts: guiLoiChao."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Đối tác ảo không trả giá cho lời chào đã tự từ chối.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1 chỉ phản hồi lời chào có status=sent."
+        },
+        {
+          "lam": "xem",
+          "ai": "0909000213",
+          "mong_doi": "Vẫn là lời chào bị từ chối; không hiện giá thấp nhất kín, không coi khoảng chờ là người bán đồng ý.",
+          "can_cu": "quy-trinh.json v23: vai[id=mua].khong; backend/src/nghiep-vu/loi-chao.ts: xemLoiChao."
+        },
+        {
+          "lam": "chao",
+          "ai": "0909000213",
+          "lo": "L-0412",
+          "kg": 500,
+          "gia": 23000,
+          "mong_doi": "Tạo lời chào mới 500 kg, giá 23.000 đ/kg; chưa có hợp đồng và chưa tự khóa lượng chỉ vì đã gửi.",
+          "can_cu": "quy-trinh.json v23: tinh_huong[id=chinh], bước Chào giá và Đồng ý giá; du-lieu-cho.json: L-0412."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả vòng 2 ở mức 23.700 đ/kg, theo quy tắc tăng 3% và làm tròn tới 100 đồng.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
+        },
+        {
+          "lam": "tra_gia",
+          "ai": "0909000213",
+          "gia": 21600,
+          "mong_doi": "Gửi đề nghị mua 21.600 đ/kg trong lời chào; chưa được tự coi người bán đã chấp nhận.",
+          "can_cu": "quy-trinh.json v23: tinh_huong[id=chinh], thương lượng giá trước hợp đồng; backend/src/nghiep-vu/loi-chao.ts: traGia."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo đồng ý vòng hiện tại; giữ 500 kg có hạn. Đồng ý giá vẫn chưa phải hợp đồng.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: từ vòng 2 đồng ý; quy-trinh.json v23: quy tắc Giữ lượng 3 giai đoạn; backend/src/nghiep-vu/loi-chao.ts: dongYLoiChao."
+        },
+        {
+          "lam": "tra_gia",
+          "ai": "0909000213",
+          "gia": 21500,
+          "mong_doi": "Từ chối thao tác trả giá tiếp trên lời chào đã chấp nhận; giá chốt vẫn 21.600 đ/kg. Không được âm thầm sửa thỏa thuận.",
+          "can_cu": "quy-trinh.json v23: thương lượng rồi soạn hợp đồng, thay đổi cần thỏa thuận; backend/src/nghiep-vu/loi-chao.ts: traGia và trạng thái lời chào."
+        },
+        {
+          "lam": "xem",
+          "ai": "0909000213",
+          "mong_doi": "Kiểm tra giá chốt không bị thay đổi, lượng giữ có hạn và chưa có cọc hay hợp đồng hiệu lực.",
+          "can_cu": "quy-trinh.json v23: quy tắc Giữ lượng 3 giai đoạn; tinh_huong[id=chinh], ký và xác nhận cọc."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-02",
+      "ten": "Bếp Sen mua ít, lách che liên lạc rồi từ chối báo giá",
+      "tinh_cach": "Nhà hàng mua 200 kg thanh long, muốn gọi riêng để mặc cả và sẵn sàng bỏ cuộc.",
+      "vai": {"mua": "0908000510"},
+      "buoc": [
+        {
+          "lam": "chao",
+          "ai": "0908000510",
+          "lo": "L-0490",
+          "kg": 200,
+          "gia": 19000,
+          "mong_doi": "Gửi lời chào 200 kg thanh long loại 1, phù hợp lượng của NC-3005. Thao tác chao không tự gắn dòng nhu cầu trong trình chạy.",
+          "can_cu": "du-lieu-cho.json: L-0490, NC-3005; backend/scripts/chay-kich-ban-ai.mjs: case chao; quy-trinh.json v23: Ghép giấu giá."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả giá 19.600 đ/kg; chưa coi đây là giá bên mua đã đồng ý.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
+        },
+        {
+          "lam": "nhan",
+          "ai": "0908000510",
+          "noi_dung": "Gọi em số không chín không tám không không không năm một không, mình chốt riêng 18.000 đồng một ký nhé.",
+          "mong_doi": "Liên lạc viết bằng chữ phải được che trước cọc; nếu còn lộ thì ghi lỗi che liên lạc. Giá trong tin nhắn không đổi giá lời chào.",
+          "can_cu": "quy-trinh.json v23: he_thong.viec_thuong mục Che liên lạc, he_thong.tinh_nang mục Tin nhắn trong đơn; backend/src/nghiep-vu/tin-nhan.ts: guiTinNhan."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả lời trong app; câu trả lời không thay thế thao tác đồng ý giá hoặc hợp đồng.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: traLoi và motVong mục 1b; quy-trinh.json v23: Tin nhắn trong đơn."
+        },
+        {
+          "lam": "nhan",
+          "ai": "0908000510",
+          "noi_dung": "Số Zalo em là ０９０８·０００·５１０, chị kết bạn giúp em.",
+          "mong_doi": "Kiểm tra che số điện thoại dùng chữ số toàn chiều rộng và dấu phân cách. Trước cọc không được mở liên lạc chỉ vì đã nhắn nhiều lần.",
+          "can_cu": "quy-trinh.json v23: vai[id=mua].khong, he_thong.viec_thuong mục Che liên lạc; backend/src/nghiep-vu/tin-nhan.ts: guiTinNhan."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Có phản hồi của người bán ảo; giá lời chào vẫn 19.600 đ/kg và chưa có giao dịch được bảo đảm.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1b; quy-trinh.json v23: Tin nhắn trong đơn."
+        },
+        {
+          "lam": "xem",
+          "ai": "0908000510",
+          "mong_doi": "Đọc lại tin đã lưu để phát hiện lộ liên lạc; kiểm tra các tin mặc cả không làm thay đổi giá lời chào.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case xem đọc tin nhắn; quy-trinh.json v23: Tin nhắn trong đơn."
+        },
+        {
+          "lam": "tu_choi",
+          "ai": "0908000510",
+          "mong_doi": "Từ chối mức trả giá của người bán; kết thúc lời chào, không tạo hợp đồng, không thu cọc và không phạt như hủy sau cọc.",
+          "can_cu": "quy-trinh.json v23: tinh_huong[id=chinh], thương lượng trước ký và cọc; backend/src/nghiep-vu/loi-chao.ts: tuChoiLoiChao."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-03",
+      "ten": "Sông Tiền cọc một nửa rồi để quá hạn",
+      "tinh_cach": "Doanh nghiệp xuất khẩu có ý mua thật nhưng thiếu dòng tiền, không chuyển bù.",
+      "vai": {"mua": "0903000410"},
+      "buoc": [
+        {
+          "lam": "tua_gio",
+          "ai": "0903000410",
+          "gio": 48,
+          "mong_doi": "Đưa đồng hồ mẫu tới ngày 04/11, trong cửa sổ NC-3003 và sau ngày có hàng, hết cách ly của L-0440.",
+          "can_cu": "du-lieu-cho.json: meta.dong_ho_nen, L-0440, NC-3003; backend/scripts/chay-kich-ban-ai.mjs: case tua_gio."
+        },
+        {
+          "lam": "chao",
+          "ai": "0903000410",
+          "lo": "L-0440",
+          "kg": 2000,
+          "gia": 92000,
+          "mong_doi": "Chào mua riêng 2 tấn sầu riêng A; không coi đã đáp ứng đủ nhu cầu 3 tấn của NC-3003.",
+          "can_cu": "du-lieu-cho.json: L-0440, NC-3003; quy-trinh.json v23: Đăng lô, nhu cầu."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả 94.800 đ/kg.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0903000410",
+          "mong_doi": "Đồng ý 2.000 kg ở 94.800 đ/kg, giữ lượng có hạn; chưa có hợp đồng hiệu lực.",
+          "can_cu": "quy-trinh.json v23: Giữ lượng 3 giai đoạn; backend/src/nghiep-vu/loi-chao.ts: dongYLoiChao."
+        },
+        {
+          "lam": "lap_don",
+          "ai": "0903000410",
+          "tra_tien": "on_receipt",
+          "mong_doi": "Soạn hợp đồng trả khi nhận, giá trị 189.600.000 đồng. Việc lập đơn chưa thay thế chữ ký hoặc xác nhận cọc.",
+          "can_cu": "quy-trinh.json v23: tinh_huong[id=chinh], thỏa thuận nghĩa vụ, ký và cọc; backend/scripts/chay-kich-ban-ai.mjs: case lap_don."
+        },
+        {
+          "lam": "ky",
+          "ai": "0903000410",
+          "mong_doi": "Bên mua ký và gửi hợp đồng; chờ đúng người bán ký, chưa được tự chuyển sang đã cọc.",
+          "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng; backend/src/nghiep-vu/don.ts: ký phía buyer."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo ký; hợp đồng sang Chờ cọc và có hướng dẫn nộp cọc riêng cho đơn.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4; quy-trinh.json v23: tinh_huong[id=chinh], hướng dẫn chuyển cọc."
+        },
+        {
+          "lam": "coc_thieu",
+          "ai": "0903000410",
+          "phan_tram": 50,
+          "mong_doi": "Chỉ nộp 50% khoản cọc được hướng dẫn, không phải 50% giá trị hợp đồng. Vẫn Chờ cọc, phải báo thiếu; chưa mở giao hàng như đã đủ cọc.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case coc_thieu; quy-trinh.json v23: tinh_huong[id=coc-thieu-khong-bu]."
+        },
+        {
+          "lam": "tua_gio",
+          "ai": "0903000410",
+          "gio": 13,
+          "mong_doi": "Vượt hạn cọc hàng tươi 12 giờ. Khi xác minh khoản thiếu và không có tiền bù, đóng đơn, lập lệnh hoàn tiền đã nhận và giải phóng lượng; nếu kết quả chưa rõ thì chờ đối soát, chưa nhả lượng.",
+          "can_cu": "quy-trinh.json v23: tinh_huong[id=coc-thieu-khong-bu], tinh_huong[id=qua-han-coc], han_gio mục Chuyển cọc."
+        },
+        {
+          "lam": "xem",
+          "ai": "0903000410",
+          "mong_doi": "Không tịch thu khoản cọc thiếu cho người bán. Phân biệt đã lập lệnh hoàn với ngân hàng đã hoàn thành; chỉ ghi đã hoàn khi có kết quả xác minh.",
+          "can_cu": "quy-trinh.json v23: coc-thieu-khong-bu; quy tắc Kết quả ngân hàng và Nguồn xác minh tiền."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-04",
+      "ten": "Biển Xanh muốn trả sau 30 ngày nhưng chưa có cam kết ngân hàng",
+      "tinh_cach": "Muốn dùng tín dụng ngân hàng, thận trọng kiểm tra điều khoản trước khi ký.",
+      "vai": {"mua": "0902000810"},
+      "buoc": [
+        {
+          "lam": "tua_gio",
+          "ai": "0902000810",
+          "gio": 72,
+          "mong_doi": "Tới ngày 05/11, trong cửa sổ NC-3004 và sau ngày có hàng của L-0470.",
+          "can_cu": "du-lieu-cho.json: meta.dong_ho_nen, L-0470, NC-3004; backend/scripts/chay-kich-ban-ai.mjs: case tua_gio."
+        },
+        {
+          "lam": "chao",
+          "ai": "0902000810",
+          "lo": "L-0470",
+          "kg": 2000,
+          "gia": 132000,
+          "mong_doi": "Chào 2 tấn tôm cỡ 48-52. Lời chào không chứng minh đã có kết quả kháng sinh bắt buộc cho lô.",
+          "can_cu": "du-lieu-cho.json: L-0470, NC-3004.giay_to_bat_buoc; quy-trinh.json v23: quy tắc Điều kiện bắt buộc."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả 136.000 đ/kg, trong ngân sách tối đa của nhu cầu mẫu.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1; du-lieu-cho.json: NC-3004."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0902000810",
+          "mong_doi": "Đồng ý giá và giữ lượng có hạn; chưa phát sinh khoản vay hay cam kết thanh toán ngân hàng.",
+          "can_cu": "quy-trinh.json v23: Giữ lượng 3 giai đoạn; tinh_huong[id=tra-sau-ngan-hang]."
+        },
+        {
+          "lam": "nhan",
+          "ai": "0902000810",
+          "noi_dung": "Biển Xanh muốn trả sau 30 ngày qua ngân hàng. Chỉ giao khi có cam kết thanh toán đúng đơn và đủ kết quả kháng sinh của lô.",
+          "mong_doi": "Ghi nhận yêu cầu; nội dung tin không tự đổi cách trả tiền, cấp tín dụng hoặc chứng nhận an toàn.",
+          "can_cu": "quy-trinh.json v23: Tin nhắn trong đơn; tra-sau-ngan-hang; quy tắc Điều kiện bắt buộc."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo có thể trả lời tin; câu trả lời theo luật không phải cam kết của ngân hàng hay phụ lục đã ký.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: traLoi, motVong mục 1b; quy-trinh.json v23: tra-sau-ngan-hang."
+        },
+        {
+          "lam": "lap_don",
+          "ai": "0902000810",
+          "tra_tien": "on_receipt",
+          "mong_doi": "Bản nháp là trả khi nhận. Không được hiển thị thành trả sau 30 ngày qua ngân hàng; đây là giới hạn của hai lựa chọn lập đơn được phép trong kịch bản.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case lap_don; quy-trinh.json v23: chinh, ba cách được trả; tra-sau-ngan-hang."
+        },
+        {
+          "lam": "xem",
+          "ai": "0902000810",
+          "mong_doi": "Dừng để chưa ký bản nháp không đúng yêu cầu tín dụng. Chưa có thao tác phát hành cam kết ngân hàng trong bộ lệnh này; không giả lập đã có cam kết. Cũng chưa chứng minh đủ giấy tờ NC-3004 vì chao không gắn dòng nhu cầu.",
+          "can_cu": "quy-trinh.json v23: tra-sau-ngan-hang, Điều kiện giao chung; backend/scripts/chay-kich-ban-ai.mjs: case chao và lap_don."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-05",
+      "ten": "Ba Cường trả trước bốc, đòi giá hạ cấp thấp và dự kiến hạ cấp 90%",
+      "tinh_cach": "Mua lúa số lượng lớn, có xu hướng ép giá hạ cấp; phải chịu điều khoản đã ký và chứng cứ nghiệm thu.",
+      "vai": {"mua": "0938000610"},
+      "buoc": [
+        {
+          "lam": "tua_gio",
+          "ai": "0938000610",
+          "gio": 24,
+          "mong_doi": "Tới ngày có hàng 03/11 của L-0480 và cửa sổ NC-3006.",
+          "can_cu": "du-lieu-cho.json: L-0480, NC-3006; backend/scripts/chay-kich-ban-ai.mjs: case tua_gio."
+        },
+        {
+          "lam": "chao",
+          "ai": "0938000610",
+          "lo": "L-0480",
+          "kg": 15000,
+          "gia": 7200,
+          "mong_doi": "Gửi lời chào 15 tấn lúa OM18-am25; lượng và loại khớp mục tiêu NC-3006.",
+          "can_cu": "du-lieu-cho.json: L-0480, NC-3006; quy-trinh.json v23: Đăng lô, nhu cầu."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả giá 7.400 đ/kg.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0938000610",
+          "mong_doi": "Chấp nhận giá 7.400 đ/kg và giữ lượng có hạn; chưa có hợp đồng hiệu lực.",
+          "can_cu": "quy-trinh.json v23: Giữ lượng 3 giai đoạn; backend/src/nghiep-vu/loi-chao.ts: dongYLoiChao."
+        },
+        {
+          "lam": "nhan",
+          "ai": "0938000610",
+          "noi_dung": "Nếu hạ cấp thì tôi chỉ muốn trả 500 đồng/kg. Tôi đề nghị vậy, hai bên phải xem lại điều khoản trước khi ký.",
+          "mong_doi": "Tin nhắn chỉ là đề nghị, không tự đặt giá hạ cấp 500 đồng/kg trong hợp đồng.",
+          "can_cu": "quy-trinh.json v23: Tin nhắn trong đơn; chinh, phiếu nghĩa vụ ghi giá hạ cấp."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả lời tin; phản hồi chung không làm giá hạ cấp có hiệu lực.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1b; quy-trinh.json v23: Thỏa thuận nghĩa vụ."
+        },
+        {
+          "lam": "lap_don",
+          "ai": "0938000610",
+          "tra_tien": "before_loading",
+          "mong_doi": "Soạn đơn trả trước bốc. Trình chạy đặt giá hạ cấp 4.800 đ/kg theo công thức 65% và làm tròn; không nhận giá 500 đồng từ tin nhắn. Đơn tại vườn này không tự kế thừa điểm gom của NC-3006.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case lap_don; quy-trinh.json v23: chinh, phiếu nghĩa vụ; du-lieu-cho.json: NC-3006."
+        },
+        {
+          "lam": "xem",
+          "ai": "0938000610",
+          "mong_doi": "Đọc rõ trả trước bốc, giá hạ cấp 4.800 đ/kg và điểm nhận tại vườn. Trong ca này bên mua chấp nhận bản nháp đó để tiếp tục thử.",
+          "can_cu": "quy-trinh.json v23: chinh, kiểm khớp nghĩa vụ và ký hợp đồng; backend/scripts/chay-kich-ban-ai.mjs: case lap_don."
+        },
+        {
+          "lam": "ky",
+          "ai": "0938000610",
+          "mong_doi": "Bên mua ký bản đã đọc; không được coi đề nghị 500 đồng trong tin nhắn là điều khoản được ký.",
+          "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng; Tin nhắn trong đơn."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo ký; đơn sang Chờ cọc.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4; quy-trinh.json v23: chinh, ký rồi chuyển cọc."
+        },
+        {
+          "lam": "coc",
+          "ai": "0938000610",
+          "mong_doi": "Ngân hàng mô phỏng nhận đủ khoản cọc theo hướng dẫn, hợp đồng có hiệu lực. Phí giới thiệu và tiền xe phải tách khỏi tài khoản cọc.",
+          "can_cu": "quy-trinh.json v23: chinh, hướng dẫn chuyển cọc và hợp đồng hiệu lực; vai[id=nh]."
+        },
+        {
+          "lam": "tra_truoc_boc",
+          "ai": "0938000610",
+          "mong_doi": "Bên mua báo đã trả khoản trước bốc kèm chứng từ; chưa được coi là người bán đã nhận chỉ từ lời báo này.",
+          "can_cu": "quy-trinh.json v23: Nguồn xác minh tiền; lay-tai-vuon, xác nhận đủ tiền trước bàn giao; backend/scripts/chay-kich-ban-ai.mjs: case tra_truoc_boc."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo xác nhận khoản tiền đã nhận; không dùng im lặng thay xác nhận.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4, xác nhận payer_reported; quy-trinh.json v23: vai[id=app].khong."
+        },
+        {
+          "lam": "dat_xe",
+          "ai": "0938000610",
+          "mong_doi": "Đăng ký chuyến xe bằng phương tiện mô phỏng còn phù hợp. Nếu không có xe đủ tải thì phải báo thiếu phương tiện; việc đặt xe chưa chứng minh đã vận chuyển 15 tấn.",
+          "can_cu": "quy-trinh.json v23: lay-tai-vuon, khai người và biển số; tinh_huong[id=vuon-bien-the]; backend/scripts/chay-kich-ban-ai.mjs: case dat_xe."
+        },
+        {
+          "lam": "phat_qr",
+          "ai": "0938000610",
+          "mong_doi": "Phát mã cho người nhận được chỉ định nếu đủ điều kiện. QR chỉ xác minh quyền nhận, không xác nhận số cân hoặc chất lượng.",
+          "can_cu": "quy-trinh.json v23: lay-tai-vuon, bước Quét mã, đối chiếu người và biển số."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Dừng tại chờ người bán bắt đầu cân: đối tác ảo hiện chưa tự bat_dau_can. Bên mua không làm thay và không gửi nghiệm thu khi chưa mở cân.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4 không có start-check; backend/scripts/chay-kich-ban-ai.mjs: bat_dau_can là thao tác phía người bán."
+        },
+        {
+          "lam": "xem",
+          "ai": "0938000610",
+          "mong_doi": "Chưa thực hiện nghiệm thu. Phương án kiểm tiếp khi có cân: can_kg=15000; accepted=750 kg, downgraded=13500 kg, rejected=750 kg, phải có căn cứ chất lượng. Không được tự hạ giá ngoài hợp đồng; nếu tiền người bán đã nhận vượt giá trị nghiệm thu thì mở nghĩa vụ hoàn, không tính số phải trả âm.",
+          "can_cu": "quy-trinh.json v23: chinh, nghiệm thu ba phần và quyền chấp thuận hạ cấp; quy tắc Không có số âm; tinh_huong[id=da-nhan-nhieu-hon]."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-06",
+      "ten": "BÁN GỘP: mua 2 tấn xoài loại 1 từ chị Năm và HTX Tân Thuận",
+      "tinh_cach": "Đồng Xanh chia nguồn có kế hoạch, kiểm tra từng hợp đồng và nộp cọc riêng từng người bán.",
+      "vai": {"mua": "0909000213"},
+      "buoc": [
+        {
+          "lam": "tua_gio",
+          "ai": "0909000213",
+          "gio": 24,
+          "mong_doi": "Tới 03/11 để cả L-0412 và L-0492 đều có hàng. Kế hoạch gom cho mục tiêu NC-3001 là 1.200 + 800 = 2.000 kg loại 1.",
+          "can_cu": "du-lieu-cho.json: L-0412, L-0492, NC-3001; quy-trinh.json v23: tinh_huong[id=nhieu-trang-trai]."
+        },
+        {
+          "lam": "chao",
+          "ai": "0909000213",
+          "lo": "L-0412",
+          "kg": 1200,
+          "gia": 23300,
+          "mong_doi": "Gửi lời chào nguồn chị Năm 1.200 kg. Đây là phần thứ nhất của kế hoạch gom; chao chưa gắn dòng NC-3001 trong trình chạy.",
+          "can_cu": "du-lieu-cho.json: L-0412 thuộc TC-B01; quy-trinh.json v23: nhieu-trang-trai; backend/scripts/chay-kich-ban-ai.mjs: case chao."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Chị Năm ảo trả giá 24.000 đ/kg.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
+        },
+        {
+          "lam": "chao",
+          "ai": "0909000213",
+          "lo": "L-0492",
+          "kg": 800,
+          "gia": 23300,
+          "mong_doi": "Gửi lời chào nguồn HTX Tân Thuận 800 kg; giữ riêng lời chào nguồn chị Năm. Hai lô thuộc hai tổ chức bán khác nhau.",
+          "can_cu": "du-lieu-cho.json: L-0492 thuộc TC-B03, L-0412 thuộc TC-B01; quy-trinh.json v23: nhieu-trang-trai."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "HTX ảo trả giá 24.000 đ/kg cho 800 kg; không tự chấp nhận thay bên mua.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
+        },
+        {
+          "lam": "chon",
+          "ai": "0909000213",
+          "lo": "L-0412",
+          "mong_doi": "Chuyển ngữ cảnh về đúng lời chào của chị Năm, không thao tác nhầm nguồn HTX.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case chon; quy-trinh.json v23: nhieu-trang-trai, mỗi người bán một hợp đồng."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0909000213",
+          "mong_doi": "Chấp nhận riêng 1.200 kg nguồn chị Năm ở 24.000 đ/kg; mới giữ lượng nguồn này.",
+          "can_cu": "quy-trinh.json v23: Giữ lượng 3 giai đoạn; nhieu-trang-trai."
+        },
+        {
+          "lam": "lap_don",
+          "ai": "0909000213",
+          "tra_tien": "on_receipt",
+          "mong_doi": "Lập hợp đồng riêng với chị Năm cho 1.200 kg; không gộp HTX thành cùng bên bán hoặc cùng tài khoản nhận.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai; quy tắc Tiền theo từng người bán."
+        },
+        {
+          "lam": "ky",
+          "ai": "0909000213",
+          "mong_doi": "Bên mua ký và gửi hợp đồng nguồn chị Năm.",
+          "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng; backend/src/nghiep-vu/don.ts: ký phía buyer."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Chị Năm ảo ký; riêng hợp đồng này sang Chờ cọc.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4; quy-trinh.json v23: nhieu-trang-trai."
+        },
+        {
+          "lam": "coc",
+          "ai": "0909000213",
+          "mong_doi": "Chuyển đủ cọc đúng mã hợp đồng chị Năm. Khoản này không được tự dùng làm cọc cho HTX.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai, cọc từng hợp đồng; quy tắc Kết quả ngân hàng."
+        },
+        {
+          "lam": "chon",
+          "ai": "0909000213",
+          "lo": "L-0492",
+          "mong_doi": "Chuyển sang lời chào HTX; trình chạy bỏ ngữ cảnh hợp đồng chị Năm để tránh ký hoặc cọc nhầm.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case chon đặt lại s.order theo lời chào được chọn."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0909000213",
+          "mong_doi": "Chấp nhận riêng 800 kg HTX ở 24.000 đ/kg; tổng hai phần đã thỏa thuận là 2.000 kg.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai; du-lieu-cho.json: NC-3001."
+        },
+        {
+          "lam": "lap_don",
+          "ai": "0909000213",
+          "tra_tien": "on_receipt",
+          "mong_doi": "Lập hợp đồng thứ hai với HTX cho 800 kg; giữ độc lập tiền, nghiệm thu và trách nhiệm từng nguồn.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai; Tiền theo từng người bán."
+        },
+        {
+          "lam": "ky",
+          "ai": "0909000213",
+          "mong_doi": "Bên mua ký và gửi hợp đồng HTX.",
+          "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "HTX ảo ký; hợp đồng thứ hai sang Chờ cọc.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4."
+        },
+        {
+          "lam": "coc",
+          "ai": "0909000213",
+          "mong_doi": "Nộp cọc riêng đúng mã hợp đồng HTX; xác nhận ngân hàng của hợp đồng này độc lập với nguồn chị Năm.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai; Kết quả ngân hàng; Tiền theo từng người bán."
+        },
+        {
+          "lam": "chon",
+          "ai": "0909000213",
+          "lo": "L-0412",
+          "mong_doi": "Mở lại đúng hợp đồng chị Năm qua lời chào của L-0412.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case chon."
+        },
+        {
+          "lam": "xem",
+          "ai": "0909000213",
+          "mong_doi": "Hợp đồng 1.200 kg vẫn tồn tại và đã đủ cọc; không bị hợp đồng HTX ghi đè. Chưa có bằng chứng đã giao hoặc nghiệm thu.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai, biên bản và nghiệm thu riêng từng nguồn."
+        },
+        {
+          "lam": "chon",
+          "ai": "0909000213",
+          "lo": "L-0492",
+          "mong_doi": "Mở lại đúng hợp đồng HTX qua lời chào của L-0492.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case chon."
+        },
+        {
+          "lam": "xem",
+          "ai": "0909000213",
+          "mong_doi": "Có hai hợp đồng riêng tổng 2.000 kg đã đủ cọc. Đây là kế hoạch gom bằng nhiều lời chào; chưa chứng minh NC-3001 tự cập nhật đủ nguồn vì chao không truyền demand_line_id. Không coi đã hoàn tất mua bán.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai, Điều kiện giao chung; backend/scripts/chay-kich-ban-ai.mjs: case chao."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-07",
+      "ten": "BÁN GỘP THIẾU NGUỒN: NC-3002 chỉ có một lô xoài loại 2",
+      "tinh_cach": "Đồng Xanh gom từng phần, công khai phần thiếu và không đổi loại hàng để làm đẹp số đủ nguồn.",
+      "vai": {"mua": "0909000213"},
+      "buoc": [
+        {
+          "lam": "tua_gio",
+          "ai": "0909000213",
+          "gio": 24,
+          "mong_doi": "Tới 03/11 trong cửa sổ NC-3002. Chợ mẫu chỉ có L-0413 là xoài L2; L-0492 của HTX là L1, không phải nguồn L2 thứ hai.",
+          "can_cu": "du-lieu-cho.json: NC-3002, L-0413, L-0492; quy-trinh.json v23: Ghép giấu giá, phải hiện phần thiếu."
+        },
+        {
+          "lam": "chao",
+          "ai": "0909000213",
+          "lo": "L-0413",
+          "kg": 1200,
+          "gia": 16500,
+          "mong_doi": "Chào trước 1.200 kg từ chị Năm cho kế hoạch gom 1.500 kg. Còn 300 kg chưa có nguồn cam kết thứ hai; không tự tạo người bán hoặc lô mới.",
+          "can_cu": "du-lieu-cho.json: NC-3002.dang=can_gom, kg_toi_thieu_moi_nguon=300, L-0413; quy-trinh.json v23: nhieu-trang-trai."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Chị Năm ảo trả giá 17.000 đ/kg cho 1.200 kg.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1; du-lieu-cho.json: NC-3002."
+        },
+        {
+          "lam": "chon",
+          "ai": "0909000213",
+          "lo": "L-0413",
+          "mong_doi": "Chọn đúng lời chào nguồn L2 hiện có. Chọn lời chào chưa phải là đã mua đủ nhu cầu gom.",
+          "can_cu": "backend/scripts/chay-kich-ban-ai.mjs: case chon; quy-trinh.json v23: nhieu-trang-trai, Ghép giấu giá."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0909000213",
+          "mong_doi": "Chấp nhận và giữ riêng 1.200 kg; không nâng thành 1.500 kg hoặc tự đổi L1 thành L2.",
+          "can_cu": "quy-trinh.json v23: Giữ lượng 3 giai đoạn, Đăng lô, nhu cầu; du-lieu-cho.json: NC-3002."
+        },
+        {
+          "lam": "lap_don",
+          "ai": "0909000213",
+          "tra_tien": "on_receipt",
+          "mong_doi": "Lập hợp đồng phần nguồn hiện có: chị Năm, 1.200 kg, 17.000 đ/kg; không ghi hợp đồng đủ 1.500 kg.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai, mỗi người bán một hợp đồng; backend/scripts/chay-kich-ban-ai.mjs: case lap_don."
+        },
+        {
+          "lam": "ky",
+          "ai": "0909000213",
+          "mong_doi": "Bên mua ký và gửi hợp đồng cho phần 1.200 kg.",
+          "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Chị Năm ảo ký; chỉ hợp đồng phần này sang Chờ cọc.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4; quy-trinh.json v23: nhieu-trang-trai."
+        },
+        {
+          "lam": "coc",
+          "ai": "0909000213",
+          "mong_doi": "Nộp đủ cọc riêng cho 1.200 kg. Không thu cọc cho 300 kg chưa có hợp đồng nguồn thứ hai.",
+          "can_cu": "quy-trinh.json v23: nhieu-trang-trai, cọc từng hợp đồng; vai[id=nh], giữ cọc theo đơn."
+        },
+        {
+          "lam": "xem",
+          "ai": "0909000213",
+          "mong_doi": "Dừng ở kết quả gom một phần: 1.200 kg có hợp đồng đủ cọc, còn 300 kg chưa được chốt. Thiếu nguồn L2 thứ hai trong chợ mẫu; không tuyên bố thiếu toàn bộ hàng vật lý hoặc đã đủ 1.500 kg. Trình chạy cũng chưa gắn hợp đồng này với dòng NC-3002.",
+          "can_cu": "du-lieu-cho.json: toàn bộ lo và NC-3002; quy-trinh.json v23: Ghép giấu giá, nhieu-trang-trai; backend/scripts/chay-kich-ban-ai.mjs: case chao."
+        }
+      ]
+    },
+    {
+      "ma": "MUA-08",
+      "ten": "Sông Tiền im lặng quá hạn rồi thử đồng ý giá muộn",
+      "tinh_cach": "Chậm duyệt nội bộ, quay lại sau hơn một ngày và muốn giữ báo giá cũ.",
+      "vai": {"mua": "0903000410"},
+      "buoc": [
+        {
+          "lam": "tua_gio",
+          "ai": "0903000410",
+          "gio": 48,
+          "mong_doi": "Tới ngày 04/11, trong cửa sổ nhu cầu và sau ngày có hàng L-0440.",
+          "can_cu": "du-lieu-cho.json: meta.dong_ho_nen, L-0440, NC-3003; backend/scripts/chay-kich-ban-ai.mjs: case tua_gio."
+        },
+        {
+          "lam": "chao",
+          "ai": "0903000410",
+          "lo": "L-0440",
+          "kg": 2000,
+          "gia": 92000,
+          "mong_doi": "Gửi lời chào 2.000 kg; mới đang thương lượng, chưa có cam kết giao và chưa phát sinh cọc.",
+          "can_cu": "quy-trinh.json v23: chinh, Chào giá rồi Đồng ý giá trước hợp đồng; du-lieu-cho.json: L-0440."
+        },
+        {
+          "lam": "cho",
+          "giay": 8,
+          "mong_doi": "Người bán ảo trả giá 94.800 đ/kg; tới lượt bên mua quyết định trong hạn trả lời.",
+          "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1; quy-trinh.json v23: chinh, hạn chào giá 24 giờ mỗi lượt."
+        },
+        {
+          "lam": "tua_gio",
+          "ai": "0903000410",
+          "gio": 25,
+          "mong_doi": "Bên mua im lặng quá hạn trả lời 24 giờ; lời chào hết hiệu lực. Không coi im lặng là đồng ý hoặc tự lập hợp đồng.",
+          "can_cu": "quy-trinh.json v23: chinh, Chào giá với hạn 24 giờ mỗi lượt; du-lieu-cho.json: chinh_sach.han_gio.tra_loi_loi_chao; backend/scripts/chay-kich-ban-ai.mjs: case tua_gio."
+        },
+        {
+          "lam": "xem",
+          "ai": "0903000410",
+          "mong_doi": "Hiện lời chào hết hạn, không có hợp đồng hay cọc; không ghi nhận đã mua 2 tấn.",
+          "can_cu": "quy-trinh.json v23: chinh, trình tự đồng ý giá, hợp đồng, cọc; backend/src/nghiep-vu/loi-chao.ts: xemLoiChao."
+        },
+        {
+          "lam": "dong_y",
+          "ai": "0903000410",
+          "mong_doi": "Từ chối đồng ý muộn trên lời chào đã hết hạn; không khôi phục giá hoặc giữ lượng bằng thao tác này. Muốn mua tiếp phải có lời chào còn hiệu lực.",
+          "can_cu": "quy-trinh.json v23: hạn chào giá 24 giờ mỗi lượt, Giữ lượng 3 giai đoạn; backend/src/nghiep-vu/loi-chao.ts: dongYLoiChao."
+        },
+        {
+          "lam": "xem",
+          "ai": "0903000410",
+          "mong_doi": "Lời chào vẫn hết hạn, không phát sinh lượng giữ mới, tài khoản cọc hoặc nghĩa vụ thanh toán từ lần đồng ý muộn.",
+          "can_cu": "quy-trinh.json v23: chinh, chỉ mở cọc sau hợp đồng được ký; quy tắc Giữ lượng 3 giai đoạn."
+        }
+      ]
+    }
+  ]
+}

@@ -297,7 +297,13 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
     if (st.has('checking') || st.has('arrival_check')) return { ten: 'Chờ nghiệm thu', chang: 'Giao nhận', toi_luot: { phia: 'buyer', viec: 'Nghiệm thu' } };
     if (st.has('in_transit') || st.has('arrived')) return { ten: 'Đang giao', chang: 'Giao nhận', toi_luot: { phia: 'buyer', viec: 'Ký nhận tại nơi đến' } };
     if (st.has('ready')) return { ten: 'Sẵn sàng giao', chang: 'Giao nhận', toi_luot: { phia: 'seller', viec: 'Giao hàng, quét QR nhận hàng' } };
-    if (chuaTraTruocBoc) return { ten: 'Đã cọc, chờ giao', chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Trả khoản trước bốc' } };
+    if (chuaTraTruocBoc) {
+      // Tách 3 trạng thái: chưa báo trả → bên mua; đã báo trả → người bán xác nhận; người bán báo chưa thấy → đối soát
+      const kt = await t.mot<any>(`SELECT status FROM core.direct_payments WHERE order_id=$1 AND blocks_loading AND status NOT IN ('fully_received','cancelled') ORDER BY created_at LIMIT 1`, [o.id]);
+      if (kt?.status === 'payer_reported') return { ten: 'Bên mua báo đã trả trước bốc', chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Xác nhận đã nhận tiền trước bốc' } };
+      if (kt?.status === 'mismatch') return { ten: 'Đang đối soát tiền trước bốc', chang: 'Thanh toán', toi_luot: { phia: 'ops', viec: 'Đối soát khoản trước bốc' } };
+      return { ten: 'Đã cọc, chờ giao', chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Trả khoản trước bốc' } };
+    }
     return { ten: 'Đã cọc, chờ giao', chang: 'Giao nhận', toi_luot: { phia: 'buyer', viec: 'Chỉ định người nhận, đặt xe' } };
   }
   if (o.status === 'awaiting_deposit') return { ten: 'Chờ cọc', chang: 'Cọc', toi_luot: { phia: 'buyer', viec: 'Chuyển cọc' } };
@@ -384,7 +390,7 @@ export async function danhSachDon(t: GiaoDich, nd: NguoiDung) {
       FROM core.orders o JOIN core.organizations b ON b.id=o.buyer_org_id JOIN core.organizations s ON s.id=o.seller_org_id
       WHERE (o.buyer_org_id=$1 OR o.seller_org_id=$1) ORDER BY o.created_at DESC LIMIT 200`, [nd.thanhVien.orgId]);
   const out = [];
-  for (const o of ds) out.push({ id: o.id, code: o.code, status: o.status, revision: o.revision, buyer_name: o.buyer_name, seller_name: o.seller_name,
+  for (const o of ds) out.push({ id: o.id, code: o.code, status: o.status, revision: o.revision, offer_id: o.offer_id, buyer_name: o.buyer_name, seller_name: o.seller_name,
     contract_value_vnd: o.contract_value_vnd, phia_cua_ban: o.buyer_org_id === nd.thanhVien.orgId ? 'buyer' : 'seller', hien_thi: await trangThaiHienThi(t, o) });
   return out;
 }

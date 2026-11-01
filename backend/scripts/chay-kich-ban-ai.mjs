@@ -87,7 +87,7 @@ async function chayMot(kb) {
           const don = (await ok('GET', '/v1/orders', undefined, t)).find((d) => d.offer_id === x.id); if (don) s.order = don.id;
           kq = { offer: x.code, status: x.status, don: don?.code ?? null }; break; }
         // Chọn hợp đồng theo lời chào hiện tại (sau khi bên kia lập đơn)
-        case 'chon_don': { const of = s.offer; const ds = await ok('GET', '/v1/orders', undefined, t); const d = ds.find((x) => x.offer_id === of) ?? ds.at(-1);
+        case 'chon_don': { const of = s.offer; const ds = await ok('GET', '/v1/orders', undefined, t); const d = ds.find((x) => x.offer_id === of);
           if (!d) throw new Error('Chưa có hợp đồng'); s.order = d.id; kq = { don: d.code, status: d.status }; break; }
         // Người bán đăng lô mới (rồi mở bán)
         case 'dang_lo': { const now = new Date((await ok('GET', '/v1/test/clock')).now); const ngay = now.toISOString().slice(0, 10);

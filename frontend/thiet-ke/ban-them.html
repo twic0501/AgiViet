@@ -170,13 +170,13 @@ $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-labe
   <div style="flex:1;min-width:0"><p class="chao">${esc(m ? m.chao : "AgiViet")}</p><h1>${esc(m ? m.tieu : "Tiện ích")}</h1></div>`;
 $("dong").onclick = quayLai;
 // Không có tên màn (hoặc tên sai): hiện danh mục tiện ích thay vì báo lỗi thô
-$("noi").innerHTML = m ? m.ve() : `${window.trauTuThe ? window.trauTuThe("08-chi", "Bác chọn việc muốn làm nhé.", 80) : ""}
+$("noi").innerHTML = m ? `<p role="note" style="margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--chin-nen,#f5ead0);color:var(--chin,#85600c);font-weight:600;font-size:15px">Bản mô phỏng: số liệu ở màn này là mẫu, bấm nút chưa lưu thật. Việc thật bác làm ở Hợp đồng, Tiền, Tin nhắn.</p>${m.ve()}` : `${window.trauTuThe ? window.trauTuThe("08-chi", "Bác chọn việc muốn làm nhé.", 80) : ""}
   <nav class="them-ds" aria-label="Tiện ích" style="display:grid;gap:8px">${Object.entries(MAN).map(([k, x]) => `<a href="?${new URLSearchParams({ ...Object.fromEntries(q), man: k })}" style="display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:10px 14px;border:1px solid var(--ke);border-radius:var(--bo-vua);background:var(--giay-noi);color:var(--muc);text-decoration:none"><span><b style="display:block;font-size:16px">${esc(x.tieu)}</b><small style="color:var(--muc-nhat);font-size:13px">${esc(x.chao)}</small></span><span aria-hidden="true">›</span></a>`).join("")}</nav>`;
 document.title = (m ? m.tieu : "Tiện ích") + " · AgiViet bán";
 giuThamSo();
 
 // Tương tác mô phỏng: nút chính → chấm chờ → dấu tích → thông báo
-const xong = async (id, chu, sau) => { const b = $(id); if (!b) return; b.addEventListener("click", async () => { await window.HieuUngThem?.nutXong(b, chu); window.HieuUngThem?.thongBaoRoi(document.querySelector(".trang"), sau); }); };
+const xong = async (id, chu, sau0) => { const sau = sau0 ? "Mô phỏng: " + sau0 + " (chưa lưu thật)" : sau0; const b = $(id); if (!b) return; b.addEventListener("click", async () => { await window.HieuUngThem?.nutXong(b, chu); window.HieuUngThem?.thongBaoRoi(document.querySelector(".trang"), sau); }); };
 xong("ghi-chi", "Đã mở", "Nói khoản chi, ví dụ: mua 2 bao phân 780 ngàn");
 xong("tiep", "Đã lưu", "Đã lưu lượng hứa giao 2.000 kg");
 xong("dat-ky", "Đã đặt", "Đã đặt lịch ký giấy 7:00 thứ Tư 28/10");

@@ -144,7 +144,7 @@ const LY_DO = { DAP: "Dập", THOI: "Thối", SAU_DUC: "Sâu đục", SAI_GIONG:
 const LOAI_DONG = { accepted: ["Đạt", "xanh"], downgraded: ["Hạ cấp", "vang"], rejected: ["Trả lại", "do"] };
 const TT_DOT = { arrival_check: ["Kiểm tại nơi đến", "vang"], closed: ["Đã đóng", "xam"], preparing: ["Đang chuẩn bị", "xam"], ready: ["Sẵn sàng giao", "xanh"], loading: ["Đang bốc hàng", "vang"], in_transit: ["Đang chở", "vang"], checking: ["Đang cân, kiểm", "vang"], awaiting_seller: ["Chờ bác xác nhận cân", "do"], accepted: ["Đã nghiệm thu", "xanh"], disputed: ["Đang tranh chấp", "do"], completed: ["Xong", "xanh"], cancelled: ["Đã hủy", "xam"] };
 const TT_KHOAN = { fully_received: ["Bác đã nhận đủ", "xanh"], partially_received: ["Nhận một phần", "vang"], due: ["Đến hạn trả", "vang"], closed: ["Đã đóng", "xam"], cancelled: ["Đã hủy", "xam"], pending: ["Chưa trả", "xam"], payer_reported: ["Bên mua báo đã trả", "vang"], confirmed: ["Bác đã nhận", "xanh"], partial: ["Nhận một phần", "vang"], mismatch: ["Bác báo chưa thấy tiền", "do"], overdue: ["Quá hạn", "do"] };
-const TT_COC = { held: "Ngân hàng đang giữ. Không ai rút được nếu chưa xong việc.", processing: "Ngân hàng đang giữ và tạm khóa chờ xử lý (tranh chấp hoặc hủy). Chưa ai nhận được.", pending: "Bên mua đã báo nộp, chờ ngân hàng xác nhận.", released: "Ngân hàng đã chuyển cọc theo kết quả.", refunded: "Ngân hàng đã hoàn cọc cho bên mua." };
+const TT_COC = { awaiting_transfer: "Chờ bên mua chuyển cọc vào ngân hàng.", partially_received: "Ngân hàng mới nhận một phần cọc; chưa đủ thì hợp đồng chưa hiệu lực.", fully_processed: "Ngân hàng đã xử lý xong tiền cọc (chuyển cho bác hoặc hoàn theo quyết toán).", void: "Không phát sinh cọc (đơn đóng trước khi cọc).", held: "Ngân hàng đang giữ. Không ai rút được nếu chưa xong việc.", processing: "Ngân hàng đang giữ và tạm khóa chờ xử lý (tranh chấp hoặc hủy). Chưa ai nhận được.", pending: "Bên mua đã báo nộp, chờ ngân hàng xác nhận.", released: "Ngân hàng đã chuyển cọc theo kết quả.", refunded: "Ngân hàng đã hoàn cọc cho bên mua." };
 const LOAI_KHOAN = { goods_before_loading: "Trả trước khi bốc", goods_on_receipt: "Trả khi nhận hàng", goods_after_days: "Trả sau nghiệm thu", goods_after_acceptance: "Trả sau nghiệm thu", goods_extra: "Tiền thêm", goods_batch: "Tiền theo đợt" };
 const nhan = ([t, l]) => `<span class="hd-nhan ${l}">${esc(t)}</span>`;
 const chuTat = (s) => String(s || "").split(/\s+/).filter((w) => /^[A-ZĐÀ-Ỹ]/.test(w)).slice(-2).map((w) => w[0]).join("") || "?";
@@ -181,7 +181,8 @@ async function tai() {
 // ---------- Việc tới lượt bác: một nút chính theo đúng trạng thái backend ----------
 const alertLoi = (e) => { const b = document.createElement("p"); b.className = "hd-bao do"; b.textContent = e.message; $("noi").prepend(b); };
 function viecChinh() {
-  const dnCho = (don.deNghi || []).find((a) => !a.la_cua_toi && /await|pending|proposed/.test(a.status));
+  const choKyPL = (a) => a.status === "accepted" && a.annex_document_id && Number(a.resulting_version_no) > Number(don.effective_version_no || 0);
+  const dnCho = (don.deNghi || []).find((a) => (!a.la_cua_toi && /^open$|await|pending|proposed/.test(a.status)) || choKyPL(a));
   if (dnCho) return { chu: "Xem đề nghị sửa", mo: () => document.getElementById("vd")?.scrollIntoView({ behavior: "smooth" }), phu: "Bên mua đề nghị sửa hợp đồng. Bác xem cũ và mới rồi đồng ý hoặc không." };
   const huyCho = (don.xinHuy || []).find((x) => !x.la_cua_toi && x.status === "awaiting_reply");
   if (huyCho) return { chu: "Xem yêu cầu hủy", mo: () => document.getElementById("vd")?.scrollIntoView({ behavior: "smooth" }), phu: "Bên mua xin hủy hợp đồng. Bác xem hậu quả về cọc và tiền rồi trả lời." };
@@ -267,7 +268,7 @@ function veTien() {
 
 // Quyết toán (04 mục 5): N = V − X_nb + X_bm; cọc chuyển bác = min(C, max(0, N − D)); phần cọc còn lại hoàn bên mua
 const LENH = { release_deposit_to_seller: "Ngân hàng chuyển cọc cho bác", refund_deposit_to_buyer: "Ngân hàng hoàn cọc bên mua" };
-const TT_LENH = { draft: "Đang lập lệnh", sent: "Đã gửi ngân hàng, chờ tiền về", accepted: "Ngân hàng đã nhận lệnh", settled: "Tiền đã về", reconciled: "Tiền đã về, đã đối soát", failed: "Ngân hàng báo lỗi, AgiViet đang xử lý", cancelled: "Đã hủy lệnh" };
+const TT_LENH = { created: "Đang lập lệnh", processing: "Ngân hàng đang xử lý", succeeded: "Tiền đã chuyển, chờ đối soát", draft: "Đang lập lệnh", sent: "Đã gửi ngân hàng, chờ tiền về", accepted: "Ngân hàng đã nhận lệnh", settled: "Tiền đã về", reconciled: "Tiền đã về, đã đối soát", failed: "Ngân hàng báo lỗi, AgiViet đang xử lý", cancelled: "Đã hủy lệnh" };
 let docQT = "";
 function veQuyetToan() {
   const qt = (tienDon?.quyet_toan || []).filter((x) => x.is_effective).at(-1); if (!qt) return "";
@@ -593,12 +594,12 @@ function veVanDe() {
         <p><b style="font-size:14px">${esc(TT_TC[x.status] || x.status)}</b>${kd ? ` · kiểm định ${vnd(kd.fee_vnd)} đ, ${kd.prepaid_by_side === "buyer" ? "bên mua trả trước" : "bác trả trước"}; bên sai chịu phí` : ""}${kd?.result ? ` · kết quả: ${esc(kd.result)}` : ""}</p>
         ${x.next_due_at ? `<p class="vd-han">Hạn tiếp theo ${esc(gioNgay(x.next_due_at))} · ${esc(conLai(x.next_due_at))}</p>` : ""}
         <p>Phần không tranh chấp vẫn tính tiền bình thường. Nhân viên AgiViet theo dõi, bác giữ ảnh và mẫu hàng.</p></div>`; }).join("")}
-    ${dn.map((a) => { const doi = Object.entries(a.payload || {}).filter(([k2]) => TRUONG_DN[k2]); const choBac = !a.la_cua_toi && /await|pending|proposed/.test(a.status);
+    ${dn.map((a) => { const doi = Object.entries(a.payload || {}).filter(([k2]) => TRUONG_DN[k2]); const choBac = !a.la_cua_toi && /^open$|await|pending|proposed/.test(a.status); const choKy = a.status === "accepted" && a.annex_document_id && Number(a.resulting_version_no) > Number(don.effective_version_no || 0);
       return `<div class="vd-muc"><b>${esc(a.la_cua_toi ? "Bác đề nghị" : "Bên mua đề nghị")}: ${esc(LOAI_DN[a.kind] || "Sửa hợp đồng")}</b>
         ${doi.length ? `<div class="vd-doi">${doi.map(([k2, v]) => `<span>${esc(TRUONG_DN[k2][0])}</span><b style="font-size:14px">${esc(TRUONG_DN[k2][1](v))}</b>`).join("")}</div>` : ""}
         ${a.han ? `<p class="vd-han">Trả lời trước ${esc(gioNgay(a.han))} · ${esc(conLai(a.han))}. Im lặng không phải là đồng ý.</p>` : ""}
-        ${choBac ? `<div class="vd-nut"><button class="nut chinh-nut" type="button" data-dn="${esc(a.id)}" data-lam="dong-y">Đồng ý</button><button class="nut do" type="button" data-dn="${esc(a.id)}" data-lam="khong">Không đồng ý</button></div>` : `<p>${esc(a.status === "awaiting_signature" || a.annex_document_id && !a.resulting_version_no ? "Hai bên ký phụ lục để có hiệu lực." : a.la_cua_toi ? "Chờ bên mua trả lời." : "Đã trả lời.")}</p>`}
-        ${a.annex_document_id && /sign/.test(a.status) ? `<button class="nut vang" type="button" data-dn="${esc(a.id)}" data-lam="ky">Ký phụ lục</button>` : ""}</div>`; }).join("")}
+        ${choBac ? `<div class="vd-nut"><button class="nut chinh-nut" type="button" data-dn="${esc(a.id)}" data-lam="dong-y">Đồng ý</button><button class="nut do" type="button" data-dn="${esc(a.id)}" data-lam="khong">Không đồng ý</button></div>` : `<p>${esc(choKy ? "Hai bên đã đồng ý. Ký phụ lục bằng mã OTP để có hiệu lực." : a.status === "accepted" ? "Phụ lục đã có hiệu lực." : a.status === "rejected" ? "Đề nghị không được đồng ý." : a.la_cua_toi ? "Chờ bên mua trả lời." : "Đã trả lời.")}</p>`}
+        ${choKy ? `<button class="nut vang" type="button" data-dn="${esc(a.id)}" data-lam="ky">Ký phụ lục</button>` : ""}</div>`; }).join("")}
     ${huy.map((x) => `<div class="vd-muc"><b>${x.la_cua_toi ? "Bác đã xin hủy" : "Bên mua xin hủy hợp đồng"}</b><p>${esc(x.reason_text || "")} · ${esc(TT_HUY[x.status] || x.status)}</p>
       ${!x.la_cua_toi && x.status === "awaiting_reply" ? `<div class="vd-nut"><button class="nut chinh-nut" type="button" data-huy-tl="${esc(x.id)}" data-lam="dong-y">Đồng ý hủy</button><button class="nut lui" type="button" data-huy-tl="${esc(x.id)}" data-lam="khong">Không đồng ý</button></div>` : ""}</div>`).join("")}
   </section>`;
