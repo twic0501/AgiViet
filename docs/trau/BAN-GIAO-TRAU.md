@@ -254,6 +254,8 @@ Người sáng lập xem trực tiếp (1/11 tối): bỏ áo mưa (34, ảnh 28
 
 **Xong (2/11):** 26 xe tải chạy vào từ phải (khung 0–34, nảy nhẹ khi dừng) → đứng sau lưng khi trâu vẫy → chạy đi sang trái (150–200), đầu xe hướng trái; ảnh `tu-the/20-xe-tai` chụp khung 100 (xe đang đỗ, cabin khuất sau trâu). 19 chỉ lên: góc −0,32 rad, đầu giữ thẳng ngửa nhẹ → bàn tay ló hẳn ngoài đầu, vai liền; ảnh `tu-the/15-chi-len` xuất lại.
 
+**Người sáng lập duyệt (2/11):** bản sửa 18, 19, 25 (bỏ bàn tay thừa), 26 xe tải chạy vào/đi — "oke". Còn: gộp PR #1.
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.
