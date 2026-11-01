@@ -138,7 +138,7 @@ function ve() {
             ${chiTiet ? `<p><b style="display:inline;font-size:14px">${chiTiet}</b></p>` : ""}<p>${esc(v.note)}</p>
             <small>${esc(tenVuon(v.site_id))}${v.recorded_by_name ? ` · ${esc(v.recorded_by_name)} ghi` : ""}${(v.photo_document_ids || []).length ? " · có ảnh" : ""}</small></div>
           ${v.source === "agiviet_confirmed" ? "" : `<button class="sua" type="button" data-sua="${esc(v.id)}" aria-label="Sửa dòng ${esc(ten)} ngày ${esc(ngayNgan(ngay))}">Sửa</button>`}</div>`;
-      }).join("")}</div>`).join("") + (theoNgay.size > 6 ? `<button class="vu-them" type="button" id="nk-them">Xem nhật ký cũ hơn (${theoNgay.size - 6} ngày)</button>` : "") || `<p class="bao">Chưa có dòng nhật ký nào. Bấm Ghi việc hôm nay để bắt đầu.</p>`}
+      }).join("")}</div>`).join("") + (theoNgay.size > 6 ? `<button class="vu-them" type="button" id="nk-them">Xem nhật ký cũ hơn (${theoNgay.size - 6} ngày)</button>` : "") || `${window.anhTrong?.("chua-co-nhat-ky") || ""}<p class="bao">Chưa có dòng nhật ký nào. Bấm Ghi việc hôm nay để bắt đầu.</p>`}
       <p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:0">${esc(du.ghi_chu || "")}</p>
     </section>
     <div class="vu-ghi-nut"><button class="nut" type="button" id="ghi">+ Ghi việc hôm nay</button></div>`;

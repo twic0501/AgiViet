@@ -242,7 +242,7 @@ async function moThongBao() {
   const ve = () => {
     $("tb-loc").innerHTML = LOC.filter(([k]) => k === "tat" || dem[k]).map(([k, t]) => `<button type="button" data-k="${k}" aria-pressed="${k === chonLoc}">${t}${k !== "tat" ? `<b>${dem[k]}</b>` : ""}</button>`).join("");
     const r = dong.filter((x) => chonLoc === "tat" || (chonLoc === "can" ? x.can : NHOM[x.ic] === chonLoc));
-    if (!r.length) { $("ds-tb").innerHTML = `<p class="bao" style="margin-top:16px">${dong.length ? "Không có thông báo trong mục này." : "Chưa có thông báo giao dịch nào."}</p>`; return; }
+    if (!r.length) { $("ds-tb").innerHTML = `${window.anhTrong?.("chua-co-thong-bao") || ""}<p class="bao" style="margin-top:16px">${dong.length ? "Không có thông báo trong mục này." : "Chưa có thông báo giao dịch nào."}</p>`; return; }
     let truoc = ""; const out = [];
     for (const x of r) {
       const g = nhomNgay(x.n.occurred_at); if (g !== truoc) { out.push(`<h3 class="ngay">${esc(g)}</h3>`); truoc = g; }

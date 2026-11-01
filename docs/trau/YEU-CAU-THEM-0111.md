@@ -49,3 +49,27 @@ Bốn nét mặt cho bong bóng feed và nút "?": **vui**, **lo**, **ngạc nhi
 ## Ghi chú
 - Bộ ảnh màn trống hiện chưa có bản nền tối (`-toi`): cần kiểm viền trên `#233c31`; nếu mất viền thì xuất thêm bản `-toi`.
 - Trái cây minh họa luôn trộn nhiều loại (xoài, chuối, thanh long…), không gỗ.
+
+
+## Rà soát lần 1 bản giao (Claude 1, 01/11 tối — PR #1 c6a7d2d)
+
+Đã kiểm: `trau-v4.riv` 794 KB nạp 0 lỗi trong Chromium, đặt được `hanh_dong` 17–35; 17/18/19 chỉ đúng hướng nhưng **phải ~2 giây mới bắt đầu chỉ** (tour sẽ trễ). 24 ảnh mới soi 640 px hai nền.
+
+**Đạt:** 13 chỉ trái · 14 chỉ xuống · 15 chỉ lên · 16 cầm tiền · 17 ký giấy · 19 cạnh cân · 20 xe tải · 24 ngón cái · 26 đồng hồ cát · trong-chua-co-nhat-ky · trong-chua-co-thong-bao (đã gắn vào Sổ vườn + Thông báo).
+
+**Cần sửa (gửi lại Claude 2):**
+| Ảnh | Mức | Lỗi | Gợi ý |
+|---|---|---|---|
+| 28 áo mưa | Cao | Áo mưa bán trong suốt, thấy áo nâu bên dưới như bóng ma; **chân và bàn chân bị cắt ở mép dưới khung** | Áo mưa đặc (không trong suốt), hạ khung để thấy đủ chân |
+| 23 tai nghe | Cao | Đầu micro đỏ nằm sát lỗ mũi trái → nhìn như thêm lỗ mũi / miệng (lỗi người sáng lập bắt nặng) | Đưa micro ra ngoài mõm, đầu micro ở cạnh má, không chạm vùng mõm |
+| 25 xin bình tĩnh | Vừa | Hai tay duỗi thẳng ngang, lòng bàn tay úp — cứng như tấm ván | Tay hạ thấp ~30°, lòng bàn tay hướng ra trước, nhấn nhẹ xuống |
+| 29 so sánh | Vừa | Tay duỗi ngang cứng; trái tròn cam có lá trông như **cam/quýt**, không phải xoài | Trái xoài thuôn dài vàng-xanh; tay cầm thấp trước ngực |
+| 27 nón lá | Vừa | Nón quá nhỏ, đậu chênh vênh giữa hai sừng, không có quai | Nón lớn hơn, ôm đầu, có quai dưới cằm (không che mõm) |
+| 18 cảnh báo | Vừa | Tay ngang lòng bàn tay úp trông như chỉ đường; cần biển "!" mới hiểu | Bàn tay dựng đứng lòng bàn tay ra trước (cử chỉ "dừng") |
+| 21 túi mẫu | Thấp | Túi nhỏ, tay che gần hết, không thấy tem niêm phong | Túi to hơn, tem đỏ "niêm phong" lộ rõ |
+| 22 bình xịt + lịch | Thấp | Lịch bị tay che, không đọc ra là lịch | Lịch to hơn, thấy lưới ngày; bình xịt cầm tay kia |
+| trong-loi | Vừa | Không thấy "cúi xin lỗi" — chỉ đứng thường, mày hơi chau | Cúi đầu rõ, tay gãi đầu hoặc chắp tay; có thể thêm dấu "?" nhỏ |
+| trong-chua-co-thong-bao | Thấp | "Zzz" xám đậm mờ trên nền tối | Màu ngà viền sẫm như đã sửa cho "…" |
+| dau-vui / dau-lo / dau-ngac-nhien / dau-ngu | Vừa | Tai/sừng **chạm mép trái-phải khung 96 px** (đo: 3/4 ảnh cắt cạnh); lo và ngạc nhiên khác thường quá ít | Thu nhỏ hoặc nới khung để thấy trọn tai sừng; lo: mày chau rõ; ngạc nhiên: mắt tròn to + tai vểnh |
+
+**Hiệu năng:** `trau-v4.riv` 595 KB → 794 KB. App hiện vẫn dùng bản 595 KB ở Trang chủ (chỉ cần 0/1/8). Đề xuất tách đạo cụ nặng (xe tải, cân) thành ảnh tĩnh, giữ `.riv` dưới ~600 KB.
