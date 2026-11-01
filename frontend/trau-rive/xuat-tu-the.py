@@ -9,7 +9,7 @@ from PIL import Image
 DIR = os.path.dirname(os.path.abspath(__file__)); R = os.path.expanduser('~/.rive/bin/rive')
 RA = os.path.join(DIR, '../assets/trau/tu-the'); TMP = sys.argv[1] if len(sys.argv) > 1 else '/tmp/xuat-tu-the'
 TU_THE = [('01-dung', 0, 60), ('02-chop', 0, 206), ('03-chao', 1, 40), ('04-nghe', -2, 50), ('05-nghi', 6, 72),
-          ('06-vui', 4, 54), ('07-lo', 5, 60), ('08-chi', 2, 60), ('09-be', 13, 80), ('10-dien-thoai', 14, 80),
+          ('06-vui', 16, 50), ('07-lo', 5, 60), ('08-chi', 2, 60), ('09-be', 13, 80), ('10-dien-thoai', 14, 80),
           ('11-mung', 4, 24), ('12-ghi-so', 15, 80)]
 NEN = ('<Shape x="400" y="400" name="nen-trang" id="0:999999"><Rectangle width="900" height="900" name="P"/><Fill name="F">'
        '<SolidColor colorValue="FFFFFFFF" name="C"/></Fill></Shape>')

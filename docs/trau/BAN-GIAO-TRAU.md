@@ -229,6 +229,9 @@ Góc chính diện: đủ 8 hành động `hanh_dong` 1–8 + nghỉ sống + đ
 #### 12 tư thế thay bộ ảnh cũ của hướng dẫn (1/11)
 Phần hướng dẫn trên `production-test` (`frontend/shared/seller.js`: rọi đèn 6 màn / 17 bước, dòng nhắc ~10 màn, màn trống ~8 chỗ) dùng bộ 12 ảnh cũ khác V4g. `xuat-tu-the.py` xuất lại cùng tên từ v4 → `frontend/assets/trau/tu-the/`: chụp đúng khung bằng Rive CLI trên nền tối + nền trắng rồi tách alpha từ hiệu hai ảnh (`AGV_CO=800` phóng cả cảnh lên artboard 800 cho nét sắc). Thêm hành động 13 bê thúng (thúng vẽ trên hai tay; nhóm ngoài SVG có transform nên đặt nút ở tâm − gốc·k), 14 điện thoại, 15 sổ — đạo cụ `nguon/dao-cu/`, bỏ nhóm con có clip-path (Rive không cắt).
 
+#### Sửa theo rà soát định hướng (1/11)
+Rà soát (ChatGPT/Claude 1): hình đạt C01; lệch ở cách gắn → chỉ app bán có trâu, không chép đè `tham-khao/…/trau/`, tour/bong bóng/màn trống dựng trên giao diện mới bằng `trau-v4.riv`, ảnh tĩnh chỉ dự phòng (`HOP-DONG-V4.md`). Sửa ảnh: "…" chấm ngà viền sẫm; 09 thúng to dưới hai tay (tay bám miệng, trái ló lên); 07 lo = mày chau ±0,6 rad dịch vào giữa + hai tay xoắn trước ngực (khác 05 chống má); 11 mừng co chân ở đỉnh nhảy; 06 vui = hành động 16 dang tay.
+
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.
 - `cham`: ngẫu nhiên 1 trong 3 phản ứng — nhún nhắm mắt, cười khúc khích, giật mình nhẹ; không đụng tay nên chạm lúc đang làm hành động vẫn đúng. Ảnh: `cham-3-phan-ung.png`. Hợp đồng nối không đổi.
