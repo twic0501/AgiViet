@@ -8,19 +8,29 @@ const AI = { bac: "Bác", mua: "Bên mua", nh: "Ngân hàng" };
 function tienO(b) {
   // Đọc HĐ dùng chung: hủy, trả một phần, hoàn dư đều phải khớp với app mua (tinhTien)
   const h = docHD(), t = tinhTien(h);
-  let nhan = (b >= 7 ? (h.nbXn || TIEN.TRA_THANG) : (h.nbXn || 0)) + (b >= 13 ? t.cocNB : 0) - (h.nbHoanXn || h.phu === "nb-da-hoan" ? t.nbHoan : 0);
+  let nhan = (b >= 7 ? (h.nbXn || (TS(h) ? 0 : TIEN.TRA_THANG)) : (h.nbXn || 0)) + (b >= 13 ? t.cocNB : 0) - (h.nbHoanXn || h.phu === "nb-da-hoan" ? t.nbHoan : 0);
   let giu = b >= 4 && b < 13 ? TIEN.COC : 0;
   let cho = b >= 15 ? 0 : Math.max(0, (b >= 11 ? t.nt : TIEN.GIA_TRI) - nhan);
   if (h.huy) { nhan = TIEN.COC; giu = 0; cho = 0; }
+  if (h.no) { nhan = TIEN.COC; giu = 0; cho = t.nt - TIEN.COC; }
   if (h.vp) { nhan = h.vpXong || h.phu === "nb-da-tra-vp" ? 0 : h.nbXn || 0; giu = h.huy ? 0 : TIEN.COC; cho = 0; }
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--ke);background:var(--giay-noi)">
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
 // Kịch bản do app mua nạp (giao-dich-chung.js): những lúc tới lượt chị Năm làm
-const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu" };
+const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả" };
+const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra";
 const nutKb = (chu, lam, lop = "m-vang") => `<button class="m-nut ${lop} m-rong" type="button" data-kb="${lam}">${esc(chu)}</button>`;
 function viecKichBan() {
   const h = docHD(), t = tinhTien(h);
+  if (h.no) return viec("Đơn đóng: bên mua chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(TIEN.COC)} cho bác. Bên mua còn nợ ${d(t.nt - TIEN.COC)}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho bác.`, "", "m-cho");
+  if (TS(h) && h.buoc === 12 && !h.traSauXong) {
+    const x = t.nt - TIEN.COC;
+    if (h.phu === "cho-xn-sau") return viec(`Bên mua báo đã chuyển ${d(h.daTra)}`, "Bác mở app ngân hàng xem Agribank •••• 2186. Chỉ bấm khi thấy tiền thật.", nutKb(`Đã nhận ${d(h.daTra)}`, "xn-sau"));
+    if (h.phu === "qua-han") return viec("Đã báo bên mua: quá hạn trả", `Bên mua có 48 giờ để trả ${d(x)} hoặc gửi chứng từ. Nhân viên AgiViet gọi hai bên đối chiếu.`, "", "m-cho");
+    if (h.phu === "xu-ly-no") return viec("Bên mua vẫn chưa trả sau 48 giờ", `Ngân hàng sẽ chuyển cọc ${d(TIEN.COC)} cho bác, trừ vào tiền hàng. Phần còn lại AgiViet cấp hồ sơ đòi nợ.`, "", "m-cho");
+    return viec(`Chờ bên mua trả phần còn lại ${d(x)}`, "Hạn 24 giờ sau khi chốt nghiệm thu. Quá hạn mà chưa thấy tiền thì bấm báo chưa nhận.", nutKb("Quá hạn, chưa nhận được tiền", "qua-han-sau", "m-phu"));
+  }
   if (h.kb === "khong-giao") {
     const tra = TIEN.TRA_THANG + TIEN.BOI_HOAN;
     if (h.vpXong) return viec("Đơn đã đóng: bác không giao", `Bên mua đã nhận lại đủ ${d(tra)}. Hạng của bác bị trừ theo quy định.`, "", "m-cho");
@@ -55,7 +65,7 @@ const viecDon = (s) => {
   if (x.ai === "bac") return viec(x.lam, x.han ? `Hạn: ${x.han}` : "", `<div>${nut(x.nut, { ma: x.di || "", id: x.di ? "" : "lam", lop: "m-vang m-rong" })}</div>`);
   return viec(`Đang chờ ${AI[x.ai].toLowerCase()}`, `${esc(x.lam)}${x.han ? ` · hạn ${esc(x.han)}` : ""}. Bác chưa phải làm gì.`, `<div><button class="m-nut m-phu m-rong" type="button" id="mp" style="border-radius:999px;background:var(--bien-nen);color:var(--bien);box-shadow:0 0 0 1.5px #9db8c9 inset,0 3px 0 #b8ccd8">${esc(x.mp)}</button></div>`, "m-cho");
 };
-const tienLen = (api, chu) => { api.doi((x) => { x.hd.buoc = Math.min(15, x.hd.buoc + 1); }); if (chu) api.toast(chu); };
+const tienLen = (api, chu) => { const ts = TS(docHD()); api.doi((x) => { const b = x.hd.buoc; x.hd.buoc = ts && b === 4 ? 7 : ts && b === 12 ? 14 : Math.min(15, b + 1); }); if (chu) api.toast(chu); };
 
 export const MAN_3 = {
   // ── Đơn ──
@@ -85,7 +95,7 @@ export const MAN_3 = {
       el.querySelectorAll("[data-kb]").forEach((b) => b.addEventListener("click", async () => {
         await api.xong(b, "Đã gửi");
         const P = { "huy-ok": { huy: true, phu: "" }, "huy-khong": { phu: "" }, "de-nghi": { phu: "de-nghi", daDeNghi: true }, lech: { phu: "lech", nbXn: 20000000 }, "phan-doi": { phu: "phan-doi", daPhanDoi: true }, kd: { phu: "kiem-dinh" }, "nb-hoan": { phu: "nb-da-hoan" }, "khong-giao": { phu: "vi-pham", vp: true }, "nb-tra-vp": { phu: "nb-da-tra-vp" } }[b.dataset.kb];
-        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : P) })); api.veLai();
+        ghiHD((x) => ({ ...x, ...(b.dataset.kb === "nhan-them" ? { nbXn: x.daTra } : b.dataset.kb === "xn-sau" ? { nbXn: x.daTra, phu: "", traSauXong: true } : b.dataset.kb === "qua-han-sau" ? { phu: "qua-han" } : P) })); api.veLai();
       }));
       const kbDang = docHD().kb; if (kbDang && kbDang !== "thuan") el.querySelector(".m-than").insertAdjacentHTML("afterbegin", `<p class="m-ghi">Kịch bản thử đang chạy: <b>${esc(TEN_KB[kbDang] || kbDang)}</b> (nạp từ app mua).</p>`);
     } },

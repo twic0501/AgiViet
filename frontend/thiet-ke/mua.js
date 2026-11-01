@@ -5,6 +5,9 @@ import { tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLie
 
 // ── Dữ liệu ──
 const BOI_HOAN = 1200000, TRA_VP = 32200000 + 1200000;
+// Trả sau nghiệm thu: không trả trước khi bốc; chốt nghiệm thu xong mới chuyển phần còn lại (nghiệm thu − cọc), rồi ngân hàng chuyển cọc
+const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra";
+const TRA_SAU = (h) => tinhTien(h).nt - 13800000;
 const TONG_CHUYEN_COC = 13938000, COC = 13800000, PHI = 138000, TRA_THANG = 32200000, NGHIEM_THU = 44350000, COC_CHO_NB = 12150000, HOAN = 1650000;
 const BUOC = [
   { ai: "ban", lam: "Đồng ý giá: hàng được giữ 24 giờ", nut: "Đồng ý giá" },
@@ -65,10 +68,11 @@ const DON_KHAC = [
 ];
 
 // ── Trạng thái đơn HĐ-0018 (8 kịch bản, prompt app mua V2 mục 8) ──
-const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"]];
+const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"]];
 const hdTien = (h) => {
   const b = h.buoc, t = tinhTien(h);
   // Người bán vi phạm (không giao): cọc + phí hoàn bạn; người bán trả lại phần đã nhận trước (+ bồi hoàn tiền xe, ghi riêng)
+  if (h.no) return { banChi: COC + PHI, nh: 0, nb: COC };
   if (h.vp) return { banChi: (h.huy ? 0 : COC + PHI) + (h.vpXong ? 0 : h.daTra || 0), nh: h.huy ? 0 : COC, nb: h.vpXong ? 0 : h.nbXn || 0 };
   if (h.huy) return { banChi: COC + PHI, nh: 0, nb: COC };
   const banChi = (b >= 4 ? COC + PHI : 0) + (h.daTra || 0) - (h.hoanXn || b >= 14 ? t.hoanMua : 0) - (h.nbHoanXn ? t.nbHoan : 0);
@@ -81,6 +85,8 @@ const hdChan = (h) => {
   return "";
 };
 const hdLuot = (h) => {
+  if (h.no) return "xong";
+  if (TS(h) && h.buoc === 12 && !h.traSauXong) return h.phu === "cho-xn-sau" ? "nb" : h.phu === "xu-ly-no" ? "nh" : "ban";
   if (h.kb === "khong-giao") {
     if (h.vpXong) return "xong";
     if (h.phu === "khong-hang" || h.phu === "cho-nb-tra") return "nb";
@@ -106,7 +112,7 @@ const lamBuoc = (i, h) => {
 };
 const hdTienSauBuoc = (i, h) => {
   const t = tinhTien(h);
-  return ["Hàng được giữ 24 giờ", h.ban === 2 ? "Thỏa thuận bản 2 (giao 29/10)" : "", "", "Đã chuyển cọc, chờ ngân hàng xác nhận", "Ngân hàng giữ 13.800.000 đ · liên lạc mở", `Đã báo trả ${d(h.daTra || TRA_THANG)}`, `Người bán đã nhận ${d(h.nbXn || TRA_THANG)}`,
+  return ["Hàng được giữ 24 giờ", h.ban === 2 ? "Thỏa thuận bản 2 (giao 29/10)" : "", "", "Đã chuyển cọc, chờ ngân hàng xác nhận", "Ngân hàng giữ 13.800.000 đ · liên lạc mở", TS(h) ? "Không trả trước: trả sau nghiệm thu" : `Đã báo trả ${d(h.daTra || TRA_THANG)}`, TS(h) ? "Bốc trước, trả sau" : `Người bán đã nhận ${d(h.nbXn || TRA_THANG)}`,
     "Rủi ro đường từ đây thuộc bạn", "", "", `Giá trị nghiệm thu ${d(t.nt)}`, h.kb === "phan-doi" ? "Chốt theo kiểm định: hạ cấp 104 kg" : "", t.nbHoan ? `Cọc ${d(TIEN_COC())} hoàn bạn · người bán phải hoàn ${d(t.nbHoan)}` : `${d(t.cocNB)} sang chị Năm · ${d(t.hoanMua)} hoàn bạn`, `Chi ròng cho hàng ${d(t.nt)}`, ""][i];
 };
 const TIEN_COC = () => COC;
@@ -129,7 +135,7 @@ function veBuoc(h, gon = false) {
 function veTienO(h) {
   const t = hdTien(h), k = tinhTien(h);
   return `<div class="sl-tien-o" id="tien-o">
-    <div><small>Bạn đã chi</small><b class="sl-so" data-v="${t.banChi}">${d(t.banChi)}</b><span class="sl-ghi">${h.vp ? (h.vpXong ? "cọc, phí, tiền trước đã hoàn đủ" : h.huy ? "cọc và phí đã hoàn; chờ chị Năm trả lại" : "người bán vi phạm, chờ hoàn") : h.huy ? "cọc chuyển người bán, phí không hoàn" : h.buoc === 13 && !h.hoanXn ? `chờ hoàn ${so(k.hoanMua)} đ` : h.buoc >= 14 ? "đã nhận lại tiền hoàn" : "gồm phí 138.000 đ"}</span></div>
+    <div><small>Bạn đã chi</small><b class="sl-so" data-v="${t.banChi}">${d(t.banChi)}</b><span class="sl-ghi">${h.vp ? (h.vpXong ? "cọc, phí, tiền trước đã hoàn đủ" : h.huy ? "cọc và phí đã hoàn; chờ chị Năm trả lại" : "người bán vi phạm, chờ hoàn") : h.huy ? "cọc chuyển người bán, phí không hoàn" : h.buoc === 13 && !h.hoanXn ? `chờ hoàn ${so(k.hoanMua)} đ` : h.buoc >= 14 ? (TS(h) ? "cọc chuyển hết cho chị Năm, không có hoàn" : "đã nhận lại tiền hoàn") : "gồm phí 138.000 đ"}</span></div>
     <div><small>Ngân hàng giữ</small><b class="sl-so" data-v="${t.nh}" style="color:var(--chin)">${d(t.nh)}</b><span class="sl-ghi">${t.nh ? (h.buoc === 4 ? "đã chuyển, chờ xác nhận" : "cọc 30%") : h.buoc >= 13 ? "đã xử lý cọc" : "chưa có cọc"}</span></div>
     <div><small>Chị Năm đã nhận</small><b class="sl-so" data-v="${t.nb}" style="color:var(--la)">${d(t.nb)}</b><span class="sl-ghi">${h.vp ? (h.vpXong ? "đã trả lại bạn" : "phải trả lại bạn") : h.phu === "lech" || h.phu === "cho-vh" ? "đang đối soát phần lệch" : (h.daTra || 0) > (h.nbXn || 0) ? `chờ xác nhận ${so(h.daTra - h.nbXn)} đ` : "đã xác nhận đúng số"}</span></div>
   </div>`;
@@ -139,6 +145,15 @@ const nutVang = (chu, lam) => `<button class="sl-nut sl-vang" data-lam="${lam}">
 const theViec = (lop, tieu, p, nut) => `<div class="sl-viec ${lop}"><div><h2>${esc(tieu)}</h2><p>${p}</p></div><div class="sl-hang-nut">${nut}</div></div>`;
 function veViec(h, url) {
   const luot = hdLuot(h), t = tinhTien(h);
+  // ── Trả sau nghiệm thu (v23 chinh: CK sau nghiệm thu; chua-tra) ──
+  if (h.no) return theViec("sl-chan-lai", "Đơn đóng có nợ: bạn chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(COC)} cho chị Năm (trừ vào tiền hàng). Bạn còn nợ ${d(TRA_SAU(h))}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho người bán.`, "");
+  if (TS(h) && h.buoc === 12 && !h.traSauXong) {
+    const x = TRA_SAU(h);
+    if (h.phu === "cho-xn-sau") return theViec("sl-cho", `Đang chờ chị Năm xác nhận đã nhận ${d(h.daTra)}`, "Chị Năm kiểm tài khoản. Xác nhận xong ngân hàng mới chuyển cọc.", nutMp("Mô phỏng: chị Năm xác nhận đã nhận", "xn-sau"));
+    if (h.phu === "qua-han") return theViec("sl-chan-lai", "Quá hạn trả: chị Năm báo chưa nhận tiền", `Bạn có 48 giờ để trả ${d(x)} hoặc gửi chứng từ đã chuyển. Hết hạn: ngân hàng chuyển cọc cho chị Năm, bạn bị trừ uy tín và khóa đơn mới.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau") + nutMp("Mô phỏng: hết 48 giờ vẫn chưa trả", "het-48h"));
+    if (h.phu === "xu-ly-no") return theViec("sl-cho", "Nhân viên AgiViet đã gọi hai bên: chưa có tiền", "Ngân hàng chuyển cọc cho chị Năm, trừ vào tiền hàng. Phần còn lại ghi thành nợ của bạn.", nutMp("Mô phỏng: ngân hàng chuyển cọc cho chị Năm", "no-chot"));
+    return theViec("", `Chuyển phần còn lại ${d(x)} cho chị Năm`, `Nghiệm thu ${d(t.nt)} − cọc ${d(COC)} ngân hàng giữ. Chuyển thẳng vào Agribank •••• 2186 (đúng tài khoản trong hợp đồng), nội dung HD0018. Hạn 24 giờ sau khi chốt nghiệm thu.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau"));
+  }
   // ── Người bán không giao (v23 ban-vi-pham) ──
   if (h.kb === "khong-giao") {
     if (h.vpXong) return theViec("sl-xong", "Đơn đóng: người bán không giao, bạn đã nhận lại đủ", `Cọc ${d(COC)} và phí ${d(PHI)} đã hoàn. ${d(TRA_THANG)} trả trước và ${d(BOI_HOAN)} bồi hoàn tiền xe đã về. Chị Năm bị trừ hạng theo quy định.`, "");
@@ -209,6 +224,10 @@ function ganNutDon(goc) {
         "huy-khong": () => { h.phu = ""; },
         "hoan-xn": () => { h.hoanXn = true; h.phu = "cho-nb-hoan"; },
         "nb-hoan": () => { h.phu = "nb-da-hoan"; },
+        "tra-sau": () => { h.daTra = TRA_SAU(h); h.phu = "cho-xn-sau"; },
+        "xn-sau": () => { h.nbXn = h.daTra; h.phu = ""; h.traSauXong = true; },
+        "het-48h": () => { h.phu = "xu-ly-no"; },
+        "no-chot": () => { h.phu = ""; h.no = true; },
         "khong-hang": () => { h.phu = "khong-hang"; },
         "nb-khong-giao": () => { h.phu = "vi-pham"; h.vp = true; },
         "hoan-coc-vp": () => { h.huy = true; h.phu = "cho-nb-tra"; },
@@ -223,6 +242,8 @@ function ganNutDon(goc) {
       if (h.buoc === 5) { h.daTra = h.kb === "thieu" ? 20000000 : TRA_THANG; h.buoc++; return; }
       if (h.buoc === 6 || (h.buoc === 7 && hdChan(h))) { h.nbXn = h.daTra; if (h.buoc === 6) h.buoc++; return; }
       if (h.buoc === 7 && h.nbXn < TRA_THANG) return;
+      if (h.buoc === 4 && TS(h)) { h.buoc = 7; return; }    // trả sau: ngân hàng giữ cọc xong là tới bốc, không có trả trước
+      if (h.buoc === 12 && TS(h)) { h.buoc = 14; return; }   // trả sau: cọc chuyển hết cho người bán, không có tiền hoàn
       if (h.buoc === 13) h.hoanXn = true;
       h.buoc = Math.min(BUOC.length, h.buoc + 1);
     });
