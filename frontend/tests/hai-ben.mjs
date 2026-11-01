@@ -25,7 +25,7 @@ async function lamLai(kb = "thuan") {
 // ── 1. Luồng thuận, mỗi bên làm phần mình ──
 await lamLai("thuan");
 await buoc("Chị Năm đồng ý giá trong trò chuyện → HĐ-0018 sang bước bên mua soạn thỏa thuận", async () => {
-  await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421#tro=T1"); await cho(1500);
+  await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1"); await cho(1500);
   await ban.click('[data-gia="dong-y"]'); await cho(300); await ban.click("#chot"); await cho(2500);
   assert.equal((await hd()).buoc, 1);
   await moMua("tin-nhan");
@@ -34,7 +34,7 @@ await buoc("Chị Năm đồng ý giá trong trò chuyện → HĐ-0018 sang bư
 await buoc("Nhắn qua lại: bên mua nhắn → chị Năm thấy; số điện thoại bên mua gửi bị che", async () => {
   await mua.fill("#tn-go", "Em gửi xe 66C-123.45 tới lúc 5 giờ 30 nha chị"); await mua.click("#tn-gui"); await cho(400);
   await mua.fill("#tn-go", "Chị gọi em 0277 386 210 nha"); await mua.click("#tn-gui"); await cho(400);
-  await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421#tro=T1"); await cho(1500);
+  await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1"); await cho(1500);
   const t = await ban.locator("#chat").innerText();
   assert.match(t, /66C-123\.45 tới lúc 5 giờ 30/);
   assert.ok(!/0277 386 210/.test(t), "số bên mua gửi phải bị che");
@@ -49,7 +49,7 @@ await buoc("Bên mua chuyển cọc → ngân hàng xác nhận → liên lạc 
   await moMua("chi-tiet-don"); await muaLam(/Chuyển cọc/); assert.equal((await hd()).buoc, 4);
   await muaLam(/Mô phỏng: ngân hàng xác nhận/); assert.equal((await hd()).buoc, 5);
   assert.deepEqual((await ketQuaTien()).slice(0, 2), [13938000, 13800000], "bạn đã chi 13.938.000 (cọc + phí), ngân hàng giữ 13.800.000");
-  await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421#tro=T1"); await cho(1200);
+  await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1"); await cho(1200);
   assert.match(await ban.locator("#dau").innerText(), /liên lạc đã mở/);
 });
 await buoc("Bên mua trả thẳng 32,2 tr → chị Năm kiểm tiền xác nhận → bên mua thấy chị Năm đã nhận", async () => {

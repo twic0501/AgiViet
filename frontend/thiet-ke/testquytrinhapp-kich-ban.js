@@ -3,7 +3,7 @@
 // Mỗi bước: qt = chỉ số các bước v23 (0-based) mà bước này thể hiện · ai = vai làm · ben = điện thoại có nút bấm
 // · ban/mua = màn mở trên từng điện thoại · nut = [{ sel, chu }] nút cần bấm (lọc theo chữ nếu có) · lech = chỗ bản mô phỏng khác v23.
 import { BANG, tenAi } from "./kich-ban-bang.js";
-const B = { don: "./mau/ban.html#man=chi-tiet-don", ky: "./mau/ban.html#man=ky-otp", kt: "./mau/ban.html#man=kiem-tien", bg: "./mau/ban.html#man=ban-giao", kq: "./mau/ban.html#man=ket-qua", chat: "./ban-tin-nhan.html?thu=0918000421#tro=T1" };
+const B = { don: "./mau/ban.html#man=chi-tiet-don", ky: "./mau/ban.html#man=ky-otp", kt: "./mau/ban.html#man=kiem-tien", bg: "./mau/ban.html#man=ban-giao", kq: "./mau/ban.html#man=ket-qua", chat: "./ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1" };
 const M = { don: "./mua.html?man=chi-tiet-don", chat: "./mua.html?man=tin-nhan" };
 const VIEC_MUA = ".sl-viec [data-lam]";
 const mua = (chu, qt, them = {}) => ({ qt, ai: "mua", ben: "mua", ban: B.don, mua: M.don, nut: [{ sel: VIEC_MUA, chu }], ...them });

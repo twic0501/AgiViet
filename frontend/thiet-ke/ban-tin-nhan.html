@@ -86,10 +86,13 @@
 
 <script type="module">
 import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, soThongBaoMoi, viecCho, tien, tenLoai, can } from "./chung.js";
+// Chữ viết tắt bên kia, cùng kiểu thẻ hợp đồng ở Trang chủ (NĐ = Nhà máy sấy Đồng Xanh, NB = Nhà hàng Bếp Sen)
+const vietTat = (ten = "") => { const t = ten.trim().split(/\s+/); const sau = t.slice(1).find((x) => /^\p{Lu}/u.test(x)); return (t[0]?.[0] ?? "") + (sau?.[0] ?? t[1]?.[0] ?? ""); };
 const $ = (id) => document.getElementById(id);
 veTab("tin-nhan");
 // ── Trò chuyện trực tiếp (màn 38) nằm trong trang Tin nhắn: #tro = danh sách, #tro=T1 = khung chat ──
-fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})).then((cc) => { if (!cc.test_tools) { $("tc-chon")?.remove(); return; } import("./tro-chuyen.js").then((TC) => {
+fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})).then((cc) => { // Trò chuyện mô phỏng (HĐ-0018 dựng sẵn) chỉ bật khi xin rõ ?mophong=1 — app thật chỉ hiện dữ liệu backend, không trộn.
+  if (!cc.test_tools || !new URLSearchParams(location.search).has("mophong")) { $("tc-chon")?.remove(); return; } import("./tro-chuyen.js").then((TC) => {
   const nhom = $("tc-chon");
   const chuaDoc = TC.soChuaDoc(); if (chuaDoc) nhom.querySelector('[data-muc="tro"]').insertAdjacentHTML("beforeend", `<small>${chuaDoc}</small>`);
   const theoHash = () => {
@@ -158,7 +161,7 @@ function ve(k) {
       <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.dongY ? "Đang giữ hàng" : c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span></span>
     </a>` : `
     <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#">
-      <span class="anh" style="background:#e3e9f4"><span class="loai hd">${IC_HD}</span></span>
+      <span class="anh" style="background:var(--nen-phu,#e9e4d6);display:grid;place-items:center;font-weight:700;color:var(--muc,#3a3a33)">${esc(vietTat(c.ai))}<span class="loai hd">${IC_HD}</span></span>
       <span class="giua"><span class="ai">${esc(c.ai)}</span><span class="phu-dong">Hợp đồng ${esc(c.ma)}</span><span class="tin">${esc(c.viec)} · <b>${esc(tien(c.gia))}</b></span></span>
       <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.toiBac ? "Chờ bác" : "Đang chờ"}</span></span>
     </a>`).join("") : `<div class="trong-tn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>

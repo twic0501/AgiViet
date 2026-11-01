@@ -309,3 +309,23 @@ export async function soThongBaoMoi(token) {
     return (Array.isArray(ds) ? ds : []).filter((n) => Number(n.seq) > da).length;
   } catch { return 0; }
 }
+
+// Mã hợp đồng hiển thị thống nhất "HĐ-…": backend sinh mã không dấu (HD-3005, giữ cho nội dung chuyển khoản),
+// màn nào in mã cũng tự đổi khi hiện — không sửa dữ liệu, không đụng ô nhập.
+const CO_MA_HD = /\bHD-(?=\d)/;
+const doiChu = (s) => s.replace(/\bHD-(?=\d)/g, "HĐ-");
+function doiMaHD(goc) {
+  if (goc.nodeType === 3) { if (CO_MA_HD.test(goc.nodeValue)) goc.nodeValue = doiChu(goc.nodeValue); return; }
+  if (goc.nodeType !== 1 || goc.closest?.("input,textarea,script,style")) return;
+  const w = document.createTreeWalker(goc, NodeFilter.SHOW_TEXT);
+  const ds = []; for (let n = w.nextNode(); n; n = w.nextNode()) if (CO_MA_HD.test(n.nodeValue) && !n.parentElement?.closest("input,textarea,script,style")) ds.push(n);
+  for (const n of ds) n.nodeValue = doiChu(n.nodeValue);
+}
+if (typeof document !== "undefined" && typeof MutationObserver !== "undefined") {
+  const chay = () => {
+    doiMaHD(document.body);
+    new MutationObserver((ms) => { for (const m of ms) { if (m.type === "characterData") doiMaHD(m.target); else m.addedNodes.forEach(doiMaHD); } })
+      .observe(document.body, { childList: true, subtree: true, characterData: true });
+  };
+  if (document.body) chay(); else addEventListener("DOMContentLoaded", chay);
+}
