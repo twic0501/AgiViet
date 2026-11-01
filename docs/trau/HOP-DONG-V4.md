@@ -1,6 +1,6 @@
 # Trâu v4 — hợp đồng nối với giao diện (1/11, ĐÃ DUYỆT)
 
-Tệp: `frontend/assets/trau/trau-v4.riv` (≈612 KB, hai artboard; 60 khung/giây khi CPU giả lập chậm ×4). Vào hành động tức thì — tay chỉ ra sau ~0,15 s, chỉ hẳn sau ~0,3 s. `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
+Tệp: `frontend/assets/trau/trau-v4.riv` (≈641 KB, hai artboard; 60 khung/giây khi CPU giả lập chậm ×4). Vào hành động tức thì — tay chỉ ra sau ~0,15 s, chỉ hẳn sau ~0,3 s. `trau-v3.riv` vẫn giữ nguyên cho tới khi giao diện chuyển xong.
 
 ## Artboard
 | Tên | Khung | Dùng |
@@ -55,8 +55,8 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 30 | giơ ngón cái, mắt cười | đánh giá, đơn xong |
 | 31 | hai tay xin bình tĩnh | tranh chấp, lệch tiền |
 | 32 | cầm đồng hồ cát, gõ chân | chờ bên mua ký, chờ ngân hàng |
-| 33 | đội nón lá, mắt nheo | thời tiết nắng |
-| 34 | mặc áo mưa | thời tiết mưa |
+| 33 | đội nón lá (không quai), mắt nheo | thời tiết nắng |
+| 34 | (đã bỏ — người sáng lập 1/11) | — |
 | 35 | so sánh 2 quả xoài (to / nhỏ) cầm thấp trước ngực | chọn loại hàng |
 
 Lưu ý: số 2 hiện chỉ chỉ sang **phải màn hình**; chỉ trái/phải theo `huong` cần góc ¾ (đang gác).
@@ -102,7 +102,7 @@ Tạo lại: `python3 frontend/trau-rive/xuat-tu-the.py`.
 | 16-cam-tien | cầm phong bì tiền | 20 |
 | 17-ky-giay | ký giấy | 21 |
 | 18-canh-bao | cảnh báo | 22 |
-| 19-can · 20-xe-tai · 21-tui-mau · 22-binh-xit-lich · 23-tai-nghe · 24-ngon-cai · 25-binh-tinh · 26-dong-ho · 27-non-la · 28-ao-mua · 29-so-sanh | ưu tiên 2 | 25 … 35 |
+| 19-can · 20-xe-tai · 21-tui-mau · 22-binh-xit-lich · 23-tai-nghe · 24-ngon-cai · 25-binh-tinh · 26-dong-ho · 27-non-la · 29-so-sanh (28 áo mưa đã bỏ) | ưu tiên 2 | 25 … 35 (trừ 34) |
 
 ## Thêm 1/11 (YEU-CAU-THEM-0111) trong `frontend/assets/trau/anh/`
 - Màn trống @2x/@3x WebP + PNG: `trong-chua-co-nhat-ky` (cầm sổ), `trong-chua-co-thong-bao` (ngủ cạnh chuông), `trong-loi` (cúi xin lỗi).
