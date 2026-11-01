@@ -6,7 +6,7 @@ import { tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLie
 // ── Dữ liệu ──
 const BOI_HOAN = 1200000, TRA_VP = 32200000 + 1200000;
 // Trả sau nghiệm thu: không trả trước khi bốc; chốt nghiệm thu xong mới chuyển phần còn lại (nghiệm thu − cọc), rồi ngân hàng chuyển cọc
-const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra";
+const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra" || h.kb === "tien-mat";
 const TRA_SAU = (h) => tinhTien(h).nt - 13800000;
 const TONG_CHUYEN_COC = 13938000, COC = 13800000, PHI = 138000, TRA_THANG = 32200000, NGHIEM_THU = 44350000, COC_CHO_NB = 12150000, HOAN = 1650000;
 const BUOC = [
@@ -68,7 +68,7 @@ const DON_KHAC = [
 ];
 
 // ── Trạng thái đơn HĐ-0018 (8 kịch bản, prompt app mua V2 mục 8) ──
-const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"]];
+const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"]];
 const hdTien = (h) => {
   const b = h.buoc, t = tinhTien(h);
   // Người bán vi phạm (không giao): cọc + phí hoàn bạn; người bán trả lại phần đã nhận trước (+ bồi hoàn tiền xe, ghi riêng)
@@ -149,9 +149,10 @@ function veViec(h, url) {
   if (h.no) return theViec("sl-chan-lai", "Đơn đóng có nợ: bạn chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(COC)} cho chị Năm (trừ vào tiền hàng). Bạn còn nợ ${d(TRA_SAU(h))}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho người bán.`, "");
   if (TS(h) && h.buoc === 12 && !h.traSauXong) {
     const x = TRA_SAU(h);
-    if (h.phu === "cho-xn-sau") return theViec("sl-cho", `Đang chờ chị Năm xác nhận đã nhận ${d(h.daTra)}`, "Chị Năm kiểm tài khoản. Xác nhận xong ngân hàng mới chuyển cọc.", nutMp("Mô phỏng: chị Năm xác nhận đã nhận", "xn-sau"));
+    if (h.phu === "cho-xn-sau") return theViec("sl-cho", `Đang chờ chị Năm đếm và xác nhận ${d(h.daTra)}`, h.kb === "tien-mat" ? "Chị Năm đếm đủ tiền mặt, ký biên nhận rồi mới cho dỡ hàng. Xác nhận xong ngân hàng mới chuyển cọc." : "Chị Năm kiểm tài khoản. Xác nhận xong ngân hàng mới chuyển cọc.", nutMp("Mô phỏng: chị Năm xác nhận đã nhận", "xn-sau"));
     if (h.phu === "qua-han") return theViec("sl-chan-lai", "Quá hạn trả: chị Năm báo chưa nhận tiền", `Bạn có 48 giờ để trả ${d(x)} hoặc gửi chứng từ đã chuyển. Hết hạn: ngân hàng chuyển cọc cho chị Năm, bạn bị trừ uy tín và khóa đơn mới.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau") + nutMp("Mô phỏng: hết 48 giờ vẫn chưa trả", "het-48h"));
     if (h.phu === "xu-ly-no") return theViec("sl-cho", "Nhân viên AgiViet đã gọi hai bên: chưa có tiền", "Ngân hàng chuyển cọc cho chị Năm, trừ vào tiền hàng. Phần còn lại ghi thành nợ của bạn.", nutMp("Mô phỏng: ngân hàng chuyển cọc cho chị Năm", "no-chot"));
+    if (h.kb === "tien-mat") return theViec("", `Trả tiền mặt ${d(x)} trước khi dỡ hàng`, `Nghiệm thu ${d(t.nt)} − cọc ${d(COC)} ngân hàng giữ. Trả tại kho, hai bên ký biên nhận (chụp ảnh biên nhận vào app). Chị Năm đếm đủ mới dỡ.`, nutVang(`Đã trả tiền mặt ${d(x)}`, "tra-sau"));
     return theViec("", `Chuyển phần còn lại ${d(x)} cho chị Năm`, `Nghiệm thu ${d(t.nt)} − cọc ${d(COC)} ngân hàng giữ. Chuyển thẳng vào Agribank •••• 2186 (đúng tài khoản trong hợp đồng), nội dung HD0018. Hạn 24 giờ sau khi chốt nghiệm thu.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau"));
   }
   // ── Người bán không giao (v23 ban-vi-pham) ──

@@ -101,6 +101,18 @@ export const KICH_BAN = [
       nh("ngân hàng chuyển cọc", [10]),
       xem([11], "Đơn đóng có nợ: chị Năm nhận cọc, bên mua còn nợ 30.550.000, bị trừ uy tín và khóa đơn mới."),
     ] },
+  { id: "tien-mat", kb: "tien-mat", dau: { buoc: 7 }, tom: "Trả tiền mặt khi nhận, người bán đếm đủ mới dỡ.",
+    lechChung: "v23 người bán tự chở tới kho bên mua, có người được ủy quyền đi theo; mô phỏng giữ HĐ-0018 lấy tại vườn.",
+    buoc: [
+      banMan(B.bg, "#bg", "", [4]),
+      mua("Đạt khi bốc", [4]),
+      mua("Ký nhận", [5]),
+      mua("Gửi kết quả", [5]),
+      banMan(B.kq, "#dy", "", [6]),
+      mua("Đã trả tiền mặt", [7], { ghi: "Trả tại kho, hai bên ký biên nhận." }),
+      banKb("xn-sau", "Đếm đủ", [8]),
+      nh("Mô phỏng: ngân hàng chi cọc", [9, 10]),
+    ] },
   { id: "da-nhan-nhieu-hon", kb: "tra-lai", dau: { buoc: 10, daTra: 32200000, nbXn: 32200000 }, tom: "Người bán đã nhận trước nhiều hơn giá trị nghiệm thu.",
     buoc: [
       mua("Gửi kết quả", [2]),

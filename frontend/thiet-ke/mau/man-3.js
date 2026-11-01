@@ -18,17 +18,19 @@ function tienO(b) {
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
 // Kịch bản do app mua nạp (giao-dich-chung.js): những lúc tới lượt chị Năm làm
-const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả" };
-const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra";
+const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả", "tien-mat": "Tiền mặt khi nhận" };
+const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra" || h.kb === "tien-mat";
 const nutKb = (chu, lam, lop = "m-vang") => `<button class="m-nut ${lop} m-rong" type="button" data-kb="${lam}">${esc(chu)}</button>`;
 function viecKichBan() {
   const h = docHD(), t = tinhTien(h);
   if (h.no) return viec("Đơn đóng: bên mua chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(TIEN.COC)} cho bác. Bên mua còn nợ ${d(t.nt - TIEN.COC)}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho bác.`, "", "m-cho");
   if (TS(h) && h.buoc === 12 && !h.traSauXong) {
     const x = t.nt - TIEN.COC;
+    if (h.phu === "cho-xn-sau" && h.kb === "tien-mat") return viec(`Bên mua trả tiền mặt ${d(h.daTra)}`, "Bác đếm đủ, hai bên ký biên nhận rồi mới cho dỡ hàng. Thiếu thì chưa dỡ.", nutKb(`Đếm đủ, đã nhận ${d(h.daTra)}`, "xn-sau"));
     if (h.phu === "cho-xn-sau") return viec(`Bên mua báo đã chuyển ${d(h.daTra)}`, "Bác mở app ngân hàng xem Agribank •••• 2186. Chỉ bấm khi thấy tiền thật.", nutKb(`Đã nhận ${d(h.daTra)}`, "xn-sau"));
     if (h.phu === "qua-han") return viec("Đã báo bên mua: quá hạn trả", `Bên mua có 48 giờ để trả ${d(x)} hoặc gửi chứng từ. Nhân viên AgiViet gọi hai bên đối chiếu.`, "", "m-cho");
     if (h.phu === "xu-ly-no") return viec("Bên mua vẫn chưa trả sau 48 giờ", `Ngân hàng sẽ chuyển cọc ${d(TIEN.COC)} cho bác, trừ vào tiền hàng. Phần còn lại AgiViet cấp hồ sơ đòi nợ.`, "", "m-cho");
+    if (h.kb === "tien-mat") return viec(`Chờ bên mua trả tiền mặt ${d(x)}`, "Bác đã chốt số. Bên mua trả tiền mặt tại kho trước khi dỡ; bác đếm đủ mới cho dỡ.", "", "m-cho");
     return viec(`Chờ bên mua trả phần còn lại ${d(x)}`, "Hạn 24 giờ sau khi chốt nghiệm thu. Quá hạn mà chưa thấy tiền thì bấm báo chưa nhận.", nutKb("Quá hạn, chưa nhận được tiền", "qua-han-sau", "m-phu"));
   }
   if (h.kb === "khong-giao") {

@@ -23,6 +23,7 @@ const GHEP = {
   "can-khong-dung": { kb: "can-lech", kiem: "tệp này", ghi: "chỉ nhánh trong ±5%; nhánh vượt 5% chưa có" },
   "ban-vi-pham": { kb: "khong-giao", kiem: "tệp này", ghi: "bên mua đã trả trước 32,2 tr (v23 chưa trả) nên người bán trả lại thêm phần đó" },
   "nghiem-thu-im-lang": { kb: "im-lang", kiem: "tệp này" },
+  "tien-mat": { kb: "tien-mat", kiem: "tệp này", ghi: "v23 người bán tự chở tới kho; mô phỏng giữ lấy tại vườn rồi trả tiền mặt khi nhận" },
   "chua-tra": { kb: "chua-tra", kiem: "tệp này", ghi: "trên khung trả sau nghiệm thu (kb tra-sau = luồng chính v23 trả sau, cũng kiểm ở đây)" },
 };
 
@@ -35,7 +36,7 @@ const cho = (ms) => new Promise((r) => setTimeout(r, ms));
 const hd = () => mua.evaluate(() => JSON.parse(localStorage.getItem("agv-hd-0018") || "{}"));
 async function buoc(ten, f) { try { await f(); ketQua.push(["ĐẠT", ten]); } catch (e) { ketQua.push(["HỎNG", ten, e.message.split("\n")[0]]); } }
 const moBan = async (hash) => { await ban.goto(GOC + "mau/ban.html#" + hash); await ban.reload(); await cho(600); };
-const moMua = async (man) => { await mua.goto(GOC + "mua.html?man=" + man); await cho(600); };
+const moMua = async (man) => { await mua.goto(GOC + "mua.html?man=" + man); await cho(400); await mua.waitForFunction(() => (document.querySelector(".sl-viec")?.innerText || "").trim().length > 0, null, { timeout: 5000 }).catch(() => {}); await cho(200); };
 const muaLam = async (re) => { await mua.locator(".sl-viec [data-lam]").filter({ hasText: re }).first().click(); await cho(1500); };
 const banKb = async (kb) => { await ban.locator(`[data-kb="${kb}"]`).click(); await cho(1600); };
 const viecMua = () => mua.locator(".sl-viec").first().innerText();
@@ -177,6 +178,18 @@ await buoc("[chua-tra] Bên mua không trả sau nghiệm thu: người bán bá
   assert.match(await viecMua(), /còn nợ 30\.550\.000/);
   await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /bên mua chưa trả/);
   assert.equal(await ban.evaluate(() => Number(document.querySelector("#o-cho b").dataset.v)), 30550000, "app bán: còn chờ 30.550.000");
+});
+
+// ── tien-mat: trả tiền mặt trước khi dỡ, người bán đếm đủ mới dỡ ──
+await napKb("tien-mat", { buoc: 11 });
+await buoc("[tien-mat] Chốt số → bên mua trả tiền mặt 30.550.000 trước khi dỡ → người bán đếm đủ → ngân hàng chuyển cọc", async () => {
+  await moBan("man=ket-qua"); await ban.click("#dy"); await cho(1800); assert.equal((await hd()).buoc, 12);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /trả tiền mặt 30\.550\.000/);
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /Trả tiền mặt 30\.550\.000 đ trước khi dỡ/);
+  await muaLam(/Đã trả tiền mặt/);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /đếm đủ/i); await banKb("xn-sau");
+  await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng/); assert.equal((await hd()).buoc, 14);
+  assert.deepEqual(await tienMua(), [44488000, 0, 44350000]);
 });
 
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });
