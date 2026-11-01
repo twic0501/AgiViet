@@ -17,7 +17,7 @@ const BUOC = [
   { ai: "ban", lam: "Đồng ý giá: hàng được giữ 24 giờ", nut: "Đồng ý giá" },
   { ai: "ban", lam: "Soạn và ký thỏa thuận", nut: "Ký và gửi" },
   { ai: "nb", lam: "Người bán xem lại và ký", mp: "Mô phỏng: chị Năm ký" },
-  { ai: "ban", lam: `Chuyển cọc ${d(TONG_CHUYEN_COC)}`, nut: `Chuyển cọc ${d(TONG_CHUYEN_COC)}`, han: "48 giờ sau khi người bán ký" },
+  { ai: "ban", lam: `Chuyển cọc ${d(TONG_CHUYEN_COC)}`, nut: `Chuyển cọc ${d(TONG_CHUYEN_COC)}`, han: "12 giờ sau khi người bán ký (hàng tươi)" },
   { ai: "nh", lam: "Ngân hàng xác nhận cọc · mở liên lạc", mp: "Mô phỏng: ngân hàng xác nhận" },
   { ai: "ban", lam: `Trả thẳng ${d(TRA_THANG)} cho người bán`, nut: "Ghi đã trả", han: "trước 5:30 ngày 28/10" },
   { ai: "nb", lam: "Người bán xác nhận đúng số", mp: "Mô phỏng: chị Năm xác nhận số đã nhận" },
@@ -721,7 +721,7 @@ const man = {
       <section class="sl-the" style="display:grid;gap:12px">
         ${dong("Cọc 30%", d(COC)) + dong("Phí giới thiệu (đơn đầu với chị Năm) 0,3%", d(PHI)) + dong("Tổng chuyển", d(TONG_CHUYEN_COC), "sl-tong")}
         <div class="sl-the sl-the-lot" style="display:flex;gap:16px;align-items:center"><div class="sl-qr" role="img" aria-label="Mã QR chuyển khoản"></div><div style="display:grid;gap:4px"><span class="sl-ghi">Tài khoản đảm bảo tại ngân hàng đối tác</span><b class="sl-so">VietinBank 1140 0018 0018</b><span class="sl-ghi">Nội dung</span><b class="sl-so">AGV HD0018 COC</b></div></div>
-        <p class="sl-ghi">Hạn: 48 giờ sau khi chị Năm ký. Đơn sau với mối quen: phí mối quen 0% theo gói Thu mua.</p>
+        <p class="sl-ghi">Hạn: 12 giờ sau khi chị Năm ký (hàng tươi; hàng khô 48 giờ). Đơn sau với mối quen: phí mối quen 0% theo gói Thu mua.</p>
         <a class="sl-nut sl-vang" href="${url("chi-tiet-don")}">Tôi đã chuyển cọc</a>
       </section>
       ${the("Cọc này đi đâu", `<ol class="sl-buoc">${["Ngân hàng giữ, không ai rút được", "Nghiệm thu chốt + trả thẳng đã xác nhận + không tranh chấp", "Ngân hàng chuyển phần (giá trị nghiệm thu − đã trả thẳng) cho người bán, hoàn phần dư cho bạn"].map((x, i) => `<li class="sl-b-cho"><span class="sl-b-vong">${i + 1}</span><div><b>${x}</b></div></li>`).join("")}</ol>`)}

@@ -185,7 +185,7 @@ xong("chua-ve", "Đã báo", "Đã báo AgiViet kiểm với ngân hàng");
 xong("gui-dg", "Đã gửi", "Đã gửi đánh giá. Bác sẽ thấy đánh giá của bên mua khi họ gửi.");
 document.querySelectorAll("[data-sao]").forEach((b) => b.addEventListener("click", () => document.querySelectorAll("[data-sao]").forEach((x) => { x.style.color = Number(x.dataset.sao) <= Number(b.dataset.sao) ? "#e2a92c" : "var(--ke-dam)"; x.animate?.([{ transform: "scale(.85)" }, { transform: "scale(1.12)" }, { transform: "none" }], { duration: 240 }); })));
 $("tu-choi")?.addEventListener("click", () => window.HieuUngThem?.thongBaoRoi(document.querySelector(".trang"), "Đã từ chối, bên mua được báo lịch sự"));
-$("nghe")?.addEventListener("click", () => { try { const u = new SpeechSynthesisUtterance([...document.querySelectorAll(".th-dong-buoc p")].map((p) => p.textContent).join(". ")); u.lang = "vi-VN"; speechSynthesis.speak(u); } catch {} });
+$("nghe")?.addEventListener("click", () => { try { window.giongViet?.docTo([...document.querySelectorAll(".th-dong-buoc p")].map((p) => p.textContent).join(". ")); } catch {} });
 if ($("so-ve")) setTimeout(() => window.HieuUng?.demSo($("so-ve"), 0, 12150000), 300);
 // Lượng hứa: chặn vượt 80% (rung + báo ngay dưới ô)
 $("tiep")?.addEventListener("click", (e) => { const v = Number($("luong").value.replace(/\D/g, "")); if (!(v > 0) || v > 2800) { e.stopImmediatePropagation(); window.HieuUng?.loiTruong($("luong"), "Tối đa 2.800 kg (80% lượng ước chừng)"); } }, true);

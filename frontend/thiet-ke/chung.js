@@ -74,12 +74,46 @@ export const viecCho = (d) => {
 // Ảnh trâu cho màn trống (chỉ app bán): chua-co-don · chua-co-lo-hang · chua-co-tien-ve · chua-co-tin-nhan · khong-co-mang · khong-tim-thay
 export const anhTrong = (loai) => `<img class="trau-trong" src="/assets/trau/anh/trong-${loai}@2x.webp" srcset="/assets/trau/anh/trong-${loai}@2x.webp 2x, /assets/trau/anh/trong-${loai}@3x.webp 3x" width="120" height="120" alt="" loading="lazy" decoding="async">`;
 if (typeof window !== "undefined") window.anhTrong = anhTrong;
+// ── Giọng đọc tiếng Việt dùng chung (Web Speech của máy) ──
+// Chọn giọng Việt tự nhiên nhất máy có (Natural / Online / Google / HoaiMy…), tốc độ 0,9 cho người lớn tuổi (bác đổi được ở màn Tôi),
+// cao độ 1,05 cho ấm, đọc theo từng câu để có ngắt nghỉ tự nhiên.
+const GIONG_UU_TIEN = [/natural/i, /online/i, /google/i, /hoai ?my|hoài ?my/i, /linh|an\b|nam ?minh/i];
+function chonGiong() {
+  try {
+    const ds = speechSynthesis.getVoices().filter((v) => /^vi/i.test(v.lang));
+    for (const r of GIONG_UU_TIEN) { const v = ds.find((x) => r.test(x.name)); if (v) return v; }
+    return ds[0] || null;
+  } catch { return null; }
+}
+const tocDoDoc = () => { try { return Number(localStorage.getItem("agv-toc-do-doc")) || 0.9; } catch { return 0.9; } };
+export function taoGiong(cau, toc) {
+  const u = new SpeechSynthesisUtterance(cau);
+  u.lang = "vi-VN"; u.rate = toc || tocDoDoc(); u.pitch = 1.05; u.volume = 1;
+  const v = chonGiong(); if (v) u.voice = v;
+  return u;
+}
+export function docTo(doan) {
+  return new Promise((xong) => {
+    try {
+      if (!("speechSynthesis" in window)) return xong();
+      speechSynthesis.cancel();
+      const cau = String(doan || "").split(/(?<=[.!?…:;])\s+/).map((c) => c.trim()).filter(Boolean);
+      if (!cau.length) return xong();
+      cau.forEach((c, i) => { const u = taoGiong(c); if (i === cau.length - 1) u.onend = u.onerror = () => xong(); speechSynthesis.speak(u); });
+    } catch { xong(); }
+  });
+}
+if (typeof window !== "undefined") { window.giongViet = { taoGiong, docTo }; try { speechSynthesis.onvoiceschanged = () => {}; speechSynthesis.getVoices(); } catch {} }
+
 const KHOA_PHIEN = "agv-phien";
 export const luuPhien = (token) => { try { sessionStorage.setItem(KHOA_PHIEN, token); } catch {} };
 export async function phien() {
   try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   const sdt = new URLSearchParams(location.search).get("thu");
   if (!sdt) throw new Error("Bác đăng nhập trước nhé.");
+  // Đăng nhập thay bằng số thử chỉ có ở môi trường thử (máy chủ báo test_tools); bản thật luôn bắt đăng nhập OTP
+  const thu = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));
+  if (!thu.test_tools) throw new Error("Bác đăng nhập trước nhé.");
   const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) });
   if (!r.ok) throw new Error("Không mở được tài khoản thử.");
   return (await r.json()).token;

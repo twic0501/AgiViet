@@ -19,6 +19,7 @@ const ganLui = () => { const b = $("dong"); b.onclick = () => { location.href = 
 // ── Danh sách hội thoại ──
 export function veDanhSach(khoi) {
   khoi.innerHTML = `
+    <p class="tc-mo-phong" role="note">Trò chuyện đang là <b>bản mô phỏng</b>: tên và tin nhắn là dữ liệu thử, chưa gửi cho ai.</p>
     <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại hai bên che tới khi ngân hàng giữ cọc.</span></div>
     <div class="tc-ds">${ds.map((h) => {
       const cuoi = h.tin.filter((m) => m.k !== "he" && m.k !== "buoc").at(-1);
@@ -63,7 +64,7 @@ export function veChat(h) {
   $("dau").innerHTML = `${nutLui("#tro")}<div style="flex:1;min-width:0"><p class="chao">${esc(h.nguoi)} · lô ${esc(h.lo)}${moLL(h) ? " · liên lạc đã mở" : ""}</p><h1>${esc(h.ben)}</h1></div>
     <button class="nut-tron" type="button" id="goi" aria-label="${moLL(h) ? "Gọi" : "Gọi qua app, che số"}">${SVG(I.dien, 22)}</button>`;
   ganLui();
-  $("noi").innerHTML = `<div class="tc-chat" id="chat"><span class="tc-ngay">Hôm nay</span>${h.tin.map(veTin).join("")}</div>`;
+  $("noi").innerHTML = `<div class="tc-chat" id="chat"><p class="tc-mo-phong" role="note">Trò chuyện đang là <b>bản mô phỏng</b>: tên và tin nhắn là dữ liệu thử, chưa gửi cho ai.</p><span class="tc-ngay">Hôm nay</span>${h.tin.map(veTin).join("")}</div>`;
   const day = document.createElement("div"); day.className = "tc-day";
   day.innerHTML = `<div class="tc-nhanh"><button type="button" id="tra-gia">${SVG(I.can, 18)}Trả giá</button><button type="button" id="gui-anh">${SVG(I.anh, 18)}Gửi ảnh hàng</button><button type="button" id="hen">${SVG(I.lich, 18)}Hẹn xem vườn</button><button type="button" id="bao">${SVG(I.co, 18)}Báo cáo</button></div>
     <div class="tc-go"><button type="button" id="chup" aria-label="Chụp ảnh">${SVG(I.anh, 22)}</button><textarea id="go" rows="1" placeholder="Nhắn cho ${esc(h.nguoi)}" aria-label="Nội dung tin nhắn"></textarea><button type="button" class="tc-gui" id="gui" aria-label="Gửi">${SVG(I.gui, 22)}</button></div>`;

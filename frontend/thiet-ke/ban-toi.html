@@ -122,7 +122,7 @@ async function tai() {
   document.querySelectorAll("[data-doc]").forEach((b) => (b.onclick = () => {
     try { localStorage.setItem("agv-toc-do-doc", b.dataset.doc); } catch {}
     document.querySelectorAll("[data-doc]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance("Tốc độ đọc như thế này."); u.lang = "vi-VN"; u.rate = Number(b.dataset.doc); speechSynthesis.speak(u); } catch {}
+    try { speechSynthesis.cancel(); speechSynthesis.speak(window.giongViet ? window.giongViet.taoGiong("Dạ, bác nghe tốc độ đọc như thế này có vừa không ạ?", Number(b.dataset.doc)) : new SpeechSynthesisUtterance("Tốc độ đọc như thế này.")); } catch {}
   }));
   document.querySelectorAll("[data-thu-hoi]").forEach((b) => (b.onclick = () => xacNhanThuHoi(b.dataset.thuHoi, b)));
   $("gui-ht").onclick = () => moHoTro("");

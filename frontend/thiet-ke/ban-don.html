@@ -227,7 +227,7 @@ function ve() {
   $("viec-chinh")?.addEventListener("click", viec.mo);
   $("tu-choi")?.addEventListener("click", moTuChoi);
   $("xin-huy")?.addEventListener("click", moXinHuy);
-  $("nghe-qt")?.addEventListener("click", () => { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(docQT); u.lang = "vi-VN"; u.rate = Number(localStorage.getItem("agv-toc-do-doc")) || 0.95; speechSynthesis.speak(u); } catch {} });
+  $("nghe-qt")?.addEventListener("click", () => { try { window.giongViet?.docTo(docQT); } catch {} });
   document.querySelectorAll("[data-dn]").forEach((b) => (b.onclick = () => traLoiDeNghi(b.dataset.dn, b.dataset.lam)));
   document.querySelectorAll("[data-huy-tl]").forEach((b) => (b.onclick = () => traLoiHuy(b.dataset.huyTl, b.dataset.lam)));
   document.querySelectorAll("[data-tai-lai]").forEach((b) => (b.onclick = () => tai().catch((e) => alertLoi(e))));

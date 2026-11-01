@@ -73,3 +73,18 @@ Bốn nét mặt cho bong bóng feed và nút "?": **vui**, **lo**, **ngạc nhi
 | dau-vui / dau-lo / dau-ngac-nhien / dau-ngu | Vừa | Tai/sừng **chạm mép trái-phải khung 96 px** (đo: 3/4 ảnh cắt cạnh); lo và ngạc nhiên khác thường quá ít | Thu nhỏ hoặc nới khung để thấy trọn tai sừng; lo: mày chau rõ; ngạc nhiên: mắt tròn to + tai vểnh |
 
 **Hiệu năng:** `trau-v4.riv` 595 KB → 794 KB. App hiện vẫn dùng bản 595 KB ở Trang chủ (chỉ cần 0/1/8). Đề xuất tách đạo cụ nặng (xe tải, cân) thành ảnh tĩnh, giữ `.riv` dưới ~600 KB.
+
+
+## Rà soát lần 2 (Claude 1, 02/11 — PR #1 7e5fc79)
+
+Đã kiểm: `trau-v4.riv` 612 KB (từ 794 KB), `trau-v3.riv` 274 KB; nạp 0 lỗi; ở 0,4 giây hành động 17/18/19 đã giơ tay chỉ (hết trễ ~2 giây). 4 đầu nhỏ đo lại: không còn điểm hình chạm mép trái/phải/trên.
+
+**Đạt:** 28 áo mưa (đặc, đủ chân) · 23 tai nghe (micro ở má, xa mõm) · 21 túi mẫu (thấy trái cây + tem đỏ) · 22 lịch + bình xịt · 25 xin bình tĩnh (tay hạ, hết cứng) · màn "lỗi" (cúi đầu, chắp tay, dấu ?) · "Zzz" (ngà, viền sẫm) · dau-lo (giọt mồ hôi) · dau-ngac-nhien (vạch sốc).
+
+**Còn nhẹ:**
+| Ảnh | Lỗi | Gợi ý |
+|---|---|---|
+| 27 nón lá | Không thấy quai dưới cằm như báo; nón vẫn đậu trên đỉnh đầu | Vẽ quai mảnh từ vành nón xuống hai bên má tới dưới cằm (không chạm mõm) |
+| 18 cảnh báo | Hai đường chỉ tay cong như nụ cười, sát mõm → dễ đọc thành miệng | Bỏ đường chỉ tay hoặc vẽ thẳng; dời bàn tay ra xa mõm một chút |
+| 29 so sánh | Hai quả xoài nằm trên khăn, hai tay ở dưới không cầm quả | Mỗi tay cầm một quả (ngón ôm quả), quả thấp trước ngực |
+| 28 áo mưa | Lộ chút tay áo nâu ở vai | Phủ áo mưa kín vai |

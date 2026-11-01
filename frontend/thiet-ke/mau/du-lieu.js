@@ -6,7 +6,7 @@ export const BUOC = [
   { ai: "bac", lam: "Đồng ý giá 23.000 đ/kg", nut: "Đồng ý giá", chang: 0 },
   { ai: "mua", lam: "Bên mua soạn và ký thỏa thuận", mp: "Mô phỏng: bên mua ký", chang: 1 },
   { ai: "bac", lam: "Bác xem lại và ký", nut: "Xem và ký", di: "ky", chang: 1 },
-  { ai: "mua", lam: "Bên mua chuyển cọc 13.938.000 đ", mp: "Mô phỏng: bên mua chuyển cọc", han: "48 giờ sau khi bác ký", chang: 2 },
+  { ai: "mua", lam: "Bên mua chuyển cọc 13.938.000 đ", mp: "Mô phỏng: bên mua chuyển cọc", han: "12 giờ sau khi bác ký (hàng tươi)", chang: 2 },
   { ai: "nh", lam: "Ngân hàng xác nhận đã giữ cọc", mp: "Mô phỏng: ngân hàng xác nhận", chang: 2 },
   { ai: "mua", lam: "Bên mua chuyển thẳng 32.200.000 đ cho bác", mp: "Mô phỏng: bên mua chuyển tiền", han: "trước 5:30 ngày 28/10", chang: 3 },
   { ai: "bac", lam: "Bác kiểm tài khoản, xác nhận đúng số", nut: "Kiểm tiền", di: "kiem-tien", chang: 3 },

@@ -6,6 +6,9 @@
 !frontend/mua/**
 !frontend/shared/**
 !frontend/assets/**
+!frontend/thiet-ke/**
+!frontend/tham-khao/**
+!frontend/mo-phong-quy-trinh/**
 **/__pycache__
 **/*.pyc
 **/.env*

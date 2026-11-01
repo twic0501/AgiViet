@@ -89,7 +89,7 @@ import { esc, phien, ANH_SP, giuThamSo, veDau, veTab, soThongBaoMoi, viecCho, ti
 const $ = (id) => document.getElementById(id);
 veTab("tin-nhan");
 // ── Trò chuyện trực tiếp (màn 38) nằm trong trang Tin nhắn: #tro = danh sách, #tro=T1 = khung chat ──
-import("./tro-chuyen.js").then((TC) => {
+fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})).then((cc) => { if (!cc.test_tools) { $("tc-chon")?.remove(); return; } import("./tro-chuyen.js").then((TC) => {
   const nhom = $("tc-chon");
   const chuaDoc = TC.soChuaDoc(); if (chuaDoc) nhom.querySelector('[data-muc="tro"]').insertAdjacentHTML("beforeend", `<small>${chuaDoc}</small>`);
   const theoHash = () => {
@@ -103,7 +103,7 @@ import("./tro-chuyen.js").then((TC) => {
   nhom.addEventListener("click", (e) => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); history.replaceState(null, "", a.dataset.muc === "tro" ? "#tro" : location.pathname + location.search); theoHash(); });
   addEventListener("hashchange", () => { if (/^#tro=/.test(location.hash) || !document.getElementById("tc-chon")) location.reload(); else theoHash(); });
   theoHash();
-});
+}); });
 veDau($("dau"), { chao: "Tin nhắn", ten: "Chào giá & trao đổi", chuDau: "" });
 
 const conLai = (iso) => {

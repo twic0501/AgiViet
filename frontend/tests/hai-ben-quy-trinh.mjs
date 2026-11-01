@@ -448,6 +448,15 @@ for (const [kb, { meta, ds }] of Object.entries(BANG)) {
   });
 }
 
+// ── HG03: hạn chuyển cọc hàng tươi 12 giờ (v23), hai app cùng ghi ──
+await napKb("thuan", { buoc: 3 });
+await buoc("[HG03] Hạn chuyển cọc hàng tươi là 12 giờ ở cả app mua và app bán", async () => {
+  await moMua("chi-tiet-don"); const m = await viecMua();
+  assert.match(m, /12 giờ sau khi người bán ký/); assert.doesNotMatch(m, /48 giờ/);
+  await moBan("man=chi-tiet-don"); const bn = await viecBan();
+  assert.match(bn, /12 giờ sau khi bác ký/); assert.doesNotMatch(bn, /48 giờ/);
+});
+
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });
 await b.close();
 

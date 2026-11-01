@@ -1,3 +1,4 @@
+import { quetLienLacDayDu } from "./lien-lac.js";
 // Giao dịch HĐ-0018 dùng CHUNG giữa app bán (chị Năm) và app mua (chị Thu Hà) — dữ liệu mô phỏng trong localStorage.
 // Hai app mở ở hai khung (cùng máy) thấy cùng một trạng thái: bên này bấm, bên kia vẽ lại ngay (sự kiện storage).
 // Không gọi backend. Không có hiệu ứng phụ khi nạp module.
@@ -82,16 +83,10 @@ export function ngheTC(f) { addEventListener("storage", (e) => { if (e.key === K
 // Liên lạc mở khi ngân hàng đã giữ cọc HĐ-0018 (bước 5 trở đi) cho hội thoại T1
 export const moLienLacT1 = () => docHD().buoc >= 5 && !docHD().huy;
 
-// Phát hiện liên lạc (mô phỏng): ≥ 8 chữ số (kể cả đọc bằng chữ), Zalo/Facebook/@
-const SO_CHU = { "không": 0, "một": 1, "mốt": 1, "hai": 2, "ba": 3, "bốn": 4, "tư": 4, "năm": 5, "lăm": 5, "sáu": 6, "bảy": 7, "tám": 8, "chín": 9 };
+// Phát hiện liên lạc: dùng bộ quét đầy đủ lien-lac.js (số điện thoại kể cả đọc bằng chữ có/không dấu, STK, link, email, Zalo/Facebook…);
+// không che nhầm số tiền, khối lượng, ngày, mã lô/mã đơn. loai trả về dạng chữ ("số điện thoại, đường link") cho câu thông báo.
 export function quetLienLac(t) {
-  const thap = t.toLowerCase();
-  const doi = thap.split(/\s+/).map((w) => (w in SO_CHU ? String(SO_CHU[w]) : w)).join(" ");
-  const coSo = /(\d[\s.\-_]*){8,}/.test(doi);
-  const coKenh = /\b(zalo|zl|facebook|fb|messenger|viber|telegram|sđt|sdt)\b|@[a-z0-9_.]{3,}|kết bạn/.test(thap);
-  if (!coSo && !coKenh) return { sach: true, che: t };
-  let che = t.replace(/(\d[\s.\-_]*){8,}/g, (x) => "••• ••• •••" + (/\s$/.test(x) ? " " : "")).replace(/\b(zalo|zl|facebook|fb|messenger|viber|telegram)\b/gi, "•••").replace(/@[A-Za-z0-9_.]{3,}/g, "•••");
-  if (coSo && che === t) che = "Tin có số điện thoại đọc bằng chữ (đã che)";
-  return { sach: false, che, loai: coSo ? "số điện thoại" : "kênh nhắn ngoài" };
+  const r = quetLienLacDayDu(t);
+  return { sach: r.sach, che: r.che, loai: r.loai.join(", ") };
 }
 export const gioNay = () => new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
