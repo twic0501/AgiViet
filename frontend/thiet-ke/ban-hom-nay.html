@@ -194,6 +194,8 @@ async function mo() {
     ? (/Ký/i.test(viec) ? 21 : /tiền/i.test(viec) ? 20 : /nghiệm thu|cân/i.test(viec) ? 25 : /Giao|QR|xe/i.test(viec) ? 26 : 8)
     : choBac.length ? 17 : new Date().getHours() < 11 ? 1 : 0;   // 17 chỉ sang trái về nút "Xem chào giá" · 1 chào buổi sáng · 0 nghỉ
   datHanhDong(dongTac);
+  // Hướng dẫn lần đầu (một lần; ?huong-dan=1 để xem lại từ trang Tôi)
+  import("./huong-dan.js").then((H) => setTimeout(() => H.moHuongDan(!new URLSearchParams(location.search).has("huong-dan")), 600)).catch(() => {});
   if (dongTac && !giamDong) {
     const lap = () => { setTimeout(() => { if (!document.hidden) datHanhDong(0); setTimeout(() => { if (!document.hidden) datHanhDong(dongTac); lap(); }, 20000); }, 6000); };
     lap();

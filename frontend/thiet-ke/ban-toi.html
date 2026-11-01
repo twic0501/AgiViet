@@ -122,7 +122,8 @@ async function tai() {
     <section class="to-the"><h2><i class="cham"></i>Hỗ trợ</h2>
       ${Array.isArray(ht) && ht.length ? ht.slice(0, 5).map((x) => `<div class="to-dong"><span style="overflow-wrap:anywhere">${esc(String(x.trigger_reason || "").replace(/^Hỗ trợ:\s*/, "").slice(0, 90))}</span><span class="to-nhan ${(TT_HT[x.status] || ["", "xam"])[1]}">${esc((TT_HT[x.status] || [x.status])[0])}</span>
         <small>Gửi ${esc(gio(x.created_at))}${x.response_due_at ? ` · AgiViet trả lời trước ${esc(gio(x.response_due_at))}` : ""}${x.nguoi_phu_trach ? ` · ${esc(x.nguoi_phu_trach)} phụ trách` : ""}</small></div>`).join("") : `<p class="hd-ghi">Chưa gửi yêu cầu nào.</p>`}
-      <button class="nut chinh-nut to-nut" type="button" id="gui-ht">Gửi yêu cầu hỗ trợ</button></section>
+      <button class="nut chinh-nut to-nut" type="button" id="gui-ht">Gửi yêu cầu hỗ trợ</button>
+      <a class="nut phu-nut to-nut" href="./ban-hom-nay.html${esc(location.search ? location.search + "&" : "?")}huong-dan=1" style="display:flex;align-items:center;justify-content:center;text-decoration:none;margin-top:8px">Xem lại hướng dẫn dùng app</a></section>
 
     <details class="to-the"><summary style="list-style:none;cursor:pointer;padding:14px 0;font-weight:700;min-height:44px">Quyền riêng tư: bên mua thấy gì?</summary>
       <ul class="to-ds"><li><b>Trước khi đặt cọc:</b> tên hộ, xã/huyện, mặt hàng, ảnh hàng, lượng, giá mong muốn, nhật ký phần bác chọn cho xem.</li>
