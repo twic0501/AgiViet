@@ -130,6 +130,7 @@ function ve() {
       <p>${tongThu ? `Đã ghi thu hoạch <b>${esc(can(tongThu).join(" "))}</b> trong năm.` : "Chưa ghi lần thu hoạch nào năm nay."} Ghi đều tay thì bên mua tin hàng hơn.</p></section>
     <section class="vu-khoi" aria-label="Nhật ký" style="gap:14px">
       <h2 style="margin:0;font-size:18px">Nhật ký canh tác</h2>
+      ${window.trauTuThe ? window.trauTuThe("12-ghi-so", "Ghi đều tay, bên mua tin hàng của bác hơn.", 72) : ""}
       ${[...theoNgay].map(([ngay, ds], iNgay) => `<div class="vu-ngay" ${iNgay >= 6 ? "hidden data-cu" : ""}><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
         const [ten, ic, nen, mau] = VIEC[v.activity] || [v.ten_viec || v.activity, VIEC.care[1], "var(--giay-lot)", "var(--muc-phu)"];
         const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, được hái từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";

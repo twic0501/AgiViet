@@ -32,7 +32,7 @@ export async function tai() {
     ...dsChao.filter((c) => /sent|accepted/.test(c.status) && !coDon.has(c.id)).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", ghi: `Lời chào ${c.code ?? ""} · lô ${c.lot_code} · ${TT_CHAO[c.status] ?? c.status}`.replace("  ", " ") })),
   ];
   for (const h of ds) {
-    const t = tom.find((x) => (h.loai === "don" ? x.order_id === h.id : x.offer_id === h.id && !x.order_id));
+    const t = tom.find((x) => (h.loai === "don" ? x.order_id === h.id : x.offer_id === h.id));
     h.cuoi = t ? { chu: `${t.la_cua_toi ? "Bác: " : ""}${t.body}`, luc: t.created_at, cuaToi: t.la_cua_toi } : null;
     h.chuaDoc = t && !t.la_cua_toi && (!xem[h.ma] || new Date(t.created_at) > new Date(xem[h.ma])) ? 1 : 0;
   }
@@ -55,7 +55,7 @@ export function veDanhSach(khoi) {
 
 // ── Khung chat ──
 const veTin = (m) => m.k === "he"
-  ? `<div class="tc-he ${m.canh ? "tc-canh" : ""}">${SVG(m.canh ? I.canh : I.khien, 16)}<span>${esc(m.t)}</span></div>`
+  ? `<div class="tc-he ${m.canh ? "tc-canh" : ""}">${m.trau ? `<img src="/assets/trau/tu-the/18-canh-bao.webp" width="56" height="56" alt="">` : SVG(m.canh ? I.canh : I.khien, 16)}<span>${esc(m.t)}</span></div>`
   : `<div class="tc-tin ${m.cuaToi ? "tc-toi" : "tc-ho"}">${esc(m.t).replace(/•••[ •]*/g, (x) => `<span class="tc-che">${x}</span>`)}<small>${esc(gioNgan(m.luc))}${m.daChe ? " · đã che liên lạc" : ""}</small></div>`;
 
 export function veChat(h) {
@@ -76,9 +76,9 @@ export function veChat(h) {
     try {
       const r = await goi(`/v1/messages?${h.loai === "don" ? "order_id" : "offer_id"}=${h.id}`);
       const tin = r.tin.map((m) => ({ k: "tin", t: m.body, cuaToi: m.la_cua_toi, luc: m.created_at, daChe: m.da_che }));
-      const tat = [...tin, ...he].sort((a, b) => new Date(a.luc) - new Date(b.luc));
+      const tat = [...tin, ...he];   // dòng hệ thống (che liên lạc, đã báo cáo) luôn ở sau tin vừa gửi — không sắp theo giờ máy
       if (tat.length !== soCu) {
-        $("tin").innerHTML = tat.length ? tat.map(veTin).join("") : `<p class="tc-ghi" style="text-align:center;padding:12px">Chưa có tin nhắn. Bác hỏi thêm về hàng, ngày hái, cách giao ở đây.</p>`;
+        $("tin").innerHTML = tat.length ? tat.map(veTin).join("") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác hỏi thêm về hàng, ngày hái, cách giao ở đây.</p></div>`;
         if (cuon || soCu >= 0) scrollTo({ top: document.body.scrollHeight, behavior: soCu >= 0 ? "smooth" : "auto" });
         soCu = tat.length;
       }
@@ -94,7 +94,7 @@ export function veChat(h) {
     try {
       const kq = await goi("/v1/messages", { ...cuoc, body: chu });
       go.value = ""; go.style.height = "auto";
-      if (kq.data?.da_che) he.push({ k: "he", canh: true, t: kq.data.canh_bao, luc: new Date().toISOString() });
+      if (kq.data?.da_che) he.push({ k: "he", canh: true, trau: true, t: kq.data.canh_bao, luc: new Date().toISOString() });
       await tai(true);
     } catch (e) { he.push({ k: "he", canh: true, t: e.message, luc: new Date().toISOString() }); soCu = -2; await tai(true); }
     $("gui").disabled = false; go.focus();

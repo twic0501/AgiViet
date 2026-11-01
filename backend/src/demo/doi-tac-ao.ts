@@ -13,6 +13,7 @@ export const DAI_DIEN: Record<string, string> = {
 };
 let dem = 0;
 const DA_LOI = new Set<string>();
+const DA_TRA_LOI = new Set<string>();
 const khoa = () => `ao-${Date.now().toString(36)}-${(dem++).toString(36)}`;
 
 /** Câu trả lời của đối tác ảo theo từ khóa trong tin bên kia (bỏ dấu để so). */
@@ -78,7 +79,8 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
     }
     // 1b) Tin nhắn: tin mới nhất của cuộc là của bên kia → trả lời một câu ngắn theo nội dung (luật đơn giản, không gửi liên lạc).
     for (const s of (await get('/v1/messages/summary', t)) ?? []) {
-      if (s.la_cua_toi) continue;
+      if (s.la_cua_toi || DA_TRA_LOI.has(s.id)) continue;   // mỗi tin của bên kia chỉ trả lời một lần
+      DA_TRA_LOI.add(s.id);
       const cau = traLoi(String(s.body ?? ''), tc.startsWith('TC-M') ? 'buyer' : 'seller');
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
     }

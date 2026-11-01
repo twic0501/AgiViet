@@ -248,6 +248,7 @@ function dungTroLy() {
     <section class="tl-tam" role="dialog" aria-modal="true" aria-labelledby="tl-tieu" inert>
       <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Trợ lý AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
       <div class="tl-hoi" id="tl-hoi" aria-live="polite">
+        ${trauTuThe("23-tai-nghe", "", 72)}
         <div class="tl-bong ai">Chào bác, bác cần làm gì? Bác bấm câu gợi ý hoặc gõ câu hỏi nhé.</div>
       </div>
       <div class="tl-goi-y" id="tl-goi-y">${GOI_Y.map((g) => `<button type="button">${esc(g)}</button>`).join("")}</div>
@@ -308,6 +309,28 @@ export async function soThongBaoMoi(token) {
     const ds = await r.json(); const da = seqDaXem();
     return (Array.isArray(ds) ? ds : []).filter((n) => Number(n.seq) > da).length;
   } catch { return 0; }
+}
+
+// ---- Trâu theo khoảnh khắc (ảnh tư thế chính diện Claude 2 đã chốt, assets/trau/tu-the/*) ----
+// trauTuThe("11-mung", "Đã đồng ý giá") → ảnh trâu nhỏ + bong bóng lời; trang trí, không thay chữ (alt rỗng).
+export const trauTuThe = (ma, cau = "", co = 96) => `<div class="trau-tt"><img src="/assets/trau/tu-the/${ma}.webp" width="${co}" height="${co}" alt="" loading="lazy" decoding="async">${cau ? `<p class="trau-tt-loi">${esc(cau)}</p>` : ""}</div>`;
+if (typeof window !== "undefined") window.trauTuThe = trauTuThe;
+if (typeof document !== "undefined" && !document.getElementById("css-trau-tt")) {
+  const st = document.createElement("style"); st.id = "css-trau-tt";
+  st.textContent = `.trau-tt{display:flex;align-items:center;gap:10px;margin:4px 0}.trau-tt img{flex:none;object-fit:contain}
+  .trau-tt-loi{position:relative;margin:0;background:var(--giay-noi,#fbf8f1);border:1px solid var(--ke,rgba(29,42,34,.12));border-radius:14px;padding:8px 12px;font-size:15px;color:var(--muc,#1d2a22);line-height:1.4}
+  .trau-mang{position:fixed;left:50%;transform:translateX(-50%);top:8px;z-index:60;display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px);background:#3a2f22;color:#fbf8f1;border-radius:14px;padding:6px 12px 6px 6px;font:600 14px var(--chu,system-ui);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+  .trau-mang img{width:44px;height:44px}`;
+  document.head.appendChild(st);
+  // Mất mạng: trâu báo nhẹ trên đầu trang (đã tải thì vẫn xem được; ký, tiền cần mạng)
+  const baoMang = () => {
+    document.querySelector(".trau-mang")?.remove();
+    if (navigator.onLine) return;
+    const d = document.createElement("div"); d.className = "trau-mang"; d.setAttribute("role", "status");
+    d.innerHTML = `<img src="/assets/trau/anh/trong-khong-co-mang@2x.webp" alt="">Mất mạng. Bác vẫn xem được dữ liệu đã tải; ký, tiền chờ có mạng.`;
+    document.body?.appendChild(d);
+  };
+  addEventListener("offline", baoMang); addEventListener("online", baoMang);
 }
 
 // Mã hợp đồng hiển thị thống nhất "HĐ-…": backend sinh mã không dấu (HD-3005, giữ cho nội dung chuyển khoản),

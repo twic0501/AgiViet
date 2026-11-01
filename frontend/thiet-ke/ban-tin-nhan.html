@@ -120,6 +120,7 @@ fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})).the
     const m = location.hash.match(/^#tro(?:=([\w-]+))?/);
     if (m && m[1] && TC.timHoiThoai(m[1])) { document.querySelector(".tab")?.remove(); TC.veChat(TC.timHoiThoai(m[1])); return; }
     const tro = !!m;
+    if (tro) { document.querySelector(".man-che")?.remove(); clearTimeout(hen); }   // chuyển tab: đóng tấm lời chào đang mở
     nhom.querySelectorAll("a").forEach((a) => a.setAttribute("aria-current", String((a.dataset.muc === "tro") === tro)));
     $("tc-ds").hidden = !tro; $("loc").hidden = tro; $("ds").hidden = tro;
     if (tro) TC.veDanhSach($("tc-ds"));
@@ -329,7 +330,7 @@ async function moLoiChao(id) {
     <a class="tn-sang-chat" href="#tro=o-${esc(id)}">${IC_NHAN} Nhắn tin với ${esc(ben)}</a>`;
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
   const r = (k) => tam.querySelector(`[data-r="${k}"]`);
-  const xong = (chu) => { r("buoc").innerHTML = ""; r("day").innerHTML = `<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
+  const xong = (chu) => { r("buoc").innerHTML = ""; r("day").innerHTML = `${window.trauTuThe ? window.trauTuThe("11-mung", "", 88) : ""}<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
   const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));
   // Đồng ý: xác nhận lại tổng tiền + nhắc "chưa phải hợp đồng"
   r("dong-y")?.addEventListener("click", () => {
