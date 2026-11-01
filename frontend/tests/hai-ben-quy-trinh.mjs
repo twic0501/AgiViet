@@ -36,6 +36,9 @@ const GHEP = {
   "nhieu-de-nghi": { kb: "nhieu-de-nghi", kiem: "tệp này", ghi: "bên mua A không có app (mô phỏng); 2.000 kg thay 4 tấn" },
   "de-nghi-bo-cuoc": { kb: "bo-cuoc", kiem: "tệp này", ghi: "nhánh B đã ký nhưng chưa cọc đi theo các tình huống cọc" },
   "den-xem-hang": { kb: "xem-hang", kiem: "tệp này" },
+  "dang-ky": { kb: "dang-ky", kiem: "tệp này", ghi: "nhân viên xác minh bằng nút Mô phỏng; lên hạng chưa có thang điểm" },
+  "khong-co-dau-ra": { kb: "dau-ra", kiem: "tệp này", ghi: "lô L-0415 6 tấn riêng, không nối vào HĐ-0018" },
+  "dat-truoc": { kb: "dat-truoc", kiem: "tệp này", ghi: "số theo v23 (8 → 9 tấn × 15.000), sổ tiền riêng" },
   "tien-mat": { kb: "tien-mat", kiem: "tệp này", ghi: "v23 người bán tự chở tới kho; mô phỏng giữ lấy tại vườn rồi trả tiền mặt khi nhận" },
   "chua-tra": { kb: "chua-tra", kiem: "tệp này", ghi: "trên khung trả sau nghiệm thu (kb tra-sau = luồng chính v23 trả sau, cũng kiểm ở đây)" },
 };
@@ -377,6 +380,44 @@ await buoc("[den-xem-hang] Xin khảo sát → người bán chọn giờ → đ
   await moMua("chi-tiet-don"); assert.match(await viecMua(), /0918 000 421/); await muaLam(/chưa mua/);
   assert.equal((await hd()).phu, "ks-xong");
   await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /chưa mua/);
+});
+
+// ── dang-ky ──
+await napKb("dang-ky", { buoc: 0 });
+await buoc("[dang-ky] Gửi đăng ký → nhân viên xác minh tại vườn → mở tài khoản, hạng ban đầu → ghi nhật ký → bên mua thấy rõ phần đã kiểm / tự khai", async () => {
+  await moBan("man=chi-tiet-don"); await banKb("dk-gui");
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /xác minh tại vườn/); await muaLam(/xác minh xong/);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /Tài khoản bán đã mở/); await banKb("dk-nhat-ky");
+  await moMua("chi-tiet-don"); const m = await viecMua();
+  assert.match(m, /Đã kiểm tại vườn/); assert.match(m, /Người bán tự khai/); assert.match(m, /nhật ký sản xuất 1 mục/);
+});
+
+// ── khong-co-dau-ra ──
+await napKb("dau-ra", { buoc: 0 });
+await buoc("[khong-co-dau-ra] 48 giờ không có đề nghị → nhân viên tìm → tách 2 tấn loại 2 cho nhà máy sấy → ngày 4 rút 4 tấn loại 1", async () => {
+  await moMua("chi-tiet-don"); await muaLam(/hết 48 giờ/); await muaLam(/tách 2 tấn loại 2/);
+  await moBan("man=chi-tiet-don"); await banKb("dr-tach-ok");
+  await moMua("chi-tiet-don"); await muaLam(/Gửi đề nghị 2 tấn/); await muaLam(/ngày 4/);
+  await moBan("man=chi-tiet-don"); assert.match(await viecBan(), /dừng tìm/i); await banKb("dr-dung");
+  assert.equal((await hd()).phu, "dr-xong");
+  await moMua("chi-tiet-don"); assert.match(await viecMua(), /đã rút 4 tấn/);
+});
+
+// ── dat-truoc ──
+await napKb("dat-truoc", { buoc: 0 });
+await buoc("[dat-truoc] Ký 8 tấn → cọc 36 tr → cập nhật vườn → chốt 9 tấn, bổ sung cọc 4,5 tr → giao → trả thẳng 94,5 tr → ngân hàng chuyển cọc 40,5 tr", async () => {
+  await moMua("chi-tiet-don"); await muaLam(/Ký hợp đồng đặt trước/);
+  await moBan("man=chi-tiet-don"); await banKb("dt-ky-ban");
+  await moMua("chi-tiet-don"); await muaLam(/Chuyển cọc 36\.000\.000/);
+  assert.deepEqual(await tienMua2(), [36000000, 36000000, 0]);
+  await moBan("man=chi-tiet-don"); await banKb("dt-vuon");
+  await moMua("chi-tiet-don"); await muaLam(/bổ sung cọc 4\.500\.000/);
+  await moBan("man=chi-tiet-don"); await banKb("dt-giao");
+  await moMua("chi-tiet-don"); await muaLam(/Ghi đã trả 94\.500\.000/);
+  await moBan("man=chi-tiet-don"); await banKb("dt-xn");
+  await moMua("chi-tiet-don"); await muaLam(/ngân hàng chuyển cọc/); assert.equal((await hd()).phu, "dt-xong");
+  assert.deepEqual(await tienMua2(), [135000000, 0, 135000000], "9 tấn × 15.000: bên mua chi đủ, chị Năm nhận đủ");
+  await moBan("man=chi-tiet-don"); assert.equal(await ban.evaluate(() => Number(document.querySelector("#o-bac b").dataset.v)), 135000000);
 });
 
 await buoc("Không có lỗi JS ở cả hai app", async () => { assert.deepEqual(loi, []); });

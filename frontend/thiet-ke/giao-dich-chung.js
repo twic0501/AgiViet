@@ -23,6 +23,18 @@ export function tinhTien(h) {
   return { ...n, nt, cocNB, hoanMua: TIEN.COC - cocNB, nbHoan: Math.max(0, daTra - nt) };
 }
 
+// ── Đặt trước khi hái (v23 dat-truoc): 8 tấn dự kiến → chốt 9 tấn × 15.000 ──
+export const DT_PHA = ["", "dt-ky-ban", "dt-coc", "dt-cap-nhat", "dt-chot", "dt-giao", "dt-tra", "dt-xn", "dt-nh", "dt-xong"];
+export function dtTien(h) {
+  const i = Math.max(0, DT_PHA.indexOf(h.phu || ""));
+  return {
+    i,
+    banChi: (i >= 3 ? 36000000 : 0) + (i >= 5 ? 4500000 : 0) + (i >= 7 ? 94500000 : 0),
+    nh: i >= 3 && i < 9 ? (i >= 5 ? 40500000 : 36000000) : 0,
+    nb: (i >= 8 ? 94500000 : 0) + (i >= 9 ? 40500000 : 0),
+  };
+}
+
 // ── Trạng thái HĐ-0018 chung ──
 const K_HD = "agv-hd-0018";
 export const HD_DAU = { buoc: 0, daTra: 0, nbXn: 0, kb: "thuan", phu: "", ban: 1, huy: false, ngayGiao: "28/10" };
