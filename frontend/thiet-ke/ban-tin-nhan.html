@@ -27,6 +27,7 @@
   .cuoc .gio { font-size: 13px; color: var(--muc-nhat); }
   /* Nhắn tin thật hai bên */
   .cuoc .phai { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .tn-sang-chat { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; margin-top: 12px; border-radius: var(--bo-vua); border: 1.5px solid var(--ke-dam); color: var(--la); font: 700 15px var(--chu); text-decoration: none; }
   .nut-nhan { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--la); color: var(--tren-la); font: 700 14px/1 var(--chu); white-space: nowrap; }
   .cuoc .tn-cuoi { display: block; margin-top: 4px; font-size: 14px; color: var(--muc-phu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tn-khung { margin-top: 16px; border-top: 1px solid var(--ke); padding-top: 12px; }
@@ -109,7 +110,10 @@ const $ = (id) => document.getElementById(id);
 veTab("tin-nhan");
 // ── Trò chuyện trực tiếp (màn 38) nằm trong trang Tin nhắn: #tro = danh sách, #tro=T1 = khung chat ──
 fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})).then((cc) => { // Trò chuyện mô phỏng (HĐ-0018 dựng sẵn) chỉ bật khi xin rõ ?mophong=1 — app thật chỉ hiện dữ liệu backend, không trộn.
-  if (!cc.test_tools || !new URLSearchParams(location.search).has("mophong")) { $("tc-chon")?.remove(); return; } import("./tro-chuyen.js").then((TC) => {
+  // Trò chuyện: dữ liệu thật (tro-chuyen-that.js); bản mô phỏng HĐ-0018 chỉ khi ?mophong=1 trên môi trường thử.
+  const moPhong = cc.test_tools && new URLSearchParams(location.search).has("mophong");
+  import(moPhong ? "./tro-chuyen.js" : "./tro-chuyen-that.js").then(async (TC) => {
+  if (TC.tai) await TC.tai().catch(() => null);
   const nhom = $("tc-chon");
   const chuaDoc = TC.soChuaDoc(); if (chuaDoc) nhom.querySelector('[data-muc="tro"]').insertAdjacentHTML("beforeend", `<small>${chuaDoc}</small>`);
   const theoHash = () => {
@@ -193,9 +197,10 @@ function ve(k) {
       ${window.anhTrong?.("chua-co-tin-nhan") || ""}<p><b>${k === "cho-bac" ? "Không có gì chờ bác trả lời" : "Chưa có tin nhắn"}</b></p><p>Khi bên mua chào giá lô hàng của bác, tin sẽ hiện ở đây.</p></div>`;
   giuThamSo($("ds"));
   // Bấm "Nhắn tin" → mở tấm, cuộn tới khung chat và đặt con trỏ vào ô nhập
-  const toiChat = () => { const tim = () => { const o = document.querySelector(".man-che .tn-go input"); if (!o) return setTimeout(tim, 150); o.closest(".tn-khung").scrollIntoView({ block: "start", behavior: "smooth" }); o.focus({ preventScroll: true }); }; tim(); };
-  $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); if (e.target.closest("[data-nhan]")) toiChat(); }));
-  $("ds").querySelectorAll("[data-hd]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); history.replaceState(null, "", `#hd=${a.dataset.hd}`); moHopDong(tatCa.find((c) => c.id === a.dataset.hd)); if (e.target.closest("[data-nhan]")) toiChat(); }));
+  // Nhắn tin là phần riêng: "Nhắn tin" (và bấm dòng hợp đồng) mở hội thoại toàn màn hình #tro=…
+  const vaoChat = (ma) => { location.hash = "#tro=" + ma; };
+  $("ds").querySelectorAll("[data-chao]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); if (e.target.closest("[data-nhan]")) return vaoChat("o-" + a.dataset.chao); history.replaceState(null, "", `#chao=${a.dataset.chao}`); moLoiChao(a.dataset.chao); }));
+  $("ds").querySelectorAll("[data-hd]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); vaoChat("d-" + a.dataset.hd); }));
 }
 
 // ===== Nhắn tin thật hai bên (backend /v1/messages, che liên lạc trước khi lưu) =====
@@ -321,9 +326,8 @@ async function moLoiChao(id) {
     <div class="lc-buoc" data-r="buoc"></div>
     <p class="bao-lc" data-r="bao" role="status"></p>
     <div class="day" data-r="day">${hanhDong}</div>
-    <div data-r="tin"></div>`;
+    <a class="tn-sang-chat" href="#tro=o-${esc(id)}">${IC_NHAN} Nhắn tin với ${esc(ben)}</a>`;
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
-  khungTin(tam.querySelector('[data-r="tin"]'), { offer_id: id }, ben);
   const r = (k) => tam.querySelector(`[data-r="${k}"]`);
   const xong = (chu) => { r("buoc").innerHTML = ""; r("day").innerHTML = `<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
   const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));
