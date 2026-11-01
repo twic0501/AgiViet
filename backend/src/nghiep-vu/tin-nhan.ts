@@ -32,7 +32,9 @@ export async function guiTinNhan(t: GiaoDich, nd: NguoiDung, b: GuiTin) {
   if (!noiDung) throw loi('DU_LIEU_KHONG_HOP_LE', 'Tin nhắn trống.');
   if (noiDung.length > 1000) throw loi('DU_LIEU_KHONG_HOP_LE', 'Tin nhắn dài quá 1000 chữ.');
   const c = await cuoc(t, nd, b);
-  const q = quetLienLacDayDu(noiDung) as { sach: boolean; che: string; loai: string[] };
+  // Quy trình v23: che liên lạc TRƯỚC khi ngân hàng nhận cọc; hợp đồng đã qua bước cọc thì liên lạc được mở (hẹn giao, gọi khi tới vườn).
+  const daCoc = c.orderId ? ['active', 'awaiting_settlement', 'outstanding', 'completed'].includes(String(await t.gtri(`SELECT status FROM core.orders WHERE id=$1`, [c.orderId]))) : false;
+  const q = daCoc ? { sach: true, che: noiDung, loai: [] as string[] } : quetLienLacDayDu(noiDung) as { sach: boolean; che: string; loai: string[] };
   // Đã có hợp đồng thì gắn tin vào hợp đồng (vẫn giữ lời chào để nối lịch sử).
   const id = await appCmd<string>(t, nd, c.phia as any, 'send_message', [c.offerId, c.orderId, q.sach ? noiDung : q.che, !q.sach, q.loai ?? []]);
   return { id, body: q.sach ? noiDung : q.che, da_che: !q.sach, loai_che: q.loai ?? [],

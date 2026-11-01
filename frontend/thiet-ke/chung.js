@@ -281,6 +281,24 @@ function dungTroLy() {
     const kd = BO_DAU(cau);
     if (/goi lai|goi cho toi|gap nguoi that|gap nhan vien|noi chuyen voi nguoi/.test(kd)) return guiNhanVien("Xin nhân viên gọi lại: " + cau, noi);
     if (/^nhan (cho )?nhan vien/.test(kd)) return guiNhanVien(cau.replace(/^\s*nhắn\s*(cho\s*)?nhân viên[:,]?\s*/i, "") || cau, noi);
+    // Hỏi tiền/cọc: trả lời bằng số liệu hợp đồng thật của bác (không để AI đoán)
+    if (/tien coc|coc (cua toi|o dau)|tien (cua toi|o dau|ve chua|ve)|bao gio (co|nhan) tien|khi nao (co|nhan) tien/.test(kd)) {
+      const cho = them("ai cho", "Con xem sổ tiền của bác…");
+      try {
+        const token = await phien(), h = { headers: { authorization: "Bearer " + token } };
+        const ds = (await (await fetch("/v1/orders", h)).json()).filter((d) => !/cancel|declin|withdrawn|closed/.test(d.status));
+        const TT = { drafting: "chưa tới bước cọc (bên mua đang soạn hợp đồng)", awaiting_seller: "chưa tới bước cọc (chờ bác ký)", awaiting_deposit: "bên mua chưa chuyển cọc, ngân hàng chưa giữ gì", active: "ngân hàng đang giữ cọc, không bên nào rút được", awaiting_settlement: "ngân hàng đang quyết toán, sắp chuyển cho bác", outstanding: "đã giao xong, còn khoản phải trả", completed: "đã quyết toán xong" };
+        const dong = [];
+        for (const d of ds.slice(0, 4)) {
+          const ct = await (await fetch(`/v1/orders/${d.id}`, h)).json().catch(() => ({}));
+          const coc = Number(ct.dieu_khoan?.deposit_vnd || 0);
+          dong.push(`Hợp đồng ${d.code} với ${d.buyer_name}: cọc ${coc ? tien(coc) : "chưa có"}, ${TT[d.status] || d.status}.${d.hien_thi?.toi_luot ? ` Việc tiếp: ${d.hien_thi.toi_luot.viec}.` : ""}`);
+        }
+        const chu = dong.length ? `Bác có ${ds.length} hợp đồng. ${dong.join(" ")} Tiền cọc luôn do ngân hàng đối tác giữ, không nằm ở AgiViet.` : "Bác chưa có hợp đồng nào nên chưa có tiền cọc. Khi bên mua chuyển cọc, ngân hàng đối tác giữ và con báo bác ngay.";
+        cho.classList.remove("cho"); cho.innerHTML = `${esc(chu)}<a class="tl-di" href="./ban-tien.html">Mở sổ tiền ›</a>`; giuThamSo(cho); traLoi(cho, chu, noi);
+      } catch { cho.classList.remove("cho"); cho.textContent = "Con chưa đọc được sổ tiền, bác mở mục Tiền ở thanh dưới nhé."; traLoi(cho, cho.textContent, noi); }
+      return;
+    }
     const t = BO_DAU(cau), co = cau.toLowerCase();
     // Câu hỏi giải thích (thế nào, làm sao, tại sao…) luôn để AI trả lời; chỉ câu muốn đi tới đâu mới dẫn đường
     const hoiGiaiThich = /the nao|lam sao|tai sao|vi sao|co duoc|nhu nao|giai thich|bao lau|khi nao|bao nhieu|la gi/.test(t);

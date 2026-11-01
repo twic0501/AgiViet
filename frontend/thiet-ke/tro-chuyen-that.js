@@ -45,7 +45,7 @@ export const timHoiThoai = (ma) => ds.find((x) => x.ma === ma);
 // ── Danh sách hội thoại ──
 export function veDanhSach(khoi) {
   khoi.innerHTML = `
-    <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại, Zalo, số tài khoản trong tin sẽ bị che.</span></div>
+    <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc của bên mua.</span></div>
     ${ds.length ? `<div class="tc-ds">${ds.map((h) => `<a class="tc-dong ${h.chuaDoc ? "tc-moi" : ""}" href="./ban-tin-nhan.html${esc(location.search)}#tro=${h.ma}" data-tro="${h.ma}"><span class="tc-anh">${esc(vietTat(h.ben))}</span>
         <span style="min-width:0"><b>${esc(h.ben)}</b><small>${esc(h.cuoi?.chu || `${h.ghi} · chưa có tin nhắn`)}</small></span>
         <span class="tc-ben"><span>${h.cuoi ? esc(gioNgan(h.cuoi.luc)) : ""}</span>${h.chuaDoc ? `<span class="tc-dem">${h.chuaDoc}</span>` : ""}</span></a>`).join("")}</div>`
@@ -63,7 +63,7 @@ export function veChat(h) {
   const den = h.loai === "don" ? `./ban-don.html${location.search}${location.search ? "&" : "?"}id=${encodeURIComponent(h.id)}` : `./ban-tin-nhan.html${location.search}#chao=${h.id}`;
   $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại">${SVG(I.lui, 22)}</button><div style="flex:1;min-width:0"><p class="chao">${esc(h.ghi)}</p><h1>${esc(h.ben)}</h1></div>`;
   $("dong").onclick = () => { location.href = "./ban-tin-nhan.html" + location.search + "#tro"; };
-  $("noi").innerHTML = `<div class="tc-chat" id="chat"><div class="tc-he">${SVG(I.khien, 16)}<span>Tin nhắn lưu trong app làm bằng chứng. Số điện thoại, Zalo, số tài khoản sẽ bị che.</span></div><div id="tin"></div></div>`;
+  $("noi").innerHTML = `<div class="tc-chat" id="chat"><div class="tc-he">${SVG(I.khien, 16)}<span>Tin nhắn lưu trong app làm bằng chứng. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc.</span></div><div id="tin"></div></div>`;
   const day = document.createElement("div"); day.className = "tc-day";
   day.innerHTML = `<div class="tc-nhanh"><a href="${esc(den)}" class="tc-nut-lk">${SVG(I.giay, 18)}${h.loai === "don" ? "Mở hợp đồng" : "Xem lời chào"}</a><button type="button" id="hen">${SVG(I.lich, 18)}Hẹn xem vườn</button><button type="button" id="bao">${SVG(I.co, 18)}Báo cáo</button></div>
     <div class="tc-go tc-hai-cot"><textarea id="go" rows="1" placeholder="Nhắn cho ${esc(h.ben)}" aria-label="Nội dung tin nhắn" maxlength="1000"></textarea><button type="button" class="tc-gui" id="gui" aria-label="Gửi">${SVG(I.gui, 22)}</button></div>`;

@@ -347,7 +347,12 @@ function henGuiLai(goc, guiMa) {
 function moKy() {
   const dk = don.dieu_khoan || {}, tk = dk.seller_account, the = Object.fromEntries((dieuKhoan?.the || []).map((x) => [x.tieu_de, x.noi_dung]));
   const batThuong = !!don.co?.gia_bat_thuong;
+  // Chốt điều kiện: từng điều kiện phải tích; trả sau → phần không có cọc bảo đảm phải chấp thuận riêng; thiếu điều khoản → khóa ký
+  const thieuDk = !dieuKhoan || !(dieuKhoan.the || []).length;
+  const traSau = dk.payment_timing === "after_days";
+  const khongBaoDam = traSau ? Math.max(0, Number(dk.contract_value_vnd || 0) - Number(dk.deposit_vnd || 0)) : 0;
   moTam(`<div class="than"><h2 id="t-ky">Ký hợp đồng ${esc(don.code)}</h2>
+    ${thieuDk ? `<p class="hd-bao do" style="margin:0">Chưa tải được toàn bộ điều khoản của bản hợp đồng này nên chưa ký được. Bác bấm Tải lại; vẫn lỗi thì nhắn nhân viên.</p><button class="nut phu-nut" type="button" onclick="location.reload()">Tải lại</button>` : ""}
     <div class="hd-the" style="padding:2px 14px">
       <div class="hd-dong"><span>Hàng</span><b>${esc(can(dk.qty_g).join(" "))}</b>${the["Hàng"] ? `<small>${esc(the["Hàng"])}</small>` : ""}</div>
       <div class="hd-dong"><span>Giá</span><b>${vnd(dk.unit_price_vnd)} đ/kg</b><small>${dk.downgrade_price_vnd ? `Hàng hạ cấp tính ${vnd(dk.downgrade_price_vnd)} đ/kg.` : "Chưa có giá hạ cấp: hàng không đạt sẽ trả lại."} Hàng lỗi cho phép ${esc((Number(dk.reject_allowance_bps || 0) / 100).toLocaleString("vi-VN"))}%.</small></div>
@@ -358,6 +363,11 @@ function moKy() {
     </div>
     <details class="hd-the"><summary>Xem toàn bộ điều khoản</summary>${(dieuKhoan?.the || []).map((x) => `<div class="hd-dong"><span style="color:var(--muc);font-weight:600">${esc(x.tieu_de)}</span><small style="font-size:14px;color:var(--muc-phu)">${esc(x.noi_dung)}</small></div>`).join("")}</details>
     <div class="hd-chon">
+      <p style="margin:4px 0 0;font-weight:700;color:var(--muc)">Bác tích từng điều kiện để chốt:</p>
+      <label><input type="checkbox" data-r="dk-luong" data-dk><span><b>Giao ${esc(can(dk.qty_g).join(" "))}, ${esc(dk.delivery_from ? gioNgay(dk.delivery_from) : "theo lịch đợt giao")}</b><small>Đúng lượng và ngày bác hái được.</small></span></label>
+      <label><input type="checkbox" data-r="dk-xe" data-dk><span><b>${esc(NGUOI_CHO[dk.transport_by] || "Cách chở theo hợp đồng")}</b><small>${esc(the["Giao nhận"] || "Giao nhận theo điều khoản.")}</small></span></label>
+      <label><input type="checkbox" data-r="dk-tien" data-dk><span><b>Tiền về ${esc(tk ? `${tk.bank_code} ${tk.masked}` : "tài khoản của bác")}, ${esc((KHI_TRA[dk.payment_timing] || "theo điều khoản").toLowerCase())}${traSau ? ` ${esc(dk.pay_after_days)} ngày` : ""}</b><small>Ngân hàng giữ cọc ${vnd(dk.deposit_vnd)} đ của bên mua.</small></span></label>
+      ${traSau && khongBaoDam ? `<label style="border-color:var(--dau-do)"><input type="checkbox" data-r="dk-tra-sau" data-dk><span><b>Tôi đồng ý: ${vnd(khongBaoDam)} đ trả sau ${esc(dk.pay_after_days)} ngày KHÔNG có cọc bảo đảm</b><small>Nếu bên mua chậm hay không trả phần này, AgiViet hỗ trợ đòi nhưng ngân hàng không trả thay.</small></span></label>` : ""}
       <label><input type="checkbox" data-r="cam-ket"><span><b>Tôi đã đọc và cam kết giao đúng lượng, đúng loại, đúng hạn</b><small>Không đủ hàng thì báo sớm cho bên mua và AgiViet, đừng im lặng.</small></span></label>
       ${batThuong ? `<label><input type="checkbox" data-r="bat-thuong"><span><b>Tôi biết giá này khác xa giá thị trường</b><small>AgiViet đánh dấu giá bất thường. Bác chắc chắn mới ký.</small></span></label>` : ""}
     </div>
@@ -366,7 +376,7 @@ function moKy() {
     <div class="day"><button class="nut vang" type="button" data-r="tiep" disabled>Gửi mã để ký</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
     goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-ky");
     let thuThach = null, dang = false;
-    const du = () => r("cam-ket").checked && (!batThuong || r("bat-thuong").checked);
+    const du = () => !thieuDk && r("cam-ket").checked && (!batThuong || r("bat-thuong").checked) && [...goc.querySelectorAll("[data-dk]")].every((c) => c.checked);
     goc.querySelectorAll('input[type="checkbox"]').forEach((c) => (c.onchange = () => { if (!thuThach) r("tiep").disabled = !du(); }));
     r("huy").onclick = dongTam;
     const guiMa = async (lai = false) => {
