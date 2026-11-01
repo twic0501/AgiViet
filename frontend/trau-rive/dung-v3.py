@@ -391,7 +391,7 @@ class Goc:
                 return {ly: [xoay(p_) for p_ in pts] for ly, pts in dg.items()}, (gx_, gy_)
             huong_ = 1 if ben == 'phai' else -1          # tay phải chỉ sang phải: xoay dương = chúi xuống
             D['chi-xuong'] = be_vai('chi', .75 * huong_)
-            D['chi-len'] = be_vai('chi', -.5 * huong_)
+            D['chi-len'] = be_vai('chi', -.32 * huong_)
 
             # khung xương (vai, khuỷu, giữa cổ tay) của từng dáng, toạ độ tay trái màn hình (bên phải lật gương)
             XUONG = {'buong': ((178, 318), (160, 352), (147, 381)), 'giay': ((178, 318), (148, 368), (209, 361)),
@@ -464,7 +464,7 @@ class Goc:
                        'phong-bi': ('phong-bi', '50 40', 256, 344, 1.05), 'canh-bao': ('canh-bao', '32 30', 256, 44, 1.15), 'but': ('but', '37 9', 288, 352, 1.35, 'but'),
                        'chuong': ('chuong', '42 46', 136, 452, .85),
                        # ưu tiên 2 (1/11): lớp — 'sau' sau người, 'tren' trên tay, 'dau' theo đầu, 'ao' khoác ngoài người (dưới khăn, đầu)
-                       'can': ('can-ban', '80 88', 112, 448, .72, 'sau'), 'xe-tai': ('xe-tai', '105 65', 352, 372, (-1.35, 1.35), 'sau'),
+                       'can': ('can-ban', '80 88', 112, 448, .72, 'sau'), 'xe-tai': ('xe-tai', '105 65', 352, 372, 1.35, 'sau'),
                        
                        'tui-mau': ('tui-mau', '42 56', 256, 342, 1.2, 'tren'), 'lich': ('lich', '40 46', 222, 338, 1.05, 'tren'),
                        'dong-ho-cat': ('dong-ho-cat', '46 70', 256, 352, .62),
@@ -1483,7 +1483,12 @@ def main():
 
         def chi_huong(kieu, dau_y):   # 18 / 19 chỉ xuống / lên: bản tay ngón trỏ uốn từ vai, đầu + mắt nhìn theo
             def fn(g):
-                out = [k_ for k_ in chi_duong_fn(g) if not (('phai', 'chi') in g.joy_bs and f'objectId="{g.joy_bs[("phai", "chi")]}"' in k_)]
+                bo = [f'objectId="{g.joy_bs[("phai", "chi")]}"'] if ('phai', 'chi') in g.joy_bs else []
+                if kieu == 'chi-len':        # chỉ lên: đầu giữ thẳng, ngửa nhẹ — không nghiêng / dời sang phía bàn tay
+                    bo += [f'objectId="{g.id["dau-nghich"]}"']
+                out = [k_ for k_ in chi_duong_fn(g) if not any(b_ in k_ for b_ in bo)]
+                if kieu == 'chi-len':
+                    out.append(khung(g.id['dau-nghich'], 'y', [(0, 0), (10, -3), (100, -3), (120, 0), (180, 0)]))
                 out += bs(g, 'phai', kieu, [(0, 0), (3, 0), (16, 1), (108, 1), (128, 0), (180, 0)])
                 out += [*mat(g, 'y', [(0, 0), (12, 0), (20, dau_y * .8), (100, dau_y * .8), (114, 0), (180, 0)])]
                 return out
@@ -1552,11 +1557,18 @@ def main():
             out += bs(g, 'trai', 'chi-xuong', [(0, 0), (3, 0), (16, 1), (108, 1), (128, 0), (180, 0)])
             return out + hien_do(g, 'can', dai=180) + [*mat(g, 'y', [(0, 0), (12, 0), (20, 2.5), (100, 2.5), (114, 0), (180, 0)])]
 
-        def xe_fn(g):     # 26 vẫy xe tải: xe đậu bên phải, đầu quay theo, mắt cười, tay phải vẫy
-            return [k_ for k_ in tam_biet_fn(g) if 'dau-nghich' not in k_] + hien_do(g, 'xe-tai') + [
-                khung(g.id['dau-nghich'], 'x', [(0, 0), (16, 5), (130, 5), (150, 0), (200, 0)]),
-                khung(g.id['dau-nghich'], 'rotation', [(0, 0), (16, .07), (130, .07), (150, 0), (200, 0)]),
-                *mat(g, 'x', [(0, 0), (14, 3), (130, 3), (146, 0), (200, 0)])]
+        def xe_fn(g):     # 26 xe tải chạy vào từ mép phải, dừng sau lưng → trâu quay nhìn, vẫy chào → xe chạy đi về bên trái
+            out = [k_ for k_ in tam_biet_fn(g) if 'dau-nghich' not in k_]
+            if 'xe-tai' in getattr(g, 'do_cam', {}):
+                xe, x0 = g.do_cam['xe-tai'], 352 - 256
+                out += [khung(xe, 'opacity', [(0, 1), (200, 1)]),
+                        khung(xe, 'x', [(0, x0 + 420), (34, x0), (40, x0 + 4), (46, x0), (150, x0), (200, x0 - 560)], '0.3 0 0.6 1'),
+                        khung(xe, 'y', [(f, 20 + (-1.5 if (f // 4) % 2 else 0)) for f in range(0, 41, 4)] + [(46, 20), (150, 20)]
+                              + [(f, 20 + (-1.5 if (f // 4) % 2 else 0)) for f in range(154, 201, 4)]),
+                        khung(xe, 'rotation', [(0, 0), (34, 0), (38, .03), (44, 0), (150, 0), (156, -.03), (162, 0), (200, 0)])]
+            return out + [khung(g.id['dau-nghich'], 'x', [(0, 0), (6, 4), (30, 5), (150, 5), (176, -4), (200, -4)]),
+                          khung(g.id['dau-nghich'], 'rotation', [(0, 0), (6, .05), (30, .07), (150, .07), (176, -.05), (200, -.05)]),
+                          *mat(g, 'x', [(0, 3), (34, 3), (150, 3), (176, -3), (200, -3)])]
 
         def xit_lich_fn(g):   # 28 tay trái đưa tờ lịch lên ngực, tay phải buông cầm bình xịt; mắt nhìn lịch
             return [*bs(g, 'trai', 'giay', [(0, 0), (6, 0), (22, 1), (150, 1), (166, 0), (200, 0)]),
