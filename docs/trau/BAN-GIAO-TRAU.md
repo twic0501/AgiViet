@@ -252,7 +252,7 @@ Phản hồi lần 2: nón lá chưa thấy quai (hành động 33 quên bật `
 
 Người sáng lập xem trực tiếp (1/11 tối): bỏ áo mưa (34, ảnh 28) và quai nón (trâu không có cằm — quai nào cũng dính mõm); ngón cái lật gương cho khớp tay phải, to ×1,25; xe tải lật đầu ra ngoài, to ×1,35, đậu sau lưng; bút xuyên nắm tay phải, nằm giữa giấy và bàn tay; **chỉ xuống / lên / cạnh cân sai vai** (cũ xoay cả bản tay quanh vai → vai lệch) → bản tay riêng `chi-xuong`, `chi-len` uốn từ vai (`be_vai`: điểm càng xa gốc vai xoay càng nhiều, gốc đứng yên); xin lỗi cúi 11 px, tay buông (cúi sâu + tay vẽ trên khăn làm mõm chìm dưới tay).
 
-**ĐANG DỞ (1/11 tối, người sáng lập bảo tạm dừng):** (1) hành động 26 xe tải chạy vào từ phải → dừng sau lưng → trâu vẫy → xe chạy đi trái (đầu xe hướng trái), (2) 19 chỉ lên hạ góc −0,32 rad, đầu không nghiêng sang tay. Đã dựng 0 lỗi nhưng **chưa soi ảnh / chưa xuất lại `tu-the/15-chi-len`, `20-xe-tai`, chưa gửi duyệt**. Tiếp: chụp chuỗi khung 26 và 19, xuất lại 2 ảnh, gửi người sáng lập.
+**Xong (2/11):** 26 xe tải chạy vào từ phải (khung 0–34, nảy nhẹ khi dừng) → đứng sau lưng khi trâu vẫy → chạy đi sang trái (150–200), đầu xe hướng trái; ảnh `tu-the/20-xe-tai` chụp khung 100 (xe đang đỗ, cabin khuất sau trâu). 19 chỉ lên: góc −0,32 rad, đầu giữ thẳng ngửa nhẹ → bàn tay ló hẳn ngoài đầu, vai liền; ảnh `tu-the/15-chi-len` xuất lại.
 
 #### Thêm cho chính diện (1/11, chờ duyệt)
 - 3 động tác lúc rảnh mới (Nghịch, tổng 12): ngáp che miệng (bản tay chống má), chỉnh khăn (một tay lên ngực, đuôi khăn đung đưa), chợt thấy rồi chỉ (mắt to → đầu quay → ngón trỏ chỉ). `AGV_THU=9/10/11`. Ảnh: `nghich-them-3.png`.

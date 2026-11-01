@@ -48,7 +48,7 @@ Cả hai có state machine `trau` với cùng đầu vào.
 | 23 | ngủ gật cạnh chuông | chưa có thông báo |
 | 24 | ngạc nhiên (mắt to, mày nhướng) | bong bóng nhỏ |
 | 25 | đứng cạnh cân, tay trái chỉ mặt cân | kết quả cân, cân lại |
-| 26 | vẫy xe tải (xe chở trái cây đậu bên phải) | bàn giao, xe tới vườn |
+| 26 | xe tải chạy vào, trâu vẫy chào, xe chạy đi | bàn giao, xe tới vườn |
 | 27 | cầm túi mẫu niêm phong | mẫu đối chứng, kiểm định |
 | 28 | tay trái cầm lịch, tay phải cầm bình xịt | nhật ký thuốc, ngày hết cách ly |
 | 29 | đeo tai nghe, đang nói | hỗ trợ, tổng đài |
