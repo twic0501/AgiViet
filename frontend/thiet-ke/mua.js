@@ -1148,6 +1148,7 @@ if (THAT) {
       // Nghiệm thu (bên mua nhập kết quả cân): ba phần đạt / xuống loại / trả lại phải cộng đúng lượng cân;
       // phần xuống loại, trả lại cần lý do theo danh mục mặt hàng + ảnh chụp tại chỗ (chứng cứ cho người bán).
       const veNghiemThu = async (d, dot) => {
+        if ((d.dong_mon || []).length) return veNghiemThuMon(d, dot);
         const k = d.dieu_khoan || {}, gia = Number(k.unit_price_vnd), giaHc = k.downgrade_price_vnd ? Number(k.downgrade_price_vnd) : null;
         const ly = d.san_pham?.code ? ((await fetch(`/v1/products/${d.san_pham.code}/profile`).then((r) => r.json()).then((j) => j.data ?? j).catch(() => ({}))).reject_reasons || []) : [];
         const chonLy = (id) => `<select id="${id}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"><option value="">Chọn lý do</option>${ly.map((x) => `<option value="${esc(x.reason_code)}">${esc(x.label_vi)}${x.is_safety ? " (an toàn thực phẩm)" : ""}</option>`).join("")}</select>`;
@@ -1196,6 +1197,56 @@ if (THAT) {
             if (x.ha > 0) lines.push({ kind: "downgraded", qty_g: g2(x.ha), reason_code: $n("#nt-ha-lydo").value, evidence_document_id: anhId });
             if (x.tra > 0) lines.push({ kind: "rejected", qty_g: g2(x.tra), reason_code: $n("#nt-tra-lydo").value, evidence_document_id: anhId });
             await api(`/v1/deliveries/${dot.id}/acceptance`, { weighed_g: g2(x.can), lines, seal_code: $n("#nt-niem").value.trim() || undefined, pin: $n("#nt-pin").value });
+            await ve();
+          } catch (err) { bao4.textContent = err.message; nut.disabled = false; }
+        };
+      };
+      // Buổi gọi hàng khung: mỗi món một dòng (đạt / xuống loại / trả lại), giá theo giá tuần đã chốt của món.
+      const veNghiemThuMon = async (d, dot) => {
+        const M = d.dong_mon, LY = {}; for (const m of M) LY[m.ma] ||= ((await fetch(`/v1/products/${m.ma}/profile`).then((r) => r.json()).then((j) => j.data ?? j).catch(() => ({}))).reject_reasons || []);
+        const O2 = "min-height:44px;padding:0 10px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box";
+        khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="nt" style="display:grid;gap:12px">
+          <h2 style="margin:0;font-size:18px">Nghiệm thu từng món · đợt ${dot.batch_no}</h2>
+          <p class="sl-ghi" style="margin:0">Cân từng món, chia thành đạt / xuống loại / trả lại. Người bán xem và đồng ý hoặc phản đối từng dòng.</p>
+          ${M.map((m) => `<fieldset data-mon="${m.line_no}" style="border:1px solid var(--ke,#e5e5e5);border-radius:12px;padding:10px;margin:0;display:grid;gap:8px;min-width:0">
+            <legend style="font-weight:700;padding:0 4px">${esc(m.mat_hang)} · lô ${esc(m.lo)} · gọi ${kg(Number(m.qty_g) / 1000)}</legend>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+              <label style="display:grid;gap:4px;font-weight:600;min-width:0;font-size:14px">Đạt (kg)<input data-k="dat" inputmode="decimal" value="${Number(m.qty_g) / 1000}" style="${O2}"></label>
+              <label style="display:grid;gap:4px;font-weight:600;min-width:0;font-size:14px">Xuống loại<input data-k="ha" inputmode="decimal" value="0" ${m.gia_ha_cap_vnd ? "" : "disabled"} style="${O2}"></label>
+              <label style="display:grid;gap:4px;font-weight:600;min-width:0;font-size:14px">Trả lại<input data-k="tra" inputmode="decimal" value="0" style="${O2}"></label></div>
+            <p class="sl-ghi" style="margin:0">${so(Number(m.gia_vnd))} đ/kg${m.gia_ha_cap_vnd ? ` · xuống loại ${so(Number(m.gia_ha_cap_vnd))} đ/kg` : " · không đặt giá xuống loại"}</p>
+            <label data-ly-o hidden style="display:grid;gap:4px;font-weight:600;font-size:14px">Lý do không đạt<select data-ly style="${O2}"><option value="">Chọn lý do</option>${(LY[m.ma] || []).map((x) => `<option value="${esc(x.reason_code)}">${esc(x.label_vi)}</option>`).join("")}</select></label></fieldset>`).join("")}
+          <label id="nt-anh-o" hidden style="display:grid;gap:4px;font-weight:600">Ảnh chụp hàng không đạt (chụp tại chỗ)<input id="nt-anh" type="file" accept="image/*" capture="environment" style="${O2};padding:8px"></label>
+          <div id="nt-tong" role="status" style="font-size:17px;font-weight:600"></div>
+          <label style="display:grid;gap:4px;font-weight:600">Mã PIN ký biên bản (4 số)<input id="nt-pin" inputmode="numeric" maxlength="4" type="password" autocomplete="off" style="${O2}"></label>
+          <button type="button" class="sl-nut sl-vang" id="nt-gui">Ký và gửi kết quả cho người bán</button>
+          <p class="sl-ghi" id="nt-bao" role="status"></p></section>`);
+        const o = khung.querySelector("#nt"), so3 = (el) => Number(String(el?.value || "0").replace(",", ".")) || 0;
+        const tinh = () => { let tien = 0, xau = false; const r = M.map((m) => { const f = o.querySelector(`[data-mon="${m.line_no}"]`), x = { m, dat: so3(f.querySelector('[data-k="dat"]')), ha: so3(f.querySelector('[data-k="ha"]')), tra: so3(f.querySelector('[data-k="tra"]')) };
+            x.ly = f.querySelector("[data-ly]").value; f.querySelector("[data-ly-o]").hidden = !(x.ha > 0 || x.tra > 0);
+            tien += x.dat * Number(m.gia_vnd) + x.ha * Number(m.gia_ha_cap_vnd || 0); xau ||= x.ha > 0 || x.tra > 0; return x; });
+          o.querySelector("#nt-anh-o").hidden = !xau;
+          o.querySelector("#nt-tong").textContent = `Tiền hàng tạm tính: ${vnd(Math.round(tien))} (trả gộp cuối tuần)`; return { r, xau }; };
+        o.oninput = tinh; tinh();
+        o.querySelector("#nt-gui").onclick = async (e) => {
+          const nut = e.currentTarget, bao4 = o.querySelector("#nt-bao"), { r, xau } = tinh();
+          if (r.some((x) => x.dat < 0 || x.ha < 0 || x.tra < 0)) return (bao4.textContent = "Lượng không được âm.");
+          if (r.some((x) => Math.round((x.dat + x.ha + x.tra) * 1000) > Number(x.m.qty_g))) return (bao4.textContent = "Mỗi món: đạt + xuống loại + trả lại không vượt lượng đã gọi.");
+          const can = r.reduce((a, x) => a + x.dat + x.ha + x.tra, 0); if (!(can > 0)) return (bao4.textContent = "Nhập lượng cân.");
+          const tep = o.querySelector("#nt-anh").files?.[0];
+          if (r.some((x) => (x.ha > 0 || x.tra > 0) && !x.ly)) return (bao4.textContent = "Chọn lý do cho món có hàng không đạt.");
+          if (xau && !tep) return (bao4.textContent = "Chụp ảnh hàng không đạt để người bán thấy chứng cứ.");
+          if (!/^\d{4}$/.test(o.querySelector("#nt-pin").value)) return (bao4.textContent = "Nhập mã PIN 4 số.");
+          nut.disabled = true; bao4.textContent = "Đang gửi…";
+          try {
+            let anhId; if (tep) { const b64 = await new Promise((ok, l2) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1]); fr.onerror = l2; fr.readAsDataURL(tep); });
+              anhId = (await api("/v1/files", { mime: tep.type || "image/jpeg", data_base64: b64, entity: "delivery", entity_id: dot.id, captured_in_app: true })).id; }
+            const g2 = (v) => Math.round(v * 1000), lines = [];
+            for (const x of r) { const n = x.m.line_no;
+              if (x.dat > 0) lines.push({ kind: "accepted", qty_g: g2(x.dat), order_line_no: n });
+              if (x.ha > 0) lines.push({ kind: "downgraded", qty_g: g2(x.ha), order_line_no: n, reason_code: x.ly, evidence_document_id: anhId });
+              if (x.tra > 0) lines.push({ kind: "rejected", qty_g: g2(x.tra), order_line_no: n, reason_code: x.ly, evidence_document_id: anhId }); }
+            await api(`/v1/deliveries/${dot.id}/acceptance`, { weighed_g: g2(can), lines, pin: o.querySelector("#nt-pin").value });
             await ve();
           } catch (err) { bao4.textContent = err.message; nut.disabled = false; }
         };
@@ -1369,7 +1420,9 @@ if (THAT) {
         khung.innerHTML = `
           <section class="sl-the" style="display:grid;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:20px">${esc(maHD(d.code))}</h2><span class="sl-nhan${toi ? " sl-n-xong" : ""}">${esc(d.hien_thi?.ten || d.status)}</span></div>
             <p style="margin:0">${tl ? `<b>${toi ? "Tới lượt bạn" : tl.phia === "seller" ? "Chờ người bán" : "Chờ AgiViet"}:</b> ${esc(tl.viec)}` : ""}</p></section>
-          ${the("Điều khoản", dong("Người bán", esc(d.seller?.display_name || d.seller?.name || "")) + dong("Lượng", kg(kg2)) + dong("Giá", `${so(Number(k.unit_price_vnd))} đ/kg`) + dong("Giá nếu xuống loại", k.downgrade_price_vnd ? `${so(Number(k.downgrade_price_vnd))} đ/kg` : "Không đặt")
+          ${(d.dong_mon || []).length ? the("Buổi gọi hàng khung", dong("Người bán", esc(d.seller?.display_name || "")) + d.dong_mon.map((m) => dong(`${esc(m.mat_hang)} · lô ${esc(m.lo)}`, `${kg(Number(m.qty_g) / 1000)} · ${so(Number(m.gia_vnd))} đ/kg${m.gia_ha_cap_vnd ? ` · xuống loại ${so(Number(m.gia_ha_cap_vnd))}` : ""}`)).join("")
+            + dong("Giá trị buổi", vnd(k.contract_value_vnd)) + dong("Trả tiền", "Gộp cuối tuần theo hợp đồng khung (cọc khung bảo đảm)") + dong("Giao", "Tại vườn, bạn lo xe") + dong("Ngày nhận", k.delivery_from ? new Date(k.delivery_from).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" }) : "")) :
+          the("Điều khoản", dong("Người bán", esc(d.seller?.display_name || d.seller?.name || "")) + dong("Lượng", kg(kg2)) + dong("Giá", `${so(Number(k.unit_price_vnd))} đ/kg`) + dong("Giá nếu xuống loại", k.downgrade_price_vnd ? `${so(Number(k.downgrade_price_vnd))} đ/kg` : "Không đặt")
             + dong("Giá trị hợp đồng", vnd(k.contract_value_vnd)) + dong("Cọc (ngân hàng giữ)", vnd(k.deposit_vnd)) + dong("Phí AgiViet", vnd(k.fee_vnd))
             + dong("Trả tiền hàng", `${TRA[k.payment_timing] || k.payment_timing}${k.payment_timing === "after_days" ? ` ${k.pay_after_days} ngày` : ""}`) + dong("Giao", k.delivery_mode === "at_farm" ? "Tại vườn, bạn lo xe" : esc(k.delivery_mode)) + dong("Ngày nhận", k.delivery_from ? `${new Date(k.delivery_from).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" })} – ${new Date(k.delivery_to).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}` : "Chưa có") + dong("Tài khoản nhận tiền người bán", esc(`${k.seller_account?.bank_code || ""} ${k.seller_account?.masked || ""}`)))}
           ${hcThap ? bao("Giá xuống loại thấp hơn 70% giá đơn: người bán phải xác nhận riêng khi ký.", "sl-bao-do") : ""}
@@ -1447,15 +1500,15 @@ if (THAT) {
     },
     sau: (g) => {
       const monCua = () => { const id = g.querySelector("#lk-nb").value; return [...new Map(LO.filter((l) => l.nguoiId === id).map((l) => [l.maSp + "|" + l.loai, l])).values()]; };
-      const dongMon = () => { const ds = monCua(); return `<div data-mon style="display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr)) auto;gap:8px;align-items:end">
-        <label style="display:grid;gap:4px;font-weight:600;min-width:0">Món<select data-sp style="${O}">${ds.map((l) => `<option value="${l.maSp}|${l.loai}">${esc(l.ten)}</option>`).join("")}</select></label>
-        <label style="display:grid;gap:4px;font-weight:600;min-width:0">Kg mỗi buổi<input data-kg inputmode="numeric" value="30" style="${O}"></label>
+      const dongMon = () => { const ds = monCua(); return `<div data-mon style="display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;align-items:end;border:1px solid var(--ke,#e5e5e5);border-radius:12px;padding:10px">
+        <label style="display:grid;gap:4px;font-weight:600;min-width:0;grid-column:1/-1">Món<select data-sp style="${O}">${ds.map((l) => `<option value="${l.maSp}|${l.loai}">${esc(l.ten)}</option>`).join("")}</select></label>
+        <label style="display:grid;gap:4px;font-weight:600;min-width:0">Kg mỗi buổi<input data-kg inputmode="decimal" value="30" style="${O}"></label>
         <label style="display:grid;gap:4px;font-weight:600;min-width:0">Giá đ/kg<input data-gia inputmode="numeric" placeholder="vd 23000" style="${O}"></label>
         <label style="display:grid;gap:4px;font-weight:600;min-width:0">Xuống loại<input data-hc inputmode="numeric" placeholder="tùy chọn" style="${O}"></label>
         <button type="button" class="sl-nut sl-vien" data-bo aria-label="Bỏ món">Bỏ</button></div>`; };
-      const ds = g.querySelector("#lk-mon"), so2 = (el) => Number(String(el?.value || "").replace(/\D/g, ""));
+      const ds = g.querySelector("#lk-mon"), so2 = (el) => Number(String(el?.value || "").replace(/\D/g, "")), soKg2 = (el) => { const v = String(el?.value || "").trim().replace(",", "."); return /^\d+(\.\d{1,3})?$/.test(v) ? Number(v) : NaN; };
       const tinh = () => { const thu = g.querySelectorAll("#lk-thu input:checked").length; let moi = 0;
-        ds.querySelectorAll("[data-mon]").forEach((r) => (moi += so2(r.querySelector("[data-kg]")) * so2(r.querySelector("[data-gia]"))));
+        ds.querySelectorAll("[data-mon]").forEach((r) => (moi += (soKg2(r.querySelector("[data-kg]")) || 0) * so2(r.querySelector("[data-gia]"))));
         g.querySelector("#lk-tong").innerHTML = moi ? `Mỗi buổi khoảng <b>${vnd(moi)}</b> · cọc khung <b>${vnd(moi * thu)}</b> (${thu} buổi/tuần)` : ""; };
       const lamMoi = () => { ds.innerHTML = monCua().length ? dongMon() : `<p class="sl-ghi">Người bán này chưa có lô nào trên chợ.</p>`; tinh(); };
       g.querySelector("#lk-nb").onchange = lamMoi; lamMoi();
@@ -1466,10 +1519,11 @@ if (THAT) {
         const nut = e.currentTarget, bao2 = g.querySelector("#lk-bao");
         const ngay_giao = [...g.querySelectorAll("#lk-thu input:checked")].map((x) => Number(x.value));
         const mon = [...ds.querySelectorAll("[data-mon]")].map((r) => { const [ma, loai] = r.querySelector("[data-sp]").value.split("|"); const hc = so2(r.querySelector("[data-hc]"));
-          return { product_code: ma, grade_code: loai, kg_moi_lan: so2(r.querySelector("[data-kg]")), gia_vnd: so2(r.querySelector("[data-gia]")), ...(hc ? { gia_ha_cap_vnd: hc } : {}) }; });
+          return { product_code: ma, grade_code: loai, kg_moi_lan: soKg2(r.querySelector("[data-kg]")), gia_vnd: so2(r.querySelector("[data-gia]")), ...(hc ? { gia_ha_cap_vnd: hc } : {}) }; });
         if (!ngay_giao.length) { bao2.textContent = "Chọn ít nhất một ngày giao trong tuần."; return; }
         if (!mon.length || mon.some((m) => !(m.kg_moi_lan > 0) || !(m.gia_vnd >= 1000))) { bao2.textContent = "Mỗi món cần kg mỗi buổi và giá (đ/kg) hợp lệ."; return; }
         if (mon.some((m) => m.gia_ha_cap_vnd && m.gia_ha_cap_vnd >= m.gia_vnd)) { bao2.textContent = "Giá xuống loại phải nhỏ hơn giá món."; return; }
+        if (new Set(mon.map((m) => m.product_code + "|" + m.grade_code)).size < mon.length) { bao2.textContent = "Có hai dòng cùng món và loại. Gộp thành một dòng (cộng kg)."; return; }
         nut.disabled = true; bao2.textContent = "Đang lập…";
         try { const k = await api("/v1/frameworks", { seller_org_id: g.querySelector("#lk-nb").value, ngay_giao, tu_ngay: g.querySelector("#lk-tu").value, den_ngay: g.querySelector("#lk-den").value, mon });
           location.href = `?man=chi-tiet-khung&khung=${k.id}&thu=${new URLSearchParams(location.search).get("thu")}`; }
@@ -1527,13 +1581,15 @@ if (THAT) {
               <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>Tuần từ ${ngay(t)}</b><span class="sl-nhan${toiTL ? " sl-n-xong" : ""}">${!x ? "Chưa có giá" : x.trang_thai === "agreed" ? "Đã chốt" : toiTL ? "Người bán đề nghị · tới lượt bạn" : "Chờ người bán"}</span></div>
               ${gia ? `<div>${gia} đ/kg</div>` : ""}
               ${toiTL ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sl-nut sl-vang" data-tl="1">Đồng ý giá tuần</button><button class="sl-nut sl-vien" data-tl="0">Không đồng ý</button></div>` : ""}
-              ${!x ? `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">${(k.mon || []).map((m) => `<label style="display:grid;gap:4px;font-weight:600;min-width:0">${esc(m.mat_hang)} (đ/kg)<input data-g inputmode="numeric" value="${Number(m.gia_vnd)}" style="${O}"></label>`).join("")}</div>
+              ${!x ? `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">${(k.mon || []).map((m) => `<label style="display:grid;gap:4px;font-weight:600;min-width:0">${esc(m.mat_hang)} (đ/kg)<input data-g inputmode="numeric" value="${Number(m.gia_vnd)}" style="${O}"></label><label style="display:grid;gap:4px;font-weight:600;min-width:0">Xuống loại (đ/kg)<input data-h inputmode="numeric" value="${m.gia_ha_cap_vnd ? Number(m.gia_ha_cap_vnd) : ""}" placeholder="không đặt" style="${O}"></label>`).join("")}</div>
                 <div><button class="sl-nut sl-vien" data-dn>Đề nghị giá tuần này</button></div>` : ""}
               <p class="sl-ghi" data-b role="status" style="margin:0"></p></div>`; }).join("") || `<p class="sl-ghi">Không còn buổi giao nào trong kỳ.</p>`}</section>`;
         $("#kh-gia").onclick = async (e) => { const r = e.target.closest("[data-tuan]"); if (!r) return; const b3 = r.querySelector("[data-b]");
           try {
-            if (e.target.closest("[data-dn]")) { const mon = [...r.querySelectorAll("[data-g]")].map((i, j) => ({ gia_vnd: Number(i.value.replace(/\D/g, "")), gia_ha_cap_vnd: k.mon[j]?.gia_ha_cap_vnd ? Number(k.mon[j].gia_ha_cap_vnd) : null }));
+            if (e.target.closest("[data-dn]")) { const hs = [...r.querySelectorAll("[data-h]")], mon = [...r.querySelectorAll("[data-g]")].map((i, j) => { const h = Number(hs[j].value.replace(/\D/g, "")); return { gia_vnd: Number(i.value.replace(/\D/g, "")), gia_ha_cap_vnd: h || null }; });
               if (mon.some((m) => !(m.gia_vnd >= 1000))) { b3.textContent = "Nhập giá hợp lệ cho mọi món."; return; }
+              if (mon.some((m) => m.gia_ha_cap_vnd && m.gia_ha_cap_vnd >= m.gia_vnd)) { b3.textContent = "Giá xuống loại phải nhỏ hơn giá món."; return; }
+              if (mon.some((m) => m.gia_ha_cap_vnd && m.gia_ha_cap_vnd * 10 < m.gia_vnd * 7)) b3.textContent = "Lưu ý: giá xuống loại dưới 70% giá món, người bán phải xác nhận riêng.";
               e.target.disabled = true; await api(`/v1/frameworks/${k.id}/week-prices`, { tuan: r.dataset.tuan, mon }); await ve(); }
             else if (e.target.closest("[data-tl]")) { e.target.disabled = true; await api(`/v1/framework-week-prices/${r.dataset.id}/answer`, { dong_y: e.target.dataset.tl === "1" }); await ve(); }
           } catch (err) { b3.textContent = err.message; e.target.disabled = false; } };

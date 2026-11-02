@@ -54,7 +54,8 @@ export async function tranhChapCuaDon(t: GiaoDich, nd: NguoiDung, orderId: strin
 
 /** Hướng dẫn trả thẳng: tài khoản người bán ĐÃ CHỤP trong phiên bản hợp đồng (F05), VietQR nội dung mã khoản. Chỉ bên trả có quyền tiền. */
 export async function huongDanTraThang(t: GiaoDich, nd: NguoiDung, paymentId: string) {
-  const p = await t.mot<any>(`SELECT p.*, o.code order_code, o.effective_version_no, o.seller_org_id, o.buyer_org_id FROM core.direct_payments p JOIN core.orders o ON o.id=p.order_id WHERE p.id=$1`, [paymentId]);
+  const p = await t.mot<any>(`SELECT p.*, coalesce(o.code, f.code) order_code, o.effective_version_no, coalesce(o.seller_org_id, f.seller_org_id) seller_org_id, coalesce(o.buyer_org_id, f.buyer_org_id) buyer_org_id
+    FROM core.direct_payments p LEFT JOIN core.orders o ON o.id=p.order_id LEFT JOIN core.framework_contracts f ON f.id=p.framework_id WHERE p.id=$1`, [paymentId]);
   if (!p || p.payer_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
   canQuyen(nd, p.direction === 'buyer_to_seller' ? 'money.pay.buyer' : 'money.confirm.seller');
   const daNhan = B(await t.gtri<string>(`SELECT coalesce(sum(amount_vnd),0)::text FROM core.direct_payment_confirmations WHERE direct_payment_id=$1`, [paymentId]));
@@ -75,7 +76,10 @@ export async function huongDanTraThang(t: GiaoDich, nd: NguoiDung, paymentId: st
       vietqr: vqr, canh_bao: doiGanDayM ? `Tài khoản nhận tiền của bên mua vừa đổi ngày ${new Date(tkm.activated_at).toISOString().slice(0, 10)}` : null,
       cau: `Chỉ hoàn vào tài khoản đã xác minh của bên mua: ${tkm.bank_code} •••• ${String(tkm.account_masked).slice(-4)}, đúng tên ${tkm.holder_name}.` };
   }
-  const v = await t.mot<any>(`SELECT seller_bank_account_id, seller_bank_code, seller_account_masked, seller_account_holder FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [p.order_id, p.effective_version_no]);
+  // Khoản trả gộp tuần (không gắn đơn): tài khoản chụp trong hợp đồng khung.
+  const v = p.order_id ? await t.mot<any>(`SELECT seller_bank_account_id, seller_bank_code, seller_account_masked, seller_account_holder FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [p.order_id, p.effective_version_no])
+    : await t.mot<any>(`SELECT seller_bank_account_id, seller_bank_code, seller_account_masked, seller_account_holder FROM core.framework_terms WHERE framework_id=$1`, [p.framework_id]);
+  if (!v) throw loi('KHONG_TIM_THAY');
   const tk = await t.mot<any>(`SELECT replace(convert_from(account_number_enc,'UTF8'),'TEST:','') so, activated_at, status FROM pii.bank_accounts WHERE id=$1`, [v.seller_bank_account_id]);
   const doiGanDay = await t.mot<any>(`SELECT max(activated_at) luc FROM pii.bank_accounts WHERE org_id=$1 AND activated_at > now()-interval '30 days'`, [p.seller_org_id]);
   let vietqr: string | null = null;

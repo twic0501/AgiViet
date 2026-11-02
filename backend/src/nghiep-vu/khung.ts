@@ -133,13 +133,16 @@ export async function dsKhung(t: GiaoDich, nd: NguoiDung) {
 export function dauTuan(ngay: string) { const d = new Date(ngay + 'T00:00:00Z'); const thu = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - thu); return d.toISOString().slice(0, 10); }
 
 /** Một bên đề nghị giá tuần (đủ các món của khung theo thứ tự lịch). Bên đề nghị coi như đã đồng ý. */
-export async function deNghiGiaTuan(t: GiaoDich, nd: NguoiDung, id: string, d: { tuan: string; mon: { gia_vnd: number; gia_ha_cap_vnd?: number | null }[] }) {
+export async function deNghiGiaTuan(t: GiaoDich, nd: NguoiDung, id: string, d: { tuan: string; mon: { gia_vnd: number; gia_ha_cap_vnd?: number | null }[]; low_downgrade_price_ack?: boolean }) {
   const { f, phia } = await layKhung(t, nd, id);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(d.tuan ?? '')) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần tuần (ngày bất kỳ trong tuần, YYYY-MM-DD).');
   const items = f.schedule?.items ?? [];
   if (!Array.isArray(d.mon) || d.mon.length !== items.length) throw loi('DU_LIEU_KHONG_HOP_LE', `Cần giá đủ ${items.length} món của khung.`);
   const gia = items.map((x: any, i: number) => ({ product_id: x.product_id, profile_version: x.profile_version, grade_code: x.grade_code,
     unit_price_vnd: String(Math.round(d.mon[i].gia_vnd)), downgrade_price_vnd: d.mon[i].gia_ha_cap_vnd == null ? null : String(Math.round(d.mon[i].gia_ha_cap_vnd)) }));
+  // Người bán tự đề nghị giá có giá xuống loại < 70% cũng phải xác nhận riêng (bên đề nghị coi như đã đồng ý).
+  if (phia === 'seller' && gia.some((x: any) => x.downgrade_price_vnd != null && BigInt(x.downgrade_price_vnd) * 10000n < BigInt(x.unit_price_vnd) * 7000n) && !d.low_downgrade_price_ack)
+    throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Giá xuống loại thấp hơn 70% giá món. Bác xác nhận riêng rồi mới gửi đề nghị.', { gia_ha_cap_thap: true });
   const wid = await appCmd<string>(t, nd, phia, 'propose_framework_week_price', [id, dauTuan(d.tuan), JSON.stringify(gia)]);
   return { id: wid, tuan: dauTuan(d.tuan), trang_thai: 'proposed', cho: phia === 'buyer' ? 'seller' : 'buyer' };
 }

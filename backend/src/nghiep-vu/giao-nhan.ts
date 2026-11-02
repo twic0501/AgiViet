@@ -216,7 +216,7 @@ export async function guiKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliver
     const q = soGam(l.qty_g);
     if (q < 0n) throw loi('KET_QUA_AM');
     if ((l.kind === 'downgraded' || l.kind === 'rejected') && !l.reason_code) throw loi('THIEU_LY_DO');
-    const mon = dongMon ? dongMon.find((m: any) => m.line_no === Number(l.order_line_no)) : null;
+    const mon = dongMon ? (dongMon.length === 1 && l.order_line_no == null ? dongMon[0] : dongMon.find((m: any) => m.line_no === Number(l.order_line_no))) : null;
     if (dongMon && !mon) throw loi('DU_LIEU_KHONG_HOP_LE', 'Buổi gọi hàng nhiều món: mỗi dòng cân phải chọn món (order_line_no).');
     const giaGoc = mon ? B(mon.gia) : B(v.unit_price_vnd), giaHc = mon ? (mon.gia_hc == null ? null : B(mon.gia_hc)) : (v.downgrade_price_vnd == null ? null : B(v.downgrade_price_vnd));
     if (l.kind === 'downgraded' && giaHc == null) throw loi('DU_LIEU_KHONG_HOP_LE', 'Hợp đồng không có giá hạ cấp.');

@@ -26,7 +26,7 @@
   .hd-chon { display: flex; gap: 10px; align-items: flex-start; font-size: 15.5px; line-height: 1.45; }
   .hd-chon input { width: 22px; height: 22px; flex: none; margin-top: 2px; }
   .tuan { border-top: 1px solid var(--ke); padding-top: 10px; display: grid; gap: 8px; }
-  .nhan { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--ke); white-space: nowrap; }
+  .nhan { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--ke); max-width: 100%; }
   .nhan.bac { background: var(--vang-lua-nhat); color: var(--nau-dat); }
 </style>
 </head>
@@ -94,7 +94,7 @@ async function ve() {
   $("gia").outerHTML = `<section class="hd-the" id="gia"><h3><i class="cham"></i>Giá từng tuần</h3>
     ${gia.length ? gia.map((x) => { const toi = x.trang_thai === "proposed" && x.de_nghi_boi === "buyer";
       const thap = x.items.some((it) => it.downgrade_price_vnd && Number(it.downgrade_price_vnd) * 10 < Number(it.unit_price_vnd) * 7);
-      return `<div class="tuan" data-id="${x.id}" data-thap="${thap ? 1 : ""}"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>Tuần từ ${ngay(x.tuan)}</b><span class="nhan${toi ? " bac" : ""}">${x.trang_thai === "agreed" ? "Đã chốt" : x.trang_thai === "rejected" ? "Không đồng ý" : toi ? "Bên mua đề nghị · tới lượt bác" : "Chờ bên mua"}</span></div>
+      return `<div class="tuan" data-id="${x.id}" data-thap="${thap ? 1 : ""}"><div style="display:flex;justify-content:space-between;gap:6px 8px;align-items:center;flex-wrap:wrap"><b>Tuần từ ${ngay(x.tuan)}</b><span class="nhan${toi ? " bac" : ""}">${x.trang_thai === "agreed" ? "Đã chốt" : x.trang_thai === "rejected" ? "Không đồng ý" : toi ? "Bên mua đề nghị · tới lượt bác" : "Chờ bên mua"}</span></div>
         ${x.items.map((it, i) => dong(esc(k.mon[i]?.mat_hang || ""), `${Number(it.unit_price_vnd).toLocaleString("vi-VN")} đ/kg${it.downgrade_price_vnd ? ` · xuống loại ${Number(it.downgrade_price_vnd).toLocaleString("vi-VN")}` : ""}`)).join("")}
         ${toi && thap ? `<label class="hd-chon"><input type="checkbox" data-ack> Giá xuống loại thấp hơn 70% giá món. Tôi đã xem và chấp nhận.</label>` : ""}
         ${toi ? `<div class="hd-nut"><button class="nut chinh-nut" data-tl="1">Đồng ý giá tuần</button><button class="nut phu-nut" data-tl="0">Không đồng ý</button></div>` : ""}
@@ -105,7 +105,7 @@ async function ve() {
   if ((k.buoi || []).length) $("buoi").outerHTML = `<section class="hd-the"><h3><i class="cham"></i>Các buổi bên mua đã gọi</h3>${k.buoi.map((b) => `<a class="hd-dong" href="./ban-don.html?id=${b.id}${location.search.replace("?", "&").replace(/&id=[^&]*/, "")}" style="text-decoration:none;color:inherit"><span>${esc(String(b.code).replace(/^HD-/, "HĐ-"))} · ${ngay(b.ngay_giao)}</span><b>${vnd(b.gia_tri_vnd)}</b></a>`).join("")}</section>`;
   const ky = k.ky_tuan || [];
   $("tien").outerHTML = `<section class="hd-the" id="tien"><h3><i class="cham"></i>Tiền gộp cuối tuần</h3>
-    ${ky.length ? ky.map((p) => `<div class="tuan" data-p="${p.payment_id}" data-so="${p.gia_tri_vnd}"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>Tuần từ ${ngay(p.tu)} · ${vnd(p.gia_tri_vnd)}</b><span class="nhan${p.trang_thai_tra === "payer_reported" ? " bac" : ""}">${p.trang_thai_tra === "fully_received" ? "Bác đã nhận đủ" : p.trang_thai_tra === "payer_reported" ? "Bên mua báo đã chuyển · tới lượt bác" : `Bên mua trả trước ${ngay(p.han_tra)}`}</span></div>
+    ${ky.length ? ky.map((p) => `<div class="tuan" data-p="${p.payment_id}" data-so="${p.gia_tri_vnd}"><div style="display:flex;justify-content:space-between;gap:6px 8px;align-items:center;flex-wrap:wrap"><b>Tuần từ ${ngay(p.tu)} · ${vnd(p.gia_tri_vnd)}</b><span class="nhan${p.trang_thai_tra === "payer_reported" ? " bac" : ""}">${p.trang_thai_tra === "fully_received" ? "Bác đã nhận đủ" : p.trang_thai_tra === "payer_reported" ? "Bên mua báo đã chuyển · tới lượt bác" : `Bên mua trả trước ${ngay(p.han_tra)}`}</span></div>
       ${p.trang_thai_tra === "payer_reported" ? `<p class="hd-ghi">Bác mở app ngân hàng xem tiền đã về chưa. Chỉ bấm khi đã thấy tiền.</p><label class="hd-o" style="font-size:15px">Mã giao dịch ngân hàng<input data-ma style="font-size:17px;letter-spacing:0"></label><div data-otp-goc></div>` : ""}</div>`).join("") : `<p class="hd-ghi">Chưa có khoản tuần nào. Hết tuần, các buổi đã chốt số gộp thành một khoản, bên mua chuyển thẳng cho bác.</p>`}</section>`;
   document.querySelectorAll("[data-otp-goc]").forEach((goc) => { const r = goc.closest("[data-p]");
     khoiOtp(goc, async () => { if (!r.querySelector("[data-ma]").value.trim()) throw new Error("Bác nhập mã giao dịch trong app ngân hàng."); return (await goi("/v1/otp/challenges", { purpose: "money_received", payment_id: r.dataset.p, amount_vnd: r.dataset.so })).challenge_id; },

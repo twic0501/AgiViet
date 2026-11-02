@@ -354,6 +354,8 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
       delivery_from: v.window_from ? new Date(v.window_from).toISOString() : null, delivery_to: v.window_to ? new Date(v.window_to).toISOString() : null, seller_account: { bank_code: v.seller_bank_code, masked: v.seller_account_masked, holder: v.seller_account_holder },
       designated_receiver_user_id: v.designated_receiver_user_id, silent_accept_hours: v.silent_accept_hours, reject_allowance_bps: v.reject_allowance_bps,
     } : null,
+    dong_mon: o.contract_type === 'framework_calloff' ? await t.q<any>(`SELECT l.line_no, p.name_vi mat_hang, p.code ma, lo.code lo, l.qty::text qty_g, l.unit_price_vnd::text gia_vnd, l.downgrade_price_vnd::text gia_ha_cap_vnd
+      FROM core.order_lines l JOIN core.lots lo ON lo.id=l.lot_id JOIN core.products p ON p.id=lo.product_id WHERE l.order_id=$1 AND l.version_no=$2 ORDER BY l.line_no`, [id, o.effective_version_no]) : null,
     lien_lac: lien?.mode ?? 'chua_mo', dot_giao: dots, han, lich_su: lichSu, tai_lieu: taiLieu,
     ky: await trangThaiKy(t, nd, o, phia, v),
     hanh_dong: hanhDongDon(nd, o, phia, await trangThaiKy(t, nd, o, phia, v)),

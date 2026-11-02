@@ -192,7 +192,7 @@ export async function xacNhanDaNhan(ht: HeThong, t: GiaoDich, nd: NguoiDung, id:
   if (method === 'bank_transfer' && !d.bank_txn_ref) throw loi('DU_LIEU_KHONG_HOP_LE', 'Chuyển khoản bắt buộc mã giao dịch ngân hàng.');
   if (method === 'cash' && !d.receipt_document_id) throw loi('DU_LIEU_KHONG_HOP_LE', 'Tiền mặt cần ảnh biên nhận hai bên ký.');
   if (d.bank_txn_ref) {
-    const trung = await t.mot(`SELECT 1 FROM core.direct_payment_confirmations c JOIN core.direct_payments x ON x.id=c.direct_payment_id WHERE x.order_id=$1 AND c.bank_txn_ref=$2`, [p.order_id, d.bank_txn_ref]);
+    const trung = await t.mot(`SELECT 1 FROM core.direct_payment_confirmations c JOIN core.direct_payments x ON x.id=c.direct_payment_id WHERE (x.order_id=$1 OR (x.framework_id=$3 AND $1::uuid IS NULL) OR x.id=$4) AND c.bank_txn_ref=$2`, [p.order_id, d.bank_txn_ref, p.framework_id, id]);
     if (trung) throw loi('MA_GIAO_DICH_TRUNG');
   }
   const daBao = B(await t.gtri<string>(`SELECT coalesce(sum(amount_vnd),0)::text FROM core.direct_payment_reports WHERE direct_payment_id=$1`, [id]));
@@ -219,7 +219,7 @@ export async function baoChuaNhan(t:GiaoDich,nd:NguoiDung,id:string,b?:{reason?:
  const p=await layKhoan(t,nd,id);if(p.payee_org_id!==nd.thanhVien.orgId)throw loi('KHONG_CO_QUYEN');
  // 0048: mismatch + việc V08 + sự kiện trong một command của bên nhận.
  const lyDo=(b?.reason??'').toString().trim()||'Bên nhận chưa thấy tiền về tài khoản';
- const task=await appCmd<string>(t,nd,(await t.gtri<string>(`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.orders WHERE id=$2`,[nd.thanhVien.orgId,p.order_id])) as any,'report_payment_not_received',[id,lyDo]);
+ const task=await appCmd<string>(t,nd,(await t.gtri<string>(p.order_id?`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.orders WHERE id=$2`:`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_contracts WHERE id=$2`,[nd.thanhVien.orgId,p.order_id??p.framework_id])) as any,'report_payment_not_received',[id,lyDo]);
  const r=await t.mot<any>(`SELECT status,version FROM core.direct_payments WHERE id=$1`,[id]);
  return {id,status:r.status,revision:r.version,task_id:task};
 }

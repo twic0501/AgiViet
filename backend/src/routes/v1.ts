@@ -39,6 +39,11 @@ async function phiaDot(t: GiaoDich, nd: NguoiDung, deliveryId: string): Promise<
   if (!id) throw loi('KHONG_TIM_THAY');
   return phiaDon(t, nd, id);
 }
+/** Tài liệu gắn hợp đồng khung (văn bản khung, chứng từ trả tuần): hai bên của khung đều xem được. */
+async function laBenKhung(t: GiaoDich, nd: NguoiDung, docId: string): Promise<boolean> {
+  return !!(await t.mot(`SELECT 1 FROM core.documents d JOIN core.framework_contracts f ON f.id = coalesce(CASE WHEN d.entity='framework' THEN d.entity_id END, (SELECT framework_id FROM core.framework_terms WHERE document_id=d.id))
+    WHERE d.id=$1 AND $2 IN (f.buyer_org_id, f.seller_org_id)`, [docId, nd.thanhVien.orgId]));
+}
 async function phiaKhoan(t: GiaoDich, nd: NguoiDung, paymentId: string): Promise<Phia> {
   const k = await t.mot<any>(`SELECT order_id, framework_id FROM core.direct_payments WHERE id=$1`, [paymentId]);
   if (k?.order_id) return phiaDon(t, nd, k.order_id);
@@ -340,7 +345,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
         (SELECT json_agg(json_build_object('party',s.party,'method',s.method,'signed_at',s.signed_at,'signer_user_id',s.signer_user_id,'signed_sha256',encode(s.signed_sha256,'hex'))) FROM core.signatures s WHERE s.document_id=d.id) signatures FROM core.documents d WHERE d.id=$1`, [P(req).id])) ?? docBanTrinhBay(P(req).id);
       if (!d) throw loi('KHONG_TIM_THAY');
       if(d.presentation_only && !await t.mot(`SELECT 1 FROM core.settlements WHERE id=$1 AND order_id=$2`,[d.canonical_content.settlement_id,d.order_id]))throw loi('KHONG_TIM_THAY');
-      if (d.order_id) await phiaDon(t, nd, d.order_id); else if (d.owner_org_id && d.owner_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
+      if (d.order_id) await phiaDon(t, nd, d.order_id); else if (d.owner_org_id && d.owner_org_id !== nd.thanhVien.orgId && !(await laBenKhung(t, nd, d.id))) throw loi('KHONG_TIM_THAY');
       return d;
     });
   });
@@ -357,7 +362,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       if (anhLoCongKhai) return x;
       // Ảnh đính kèm tin nhắn (0078): hai bên của cuộc trao đổi đều xem được (ảnh đã qua quét liên lạc khi gửi).
       if (await t.mot(`SELECT 1 FROM core.chat_messages_of($1) m WHERE m.attachment_document_id=$2`, [nd.thanhVien.orgId, P(req).id])) return x;
-      if (x.order_id) await phiaDon(t, nd, x.order_id); else if (x.owner_org_id && x.owner_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
+      if (x.order_id) await phiaDon(t, nd, x.order_id); else if (x.owner_org_id && x.owner_org_id !== nd.thanhVien.orgId && !(await laBenKhung(t, nd, P(req).id))) throw loi('KHONG_TIM_THAY');
       return x;
     });
     const duoi: Record<string, string> = { 'application/pdf': 'pdf', 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
