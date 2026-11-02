@@ -1200,6 +1200,96 @@ if (THAT) {
           } catch (err) { bao4.textContent = err.message; nut.disabled = false; }
         };
       };
+      // Tiền hàng trả thẳng cho người bán: chỉ vào tài khoản chụp trong hợp đồng; báo đã chuyển kèm ảnh, người bán xác nhận mới tính.
+      const TT_TIEN = { due: "Chưa trả", payer_reported: "Đã báo chuyển · chờ người bán xác nhận", partially_confirmed: "Người bán xác nhận một phần", confirmed: "Người bán đã xác nhận nhận đủ", fully_received: "Người bán đã xác nhận nhận đủ", mismatch: "Lệch số tiền · AgiViet đang xem" };
+      const KHOAN = { goods_on_receipt: "Tiền hàng khi nhận", goods_before_loading: "Tiền hàng trước khi bốc", goods_after_days: "Tiền hàng trả sau" };
+      const veTien = async (d) => {
+        const ds = (await api(`/v1/orders/${d.id}/payments`).catch(() => [])).filter((p) => p.direction === "buyer_to_seller");
+        if (!ds.length) return;
+        for (const p of ds) {
+          const can = ["due", "partially_confirmed"].includes(p.status);
+          const hd = can ? await api(`/v1/payments/${p.id}/instruction`).catch(() => null) : null;
+          khung.insertAdjacentHTML("beforeend", `<section class="sl-the" data-khoan="${p.id}" style="display:grid;gap:12px">
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:18px">${esc(KHOAN[p.kind] || "Khoản trả")}</h2><span class="sl-nhan${/confirmed|fully_received/.test(p.status) ? " sl-n-xong" : ""}">${esc(TT_TIEN[p.status] || p.status)}</span></div>
+            <div style="font-size:28px;font-weight:700">${vnd(hd ? hd.so_tien_con_vnd : p.amount_due_vnd)}</div>
+            ${p.due_at ? `<p style="margin:0;font-weight:600">Hạn trả: ${new Date(p.due_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}</p>` : ""}
+            ${hd?.tai_khoan ? `<div data-qr style="text-align:center"></div>
+              <div style="display:grid;gap:6px">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span>${esc(hd.tai_khoan.ngan_hang)} · ${esc(hd.tai_khoan.chu_tai_khoan)}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b style="font-size:20px;letter-spacing:1px">${esc(hd.tai_khoan.so_tai_khoan)}</b><button type="button" class="sl-nut sl-vien" data-chep="${esc(hd.tai_khoan.so_tai_khoan)}">Chép</button></div>
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span>Nội dung: <b>${esc(hd.noi_dung)}</b></span><button type="button" class="sl-nut sl-vien" data-chep="${esc(hd.noi_dung)}">Chép</button></div></div>
+              ${hd.canh_bao ? bao(`<b>Cẩn thận:</b> ${esc(hd.canh_bao)}. Gọi AgiViet nếu người bán nhắn đổi số tài khoản ngoài hợp đồng.`, "sl-bao-do") : ""}
+              ${bao(esc(hd.cau), "sl-bao-nh")}
+              <label style="display:grid;gap:4px;font-weight:600">Số tiền bạn đã chuyển (đ)<input data-so inputmode="numeric" value="${Number(hd.so_tien_con_vnd)}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+              <label style="display:grid;gap:4px;font-weight:600">Ảnh biên lai chuyển khoản<input data-anh type="file" accept="image/*" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+              <button type="button" class="sl-nut sl-vang" data-bao-chuyen>Báo đã chuyển cho người bán</button>
+              <p class="sl-ghi" style="margin:0">Người bán kiểm tài khoản rồi xác nhận. Chỉ khi người bán xác nhận mới tính là đã trả.</p>` : ""}
+            <p class="sl-ghi" data-bao role="status"></p></section>`);
+          const o = khung.querySelector(`[data-khoan="${p.id}"]`);
+          if (hd?.vietqr) await veQr(o.querySelector("[data-qr]"), hd.vietqr);
+          o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
+          const nut = o.querySelector("[data-bao-chuyen]");
+          if (nut) nut.onclick = async () => {
+            const bao5 = o.querySelector("[data-bao]"), soTien = Number(o.querySelector("[data-so]").value.replace(/\D/g, "")), tep = o.querySelector("[data-anh]").files?.[0];
+            if (!(soTien > 0)) return (bao5.textContent = "Nhập số tiền đã chuyển.");
+            if (!tep) return (bao5.textContent = "Đính ảnh biên lai để người bán đối chiếu.");
+            nut.disabled = true; bao5.textContent = "Đang gửi…";
+            try {
+              const b64 = await new Promise((ok, loi2) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = loi2; r.readAsDataURL(tep); });
+              const anh = await api("/v1/files", { mime: tep.type || "image/jpeg", data_base64: b64, entity: "payment", entity_id: p.id, captured_in_app: false });
+              await api(`/v1/payments/${p.id}/report`, { amount_vnd: soTien, method: "bank_transfer", evidence_document_id: anh.id });
+              await ve();
+            } catch (err) { bao5.textContent = err.message; nut.disabled = false; }
+          };
+        }
+      };
+      // Nhận tại kho (hàng nhận tại vườn, bên mua chở về): cân lại, báo hao hụt đường, rồi chốt nhận.
+      const veDenNoi = async (d, dot) => {
+        khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="den" style="display:grid;gap:12px">
+          <h2 style="margin:0;font-size:18px">Nhận tại kho · đợt ${dot.batch_no}</h2>
+          ${dot.status === "in_transit" ? `<p class="sl-ghi" style="margin:0">Xe tới kho thì cân lại. Hao hụt đường trong mức cho phép là bình thường; vượt mức AgiViet sẽ xem.</p>
+            <label style="display:grid;gap:4px;font-weight:600">Lượng cân tại kho (kg)<input id="den-can" inputmode="decimal" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+            <button type="button" class="sl-nut sl-vang" id="den-gui">Ghi lượng cân tại kho</button>`
+          : `<p style="margin:0">Đã ghi lượng cân tại kho. Kiểm hàng xong:</p><button type="button" class="sl-nut sl-vang" id="den-chot">Hàng đúng, chốt nhận</button>
+            <p class="sl-ghi" style="margin:0">Hàng khác mẫu đã niêm phong? Đừng chốt; bấm Hỗ trợ để khiếu nại kèm ảnh.</p>`}
+          <p class="sl-ghi" id="den-bao" role="status"></p></section>`);
+        const o = khung.querySelector("#den"), bao6 = o.querySelector("#den-bao");
+        o.querySelector("#den-gui")?.addEventListener("click", async (e) => {
+          const can = Number((o.querySelector("#den-can").value || "").replace(",", ".")); if (!(can > 0)) return (bao6.textContent = "Nhập lượng cân tại kho.");
+          e.currentTarget.disabled = true;
+          try { const r = await api(`/v1/deliveries/${dot.id}/arrival`, { weighed_g: Math.round(can * 1000) }); sessionStorage.setItem("agv-hao-" + dot.id, JSON.stringify(r)); await ve(); }
+          catch (err) { bao6.textContent = err.message; e.currentTarget.disabled = false; }
+        });
+        try { const r = JSON.parse(sessionStorage.getItem("agv-hao-" + dot.id) || "null"); if (r && dot.status === "arrival_check") bao6.innerHTML = `Hao hụt đường: <b>${kg(Number(r.hao_hut_g) / 1000)}</b> (${(r.hao_hut_bps / 100).toFixed(1)}%)${r.vuot_muc ? ' — <b style="color:var(--do,#a8392c)">vượt mức cho phép, AgiViet đã được báo</b>' : " — trong mức cho phép"}.`; } catch {}
+        o.querySelector("#den-chot")?.addEventListener("click", async (e) => {
+          e.currentTarget.disabled = true;
+          try { await api(`/v1/deliveries/${dot.id}/arrival/confirm`, {}); await ve(); } catch (err) { bao6.textContent = err.message; e.currentTarget.disabled = false; }
+        });
+      };
+      // Tổng kết tiền của đơn: cọc đang ở đâu, các khoản trả thẳng, lệnh ngân hàng, quyết toán.
+      const LENH = { release_deposit_to_seller: "Chuyển cọc cho người bán", refund_deposit_to_buyer: "Hoàn cọc cho bạn", refund_to_buyer: "Hoàn tiền cho bạn", pay_seller: "Chuyển cho người bán", refund_fee: "Hoàn phí" };
+      const TT_LENH2 = { created: "Đã lập", sent: "Ngân hàng đang xử lý", accepted: "Ngân hàng đã nhận lệnh", executed: "Đã chuyển xong", fully_processed: "Đã chuyển xong", failed: "Lỗi, AgiViet đang xử lý", rejected: "Ngân hàng từ chối, AgiViet đang xử lý" };
+      const TT_COC = { processing: "Ngân hàng đang chuyển theo quyết toán", awaiting_transfer: "Chờ bạn chuyển", held: "Ngân hàng đang giữ", partially_received: "Ngân hàng nhận một phần", released: "Đã chuyển theo quyết toán", refunded: "Đã hoàn cho bạn", forfeited: "Đã chuyển cho người bán do vi phạm" };
+      const veTongTien = async (d) => {
+        const m = await api(`/v1/orders/${d.id}/money`).catch(() => null); if (!m?.coc) return;
+        const daTra = (m.khoan_tra_thang || []).filter((p) => p.direction === "buyer_to_seller").reduce((a, p) => a + Number(p.confirmed_vnd || 0), 0);
+        const qt = (m.quyet_toan || []).slice(-1)[0];
+        khung.insertAdjacentHTML("beforeend", `<section class="sl-the" style="display:grid;gap:4px">
+          <h2 style="margin:0 0 6px;font-size:18px">Tiền của đơn này đang ở đâu</h2>
+          ${dong("Cọc " + vnd(m.coc.deposit_vnd), esc(TT_COC[m.coc.status] || m.coc.status))}
+          ${dong("Phí AgiViet " + vnd(m.phi?.so_tien_vnd), esc(m.phi?.trang_thai || ""))}
+          ${dong("Bạn đã trả thẳng cho người bán (người bán xác nhận)", vnd(daTra))}
+          ${(m.lenh_ngan_hang || []).map((l) => dong(`${esc(LENH[l.kind] || l.kind)} ${vnd(l.amount_vnd)}`, esc(TT_LENH2[l.status] || l.status))).join("")}
+          ${qt ? `<h3 style="margin:12px 0 2px;font-size:16px">Quyết toán${qt.is_final ? "" : " (tạm, còn có thể đổi)"}</h3>
+            ${dong("Giá trị hàng đã nhận", vnd(qt.v_vnd))}
+            ${dong("Bạn đã trả thẳng", vnd(qt.d_vnd))}
+            ${dong("Cọc chuyển cho người bán", vnd(qt.release_vnd))}
+            ${Number(qt.refund_vnd) ? dong("Hoàn cho bạn", vnd(qt.refund_vnd)) : ""}
+            ${Number(qt.x_bm_vnd) ? dong("Bạn bị phạt", vnd(qt.x_bm_vnd)) : ""}${Number(qt.x_nb_vnd) ? dong("Người bán bị phạt (trả bạn)", vnd(qt.x_nb_vnd)) : ""}
+            ${(() => { const con = Number(qt.v_vnd) + Number(qt.x_bm_vnd || 0) - Number(qt.x_nb_vnd || 0) - Number(qt.d_vnd) - Number(qt.release_vnd) + Number(qt.refund_vnd || 0); return dong(con > 0 ? "Bạn còn phải trả" : con < 0 ? "Người bán phải hoàn bạn" : "Còn lại", `<b>${vnd(Math.abs(con))}</b>`); })()}`
+            : `<p class="sl-ghi" style="margin:6px 0 0">Chưa quyết toán: quyết toán lập sau khi chốt nhận hàng.</p>`}
+        </section>`);
+      };
       const ve = async () => {
         const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
         const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) * 2 < Number(k.unit_price_vnd);
@@ -1220,6 +1310,9 @@ if (THAT) {
         const dot = (d.dot_giao || []).find((x) => !/closed|cancel|shortfall_ended/.test(x.status));
         if (dot && ["preparing", "ready"].includes(dot.status)) await veGiao(d, dot);
         if (dot && dot.status === "checking") await veNghiemThu(d, dot);
+        if (dot && ["in_transit", "arrival_check"].includes(dot.status)) await veDenNoi(d, dot);
+        await veTien(d);
+        await veTongTien(d);
         if (!coKy) return;
         let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
         khung.querySelector("#ky-ma").onclick = async (e) => {
