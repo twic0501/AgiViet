@@ -239,7 +239,10 @@ them('TH-024', 'Trả lại nhiều: người bán còn phải hoàn ngoài app'
   th.bang('V 29.100.000', kq.data.gia_tri_vnd, '29100000');
   const sai = await b.nam.post(`/v1/deliveries/${b.deliveryId}/acceptance/agree`, { pin: '0000' });
   th.bang('PIN sai không ký được', sai.json.errors?.[0]?.code, 'OTP_SAI');
-  await b.nam.ok(`/v1/deliveries/${b.deliveryId}/acceptance/agree`, { pin: '2468' });
+  // Ngưỡng 20% (người sáng lập 02/11/2026): 40% xuống loại/trả lại → không đánh dấu chấp nhận riêng thì không chốt.
+  const chuaChon = await b.nam.post(`/v1/deliveries/${b.deliveryId}/acceptance/agree`, { pin: '2468' });
+  th.bang('Quá 20% chưa chấp nhận riêng: không chốt', chuaChon.json.errors?.[0]?.details?.ti_le_bps, 4000);
+  await b.nam.ok(`/v1/deliveries/${b.deliveryId}/acceptance/agree`, { pin: '2468', chap_nhan_vuot_nguong: true });
   await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/arrival`, { weighed_g: 1300000 });
   const x = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/arrival/confirm`, {});
   th.bang('C_nb 0', x.data.quyet_toan?.release_vnd, '0');
