@@ -1,0 +1,122 @@
+{
+  "kich_ban": [
+    {
+      "ma": "CMUA-01",
+      "ten": "Nhà máy sấy Đồng Xanh mua xoài, kiểm tại vườn xong trả rồi mới bốc; 10% xuống loại",
+      "tinh_cach": "Bên mua chuyên nghiệp, trả giá một lần, giấy tờ đầy đủ",
+      "vai": { "mua": "0909000213", "ban": "0918000421" },
+      "buoc": [
+        { "ai": "0909000213", "lam": "chao", "lo": "L-0412", "kg": 1000, "gia": 23500, "mong_doi": "Lời chào gửi được, người bán không thấy giá các bên khác; giá kín của người bán không lộ", "can_cu": "A3.10" },
+        { "lam": "cho", "giay": 8, "mong_doi": "Người bán ảo trả giá lại" },
+        { "ai": "0909000213", "lam": "dong_y", "mong_doi": "Đồng ý giá → giữ lượng 24h, chưa phải hợp đồng", "can_cu": "B3/B4" },
+        { "ai": "0909000213", "lam": "lap_don", "tra_tien": "inspect_then_before_loading", "mong_doi": "Lập đơn kiểm rồi trả trước bốc; chưa có khoản tiền nào trước khi kiểm", "can_cu": "chính sách 02/11" },
+        { "ai": "0909000213", "lam": "ky", "mong_doi": "Bên mua ký → chờ người bán ký", "can_cu": "C2" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Người bán ảo ký" },
+        { "ai": "0909000213", "lam": "coc", "mong_doi": "Ngân hàng nhận đủ cọc → đơn có hiệu lực, đợt giao chuẩn bị", "can_cu": "C6" },
+        { "ai": "0909000213", "lam": "xem", "mong_doi": "Không có khoản trả trước khi kiểm (khoản tiền hàng chỉ sinh sau nghiệm thu)" },
+        { "ai": "0909000213", "lam": "dat_xe", "mong_doi": "Đặt xe được, sẵn sàng giao" },
+        { "ai": "0909000213", "lam": "phat_qr", "mong_doi": "Phát mã nhận hàng cho người nhận được chỉ định" },
+        { "ai": "0918000421", "lam": "bat_dau_can", "mong_doi": "Người bán quét mã → bắt đầu cân tại vườn (thao tác máy, phía người bán)" },
+        { "ai": "0909000213", "lam": "nghiem_thu", "can_kg": 1000, "dong": [{ "loai": "accepted", "kg": 900 }, { "loai": "downgraded", "kg": 100, "ly_do": "DAP" }], "mong_doi": "Biên bản 900 đạt + 100 xuống loại có ảnh; chờ người bán đồng ý", "can_cu": "D nghiệm thu" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Người bán ảo đồng ý số cân" },
+        { "ai": "0909000213", "lam": "xem", "mong_doi": "Có đúng một khoản tiền hàng = 900×giá + 100×giá hạ cấp − cọc chuyển người bán; hàng chưa được đi trước khi trả" },
+        { "ai": "0909000213", "lam": "tra_tien_hang", "mong_doi": "Báo đã trả kèm chứng từ; chỉ tính khi người bán xác nhận" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Người bán ảo xác nhận đã nhận" },
+        { "ai": "0909000213", "lam": "xem", "mong_doi": "Hàng được đi; KHÔNG có khoản người bán phải hoàn" }
+      ]
+    },
+    {
+      "ma": "CMUA-02",
+      "ten": "Vựa Ba Cường (đại lý) ép giá thấp rồi đòi trả sau",
+      "tinh_cach": "Đầu mối quen ép giá, muốn nợ tiền",
+      "vai": { "mua": "0938000610", "ban": "0918000421" },
+      "buoc": [
+        { "ai": "0938000610", "lam": "chao", "lo": "L-0412", "kg": 2000, "gia": 12000, "mong_doi": "Dưới mức người bán chấp nhận → lời chào tự đóng, không lộ giá kín", "can_cu": "A3.10 chống ép giá" },
+        { "ai": "0938000610", "lam": "chao", "lo": "L-0412", "kg": 2000, "gia": 24500, "mong_doi": "Chào lại giá hợp lý → gửi được" },
+        { "lam": "cho", "giay": 8, "mong_doi": "Người bán ảo trả giá" },
+        { "ai": "0938000610", "lam": "dong_y", "mong_doi": "Đồng ý giá" },
+        { "ai": "0938000610", "lam": "lap_don", "tra_tien": "after_days", "mong_doi": "BỊ CHẶN: trả sau chưa mở", "can_cu": "chính sách 02/11" },
+        { "ai": "0938000610", "lam": "lap_don", "tra_tien": "before_loading", "mong_doi": "BỊ CHẶN: trả trước khi chưa kiểm không còn", "can_cu": "chính sách 02/11" },
+        { "ai": "0938000610", "lam": "lap_don", "tra_tien": "on_receipt", "mong_doi": "Lập đơn trả khi nhận được" },
+        { "ai": "0938000610", "lam": "xem", "mong_doi": "Đơn đang soạn, tới lượt bên mua ký" }
+      ]
+    },
+    {
+      "ma": "CMUA-03",
+      "ten": "Nhà hàng Bếp Sen mua thanh long định kỳ, lô này hư nhiều (30% trả lại)",
+      "tinh_cach": "Nhà hàng mua lượng nhỏ, cần hàng đẹp, nhận tại vườn qua điểm gom",
+      "vai": { "mua": "0908000510", "ban": "0907000300" },
+      "buoc": [
+        { "ai": "0908000510", "lam": "chao", "lo": "L-0490", "kg": 300, "gia": 18500, "mong_doi": "Gửi lời chào lượng nhỏ được" },
+        { "lam": "cho", "giay": 8, "mong_doi": "HTX ảo trả giá" },
+        { "ai": "0908000510", "lam": "dong_y", "mong_doi": "Đồng ý giá" },
+        { "ai": "0908000510", "lam": "lap_don", "tra_tien": "inspect_then_before_loading", "mong_doi": "Lập đơn kiểm rồi trả" },
+        { "ai": "0908000510", "lam": "ky", "mong_doi": "Ký" },
+        { "lam": "cho", "giay": 9, "mong_doi": "HTX ký" },
+        { "ai": "0908000510", "lam": "coc", "mong_doi": "Cọc đủ" },
+        { "ai": "0908000510", "lam": "dat_xe", "mong_doi": "Đặt xe" },
+        { "ai": "0908000510", "lam": "phat_qr", "mong_doi": "Mã nhận hàng" },
+        { "ai": "0907000300", "lam": "bat_dau_can", "mong_doi": "Bắt đầu cân (phía bán, thao tác máy)" },
+        { "ai": "0908000510", "lam": "nghiem_thu", "can_kg": 300, "dong": [{ "loai": "accepted", "kg": 210 }, { "loai": "rejected", "kg": 90, "ly_do": "DAP" }], "mong_doi": "Trả lại 30% (> 20%): app phải DỪNG tự chốt phần trả lại, để người bán chọn chấp nhận hoặc yêu cầu giám định", "can_cu": "ngưỡng 20% (người sáng lập chốt 02/11)" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Không được tự chốt khi người bán chưa chọn" },
+        { "ai": "0908000510", "lam": "xem", "mong_doi": "Đơn chờ người bán chọn chấp nhận/giám định, chưa chốt tiền phần trả lại" }
+      ]
+    },
+    {
+      "ma": "CMUA-04",
+      "ten": "XNK Sông Tiền nhắn số trước cọc, rồi rút lời chào khi còn được rút",
+      "tinh_cach": "Doanh nghiệp muốn xin số làm ngoài app",
+      "vai": { "mua": "0903000410", "ban": "0977000610" },
+      "buoc": [
+        { "ai": "0903000410", "lam": "chao", "lo": "L-0440", "kg": 500, "gia": 76000, "mong_doi": "Gửi lời chào sầu riêng" },
+        { "ai": "0903000410", "lam": "nhan", "noi_dung": "Anh cho em xin zalo 0903 000 410 nói chuyện cho nhanh", "mong_doi": "Trước cọc: số và chữ 'zalo' bị che", "can_cu": "chặn liên lạc trước cọc" },
+        { "ai": "0903000410", "lam": "nhan", "noi_dung": "STK VCB 1234·5678·9010 anh chuyển trước nha", "mong_doi": "Số tài khoản xen dấu · bị che", "can_cu": "E69 #6" },
+        { "ai": "0903000410", "lam": "rut", "mong_doi": "Rút lời chào khi người bán chưa trả lời: được; đã trả lời thì báo rõ không rút được", "can_cu": "0074" },
+        { "ai": "0903000410", "lam": "xem", "mong_doi": "Lời chào đã rút hoặc lý do không rút rõ ràng" }
+      ]
+    },
+    {
+      "ma": "CMUA-05",
+      "ten": "Thủy sản Biển Xanh mua tôm trả khi nhận, nghiệm thu đủ, mở liên lạc sau cọc",
+      "tinh_cach": "Doanh nghiệp thủy sản, quan tâm giấy kiểm kháng sinh",
+      "vai": { "mua": "0902000810", "ban": "0945000880" },
+      "buoc": [
+        { "ai": "0902000810", "lam": "chao", "lo": "L-0470", "kg": 500, "gia": 121000, "mong_doi": "Gửi lời chào tôm" },
+        { "lam": "cho", "giay": 8, "mong_doi": "Người bán ảo trả giá" },
+        { "ai": "0902000810", "lam": "dong_y", "mong_doi": "Đồng ý" },
+        { "ai": "0902000810", "lam": "lap_don", "tra_tien": "on_receipt", "mong_doi": "Lập đơn trả khi nhận" },
+        { "ai": "0902000810", "lam": "ky", "mong_doi": "Ký" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Người bán ảo ký" },
+        { "ai": "0902000810", "lam": "nhan", "noi_dung": "Gọi chị 0902 000 810 khi xe tới", "mong_doi": "Chưa cọc: số bị che" },
+        { "ai": "0902000810", "lam": "coc", "mong_doi": "Cọc đủ" },
+        { "ai": "0902000810", "lam": "nhan", "noi_dung": "Gọi chị 0902 000 810 khi xe tới", "mong_doi": "Sau cọc: số KHÔNG bị che", "can_cu": "mở liên lạc sau cọc" },
+        { "ai": "0902000810", "lam": "dat_xe", "mong_doi": "Đặt xe" },
+        { "ai": "0902000810", "lam": "phat_qr", "mong_doi": "Mã nhận hàng" },
+        { "ai": "0945000880", "lam": "bat_dau_can", "mong_doi": "Bắt đầu cân (phía bán)" },
+        { "ai": "0902000810", "lam": "nghiem_thu", "can_kg": 500, "dong": [{ "loai": "accepted", "kg": 500 }], "mong_doi": "Nghiệm thu đủ 500 kg" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Người bán đồng ý" },
+        { "ai": "0902000810", "lam": "tra_tien_hang", "mong_doi": "Trả đúng tiền hàng trừ phần cọc" },
+        { "lam": "cho", "giay": 9, "mong_doi": "Người bán xác nhận" },
+        { "ai": "0902000810", "lam": "xem", "mong_doi": "Hàng đi; không có khoản hoàn" }
+      ]
+    },
+    {
+      "ma": "CMUA-06",
+      "ten": "Nhà máy cọc thiếu rồi quá hạn cọc",
+      "tinh_cach": "Bên mua chuyển thiếu tiền",
+      "vai": { "mua": "0909000213", "ban": "0907000300" },
+      "buoc": [
+        { "ai": "0909000213", "lam": "chao", "lo": "L-0492", "kg": 500, "gia": 24500, "mong_doi": "Gửi lời chào" },
+        { "lam": "cho", "giay": 8, "mong_doi": "HTX ảo trả giá" },
+        { "ai": "0909000213", "lam": "dong_y", "mong_doi": "Đồng ý" },
+        { "ai": "0909000213", "lam": "lap_don", "tra_tien": "on_receipt", "mong_doi": "Lập đơn" },
+        { "ai": "0909000213", "lam": "ky", "mong_doi": "Ký" },
+        { "lam": "cho", "giay": 9, "mong_doi": "HTX ký" },
+        { "ai": "0909000213", "lam": "coc_thieu", "phan_tram": 50, "mong_doi": "Ngân hàng nhận 50%: đơn CHƯA hiệu lực, báo còn thiếu" },
+        { "ai": "0909000213", "lam": "xem", "mong_doi": "Vẫn chờ cọc, hiện số còn thiếu" },
+        { "lam": "tua_gio", "gio": 49, "mong_doi": "Quá hạn cọc 48h" },
+        { "ai": "0909000213", "lam": "xem", "mong_doi": "Đơn đóng vì quá hạn cọc; phần đã chuyển được hoàn qua ngân hàng (không phải người bán hoàn)" }
+      ]
+    }
+  ]
+}

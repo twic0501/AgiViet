@@ -23,16 +23,10 @@
 </head>
 <body>
 <div class="trang">
-  <header class="dau-lui nen-xanh"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1>Thời tiết</h1></header>
-  <main class="noi" id="noi" aria-busy="true">
-    <section class="muc" aria-labelledby="t-troi">
-      <h3 id="t-troi"><span id="tinh">Các ngày tới</span></h3>
-      <div id="ds-ngay"></div>
-    </section>
-    <section class="muc" aria-labelledby="t-khuyen" id="khoi-khuyen" hidden>
-      <h3 id="t-khuyen"><span>Lời khuyên cho ruộng vườn</span></h3>
-      <div id="ds-khuyen"></div>
-    </section>
+  <header class="dau-lui nen-xanh"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><div style="flex:1;min-width:0"><small>7 ngày tới</small><h1 id="tieu-de">Thời tiết</h1></div></header>
+  <main class="m-than" id="noi" aria-busy="true">
+    <section class="m-the m-the-xanh" id="hom-nay" aria-live="polite"><p style="margin:0">Đang tải thời tiết…</p></section>
+    <section class="m-the" aria-labelledby="t-7"><div class="m-the-dau"><h2 id="t-7">7 ngày</h2></div><div id="ds-ngay"></div></section>
   </main>
 </div>
 <script type="module">
@@ -47,19 +41,25 @@ const iconTroi = (p) => p >= 70
 
 async function mo() {
   const { troi } = await layDuLieu(await phien());
-  if (!troi || troi.__loi || !troi.ngay?.length) { $("ds-ngay").innerHTML = `<p class="bao" style="margin-top:12px">${troi?.__loi ? "Chưa tải được thời tiết." : "Chưa có dữ liệu thời tiết."}</p>`; return; }
-  $("tinh").textContent = `Các ngày tới · ${troi.tinh?.ten || ""}`;
+  if (!troi || troi.__loi || !troi.ngay?.length) { $("hom-nay").innerHTML = `<p style="margin:0">${troi?.__loi ? "Chưa tải được thời tiết. Bác kiểm tra mạng rồi mở lại." : "Chưa có dữ liệu thời tiết."}</p>`; $("ds-ngay").innerHTML = ""; return; }
+  const noi = troi.tinh?.ten || "";
+  if (noi) $("tieu-de").textContent = `Thời tiết ${noi}`;
+  // Thẻ lớn: hôm nay + lời khuyên ngay trong thẻ (theo bản mẫu)
+  const h = troi.ngay[0], mua0 = so(h.kha_nang_mua_phan_tram, 0, 100), cao0 = so(h.nhiet_do_cao_c);
+  const moTa = mua0 == null ? "" : mua0 >= 70 ? "Nhiều khả năng mưa" : mua0 >= 30 ? "Có thể mưa" : "Ít mưa";
+  const kh = h.loi_khuyen?.[0] || [...new Set(troi.ngay.flatMap((n) => n.loi_khuyen || []))][0];
+  $("hom-nay").innerHTML = `<div style="display:flex;align-items:center;gap:16px"><span style="width:56px;height:56px;flex:none">${iconTroi(mua0 ?? 0)}</span>
+    <div><b style="font-size:40px;line-height:1;font-variant-numeric:tabular-nums">${cao0 == null ? "—" : Math.round(cao0) + "°"}</b>
+    <p style="margin:4px 0 0;opacity:.85;font-size:16px">Hôm nay${moTa ? ` · ${moTa}` : ""}${mua0 == null ? "" : ` · mưa ${mua0}%`}</p></div></div>
+    ${kh ? `<p class="m-loi-khuyen">${esc(kh)}</p>` : ""}`;
   $("ds-ngay").innerHTML = troi.ngay.map((n, i) => {
     const thu = i === 0 ? "Hôm nay" : new Date(n.ngay).toLocaleDateString("vi-VN", { weekday: "short", day: "numeric", month: "numeric" });
     const mua = so(n.kha_nang_mua_phan_tram, 0, 100), cao = so(n.nhiet_do_cao_c), thap = so(n.nhiet_do_thap_c);
-    return `<div class="ngay-dai"><span class="thu">${esc(thu)}</span>${iconTroi(mua ?? 0)}<span><div class="mua" title="Khả năng mưa ${mua ?? "?"}%"><span style="width:${mua ?? 0}%"></span></div><small style="font-size:12px;color:var(--muc-nhat)">Mưa ${mua ?? "—"}%</small></span>
-      <span class="so">${cao === null ? "—" : Math.round(cao) + "°"}${thap === null ? "" : `<small>${Math.round(thap)}°</small>`}</span></div>`;
+    return `<div class="m-dong"><span><b style="color:var(--muc)">${esc(thu)}</b></span><b>${cao == null ? "—" : Math.round(cao) + "°"}${thap == null ? "" : "/" + Math.round(thap) + "°"} <span class="m-ghi">· ${mua == null ? "—" : mua >= 30 ? "mưa " + mua + "%" : "nắng"}</span></b></div>`;
   }).join("");
-  const kh = [...new Set(troi.ngay.flatMap((n) => n.loi_khuyen || []))];
-  if (kh.length) { $("ds-khuyen").innerHTML = kh.slice(0, 4).map((k) => `<p class="khuyen">${esc(k)}</p>`).join(""); $("khoi-khuyen").hidden = false; }
 }
 
-mo().catch((e) => { $("noi").insertAdjacentHTML("afterbegin", `<p class="bao loi" style="margin-top:12px">Không tải được: ${esc(e.message)}</p>`); }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });
+mo().catch((e) => { $("hom-nay").innerHTML = `<p style="margin:0">Không tải được: ${esc(e.message)}</p>`; }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });
 </script>
 </body>
 </html>
