@@ -200,7 +200,7 @@
     </section>
 
     <section id="p-vu" role="tabpanel" aria-labelledby="ngan-vu" hidden>
-      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Hợp đồng ký trước mùa: <b style="color:var(--muc)">đặt trước khi hái</b> (chốt lượng gần ngày hái) và <b style="color:var(--muc)">bao tiêu theo vụ</b> (bên mua cam kết mua cả vụ, có thể ứng vật tư).</p>
+      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Hợp đồng ký trước mùa: <b style="color:var(--muc)">đặt trước khi hái</b> (bên mua đặt trước, chốt lượng gần ngày hái).</p>
       <div id="ds-vu"><div class="khung-tai"></div></div>
     </section>
 
@@ -679,7 +679,7 @@ async function moVu() {
         <dt>Vườn</dt><dd>${esc(v.site_name || "—")}</dd>
         ${v.so_dot > 1 ? `<dt>Số đợt giao</dt><dd>${v.so_dot}</dd>` : ""}</dl>
       <p class="tt-vu">${esc(TT_DON[v.order_status] || v.order_status)} ›</p></a>`;
-  }).join("") : `<div class="trong">Bác chưa có hợp đồng đặt trước hay bao tiêu nào. Khi bên mua muốn đặt hàng trước mùa, hợp đồng sẽ hiện ở đây.</div>`;
+  }).join("") : `<div class="trong">Bác chưa có hợp đồng đặt trước nào. Khi bên mua muốn đặt hàng trước mùa, hợp đồng sẽ hiện ở đây.</div>`;
 }
 
 async function mo() {

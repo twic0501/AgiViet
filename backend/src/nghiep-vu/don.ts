@@ -61,6 +61,7 @@ export interface ThongTinVu {
 export async function lapDonVu(t: GiaoDich, nd: NguoiDung, d: LapDon & { vu: ThongTinVu }) {
   const vu = d?.vu;
   if (!vu || !['pre_harvest', 'offtake'].includes(vu.loai)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần vu.loai = pre_harvest | offtake.');
+  if (vu.loai === 'offtake' && !CHINH_SACH.choPhepBaoTieu) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Bao tiêu theo vụ chưa mở ở giai đoạn này. Dùng đặt trước khi hái hoặc mua hàng có sẵn.');
   if (!Array.isArray(vu.batches) || !vu.batches.length) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần lịch đợt vu.batches.');
   if (vu.loai === 'pre_harvest' && vu.batches.length !== 1) throw loi('DU_LIEU_KHONG_HOP_LE', 'Đặt trước chỉ một đợt.');
   if (!vu.harvest_from || !vu.harvest_to) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần vu.harvest_from và vu.harvest_to.');

@@ -704,7 +704,7 @@ const man = {
   "thoa-thuan": { tieuDe: "Lập thỏa thuận · HĐ-0018", thuoc: "don-hang", lui: "chi-tiet-don", phu: "Bản 1 · điền sẵn theo phân khúc Chế biến", ve: (s, { url }) => `
     <div class="sl-luoi sl-chinh-phu">
       <section class="sl-the" style="display:grid;gap:14px">
-        <label class="sl-o"><span>Loại hợp đồng</span><select><option>Mua giao ngay</option><option>Hợp đồng khung theo tuần</option><option>Đặt trước khi hái</option><option>Bao tiêu cả vụ</option></select></label>
+        <label class="sl-o"><span>Loại hợp đồng</span><select><option>Mua giao ngay</option><option>Hợp đồng khung theo tuần</option><option>Đặt trước khi hái</option></select></label>
         <div class="sl-luoi sl-l2">
           <label class="sl-o"><span>Lượng</span><input value="2.000 kg (±5%)"></label><label class="sl-o"><span>Ngày giao</span><input value="28/10 · 5:30 tại vườn"></label>
           <label class="sl-o"><span>Giá loại 1</span><input value="23.000 đ/kg"></label><label class="sl-o"><span>Giá hạ cấp</span><input value="15.000 đ/kg"></label>
