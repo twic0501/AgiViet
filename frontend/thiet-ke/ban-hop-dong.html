@@ -47,11 +47,19 @@ async function tai() {
   const r = await fetch("/v1/orders", { headers: { authorization: "Bearer " + token } });
   if (!r.ok) throw new Error("Chưa tải được hợp đồng. Bác kéo xuống để tải lại.");
   const ds = await r.json();
+  // Hợp đồng khung theo tuần (người bán): việc tới lượt bác lên trước.
+  const kh = await fetch("/v1/frameworks", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : { data: [] })).then((j) => (j.data ?? j).filter((k) => k.phia === "seller" && (k.mon || []).length)).catch(() => []);
+  const toiKh = (k) => k.toi_luot === "seller" || k.gia_tuan?.some((g) => g.trang_thai === "proposed" && g.de_nghi_boi === "buyer") || k.ky_tuan?.some((p) => p.trang_thai_tra === "payer_reported");
+  const theKh = (k) => `<a class="the-hd ${toiKh(k) ? "bac" : ""}" href="./ban-khung.html?id=${encodeURIComponent(k.id)}">
+    <div class="hang"><span class="logo-ben">${esc(chuTat(k.ben_mua))}</span>
+      <span class="giua"><span class="ten">${esc(k.ben_mua)}</span><span class="phu">${esc(k.code)} · khung theo tuần · ${esc(toiKh(k) ? "Tới lượt bác" : k.ten_trang_thai)}</span></span>
+      <span class="gia">${esc(tien(k.coc_khung_vnd))}</span></div></a>`;
+  const nhomKh = kh.length ? `<section class="hl-nhom"><h2>Hợp đồng khung theo tuần${kh.some(toiKh) ? ` <b>${kh.filter(toiKh).length}</b>` : ""}</h2>${kh.map(theKh).join("")}</section>` : "";
   const bac = ds.filter((d) => dangLam(d) && d.hien_thi?.toi_luot?.phia === d.phia_cua_ban);
   const chay = ds.filter((d) => dangLam(d) && !bac.includes(d));
   const xong = ds.filter((d) => !dangLam(d));
   const nhom = (ten, ds_, nhanSo) => ds_.length ? `<section class="hl-nhom"><h2>${esc(ten)}${nhanSo ? ` <b>${ds_.length}</b>` : ""}</h2>${ds_.map(the).join("")}</section>` : "";
-  $("noi").innerHTML = ds.length ? nhom("Cần bác làm", bac, true) + nhom("Đang chạy, chờ bên kia", chay) + nhom("Đã xong / đã đóng", xong)
+  $("noi").innerHTML = ds.length || kh.length ? nhomKh + nhom("Cần bác làm", bac, true) + nhom("Đang chạy, chờ bên kia", chay) + nhom("Đã xong / đã đóng", xong)
     : `<div class="hl-trong">${window.anhTrong?.("chua-co-don") || ""}<p>Chưa có hợp đồng nào. Sau khi bác đồng ý giá và bên mua gửi điều kiện giao, trả tiền, hợp đồng hiện ở đây để bác xem và ký.</p><a class="nut chinh-nut" href="./ban-tin-nhan.html${esc(location.search)}" style="text-decoration:none">Xem lời chào giá</a></div>`;
   giuThamSo($("noi"));
 }
