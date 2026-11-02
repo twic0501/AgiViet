@@ -51,6 +51,17 @@
   .to-hai-nut { display: grid; gap: 8px; margin: 10px 0 14px; }
   .to-nhan-o { font-weight: 600; color: var(--muc-phu); font-size: 14px; }
   .to-nhan.do { background: var(--dau-do-nen); color: var(--dau-do); }
+  /* Danh sách mục theo bản mẫu mau/ban.html#man=toi: thẻ hồ sơ ngắn + dòng có ô biểu tượng + mũi tên */
+  .m-menu { display: grid; gap: 12px; margin-top: 12px; }
+  .m-menu button { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 56px; padding: 10px 14px 10px 12px; border: 0; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); color: var(--muc); font-family: inherit; font-size: 16px; font-weight: 700; line-height: 1.3; text-align: left; cursor: pointer; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .m-menu button:active { transform: scale(.985); }
+  .m-menu button:focus-visible { outline: 3px solid #c99a2e; outline-offset: 2px; }
+  .m-menu .o { width: 36px; height: 36px; border-radius: 10px; background: var(--la-nhat); color: var(--la-dam); display: grid; place-items: center; flex: none; }
+  .m-menu .o svg { width: 20px; height: 20px; }
+  .m-menu .ten { flex: 1; min-width: 0; }
+  .m-menu .ten small { display: block; font-weight: 400; font-size: 15px; color: var(--muc-nhat); margin-top: 2px; }
+  .m-menu .mui { color: var(--muc-nhat); flex: none; }
+  .an-muc { display: none !important; }
 </style>
 </head>
 <body>
@@ -239,7 +250,48 @@ async function dangXuat() {
 }
 
 giuThamSo();
-tai().catch((e) => { $("noi").innerHTML = `<p class="bao loi">${esc(e.message)}</p>`; });
+// ===== Danh sách mục (theo bản mẫu): mỗi phần thành một dòng; bấm mở riêng phần đó; nút thoát về danh sách =====
+const ICON = {
+  "giấy tờ": '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>',
+  "hoạt động": '<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',
+  "tài khoản": '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 15h2"/>',
+  "người giúp": '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  "cài đặt": '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  "hỗ trợ": '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/>',
+  "riêng tư": '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+};
+const iconCho = (t) => { const k = Object.keys(ICON).find((x) => t.toLowerCase().includes(x)); return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ICON["cài đặt"]}</svg>`; };
+const PHU = { "giấy tờ": "Nộp giấy tờ, đề nghị sửa thông tin", "tài khoản": "Nơi bên mua chuyển tiền cho bác", "người giúp": "Con cháu làm thay một số việc", "cài đặt": "Cỡ chữ, tốc độ đọc", "hỗ trợ": "Hỏi nhân viên AgiViet, xem lại hướng dẫn", "riêng tư": "Bên mua thấy gì về bác" };
+let MUC = [];
+function ganMenu() {
+  const noi = $("noi"), hs = noi.querySelector(".to-ho-so");
+  MUC = [...noi.querySelectorAll(":scope > .to-the")].map((el, i) => {
+    const ten = (el.querySelector("h2")?.textContent || el.querySelector("summary")?.textContent || "Mục").trim().replace(/:.*$/, "");
+    el.dataset.muc = String(i); return { el, ten };
+  });
+  const nav = document.createElement("nav"); nav.className = "m-menu"; nav.setAttribute("aria-label", "Các mục tài khoản");
+  nav.innerHTML = MUC.map((m, i) => { const k = Object.keys(PHU).find((x) => m.ten.toLowerCase().includes(x));
+    return `<button type="button" data-mo="${i}"><span class="o">${iconCho(m.ten)}</span><span class="ten">${esc(m.ten)}${k ? `<small>${esc(PHU[k])}</small>` : ""}</span><svg class="mui" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`; }).join("");
+  hs.after(nav);
+  nav.onclick = (e) => { const b = e.target.closest("[data-mo]"); if (b) { history.pushState({ muc: b.dataset.mo }, "", "#muc=" + b.dataset.mo); veMuc(); } };
+  window.addEventListener("popstate", veMuc);
+  // Link cũ (#ho-so, #tk) mở thẳng phần tương ứng
+  const cu = location.hash.slice(1); const dich = cu && noi.querySelector(`#${CSS.escape(cu)}.to-the`);
+  if (dich) history.replaceState({ muc: dich.dataset.muc }, "", "#muc=" + dich.dataset.muc);
+  veMuc();
+}
+function veMuc() {
+  const m = /muc=(\d+)/.exec(location.hash)?.[1], noi = $("noi"), mo = m != null && MUC[m];
+  noi.querySelector(".to-ho-so")?.classList.toggle("an-muc", !!mo);
+  noi.querySelector(".m-menu")?.classList.toggle("an-muc", !!mo);
+  $("dang-xuat")?.classList.toggle("an-muc", !!mo);
+  MUC.forEach((x, i) => { x.el.classList.toggle("an-muc", !mo || String(i) !== m); if (x.el.tagName === "DETAILS" && mo && String(i) === m) x.el.open = true; });
+  $("dau").querySelector("h1").textContent = mo ? mo.ten : "Tôi";
+  $("dau").querySelector(".chao").textContent = mo ? "Tôi" : "Tài khoản";
+  window.scrollTo(0, 0);
+}
+$("dong").onclick = () => (/muc=/.test(location.hash) ? history.back() : history.length > 1 ? history.back() : (location.href = "./ban-hom-nay.html" + location.search));
+tai().then(ganMenu).catch((e) => { $("noi").innerHTML = `<p class="bao loi">${esc(e.message)}</p>`; });
 </script>
 </body>
 </html>
