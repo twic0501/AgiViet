@@ -64,7 +64,11 @@ function khoiOtp(goc, guiMa, xacNhan, chuNut) {
     try {
       if (!ch) { ch = await guiMa(); o.hidden = false; o.querySelector("input").focus(); nut.textContent = chuNut[1]; }
       else { const ma = o.querySelector("input").value.trim(); if (!/^\d{6}$/.test(ma)) throw new Error("Bác nhập đủ 6 số trong tin nhắn."); await xacNhan(ch, ma); return ve(); }
-    } catch (e) { b.textContent = e.message; }
+    } catch (e) {
+      b.textContent = e.message;
+      // Lỗi ở bước xác nhận: mã OTP đã dùng → quay về bước gửi mã mới, mở lại các ô để sửa.
+      if (ch) { ch = null; o.hidden = true; o.querySelector("input").value = ""; nut.textContent = chuNut[0]; goc.closest("[data-p]")?.querySelectorAll("input").forEach((x) => (x.disabled = false)); b.textContent = e.message + " Sửa lại rồi bấm gửi mã mới."; }
+    }
     nut.disabled = false;
   };
 }
@@ -105,11 +109,12 @@ async function ve() {
   if ((k.buoi || []).length) $("buoi").outerHTML = `<section class="hd-the"><h3><i class="cham"></i>Các buổi bên mua đã gọi</h3>${k.buoi.map((b) => `<a class="hd-dong" href="./ban-don.html?id=${b.id}${location.search.replace("?", "&").replace(/&id=[^&]*/, "")}" style="text-decoration:none;color:inherit"><span>${esc(String(b.code).replace(/^HD-/, "HĐ-"))} · ${ngay(b.ngay_giao)}</span><b>${vnd(b.gia_tri_vnd)}</b></a>`).join("")}</section>`;
   const ky = k.ky_tuan || [];
   $("tien").outerHTML = `<section class="hd-the" id="tien"><h3><i class="cham"></i>Tiền gộp cuối tuần</h3>
-    ${ky.length ? ky.map((p) => `<div class="tuan" data-p="${p.payment_id}" data-so="${p.gia_tri_vnd}"><div style="display:flex;justify-content:space-between;gap:6px 8px;align-items:center;flex-wrap:wrap"><b>Tuần từ ${ngay(p.tu)} · ${vnd(p.gia_tri_vnd)}</b><span class="nhan${p.trang_thai_tra === "payer_reported" ? " bac" : ""}">${p.trang_thai_tra === "fully_received" ? "Bác đã nhận đủ" : p.trang_thai_tra === "payer_reported" ? "Bên mua báo đã chuyển · tới lượt bác" : `Bên mua trả trước ${ngay(p.han_tra)}`}</span></div>
-      ${p.trang_thai_tra === "payer_reported" ? `<p class="hd-ghi">Bác mở app ngân hàng xem tiền đã về chưa. Chỉ bấm khi đã thấy tiền.</p><label class="hd-o" style="font-size:15px">Mã giao dịch ngân hàng<input data-ma style="font-size:17px;letter-spacing:0"></label><div data-otp-goc></div>` : ""}</div>`).join("") : `<p class="hd-ghi">Chưa có khoản tuần nào. Hết tuần, các buổi đã chốt số gộp thành một khoản, bên mua chuyển thẳng cho bác.</p>`}</section>`;
+    ${ky.length ? ky.map((p) => { const con = Number(p.gia_tri_vnd) - Number(p.da_nhan_vnd || 0); return `<div class="tuan" data-p="${p.payment_id}" data-so="${con}"><div style="display:flex;justify-content:space-between;gap:6px 8px;align-items:center;flex-wrap:wrap"><b>Tuần từ ${ngay(p.tu)} · ${vnd(p.gia_tri_vnd)}</b><span class="nhan${["payer_reported"].includes(p.trang_thai_tra) ? " bac" : ""}">${p.trang_thai_tra === "fully_received" ? "Bác đã nhận đủ" : p.trang_thai_tra === "payer_reported" ? "Bên mua báo đã chuyển · tới lượt bác" : p.trang_thai_tra === "partially_received" ? `Bác đã nhận ${vnd(p.da_nhan_vnd)} · còn ${vnd(con)}` : p.trang_thai_tra === "overdue" ? `Quá hạn · bên mua còn nợ ${vnd(con)}` : `Bên mua trả trước ${ngay(p.han_tra)}`}</span></div>
+      ${p.trang_thai_tra === "payer_reported" ? `<p class="hd-ghi">Bác mở app ngân hàng xem tiền đã về chưa. Chỉ bấm khi đã thấy tiền.</p><label class="hd-o" style="font-size:15px">Số tiền thực nhận (đ)<input data-tn inputmode="numeric" value="${con}" style="font-size:17px;letter-spacing:0"></label><label class="hd-o" style="font-size:15px">Mã giao dịch ngân hàng<input data-ma style="font-size:17px;letter-spacing:0"></label><div data-otp-goc></div>` : ""}</div>`; }).join("") : `<p class="hd-ghi">Chưa có khoản tuần nào. Hết tuần, các buổi đã chốt số gộp thành một khoản, bên mua chuyển thẳng cho bác.</p>`}</section>`;
   document.querySelectorAll("[data-otp-goc]").forEach((goc) => { const r = goc.closest("[data-p]");
-    khoiOtp(goc, async () => { if (!r.querySelector("[data-ma]").value.trim()) throw new Error("Bác nhập mã giao dịch trong app ngân hàng."); return (await goi("/v1/otp/challenges", { purpose: "money_received", payment_id: r.dataset.p, amount_vnd: r.dataset.so })).challenge_id; },
-      (ch, ma) => goi(`/v1/payments/${r.dataset.p}/confirm`, { challenge_id: ch, code: ma, amount_vnd: Number(r.dataset.so), result: "full", bank_txn_ref: r.querySelector("[data-ma]").value.trim() }), [`Tôi đã nhận đủ ${vnd(r.dataset.so)}`, "Xác nhận đã nhận"]); });
+    const soNhan = () => Number(String(r.querySelector("[data-tn]").value).replace(/\D/g, ""));
+    khoiOtp(goc, async () => { const n = soNhan(); if (!(n > 0) || n > Number(r.dataset.so)) throw new Error(`Số thực nhận phải từ 1 đến ${vnd(r.dataset.so)}.`); if (!r.querySelector("[data-ma]").value.trim()) throw new Error("Bác nhập mã giao dịch trong app ngân hàng."); r.querySelector("[data-tn]").disabled = true; return (await goi("/v1/otp/challenges", { purpose: "money_received", payment_id: r.dataset.p, amount_vnd: String(n) })).challenge_id; },
+      (ch, ma) => { const n = soNhan(); return goi(`/v1/payments/${r.dataset.p}/confirm`, { challenge_id: ch, code: ma, amount_vnd: n, result: n >= Number(r.dataset.so) ? "full" : "partial", bank_txn_ref: r.querySelector("[data-ma]").value.trim() }); }, ["Gửi mã xác nhận đã nhận", "Xác nhận đã nhận"]); });
 }
 giuThamSo();
 (async () => { token = await phien(); await ve(); })().catch((e) => { $("noi").innerHTML = `<p class="hd-bao do">${esc(e.message)}</p>`; });

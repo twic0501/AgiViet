@@ -118,7 +118,7 @@ export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
     buoi: await t.q<any>(`SELECT o.id, o.code, o.status, v.contract_value_vnd::text gia_tri_vnd, (SELECT min(lower(d.delivery_window)) FROM core.deliveries d WHERE d.order_id=o.id) ngay_giao,
       EXISTS(SELECT 1 FROM core.settlements s WHERE s.order_id=o.id AND s.is_final) da_quyet_toan
       FROM core.orders o JOIN core.order_versions v ON v.order_id=o.id AND v.version_no=o.effective_version_no WHERE o.framework_id=$1 ORDER BY 5`, [id]),
-    ky_tuan: await t.q<any>(`SELECT p.id, lower(p.period) tu, upper(p.period) den, p.value_vnd::text gia_tri_vnd, p.fee_vnd::text phi_vnd, p.payment_id, dp.status trang_thai_tra, dp.due_at han_tra FROM core.framework_periods p LEFT JOIN core.direct_payments dp ON dp.id=p.payment_id WHERE p.framework_id=$1 ORDER BY p.period`, [id]),
+    ky_tuan: await t.q<any>(`SELECT p.id, lower(p.period) tu, upper(p.period) den, p.value_vnd::text gia_tri_vnd, p.fee_vnd::text phi_vnd, p.payment_id, dp.status trang_thai_tra, dp.due_at han_tra, (SELECT coalesce(sum(c.amount_vnd),0)::text FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=dp.id) da_nhan_vnd FROM core.framework_periods p LEFT JOIN core.direct_payments dp ON dp.id=p.payment_id WHERE p.framework_id=$1 ORDER BY p.period`, [id]),
     coc: dep ? { trang_thai: dep.status, payment_ref: dep.payment_ref, virtual_account_no: dep.virtual_account_no, so_tien_vnd: dep.coc_vnd } : null,
   };
 }
