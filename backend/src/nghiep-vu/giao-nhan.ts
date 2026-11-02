@@ -283,7 +283,7 @@ export async function guiKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliver
     const row = await t.mot<any>(`SELECT status,version FROM core.deliveries WHERE id=$1`, [deliveryId]);
     return { id: deliveryId, status: row.status, revision: row.version, acceptance_id: avId, document_id: doc.id, content_sha256: doc.contentSha256, gia_tri_vnd: V.toString(), da_rut_g: rut.toString() };
   }
-  const avId=await appCmd<string>(t,nd,'buyer','submit_acceptance',[deliveryId,can.toString(),doc.payload,dong2.map(l=>({lot_id:o.lot_id,kind:l.kind,qty:l.q.toString(),payable_qty:l.payable.toString(),unit_price_vnd:l.gia.toString(),value_vnd:l.value.toString(),reason_code:l.reason_code??null})),!!x.accept_overage&&can>keHoach]);
+  const avId=await appCmd<string>(t,nd,'buyer','submit_acceptance',[deliveryId,can.toString(),doc.payload,dong2.map(l=>({lot_id:o.lot_id,kind:l.kind,qty:l.q.toString(),payable_qty:l.payable.toString(),unit_price_vnd:l.gia.toString(),value_vnd:l.value.toString(),reason_code:l.reason_code??null,evidence_document_id:l.evidence_document_id??null})),!!x.accept_overage&&can>keHoach]);
   doc.id=await t.gtri<string>(`SELECT document_id FROM core.acceptance_versions WHERE id=$1`,[avId]);
   await kyBienBan(ht,t,nd,doc.id,'buyer',x.pin,x.device_id);
   await appCmd(t,nd,'buyer','send_acceptance',[avId]);await dongBoTaiLieu(t,doc.id,'partially_signed');
