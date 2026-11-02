@@ -30,8 +30,11 @@ SELECT test.as_login('db_test_buyer',$$SELECT cmd.withdraw_substandard_offer(cur
 SELECT test.check('C58 rút lời chào không xóa lịch sử',(SELECT isempty(valid_during) FROM core.substandard_receivers WHERE id=current_setting('test.c58.standing')::uuid));
 -- Giá công thức không nhận tham khảo từ client; chốt từ view giao dịch đúng ngày.
 SELECT test.seasonal_order('C58FORM','pre_harvest',true);
+-- Đồng hồ thử sang ngày khác để view giá (làm mới lúc nạp dữ liệu, ngày hôm nay) chắc chắn là "giá cũ" — trước đây phép thử hỏng nếu ngày chạy trùng ngày làm mới.
+INSERT INTO cmd.test_clock(at) VALUES(now()+interval '3 days');
 SELECT test.as_login('db_test_seller',$$SELECT test.expect_error('C58 view giá cũ không thay cho giá ngày chốt',
  'SELECT cmd.propose_harvest_fix(current_setting(''test.s.order'')::uuid,1100000)','ck_seasonal_reference')$$);
+DELETE FROM cmd.test_clock;
 -- Nạp mẫu giao dịch ảo tại hôm nay, nhiều cặp thật trong fixture; refresh qua quyền owner thử.
 INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,province_code,qty,unit_price_vnd,accepted_at,is_test_data,source_key)
 SELECT test.id('C58-PRICE-'||n),'C58-PRICE-'||n,test.org(CASE WHEN n%2=0 THEN 'TC-M01' ELSE 'TC-M04' END),test.org('TC-B01'),l.product_id,'L1','DT',1000000,25000,now()-interval '1 minute',true,'du-lieu-ao.json'
