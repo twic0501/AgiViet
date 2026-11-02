@@ -113,12 +113,21 @@ export async function rutDeNghi(t:GiaoDich,nd:NguoiDung,id:string){
 }
 
 /** Ký phụ lục (OTP amendment_sign đã xác minh). Đủ hai chữ ký → phiên bản hiệu lực mới + hệ quả tiền/lượng. */
-export async function kyPhuLuc(ht: HeThong, t: GiaoDich, nd: NguoiDung, amendmentId: string, d: { challenge_id: string; device_id?: string }) {
+export async function kyPhuLuc(ht: HeThong, t: GiaoDich, nd: NguoiDung, amendmentId: string, d: { challenge_id: string; device_id?: string; abnormal_price_ack?: boolean; low_downgrade_price_ack?: boolean }) {
   const { a, o, phia } = await layDeNghi(t, nd, amendmentId);
   if (a.status !== 'accepted' || !a.resulting_version_no || a.resulting_version_no <= o.effective_version_no) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Không có phụ lục chờ ký.');
   const nv = await t.mot<any>(`SELECT * FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [o.id, a.resulting_version_no]);
   const login = await damBaoDangNhap(t, nd.userId, nd.thanhVien.orgId, phia);
-  await t.voiDangNhap(login, () => t.q(`SELECT cmd.sign_document($1,$2,$3,$4)`, [nv.document_id, phia, d.challenge_id, d.device_id ?? nd.thietBi ?? 'thiet-bi']));
+  // Phụ lục là phiên bản mới: người bán xác nhận lại giá bất thường / giá hạ cấp < 70% (DB 0037, 0082 kiểm lần nữa).
+  const tuyenBo: string[] = [];
+  if (phia === 'seller') {
+    if (o.flag_abnormal_price) { if (!d.abnormal_price_ack) throw loi('CAN_XAC_NHAN_GIA_BAT_THUONG'); tuyenBo.push('abnormal_price_ack'); }
+    if (nv.downgrade_price_vnd != null && BigInt(nv.downgrade_price_vnd) * 10000n < BigInt(nv.unit_price_vnd) * 7000n) {
+      if (!d.low_downgrade_price_ack) throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Phụ lục có giá xuống loại ${Number(nv.downgrade_price_vnd).toLocaleString('vi-VN')} đ/kg, thấp hơn 70% giá đơn. Bác xác nhận riêng rồi ký.`, { gia_ha_cap_thap: true });
+      tuyenBo.push('low_downgrade_price_ack');
+    }
+  }
+  await t.voiDangNhap(login, () => t.q(`SELECT cmd.sign_document($1,$2,$3,$4,$5::text[])`, [nv.document_id, phia, d.challenge_id, d.device_id ?? nd.thietBi ?? 'thiet-bi', tuyenBo]));
   const ben = await t.q<{ party: string }>(`SELECT DISTINCT party FROM core.signatures WHERE document_id=$1`, [nv.document_id]);
   const du = ben.some((x) => x.party === 'buyer') && ben.some((x) => x.party === 'seller');
   const actor = await t.gtri<string>(`SELECT current_setting('app.actor_kind',true)`);

@@ -69,7 +69,7 @@ them('TH-NV-04', 'Đặt trước khi hái: lập, ký, cọc 30%; danh sách/ch
   th.bang('Cọc 30% trên lượng tối thiểu = 6.900.000', d.json.data.tinh.coc_vnd, '6900000');
   const id = d.json.id; const docId = d.json.data.document_id;
   const c1 = await thinh.otpKy(docId); await thinh.ok(`/v1/orders/${id}/sign`, { challenge_id: c1, code: '123456' });
-  const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true });
+  const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   const hd = (await thinh.get(`/v1/orders/${id}/deposit-instruction`)).json;
   await may.he('/v1/sim/bank/transfers', { payment_ref: hd.payment_ref, amount_vnd: Number(hd.total_vnd), payer: { bank_code: 'VCB', account_no: '0071000123456', name: 'CONG TY NHA MAY SAY DONG XANH' } });
   await may.he('/v1/sim/bank/deliver', {});
@@ -92,7 +92,7 @@ them('TH-NV-04', 'Đặt trước khi hái: lập, ký, cọc 30%; danh sách/ch
   if (dy.status !== 200) return;
   for (const [p, extra] of [[b.nam, {}], [thinh, {}]] as const) {
     const c = await p.ok('/v1/otp/challenges', { purpose: 'amendment_sign', document_id: dy.json.data.annex_document_id }, { khongKhoa: true });
-    const k = await p.post(`/v1/amendments/${fx.json.id}/sign`, { challenge_id: c.challenge_id, code: '123456', ...extra });
+    const k = await p.post(`/v1/amendments/${fx.json.id}/sign`, { challenge_id: c.challenge_id, code: '123456', low_downgrade_price_ack: true, ...extra });
     if (k.status !== 200) { th.kiem('Ký phụ lục chốt', false, k.json); return; }
     if (k.json.status === 'effective') th.kiem('Chốt 1.100 kg: cọc chênh 690.000 với mã nạp TP…', k.json.data.he_qua?.chenh_coc_vnd === '690000' && /^TP\d{12}$/.test(k.json.data.he_qua?.bo_sung_coc_ref ?? ''), k.json.data.he_qua);
   }
@@ -110,7 +110,7 @@ them('TH-NV-05', 'Từ chối đề nghị chốt lượng', async (may, th) => 
     vu: { loai: 'pre_harvest', qty_max_g: 1200000, harvest_from: '2026-12-01', harvest_to: '2026-12-20', batches: [{ qty_g: 1000000, from: '2026-12-10T06:00:00+07:00', to: '2026-12-15T18:00:00+07:00' }] } });
   const id = d.id; const docId = d.data.document_id;
   const c1 = await thinh.otpKy(docId); await thinh.ok(`/v1/orders/${id}/sign`, { challenge_id: c1, code: '123456' });
-  const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true });
+  const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   const hd = (await thinh.get(`/v1/orders/${id}/deposit-instruction`)).json;
   await may.he('/v1/sim/bank/transfers', { payment_ref: hd.payment_ref, amount_vnd: Number(hd.total_vnd), payer: { bank_code: 'VCB', account_no: '0071000123456', name: 'CONG TY NHA MAY SAY DONG XANH' } });
   await may.he('/v1/sim/bank/deliver', {});
@@ -133,7 +133,7 @@ them('TH-NV-06', 'Bao tiêu theo vụ 2 đợt: lập, ký, cọc vụ; mất m�
   if (d.status !== 200) return;
   const id = d.json.id; const docId = d.json.data.document_id;
   const c1 = await thinh.otpKy(docId); await thinh.ok(`/v1/orders/${id}/sign`, { challenge_id: c1, code: '123456' });
-  const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true });
+  const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   const hd = (await thinh.get(`/v1/orders/${id}/deposit-instruction`)).json;
   await may.he('/v1/sim/bank/transfers', { payment_ref: hd.payment_ref, amount_vnd: Number(hd.total_vnd), payer: { bank_code: 'VCB', account_no: '0071000123456', name: 'CONG TY NHA MAY SAY DONG XANH' } });
   await may.he('/v1/sim/bank/deliver', {});
@@ -152,7 +152,7 @@ them('TH-NV-06', 'Bao tiêu theo vụ 2 đợt: lập, ký, cọc vụ; mất m�
   let cuoi: any = null;
   for (const p of [b.nam, thinh]) {
     const c = await p.ok('/v1/otp/challenges', { purpose: 'amendment_sign', document_id: dy.json.data.annex_document_id }, { khongKhoa: true });
-    cuoi = await p.post(`/v1/amendments/${dn.json.id}/sign`, { challenge_id: c.challenge_id, code: '123456' });
+    cuoi = await p.post(`/v1/amendments/${dn.json.id}/sign`, { challenge_id: c.challenge_id, code: '123456', low_downgrade_price_ack: true });
   }
   th.kiem('Phụ lục hiệu lực', cuoi?.json?.status === 'effective', cuoi?.json);
   const ct2 = (await b.nam.get(`/v1/seasonal-orders/${id}`)).json;

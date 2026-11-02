@@ -31,7 +31,7 @@ them('TH-007', 'Giao tại kho bên mua, người bán thuê xe, trả khi nhậ
   const d = await ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_buyer_warehouse', transport_by: 'partner_for_seller', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'on_receipt', designated_receiver_user_id: phuc.userId });
   th.bang('C 7.200.000', d.data.tinh.coc_vnd, '7200000');
   th.bang('F 72.000', d.data.tinh.phi_vnd, '72000');
-  for (const [p, extra] of [[ha, {}], [sau, { commitment_ack: true }]] as const) {
+  for (const [p, extra] of [[ha, {}], [sau, { commitment_ack: true, low_downgrade_price_ack: true }]] as const) {
     const c = await p.otpKy(d.data.document_id);
     await p.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c, code: '123456', ...extra });
   }

@@ -45,7 +45,7 @@ export async function lapVaKy(b: BoiCanh, th: TinhHuong | null, dk: DieuKhoan = 
   const s1 = await b.ha.ok(`/v1/orders/${b.orderId}/sign`, { challenge_id: c1, code: '123456' });
   th?.bang('Bên mua ký và gửi', s1.status, 'awaiting_seller');
   const c2 = await b.nam.otpKy(b.docId!);
-  const kyBody = { challenge_id: c2, code: '123456', commitment_ack: true }, kyKey = 'k-ky-' + b.orderId;
+  const kyBody = { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true }, kyKey = 'k-ky-' + b.orderId;
   const s2 = await b.nam.ok(`/v1/orders/${b.orderId}/sign`, kyBody, { key: kyKey });
   // Gửi lại đúng lệnh (mạng chập chờn): phải nhận lại kết quả đã lưu, không đòi OTP mới.
   (b as any).guiLaiKy = await b.nam.post(`/v1/orders/${b.orderId}/sign`, kyBody, { key: kyKey });

@@ -25,7 +25,7 @@ them('TH-009A', 'Trả sau 7 ngày (bưởi, vựa), trả đúng hạn; lệnh 
   th.bang('G 90.000.000', d.data.tinh.gia_tri_vnd, '90000000');
   th.bang('C 27.000.000', d.data.tinh.coc_vnd, '27000000');
   th.bang('F 900.000 (Miễn phí, đơn đầu 1%)', d.data.tinh.phi_vnd, '900000');
-  for (const [p, extra] of [[tu, {}], [bay, { commitment_ack: true }]] as const) {
+  for (const [p, extra] of [[tu, {}], [bay, { commitment_ack: true, low_downgrade_price_ack: true }]] as const) {
     const c = await p.otpKy(d.data.document_id);
     await p.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c, code: '123456', ...extra });
   }
@@ -93,7 +93,7 @@ them('TH-052a', 'Đơn vượt hạn mức người lập: phải duyệt nội 
   const k2 = await b.ha.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c2, code: '123456' });
   th.bang('Ký sau duyệt', k2.status, 'awaiting_seller');
   const otpSai = await b.nam.otpKy(d.data.document_id);
-  const ks = await b.nam.post(`/v1/orders/${d.id}/sign`, { challenge_id: otpSai, code: '000000', commitment_ack: true });
+  const ks = await b.nam.post(`/v1/orders/${d.id}/sign`, { challenge_id: otpSai, code: '000000', commitment_ack: true, low_downgrade_price_ack: true });
   th.bang('OTP sai', ks.json.errors?.[0]?.code, 'OTP_SAI');
   const kt = await b.nam.post(`/v1/orders/${d.id}/sign`, { challenge_id: otpSai, code: '123456' });
   th.bang('Thiếu tick cam kết bị chặn', kt.json.errors?.[0]?.code, 'DU_LIEU_KHONG_HOP_LE');

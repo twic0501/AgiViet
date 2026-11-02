@@ -205,7 +205,7 @@ export async function duyetNoiBo(t:GiaoDich,nd:NguoiDung,id:string,dongY:boolean
  const {o}=await layDon(t,nd,id);canQuyen(nd,'order.approve');await appCmd(t,nd,'buyer','approve_order',[id,dongY]);const r=await t.mot<any>(`SELECT status,version FROM core.orders WHERE id=$1`,[id]);return {id,code:o.code,status:r.status,revision:r.version,approved:dongY};
 }
 
-export interface KyDon { challenge_id: string; device_id?: string; commitment_ack?: boolean; abnormal_price_ack?: boolean }
+export interface KyDon { challenge_id: string; device_id?: string; commitment_ack?: boolean; abnormal_price_ack?: boolean; low_downgrade_price_ack?: boolean }
 
 /** Ký phiên bản hiện hành. OTP đã được xác minh ở giao dịch trước (auth worker); ở đây DB tiêu thụ OTP nguyên tử. */
 export async function kyDon(t: GiaoDich, nd: NguoiDung, id: string, d: KyDon, version?: number) {
@@ -224,10 +224,13 @@ export async function kyDon(t: GiaoDich, nd: NguoiDung, id: string, d: KyDon, ve
     if (o.status !== 'awaiting_seller') throw loi('TRANG_THAI_KHONG_CHO_PHEP');
     if (!d.commitment_ack) throw loi('DU_LIEU_KHONG_HOP_LE', `Cần tick cam kết "Chắc chắn giao ${kg(ver.qty_min)}".`);
     if (o.flag_abnormal_price && !d.abnormal_price_ack) throw loi('CAN_XAC_NHAN_GIA_BAT_THUONG');
+    // Ngưỡng 70% (người sáng lập 02/11/2026): giá hạ cấp dưới 70% giá đơn → người bán xác nhận riêng (DB 0082 chặn lại lần nữa).
+    if (ver.downgrade_price_vnd != null && BigInt(ver.downgrade_price_vnd) * 10000n < BigInt(ver.unit_price_vnd) * BigInt(CHINH_SACH.nguongGiaHaCapBps) && !d.low_downgrade_price_ack)
+      throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Giá nếu hàng xuống loại là ${Number(ver.downgrade_price_vnd).toLocaleString('vi-VN')} đ/kg, thấp hơn 70% giá đơn. Bác đánh dấu "Tôi đã đọc và chấp nhận giá xuống loại này" rồi ký, hoặc nhắn bên mua sửa giá.`, { gia_ha_cap_thap: true });
   }
   const login = await damBaoDangNhap(t, nd.userId, nd.thanhVien.orgId, phia);
   const thietBi = d.device_id ?? nd.thietBi ?? 'thiet-bi-chua-dang-ky';
-  await t.voiDangNhap(login,()=>t.q(`SELECT cmd.sign_document($1,$2,$3,$4,$5::text[])`,[doc.id,phia,d.challenge_id,thietBi,phia==='seller'?['commitment_ack',...(d.abnormal_price_ack?['abnormal_price_ack']:[])]:[]]));
+  await t.voiDangNhap(login,()=>t.q(`SELECT cmd.sign_document($1,$2,$3,$4,$5::text[])`,[doc.id,phia,d.challenge_id,thietBi,phia==='seller'?['commitment_ack',...(d.abnormal_price_ack?['abnormal_price_ack']:[]),...(d.low_downgrade_price_ack?['low_downgrade_price_ack']:[])]:[]]));
   await dongBoTaiLieu(t,doc.id,phia==='buyer'?'partially_signed':'fully_signed');
   if(phia==='buyer')await appCmd(t,nd,'buyer','send_order',[id]);
   else {const code=o.code.replace(/-/g,'');await systemCmd(t,'finalize_signed_order',[id,`AGV ${code} COC`,`THU-${code}`,'bank_sim']);}

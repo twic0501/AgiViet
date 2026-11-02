@@ -74,7 +74,7 @@ them('DC-NV22', 'Người bán xem mọi đợt giao của đơn, đơn chỉ ra
     vu: { loai: 'offtake', deposit_vnd: 2000000, harvest_from: '2026-12-01', harvest_to: '2027-01-31',
       batches: [{ qty_g: 1000000, from: '2026-12-10T06:00:00+07:00', to: '2026-12-15T18:00:00+07:00' }, { qty_g: 1000000, from: '2027-01-10T06:00:00+07:00', to: '2027-01-15T18:00:00+07:00' }] } });
   const c1 = await thinh.otpKy(d.data.document_id); await thinh.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c1, code: '123456' });
-  const c2 = await b.nam.otpKy(d.data.document_id); await b.nam.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true });
+  const c2 = await b.nam.otpKy(d.data.document_id); await b.nam.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   const hd = (await thinh.get(`/v1/orders/${d.id}/deposit-instruction`)).json;
   await may.he('/v1/sim/bank/transfers', { payment_ref: hd.payment_ref, amount_vnd: Number(hd.total_vnd), payer: { bank_code: 'VCB', account_no: '0071000123456', name: 'CONG TY NHA MAY SAY DONG XANH' } });
   await may.he('/v1/sim/bank/deliver', {});

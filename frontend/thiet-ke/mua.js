@@ -1010,8 +1010,8 @@ if (THAT) {
           <label style="display:grid;gap:4px;font-weight:600">Ngày nhận hàng tại vườn (bạn lo xe)<input type="date" data-ngay style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;background:var(--giay,#fff);color:inherit;width:100%;box-sizing:border-box" value="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}"></label>
           <label style="display:grid;gap:4px;font-weight:600">Trả tiền hàng<select data-tra style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"><option value="inspect_then_before_loading">Kiểm tại vườn xong, trả rồi mới bốc</option><option value="on_receipt">Trả khi nhận hàng</option></select></label>
           <label data-o-ngay hidden style="display:grid;gap:4px;font-weight:600">Số ngày trả sau<input inputmode="numeric" data-sau value="7" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
-          <label style="display:grid;gap:4px;font-weight:600">Giá nếu hàng xuống loại (đ/kg)<input inputmode="numeric" data-hc value="${Math.round(gia * 0.65 / 100) * 100}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
-          <p class="sl-ghi">Người bán thấy và chấp thuận riêng giá xuống loại khi ký. Dưới 50% giá đơn sẽ bị cảnh báo đỏ.</p>
+          <label style="display:grid;gap:4px;font-weight:600">Giá nếu hàng xuống loại (đ/kg)<input inputmode="numeric" data-hc value="${Math.round(gia * 0.75 / 100) * 100}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <p class="sl-ghi">Dưới 70% giá đơn thì người bán phải xác nhận riêng mới ký được, dễ bị từ chối hoặc trả giá lại.</p>
           <button class="sl-nut sl-vang" data-lam="lap-don">Lập đơn (bạn ký trước, rồi người bán ký)</button>
         </div></details>` : ""}
       ${o.don ? `<p class="sl-ghi">Đã lập đơn <b>${esc(String(o.don.code).replace(/^HD-/, "HĐ-"))}</b>. Theo dõi ký, cọc, giao ở mục <a href="?man=don-hang">Đơn</a>.</p>` : ""}
@@ -1364,7 +1364,7 @@ if (THAT) {
       };
       const ve = async () => {
         const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
-        const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) * 2 < Number(k.unit_price_vnd);
+        const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) < 0.7 * Number(k.unit_price_vnd);
         const coKy = (d.hanh_dong || []).includes("sign") && d.ky?.duoc_ky;
         khung.innerHTML = `
           <section class="sl-the" style="display:grid;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:20px">${esc(maHD(d.code))}</h2><span class="sl-nhan${toi ? " sl-n-xong" : ""}">${esc(d.hien_thi?.ten || d.status)}</span></div>
@@ -1372,7 +1372,7 @@ if (THAT) {
           ${the("Điều khoản", dong("Người bán", esc(d.seller?.display_name || d.seller?.name || "")) + dong("Lượng", kg(kg2)) + dong("Giá", `${so(Number(k.unit_price_vnd))} đ/kg`) + dong("Giá nếu xuống loại", k.downgrade_price_vnd ? `${so(Number(k.downgrade_price_vnd))} đ/kg` : "Không đặt")
             + dong("Giá trị hợp đồng", vnd(k.contract_value_vnd)) + dong("Cọc (ngân hàng giữ)", vnd(k.deposit_vnd)) + dong("Phí AgiViet", vnd(k.fee_vnd))
             + dong("Trả tiền hàng", `${TRA[k.payment_timing] || k.payment_timing}${k.payment_timing === "after_days" ? ` ${k.pay_after_days} ngày` : ""}`) + dong("Giao", k.delivery_mode === "at_farm" ? "Tại vườn, bạn lo xe" : esc(k.delivery_mode)) + dong("Ngày nhận", k.delivery_from ? `${new Date(k.delivery_from).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" })} – ${new Date(k.delivery_to).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}` : "Chưa có") + dong("Tài khoản nhận tiền người bán", esc(`${k.seller_account?.bank_code || ""} ${k.seller_account?.masked || ""}`)))}
-          ${hcThap ? bao("Giá xuống loại thấp hơn 50% giá đơn. Người bán sẽ thấy cảnh báo đỏ khi ký.", "sl-bao-do") : ""}
+          ${hcThap ? bao("Giá xuống loại thấp hơn 70% giá đơn: người bán phải xác nhận riêng khi ký.", "sl-bao-do") : ""}
           ${coKy ? `<section class="sl-the" style="display:grid;gap:10px"><h2 style="margin:0;font-size:18px">Ký hợp đồng</h2>
             <p class="sl-ghi">Bấm "Gửi mã" để nhận mã OTP, nhập mã rồi bấm Ký. Ký xong không sửa được điều khoản; muốn đổi phải làm phụ lục.</p>
             <div style="display:grid;gap:10px;max-width:420px"><button class="sl-nut sl-vien" id="ky-ma">1. Gửi mã OTP</button>

@@ -12,7 +12,7 @@ async function toiHieuLuc(may: May) {
 
 async function kyPL(p: Phien, amendmentId: string, docId: string) {
   const c = await p.ok('/v1/otp/challenges', { purpose: 'amendment_sign', document_id: docId }, { khongKhoa: true });
-  return p.ok(`/v1/amendments/${amendmentId}/sign`, { challenge_id: c.challenge_id, code: '123456' });
+  return p.ok(`/v1/amendments/${amendmentId}/sign`, { challenge_id: c.challenge_id, code: '123456', low_downgrade_price_ack: true });
 }
 
 them('TH-040', 'Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục hai bên ký', async (may, th) => {
@@ -78,7 +78,7 @@ them('TH-AM-1', 'Tăng lượng 2.000 → 2.400 kg: cọc bổ sung, chặn giao
   th.bang('Cọc mới 16.560.000', dy.data.tinh.coc_vnd, '16560000');
   await kyPL(b.nam, dn.id, dy.data.annex_document_id);
   const c = await b.ha.ok('/v1/otp/challenges', { purpose: 'amendment_sign', document_id: dy.data.annex_document_id }, { khongKhoa: true });
-  const vuot = await b.ha.post(`/v1/amendments/${dn.id}/sign`, { challenge_id: c.challenge_id, code: '123456' });
+  const vuot = await b.ha.post(`/v1/amendments/${dn.id}/sign`, { challenge_id: c.challenge_id, code: '123456', low_downgrade_price_ack: true });
   th.kiem('Hà ký phụ lục 55,2 triệu vượt hạn mức: bị chặn', vuot.status >= 400, vuot.json);
   const thinh = await may.dangNhap(SDT.thinh);
   const k = await kyPL(thinh, dn.id, dy.data.annex_document_id);

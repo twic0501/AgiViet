@@ -129,11 +129,15 @@ them('TH-015', 'Giá bất thường: cần tick xác nhận, cọc theo giá t�
   th.bang('Trả thẳng 8.750.000', d.data.tinh.tra_thang_vnd, '8750000');
   const c1 = await tu.otpKy(d.data.document_id);
   await tu.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c1, code: '123456' });
+  // Ngưỡng 70% (người sáng lập 02/11/2026): giá hạ cấp 9.000 < 70% của 14.000 → thiếu xác nhận riêng thì không ký được.
+  const c0 = await sau.otpKy(d.data.document_id);
+  const k0 = await sau.post(`/v1/orders/${d.id}/sign`, { challenge_id: c0, code: '123456', commitment_ack: true, abnormal_price_ack: true });
+  th.kiem('Giá hạ cấp < 70% chưa xác nhận riêng: chặn', k0.status === 409 && /70%/.test(k0.json.errors?.[0]?.message ?? ''), k0.json);
   const c2 = await sau.otpKy(d.data.document_id);
-  const k1 = await sau.post(`/v1/orders/${d.id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true });
+  const k1 = await sau.post(`/v1/orders/${d.id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   th.bang('Ký thiếu tick bị chặn', k1.json.errors?.[0]?.code, 'CAN_XAC_NHAN_GIA_BAT_THUONG');
   const c3 = await sau.otpKy(d.data.document_id);
-  const k2 = await sau.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c3, code: '123456', commitment_ack: true, abnormal_price_ack: true });
+  const k2 = await sau.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c3, code: '123456', commitment_ack: true, low_downgrade_price_ack: true, abnormal_price_ack: true });
   th.bang('Ký có tick: chờ cọc', k2.status, 'awaiting_deposit');
 });
 
@@ -428,7 +432,7 @@ them('TH-062', 'PDF: xác minh mã băm, tệp bị sửa không khớp, trang c
   const r = await ngoai.get(`/v1/documents/${b.docId}/file`);
   th.bang('Tổ chức ngoài đơn không tải được bản gốc', r.status, 404);
   const c = await b.nam.otpKy(b.docId!);
-  const kyLai = await b.nam.post(`/v1/orders/${b.orderId}/sign`, { challenge_id: c, code: '123456', commitment_ack: true });
+  const kyLai = await b.nam.post(`/v1/orders/${b.orderId}/sign`, { challenge_id: c, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   th.kiem('Ký lại bản đã đủ chữ ký bị chặn', kyLai.status >= 400, kyLai.json);
 });
 

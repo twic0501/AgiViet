@@ -50,11 +50,11 @@ async function chayMot(kb) {
         case 'nhan': kq = du(await ok('POST', '/v1/messages', { ...(s.order ? { order_id: s.order } : { offer_id: s.offer }), body: b.noi_dung }, t)); break;
         case 'lap_don': { const of = await ok('GET', `/v1/offers/${s.offer}`, undefined, t); const v = of.rounds.at(-1); const now = new Date((await ok('GET', '/v1/test/clock')).now);
           const tu = new Date(now.getTime() + 2 * 3600e3);
-          kq = du(await ok('POST', '/v1/orders', { offer_id: s.offer, downgrade_price_vnd: Math.round(Number(v.price_vnd) * 0.65 / 100) * 100, delivery_mode: 'at_farm', transport_by: 'buyer',
+          kq = du(await ok('POST', '/v1/orders', { offer_id: s.offer, downgrade_price_vnd: b.gia_ha_cap ?? Math.round(Number(v.price_vnd) * 0.75 / 100) * 100, delivery_mode: 'at_farm', transport_by: 'buyer',
             delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: b.tra_tien ?? 'on_receipt', designated_receiver_user_id: me.user.user_id, silent_accept_hours: 2 }, t));
           s.order = kq.id; break; }
         case 'ky': { const o = await donCt(t); const doc = [...(o.tai_lieu ?? [])].reverse().find((d) => d.doc_type === 'contract'); const phia = o.phia_cua_ban;
-          kq = du(await ok('POST', `/v1/orders/${s.order}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, ...(phia === 'seller' ? { commitment_ack: true } : {}) }, t)); break; }
+          kq = du(await ok('POST', `/v1/orders/${s.order}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, ...(phia === 'seller' ? { commitment_ack: true, ...(b.chap_nhan_ha_cap ? { low_downgrade_price_ack: true } : {}) } : {}) }, t)); break; }
         case 'tu_choi_ky': kq = du(await ok('POST', `/v1/orders/${s.order}/decline`, { reason: b.ly_do ?? 'Không đồng ý điều khoản' }, t)); break;
         case 'coc': case 'coc_thieu': { const hd = await ok('GET', `/v1/orders/${s.order}/deposit-instruction`, undefined, t); const so = Math.round(Number(hd.total_vnd) * (b.lam === 'coc' ? 1 : (b.phan_tram ?? 50) / 100));
           await ok('POST', '/v1/sim/bank/transfers', { payment_ref: hd.payment_ref, amount_vnd: so, payer: { bank_code: 'VCB', account_no: '0071000123456', name: 'BEN MUA AI' } }); kq = await ok('POST', '/v1/sim/bank/deliver', {}); break; }

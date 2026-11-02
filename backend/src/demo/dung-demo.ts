@@ -48,7 +48,7 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
   };
   const kyHaiBen = async (buyer: string, seller: string, don: { orderId: string; docId: string }, chiBenMua = false) => {
     await ok('POST', `/v1/orders/${don.orderId}/sign`, { challenge_id: await kyOtp(buyer, 'contract_sign', { document_id: don.docId }), code: OTP }, buyer);
-    if (!chiBenMua) await ok('POST', `/v1/orders/${don.orderId}/sign`, { challenge_id: await kyOtp(seller, 'contract_sign', { document_id: don.docId }), code: OTP, commitment_ack: true }, seller);
+    if (!chiBenMua) await ok('POST', `/v1/orders/${don.orderId}/sign`, { challenge_id: await kyOtp(seller, 'contract_sign', { document_id: don.docId }), code: OTP, commitment_ack: true, low_downgrade_price_ack: true }, seller);
   };
   const coc = async (buyer: string, orderId: string, ten: string) => {
     const hd = await ok('GET', `/v1/orders/${orderId}/deposit-instruction`, undefined, buyer);

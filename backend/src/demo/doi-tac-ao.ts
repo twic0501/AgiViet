@@ -51,7 +51,7 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
   const otp = async (t: string, purpose: string, extra: any) => (await post('/v1/otp/challenges', { purpose, ...extra }, t)).json?.challenge_id;
   const ky = async (t: string, o: any, phia: string) => {
     const doc = [...(o.tai_lieu ?? [])].reverse().find((d: any) => d.doc_type === 'contract');
-    return post(`/v1/orders/${o.id}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, expected_revision: o.revision, ...(phia === 'seller' ? { commitment_ack: true } : {}) }, t);
+    return post(`/v1/orders/${o.id}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, expected_revision: o.revision, ...(phia === 'seller' ? { commitment_ack: true, low_downgrade_price_ack: true } : {}) }, t);
   };
 
   for (const [tc, sdt] of Object.entries(DAI_DIEN)) {
