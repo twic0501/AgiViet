@@ -209,6 +209,8 @@ table.sl-bang { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 /* Thẻ lô hàng */
 .sl-lo { display: grid; grid-template-rows: auto 1fr; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--ke); background: var(--giay-noi); text-decoration: none; }
 .sl-lo-anh { aspect-ratio: 4 / 3; background: var(--giay-sau) center / cover no-repeat; position: relative; }
+/* Điện thoại: ảnh lô thấp lại để một màn thấy được 2–3 lô */
+@media (max-width: 600px) { .sl-lo-anh { aspect-ratio: 16 / 7; } }
 .sl-lo-anh .sl-nhan { position: absolute; left: 10px; top: 10px; }
 .sl-lo-than { padding: 12px 14px; display: grid; gap: 4px; }
 .sl-lo-than b { font-size: 15px; }

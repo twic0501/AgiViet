@@ -934,6 +934,23 @@ if (THAT) {
     NGUOI = { viet: ten.split(/\s+/).slice(-2).map((x) => x[0]).join("").toUpperCase(), ten, vai: "Dữ liệu thật" }; TEN_TC = d.me.org?.name || TEN_TC;
   } catch (e) { console.error("Chưa nạp được dữ liệu thật:", e); }
   man["nguon-hang"].phu = "Lô đang bán trên chợ · giá người bán là giá kín, bạn chào giá";
+  {
+    const goc = man["nguon-hang"];
+    goc.ve = (st, { url }) => `
+    <div class="sl-loc" role="group" aria-label="Lọc theo nhóm hàng" id="nh-loc">${["Tất cả", "Trái cây", "Thủy sản", "Rau củ", "Hạt, cà phê"].map((t, i) => `<button type="button" data-nhom="${t}" aria-pressed="${!i}" style="min-height:44px">${t}</button>`).join("")}</div>
+    <div class="sl-luoi sl-l3" id="nh-ds">${LO.map((l) => theLo(l, url)).join("")}</div>
+    <p class="sl-ghi" id="nh-trong" hidden>Chưa có lô nào thuộc nhóm này trên chợ.</p>
+    <p class="sl-ghi">Giá người bán đặt là giá kín. Bạn chào giá theo đ/kg tại vườn; chào dưới mức người bán chấp nhận thì lời chào tự đóng.</p>`;
+    goc.sau = (g) => {
+      const the3 = [...g.querySelectorAll("#nh-ds > *")];
+      g.querySelector("#nh-loc").onclick = (e) => {
+        const b = e.target.closest("[data-nhom]"); if (!b) return;
+        g.querySelectorAll("#nh-loc [data-nhom]").forEach((x) => { const on = x === b; x.setAttribute("aria-pressed", on); });
+        let con = 0; the3.forEach((el, i) => { const hien = b.dataset.nhom === "Tất cả" || LO[i].nhom === b.dataset.nhom; el.hidden = !hien; con += hien; });
+        g.querySelector("#nh-trong").hidden = con > 0;
+      };
+    };
+  }
   man["chi-tiet-lo"] = {
     tieuDe: () => lo(new URLSearchParams(location.search).get("lo")).ten, thuoc: "nguon-hang", lui: "nguon-hang",
     phu: () => { const l = lo(new URLSearchParams(location.search).get("lo")); return `${l.ma} · ${l.nguoi} · ${l.noi}`; },
@@ -987,12 +1004,12 @@ if (THAT) {
       ${o.status === "accepted" && !o.don ? `<p class="sl-ghi">Đồng ý giá chưa phải hợp đồng. Lập đơn rồi hai bên ký mới thành hợp đồng.</p>
       <details data-lap><summary class="sl-nut sl-vang" style="list-style:none;display:inline-flex">Lập đơn từ giá này</summary>
         <div style="display:grid;gap:10px;margin-top:10px">
-          <label style="display:grid;gap:4px;font-weight:600">Ngày nhận hàng tại vườn (bạn lo xe)<input type="date" data-ngay value="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Ngày nhận hàng tại vườn (bạn lo xe)<input type="date" data-ngay style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;background:var(--giay,#fff);color:inherit;width:100%;box-sizing:border-box" value="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}"></label>
           <label style="display:grid;gap:4px;font-weight:600">Trả tiền hàng<select data-tra style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"><option value="on_receipt">Khi nhận hàng</option><option value="before_loading">Trước khi bốc hàng</option><option value="after_days">Trả sau (ngày)</option></select></label>
           <label data-o-ngay hidden style="display:grid;gap:4px;font-weight:600">Số ngày trả sau<input inputmode="numeric" data-sau value="7" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
           <label style="display:grid;gap:4px;font-weight:600">Giá nếu hàng xuống loại (đ/kg)<input inputmode="numeric" data-hc value="${Math.round(gia * 0.65 / 100) * 100}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
           <p class="sl-ghi">Người bán thấy và chấp thuận riêng giá xuống loại khi ký. Dưới 50% giá đơn sẽ bị cảnh báo đỏ.</p>
-          <button class="sl-nut sl-vang" data-lam="lap-don">Gửi đơn cho người bán xem và ký</button>
+          <button class="sl-nut sl-vang" data-lam="lap-don">Lập đơn (bạn ký trước, rồi người bán ký)</button>
         </div></details>` : ""}
       ${o.don ? `<p class="sl-ghi">Đã lập đơn <b>${esc(String(o.don.code).replace(/^HD-/, "HĐ-"))}</b>. Theo dõi ký, cọc, giao ở mục <a href="?man=don-hang">Đơn</a>.</p>` : ""}
       <p class="sl-ghi" data-bao role="status"></p></section>`;
@@ -1024,7 +1041,7 @@ if (THAT) {
             const don = await api("/v1/orders", { offer_id: o.id, delivery_mode: "at_farm", transport_by: "buyer", delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(),
               payment_timing: tra, ...(tra === "after_days" ? { pay_after_days: Number(the2.querySelector("[data-sau]").value) || 7 } : {}), ...(hc ? { downgrade_price_vnd: hc } : {}),
               designated_receiver_user_id: me.user?.user_id ?? me.user_id, silent_accept_hours: 2 });
-            bao2.innerHTML = `<b>Đã lập đơn ${esc(don.code || "")}</b>. Người bán xem và ký trước; tới lượt bạn ký sẽ báo ở mục Đơn.`;
+            bao2.innerHTML = `<b>Đã lập đơn ${esc(don.code || "")}</b>. Bước tiếp: <a href="?man=chi-tiet-don&don=${don.id}">mở đơn để bạn ký trước</a>, sau đó người bán ký.`;
             the2.querySelector("[data-lap]").remove();
           } catch (err) { bao2.textContent = err.message; b.disabled = false; }
           return;
@@ -1079,9 +1096,9 @@ if (THAT) {
           ${hcThap ? bao("Giá xuống loại thấp hơn 50% giá đơn. Người bán sẽ thấy cảnh báo đỏ khi ký.", "sl-bao-do") : ""}
           ${coKy ? `<section class="sl-the" style="display:grid;gap:10px"><h2 style="margin:0;font-size:18px">Ký hợp đồng</h2>
             <p class="sl-ghi">Bấm "Gửi mã" để nhận mã OTP, nhập mã rồi bấm Ký. Ký xong không sửa được điều khoản; muốn đổi phải làm phụ lục.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><button class="sl-nut sl-vien" id="ky-ma">Gửi mã</button>
-            <label style="display:grid;gap:4px;font-weight:600">Mã OTP<input id="ky-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
-            <button class="sl-nut sl-vang" id="ky-gui" disabled>Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}`;
+            <div style="display:grid;gap:10px;max-width:420px"><button class="sl-nut sl-vien" id="ky-ma">1. Gửi mã OTP</button>
+            <label style="display:grid;gap:4px;font-weight:600;min-width:0">2. Nhập mã 6 số<input id="ky-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box;letter-spacing:4px;font-size:20px"></label>
+            <button class="sl-nut sl-vang" id="ky-gui" disabled>3. Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}`;
         if (!coKy) return;
         let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
         khung.querySelector("#ky-ma").onclick = async (e) => {

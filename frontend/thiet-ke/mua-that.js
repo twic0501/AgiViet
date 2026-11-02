@@ -16,6 +16,7 @@ export async function api(duong, than) {
 const TINH = { DT: "Đồng Tháp", CT: "Cần Thơ", TN: "Tây Ninh", VL: "Vĩnh Long", AG: "An Giang", HCM: "TP.HCM" };
 const ANH = { XOAI: "xoai", SAU: "sau", THANH: "thanh-long", BUOI: "buoi", TOM: "tom", CA: "tom", LUA: "lua", CHANH: "chanh" };
 const anhCua = (ma = "") => ANH[Object.keys(ANH).find((k) => ma.startsWith(k))] || "xoai";
+const nhomCua = (ma = "") => (/^(TOM|CA|CUA|NGHEU|SO|OC|MUC)/.test(ma) ? "Thủy sản" : /^(LUA|GAO|CAPHE|CAFE|TIEU|DIEU|HAT|CACAO)/.test(ma) ? "Hạt, cà phê" : /^(RAU|CAI|HANH|OT|KHOAI|CU|BAP|DUA_LEO|CA_CHUA)/.test(ma) ? "Rau củ" : "Trái cây");
 const LOAI = (g) => (/^L(\d)$/.test(g) ? `loại ${g.slice(1)}` : g === "A" ? "loại A" : g === "B" ? "loại B" : g);
 const ngayVN = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" }) : "");
 
@@ -27,7 +28,7 @@ export async function napThat() {
   const lo = ds.map((l, i) => {
     const c = ct[i] || {};
     return { id: l.id, ma: l.code, ten: `${c.product_name || l.product_code} ${LOAI(l.grade_code)}`, nguoi: c.seller_name || "Người bán", noi: TINH[l.province_code] || l.province_code,
-      gia: null, con: Math.round(Number(l.available_g) / 1000), hai: ngayVN(l.available_from), uy: null, don: null, anh: anhCua(l.product_code), kiem: false,
+      gia: null, con: Math.round(Number(l.available_g) / 1000), hai: ngayVN(l.available_from), uy: null, don: null, anh: anhCua(l.product_code), nhom: nhomCua(l.product_code), kiem: false,
       sapCo: l.status === "upcoming", banGap: !!l.ban_gap, uocTinh: l.qty_basis === "estimated", soAnh: (c.photos || []).length };
   });
   return { me, lo };
