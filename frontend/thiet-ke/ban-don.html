@@ -743,6 +743,9 @@ function moCan(d) {
       <tr><td>Thành tiền đợt này</td><td>${vnd(tong)} đ</td></tr>
     </tbody></table>
     <p class="hd-ghi">Phần trả lại vẫn là hàng của bác: app tạo lô riêng để bác bán tiếp. Phần hạ cấp tính theo giá hạ cấp đã ký.</p>
+    ${d.nguong_khong_dat?.vuot ? `<div class="hd-bao do" role="alert" style="display:grid;gap:8px"><b>Bên mua chê ${(d.nguong_khong_dat.bps / 100).toFixed(1).replace(".", ",")}% hàng (xuống loại + trả lại), quá 20%.</b>
+      <span>App không tự chốt. Bác xem ảnh từng dòng. Thấy chưa đúng thì bấm <b>"Có dòng không đúng"</b> để mời bên kiểm định (bên sai chịu phí).</span>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-weight:700"><input type="checkbox" data-r="chap-nhan" style="width:24px;height:24px;flex:none;margin-top:2px"> Tôi đã xem và chấp nhận kết quả cân này</label></div>` : ""}
     <div data-r="khoi-pin" hidden><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="pin">Nhập mã PIN app (4 số) để ký biên bản</label><input class="hd-otp" id="pin" data-r="pin" inputmode="numeric" maxlength="4" autocomplete="off" type="password"></div>
     <div data-r="khoi-thieu" hidden><p class="hd-bao vang">Thiếu ngoài dung sai: bác chọn cách xử lý phần thiếu.</p>
       <div class="hd-chon">
@@ -769,7 +772,8 @@ function moCan(d) {
       try {
         if (buoc === "dong-y") {
           const xl = r("khoi-thieu").hidden ? undefined : { choice: $("che").querySelector('input[name="thieu"]:checked').value };
-          await lenh(`/v1/deliveries/${d.id}/acceptance/agree`, { pin: r("pin").value, expected_sha256: kq.content_sha256, shortfall: xl });
+          if (d.nguong_khong_dat?.vuot && !r("chap-nhan")?.checked) { r("chinh").disabled = false; return baoTam("Hàng bị chê quá 20%: bác đánh dấu \"Tôi đã xem và chấp nhận\" nếu đồng ý, hoặc bấm Thôi rồi chọn \"Có dòng không đúng\" để mời kiểm định.", "do"); }
+          await lenh(`/v1/deliveries/${d.id}/acceptance/agree`, { pin: r("pin").value, expected_sha256: kq.content_sha256, shortfall: xl, ...(d.nguong_khong_dat?.vuot ? { chap_nhan_vuot_nguong: true } : {}) });
           return xongViec("Bác đã ký biên bản nghiệm thu. Tiền hàng tính theo kết quả này.");
         }
         if (!r("ly").value.trim()) throw new Error("Bác ghi lý do để bên mua và AgiViet xem lại.");

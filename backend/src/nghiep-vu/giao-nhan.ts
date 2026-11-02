@@ -300,7 +300,15 @@ async function kiemPin(ht: HeThong, nd: NguoiDung, x: { pin?: string; challenge_
 /** Người bán đồng ý kết quả: ký BBNT, chốt dòng, chuyển lượng, lô con phần trả lại, chuyển rủi ro. */
 export interface XuLyThieu { choice: 'backfill' | 'end' | 'force_majeure'; notice?: 'none' | 'lt3d' | 'ge3d'; backfill_from?: string; backfill_to?: string }
 
-export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliveryId: string, x: { pin?: string; device_id?: string; expected_sha256?: string; shortfall?: XuLyThieu }) {
+/** Tỉ lệ (bps) phần xuống loại + trả lại trên lượng cân của một bản nghiệm thu; vuot = quá ngưỡng 20%. */
+export async function tiLeKhongDat(t: GiaoDich, acceptanceId: string, weighed: unknown) {
+  const kd = B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM core.acceptance_lines WHERE acceptance_id=$1 AND kind IN ('downgraded','rejected')`, [acceptanceId]));
+  const can = B(String(weighed ?? 0));
+  const bps = can > 0n ? Number((kd * 10000n) / can) : 0;
+  return { bps, vuot: bps > CHINH_SACH.nguongHaCapTraLaiBps };
+}
+
+export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliveryId: string, x: { pin?: string; device_id?: string; expected_sha256?: string; shortfall?: XuLyThieu; chap_nhan_vuot_nguong?: boolean }) {
   const { d, o, v } = await layDot(t, deliveryId);
   if (phiaCua(nd, o) !== 'seller') throw loi('KHONG_CO_QUYEN');
   canQuyen(nd, 'acceptance.respond');
@@ -308,6 +316,10 @@ export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliv
   await kiemPin(ht, nd, x);
   const av = await t.mot<any>(`SELECT a.*, encode(doc.content_sha256,'hex') sha, doc.canonical_content cc FROM core.acceptance_versions a JOIN core.documents doc ON doc.id=a.document_id WHERE a.delivery_id=$1 ORDER BY a.version_no DESC LIMIT 1`, [deliveryId]);
   if (x.expected_sha256 && x.expected_sha256 !== av.sha) throw loi('PHIEN_BAN_DA_DOI');
+  // Ngưỡng 20% (người sáng lập 02/11/2026): xuống loại + trả lại vượt ngưỡng thì không chốt nếu người bán chưa chấp nhận riêng.
+  const vn = await tiLeKhongDat(t, av.id, av.weighed_qty);
+  if (vn.vuot && !x.chap_nhan_vuot_nguong) throw loi('TRANG_THAI_KHONG_CHO_PHEP',
+    `Hàng xuống loại và trả lại là ${(vn.bps / 100).toFixed(1)}% (quá 20%). Bác chọn: đánh dấu "tôi chấp nhận kết quả này" rồi đồng ý, hoặc phản đối dòng chưa đúng để AgiViet gửi kiểm định.`, { ti_le_bps: vn.bps, nguong_bps: CHINH_SACH.nguongHaCapTraLaiBps });
   // 0052: bản chia lại sau phản đối giữ các phần mới ở 'disputed' tới khi người bán đồng ý; agree_acceptance đóng chúng.
   if (!(await t.mot(`SELECT 1 FROM core.acceptance_revisions WHERE acceptance_id=$1`, [av.id])) && await t.mot(`SELECT 1 FROM core.acceptance_lines WHERE acceptance_id=$1 AND status='disputed'`, [av.id])) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Còn dòng đang tranh chấp: chờ bên mua cân lại/chia lại.');
   // Thiếu lượng (03 mục 6.5): ngoài dung sai thì người bán phải chọn cách xử lý.
@@ -481,6 +493,8 @@ export async function xemDot(t: GiaoDich, nd: NguoiDung, deliveryId: string) {
   return { id: d.id, code: d.code, order_id: o.id, order_code: o.code, status: d.status, revision: d.version, batch_no: d.batch_no, planned_qty_g: String(d.planned_qty),
     receiver_user_id: d.receiver_user_id, acceptance_point: v.acceptance_point, window_from: d.win_start, window_to: d.win_end, phia, hanh_dong: hd,
     the_san_sang: d.status === 'preparing' || d.status === 'ready' ? await theSanSang(t, deliveryId) : null,
+    // Ngưỡng 20%: UI người bán hiện ô "tôi chấp nhận kết quả này" khi vượt (không vượt thì đồng ý như thường).
+    nguong_khong_dat: cuoi ? { ...(await tiLeKhongDat(t, cuoi.id, cuoi.weighed_g)), nguong_bps: CHINH_SACH.nguongHaCapTraLaiBps } : null,
     ket_qua: kq.map((k) => ({ ...k, seller_agreed: !!k.seller_agreed_at, buyer_agreed: !!k.buyer_agreed_at })) };
 }
 

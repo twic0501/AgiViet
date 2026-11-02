@@ -14,6 +14,10 @@ export const CHINH_SACH = Object.freeze({
   choPhepTraTruocChuaKiem: process.env.AGV_TRA_TRUOC_CHUA_KIEM === '1',
   // Bao tiêu theo vụ (offtake) — người sáng lập chốt 02/11/2026: chưa mở, để nâng cấp sau. Chỉ còn đặt trước khi hái + có hàng ngay.
   choPhepBaoTieu: process.env.AGV_BAO_TIEU === '1',
+  // Người sáng lập chốt 02/11/2026: xuống loại + trả lại > 20% lượng cân thì KHÔNG tự chốt — người bán phải chủ động chấp nhận riêng
+  // hoặc phản đối để giám định (quyền giám định có ở mọi mức). Ngưỡng 70% giá hạ cấp: nguongGiaHaCapBps.
+  nguongHaCapTraLaiBps: 2000,
+  nguongGiaHaCapBps: 7000,
 
   // ---- Cọc và phí (04 mục 3–4) ----
   cocBps: 3000, // r_coc = 30%
