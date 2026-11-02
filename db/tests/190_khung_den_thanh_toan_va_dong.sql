@@ -18,6 +18,11 @@ SELECT test.as_login('db_test_system',$$SELECT set_config('test.c47.delivery',cm
 SELECT set_config('test.c47.receiver',test.person('Võ Hoàng Phúc')::text,true);
 SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.c47.qr',cmd.assign_receiver(current_setting('test.c47.delivery')::uuid,current_setting('test.c47.receiver')::uuid),true)$$);
 INSERT INTO cmd.test_clock(at) VALUES(now()+interval '2 days 1 hour');
+-- 0087: hạn mức đếm buổi đang chạy chưa quyết toán cuối; lô khóa an toàn trong buổi (kể cả nhiều lô) chặn sẵn sàng giao.
+SELECT test.check('C47 hạn mức đang dùng = giá trị buổi đang chạy',(SELECT used_vnd FROM core.v_framework_limits WHERE id=current_setting('test.fw.id')::uuid)=(SELECT v.contract_value_vnd FROM core.orders o JOIN core.order_versions v ON v.order_id=o.id AND v.version_no=o.effective_version_no WHERE o.id=current_setting('test.fw.order')::uuid));
+UPDATE core.lots SET safety_locked_at=now(),safety_lock_reason='Thử khóa an toàn' WHERE id IN (SELECT lot_id FROM core.order_lines WHERE order_id=current_setting('test.fw.order')::uuid);
+SELECT test.expect_error('C47 lô của buổi bị khóa an toàn: không sẵn sàng giao',$$SELECT test.as_login('db_test_system',$x$SELECT cmd.ready_delivery(current_setting('test.c47.delivery')::uuid)$x$)$$);
+UPDATE core.lots SET safety_locked_at=NULL,safety_lock_reason=NULL WHERE id IN (SELECT lot_id FROM core.order_lines WHERE order_id=current_setting('test.fw.order')::uuid);
 SELECT test.as_login('db_test_system',$$SELECT cmd.ready_delivery(current_setting('test.c47.delivery')::uuid)$$);
 SELECT test.as_login('db_test_seller',$$SELECT cmd.dispatch_delivery(current_setting('test.c47.delivery')::uuid)$$);
 SELECT test.as_login('db_test_receiver',$$SELECT cmd.scan_qr(current_setting('test.c47.qr'),'TEST')$$);

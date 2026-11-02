@@ -76,7 +76,7 @@ export async function theSanSang(t: GiaoDich, deliveryId: string): Promise<DongT
   const v = await t.mot<any>(`SELECT * FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [d.order_id, d.version_no]);
   // Đơn nhiều lô (gọi hàng khung, lot_id null): cộng cam kết mọi lô của đơn — cùng cách DB bỏ qua kiểm một lô khi lot_id null.
   const camKet = B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM ledger.qty_balances WHERE ($1::uuid IS NULL OR lot_id=$1) AND order_key=$2 AND bucket='committed'`, [o.lot_id, o.id]));
-  const khoa = !!(await t.gtri(`SELECT safety_locked_at FROM core.lots WHERE id=$1`, [o.lot_id]));
+  const khoa = !!(await t.gtri(`SELECT 1 FROM core.lots WHERE safety_locked_at IS NOT NULL AND (id=$1 OR ($1::uuid IS NULL AND id IN (SELECT lot_id FROM core.order_lines WHERE order_id=$2 AND version_no=$3)))`, [o.lot_id, o.id, d.version_no]));
   const coc = B(await t.gtri<string>(`SELECT coalesce(sum(balance_vnd),0)::text FROM ledger.v_account_balances WHERE order_id=$1 AND account_type='deposit_escrow'`, [o.id]));
   const thieuTien = await t.q<any>(`SELECT p.code,(p.amount_due_vnd-coalesce((SELECT sum(amount_vnd) FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=p.id),0))::text con FROM core.direct_payments p
     WHERE order_id=$1 AND blocks_loading AND kind<>'goods_on_receipt' AND status<>'cancelled' AND amount_due_vnd<>(SELECT coalesce(sum(amount_vnd),0) FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=p.id)`, [o.id]);
