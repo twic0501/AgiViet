@@ -1284,9 +1284,9 @@ if (THAT) {
             ${dong("Giá trị hàng đã nhận", vnd(qt.v_vnd))}
             ${dong("Bạn đã trả thẳng", vnd(qt.d_vnd))}
             ${dong("Cọc chuyển cho người bán", vnd(qt.release_vnd))}
-            ${Number(qt.refund_vnd) ? dong("Hoàn cho bạn", vnd(qt.refund_vnd)) : ""}
+            ${Number(qt.refund_vnd) ? dong("Cọc ngân hàng hoàn cho bạn", vnd(qt.refund_vnd)) : ""}
             ${Number(qt.x_bm_vnd) ? dong("Bạn bị phạt", vnd(qt.x_bm_vnd)) : ""}${Number(qt.x_nb_vnd) ? dong("Người bán bị phạt (trả bạn)", vnd(qt.x_nb_vnd)) : ""}
-            ${(() => { const con = Number(qt.v_vnd) + Number(qt.x_bm_vnd || 0) - Number(qt.x_nb_vnd || 0) - Number(qt.d_vnd) - Number(qt.release_vnd) + Number(qt.refund_vnd || 0); return dong(con > 0 ? "Bạn còn phải trả" : con < 0 ? "Người bán phải hoàn bạn" : "Còn lại", `<b>${vnd(Math.abs(con))}</b>`); })()}`
+            ${(() => { const bm = Number(qt.t_bm_vnd || 0), nb = Number(qt.t_nb_vnd || 0); /* lấy thẳng từ quyết toán, không tự cộng trừ (lỗi cũ: cộng cọc hoàn vào số còn trả) */ return bm > 0 ? dong("Bạn còn phải trả người bán", `<b>${vnd(bm)}</b>`) : nb > 0 ? dong("Người bán phải hoàn bạn", `<b>${vnd(nb)}</b>`) : dong("Còn lại", `<b>${vnd(0)}</b>`); })()}`
             : `<p class="sl-ghi" style="margin:6px 0 0">Chưa quyết toán: quyết toán lập sau khi chốt nhận hàng.</p>`}
         </section>`);
       };
