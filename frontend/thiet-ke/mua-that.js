@@ -29,7 +29,7 @@ export async function napThat() {
     const c = ct[i] || {};
     return { id: l.id, ma: l.code, ten: `${c.product_name || l.product_code} ${LOAI(l.grade_code)}`, nguoi: c.seller_name || "Người bán", noi: TINH[l.province_code] || l.province_code,
       gia: null, con: Math.round(Number(l.available_g) / 1000), hai: ngayVN(l.available_from), uy: null, don: null, anh: anhCua(l.product_code), nhom: nhomCua(l.product_code), kiem: false,
-      sapCo: l.status === "upcoming", banGap: !!l.ban_gap, uocTinh: l.qty_basis === "estimated", soAnh: (c.photos || []).length };
+      nguoiId: c.seller_org_id || null, maSp: l.product_code, loai: l.grade_code, sapCo: l.status === "upcoming", banGap: !!l.ban_gap, uocTinh: l.qty_basis === "estimated", soAnh: (c.photos || []).length };
   });
   return { me, lo };
 }

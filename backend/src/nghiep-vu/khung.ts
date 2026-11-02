@@ -100,20 +100,24 @@ export async function kichHoatKhung(t: GiaoDich, frameworkId: string) {
 export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
   const { f, phia } = await layKhung(t, nd, id);
   const dep = await t.mot<any>(`SELECT status, payment_ref, virtual_account_no, expected_deposit_vnd::text coc_vnd FROM core.deposits WHERE framework_id=$1 ORDER BY created_at DESC LIMIT 1`, [id]);
-  const ten = await t.q<any>(`SELECT id, name_vi FROM core.products WHERE id = ANY($1::uuid[])`, [(f.schedule?.items ?? []).map((x: any) => x.product_id)]);
+  const ten = await t.q<any>(`SELECT id, name_vi, code FROM core.products WHERE id = ANY($1::uuid[])`, [(f.schedule?.items ?? []).map((x: any) => x.product_id)]);
   const tenSp = new Map(ten.map((x: any) => [x.id, x.name_vi]));
+  const maSp = new Map(ten.map((x: any) => [x.id, x.code]));
   const buyer = await t.gtri<string>(`SELECT display_name FROM core.organizations WHERE id=$1`, [f.buyer_org_id]);
   const seller = await t.gtri<string>(`SELECT display_name FROM core.organizations WHERE id=$1`, [f.seller_org_id]);
   const TT: Record<string, string> = { drafting: 'Bên mua đang soạn', awaiting_signature: 'Chờ người bán ký', awaiting_deposit: 'Chờ bên mua chuyển cọc khung', running: 'Đang chạy', needs_security: 'Tạm dừng: nợ vượt cọc', closed: 'Đã kết thúc' };
   const toiLuot = f.status === 'drafting' ? 'buyer' : f.status === 'awaiting_signature' ? 'seller' : f.status === 'awaiting_deposit' ? 'buyer' : null;
   return {
-    id: f.id, code: f.code, status: f.status, ten_trang_thai: TT[f.status] ?? f.status, phia, toi_luot: toiLuot, ben_mua: buyer, ben_ban: seller,
-    ngay_giao: f.schedule?.weekdays ?? null, ky: { tu: f.active_during.lower ?? null, den: f.active_during.upper ?? null, chuoi: String(f.active_during) },
-    mon: (f.schedule?.items ?? []).map((x: any) => ({ mat_hang: tenSp.get(x.product_id), loai: x.grade_code, luong_g: x.qty, gia_vnd: x.unit_price_vnd, gia_ha_cap_vnd: x.downgrade_price_vnd })),
+    id: f.id, code: f.code, seller_org_id: f.seller_org_id, buyer_org_id: f.buyer_org_id, status: f.status, ten_trang_thai: TT[f.status] ?? f.status, phia, toi_luot: toiLuot, ben_mua: buyer, ben_ban: seller,
+    ngay_giao: f.schedule?.weekdays ?? null, ky: (() => { const c = String(f.active_during), m = c.match(/^[\[(]"?([^,"]*)"?,"?([^,"\])]*)"?[\])]$/); return { tu: f.active_during?.lower ?? (m?.[1] || null), den: f.active_during?.upper ?? (m?.[2] || null), chuoi: c }; })(), // pg trả daterange dạng chuỗi '[a,b)'
+    mon: (f.schedule?.items ?? []).map((x: any) => ({ mat_hang: tenSp.get(x.product_id), ma: maSp.get(x.product_id), loai: x.grade_code, luong_g: x.qty, gia_vnd: x.unit_price_vnd, gia_ha_cap_vnd: x.downgrade_price_vnd })),
     gia_tri_moi_lan_vnd: f.gia_tri_ky, coc_khung_vnd: String(f.framework_deposit_vnd), tai_khoan_ban: f.seller_bank_code ? `${f.seller_bank_code} ${f.seller_account_masked}` : null, document_id: f.document_id,
     nhap_tu_du_lieu_cu: !f.document_id, // khung nạp thẳng từ dữ liệu cũ (chưa có văn bản ký trên app)
     gia_tuan: await giaTuanCuaKhung(t, id),
     han_muc: await t.mot<any>(`SELECT allowed_vnd::text duoc_vnd, used_vnd::text dang_dung_vnd, greatest(allowed_vnd-used_vnd,0)::text con_vnd FROM core.v_framework_limits WHERE id=$1`, [id]),
+    buoi: await t.q<any>(`SELECT o.id, o.code, o.status, v.contract_value_vnd::text gia_tri_vnd, (SELECT min(lower(d.delivery_window)) FROM core.deliveries d WHERE d.order_id=o.id) ngay_giao,
+      EXISTS(SELECT 1 FROM core.settlements s WHERE s.order_id=o.id AND s.is_final) da_quyet_toan
+      FROM core.orders o JOIN core.order_versions v ON v.order_id=o.id AND v.version_no=o.effective_version_no WHERE o.framework_id=$1 ORDER BY 5`, [id]),
     ky_tuan: await t.q<any>(`SELECT p.id, lower(p.period) tu, upper(p.period) den, p.value_vnd::text gia_tri_vnd, p.fee_vnd::text phi_vnd, p.payment_id, dp.status trang_thai_tra, dp.due_at han_tra FROM core.framework_periods p LEFT JOIN core.direct_payments dp ON dp.id=p.payment_id WHERE p.framework_id=$1 ORDER BY p.period`, [id]),
     coc: dep ? { trang_thai: dep.status, payment_ref: dep.payment_ref, virtual_account_no: dep.virtual_account_no, so_tien_vnd: dep.coc_vnd } : null,
   };

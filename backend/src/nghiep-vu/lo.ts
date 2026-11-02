@@ -132,7 +132,7 @@ export async function xemLo(t: GiaoDich, nd: NguoiDung | null, lotId: string) {
     id: l.id, code: l.code, product_code: l.product_code, product_name: l.product_name, grade_code: l.grade_code,
     qty_basis: l.qty_basis, declared_qty_g: l.declared_qty, available_from: l.available_from, harvest_on: l.harvest_on,
     status: l.status, revision: l.version, is_substandard: l.is_substandard, safety_locked: l.safety_locked,
-    province_code: l.province_code, seller_name: l.seller_name, qty: await soLuongLo(t, lotId),
+    province_code: l.province_code, seller_name: l.seller_name, seller_org_id: l.seller_org_id, qty: await soLuongLo(t, lotId),
     photos: await t.q(`SELECT id, code, captured_in_app, created_at FROM core.documents WHERE entity='lot' AND entity_id=$1 AND doc_type='evidence' ORDER BY created_at`, [lotId]),
   };
   if (laChu) {
