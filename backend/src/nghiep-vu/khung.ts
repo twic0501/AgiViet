@@ -112,6 +112,7 @@ export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
     mon: (f.schedule?.items ?? []).map((x: any) => ({ mat_hang: tenSp.get(x.product_id), loai: x.grade_code, luong_g: x.qty, gia_vnd: x.unit_price_vnd, gia_ha_cap_vnd: x.downgrade_price_vnd })),
     gia_tri_moi_lan_vnd: f.gia_tri_ky, coc_khung_vnd: String(f.framework_deposit_vnd), tai_khoan_ban: f.seller_bank_code ? `${f.seller_bank_code} ${f.seller_account_masked}` : null, document_id: f.document_id,
     nhap_tu_du_lieu_cu: !f.document_id, // khung nạp thẳng từ dữ liệu cũ (chưa có văn bản ký trên app)
+    gia_tuan: await giaTuanCuaKhung(t, id),
     coc: dep ? { trang_thai: dep.status, payment_ref: dep.payment_ref, virtual_account_no: dep.virtual_account_no, so_tien_vnd: dep.coc_vnd } : null,
   };
 }
@@ -119,4 +120,36 @@ export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
 export async function dsKhung(t: GiaoDich, nd: NguoiDung) {
   const ids = await t.q<any>(`SELECT id FROM core.framework_contracts WHERE buyer_org_id=$1 OR seller_org_id=$1 ORDER BY created_at DESC`, [nd.thanhVien.orgId]);
   return Promise.all(ids.map((x: any) => xemKhung(t, nd, x.id)));
+}
+
+// ---------------- Bước 2: giá chốt lại mỗi tuần (0084) ----------------
+/** Thứ 2 đầu tuần (giờ VN) của một ngày YYYY-MM-DD. */
+export function dauTuan(ngay: string) { const d = new Date(ngay + 'T00:00:00Z'); const thu = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - thu); return d.toISOString().slice(0, 10); }
+
+/** Một bên đề nghị giá tuần (đủ các món của khung theo thứ tự lịch). Bên đề nghị coi như đã đồng ý. */
+export async function deNghiGiaTuan(t: GiaoDich, nd: NguoiDung, id: string, d: { tuan: string; mon: { gia_vnd: number; gia_ha_cap_vnd?: number | null }[] }) {
+  const { f, phia } = await layKhung(t, nd, id);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d.tuan ?? '')) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần tuần (ngày bất kỳ trong tuần, YYYY-MM-DD).');
+  const items = f.schedule?.items ?? [];
+  if (!Array.isArray(d.mon) || d.mon.length !== items.length) throw loi('DU_LIEU_KHONG_HOP_LE', `Cần giá đủ ${items.length} món của khung.`);
+  const gia = items.map((x: any, i: number) => ({ product_id: x.product_id, profile_version: x.profile_version, grade_code: x.grade_code,
+    unit_price_vnd: String(Math.round(d.mon[i].gia_vnd)), downgrade_price_vnd: d.mon[i].gia_ha_cap_vnd == null ? null : String(Math.round(d.mon[i].gia_ha_cap_vnd)) }));
+  const wid = await appCmd<string>(t, nd, phia, 'propose_framework_week_price', [id, dauTuan(d.tuan), JSON.stringify(gia)]);
+  return { id: wid, tuan: dauTuan(d.tuan), trang_thai: 'proposed', cho: phia === 'buyer' ? 'seller' : 'buyer' };
+}
+
+/** Bên kia đồng ý / không đồng ý giá tuần. Người bán đồng ý giá có giá xuống loại < 70% phải xác nhận riêng (ngưỡng 02/11). */
+export async function traLoiGiaTuan(t: GiaoDich, nd: NguoiDung, priceId: string, d: { dong_y: boolean; low_downgrade_price_ack?: boolean }) {
+  const w = await t.mot<any>(`SELECT * FROM core.framework_week_prices WHERE id=$1`, [priceId]);
+  if (!w) throw loi('KHONG_TIM_THAY');
+  const { phia } = await layKhung(t, nd, w.framework_id);
+  if (d.dong_y && phia === 'seller' && (w.items as any[]).some((x) => x.downgrade_price_vnd != null && BigInt(x.downgrade_price_vnd) * 10000n < BigInt(x.unit_price_vnd) * 7000n) && !d.low_downgrade_price_ack)
+    throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Giá tuần có giá xuống loại thấp hơn 70% giá món. Bác xác nhận riêng rồi mới đồng ý, hoặc không đồng ý để bên mua đề nghị lại.', { gia_ha_cap_thap: true });
+  const kq = await appCmd<string>(t, nd, phia, 'answer_framework_week_price', [priceId, !!d.dong_y]);
+  return { id: priceId, trang_thai: kq };
+}
+
+export async function giaTuanCuaKhung(t: GiaoDich, frameworkId: string) {
+  return t.q<any>(`SELECT id, week_start::text tuan, items, proposed_by_side de_nghi_boi, status trang_thai, proposed_at, answered_at FROM core.framework_week_prices
+    WHERE framework_id=$1 AND status IN ('proposed','agreed','rejected') ORDER BY week_start, created_at`, [frameworkId]);
 }
