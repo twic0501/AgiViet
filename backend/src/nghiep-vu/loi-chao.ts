@@ -84,9 +84,18 @@ async function layLoiChao(t: GiaoDich, nd: NguoiDung, id: string) {
 }
 
 /** Đồng ý giá → giữ lượng 24 giờ. "Đây chưa phải hợp đồng." */
+/** Câu báo rõ trước khi gọi DB: lời chào đã đóng (vì sao) hoặc đang chờ bên kia trả lời (không tự đồng ý/trả giá lời chào của mình). */
+async function chanTuTraLoiMinh(t: GiaoDich, o: any, phia: string, viec: string) {
+  if (o.status === 'auto_rejected') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Lời chào đã tự đóng vì giá chưa tới mức người bán chấp nhận. Chào lại giá khác nếu muốn.');
+  if (o.status !== 'sent') throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Lời chào đã đóng (${({ accepted: 'đã đồng ý giá', rejected: 'bên kia không đồng ý', withdrawn: 'đã rút', expired: 'quá hạn trả lời', converted: 'đã lập đơn' } as Record<string, string>)[o.status] ?? o.status}).`);
+  const r = await vongCuoi(t, o.id);
+  if (r && r.from_side === phia) throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Đang chờ ${phia === 'buyer' ? 'người bán' : 'bên mua'} trả lời giá bạn đưa; chưa ${viec} được.`);
+}
+
 export async function dongYLoiChao(t: GiaoDich, nd: NguoiDung, id: string, version?: number) {
  const {o,phia}=await layLoiChao(t,nd,id);if(version!=null&&o.version!==version)throw loi('REVISION_XUNG_DOT');
  canQuyen(nd,phia==='seller'?'offer.accept.seller':'offer.accept.buyer');
+ await chanTuTraLoiMinh(t,o,phia,'đồng ý');
  const holdId=await appCmd<string>(t,nd,phia,'accept_offer',[id]);
  const h=await t.mot<any>(`SELECT qty::text,expires_at FROM core.holds WHERE id=$1`,[holdId]);
  const row=await t.mot<any>(`SELECT status,version FROM core.offers WHERE id=$1`,[id]);
@@ -106,7 +115,8 @@ export async function tuChoiLoiChao(t: GiaoDich, nd: NguoiDung, id: string) {
 }
 
 export async function rutLoiChao(t: GiaoDich, nd: NguoiDung, id: string) {
- const {phia}=await layLoiChao(t,nd,id);canQuyen(nd,phia==='seller'?'offer.counter.seller':'offer.counter.buyer'); 
+ const {o,phia}=await layLoiChao(t,nd,id);canQuyen(nd,phia==='seller'?'offer.counter.seller':'offer.counter.buyer'); 
+ if (o.status !== 'sent') await chanTuTraLoiMinh(t, o, phia, 'rút');
  await appCmd(t,nd,phia,'reply_offer',[id,'withdraw',null,null]);
  const row=await t.mot<any>(`SELECT status,version FROM core.offers WHERE id=$1`,[id]);return {id,status:row.status,revision:row.version};
 }

@@ -107,6 +107,8 @@ export function anhXaLoiDb(e: any): LoiNghiepVu | null {
   // Lý do DB viết sẵn tiếng Việt ("Chuyến vượt tải", "Chưa đủ tiền trước bốc"…) → đưa lên câu báo chính thay câu chung chung
   const roRang = msg && msg.length <= 160 && /[à-ỹđ]/i.test(msg) ? `${msg.replace(/[.\s]+$/, '')}.` : undefined;
   if (hint && hint.startsWith('ck_') ) return new LoiNghiepVu('TRANG_THAI_KHONG_CHO_PHEP', roRang, { db: hint, thong_bao: msg.slice(0, 160) });
+  // Mã (uuid) sai dạng từ đường dẫn/thân lệnh: là 'không tìm thấy', không phải lỗi hệ thống 500
+  if (e.code === '22P02' && /uuid/i.test(msg)) return new LoiNghiepVu('KHONG_TIM_THAY', undefined, { db: '22P02' });
   if(e.code==='42501')return new LoiNghiepVu('CHUA_HO_TRO','Đường DB này chưa có command hoặc chưa được cấp quyền runtime; backend không chạy dự phòng bằng owner.');
   if (e.code === '23505') {
     if (/bank_txn_ref|txn/i.test(msg) || /bank_txn_ref/.test(String(e.constraint ?? ''))) return new LoiNghiepVu('MA_GIAO_DICH_TRUNG');
