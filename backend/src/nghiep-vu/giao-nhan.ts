@@ -333,11 +333,12 @@ export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliv
   const keHoach = B(d.planned_qty); const canQ = B(av.weighed_qty); const rutQ = B(av.cc?.nguoi_ban_rut_g ?? 0);
   const thieuQ = keHoach - canQ - rutQ;
   const dungSai = (keHoach * BigInt(v.qty_tolerance_bps)) / 10000n;
-  if (thieuQ > dungSai && !x.shortfall) throw loi('DU_LIEU_KHONG_HOP_LE', `Thiếu ${kg(thieuQ)} ngoài dung sai: chọn giao bù, kết thúc phần thiếu hoặc bất khả kháng.`, { thieu_g: thieuQ.toString() });
+  // 0089: buổi gọi hàng khung — phần thiếu kết thúc theo từng lô, không phạt, không phải chọn (bên mua gọi buổi khác nếu cần bù).
+  if (thieuQ > dungSai && !x.shortfall && !o.framework_id) throw loi('DU_LIEU_KHONG_HOP_LE', `Thiếu ${kg(thieuQ)} ngoài dung sai: chọn giao bù, kết thúc phần thiếu hoặc bất khả kháng.`, { thieu_g: thieuQ.toString() });
   await kyBienBan(ht,t,nd,av.document_id,'seller',x.pin,x.device_id);
   await appCmd(t,nd,'seller','agree_acceptance',[av.id]);await dongBoTaiLieu(t,av.document_id,'fully_signed');
   let xuLyThieu:any=null;
-  if(thieuQ>0n) xuLyThieu=await apDungXuLyThieu(ht,t,nd,d,o,v,thieuQ,x.shortfall??{choice:'end'});
+  if(thieuQ>0n) xuLyThieu=o.framework_id?{choice:'end',planned_g:String(await appCmd(t,nd,'seller','resolve_calloff_shortfall',[d.id])),penalty_vnd:'0'}:await apDungXuLyThieu(ht,t,nd,d,o,v,thieuQ,x.shortfall??{choice:'end'});
   const status=await sauNghiemThuChot(ht,t,deliveryId,nd);
   let loCon:any=null;
   // 0050: tại nguồn, BBNT hai chữ ký đã chuyển phần trả lại sang returned_pending ngay khi chốt (đợt còn in_transit).
