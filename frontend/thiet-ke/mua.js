@@ -1145,6 +1145,61 @@ if (THAT) {
           catch (err) { bao3.textContent = err.message; } nut.disabled = false;
         });
       };
+      // Nghiệm thu (bên mua nhập kết quả cân): ba phần đạt / xuống loại / trả lại phải cộng đúng lượng cân;
+      // phần xuống loại, trả lại cần lý do theo danh mục mặt hàng + ảnh chụp tại chỗ (chứng cứ cho người bán).
+      const veNghiemThu = async (d, dot) => {
+        const k = d.dieu_khoan || {}, gia = Number(k.unit_price_vnd), giaHc = k.downgrade_price_vnd ? Number(k.downgrade_price_vnd) : null;
+        const ly = d.san_pham?.code ? ((await fetch(`/v1/products/${d.san_pham.code}/profile`).then((r) => r.json()).then((j) => j.data ?? j).catch(() => ({}))).reject_reasons || []) : [];
+        const chonLy = (id) => `<select id="${id}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"><option value="">Chọn lý do</option>${ly.map((x) => `<option value="${esc(x.reason_code)}">${esc(x.label_vi)}${x.is_safety ? " (an toàn thực phẩm)" : ""}</option>`).join("")}</select>`;
+        const keHoach = Number(dot.planned_qty_g) / 1000;
+        khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="nt" style="display:grid;gap:12px">
+          <h2 style="margin:0;font-size:18px">Nghiệm thu · đợt ${dot.batch_no}</h2>
+          <p class="sl-ghi" style="margin:0">Đợt ${kg(keHoach)}. Cân xong chia lượng cân thành ba phần. Người bán xem và đồng ý hoặc phản đối từng dòng.</p>
+          <label style="display:grid;gap:4px;font-weight:600">Lượng cân thực tế (kg)<input id="nt-can" inputmode="decimal" value="${keHoach}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Đạt (kg) · ${so(gia)} đ/kg<input id="nt-dat" inputmode="decimal" value="${keHoach}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          ${giaHc ? `<label style="display:grid;gap:4px;font-weight:600">Xuống loại (kg) · ${so(giaHc)} đ/kg<input id="nt-ha" inputmode="decimal" value="0" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label><div id="nt-ha-ly" hidden>${chonLy("nt-ha-lydo")}</div>` : `<p class="sl-ghi" style="margin:0">Hợp đồng không đặt giá xuống loại: hàng không đạt chỉ có thể trả lại.</p>`}
+          <label style="display:grid;gap:4px;font-weight:600">Trả lại (kg) · 0 đ<input id="nt-tra" inputmode="decimal" value="0" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label><div id="nt-tra-ly" hidden>${chonLy("nt-tra-lydo")}</div>
+          <label id="nt-anh-o" hidden style="display:grid;gap:4px;font-weight:600">Ảnh chụp hàng không đạt (chụp tại chỗ)<input id="nt-anh" type="file" accept="image/*" capture="environment" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Mã niêm phong mẫu lưu<input id="nt-niem" placeholder="vd M-7710" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <div id="nt-tong" role="status" style="font-size:17px;font-weight:600"></div>
+          <label style="display:grid;gap:4px;font-weight:600">Mã PIN ký biên bản (4 số)<input id="nt-pin" inputmode="numeric" maxlength="4" type="password" autocomplete="off" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <button type="button" class="sl-nut sl-vang" id="nt-gui">Ký và gửi kết quả cho người bán</button>
+          <p class="sl-ghi" id="nt-bao" role="status"></p></section>`);
+        const o = khung.querySelector("#nt"), $n = (id) => o.querySelector(id), soKg = (id) => Number(($n(id)?.value || "0").replace(",", "."));
+        const tinh = () => {
+          const can = soKg("#nt-can"), dat = soKg("#nt-dat"), ha = soKg("#nt-ha"), tra = soKg("#nt-tra"), tong = dat + ha + tra;
+          if ($n("#nt-ha-ly")) $n("#nt-ha-ly").hidden = !(ha > 0); $n("#nt-tra-ly").hidden = !(tra > 0); $n("#nt-anh-o").hidden = !(ha > 0 || tra > 0);
+          const lech = Math.round((tong - can) * 1000) / 1000;
+          $n("#nt-tong").innerHTML = lech ? `<span style="color:var(--do,#a8392c)">Ba phần cộng ${kg(tong)}, lệch ${kg(Math.abs(lech))} so với lượng cân.</span>` : `Tiền hàng tạm tính: ${vnd(Math.round(dat * gia + ha * (giaHc || 0)))}`;
+          return { can, dat, ha, tra, lech };
+        };
+        o.oninput = tinh; tinh();
+        $n("#nt-gui").onclick = async (e) => {
+          const nut = e.currentTarget, bao4 = $n("#nt-bao"), x = tinh();
+          if (!(x.can > 0)) return (bao4.textContent = "Nhập lượng cân.");
+          if (x.lech) return (bao4.textContent = "Ba phần phải cộng đúng lượng cân.");
+          if (x.can > keHoach) return (bao4.textContent = `Cân vượt lượng đợt (${kg(keHoach)}). Chỉ ghi lượng hợp đồng, phần vượt cần phụ lục.`);
+          if (x.ha > 0 && !$n("#nt-ha-lydo").value) return (bao4.textContent = "Chọn lý do xuống loại.");
+          if (x.tra > 0 && !$n("#nt-tra-lydo").value) return (bao4.textContent = "Chọn lý do trả lại.");
+          const tep = $n("#nt-anh").files?.[0];
+          if ((x.ha > 0 || x.tra > 0) && !tep) return (bao4.textContent = "Chụp ảnh hàng không đạt để người bán thấy chứng cứ.");
+          if (!/^\d{4}$/.test($n("#nt-pin").value)) return (bao4.textContent = "Nhập mã PIN 4 số.");
+          nut.disabled = true; bao4.textContent = "Đang gửi…";
+          try {
+            let anhId;
+            if (tep) {
+              const b64 = await new Promise((ok, loi2) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = loi2; r.readAsDataURL(tep); });
+              anhId = (await api("/v1/files", { mime: tep.type || "image/jpeg", data_base64: b64, entity: "delivery", entity_id: dot.id, captured_in_app: true })).id;
+            }
+            const g2 = (kgv) => Math.round(kgv * 1000);
+            const lines = [{ kind: "accepted", qty_g: g2(x.dat) }];
+            if (x.ha > 0) lines.push({ kind: "downgraded", qty_g: g2(x.ha), reason_code: $n("#nt-ha-lydo").value, evidence_document_id: anhId });
+            if (x.tra > 0) lines.push({ kind: "rejected", qty_g: g2(x.tra), reason_code: $n("#nt-tra-lydo").value, evidence_document_id: anhId });
+            await api(`/v1/deliveries/${dot.id}/acceptance`, { weighed_g: g2(x.can), lines, seal_code: $n("#nt-niem").value.trim() || undefined, pin: $n("#nt-pin").value });
+            await ve();
+          } catch (err) { bao4.textContent = err.message; nut.disabled = false; }
+        };
+      };
       const ve = async () => {
         const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
         const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) * 2 < Number(k.unit_price_vnd);
@@ -1164,6 +1219,7 @@ if (THAT) {
         if ((d.hanh_dong || []).includes("deposit_instruction")) await veCoc(d);
         const dot = (d.dot_giao || []).find((x) => !/closed|cancel|shortfall_ended/.test(x.status));
         if (dot && ["preparing", "ready"].includes(dot.status)) await veGiao(d, dot);
+        if (dot && dot.status === "checking") await veNghiemThu(d, dot);
         if (!coKy) return;
         let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
         khung.querySelector("#ky-ma").onclick = async (e) => {

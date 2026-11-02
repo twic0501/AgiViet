@@ -331,6 +331,7 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
     ly_do_dong: o.status === 'closed' ? await t.gtri<string>(`SELECT payload->>'ly_do' FROM evt.domain_events WHERE aggregate_id=$1 AND event_type='don.dong_truoc_coc' ORDER BY seq DESC LIMIT 1`, [id]) : null,
     dot_hien_hanh_id: await t.gtri<string>(`SELECT id FROM core.deliveries WHERE order_id=$1 AND status NOT IN ('closed','shortfall_ended','cancelled') ORDER BY batch_no LIMIT 1`, [id]),
     hien_thi: hien, buyer, seller, effective_version_no: o.effective_version_no,
+    san_pham: await t.mot<any>(`SELECT code, name_vi ten FROM core.products WHERE id=$1`, [o.product_id]),
     co: { gia_bat_thuong: o.flag_abnormal_price, vi_pham_thanh_toan: o.flag_payment_violation,
       de_nghi_mo: Number(await t.gtri(`SELECT count(*) FROM core.amendments WHERE order_id=$1 AND status='open'`, [id])) > 0,
       dang_xin_huy: Number(await t.gtri(`SELECT count(*) FROM core.cancellation_requests WHERE order_id=$1 AND status='awaiting_reply'`, [id])) > 0 },
