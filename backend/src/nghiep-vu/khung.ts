@@ -1,0 +1,122 @@
+// Hợp đồng khung theo tuần (người sáng lập chốt 02/11/2026: ưu tiên — nhà hàng/quán ăn/đại lý mua định kỳ).
+// Bước 1: lập khung (lịch món + ngày giao trong tuần), hai bên ký OTP, cọc khung ở ngân hàng, kích hoạt khi ngân hàng nhận đủ.
+// Chính sách: trả gộp cuối tuần, cọc khung phủ đủ phần chưa trả trong tuần (cọc = giá trị một tuần lịch);
+// KHÔNG cho nợ thêm ngoài cọc (không mở cmd.grant_framework_credit); giá chốt lại mỗi tuần (bước 2).
+// Mọi ghi qua cmd.* dưới login riêng (appCmd/systemCmd), không DML trực tiếp.
+import { appCmd, systemCmd } from '../db/command.ts';
+import type { GiaoDich } from '../db/co-so-du-lieu.ts';
+import type { NguoiDung } from '../auth/phien.ts';
+import { canQuyen } from '../auth/quyen.ts';
+import { damBaoDangNhap } from '../db/dang-nhap-rieng.ts';
+import { loi } from '../loi.ts';
+import { dong, kg, maMoi, soGam, dongBoTaiLieu } from './chung.ts';
+import { B } from './tinh-tien.ts';
+import { taoTaiLieuPdf } from '../pdf/tai-lieu-pdf.ts';
+
+const THU = ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+
+export interface LapKhung {
+  seller_org_id: string;
+  ngay_giao: number[];               // 0=CN..6=T7, vd [1,4] = thứ 2 và thứ 5
+  tu_ngay: string; den_ngay: string; // kỳ khung (YYYY-MM-DD), vd 4 tuần
+  mon: { product_code: string; grade_code: string; kg_moi_lan: number; gia_vnd: number; gia_ha_cap_vnd?: number | null }[];
+}
+
+export async function lapKhung(t: GiaoDich, nd: NguoiDung, d: LapKhung) {
+  canQuyen(nd, 'order.create');
+  if (!Array.isArray(d.ngay_giao) || !d.ngay_giao.length || d.ngay_giao.some((x) => !(Number.isInteger(x) && x >= 0 && x <= 6))) throw loi('DU_LIEU_KHONG_HOP_LE', 'Chọn ngày giao trong tuần (thứ 2…CN).');
+  if (!Array.isArray(d.mon) || !d.mon.length) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần ít nhất một món trong lịch.');
+  if (!(d.tu_ngay < d.den_ngay)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Ngày kết thúc khung phải sau ngày bắt đầu.');
+  const seller = await t.mot<any>(`SELECT id, code, display_name FROM core.organizations WHERE id=$1 AND can_sell AND status='active'`, [d.seller_org_id]);
+  if (!seller) throw loi('KHONG_TIM_THAY', 'Không tìm thấy người bán.');
+  const buyer = await t.mot<any>(`SELECT id, code, display_name FROM core.organizations WHERE id=$1`, [nd.thanhVien.orgId]);
+  const bank = await t.mot<any>(`SELECT id, bank_code, account_masked, holder_name FROM pii.bank_accounts WHERE org_id=$1 AND status='active' ORDER BY activated_at DESC NULLS LAST LIMIT 1`, [seller.id]);
+  if (!bank) throw loi('TAI_KHOAN_DANG_CHO', 'Người bán chưa có tài khoản nhận tiền đang hoạt động.');
+  const segment = (await t.gtri<string>(`SELECT segment_code FROM core.org_buyer_segments WHERE org_id=$1 ORDER BY 1 LIMIT 1`, [buyer.id])) ?? 'restaurant';
+  const items: any[] = []; let moiLan = 0n;
+  for (const m of d.mon) {
+    const p = await t.mot<any>(`SELECT id, name_vi, current_profile_version pv FROM core.products WHERE code=$1`, [m.product_code]);
+    if (!p) throw loi('DU_LIEU_KHONG_HOP_LE', `Mặt hàng ${m.product_code} không có trong danh mục.`);
+    const qty = soGam(Math.round(m.kg_moi_lan * 1000), 'kg_moi_lan'); const gia = B(String(Math.round(m.gia_vnd)));
+    const hc = m.gia_ha_cap_vnd == null ? null : B(String(Math.round(m.gia_ha_cap_vnd)));
+    if (gia <= 0n || qty <= 0n) throw loi('DU_LIEU_KHONG_HOP_LE', 'Lượng và giá mỗi món phải lớn hơn 0.');
+    if (hc !== null && (hc < 0n || hc >= gia)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Giá xuống loại phải nhỏ hơn giá món.');
+    items.push({ product_id: p.id, profile_version: p.pv, grade_code: m.grade_code, qty: qty.toString(), unit_price_vnd: gia.toString(), downgrade_price_vnd: hc?.toString() ?? null, _ten: p.name_vi });
+    moiLan += (qty * gia) / 1000n;
+  }
+  // Cọc khung phủ đủ phần chưa trả của MỘT TUẦN (trả gộp cuối tuần) = giá trị mỗi lần × số buổi/tuần.
+  const coc = moiLan * BigInt(new Set(d.ngay_giao).size);
+  const code = await maMoi(t, 'core.framework_contracts', 'KH', 2101);
+  const dieuKhoan = { loai: 'khung_tuan', ben_mua: buyer.display_name, ben_ban: seller.display_name, ngay_giao: d.ngay_giao, ky: [d.tu_ngay, d.den_ngay],
+    mon: items.map((x) => ({ mat_hang: x._ten, loai: x.grade_code, luong_g: x.qty, gia_vnd: x.unit_price_vnd, gia_ha_cap_vnd: x.downgrade_price_vnd })),
+    coc_khung_vnd: coc.toString(), thanh_toan: 'gộp cuối tuần, trong 72 giờ sau kỳ', gia: 'chốt lại mỗi tuần; không đồng ý giá tuần thì tuần đó tạm dừng', no_them_ngoai_coc: 'không' };
+  const doc = await taoTaiLieuPdf(t, {
+    docType: 'framework_contract', code: `${code}-HDK`, seriesKey: `${code}-HDK`, versionNo: 1, orderId: null, ownerOrgId: buyer.id,
+    noiDung: dieuKhoan, status: 'awaiting_signature', createdBy: nd.userId,
+    trinhBay: { loai: 'HD', tieuDe: 'HỢP ĐỒNG KHUNG MUA ĐỊNH KỲ THEO TUẦN', muc: [
+      { tieuDe: 'Các bên', dong: [['Bên mua', buyer.display_name], ['Bên bán', seller.display_name], ['Tài khoản nhận tiền', `${bank.bank_code} ${bank.account_masked}`]] },
+      { tieuDe: 'Lịch giao', dong: [['Ngày giao', d.ngay_giao.map((x) => THU[x]).join(', ')], ['Kỳ khung', `${d.tu_ngay} → ${d.den_ngay}`]] },
+      { tieuDe: 'Món mỗi lần giao', bang: { cot: ['Món', 'Loại', 'Lượng', 'Giá', 'Giá xuống loại'], hang: items.map((x) => [x._ten, x.grade_code, kg(B(x.qty)), dong(B(x.unit_price_vnd)), x.downgrade_price_vnd ? dong(B(x.downgrade_price_vnd)) : '—']) } },
+      { tieuDe: 'Tiền', dong: [['Giá trị mỗi lần giao', dong(moiLan)], ['Cọc khung (ngân hàng giữ, phủ một tuần)', dong(coc)], ['Thanh toán', 'Gộp cuối tuần, trong 72 giờ'], ['Nợ thêm ngoài cọc', 'Không'], ['Giá', 'Chốt lại mỗi tuần']] },
+    ] },
+  });
+  const data = { code, seller_org_id: seller.id, segment_code: segment,
+    schedule: { weekdays: [...new Set(d.ngay_giao)].sort(), items: items.map(({ _ten, ...x }) => x) },
+    price_period: 'week', billing_period: 'week', framework_deposit_vnd: coc.toString(), active_during: `[${d.tu_ngay},${d.den_ngay})` };
+  const id = await appCmd<string>(t, nd, 'buyer', 'create_framework', [data, doc.payload, bank.id]);
+  return { id, code, coc_khung_vnd: coc.toString(), gia_tri_moi_lan_vnd: moiLan.toString(), trang_thai: 'drafting' };
+}
+
+async function layKhung(t: GiaoDich, nd: NguoiDung, id: string) {
+  const f = await t.mot<any>(`SELECT f.*, ft.document_id, ft.period_value_vnd::text gia_tri_ky, ft.seller_bank_code, ft.seller_account_masked FROM core.framework_contracts f LEFT JOIN core.framework_terms ft ON ft.framework_id=f.id WHERE f.id=$1`, [id]);
+  if (!f) throw loi('KHONG_TIM_THAY');
+  const phia = f.buyer_org_id === nd.thanhVien.orgId ? 'buyer' : f.seller_org_id === nd.thanhVien.orgId ? 'seller' : null;
+  if (!phia) throw loi('KHONG_TIM_THAY');
+  return { f, phia: phia as 'buyer' | 'seller' };
+}
+
+/** Ký khung (OTP contract_sign đã xác minh ở route). Bên mua ký → gửi; người bán ký → chốt, mở cọc khung ở ngân hàng. */
+export async function kyKhung(t: GiaoDich, nd: NguoiDung, id: string, d: { challenge_id: string; device_id?: string }) {
+  const { f, phia } = await layKhung(t, nd, id);
+  canQuyen(nd, phia === 'buyer' ? 'order.sign.buyer' : 'order.sign.seller');
+  if (phia === 'buyer' && f.status !== 'drafting') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Khung không còn ở bước bên mua ký.');
+  if (phia === 'seller' && f.status !== 'awaiting_signature') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Chưa tới lượt người bán ký khung.');
+  const login = await damBaoDangNhap(t, nd.userId, nd.thanhVien.orgId, phia);
+  await t.voiDangNhap(login, () => t.q(`SELECT cmd.sign_document($1,$2,$3,$4,$5::text[])`, [f.document_id, phia, d.challenge_id, d.device_id ?? nd.thietBi ?? 'thiet-bi', phia === 'seller' ? ['commitment_ack'] : []]));
+  if (phia === 'buyer') await appCmd(t, nd, 'buyer', 'send_framework', [id]);
+  else {
+    const ma = String(f.code).replace(/-/g, '');
+    await appCmd(t, nd, 'seller', 'finalize_framework', [id, `AGV ${ma} COC`, `THU-${ma}`, 'ngan-hang-thu']);
+    await dongBoTaiLieu(t, f.document_id, 'fully_signed');
+  }
+  return xemKhung(t, nd, id);
+}
+
+/** Ngân hàng báo nhận đủ cọc khung → kích hoạt (gọi từ webhook). */
+export async function kichHoatKhung(t: GiaoDich, frameworkId: string) {
+  await systemCmd(t, 'activate_framework', [frameworkId]);
+}
+
+export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
+  const { f, phia } = await layKhung(t, nd, id);
+  const dep = await t.mot<any>(`SELECT status, payment_ref, virtual_account_no, expected_deposit_vnd::text coc_vnd FROM core.deposits WHERE framework_id=$1 ORDER BY created_at DESC LIMIT 1`, [id]);
+  const ten = await t.q<any>(`SELECT id, name_vi FROM core.products WHERE id = ANY($1::uuid[])`, [(f.schedule?.items ?? []).map((x: any) => x.product_id)]);
+  const tenSp = new Map(ten.map((x: any) => [x.id, x.name_vi]));
+  const buyer = await t.gtri<string>(`SELECT display_name FROM core.organizations WHERE id=$1`, [f.buyer_org_id]);
+  const seller = await t.gtri<string>(`SELECT display_name FROM core.organizations WHERE id=$1`, [f.seller_org_id]);
+  const TT: Record<string, string> = { drafting: 'Bên mua đang soạn', awaiting_signature: 'Chờ người bán ký', awaiting_deposit: 'Chờ bên mua chuyển cọc khung', running: 'Đang chạy', needs_security: 'Tạm dừng: nợ vượt cọc', closed: 'Đã kết thúc' };
+  const toiLuot = f.status === 'drafting' ? 'buyer' : f.status === 'awaiting_signature' ? 'seller' : f.status === 'awaiting_deposit' ? 'buyer' : null;
+  return {
+    id: f.id, code: f.code, status: f.status, ten_trang_thai: TT[f.status] ?? f.status, phia, toi_luot: toiLuot, ben_mua: buyer, ben_ban: seller,
+    ngay_giao: f.schedule?.weekdays ?? null, ky: { tu: f.active_during.lower ?? null, den: f.active_during.upper ?? null, chuoi: String(f.active_during) },
+    mon: (f.schedule?.items ?? []).map((x: any) => ({ mat_hang: tenSp.get(x.product_id), loai: x.grade_code, luong_g: x.qty, gia_vnd: x.unit_price_vnd, gia_ha_cap_vnd: x.downgrade_price_vnd })),
+    gia_tri_moi_lan_vnd: f.gia_tri_ky, coc_khung_vnd: String(f.framework_deposit_vnd), tai_khoan_ban: f.seller_bank_code ? `${f.seller_bank_code} ${f.seller_account_masked}` : null, document_id: f.document_id,
+    nhap_tu_du_lieu_cu: !f.document_id, // khung nạp thẳng từ dữ liệu cũ (chưa có văn bản ký trên app)
+    coc: dep ? { trang_thai: dep.status, payment_ref: dep.payment_ref, virtual_account_no: dep.virtual_account_no, so_tien_vnd: dep.coc_vnd } : null,
+  };
+}
+
+export async function dsKhung(t: GiaoDich, nd: NguoiDung) {
+  const ids = await t.q<any>(`SELECT id FROM core.framework_contracts WHERE buyer_org_id=$1 OR seller_org_id=$1 ORDER BY created_at DESC`, [nd.thanhVien.orgId]);
+  return Promise.all(ids.map((x: any) => xemKhung(t, nd, x.id)));
+}

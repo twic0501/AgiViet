@@ -405,6 +405,18 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/ops/inspections/:id/fee-allocation-proposals', async (req) => bo.lenh(req, 'de_xuat_phan_bo_phi', 'ops', async (t, nd, b) => (await B23()).deXuatPhanBoPhi(t, nd, P(req).id, b)));
   app.post('/v1/ops/fee-allocations', async (req) => bo.lenh(req, 'ap_phan_bo_phi', 'ops', async (t, nd, b) => (await B23()).apPhanBoPhi(t, nd, b)));
   app.post('/v1/acceptance-lines/:id/post-delivery-claim', async (req) => bo.lenh(req, 'khieu_nai_sau_giao', 'buyer', async (t, nd, b) => (await B23()).khieuNaiSauGiao(t, nd, P(req).id, b)));
+  // ---------------- Hợp đồng khung theo tuần (bước 1: lập, ký, cọc khung) ----------------
+  const KH = () => import('../nghiep-vu/khung.ts');
+  app.post('/v1/frameworks', async (req) => bo.lenh(req, 'lap_khung', 'buyer', async (t, nd, b) => (await KH()).lapKhung(t, nd, b)));
+  app.get('/v1/frameworks', async (req) => { const nd = await bo.xacThuc(req); const m = await KH(); return bo.doc((t) => m.dsKhung(t, nd)); });
+  app.get('/v1/frameworks/:id', async (req) => { const nd = await bo.xacThuc(req); const m = await KH(); return bo.doc((t) => m.xemKhung(t, nd, P(req).id)); });
+  app.post('/v1/frameworks/:id/sign', async (req) => {
+    const nd = await bo.xacThuc(req);
+    const b = z.object({ challenge_id: z.string(), code: z.string(), device_id: z.string().optional() }).passthrough().parse(req.body);
+    const cu = await bo.layLai(req, 'ky_khung'); if (cu) return cu;
+    await ht.otp.xacMinh(nd, b.challenge_id, b.code);
+    return bo.lenh(req, 'ky_khung', async (t, n) => (await t.gtri<string>(`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_contracts WHERE id=$2`, [n.thanhVien.orgId, P(req).id])) as any, async (t, n, body) => (await KH()).kyKhung(t, n, P(req).id, body));
+  });
   app.post('/v1/sourcing-agreements', async (req) => bo.lenh(req, 'lap_thoa_thuan_nguon', 'buyer', async (t, nd, b) => (await B23()).lapThoaThuanNguon(t, nd, b)));
   app.get('/v1/sourcing-agreements/:id/coverage', async (req) => { const nd = await bo.xacThuc(req); const m = await B23(); return bo.doc((t) => m.doPhuNguon(t, nd, P(req).id)); });
   app.post('/v1/sourcing-agreements/:id/days', async (req) => bo.lenh(req, 'chot_ngay_nguon', 'buyer', async (t, nd, b) => (await B23()).chotNgay(t, nd, P(req).id, b)));

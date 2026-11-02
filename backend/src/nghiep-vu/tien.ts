@@ -64,6 +64,11 @@ async function sauSuKienNganHang(ht: HeThong, t: GiaoDich, eventId: string, ev: 
   if (ev.kind === 'deposit_received') {
     const dep = await t.mot<any>(`SELECT d.*, o.status order_status FROM core.deposits d LEFT JOIN core.orders o ON o.id=d.order_id WHERE d.payment_ref=$1 OR d.id IN (SELECT deposit_id FROM core.deposit_adjustments WHERE payment_ref=$1)`, [ev.payment_ref]);
     if (!dep) return { ghi_chu: 'Tiền vào chưa khớp đơn: tiền treo, chờ đối soát' };
+    if (dep.framework_id) {
+      // Cọc khung (khung tuần): ngân hàng giữ đủ → kích hoạt khung.
+      if (r === 'held') { const { kichHoatKhung } = await import('./khung.ts'); await kichHoatKhung(t, dep.framework_id); return { framework_activated: dep.framework_id }; }
+      return { framework_deposit: r };
+    }
     if (r === 'late_after_closed') {
       await taoViec(t, 'V09', 2, 'deposit', dep.id, dep.order_id, 'finance', `late:${eventId}`, 'Tiền cọc đến sau khi đơn đóng: hoàn về tài khoản nguồn');
       await phat(t, 'deposit', dep.id, 'coc.den_muon', {});

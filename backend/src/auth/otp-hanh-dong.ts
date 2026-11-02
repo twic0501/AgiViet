@@ -32,7 +32,9 @@ export class DichVuOtpHanhDong {
         binding = await t.gtri(`SELECT core.payment_binding($1,$2)`, [d.payment_id, String(d.amount_vnd)]);
       } else {
         if (!d.document_id) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần document_id.');
-        const doc = await t.mot<any>(`SELECT d.doc_type, o.buyer_org_id, o.seller_org_id FROM core.documents d LEFT JOIN core.orders o ON o.id=d.order_id WHERE d.id=$1`, [d.document_id]);
+        // Hợp đồng khung (entity=framework) không gắn đơn: lấy hai bên từ khung.
+        const doc = await t.mot<any>(`SELECT d.doc_type, coalesce(o.buyer_org_id, f.buyer_org_id) buyer_org_id, coalesce(o.seller_org_id, f.seller_org_id) seller_org_id
+          FROM core.documents d LEFT JOIN core.orders o ON o.id=d.order_id LEFT JOIN core.framework_contracts f ON d.entity='framework' AND f.id=d.entity_id WHERE d.id=$1`, [d.document_id]);
         if (!doc || (doc.buyer_org_id !== nd.thanhVien.orgId && doc.seller_org_id !== nd.thanhVien.orgId)) throw loi('KHONG_TIM_THAY');
         const can = doc.doc_type === 'annex' ? 'amendment_sign' : 'contract_sign';
         if (can !== d.purpose) throw loi('DU_LIEU_KHONG_HOP_LE', `Tài liệu này cần mục đích ${can}.`);
