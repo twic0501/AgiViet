@@ -1086,6 +1086,65 @@ if (THAT) {
     ve: () => `<div id="dn-ct" style="display:grid;gap:16px"><p class="sl-ghi">Đang tải…</p></div>`,
     sau: async (g) => {
       const khung = g.querySelector("#dn-ct");
+      const veQr = async (el, chuoi) => { try { const { default: QR } = await import("/assets/qr.js"); const c = document.createElement("canvas"); await QR.toCanvas(c, chuoi, { width: 240, margin: 2, errorCorrectionLevel: "M" }); c.style.cssText = "display:block;margin:0 auto;max-width:100%;height:auto"; c.setAttribute("role", "img"); c.setAttribute("aria-label", "Mã QR"); el.prepend(c); } catch (e) { console.error("Không vẽ được QR", e); } };
+      // Cọc: ngân hàng đối tác giữ; chỉ khi ngân hàng báo nhận mới tính là đã cọc (không tin ảnh chụp chuyển khoản).
+      const veCoc = async (d) => {
+        const h = await api(`/v1/orders/${d.id}/deposit-instruction`);
+        const con = Number(h.total_vnd) - Number(h.received_vnd || 0), han = new Date(h.due_at);
+        const chep = (id, gt, nhan) => `<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span class="sl-ghi" style="margin:0">${nhan}</span><span style="display:flex;gap:8px;align-items:center"><b id="${id}" style="font-size:17px;letter-spacing:.5px">${esc(gt)}</b><button type="button" class="sl-nut sl-vien" data-chep="${esc(gt)}" style="min-height:44px">Chép</button></span></div>`;
+        khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="coc" style="display:grid;gap:12px">
+          <h2 style="margin:0;font-size:18px">Chuyển cọc</h2>
+          <div style="font-size:28px;font-weight:700">${vnd(con)}</div>
+          <p class="sl-ghi" style="margin:0">Gồm cọc ${vnd(h.deposit_vnd)} (ngân hàng giữ tới khi giao xong) + phí AgiViet ${vnd(h.fee_vnd)}.${Number(h.received_vnd) ? ` Ngân hàng đã nhận ${vnd(h.received_vnd)}.` : ""}</p>
+          ${h.vietqr ? `<div id="coc-qr" style="display:grid;gap:4px;text-align:center"><p class="sl-ghi" style="margin:0">Quét bằng app ngân hàng: số tiền và nội dung điền sẵn</p></div>` : ""}
+          ${chep("coc-tk", h.virtual_account_no, `Số tài khoản · ${esc(h.ngan_hang)}`)}
+          ${chep("coc-nd", h.payment_ref, "Nội dung chuyển khoản (ghi đúng)")}
+          <p style="margin:0;font-weight:600">Hạn chót: ${han.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}. Quá hạn chưa đủ cọc thì đơn tự đóng.</p>
+          ${bao(esc(h.cau), "sl-bao-nh")}
+          ${new URLSearchParams(location.search).has("thu") ? `<button type="button" class="sl-nut sl-vien" id="coc-gia-lap">Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>` : ""}
+          <p class="sl-ghi" id="coc-bao" role="status"></p></section>`);
+        const o = khung.querySelector("#coc");
+        if (h.vietqr) await veQr(o.querySelector("#coc-qr"), h.vietqr);
+        o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
+        const gl = o.querySelector("#coc-gia-lap");
+        if (gl) gl.onclick = async () => {
+          gl.disabled = true; o.querySelector("#coc-bao").textContent = "Đang giả lập chuyển khoản…";
+          try { await api("/v1/sim/bank/transfers", { payment_ref: h.payment_ref, amount_vnd: con, payer: { bank_code: "VCB", account_no: "0071000123456", name: "BEN MUA THU" } }); await api("/v1/sim/bank/deliver", {}); await ve(); }
+          catch (err) { o.querySelector("#coc-bao").textContent = err.message; gl.disabled = false; }
+        };
+      };
+      // Giao nhận (bên mua lo xe): bảng sẵn sàng giao của backend + người nhận + đặt xe + mã QR nhận hàng.
+      const veGiao = async (d, dot) => {
+        const [rd, me] = await Promise.all([api(`/v1/deliveries/${dot.id}/readiness`), api("/v1/me")]);
+        const tu = new Date(dot.window_from), den = new Date(dot.window_to);
+        const xeOk = rd.find((x) => x.ma === "xe")?.ok, nhanOk = rd.find((x) => x.ma === "nguoi_nhan")?.ok;
+        khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="giao" style="display:grid;gap:12px">
+          <h2 style="margin:0;font-size:18px">Giao nhận · đợt ${dot.batch_no} (${kg(Number(dot.planned_qty_g) / 1000)})</h2>
+          <p style="margin:0;font-weight:600">Nhận tại vườn ${tu.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })} – ${den.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
+          <ul style="list-style:none;margin:0;padding:0;display:grid;gap:6px">${rd.map((x) => `<li style="display:flex;gap:8px;align-items:start;font-size:16px"><span aria-hidden="true" style="font-weight:700;color:${x.ok ? "var(--xanh,#2f6b3a)" : "var(--do,#a8392c)"}">${x.ok ? "✓" : "✗"}</span><span><b>${esc(x.ten)}</b>${x.ok ? "" : ` — ${esc(x.ly_do || "chưa xong")}`}</span></li>`).join("")}</ul>
+          <p style="margin:0">Người nhận: <b>${dot.receiver_user_id === me.user_id ? `Bạn (${esc(me.name)})` : dot.receiver_user_id ? "Thành viên khác của tổ chức" : "Chưa chỉ định"}</b></p>
+          ${!dot.receiver_user_id ? `<button type="button" class="sl-nut sl-vien" id="g-nhan">Tôi sẽ nhận hàng</button>` : ""}
+          ${!xeOk ? `<div style="display:grid;gap:10px"><label style="display:grid;gap:4px;font-weight:600">Biển số xe<input id="g-bien" placeholder="vd 66C-123.45" autocapitalize="characters" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+            <label style="display:grid;gap:4px;font-weight:600">Cước xe (đ, bạn trả nhà xe)<input id="g-cuoc" inputmode="numeric" placeholder="vd 1500000" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+            <button type="button" class="sl-nut sl-vang" id="g-xe">Đặt xe</button></div>` : ""}
+          ${nhanOk ? `<button type="button" class="sl-nut ${xeOk ? "sl-vang" : "sl-vien"}" id="g-qr">Hiện mã nhận hàng</button><div id="g-ma" hidden style="text-align:center;padding:16px;border:2px dashed var(--ke-dam,#ccc);border-radius:12px"></div>` : ""}
+          <p class="sl-ghi" style="margin:0">Khi xe tới vườn, người nhận đưa mã này cho người bán quét để bắt đầu cân. Không đưa mã qua tin nhắn ngoài app.</p>
+          <p class="sl-ghi" id="g-bao" role="status"></p></section>`);
+        const o = khung.querySelector("#giao"), bao3 = o.querySelector("#g-bao");
+        const lam = async (nut, fn) => { nut.disabled = true; bao3.textContent = "Đang gửi…"; try { await fn(); await ve(); } catch (err) { bao3.textContent = err.message; nut.disabled = false; } };
+        o.querySelector("#g-nhan")?.addEventListener("click", (e) => lam(e.currentTarget, () => api(`/v1/deliveries/${dot.id}/receiver`, { user_id: me.user_id })));
+        o.querySelector("#g-xe")?.addEventListener("click", (e) => {
+          const bien = o.querySelector("#g-bien").value.trim().toUpperCase(), cuoc = Number(o.querySelector("#g-cuoc").value.replace(/\D/g, ""));
+          if (!/^[0-9]{2}[A-Z]{1,2}[-\s]?[0-9.]{4,6}$/.test(bien.replace(/^DEMO-/, ""))) { bao3.textContent = "Biển số chưa đúng dạng, vd 66C-123.45."; return; }
+          lam(e.currentTarget, () => api(`/v1/deliveries/${dot.id}/trip`, { plate_no: bien, ...(cuoc ? { freight_vnd: cuoc } : {}) }));
+        });
+        o.querySelector("#g-qr")?.addEventListener("click", async (e) => {
+          const nut = e.currentTarget; nut.disabled = true;
+          try { const r = await api(`/v1/deliveries/${dot.id}/receipt-qr`, {}); const ma = r.qr_token ?? r.data?.qr_token; const hop = o.querySelector("#g-ma"); hop.hidden = false;
+            hop.innerHTML = `<p style="margin:8px 0 0;font-weight:600">Đưa màn này cho người bán quét</p><p class="sl-ghi" style="margin:4px 0 0">Hết hạn ${r.expires_at ? new Date(r.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "theo đợt"}</p><details style="margin-top:6px"><summary class="sl-ghi" style="cursor:pointer">Không quét được? Xem mã chữ</summary><code style="font-size:12px;word-break:break-all">${esc(ma)}</code></details>`; await veQr(hop, ma); bao3.textContent = ""; }
+          catch (err) { bao3.textContent = err.message; } nut.disabled = false;
+        });
+      };
       const ve = async () => {
         const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
         const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) * 2 < Number(k.unit_price_vnd);
@@ -1102,6 +1161,9 @@ if (THAT) {
             <div style="display:grid;gap:10px;max-width:420px"><button class="sl-nut sl-vien" id="ky-ma">1. Gửi mã OTP</button>
             <label style="display:grid;gap:4px;font-weight:600;min-width:0">2. Nhập mã 6 số<input id="ky-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box;letter-spacing:4px;font-size:20px"></label>
             <button class="sl-nut sl-vang" id="ky-gui" disabled>3. Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}`;
+        if ((d.hanh_dong || []).includes("deposit_instruction")) await veCoc(d);
+        const dot = (d.dot_giao || []).find((x) => !/closed|cancel|shortfall_ended/.test(x.status));
+        if (dot && ["preparing", "ready"].includes(dot.status)) await veGiao(d, dot);
         if (!coKy) return;
         let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
         khung.querySelector("#ky-ma").onclick = async (e) => {
