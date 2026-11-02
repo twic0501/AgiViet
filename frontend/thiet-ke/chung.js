@@ -219,7 +219,7 @@ function nutCuonNhanh() {
 // Header dùng chung: ảnh đại diện + tên bên trái; Hỗ trợ (tai nghe) + Thông báo (chuông, chấm xanh) bên phải
 export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
   goc.classList.add("dau-xanh", "nen-xanh");
-  goc.innerHTML = `<div class="dau-trai"><a class="anh-dai-dien" href="./ban-toi.html" aria-label="Trang cá nhân: hồ sơ, giấy tờ, cài đặt" style="text-decoration:none;color:inherit">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</a><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
+  goc.innerHTML = `<div class="dau-trai"><span class="anh-dai-dien" aria-hidden="true">${chuDau ? esc(chuDau) : '<img src="/assets/logo.svg" alt="" width="40" height="40" style="border-radius:50%">'}</span><div><p class="chao">${esc(chao)}</p><h1>${esc(ten)}</h1></div></div>
     <div class="dau-phai">
       <button class="nut-tron" type="button" data-tro-ly aria-label="Trợ lý AgiViet: hỏi đáp, tìm tính năng">${bieuTuong("ho-tro")}</button>
       <a class="nut-tron" href="./ban-thong-bao.html#thong-bao" aria-label="Thông báo${soThongBao ? `, ${soThongBao} mới` : ""}">${bieuTuong("chuong")}${soThongBao ? '<i class="cham-moi"></i>' : ""}</a>

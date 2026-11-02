@@ -8,56 +8,82 @@
 <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./so-vuon.css">
 <style>
-  .dau-lui { position: sticky; top: 0; z-index: 12; display: flex; align-items: center; gap: 8px; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55); }
-  .dau-lui a { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: #f6f2e7; text-decoration: none; }
-  .dau-lui h1 { font-size: 18px; font-weight: 700; color: #f6f2e7; }
-  .gia-tt { display: grid; grid-template-columns: 48px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--ke); }
-  .gia-tt .anh { width: 48px; height: 48px; border-radius: 12px; background: var(--giay-lot) center / cover; }
-  .gia-tt .ten { font-weight: 600; }
-  .gia-tt .phu { font-size: 13px; color: var(--muc-nhat); }
-  .gia-tt .so { text-align: right; font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; }
-  .gia-tt .so small { display: block; font-size: 12px; font-weight: 400; color: var(--muc-nhat); }
-  .tin { display: block; padding: 12px 0; border-bottom: 1px solid var(--ke); text-decoration: none; color: inherit; }
-  .tin .tieu { font-weight: 600; line-height: 1.35; }
-  .tin .phu { font-size: 13px; color: var(--muc-nhat); margin-top: 4px; }
+  /* Theo bản mẫu mau/ban.html#man=gia-tin-tuc: nút chuyển viên tròn, thẻ khoảng giá + biểu đồ 7 tuần, tin dạng thẻ có ảnh */
+  .m-tab { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+  .m-tab button { flex: none; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; background: #e9e2cf; color: var(--muc); font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .m-tab button[aria-selected="true"] { background: var(--la); color: #f4f1e8; }
+  .m-tab button:focus-visible { outline: 3px solid #c99a2e; outline-offset: 2px; }
+  .gia-nhan { font-size: 15px; color: var(--muc-phu); margin: 0; }
+  .gia-to { font-size: 30px; font-weight: 700; color: #8a5a00; letter-spacing: -.01em; font-variant-numeric: tabular-nums; line-height: 1.1; margin: 0; }
+  .gia-phu { font-size: 14px; color: var(--muc-nhat); margin: 2px 0 0; }
+  .cot { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; height: 72px; margin-top: 4px; }
+  .cot span { display: block; border-radius: 6px 6px 3px 3px; background: var(--la-nhat); min-height: 6px; }
+  .cot span.moi { background: #f2c14e; }
+  .cot span.trong { background: repeating-linear-gradient(135deg, var(--ke) 0 4px, transparent 4px 8px); height: 6px; }
+  .tin-the { display: flex; gap: 14px; align-items: center; padding: 12px; text-decoration: none; color: inherit; }
+  .tin-the .anh { width: 58px; height: 58px; border-radius: 12px; background: var(--la-nhat) center / cover; flex: none; }
+  .tin-the .tieu { font-weight: 700; font-size: 16px; line-height: 1.35; margin: 0; }
+  .tin-the .phu { font-size: 14px; color: var(--muc-nhat); margin: 4px 0 0; }
+  .tin-the svg { flex: none; color: var(--muc-nhat); }
 </style>
 </head>
 <body>
 <div class="trang">
-  <header class="dau-lui nen-xanh"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a><h1>Giá &amp; tin tức</h1></header>
-  <main class="noi" id="noi" aria-busy="true">
-    <section class="muc" aria-labelledby="t-gia" id="gia">
-      <h3 id="t-gia"><span>Giá thị trường hôm nay</span><span style="font-weight:400">đ/kg</span></h3>
-      <div id="ds-gia"><div class="khung-tai"></div></div>
-    </section>
-    <section class="muc" aria-labelledby="t-tin" id="tin">
-      <h3 id="t-tin"><span>Tin tức nông nghiệp</span><span id="tin-tinh" style="font-weight:400"></span></h3>
-      <div id="ds-tin"><div class="khung-tai"></div></div>
-    </section>
+  <header class="dau-lui nen-xanh"><a href="./ban-hom-nay.html" aria-label="Về Trang chủ"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a><div style="flex:1;min-width:0"><small id="theo-hang">Theo hàng của bác</small><h1>Giá &amp; tin tức</h1></div></header>
+  <main class="m-than" id="noi" aria-busy="true">
+    <div class="m-tab" role="tablist" aria-label="Chọn mục">
+      <button role="tab" aria-selected="true" data-tab="gia">Giá thị trường</button><button role="tab" aria-selected="false" data-tab="tin">Tin tức</button><button role="tab" aria-selected="false" data-tab="hoc">Học kỹ thuật</button>
+    </div>
+    <div id="tab-gia" style="display:grid;gap:16px"><section class="m-the"><p class="m-ghi" style="margin:0">Đang tải giá…</p></section></div>
+    <div id="tab-tin" style="display:grid;gap:12px" hidden></div>
+    <div id="tab-hoc" style="display:grid;gap:12px" hidden></div>
   </main>
 </div>
 <script type="module">
-import { esc, so, phien, layDuLieu, ANH_SP, giuThamSo, veTab } from "./chung.js";
+import { esc, phien, layDuLieu, ANH_SP, giuThamSo, veTab } from "./chung.js";
 veTab("trang-chu");
 const $ = (id) => document.getElementById(id);
+const vnd = (x) => Number(x).toLocaleString("vi-VN");
+const MUI = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+document.querySelector(".m-tab").onclick = (e) => {
+  const b = e.target.closest("[data-tab]"); if (!b) return;
+  document.querySelectorAll(".m-tab [data-tab]").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+  ["gia", "tin", "hoc"].forEach((k) => ($("tab-" + k).hidden = k !== b.dataset.tab));
+};
+const theTin = (n, anh) => `<a class="m-the tin-the" href="${esc(n.link)}" target="_blank" rel="noopener noreferrer">${anh ? `<span class="anh" style="background-image:url(${anh})"></span>` : `<span class="anh" style="display:grid;place-items:center;color:var(--la-dam)"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5"/></svg></span>`}
+  <span style="flex:1;min-width:0"><p class="tieu">${esc(n.tieu_de)}</p><p class="phu">${esc(n.nguon)} · ${new Date(n.ngay).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" })}${n.theo_tinh ? " · trong tỉnh" : ""}</p></span>${MUI}</a>`;
+
 async function mo() {
   const token = await phien();
   const { lo: tatCa, tenSp } = await layDuLieu(token);
-  const lo = tatCa.filter((l) => l.status === "on_sale");
+  const lo = tatCa.filter((l) => ["on_sale", "upcoming"].includes(l.status));
   const h = { headers: { authorization: "Bearer " + token } };
   const cap = [...new Map(lo.map((l) => [`${l.product_code}|${l.grade_code}`, l])).values()];
-  const gia = await Promise.all(cap.map((l) => fetch(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`, h).then((x) => (x.ok ? x.json() : null)).catch(() => null)));
-  const dong = cap.map((l, i) => ({ l, g: gia[i] })).filter((x) => x.g?.price_vnd);
-  $("ds-gia").innerHTML = dong.length ? dong.map(({ l, g }) => { const a = ANH_SP(l.product_code); return `<div class="gia-tt"><span class="anh" style="${a ? `background-image:url(${a})` : ""}"></span>
-    <span><p class="ten">${esc(tenSp.get(l.product_code) || l.product_code)} · Loại ${esc(l.grade_code.replace(/^L/, ""))}</p><p class="phu">Từ ${esc(String(g.order_count || 0))} giao dịch gần đây · ${esc(g.scope === "DBSCL" ? "ĐBSCL" : g.scope || "")}</p></span>
-    <span class="so">${Number(g.price_vnd).toLocaleString("vi-VN")}<small>đ/kg</small></span></div>`; }).join("") : `<p class="bao" style="margin-top:12px">Chưa có giá tham khảo cho mặt hàng bác đang bán.</p>`;
+  const tenHang = [...new Set(cap.map((l) => tenSp.get(l.product_code) || l.product_code))];
+  if (tenHang.length) $("theo-hang").textContent = "Theo hàng của bác: " + tenHang.slice(0, 2).join(", ");
+  const ls = await Promise.all(cap.map((l) => fetch(`/v1/price-history?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`, h).then((x) => (x.ok ? x.json() : null)).catch(() => null)));
+  $("tab-gia").innerHTML = cap.length ? cap.map((l, i) => {
+    const g = ls[i], ten = `${tenSp.get(l.product_code) || l.product_code} loại ${String(l.grade_code).replace(/^L/, "")}`;
+    if (!g || !g.khoang) return `<section class="m-the"><p class="gia-nhan">${esc(ten)}</p><p style="margin:0;font-size:16px">Chưa có giao dịch nào trong 7 tuần để tham khảo. Khi có người mua bán mặt hàng này trên AgiViet, giá sẽ hiện ở đây.</p></section>`;
+    const cao = Math.max(...g.tuan.map((t) => Number(t.gia_tb_vnd || 0)));
+    const khoang = g.khoang.thap_vnd === g.khoang.cao_vnd ? vnd(g.khoang.thap_vnd) : `${vnd(g.khoang.thap_vnd)}–${vnd(g.khoang.cao_vnd)}`;
+    return `<section class="m-the"><p class="gia-nhan">${esc(ten)} · tại vườn</p>
+      <div><p class="gia-to">${khoang}</p><p class="gia-phu">đ/kg · ${g.tong_don} giao dịch trong 7 tuần trên AgiViet</p></div>
+      <div class="cot" role="img" aria-label="Giá trung bình 7 tuần gần nhất">${g.tuan.map((t, k) => t.so_don ? `<span class="${k === g.tuan.length - 1 ? "moi" : ""}" style="height:${Math.max(12, Math.round(72 * Number(t.gia_tb_vnd) / cao))}px" title="${vnd(t.gia_tb_vnd)} đ/kg · ${t.so_don} giao dịch"></span>` : `<span class="trong" title="Tuần này chưa có giao dịch"></span>`).join("")}</div>
+      <p class="m-ghi" style="margin:0">7 tuần gần nhất · cột gạch là tuần chưa có giao dịch · tham khảo từ các đơn đã hoàn tất trên AgiViet, không phải giá chính thức.</p></section>`;
+  }).join("") : `<section class="m-the"><p style="margin:0;font-size:16px">Bác chưa đăng hàng nào, nên chưa có giá để theo dõi. Đăng hàng xong, giá của mặt hàng đó sẽ hiện ở đây.</p></section>`;
   const tin = await fetch("/v1/news", h).then((x) => (x.ok ? x.json() : null)).catch(() => null);
-  $("tin-tinh").textContent = tin?.tinh || "";
-  $("ds-tin").innerHTML = tin?.tin?.length ? tin.tin.map((n) => `<a class="tin" href="${esc(n.link)}" target="_blank" rel="noopener noreferrer"><p class="tieu">${esc(n.tieu_de)}</p>
-    <p class="phu">${esc(n.nguon)} · ${new Date(n.ngay).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric" })}${n.theo_tinh ? " · trong tỉnh" : ""}</p></a>`).join("") : `<p class="bao" style="margin-top:12px">Chưa tải được tin.</p>`;
+  const ds = tin?.tin || [];
+  // Ảnh theo mặt hàng tin nhắc tới; không khớp thì dùng biểu tượng tờ báo (không gắn ảnh xoài cho tin sầu riêng/trứng gà)
+  const KHOP = [[/xoài/i, "XOAI_CAT_CHU"], [/sầu riêng/i, "SAU_RIENG"], [/thanh long/i, "THANH_LONG"], [/bưởi/i, "BUOI_DA_XANH"], [/tôm/i, "TOM_THE"], [/cá tra/i, "CA_TRA"], [/lúa|gạo/i, "LUA_TUOI"], [/chanh/i, "CHANH_KHONG_HAT"]];
+  const anhTin = (n) => { const k = KHOP.find(([r]) => r.test(n.tieu_de)); return k ? ANH_SP(k[1]) : null; };
+  const laHoc = (n) => /kỹ thuật|cách |phòng trừ|bón|tưới|chăm sóc|bao trái|sâu bệnh/i.test(n.tieu_de);
+  const tinThuong = ds.filter((n) => !laHoc(n)), hoc = ds.filter(laHoc);
+  $("tab-tin").innerHTML = tinThuong.length ? tinThuong.map((n) => theTin(n, anhTin(n))).join("") : `<section class="m-the"><p style="margin:0">Chưa tải được tin tức. Bác thử lại sau.</p></section>`;
+  $("tab-hoc").innerHTML = hoc.length ? hoc.map((n) => theTin(n, anhTin(n))).join("") : `<section class="m-the"><p style="margin:0;font-size:16px">Chưa có bài kỹ thuật mới cho mặt hàng của bác. Bác cần hỏi gì thì bấm Hỗ trợ để nhân viên AgiViet giúp.</p></section>`;
 }
 
-mo().catch((e) => { $("noi").insertAdjacentHTML("afterbegin", `<p class="bao loi" style="margin-top:12px">Không tải được: ${esc(e.message)}</p>`); }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });
+mo().catch((e) => { $("tab-gia").innerHTML = `<section class="m-the"><p style="margin:0">Không tải được: ${esc(e.message)}</p></section>`; }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });
 </script>
 </body>
 </html>

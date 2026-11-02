@@ -163,6 +163,34 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     });
   });
 
+  // Lịch sử giá theo tuần cho màn Giá & tin tức (7 tuần): gộp giao dịch cũ (core.historical_trades) + đơn đã hoàn tất trên app.
+  // Tuần không có giao dịch trả so_don=0, gia_tb=null (không nội suy, không bịa số). Đây là giá tham khảo, không phải giá chính thức.
+  app.get('/v1/price-history', async (req) => {
+    await bo.xacThuc(req);
+    const q = z.object({ product: z.string(), grade: z.string(), weeks: z.coerce.number().int().min(1).max(26).optional() }).parse(req.query);
+    return ht.db.doc(async (t) => {
+      const p = await t.gtri<string>(`SELECT id FROM core.products WHERE code=$1`, [q.product]);
+      if (!p) throw loi('KHONG_TIM_THAY');
+      const n = q.weeks ?? 7;
+      const rows = await t.q<any>(`
+        WITH gd AS (
+          SELECT h.unit_price_vnd::bigint gia, h.accepted_at luc FROM core.historical_trades h WHERE h.product_id=$1 AND h.grade_code=$2
+          UNION ALL
+          SELECT v.unit_price_vnd::bigint, (SELECT max(s.at) FROM evt.state_history s WHERE s.entity_id=o.id AND s.to_status='completed')
+            FROM core.orders o JOIN core.lots l ON l.id=o.lot_id
+            JOIN core.order_versions v ON v.order_id=o.id AND v.version_no=o.effective_version_no
+           WHERE o.product_id=$1 AND l.grade_code=$2 AND o.status='completed'),
+        tuan AS (SELECT generate_series(date_trunc('week', ref.clock_at()) - (($3::int - 1) * interval '1 week'), date_trunc('week', ref.clock_at()), interval '1 week') tu)
+        SELECT tuan.tu, count(gd.gia)::int so_don, round(avg(gd.gia))::bigint::text gia_tb, min(gd.gia)::text gia_thap, max(gd.gia)::text gia_cao
+          FROM tuan LEFT JOIN gd ON gd.luc >= tuan.tu AND gd.luc < tuan.tu + interval '1 week'
+         GROUP BY tuan.tu ORDER BY tuan.tu`, [p, q.grade, n]);
+      const co = rows.filter((r) => r.so_don > 0);
+      return { product: q.product, grade: q.grade, tuan: rows.map((r) => ({ tu: r.tu, so_don: r.so_don, gia_tb_vnd: r.so_don ? r.gia_tb : null, gia_thap_vnd: r.so_don ? r.gia_thap : null, gia_cao_vnd: r.so_don ? r.gia_cao : null })),
+        tong_don: co.reduce((a, r) => a + r.so_don, 0),
+        khoang: co.length ? { thap_vnd: String(Math.min(...co.map((r) => Number(r.gia_thap)))), cao_vnd: String(Math.max(...co.map((r) => Number(r.gia_cao)))) } : null };
+    });
+  });
+
   // ---------------- Tệp, ảnh ----------------
   app.post('/v1/files', async (req) => bo.lenh(req, 'tai_tep', 'system', async (t, nd, b) => {
     const x = z.object({ mime: z.string(), data_base64: z.string(), entity: z.enum(['lot', 'order', 'delivery', 'acceptance', 'payment', 'dispute', 'organization', 'production_site']), entity_id: uuid, captured_in_app: z.boolean(), lat: z.number().optional(), lng: z.number().optional() }).parse(b);

@@ -310,6 +310,7 @@ input:focus-visible, textarea:focus-visible, select:focus-visible { outline-offs
 /* ===== Đầu trang + nút thoát theo bản mẫu (thiet-ke/mau/ban.html, người sáng lập ưng 02/11/2026) =====
    Khối xanh bo tròn đáy 22px; nút lùi tròn 44px nền mờ, bóng 3px, bấm thì lún xuống + mũi tên nhích trái;
    dòng nhỏ phía trên (small) + tiêu đề 19px đậm. Áp cho cả .dau.dau-xanh (dựng chung) và .dau-lui (trang tự viết). */
+header.dau-lui.nen-xanh { display: flex; align-items: center; position: sticky; top: 0; z-index: 12; }
 header.dau.dau-xanh:has(.nut-tron[aria-label*="Quay"], .nut-tron[aria-label*="Về"]), header.dau-lui.nen-xanh { border-radius: 0 0 22px 22px; padding: calc(12px + env(safe-area-inset-top)) 16px 16px; gap: 12px; box-shadow: none; }
 header.dau-lui.nen-xanh h1, header.dau.dau-xanh h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; color: #f4f1e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 header.dau-lui.nen-xanh small, header.dau.dau-xanh .chao { display: block; font-size: 13px; color: rgba(244, 241, 232, .72); line-height: 1.3; }

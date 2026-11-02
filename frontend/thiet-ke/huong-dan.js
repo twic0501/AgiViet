@@ -12,7 +12,7 @@ const BUOC = [
   [".tb-xanh", "13-chi-trai", "Việc cần làm hôm nay", "Ô xanh này báo việc đang chờ bác: lời chào giá mới, hợp đồng cần ký, tiền cần xác nhận. Bấm nút vàng là làm ngay."],
   [".loi-tat", "14-chi-xuong", "Lối tắt", "Thời tiết, nhật ký canh tác, hợp đồng, giá và tin tức, cài đặt — bấm vào ô là mở."],
   ["nav.tab", "14-chi-xuong", "Thanh dưới cùng", "Chợ là hàng bác đang bán và bên mua cần gì. Nút tròn ở giữa để đăng bán. Tin nhắn để trả lời giá và nhắn với bên mua. Tiền để xem tiền về."],
-  [".anh-dai-dien", "15-chi-len", "Hồ sơ của bác", "Bấm vào chữ cái này để xem hồ sơ, nộp giấy tờ như VietGAP, mã vùng trồng, và chỉnh cỡ chữ."],
+  ["a[href=\"./ban-toi.html\"]", "15-chi-len", "Cài đặt và hỗ trợ", "Bấm vào ô này để xem hồ sơ, nộp giấy tờ như VietGAP, mã vùng trồng, đổi cỡ chữ và nhờ nhân viên AgiViet giúp."],
   [".dau-phai", "15-chi-len", "Hỏi và nghe thông báo", "Nút tai nghe để hỏi trâu bằng giọng nói hoặc gõ chữ. Cái chuông là thông báo mới."],
   ["@co-chu", "02-chop", "Chữ có dễ đọc không?", "Bác chọn cỡ chữ cho dễ nhìn. Sau này đổi lại ở trang hồ sơ."],
   [null, "24-ngon-cai", "Xong rồi bác!", "Tiền cọc do ngân hàng giữ, bác không phải đóng tiền gì để bán. Có gì vướng, bác bấm tai nghe hỏi con nha."],
