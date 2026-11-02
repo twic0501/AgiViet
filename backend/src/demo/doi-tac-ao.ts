@@ -145,7 +145,7 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
           }
           await lam(tc, 'đặt xe', d.code, async () => {
           let r: any;
-          for (const plate of ['DEMO-66C-001', 'DEMO-66C-002', 'DEMO-66C-003', 'DEMO-66C-004', '66C-123.45', '66C-678.90']) { r = await post(`/v1/deliveries/${did}/trip`, { plate_no: plate, freight_vnd: 1500000 }, t); if (r.status < 300) break; }
+          let duoc = false; for (const plate of ['DEMO-66C-001', 'DEMO-66C-002', 'DEMO-66C-003', 'DEMO-66C-004', '66C-123.45', '66C-678.90', '66C-246.80', '66C-135.79']) { const r1 = await post(`/v1/deliveries/${did}/trip`, { plate_no: plate, freight_vnd: 1500000 }, t); if (r1.status < 300) { r = r1; duoc = true; if (r1.json?.data?.delivery_status === 'ready' || r1.json?.delivery_status === 'ready') break; } else if (/đủ xe/i.test(JSON.stringify(r1.json ?? ''))) break; else if (!duoc) r = r1; } /* 0081: đơn lớn đi nhiều chuyến */
           return r;
           }); break;
         }

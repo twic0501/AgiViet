@@ -82,7 +82,9 @@ export async function theSanSang(t: GiaoDich, deliveryId: string): Promise<DongT
   const nhanOk = !!d.receiver_user_id && !!(await t.mot(`SELECT 1 FROM core.memberships m JOIN core.membership_roles r ON r.membership_id=m.id WHERE m.user_id=$1 AND m.org_id=$2 AND m.status='active' AND r.role_code IN ('owner','warehouse','site_receiver')`, [d.receiver_user_id, o.buyer_org_id]));
   const qrOk = !!(await t.mot(`SELECT 1 FROM core.qr_tokens WHERE delivery_id=$1 AND kind='receipt' AND designated_user_id=$2 AND revoked_at IS NULL AND expires_at>ref.clock_at()`, [deliveryId, d.receiver_user_id]));
   const canXe = ['buyer', 'partner_for_buyer', 'partner_for_seller'].includes(v.transport_by);
-  const xeOk = !canXe || !!(await t.mot(`SELECT 1 FROM core.trip_deliveries td JOIN core.trips x ON x.id=td.trip_id WHERE td.delivery_id=$1 AND x.status IN ('accepted','at_pickup','loading')`, [deliveryId]));
+  // 0081: một đợt nhiều chuyến — đủ xe khi tổng lượng các chuyến hiệu lực ≥ lượng đợt.
+  const daCoXe = B(await t.gtri<string>(`SELECT coalesce(sum(td.loaded_qty),0)::text FROM core.trip_deliveries td JOIN core.trips x ON x.id=td.trip_id WHERE td.delivery_id=$1 AND x.status IN ('accepted','at_pickup','loading')`, [deliveryId]));
+  const xeOk = !canXe || daCoXe >= B(d.planned_qty);
   const hoSoThieu: string[] = [];
   for (const need of (await t.gtri<string[]>(`SELECT required_docs FROM core.demands WHERE id=$1`, [o.demand_id])) ?? []) {
     const kind = need.startsWith('ma_vung_trong') ? 'growing_area_code' : need === 'nhat_ky_cach_ly' ? 'spray_diary' : need === 'nhat_ky_ao' ? 'pond_diary' : need === 'kiem_dinh:cadimi_vang_o' ? 'cadmium_test' : need === 'kiem_dinh:khang_sinh' ? 'antibiotic_test' : need;
@@ -100,7 +102,7 @@ export async function theSanSang(t: GiaoDich, deliveryId: string): Promise<DongT
     { ma: 'tien', ten: 'Tiền', ok: o.status === 'active' && coc >= B(v.deposit_vnd) && thieuTien.length === 0,
       ly_do: o.status !== 'active' ? 'Ngân hàng chưa xác nhận cọc' : thieuTien.length ? `Khoản ${thieuTien[0].code} còn thiếu ${dong(thieuTien[0].con)}` : undefined },
     { ma: 'nguoi_nhan', ten: 'Người nhận', ok: nhanOk && qrOk, ly_do: !nhanOk ? 'Bên mua chưa chỉ định người nhận' : !qrOk ? 'Chưa phát QR nhận hàng' : undefined },
-    { ma: 'xe', ten: 'Xe', ok: xeOk, ly_do: xeOk ? undefined : 'Chưa có chuyến xe nhận chở' },
+    { ma: 'xe', ten: 'Xe', ok: xeOk, ly_do: xeOk ? undefined : daCoXe > 0n ? `Đã có xe cho ${kg(daCoXe)}/${kg(B(d.planned_qty))}, cần đặt thêm xe` : 'Chưa có chuyến xe nhận chở' },
     { ma: 'ho_so', ten: 'Hồ sơ', ok: hoSoThieu.length === 0, ly_do: hoSoThieu.length ? `Thiếu: ${hoSoThieu.join(', ')}` : undefined },
     { ma: 'de_nghi', ten: 'Không có đề nghị/hủy đang chờ', ok: deNghi === 0 && huy === 0, ly_do: deNghi ? 'Đang có đề nghị sửa' : huy ? 'Đang có yêu cầu hủy' : undefined },
   ];

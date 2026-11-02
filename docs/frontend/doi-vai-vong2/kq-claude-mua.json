@@ -1,0 +1,1329 @@
+[
+ {
+  "ma": "CMUA-01",
+  "ten": "Nhà máy sấy Đồng Xanh mua xoài, kiểm tại vườn xong trả rồi mới bốc; 10% xuống loại",
+  "tinh_cach": "Bên mua chuyên nghiệp, trả giá một lần, giấy tờ đầy đủ",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "chao",
+    "ai": "0909000213",
+    "mong_doi": "Lời chào gửi được, người bán không thấy giá các bên khác; giá kín của người bán không lộ",
+    "can_cu": "A3.10",
+    "http": 200,
+    "ket_qua": "{\"id\":\"baa38551-f4a5-4dde-8d2f-e1d7f2c13fdd\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-03T07:32:47.561Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "23500",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 2,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo trả giá lại",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":8}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "24200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "dong_y",
+    "ai": "0909000213",
+    "mong_doi": "Đồng ý giá → giữ lượng 24h, chưa phải hợp đồng",
+    "can_cu": "B3/B4",
+    "http": 200,
+    "ket_qua": "{\"id\":\"baa38551-f4a5-4dde-8d2f-e1d7f2c13fdd\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"620dbd25-8ccf-4c1d-b451-151ec98b7af6\",\"hold_expires_at\":\"2026-11-03T07:33:17.241Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 1.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "24200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "lap_don",
+    "ai": "0909000213",
+    "mong_doi": "Lập đơn kiểm rồi trả trước bốc; chưa có khoản tiền nào trước khi kiểm",
+    "can_cu": "chính sách 02/11",
+    "http": 200,
+    "ket_qua": "{\"id\":\"ce6a184d-5aed-45e0-ac20-eee72bf8a5f7\",\"code\":\"HD-3001\",\"status\":\"drafting\",\"revision\":2,\"document_id\":\"a576a017-9ea4-4782-bf74-3e043e8017c5\",\"content_sha256\":\"f1071e080ddbdc75c4fea66460197db430b45ad69f2db30e291c2183bbb0364d\",\"tinh\":{\"gia_tinh_coc_vnd\":\"24200\",\"gia_tri_vnd\":\"24200000\",\"coc_vnd\":\"7260000\",\"phi_vnd\":\"72600\",\"tra_thang_vnd\":\"16940000\",\"gia_bat_thuong\":false}}",
+    "don": {
+     "code": "HD-3001",
+     "status": "drafting",
+     "hien_thi": {
+      "ten": "Đang soạn hợp đồng",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký và gửi"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "ky",
+    "ai": "0909000213",
+    "mong_doi": "Bên mua ký → chờ người bán ký",
+    "can_cu": "C2",
+    "http": 200,
+    "ket_qua": "{\"id\":\"ce6a184d-5aed-45e0-ac20-eee72bf8a5f7\",\"code\":\"HD-3001\",\"status\":\"awaiting_seller\",\"revision\":3,\"signed_at\":\"2026-11-02T07:33:17.401Z\",\"document_id\":\"a576a017-9ea4-4782-bf74-3e043e8017c5\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo ký",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "coc",
+    "ai": "0909000213",
+    "mong_doi": "Ngân hàng nhận đủ cọc → đơn có hiệu lực, đợt giao chuẩn bị",
+    "can_cu": "C6",
+    "http": 200,
+    "ket_qua": "[{\"event_id\":\"nh-ev-FT00000143F7\",\"ket_qua\":{\"http\":200,\"body\":{\"ket_qua\":\"held\",\"bank_event_id\":\"a89ac680-004f-4383-9c01-612704bbf4b4\",\"order_activated\":\"ce6a184d-5aed-45e0-ac20-eee72bf8a5f7\"}}}]",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "xem",
+    "ai": "0909000213",
+    "mong_doi": "Không có khoản trả trước khi kiểm (khoản tiền hàng chỉ sinh sau nghiệm thu)",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    },
+    "tin": []
+   },
+   {
+    "buoc": 9,
+    "lam": "dat_xe",
+    "ai": "0909000213",
+    "mong_doi": "Đặt xe được, sẵn sàng giao",
+    "http": 200,
+    "ket_qua": "{\"id\":\"eb79a8c6-41b4-4875-8854-d9f3841090ce\",\"code\":\"TRIP-eefba4a8-e7e5-46a8-b37f-5a2d98ddfa4e\",\"plate_no\":\"DEMO-66C-001\",\"status\":\"accepted\",\"the_chuyen_token\":null,\"delivery_status\":\"ready\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "phat_qr",
+    "ai": "0909000213",
+    "mong_doi": "Phát mã nhận hàng cho người nhận được chỉ định",
+    "http": 200,
+    "ket_qua": "{\"delivery_id\":\"20d957b7-ca97-4c2c-8c0d-12d5e4924196\",\"qr_token\":\"AGV1.eyJhdWQiOiI0NzNhMjMxOS04M2RiLTVkYmItYjA2Yy03NTEyYmQ3MWNkOGIiLCJleHAiOjE3OTM2NDA3OTcsImlhdCI6MTc5MzYwNDgxMywianRpIjoiVFJWR0lXREN4WHJvU1VnciIsImtpZCI6InFyLXRodS0xIiwic3ViIjoiMjBkOTU3YjctY2E5Ny00YzJjLThjMGQtMTJkNWU0OTI0MTk2IiwidCI6InJlY3YiLCJ2IjoxLCJ4Ijp7InIiOiI5ZDFmYzM4MDJjNjNjZmNkYmQ5MDk1NDcyNTAzMGNhMDhlNzFjMThiZGI5NTMwZDI4OWU2O",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "bat_dau_can",
+    "ai": "0918000421",
+    "mong_doi": "Người bán quét mã → bắt đầu cân tại vườn (thao tác máy, phía người bán)",
+    "http": 200,
+    "ket_qua": "{\"id\":\"20d957b7-ca97-4c2c-8c0d-12d5e4924196\",\"status\":\"checking\",\"revision\":4}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Chờ nghiệm thu",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Nghiệm thu"
+      }
+     },
+     "dot": [
+      "checking"
+     ]
+    }
+   },
+   {
+    "buoc": 12,
+    "lam": "nghiem_thu",
+    "ai": "0909000213",
+    "mong_doi": "Biên bản 900 đạt + 100 xuống loại có ảnh; chờ người bán đồng ý",
+    "can_cu": "D nghiệm thu",
+    "http": 200,
+    "ket_qua": "{\"id\":\"20d957b7-ca97-4c2c-8c0d-12d5e4924196\",\"status\":\"awaiting_seller\",\"revision\":5,\"acceptance_id\":\"f0168ba6-50c2-45a0-bfb6-05368806a58b\",\"document_id\":\"d80bc145-9842-4965-96f7-91d6eae1ecd8\",\"content_sha256\":\"93182d523e734cdbb5839f83fda81456ab03ae2d6c4c5b92d6e981ad9701f129\",\"gia_tri_vnd\":\"23350000\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Chờ xác nhận số cân",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Xác nhận kết quả nghiệm thu"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo đồng ý số cân",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã chốt số cân · chờ trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Trả tiền hàng khi nhận"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 14,
+    "lam": "xem",
+    "ai": "0909000213",
+    "mong_doi": "Có đúng một khoản tiền hàng = 900×giá + 100×giá hạ cấp − cọc chuyển người bán; hàng chưa được đi trước khi trả",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã chốt số cân · chờ trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Trả tiền hàng khi nhận"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    },
+    "tin": []
+   },
+   {
+    "buoc": 15,
+    "lam": "tra_tien_hang",
+    "ai": "0909000213",
+    "mong_doi": "Báo đã trả kèm chứng từ; chỉ tính khi người bán xác nhận",
+    "http": 200,
+    "ket_qua": "{\"id\":\"8d58feac-d6c4-4665-ac6d-4b4f4c8e1f1e\",\"status\":\"payer_reported\",\"thong_bao\":\"Đã báo trả; chỉ tính đã nhận sau xác nhận của bên nhận.\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Bên mua báo đã trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Xác nhận đã nhận tiền hàng"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 16,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo xác nhận đã nhận",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đang giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký nhận tại nơi đến"
+      }
+     },
+     "dot": [
+      "in_transit"
+     ]
+    }
+   },
+   {
+    "buoc": 17,
+    "lam": "xem",
+    "ai": "0909000213",
+    "mong_doi": "Hàng được đi; KHÔNG có khoản người bán phải hoàn",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đang giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký nhận tại nơi đến"
+      }
+     },
+     "dot": [
+      "in_transit"
+     ]
+    },
+    "tin": []
+   }
+  ]
+ },
+ {
+  "ma": "CMUA-02",
+  "ten": "Vựa Ba Cường (đại lý) ép giá thấp rồi đòi trả sau",
+  "tinh_cach": "Đầu mối quen ép giá, muốn nợ tiền",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "chao",
+    "ai": "0938000610",
+    "mong_doi": "Dưới mức người bán chấp nhận → lời chào tự đóng, không lộ giá kín",
+    "can_cu": "A3.10 chống ép giá",
+    "http": 200,
+    "ket_qua": "{\"id\":\"b5372cd9-c8c7-4374-ae6b-30bea31e0c4c\",\"code\":\"LC-0001\",\"status\":\"auto_rejected\",\"revision\":1,\"thong_bao\":\"Chưa tới mức người bán chấp nhận.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "12000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 2,
+    "lam": "chao",
+    "ai": "0938000610",
+    "mong_doi": "Chào lại giá hợp lý → gửi được",
+    "http": 200,
+    "ket_qua": "{\"id\":\"15fbdaa5-facd-41ad-81f6-c519cbd301ad\",\"code\":\"LC-0002\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-03T07:34:06.506Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "24500",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo trả giá",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":8}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "25200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "dong_y",
+    "ai": "0938000610",
+    "mong_doi": "Đồng ý giá",
+    "http": 200,
+    "ket_qua": "{\"id\":\"15fbdaa5-facd-41ad-81f6-c519cbd301ad\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"620ffb9d-e188-4d28-a1d2-ec39d39cd887\",\"hold_expires_at\":\"2026-11-03T07:34:22.255Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 2.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "25200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "lap_don",
+    "ai": "0938000610",
+    "mong_doi": "BỊ CHẶN: trả sau chưa mở",
+    "can_cu": "chính sách 02/11",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Trả sau chưa mở ở giai đoạn này. Chọn trả khi nhận hàng hoặc trả trước khi bốc.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "25200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "lap_don",
+    "ai": "0938000610",
+    "mong_doi": "BỊ CHẶN: trả trước khi chưa kiểm không còn",
+    "can_cu": "chính sách 02/11",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Trả trước khi bốc phải kiểm hàng tại vườn trước rồi trả theo kết quả: chọn \\\"kiểm rồi trả trước khi bốc\\\" (inspect_then_before_loading).\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "25200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "lap_don",
+    "ai": "0938000610",
+    "mong_doi": "Lập đơn trả khi nhận được",
+    "http": 200,
+    "ket_qua": "{\"id\":\"af60bd4e-fd3a-48e2-a503-36f81700e4d2\",\"code\":\"HD-3001\",\"status\":\"drafting\",\"revision\":2,\"document_id\":\"511c732c-e08b-4c9f-bc9d-5edd4c9a2da9\",\"content_sha256\":\"86275eaf8ada54ef61becdfa0ce321929829eafc11b04195f41b341981575b34\",\"tinh\":{\"gia_tinh_coc_vnd\":\"25200\",\"gia_tri_vnd\":\"50400000\",\"coc_vnd\":\"15120000\",\"phi_vnd\":\"504000\",\"tra_thang_vnd\":\"35280000\",\"gia_bat_thuong\":false}}",
+    "don": {
+     "code": "HD-3001",
+     "status": "drafting",
+     "hien_thi": {
+      "ten": "Đang soạn hợp đồng",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký và gửi"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "xem",
+    "ai": "0938000610",
+    "mong_doi": "Đơn đang soạn, tới lượt bên mua ký",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "drafting",
+     "hien_thi": {
+      "ten": "Đang soạn hợp đồng",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký và gửi"
+      }
+     },
+     "dot": []
+    },
+    "tin": []
+   }
+  ]
+ },
+ {
+  "ma": "CMUA-03",
+  "ten": "Nhà hàng Bếp Sen mua thanh long định kỳ, lô này hư nhiều (30% trả lại)",
+  "tinh_cach": "Nhà hàng mua lượng nhỏ, cần hàng đẹp, nhận tại vườn qua điểm gom",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "chao",
+    "ai": "0908000510",
+    "mong_doi": "Gửi lời chào lượng nhỏ được",
+    "http": 200,
+    "ket_qua": "{\"id\":\"4beae283-a3ac-4fb9-bc7d-997a9affa5c2\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-03T07:34:22.895Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "18500",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 2,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "HTX ảo trả giá",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":8}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "19100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "dong_y",
+    "ai": "0908000510",
+    "mong_doi": "Đồng ý giá",
+    "http": 200,
+    "ket_qua": "{\"id\":\"4beae283-a3ac-4fb9-bc7d-997a9affa5c2\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"0b577a44-9a67-43fc-b100-7e1890432e85\",\"hold_expires_at\":\"2026-11-03T07:34:38.529Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 300 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "19100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "lap_don",
+    "ai": "0908000510",
+    "mong_doi": "Lập đơn kiểm rồi trả",
+    "http": 200,
+    "ket_qua": "{\"id\":\"ce68fa2b-45f5-4dc2-8766-3f936bb52340\",\"code\":\"HD-3001\",\"status\":\"drafting\",\"revision\":2,\"document_id\":\"57fcd2d5-fb07-48fe-9def-e59fb7865c63\",\"content_sha256\":\"d0346e0c5127c9c4b3d333605f51e491658d1967a49146d2353e43dfbe1e841b\",\"tinh\":{\"gia_tinh_coc_vnd\":\"19100\",\"gia_tri_vnd\":\"5730000\",\"coc_vnd\":\"1719000\",\"phi_vnd\":\"0\",\"tra_thang_vnd\":\"4011000\",\"gia_bat_thuong\":false}}",
+    "don": {
+     "code": "HD-3001",
+     "status": "drafting",
+     "hien_thi": {
+      "ten": "Đang soạn hợp đồng",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký và gửi"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "ky",
+    "ai": "0908000510",
+    "mong_doi": "Ký",
+    "http": 200,
+    "ket_qua": "{\"id\":\"ce68fa2b-45f5-4dc2-8766-3f936bb52340\",\"code\":\"HD-3001\",\"status\":\"awaiting_seller\",\"revision\":3,\"signed_at\":\"2026-11-02T07:34:38.685Z\",\"document_id\":\"57fcd2d5-fb07-48fe-9def-e59fb7865c63\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "HTX ký",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "coc",
+    "ai": "0908000510",
+    "mong_doi": "Cọc đủ",
+    "http": 200,
+    "ket_qua": "[{\"event_id\":\"nh-ev-FT0000015C23\",\"ket_qua\":{\"http\":200,\"body\":{\"ket_qua\":\"held\",\"bank_event_id\":\"62e19c7a-6c84-4d62-84eb-17897c6f5e65\",\"order_activated\":\"ce68fa2b-45f5-4dc2-8766-3f936bb52340\"}}}]",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "dat_xe",
+    "ai": "0908000510",
+    "mong_doi": "Đặt xe",
+    "http": 200,
+    "ket_qua": "{\"id\":\"646c4326-5942-4ecd-84b0-ec03d6af1f04\",\"code\":\"TRIP-512c2cf8-23fa-4f02-8b57-35c882dd3ecb\",\"plate_no\":\"DEMO-66C-001\",\"status\":\"accepted\",\"the_chuyen_token\":null,\"delivery_status\":\"ready\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "phat_qr",
+    "ai": "0908000510",
+    "mong_doi": "Mã nhận hàng",
+    "http": 200,
+    "ket_qua": "{\"delivery_id\":\"61f2c538-e9c5-4719-a5de-4dc92fd2b69d\",\"qr_token\":\"AGV1.eyJhdWQiOiIyZGU1MDU2My1lMDFhLTUyMDItODM5YS1lZmZjY2I3OWFhYWQiLCJleHAiOjE3OTM2NDA4NzgsImlhdCI6MTc5MzYwNDg5NCwianRpIjoic1E3TzNuZFJMRkhtVUNyaCIsImtpZCI6InFyLXRodS0xIiwic3ViIjoiNjFmMmM1MzgtZTljNS00NzE5LWE1ZGUtNGRjOTJmZDJiNjlkIiwidCI6InJlY3YiLCJ2IjoxLCJ4Ijp7InIiOiI4MzkxNWFlY2UyODY4MWMzZDFlYzY5ODFlYTVjMGNiYWY2N2FiY2JlODFmY2UwZmNkM2E5O",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "bat_dau_can",
+    "ai": "0907000300",
+    "mong_doi": "Bắt đầu cân (phía bán, thao tác máy)",
+    "http": 200,
+    "ket_qua": "{\"id\":\"61f2c538-e9c5-4719-a5de-4dc92fd2b69d\",\"status\":\"checking\",\"revision\":4}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Chờ nghiệm thu",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Nghiệm thu"
+      }
+     },
+     "dot": [
+      "checking"
+     ]
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "nghiem_thu",
+    "ai": "0908000510",
+    "mong_doi": "Trả lại 30% (> 20%): app phải DỪNG tự chốt phần trả lại, để người bán chọn chấp nhận hoặc yêu cầu giám định",
+    "can_cu": "ngưỡng 20% (người sáng lập chốt 02/11)",
+    "http": 200,
+    "ket_qua": "{\"id\":\"61f2c538-e9c5-4719-a5de-4dc92fd2b69d\",\"status\":\"awaiting_seller\",\"revision\":5,\"acceptance_id\":\"5ea24901-8382-4a3e-b699-42f7f11f7fda\",\"document_id\":\"b78169ef-b279-4da4-9e47-b5ca2bcd9ac0\",\"content_sha256\":\"b47d78e10ac9d389ca64693cf8e2a6054cbb685ca359882f257dbed5c40c28fe\",\"gia_tri_vnd\":\"4011000\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Chờ xác nhận số cân",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Xác nhận kết quả nghiệm thu"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 12,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Không được tự chốt khi người bán chưa chọn",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã chốt số cân · chờ trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Trả tiền hàng khi nhận"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "xem",
+    "ai": "0908000510",
+    "mong_doi": "Đơn chờ người bán chọn chấp nhận/giám định, chưa chốt tiền phần trả lại",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã chốt số cân · chờ trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Trả tiền hàng khi nhận"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    },
+    "tin": []
+   }
+  ]
+ },
+ {
+  "ma": "CMUA-04",
+  "ten": "XNK Sông Tiền nhắn số trước cọc, rồi rút lời chào khi còn được rút",
+  "tinh_cach": "Doanh nghiệp muốn xin số làm ngoài app",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "chao",
+    "ai": "0903000410",
+    "mong_doi": "Gửi lời chào sầu riêng",
+    "http": 200,
+    "ket_qua": "{\"id\":\"646ae7ad-dbdc-4cac-8776-3e1ac4de7c46\",\"code\":\"LC-0001\",\"status\":\"auto_rejected\",\"revision\":1,\"thong_bao\":\"Chưa tới mức người bán chấp nhận.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "76000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 2,
+    "lam": "nhan",
+    "ai": "0903000410",
+    "mong_doi": "Trước cọc: số và chữ 'zalo' bị che",
+    "can_cu": "chặn liên lạc trước cọc",
+    "http": 200,
+    "ket_qua": "{\"id\":\"e228c1ff-566c-45e1-9933-ec5067082374\",\"gui\":true,\"body\":\"Anh cho em xin ••• ••• ••• •••nói chuyện cho nhanh\",\"da_che\":true,\"loai_che\":[\"số điện thoại\",\"kênh nhắn ngoài\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "76000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Anh cho em xin ••• ••• ••• •••nói chuyện cho nhanh"
+    ]
+   },
+   {
+    "buoc": 3,
+    "lam": "nhan",
+    "ai": "0903000410",
+    "mong_doi": "Số tài khoản xen dấu · bị che",
+    "can_cu": "E69 #6",
+    "http": 200,
+    "ket_qua": "{\"id\":\"0025e72c-4f86-4c86-bb11-ef713bf3b27c\",\"gui\":true,\"body\":\"STK VCB •••anh chuyển trước nha\",\"da_che\":true,\"loai_che\":[\"số tài khoản\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "76000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Anh cho em xin ••• ••• ••• •••nói chuyện cho nhanh",
+     "STK VCB •••anh chuyển trước nha"
+    ]
+   },
+   {
+    "buoc": 4,
+    "lam": "rut",
+    "ai": "0903000410",
+    "mong_doi": "Rút lời chào khi người bán chưa trả lời: được; đã trả lời thì báo rõ không rút được",
+    "can_cu": "0074",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Lời chào đã tự đóng vì giá chưa tới mức người bán chấp nhận. Chào lại giá khác nếu muốn.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "76000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "xem",
+    "ai": "0903000410",
+    "mong_doi": "Lời chào đã rút hoặc lý do không rút rõ ràng",
+    "http": 200,
+    "ket_qua": "null",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "76000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Anh cho em xin ••• ••• ••• •••nói chuyện cho nhanh",
+     "STK VCB •••anh chuyển trước nha"
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "CMUA-05",
+  "ten": "Thủy sản Biển Xanh mua tôm trả khi nhận, nghiệm thu đủ, mở liên lạc sau cọc",
+  "tinh_cach": "Doanh nghiệp thủy sản, quan tâm giấy kiểm kháng sinh",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "chao",
+    "ai": "0902000810",
+    "mong_doi": "Gửi lời chào tôm",
+    "http": 200,
+    "ket_qua": "{\"id\":\"79ecb5f5-5ec1-4c9d-89f5-39afa865e785\",\"code\":\"LC-0001\",\"status\":\"auto_rejected\",\"revision\":1,\"thong_bao\":\"Chưa tới mức người bán chấp nhận.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 2,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo trả giá",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":8}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "dong_y",
+    "ai": "0902000810",
+    "mong_doi": "Đồng ý",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Lời chào đã tự đóng vì giá chưa tới mức người bán chấp nhận. Chào lại giá khác nếu muốn.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "lap_don",
+    "ai": "0902000810",
+    "mong_doi": "Lập đơn trả khi nhận",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Lời chào chưa được đồng ý.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "ky",
+    "ai": "0902000810",
+    "mong_doi": "Ký",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán ảo ký",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "nhan",
+    "ai": "0902000810",
+    "mong_doi": "Chưa cọc: số bị che",
+    "http": 200,
+    "ket_qua": "{\"id\":\"b7f1e2c6-4800-4dd4-959d-3010cfb895f7\",\"gui\":true,\"body\":\"Gọi chị ••• ••• •••khi xe tới\",\"da_che\":true,\"loai_che\":[\"số điện thoại\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Gọi chị ••• ••• •••khi xe tới"
+    ]
+   },
+   {
+    "buoc": 8,
+    "lam": "coc",
+    "ai": "0902000810",
+    "mong_doi": "Cọc đủ",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "nhan",
+    "ai": "0902000810",
+    "mong_doi": "Sau cọc: số KHÔNG bị che",
+    "can_cu": "mở liên lạc sau cọc",
+    "http": 200,
+    "ket_qua": "{\"id\":\"0ece26ee-0c33-4027-a085-a7d61fe424dc\",\"gui\":true,\"body\":\"Gọi chị ••• ••• •••khi xe tới\",\"da_che\":true,\"loai_che\":[\"số điện thoại\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Gọi chị ••• ••• •••khi xe tới",
+     "Gọi chị ••• ••• •••khi xe tới"
+    ]
+   },
+   {
+    "buoc": 10,
+    "lam": "dat_xe",
+    "ai": "0902000810",
+    "mong_doi": "Đặt xe",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "phat_qr",
+    "ai": "0902000810",
+    "mong_doi": "Mã nhận hàng",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 12,
+    "lam": "bat_dau_can",
+    "ai": "0945000880",
+    "mong_doi": "Bắt đầu cân (phía bán)",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "nghiem_thu",
+    "ai": "0902000810",
+    "mong_doi": "Nghiệm thu đủ 500 kg",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 14,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán đồng ý",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 15,
+    "lam": "tra_tien_hang",
+    "ai": "0902000810",
+    "mong_doi": "Trả đúng tiền hàng trừ phần cọc",
+    "http": 404,
+    "loi": "{\"code\":\"KHONG_TIM_THAY\",\"message\":\"Không tìm thấy hoặc bạn không được xem.\",\"fix\":\"Kiểm lại mã, hoặc tải lại danh sách.\",\"details\":{\"db\":\"22P02\"}}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 16,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "Người bán xác nhận",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 17,
+    "lam": "xem",
+    "ai": "0902000810",
+    "mong_doi": "Hàng đi; không có khoản hoàn",
+    "http": 200,
+    "ket_qua": "null",
+    "loi_chao": {
+     "status": "auto_rejected",
+     "vong": 1,
+     "gia": "121000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Gọi chị ••• ••• •••khi xe tới",
+     "Gọi chị ••• ••• •••khi xe tới",
+     "Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "CMUA-06",
+  "ten": "Nhà máy cọc thiếu rồi quá hạn cọc",
+  "tinh_cach": "Bên mua chuyển thiếu tiền",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "chao",
+    "ai": "0909000213",
+    "mong_doi": "Gửi lời chào",
+    "http": 200,
+    "ket_qua": "{\"id\":\"10859bca-9b7b-40ab-a2b3-2e98e2868360\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-03T07:36:16.513Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "24500",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 2,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "HTX ảo trả giá",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":8}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "25200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "dong_y",
+    "ai": "0909000213",
+    "mong_doi": "Đồng ý",
+    "http": 200,
+    "ket_qua": "{\"id\":\"10859bca-9b7b-40ab-a2b3-2e98e2868360\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"ecad8991-3e0a-4a4c-b368-b06f3d77d51b\",\"hold_expires_at\":\"2026-11-03T07:36:32.343Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 500 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "25200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "lap_don",
+    "ai": "0909000213",
+    "mong_doi": "Lập đơn",
+    "http": 200,
+    "ket_qua": "{\"id\":\"4779327e-9ab1-41c2-8f94-5f2d2c4d7392\",\"code\":\"HD-3001\",\"status\":\"drafting\",\"revision\":2,\"document_id\":\"13824e0c-7e86-4b3e-bc07-dd5a0dfc4f9b\",\"content_sha256\":\"b4c45e7e504d994e217f18f02e89664539e1bbcfe00c6cca1419045388bc5d6b\",\"tinh\":{\"gia_tinh_coc_vnd\":\"25200\",\"gia_tri_vnd\":\"12600000\",\"coc_vnd\":\"3780000\",\"phi_vnd\":\"37800\",\"tra_thang_vnd\":\"8820000\",\"gia_bat_thuong\":false}}",
+    "don": {
+     "code": "HD-3001",
+     "status": "drafting",
+     "hien_thi": {
+      "ten": "Đang soạn hợp đồng",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký và gửi"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "ky",
+    "ai": "0909000213",
+    "mong_doi": "Ký",
+    "http": 200,
+    "ket_qua": "{\"id\":\"4779327e-9ab1-41c2-8f94-5f2d2c4d7392\",\"code\":\"HD-3001\",\"status\":\"awaiting_seller\",\"revision\":3,\"signed_at\":\"2026-11-02T07:36:32.498Z\",\"document_id\":\"13824e0c-7e86-4b3e-bc07-dd5a0dfc4f9b\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": null,
+    "mong_doi": "HTX ký",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":9}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "coc_thieu",
+    "ai": "0909000213",
+    "mong_doi": "Ngân hàng nhận 50%: đơn CHƯA hiệu lực, báo còn thiếu",
+    "http": 200,
+    "ket_qua": "[{\"event_id\":\"nh-ev-FT000001103D\",\"ket_qua\":{\"http\":200,\"body\":{\"ket_qua\":\"partially_received\",\"bank_event_id\":\"03fa1f83-faa7-486e-b7af-b21a64d52df0\",\"con_thieu_vnd\":\"1908900\"}}}]",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "xem",
+    "ai": "0909000213",
+    "mong_doi": "Vẫn chờ cọc, hiện số còn thiếu",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    },
+    "tin": []
+   },
+   {
+    "buoc": 9,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Quá hạn cọc 48h",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-04T08:36:48.676Z\",\"hen_gio\":[{\"kind\":\"deposit\",\"entity_id\":\"b8ece80b-bb0f-4802-a176-215c956a8fee\",\"ket_qua\":\"order_deposit_expired\"},{\"kind\":\"hold\",\"entity_id\":\"ecad8991-3e0a-4a4c-b368-b06f3d77d51b\",\"ket_qua\":\"hold_expired\"}]}",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Quá hạn cọc",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "xem",
+    "ai": "0909000213",
+    "mong_doi": "Đơn đóng vì quá hạn cọc; phần đã chuyển được hoàn qua ngân hàng (không phải người bán hoàn)",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Quá hạn cọc",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    },
+    "tin": []
+   }
+  ]
+ }
+]

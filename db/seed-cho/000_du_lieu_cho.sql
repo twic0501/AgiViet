@@ -2,1273 +2,1286 @@ SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có 
 -- Tự sinh từ du-lieu-cho.json bằng db/tools/tao-seed.py. Không sửa tay.
 DO $seed$ BEGIN
 IF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json') THEN
- IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json' AND sha256=decode('4fbea713e1d64962c0b1b1d08d419dd6f53e87327a37be42ae7dd5adb099d741','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json' AND sha256=decode('4404a3b07e3b0e8df71a71a7332ee938a1504d786a79f5a6179bc34421e0f15c','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;
  RETURN; END IF;
 ALTER TABLE core.membership_role_grants DISABLE TRIGGER a_privilege;
 ALTER TABLE core.membership_role_grants DISABLE TRIGGER z_notify_grant;
 PERFORM set_config('app.allow_any_initial','on',true);
 PERFORM set_config('app.actor_kind','system',true);
 PERFORM set_config('app.test_time','2026-11-02T08:00:00+07:00',true);
-INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json',decode('4fbea713e1d64962c0b1b1d08d419dd6f53e87327a37be42ae7dd5adb099d741','hex'),'{
- "meta": {
-  "ten": "Chợ mẫu AgiViet: 5 nhà bán + 5 bên mua",
-  "phien_ban": "2026-11-01",
-  "dong_ho_nen": "2026-11-02T08:00:00+07:00",
-  "ghi_chu": "Mọi tên, mã số, tài khoản là hư cấu. Mỗi số đăng ký có hàng/nhu cầu riêng trên cùng một chợ; bên kia giao dịch do đối tác ảo (AI đóng vai) đáp lại."
- },
- "chinh_sach": {
-  "ty_le_coc": 0.3,
-  "ty_le_gia_tinh_coc": 0.7,
-  "nguong_gia_thap": 0.8,
-  "nguong_gia_bat_thuong": 0.6,
-  "nguong_gia_cao": 1.3,
-  "so_don_tham_khao_toi_thieu": 3,
-  "so_cap_toi_thieu": 2,
-  "loi_cho_phep_mac_dinh": 0.05,
-  "dung_sai_luong_mac_dinh": 0.05,
-  "phat_thieu_luong": {
-   "bat_kha_khang": 0,
-   "bao_truoc_3_ngay": 0.1,
-   "bao_duoi_3_ngay": 0.5,
-   "khong_bao": 1.0
+INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json',decode('4404a3b07e3b0e8df71a71a7332ee938a1504d786a79f5a6179bc34421e0f15c','hex'),'{
+  "meta": {
+    "ten": "Chợ mẫu AgiViet: 5 nhà bán + 5 bên mua",
+    "phien_ban": "2026-11-01",
+    "dong_ho_nen": "2026-11-02T08:00:00+07:00",
+    "ghi_chu": "Mọi tên, mã số, tài khoản là hư cấu. Mỗi số đăng ký có hàng/nhu cầu riêng trên cùng một chợ; bên kia giao dịch do đối tác ảo (AI đóng vai) đáp lại."
   },
-  "nguong_mo_lien_lac_dong": 3000000,
-  "nguong_mo_lien_lac_don_hoan_tat": 2,
-  "han_gio": {
-   "tra_loi_loi_chao": 24,
-   "tra_loi_loi_chao_vua": [
-    6,
-    12
-   ],
-   "giu_luong": 24,
-   "nguoi_ban_ky": 24,
-   "coc": 48,
-   "coc_hang_tuoi": 12,
-   "tra_loi_de_nghi": 24,
-   "xac_nhan_tra_thang": 48,
-   "nb_xac_nhan_tai_cho_phut": 60,
-   "nb_xac_nhan_tai_kho": 24,
-   "kiem_den": 2,
-   "gia_han_kiem_den": 2,
-   "nghiem_thu_giao_gan_tuoi": 12,
-   "nghiem_thu_giao_gan_khac": 24,
-   "can_lai": 24,
-   "kiem_dinh": 48,
-   "thoa_thuan_khong_ket_luan_ngay": 14,
-   "cong_no": 72,
-   "hien_thi_lo_ngay": 14,
-   "ban_gap_ngay": 3,
-   "kem_loai_khong_ai_hoi": 24,
-   "doi_tai_khoan": 24,
-   "doi_tai_khoan_sau_khoi_phuc": 72,
-   "khung_chot_lan_goi": 24
+  "chinh_sach": {
+    "ty_le_coc": 0.3,
+    "ty_le_gia_tinh_coc": 0.7,
+    "nguong_gia_thap": 0.8,
+    "nguong_gia_bat_thuong": 0.6,
+    "nguong_gia_cao": 1.3,
+    "so_don_tham_khao_toi_thieu": 3,
+    "so_cap_toi_thieu": 2,
+    "loi_cho_phep_mac_dinh": 0.05,
+    "dung_sai_luong_mac_dinh": 0.05,
+    "phat_thieu_luong": {
+      "bat_kha_khang": 0,
+      "bao_truoc_3_ngay": 0.1,
+      "bao_duoi_3_ngay": 0.5,
+      "khong_bao": 1.0
+    },
+    "nguong_mo_lien_lac_dong": 3000000,
+    "nguong_mo_lien_lac_don_hoan_tat": 2,
+    "han_gio": {
+      "tra_loi_loi_chao": 24,
+      "tra_loi_loi_chao_vua": [
+        6,
+        12
+      ],
+      "giu_luong": 24,
+      "nguoi_ban_ky": 24,
+      "coc": 48,
+      "coc_hang_tuoi": 12,
+      "tra_loi_de_nghi": 24,
+      "xac_nhan_tra_thang": 48,
+      "nb_xac_nhan_tai_cho_phut": 60,
+      "nb_xac_nhan_tai_kho": 24,
+      "kiem_den": 2,
+      "gia_han_kiem_den": 2,
+      "nghiem_thu_giao_gan_tuoi": 12,
+      "nghiem_thu_giao_gan_khac": 24,
+      "can_lai": 24,
+      "kiem_dinh": 48,
+      "thoa_thuan_khong_ket_luan_ngay": 14,
+      "cong_no": 72,
+      "hien_thi_lo_ngay": 14,
+      "ban_gap_ngay": 3,
+      "kem_loai_khong_ai_hoi": 24,
+      "doi_tai_khoan": 24,
+      "doi_tai_khoan_sau_khoi_phuc": 72,
+      "khung_chot_lan_goi": 24
+    },
+    "otp_thu": {
+      "dung": "123456",
+      "sai": "000000"
+    }
   },
-  "otp_thu": {
-   "dung": "123456",
-   "sai": "000000"
-  }
- },
- "goi": [
-  {
-   "ma": "mien_phi",
-   "gia_thang": 0,
-   "phi_don_dau": 0.01,
-   "phi_don_sau": 0.005,
-   "san": 20000,
-   "tran": 2000000,
-   "thanh_vien": 1,
-   "nhu_cau_thang": 5,
-   "ket_noi_moi_thang": 5
-  },
-  {
-   "ma": "thu_mua",
-   "gia_thang": 1500000,
-   "phi_don_dau": 0.003,
-   "phi_don_sau": 0.0,
-   "san": 20000,
-   "tran": 1500000,
-   "thanh_vien": 5,
-   "nhu_cau_thang": 30,
-   "ket_noi_moi_thang": 50
-  },
-  {
-   "ma": "doanh_nghiep",
-   "gia_thang": 4000000,
-   "ky": "nam",
-   "phi_don_dau": 0.002,
-   "phi_don_sau": 0.002,
-   "san": 20000,
-   "tran": 3000000,
-   "thanh_vien": 10,
-   "nhu_cau_thang": 100,
-   "ket_noi_moi_thang": 200
-  },
-  {
-   "ma": "bep",
-   "gia_thang": 490000,
-   "phi_don_dau": 0.0,
-   "phi_don_sau": 0.0,
-   "san": 0,
-   "tran": 0,
-   "thanh_vien": 2,
-   "nhu_cau_thang": 10,
-   "ket_noi_moi_thang": 10
-  }
- ],
- "doi_tac": [
-  {
-   "ma": "DT-NH",
-   "ten": "Ngân hàng TMCP Thử Nghiệm (mô phỏng)",
-   "tai_khoan_coc_mau": "THU-COC-<madon>",
-   "tai_khoan_doanh_thu": "THU-AGV-DOANHTHU"
-  },
-  {
-   "ma": "DT-KD",
-   "ten": "Trung tâm kiểm định Phương Nam (mô phỏng)",
-   "nguoi": [
-    "ND-201"
-   ],
-   "bang_gia": {
-    "cam_quan_can_lai": 280000,
-    "cadimi_vang_o_mau": 1500000,
-    "test_khang_sinh_tom": 450000,
-    "do_am_lua": 200000
-   }
-  },
-  {
-   "ma": "DT-XE",
-   "ten": "Nhà xe Lộc Phát",
-   "xe": [
+  "goi": [
     {
-     "bien_so": "66C-123.45",
-     "loai": "lanh",
-     "tai_kg": 2500,
-     "tai_xe": "ND-202"
+      "ma": "mien_phi",
+      "gia_thang": 0,
+      "phi_don_dau": 0.01,
+      "phi_don_sau": 0.005,
+      "san": 20000,
+      "tran": 2000000,
+      "thanh_vien": 1,
+      "nhu_cau_thang": 5,
+      "ket_noi_moi_thang": 5
     },
     {
-     "bien_so": "66C-678.90",
-     "loai": "thuong",
-     "tai_kg": 5000,
-     "tai_xe": "ND-203"
-    }
-   ],
-   "cuoc": {
-    "CaoLanh-TPHCM-lanh-2.5t": 3200000,
-    "CaoLanh-TPHCM-thuong-5t": 2400000
-   }
-  },
-  {
-   "ma": "DT-KHO",
-   "ten": "Kho lạnh Tân Phú Lạnh",
-   "dia_chi": "Cao Lãnh, Đồng Tháp",
-   "nguoi": [
-    "ND-204"
-   ],
-   "gia_dong_kg_ngay": 300,
-   "dai_nhiet": [
-    "2-8",
-    "10-13"
-   ]
-  },
-  {
-   "ma": "ĐG-01",
-   "ten": "Điểm gom HTX Mỹ Xương",
-   "to_chuc": "TC-B03",
-   "nguoi": [
-    "ND-006"
-   ],
-   "phi_gom_dong_kg": 300
-  }
- ],
- "gia_tham_khao": [
-  {
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L1",
-   "gia": 25000,
-   "so_don": 14,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L2",
-   "gia": 15000,
-   "so_don": 6,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L3",
-   "gia": 6000,
-   "so_don": 4,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "CHANH_KHONG_HAT",
-   "loai": "L1",
-   "gia": 14000,
-   "so_don": 9,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "CHANH_KHONG_HAT",
-   "loai": "L2",
-   "gia": 9000,
-   "so_don": 5,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "TOM_THE",
-   "loai": "48-52",
-   "gia": 120000,
-   "so_don": 7,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "LUA_TUOI",
-   "loai": "OM18-am25",
-   "gia": 6600,
-   "so_don": 12,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "SAU_RIENG",
-   "loai": "A",
-   "gia": 75000,
-   "so_don": 8,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "BUOI_DA_XANH",
-   "loai": "L1",
-   "gia": 32000,
-   "so_don": 6,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "THANH_LONG",
-   "loai": "L1",
-   "gia": 18000,
-   "so_don": 5,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "THANH_LONG",
-   "loai": "L2",
-   "gia": 9000,
-   "so_don": 4,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  },
-  {
-   "mat_hang": "CA_TRA",
-   "loai": "0.8-1.2",
-   "gia": 30000,
-   "so_don": 5,
-   "vung": "DBSCL",
-   "den_ngay": "2026-11-02",
-   "ghi_chu": "giá giả định cho dữ liệu ảo"
-  }
- ],
- "to_chuc_ban": [
-  {
-   "ma": "TC-B01",
-   "ten": "Hộ Nguyễn Thị Năm",
-   "phia": "ban",
-   "loai": "ho",
-   "dia_ban": "Mỹ Xương, Cao Lãnh, Đồng Tháp",
-   "tinh": "DT",
-   "kieu_vung": "orchard",
-   "mat_hang": [
-    "XOAI_CAT_CHU"
-   ],
-   "tai_khoan_nhan_tien": {
-    "ngan_hang": "Agribank",
-    "so": "THU-7300000002186",
-    "chu": "Nguyễn Thị Năm"
-   },
-   "xac_minh": "da_xac_minh",
-   "uy_tin": 92,
-   "so_don_hoan_tat": 18,
-   "giay_to": [
-    {
-     "loai": "vietgap",
-     "trang_thai": "da_xac_minh"
+      "ma": "thu_mua",
+      "gia_thang": 1500000,
+      "phi_don_dau": 0.003,
+      "phi_don_sau": 0.0,
+      "san": 20000,
+      "tran": 1500000,
+      "thanh_vien": 5,
+      "nhu_cau_thang": 30,
+      "ket_noi_moi_thang": 50
     },
     {
-     "loai": "ma_vung_trong",
-     "ma": "MVT-DT-0412",
-     "thi_truong": [
-      "TQ",
-      "HQ"
-     ],
-     "trang_thai": "da_xac_minh",
-     "hieu_luc_den": "2027-06-30"
-    }
-   ],
-   "nguoi_giup": [
-    "ND-002"
-   ]
-  },
-  {
-   "ma": "TC-B02",
-   "ten": "Hộ Lý Văn Tư",
-   "phia": "ban",
-   "loai": "trang_trai",
-   "dia_ban": "Cai Lậy, Đồng Tháp",
-   "tinh": "DT",
-   "kieu_vung": "orchard",
-   "mat_hang": [
-    "SAU_RIENG"
-   ],
-   "tai_khoan_nhan_tien": {
-    "ngan_hang": "Vietcombank",
-    "so": "THU-0071000610610",
-    "chu": "Lý Văn Tư"
-   },
-   "xac_minh": "da_xac_minh",
-   "uy_tin": 88,
-   "so_don_hoan_tat": 9,
-   "giay_to": [
-    {
-     "loai": "ma_vung_trong",
-     "ma": "MVT-DT-0610",
-     "thi_truong": [
-      "TQ"
-     ],
-     "trang_thai": "da_xac_minh",
-     "hieu_luc_den": "2027-03-31"
-    }
-   ]
-  },
-  {
-   "ma": "TC-B03",
-   "ten": "HTX Tân Thuận",
-   "phia": "ban",
-   "loai": "htx",
-   "dia_ban": "Chợ Gạo, Đồng Tháp",
-   "tinh": "DT",
-   "kieu_vung": "orchard",
-   "mat_hang": [
-    "THANH_LONG",
-    "XOAI_CAT_CHU"
-   ],
-   "tai_khoan_nhan_tien": {
-    "ngan_hang": "Agribank",
-    "so": "THU-7300000003000",
-    "chu": "HTX Tân Thuận"
-   },
-   "xac_minh": "da_xac_minh",
-   "uy_tin": 90,
-   "so_don_hoan_tat": 31,
-   "giay_to": [
-    {
-     "loai": "vietgap",
-     "trang_thai": "da_xac_minh"
-    }
-   ],
-   "ten_diem_gom": "Điểm gom HTX Tân Thuận"
-  },
-  {
-   "ma": "TC-B04",
-   "ten": "Hộ Phan Thị Hồng",
-   "phia": "ban",
-   "loai": "ho",
-   "dia_ban": "Mỹ Xuyên, Cần Thơ",
-   "tinh": "CT",
-   "kieu_vung": "pond",
-   "mat_hang": [
-    "TOM_THE"
-   ],
-   "tai_khoan_nhan_tien": {
-    "ngan_hang": "Sacombank",
-    "so": "THU-0400000880880",
-    "chu": "Phan Thị Hồng"
-   },
-   "xac_minh": "da_xac_minh",
-   "uy_tin": 86,
-   "so_don_hoan_tat": 6,
-   "giay_to": [
-    {
-     "loai": "nhat_ky_ao",
-     "trang_thai": "da_xac_minh"
-    }
-   ]
-  },
-  {
-   "ma": "TC-B05",
-   "ten": "Hộ Trần Văn Sáu",
-   "phia": "ban",
-   "loai": "ho",
-   "dia_ban": "Tháp Mười, Đồng Tháp",
-   "tinh": "DT",
-   "kieu_vung": "field",
-   "mat_hang": [
-    "LUA_TUOI"
-   ],
-   "tai_khoan_nhan_tien": {
-    "ngan_hang": "Agribank",
-    "so": "THU-7300000009500",
-    "chu": "Trần Văn Sáu"
-   },
-   "xac_minh": "da_xac_minh",
-   "uy_tin": 84,
-   "so_don_hoan_tat": 12,
-   "giay_to": []
-  }
- ],
- "to_chuc_mua": [
-  {
-   "ma": "TC-M01",
-   "ten": "Nhà máy sấy Đồng Xanh",
-   "phia": "mua",
-   "phan_khuc": [
-    "che_bien"
-   ],
-   "goi": "thu_mua",
-   "mst": "0319990001",
-   "dia_chi_nhan": "KCN Hiệp Phước, TP.HCM",
-   "tinh": "HCM",
-   "xac_minh": "da_xac_minh",
-   "han_muc_ky": {
-    "ND-101": 50000000
-   },
-   "nhan_hang_kem_loai": [
-    {
-     "mat_hang": "XOAI_CAT_CHU",
-     "loai": "L2",
-     "kg_toi_thieu": 500,
-     "ban_kinh_km": 200
-    }
-   ]
-  },
-  {
-   "ma": "TC-M02",
-   "ten": "Công ty XNK Sông Tiền",
-   "phia": "mua",
-   "phan_khuc": [
-    "xuat_khau"
-   ],
-   "goi": "doanh_nghiep",
-   "mst": "0319990002",
-   "dia_chi_nhan": "Kho Mỹ Tho, Đồng Tháp",
-   "tinh": "DT",
-   "xac_minh": "da_xac_minh",
-   "han_muc_ky": {
-    "ND-105": 300000000
-   }
-  },
-  {
-   "ma": "TC-M03",
-   "ten": "Nhà hàng Bếp Sen",
-   "phia": "mua",
-   "phan_khuc": [
-    "nha_hang"
-   ],
-   "goi": "bep",
-   "mst": "0319990005",
-   "dia_chi_nhan": "Quận 3, TP.HCM",
-   "tinh": "HCM",
-   "kieu_co_so": "restaurant",
-   "xac_minh": "da_xac_minh",
-   "han_muc_ky": {
-    "ND-112": 20000000
-   }
-  },
-  {
-   "ma": "TC-M04",
-   "ten": "Vựa nông sản Ba Cường",
-   "phia": "mua",
-   "phan_khuc": [
-    "dau_moi"
-   ],
-   "goi": "mien_phi",
-   "dia_chi_nhan": "Cao Lãnh, Đồng Tháp",
-   "tinh": "DT",
-   "thuong_lai": true,
-   "xac_minh": "da_xac_minh",
-   "doi_tac_bao_tieu": true,
-   "gia_san_bao_tieu": [
-    {
-     "mat_hang": "XOAI_CAT_CHU",
-     "loai": "L2",
-     "gia": 9000
+      "ma": "doanh_nghiep",
+      "gia_thang": 4000000,
+      "ky": "nam",
+      "phi_don_dau": 0.002,
+      "phi_don_sau": 0.002,
+      "san": 20000,
+      "tran": 3000000,
+      "thanh_vien": 10,
+      "nhu_cau_thang": 100,
+      "ket_noi_moi_thang": 200
     },
     {
-     "mat_hang": "THANH_LONG",
-     "loai": "L2",
-     "gia": 6000
+      "ma": "bep",
+      "gia_thang": 490000,
+      "phi_don_dau": 0.0,
+      "phi_don_sau": 0.0,
+      "san": 0,
+      "tran": 0,
+      "thanh_vien": 2,
+      "nhu_cau_thang": 10,
+      "ket_noi_moi_thang": 10
     }
-   ],
-   "nhan_hang_kem_loai": [
+  ],
+  "doi_tac": [
     {
-     "mat_hang": "XOAI_CAT_CHU",
-     "loai": "L2",
-     "kg_toi_thieu": 300,
-     "ban_kinh_km": 100,
-     "gia_chao_san": 12000
+      "ma": "DT-NH",
+      "ten": "Ngân hàng TMCP Thử Nghiệm (mô phỏng)",
+      "tai_khoan_coc_mau": "THU-COC-<madon>",
+      "tai_khoan_doanh_thu": "THU-AGV-DOANHTHU"
     },
     {
-     "mat_hang": "THANH_LONG",
-     "loai": "L2",
-     "kg_toi_thieu": 500,
-     "ban_kinh_km": 100,
-     "gia_chao_san": 9000
-    }
-   ]
-  },
-  {
-   "ma": "TC-M05",
-   "ten": "Công ty Thủy sản Biển Xanh",
-   "phia": "mua",
-   "phan_khuc": [
-    "xuat_khau"
-   ],
-   "goi": "doanh_nghiep",
-   "mst": "0319990003",
-   "dia_chi_nhan": "KCN Trà Nóc, Cần Thơ",
-   "tinh": "CT",
-   "xac_minh": "da_xac_minh",
-   "han_muc_ky": {
-    "ND-108": 400000000
-   }
-  }
- ],
- "nguoi_dung": [
-  {
-   "ma": "ND-001",
-   "ho_ten": "Nguyễn Thị Năm",
-   "dien_thoai": "0918000421",
-   "to_chuc": "TC-B01",
-   "vai": "chu"
-  },
-  {
-   "ma": "ND-002",
-   "ho_ten": "Nguyễn Văn Tèo",
-   "dien_thoai": "0918000422",
-   "to_chuc": "TC-B01",
-   "vai": "nguoi_giup"
-  },
-  {
-   "ma": "ND-011",
-   "ho_ten": "Lý Văn Tư",
-   "dien_thoai": "0977000610",
-   "to_chuc": "TC-B02",
-   "vai": "chu"
-  },
-  {
-   "ma": "ND-021",
-   "ho_ten": "Võ Văn Thuận",
-   "dien_thoai": "0907000300",
-   "to_chuc": "TC-B03",
-   "vai": "chu_nhiem"
-  },
-  {
-   "ma": "ND-022",
-   "ho_ten": "Lê Thị Mai",
-   "dien_thoai": "0907000301",
-   "to_chuc": "TC-B03",
-   "vai": "ke_toan_htx"
-  },
-  {
-   "ma": "ND-023",
-   "ho_ten": "Đỗ Văn Gom",
-   "dien_thoai": "0907000302",
-   "to_chuc": "TC-B03",
-   "vai": "nhan_vien_diem_gom"
-  },
-  {
-   "ma": "ND-031",
-   "ho_ten": "Phan Thị Hồng",
-   "dien_thoai": "0945000880",
-   "to_chuc": "TC-B04",
-   "vai": "chu"
-  },
-  {
-   "ma": "ND-041",
-   "ho_ten": "Trần Văn Sáu",
-   "dien_thoai": "0919000950",
-   "to_chuc": "TC-B05",
-   "vai": "chu"
-  },
-  {
-   "ma": "ND-101",
-   "ho_ten": "Phạm Thị Hạnh",
-   "dien_thoai": "0909000210",
-   "to_chuc": "TC-M01",
-   "vai": "mua_hang"
-  },
-  {
-   "ma": "ND-102",
-   "ho_ten": "Ngô Văn Kế",
-   "dien_thoai": "0909000211",
-   "to_chuc": "TC-M01",
-   "vai": "ke_toan"
-  },
-  {
-   "ma": "ND-103",
-   "ho_ten": "Lưu Văn Kho",
-   "dien_thoai": "0909000212",
-   "to_chuc": "TC-M01",
-   "vai": "kho"
-  },
-  {
-   "ma": "ND-104",
-   "ho_ten": "Trịnh Quốc Thịnh",
-   "dien_thoai": "0909000213",
-   "to_chuc": "TC-M01",
-   "vai": "quan_ly"
-  },
-  {
-   "ma": "ND-105",
-   "ho_ten": "Đặng Minh Quân",
-   "dien_thoai": "0903000410",
-   "to_chuc": "TC-M02",
-   "vai": "quan_ly"
-  },
-  {
-   "ma": "ND-106",
-   "ho_ten": "Nguyễn Thị Ngọc",
-   "dien_thoai": "0903000411",
-   "to_chuc": "TC-M02",
-   "vai": "kho"
-  },
-  {
-   "ma": "ND-107",
-   "ho_ten": "Hồ Thị Lệ",
-   "dien_thoai": "0903000412",
-   "to_chuc": "TC-M02",
-   "vai": "ke_toan"
-  },
-  {
-   "ma": "ND-112",
-   "ho_ten": "Võ Thanh Sen",
-   "dien_thoai": "0908000510",
-   "to_chuc": "TC-M03",
-   "vai": "quan_ly"
-  },
-  {
-   "ma": "ND-113",
-   "ho_ten": "Trần Bếp Phó",
-   "dien_thoai": "0908000511",
-   "to_chuc": "TC-M03",
-   "vai": "nguoi_nhan"
-  },
-  {
-   "ma": "ND-115",
-   "ho_ten": "Lâm Văn Cường",
-   "dien_thoai": "0938000610",
-   "to_chuc": "TC-M04",
-   "vai": "quan_ly"
-  },
-  {
-   "ma": "ND-108",
-   "ho_ten": "Huỳnh Thị Biển",
-   "dien_thoai": "0902000810",
-   "to_chuc": "TC-M05",
-   "vai": "quan_ly"
-  },
-  {
-   "ma": "ND-109",
-   "ho_ten": "Châu Văn Lạnh",
-   "dien_thoai": "0902000811",
-   "to_chuc": "TC-M05",
-   "vai": "kho"
-  },
-  {
-   "ma": "ND-201",
-   "ho_ten": "Phan Văn Lâm",
-   "dien_thoai": "0913000444",
-   "to_chuc": "DT-KD",
-   "vai": "kiem_dinh_vien"
-  },
-  {
-   "ma": "ND-202",
-   "ho_ten": "Hồ Văn Lộc",
-   "dien_thoai": "0912000123",
-   "to_chuc": "DT-XE",
-   "vai": "tai_xe"
-  },
-  {
-   "ma": "ND-203",
-   "ho_ten": "Trần Văn Nghĩa",
-   "dien_thoai": "0912000124",
-   "to_chuc": "DT-XE",
-   "vai": "tai_xe"
-  },
-  {
-   "ma": "ND-204",
-   "ho_ten": "Võ Thị Diễm",
-   "dien_thoai": "0909000920",
-   "to_chuc": "DT-KHO",
-   "vai": "quan_ly_kho"
-  },
-  {
-   "ma": "ND-301",
-   "ho_ten": "Ngô Thị Vy",
-   "dien_thoai": "0901000001",
-   "to_chuc": "AGV",
-   "vai": "VH-DP"
-  },
-  {
-   "ma": "ND-302",
-   "ho_ten": "Trần Văn Khoa",
-   "dien_thoai": "0901000002",
-   "to_chuc": "AGV",
-   "vai": "VH-HT"
-  },
-  {
-   "ma": "ND-303",
-   "ho_ten": "Lâm Thị Thu",
-   "dien_thoai": "0901000003",
-   "to_chuc": "AGV",
-   "vai": "VH-HT"
-  },
-  {
-   "ma": "ND-304",
-   "ho_ten": "Bùi Thị Thảo",
-   "dien_thoai": "0901000004",
-   "to_chuc": "AGV",
-   "vai": "VH-DS-lap"
-  },
-  {
-   "ma": "ND-305",
-   "ho_ten": "Đỗ Minh Trí",
-   "dien_thoai": "0901000005",
-   "to_chuc": "AGV",
-   "vai": "VH-DS-duyet"
-  },
-  {
-   "ma": "ND-306",
-   "ho_ten": "Phạm Quốc Bảo",
-   "dien_thoai": "0901000006",
-   "to_chuc": "AGV",
-   "vai": "VH-RR"
-  },
-  {
-   "ma": "ND-307",
-   "ho_ten": "Lê Minh Châu",
-   "dien_thoai": "0901000007",
-   "to_chuc": "AGV",
-   "vai": "VH-DM"
-  },
-  {
-   "ma": "ND-308",
-   "ho_ten": "Nguyễn Hữu Tâm",
-   "dien_thoai": "0901000008",
-   "to_chuc": "AGV",
-   "vai": "VH-QL"
-  }
- ],
- "lo": [
-  {
-   "ma": "L-0412",
-   "ban": "TC-B01",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L1",
-   "luong_kg": 4000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-02",
-   "het_cach_ly": "2026-11-01",
-   "gia_mong_muon": 24000,
-   "gia_thap_nhat_kin": 21500,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0413",
-   "ban": "TC-B01",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L2",
-   "luong_kg": 1500,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-02",
-   "het_cach_ly": "2026-11-02",
-   "gia_mong_muon": 16500,
-   "gia_thap_nhat_kin": 14500,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0414",
-   "ban": "TC-B01",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L1",
-   "luong_kg": 2500,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-12",
-   "het_cach_ly": "2026-11-12",
-   "gia_mong_muon": 25000,
-   "gia_thap_nhat_kin": 22500,
-   "trang_thai": "sap_co_hang"
-  },
-  {
-   "ma": "L-0440",
-   "ban": "TC-B02",
-   "mat_hang": "SAU_RIENG",
-   "loai": "A",
-   "luong_kg": 3000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-03",
-   "het_cach_ly": "2026-11-03",
-   "gia_mong_muon": 92000,
-   "gia_thap_nhat_kin": 86000,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0441",
-   "ban": "TC-B02",
-   "mat_hang": "SAU_RIENG",
-   "loai": "B",
-   "luong_kg": 1200,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-03",
-   "het_cach_ly": "2026-11-03",
-   "gia_mong_muon": 72000,
-   "gia_thap_nhat_kin": 66000,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0447",
-   "ban": "TC-B02",
-   "mat_hang": "SAU_RIENG",
-   "loai": "A",
-   "luong_kg": 5000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-20",
-   "het_cach_ly": "2026-11-20",
-   "gia_mong_muon": 90000,
-   "gia_thap_nhat_kin": 85000,
-   "trang_thai": "sap_co_hang"
-  },
-  {
-   "ma": "L-0490",
-   "ban": "TC-B03",
-   "mat_hang": "THANH_LONG",
-   "loai": "L1",
-   "luong_kg": 6000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-02",
-   "het_cach_ly": "2026-11-02",
-   "gia_mong_muon": 19000,
-   "gia_thap_nhat_kin": 17000,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0491",
-   "ban": "TC-B03",
-   "mat_hang": "THANH_LONG",
-   "loai": "L2",
-   "luong_kg": 2000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-02",
-   "het_cach_ly": "2026-11-02",
-   "gia_mong_muon": 12000,
-   "gia_thap_nhat_kin": 10500,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0492",
-   "ban": "TC-B03",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L1",
-   "luong_kg": 1000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-03",
-   "het_cach_ly": "2026-11-03",
-   "gia_mong_muon": 25500,
-   "gia_thap_nhat_kin": 23000,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0470",
-   "ban": "TC-B04",
-   "mat_hang": "TOM_THE",
-   "loai": "48-52",
-   "luong_kg": 2500,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-04",
-   "het_cach_ly": "2026-11-04",
-   "gia_mong_muon": 135000,
-   "gia_thap_nhat_kin": 128000,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0471",
-   "ban": "TC-B04",
-   "mat_hang": "TOM_THE",
-   "loai": "53-60",
-   "luong_kg": 1500,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-15",
-   "het_cach_ly": "2026-11-15",
-   "gia_mong_muon": 120000,
-   "gia_thap_nhat_kin": 114000,
-   "trang_thai": "sap_co_hang"
-  },
-  {
-   "ma": "L-0480",
-   "ban": "TC-B05",
-   "mat_hang": "LUA_TUOI",
-   "loai": "OM18-am25",
-   "luong_kg": 20000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-03",
-   "het_cach_ly": "2026-11-03",
-   "gia_mong_muon": 7200,
-   "gia_thap_nhat_kin": 6800,
-   "trang_thai": "dang_ban"
-  },
-  {
-   "ma": "L-0481",
-   "ban": "TC-B05",
-   "mat_hang": "LUA_TUOI",
-   "loai": "OM18-am25",
-   "luong_kg": 12000,
-   "uoc_tinh": true,
-   "ngay_co_hang": "2026-11-25",
-   "het_cach_ly": "2026-11-25",
-   "gia_mong_muon": 7300,
-   "gia_thap_nhat_kin": 6900,
-   "trang_thai": "sap_co_hang"
-  }
- ],
- "nhu_cau": [
-  {
-   "ma": "NC-3001",
-   "mua": "TC-M01",
-   "dong": [
-    {
-     "mat_hang": "XOAI_CAT_CHU",
-     "loai": [
-      "L1"
-     ],
-     "kg": 2000,
-     "gia_toi_da_kin": 24000
-    }
-   ],
-   "cua_so": [
-    "2026-11-03",
-    "2026-11-06"
-   ],
-   "kieu_giao": "tai_vuon",
-   "giay_to_bat_buoc": [],
-   "dang": "lo_mot_lan"
-  },
-  {
-   "ma": "NC-3002",
-   "mua": "TC-M01",
-   "dong": [
-    {
-     "mat_hang": "XOAI_CAT_CHU",
-     "loai": [
-      "L2"
-     ],
-     "kg": 1500,
-     "gia_toi_da_kin": 17000,
-     "kg_toi_thieu_moi_nguon": 300
-    }
-   ],
-   "cua_so": [
-    "2026-11-03",
-    "2026-11-10"
-   ],
-   "kieu_giao": "tai_vuon",
-   "giay_to_bat_buoc": [],
-   "dang": "can_gom"
-  },
-  {
-   "ma": "NC-3003",
-   "mua": "TC-M02",
-   "dong": [
-    {
-     "mat_hang": "SAU_RIENG",
-     "loai": [
-      "A"
-     ],
-     "kg": 3000,
-     "gia_toi_da_kin": 95000
-    }
-   ],
-   "cua_so": [
-    "2026-11-04",
-    "2026-11-12"
-   ],
-   "kieu_giao": "tai_vuon",
-   "giay_to_bat_buoc": [
-    "ma_vung_trong:TQ"
-   ],
-   "dang": "lo_mot_lan"
-  },
-  {
-   "ma": "NC-3005",
-   "mua": "TC-M03",
-   "dong": [
-    {
-     "mat_hang": "THANH_LONG",
-     "loai": [
-      "L1"
-     ],
-     "kg": 200,
-     "gia_toi_da_kin": 21000
-    }
-   ],
-   "cua_so": [
-    "2026-11-03",
-    "2026-11-30"
-   ],
-   "kieu_giao": "tai_kho_ben_mua",
-   "giay_to_bat_buoc": [],
-   "dang": "lo_mot_lan"
-  },
-  {
-   "ma": "NC-3006",
-   "mua": "TC-M04",
-   "dong": [
-    {
-     "mat_hang": "LUA_TUOI",
-     "loai": [
-      "OM18-am25"
-     ],
-     "kg": 15000,
-     "gia_toi_da_kin": 7400
-    }
-   ],
-   "cua_so": [
-    "2026-11-03",
-    "2026-11-08"
-   ],
-   "kieu_giao": "tai_diem_gom",
-   "giay_to_bat_buoc": [],
-   "dang": "lo_mot_lan"
-  },
-  {
-   "ma": "NC-3004",
-   "mua": "TC-M05",
-   "dong": [
-    {
-     "mat_hang": "TOM_THE",
-     "loai": [
-      "48-52"
-     ],
-     "kg": 2000,
-     "gia_toi_da_kin": 138000
-    }
-   ],
-   "cua_so": [
-    "2026-11-05",
-    "2026-11-07"
-   ],
-   "kieu_giao": "tai_vuon",
-   "giay_to_bat_buoc": [
-    "nhat_ky_ao",
-    "kiem_dinh:khang_sinh"
-   ],
-   "dang": "lo_mot_lan"
-  }
- ],
- "don_nen": [
-  {
-   "ma": "HĐ-1901",
-   "ban": "TC-B01",
-   "mua": "TC-M01",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L1",
-   "gia": 23500,
-   "kg_dat": 1500,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-05",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1902",
-   "ban": "TC-B01",
-   "mua": "TC-M04",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L2",
-   "gia": 15500,
-   "kg_dat": 800,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-12",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1903",
-   "ban": "TC-B02",
-   "mua": "TC-M02",
-   "mat_hang": "SAU_RIENG",
-   "loai": "A",
-   "gia": 88000,
-   "kg_dat": 2000,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-08",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1904",
-   "ban": "TC-B02",
-   "mua": "TC-M02",
-   "mat_hang": "SAU_RIENG",
-   "loai": "A",
-   "gia": 90000,
-   "kg_dat": 1500,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-20",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1905",
-   "ban": "TC-B03",
-   "mua": "TC-M03",
-   "mat_hang": "THANH_LONG",
-   "loai": "L1",
-   "gia": 19500,
-   "kg_dat": 120,
-   "noi_giao": "tai_kho_ben_mua",
-   "chot_ngay": "2026-10-09",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1906",
-   "ban": "TC-B03",
-   "mua": "TC-M04",
-   "mat_hang": "THANH_LONG",
-   "loai": "L2",
-   "gia": 11000,
-   "kg_dat": 1500,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-15",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1907",
-   "ban": "TC-B04",
-   "mua": "TC-M05",
-   "mat_hang": "TOM_THE",
-   "loai": "48-52",
-   "gia": 132000,
-   "kg_dat": 1200,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-10",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1908",
-   "ban": "TC-B04",
-   "mua": "TC-M05",
-   "mat_hang": "TOM_THE",
-   "loai": "48-52",
-   "gia": 134000,
-   "kg_dat": 1000,
-   "noi_giao": "tai_vuon",
-   "chot_ngay": "2026-10-24",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1909",
-   "ban": "TC-B05",
-   "mua": "TC-M04",
-   "mat_hang": "LUA_TUOI",
-   "loai": "OM18-am25",
-   "gia": 7100,
-   "kg_dat": 10000,
-   "noi_giao": "tai_diem_gom",
-   "chot_ngay": "2026-10-11",
-   "trang_thai": "hoan_tat"
-  },
-  {
-   "ma": "HĐ-1910",
-   "ban": "TC-B05",
-   "mua": "TC-M04",
-   "mat_hang": "LUA_TUOI",
-   "loai": "OM18-am25",
-   "gia": 7000,
-   "kg_dat": 8000,
-   "noi_giao": "tai_diem_gom",
-   "chot_ngay": "2026-10-25",
-   "trang_thai": "hoan_tat"
-  }
- ],
- "hop_dong_khung": [
-  {
-   "ma": "KH-2003",
-   "ban": "TC-B03",
-   "mua": "TC-M03",
-   "lich": [
-    "thu_2",
-    "thu_5"
-   ],
-   "mon": [
-    {
-     "mat_hang": "THANH_LONG",
-     "loai": "L1",
-     "kg": 30,
-     "gia": 20000
+      "ma": "DT-KD",
+      "ten": "Trung tâm kiểm định Phương Nam (mô phỏng)",
+      "nguoi": [
+        "ND-201"
+      ],
+      "bang_gia": {
+        "cam_quan_can_lai": 280000,
+        "cadimi_vang_o_mau": 1500000,
+        "test_khang_sinh_tom": 450000,
+        "do_am_lua": 200000
+      }
     },
     {
-     "mat_hang": "XOAI_CAT_CHU",
-     "loai": "L1",
-     "kg": 20,
-     "gia": 26000
-    }
-   ],
-   "coc_khung": 1120000,
-   "cho_no_them": 1500000,
-   "da_giao_chua_tra": 1120000,
-   "da_chot_sap_giao": 1120000,
-   "ky_thanh_toan": "tuan"
-  }
- ],
- "bao_tieu": [
-  {
-   "ma": "BT-2005",
-   "mua": "TC-M01",
-   "ban": "TC-B01",
-   "mat_hang": "XOAI_CAT_CHU",
-   "loai": "L1",
-   "dot": [
-    {
-     "so": 1,
-     "kg_cam_ket": 3000,
-     "trang_thai": "da_chot"
+      "ma": "DT-XE",
+      "ten": "Nhà xe Lộc Phát",
+      "xe": [
+        {
+          "bien_so": "66C-123.45",
+          "loai": "lanh",
+          "tai_kg": 2500,
+          "tai_xe": "ND-202"
+        },
+        {
+          "bien_so": "66C-678.90",
+          "loai": "thuong",
+          "tai_kg": 5000,
+          "tai_xe": "ND-203"
+        },
+        {
+          "bien_so": "66C-246.80",
+          "loai": "thuong",
+          "tai_kg": 8000,
+          "tai_xe": "ND-202"
+        },
+        {
+          "bien_so": "66C-135.79",
+          "loai": "thuong",
+          "tai_kg": 5000,
+          "tai_xe": "ND-203"
+        }
+      ],
+      "cuoc": {
+        "CaoLanh-TPHCM-lanh-2.5t": 3200000,
+        "CaoLanh-TPHCM-thuong-5t": 2400000
+      }
     },
     {
-     "so": 2,
-     "kg_cam_ket": 2800,
-     "trang_thai": "cho_chuan_bi"
+      "ma": "DT-KHO",
+      "ten": "Kho lạnh Tân Phú Lạnh",
+      "dia_chi": "Cao Lãnh, Đồng Tháp",
+      "nguoi": [
+        "ND-204"
+      ],
+      "gia_dong_kg_ngay": 300,
+      "dai_nhiet": [
+        "2-8",
+        "10-13"
+      ]
     },
     {
-     "so": 3,
-     "kg_cam_ket": 3200,
-     "trang_thai": "cho_chuan_bi"
+      "ma": "ĐG-01",
+      "ten": "Điểm gom HTX Mỹ Xương",
+      "to_chuc": "TC-B03",
+      "nguoi": [
+        "ND-006"
+      ],
+      "phi_gom_dong_kg": 300
     }
-   ],
-   "cong_thuc_gia": "max(18000, 0.9 * P_tk_L1_ngay_giao)",
-   "coc_vu": 9000000,
-   "vat_tu_ung": 15000000,
-   "tru_vat_tu_moi_dot": 5000000,
-   "han_tra_dot_ngay": 7
-  }
- ]
-}'::jsonb);
+  ],
+  "gia_tham_khao": [
+    {
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "gia": 25000,
+      "so_don": 14,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L2",
+      "gia": 15000,
+      "so_don": 6,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L3",
+      "gia": 6000,
+      "so_don": 4,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L1",
+      "gia": 14000,
+      "so_don": 9,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L2",
+      "gia": 9000,
+      "so_don": 5,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "gia": 120000,
+      "so_don": 7,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "gia": 6600,
+      "so_don": 12,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "gia": 75000,
+      "so_don": 8,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "BUOI_DA_XANH",
+      "loai": "L1",
+      "gia": 32000,
+      "so_don": 6,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "gia": 18000,
+      "so_don": 5,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "THANH_LONG",
+      "loai": "L2",
+      "gia": 9000,
+      "so_don": 4,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    },
+    {
+      "mat_hang": "CA_TRA",
+      "loai": "0.8-1.2",
+      "gia": 30000,
+      "so_don": 5,
+      "vung": "DBSCL",
+      "den_ngay": "2026-11-02",
+      "ghi_chu": "giá giả định cho dữ liệu ảo"
+    }
+  ],
+  "to_chuc_ban": [
+    {
+      "ma": "TC-B01",
+      "ten": "Hộ Nguyễn Thị Năm",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Mỹ Xương, Cao Lãnh, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "XOAI_CAT_CHU"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7300000002186",
+        "chu": "Nguyễn Thị Năm"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 92,
+      "so_don_hoan_tat": 18,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        },
+        {
+          "loai": "ma_vung_trong",
+          "ma": "MVT-DT-0412",
+          "thi_truong": [
+            "TQ",
+            "HQ"
+          ],
+          "trang_thai": "da_xac_minh",
+          "hieu_luc_den": "2027-06-30"
+        }
+      ],
+      "nguoi_giup": [
+        "ND-002"
+      ]
+    },
+    {
+      "ma": "TC-B02",
+      "ten": "Hộ Lý Văn Tư",
+      "phia": "ban",
+      "loai": "trang_trai",
+      "dia_ban": "Cai Lậy, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "SAU_RIENG"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Vietcombank",
+        "so": "THU-0071000610610",
+        "chu": "Lý Văn Tư"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 88,
+      "so_don_hoan_tat": 9,
+      "giay_to": [
+        {
+          "loai": "ma_vung_trong",
+          "ma": "MVT-DT-0610",
+          "thi_truong": [
+            "TQ"
+          ],
+          "trang_thai": "da_xac_minh",
+          "hieu_luc_den": "2027-03-31"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B03",
+      "ten": "HTX Tân Thuận",
+      "phia": "ban",
+      "loai": "htx",
+      "dia_ban": "Chợ Gạo, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "THANH_LONG",
+        "XOAI_CAT_CHU"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7300000003000",
+        "chu": "HTX Tân Thuận"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 90,
+      "so_don_hoan_tat": 31,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ],
+      "ten_diem_gom": "Điểm gom HTX Tân Thuận"
+    },
+    {
+      "ma": "TC-B04",
+      "ten": "Hộ Phan Thị Hồng",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Mỹ Xuyên, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "pond",
+      "mat_hang": [
+        "TOM_THE"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Sacombank",
+        "so": "THU-0400000880880",
+        "chu": "Phan Thị Hồng"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 86,
+      "so_don_hoan_tat": 6,
+      "giay_to": [
+        {
+          "loai": "nhat_ky_ao",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B05",
+      "ten": "Hộ Trần Văn Sáu",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Tháp Mười, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "field",
+      "mat_hang": [
+        "LUA_TUOI"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7300000009500",
+        "chu": "Trần Văn Sáu"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 84,
+      "so_don_hoan_tat": 12,
+      "giay_to": []
+    }
+  ],
+  "to_chuc_mua": [
+    {
+      "ma": "TC-M01",
+      "ten": "Nhà máy sấy Đồng Xanh",
+      "phia": "mua",
+      "phan_khuc": [
+        "che_bien"
+      ],
+      "goi": "thu_mua",
+      "mst": "0319990001",
+      "dia_chi_nhan": "KCN Hiệp Phước, TP.HCM",
+      "tinh": "HCM",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-101": 50000000
+      },
+      "nhan_hang_kem_loai": [
+        {
+          "mat_hang": "XOAI_CAT_CHU",
+          "loai": "L2",
+          "kg_toi_thieu": 500,
+          "ban_kinh_km": 200
+        }
+      ]
+    },
+    {
+      "ma": "TC-M02",
+      "ten": "Công ty XNK Sông Tiền",
+      "phia": "mua",
+      "phan_khuc": [
+        "xuat_khau"
+      ],
+      "goi": "doanh_nghiep",
+      "mst": "0319990002",
+      "dia_chi_nhan": "Kho Mỹ Tho, Đồng Tháp",
+      "tinh": "DT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-105": 300000000
+      }
+    },
+    {
+      "ma": "TC-M03",
+      "ten": "Nhà hàng Bếp Sen",
+      "phia": "mua",
+      "phan_khuc": [
+        "nha_hang"
+      ],
+      "goi": "bep",
+      "mst": "0319990005",
+      "dia_chi_nhan": "Quận 3, TP.HCM",
+      "tinh": "HCM",
+      "kieu_co_so": "restaurant",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-112": 20000000
+      }
+    },
+    {
+      "ma": "TC-M04",
+      "ten": "Vựa nông sản Ba Cường",
+      "phia": "mua",
+      "phan_khuc": [
+        "dau_moi"
+      ],
+      "goi": "mien_phi",
+      "dia_chi_nhan": "Cao Lãnh, Đồng Tháp",
+      "tinh": "DT",
+      "thuong_lai": true,
+      "xac_minh": "da_xac_minh",
+      "doi_tac_bao_tieu": true,
+      "gia_san_bao_tieu": [
+        {
+          "mat_hang": "XOAI_CAT_CHU",
+          "loai": "L2",
+          "gia": 9000
+        },
+        {
+          "mat_hang": "THANH_LONG",
+          "loai": "L2",
+          "gia": 6000
+        }
+      ],
+      "nhan_hang_kem_loai": [
+        {
+          "mat_hang": "XOAI_CAT_CHU",
+          "loai": "L2",
+          "kg_toi_thieu": 300,
+          "ban_kinh_km": 100,
+          "gia_chao_san": 12000
+        },
+        {
+          "mat_hang": "THANH_LONG",
+          "loai": "L2",
+          "kg_toi_thieu": 500,
+          "ban_kinh_km": 100,
+          "gia_chao_san": 9000
+        }
+      ]
+    },
+    {
+      "ma": "TC-M05",
+      "ten": "Công ty Thủy sản Biển Xanh",
+      "phia": "mua",
+      "phan_khuc": [
+        "xuat_khau"
+      ],
+      "goi": "doanh_nghiep",
+      "mst": "0319990003",
+      "dia_chi_nhan": "KCN Trà Nóc, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-108": 400000000
+      }
+    }
+  ],
+  "nguoi_dung": [
+    {
+      "ma": "ND-001",
+      "ho_ten": "Nguyễn Thị Năm",
+      "dien_thoai": "0918000421",
+      "to_chuc": "TC-B01",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-002",
+      "ho_ten": "Nguyễn Văn Tèo",
+      "dien_thoai": "0918000422",
+      "to_chuc": "TC-B01",
+      "vai": "nguoi_giup"
+    },
+    {
+      "ma": "ND-011",
+      "ho_ten": "Lý Văn Tư",
+      "dien_thoai": "0977000610",
+      "to_chuc": "TC-B02",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-021",
+      "ho_ten": "Võ Văn Thuận",
+      "dien_thoai": "0907000300",
+      "to_chuc": "TC-B03",
+      "vai": "chu_nhiem"
+    },
+    {
+      "ma": "ND-022",
+      "ho_ten": "Lê Thị Mai",
+      "dien_thoai": "0907000301",
+      "to_chuc": "TC-B03",
+      "vai": "ke_toan_htx"
+    },
+    {
+      "ma": "ND-023",
+      "ho_ten": "Đỗ Văn Gom",
+      "dien_thoai": "0907000302",
+      "to_chuc": "TC-B03",
+      "vai": "nhan_vien_diem_gom"
+    },
+    {
+      "ma": "ND-031",
+      "ho_ten": "Phan Thị Hồng",
+      "dien_thoai": "0945000880",
+      "to_chuc": "TC-B04",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-041",
+      "ho_ten": "Trần Văn Sáu",
+      "dien_thoai": "0919000950",
+      "to_chuc": "TC-B05",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-101",
+      "ho_ten": "Phạm Thị Hạnh",
+      "dien_thoai": "0909000210",
+      "to_chuc": "TC-M01",
+      "vai": "mua_hang"
+    },
+    {
+      "ma": "ND-102",
+      "ho_ten": "Ngô Văn Kế",
+      "dien_thoai": "0909000211",
+      "to_chuc": "TC-M01",
+      "vai": "ke_toan"
+    },
+    {
+      "ma": "ND-103",
+      "ho_ten": "Lưu Văn Kho",
+      "dien_thoai": "0909000212",
+      "to_chuc": "TC-M01",
+      "vai": "kho"
+    },
+    {
+      "ma": "ND-104",
+      "ho_ten": "Trịnh Quốc Thịnh",
+      "dien_thoai": "0909000213",
+      "to_chuc": "TC-M01",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-105",
+      "ho_ten": "Đặng Minh Quân",
+      "dien_thoai": "0903000410",
+      "to_chuc": "TC-M02",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-106",
+      "ho_ten": "Nguyễn Thị Ngọc",
+      "dien_thoai": "0903000411",
+      "to_chuc": "TC-M02",
+      "vai": "kho"
+    },
+    {
+      "ma": "ND-107",
+      "ho_ten": "Hồ Thị Lệ",
+      "dien_thoai": "0903000412",
+      "to_chuc": "TC-M02",
+      "vai": "ke_toan"
+    },
+    {
+      "ma": "ND-112",
+      "ho_ten": "Võ Thanh Sen",
+      "dien_thoai": "0908000510",
+      "to_chuc": "TC-M03",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-113",
+      "ho_ten": "Trần Bếp Phó",
+      "dien_thoai": "0908000511",
+      "to_chuc": "TC-M03",
+      "vai": "nguoi_nhan"
+    },
+    {
+      "ma": "ND-115",
+      "ho_ten": "Lâm Văn Cường",
+      "dien_thoai": "0938000610",
+      "to_chuc": "TC-M04",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-108",
+      "ho_ten": "Huỳnh Thị Biển",
+      "dien_thoai": "0902000810",
+      "to_chuc": "TC-M05",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-109",
+      "ho_ten": "Châu Văn Lạnh",
+      "dien_thoai": "0902000811",
+      "to_chuc": "TC-M05",
+      "vai": "kho"
+    },
+    {
+      "ma": "ND-201",
+      "ho_ten": "Phan Văn Lâm",
+      "dien_thoai": "0913000444",
+      "to_chuc": "DT-KD",
+      "vai": "kiem_dinh_vien"
+    },
+    {
+      "ma": "ND-202",
+      "ho_ten": "Hồ Văn Lộc",
+      "dien_thoai": "0912000123",
+      "to_chuc": "DT-XE",
+      "vai": "tai_xe"
+    },
+    {
+      "ma": "ND-203",
+      "ho_ten": "Trần Văn Nghĩa",
+      "dien_thoai": "0912000124",
+      "to_chuc": "DT-XE",
+      "vai": "tai_xe"
+    },
+    {
+      "ma": "ND-204",
+      "ho_ten": "Võ Thị Diễm",
+      "dien_thoai": "0909000920",
+      "to_chuc": "DT-KHO",
+      "vai": "quan_ly_kho"
+    },
+    {
+      "ma": "ND-301",
+      "ho_ten": "Ngô Thị Vy",
+      "dien_thoai": "0901000001",
+      "to_chuc": "AGV",
+      "vai": "VH-DP"
+    },
+    {
+      "ma": "ND-302",
+      "ho_ten": "Trần Văn Khoa",
+      "dien_thoai": "0901000002",
+      "to_chuc": "AGV",
+      "vai": "VH-HT"
+    },
+    {
+      "ma": "ND-303",
+      "ho_ten": "Lâm Thị Thu",
+      "dien_thoai": "0901000003",
+      "to_chuc": "AGV",
+      "vai": "VH-HT"
+    },
+    {
+      "ma": "ND-304",
+      "ho_ten": "Bùi Thị Thảo",
+      "dien_thoai": "0901000004",
+      "to_chuc": "AGV",
+      "vai": "VH-DS-lap"
+    },
+    {
+      "ma": "ND-305",
+      "ho_ten": "Đỗ Minh Trí",
+      "dien_thoai": "0901000005",
+      "to_chuc": "AGV",
+      "vai": "VH-DS-duyet"
+    },
+    {
+      "ma": "ND-306",
+      "ho_ten": "Phạm Quốc Bảo",
+      "dien_thoai": "0901000006",
+      "to_chuc": "AGV",
+      "vai": "VH-RR"
+    },
+    {
+      "ma": "ND-307",
+      "ho_ten": "Lê Minh Châu",
+      "dien_thoai": "0901000007",
+      "to_chuc": "AGV",
+      "vai": "VH-DM"
+    },
+    {
+      "ma": "ND-308",
+      "ho_ten": "Nguyễn Hữu Tâm",
+      "dien_thoai": "0901000008",
+      "to_chuc": "AGV",
+      "vai": "VH-QL"
+    }
+  ],
+  "lo": [
+    {
+      "ma": "L-0412",
+      "ban": "TC-B01",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "luong_kg": 4000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 24000,
+      "gia_thap_nhat_kin": 21500,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0413",
+      "ban": "TC-B01",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L2",
+      "luong_kg": 1500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-02",
+      "gia_mong_muon": 16500,
+      "gia_thap_nhat_kin": 14500,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0414",
+      "ban": "TC-B01",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "luong_kg": 2500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-12",
+      "het_cach_ly": "2026-11-12",
+      "gia_mong_muon": 25000,
+      "gia_thap_nhat_kin": 22500,
+      "trang_thai": "sap_co_hang"
+    },
+    {
+      "ma": "L-0440",
+      "ban": "TC-B02",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "luong_kg": 3000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-03",
+      "het_cach_ly": "2026-11-03",
+      "gia_mong_muon": 92000,
+      "gia_thap_nhat_kin": 86000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0441",
+      "ban": "TC-B02",
+      "mat_hang": "SAU_RIENG",
+      "loai": "B",
+      "luong_kg": 1200,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-03",
+      "het_cach_ly": "2026-11-03",
+      "gia_mong_muon": 72000,
+      "gia_thap_nhat_kin": 66000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0447",
+      "ban": "TC-B02",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "luong_kg": 5000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-20",
+      "het_cach_ly": "2026-11-20",
+      "gia_mong_muon": 90000,
+      "gia_thap_nhat_kin": 85000,
+      "trang_thai": "sap_co_hang"
+    },
+    {
+      "ma": "L-0490",
+      "ban": "TC-B03",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "luong_kg": 6000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-02",
+      "gia_mong_muon": 19000,
+      "gia_thap_nhat_kin": 17000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0491",
+      "ban": "TC-B03",
+      "mat_hang": "THANH_LONG",
+      "loai": "L2",
+      "luong_kg": 2000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-02",
+      "gia_mong_muon": 12000,
+      "gia_thap_nhat_kin": 10500,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0492",
+      "ban": "TC-B03",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "luong_kg": 1000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-03",
+      "het_cach_ly": "2026-11-03",
+      "gia_mong_muon": 25500,
+      "gia_thap_nhat_kin": 23000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0470",
+      "ban": "TC-B04",
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "luong_kg": 2500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-04",
+      "het_cach_ly": "2026-11-04",
+      "gia_mong_muon": 135000,
+      "gia_thap_nhat_kin": 128000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0471",
+      "ban": "TC-B04",
+      "mat_hang": "TOM_THE",
+      "loai": "53-60",
+      "luong_kg": 1500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-15",
+      "het_cach_ly": "2026-11-15",
+      "gia_mong_muon": 120000,
+      "gia_thap_nhat_kin": 114000,
+      "trang_thai": "sap_co_hang"
+    },
+    {
+      "ma": "L-0480",
+      "ban": "TC-B05",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "luong_kg": 20000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-03",
+      "het_cach_ly": "2026-11-03",
+      "gia_mong_muon": 7200,
+      "gia_thap_nhat_kin": 6800,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0481",
+      "ban": "TC-B05",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "luong_kg": 12000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-25",
+      "het_cach_ly": "2026-11-25",
+      "gia_mong_muon": 7300,
+      "gia_thap_nhat_kin": 6900,
+      "trang_thai": "sap_co_hang"
+    }
+  ],
+  "nhu_cau": [
+    {
+      "ma": "NC-3001",
+      "mua": "TC-M01",
+      "dong": [
+        {
+          "mat_hang": "XOAI_CAT_CHU",
+          "loai": [
+            "L1"
+          ],
+          "kg": 2000,
+          "gia_toi_da_kin": 24000
+        }
+      ],
+      "cua_so": [
+        "2026-11-03",
+        "2026-11-06"
+      ],
+      "kieu_giao": "tai_vuon",
+      "giay_to_bat_buoc": [],
+      "dang": "lo_mot_lan"
+    },
+    {
+      "ma": "NC-3002",
+      "mua": "TC-M01",
+      "dong": [
+        {
+          "mat_hang": "XOAI_CAT_CHU",
+          "loai": [
+            "L2"
+          ],
+          "kg": 1500,
+          "gia_toi_da_kin": 17000,
+          "kg_toi_thieu_moi_nguon": 300
+        }
+      ],
+      "cua_so": [
+        "2026-11-03",
+        "2026-11-10"
+      ],
+      "kieu_giao": "tai_vuon",
+      "giay_to_bat_buoc": [],
+      "dang": "can_gom"
+    },
+    {
+      "ma": "NC-3003",
+      "mua": "TC-M02",
+      "dong": [
+        {
+          "mat_hang": "SAU_RIENG",
+          "loai": [
+            "A"
+          ],
+          "kg": 3000,
+          "gia_toi_da_kin": 95000
+        }
+      ],
+      "cua_so": [
+        "2026-11-04",
+        "2026-11-12"
+      ],
+      "kieu_giao": "tai_vuon",
+      "giay_to_bat_buoc": [
+        "ma_vung_trong:TQ"
+      ],
+      "dang": "lo_mot_lan"
+    },
+    {
+      "ma": "NC-3005",
+      "mua": "TC-M03",
+      "dong": [
+        {
+          "mat_hang": "THANH_LONG",
+          "loai": [
+            "L1"
+          ],
+          "kg": 200,
+          "gia_toi_da_kin": 21000
+        }
+      ],
+      "cua_so": [
+        "2026-11-03",
+        "2026-11-30"
+      ],
+      "kieu_giao": "tai_kho_ben_mua",
+      "giay_to_bat_buoc": [],
+      "dang": "lo_mot_lan"
+    },
+    {
+      "ma": "NC-3006",
+      "mua": "TC-M04",
+      "dong": [
+        {
+          "mat_hang": "LUA_TUOI",
+          "loai": [
+            "OM18-am25"
+          ],
+          "kg": 15000,
+          "gia_toi_da_kin": 7400
+        }
+      ],
+      "cua_so": [
+        "2026-11-03",
+        "2026-11-08"
+      ],
+      "kieu_giao": "tai_diem_gom",
+      "giay_to_bat_buoc": [],
+      "dang": "lo_mot_lan"
+    },
+    {
+      "ma": "NC-3004",
+      "mua": "TC-M05",
+      "dong": [
+        {
+          "mat_hang": "TOM_THE",
+          "loai": [
+            "48-52"
+          ],
+          "kg": 2000,
+          "gia_toi_da_kin": 138000
+        }
+      ],
+      "cua_so": [
+        "2026-11-05",
+        "2026-11-07"
+      ],
+      "kieu_giao": "tai_vuon",
+      "giay_to_bat_buoc": [
+        "nhat_ky_ao",
+        "kiem_dinh:khang_sinh"
+      ],
+      "dang": "lo_mot_lan"
+    }
+  ],
+  "don_nen": [
+    {
+      "ma": "HĐ-1901",
+      "ban": "TC-B01",
+      "mua": "TC-M01",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "gia": 23500,
+      "kg_dat": 1500,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-05",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1902",
+      "ban": "TC-B01",
+      "mua": "TC-M04",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L2",
+      "gia": 15500,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-12",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1903",
+      "ban": "TC-B02",
+      "mua": "TC-M02",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "gia": 88000,
+      "kg_dat": 2000,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-08",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1904",
+      "ban": "TC-B02",
+      "mua": "TC-M02",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "gia": 90000,
+      "kg_dat": 1500,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-20",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1905",
+      "ban": "TC-B03",
+      "mua": "TC-M03",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "gia": 19500,
+      "kg_dat": 120,
+      "noi_giao": "tai_kho_ben_mua",
+      "chot_ngay": "2026-10-09",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1906",
+      "ban": "TC-B03",
+      "mua": "TC-M04",
+      "mat_hang": "THANH_LONG",
+      "loai": "L2",
+      "gia": 11000,
+      "kg_dat": 1500,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-15",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1907",
+      "ban": "TC-B04",
+      "mua": "TC-M05",
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "gia": 132000,
+      "kg_dat": 1200,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-10",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1908",
+      "ban": "TC-B04",
+      "mua": "TC-M05",
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "gia": 134000,
+      "kg_dat": 1000,
+      "noi_giao": "tai_vuon",
+      "chot_ngay": "2026-10-24",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1909",
+      "ban": "TC-B05",
+      "mua": "TC-M04",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "gia": 7100,
+      "kg_dat": 10000,
+      "noi_giao": "tai_diem_gom",
+      "chot_ngay": "2026-10-11",
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "HĐ-1910",
+      "ban": "TC-B05",
+      "mua": "TC-M04",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "gia": 7000,
+      "kg_dat": 8000,
+      "noi_giao": "tai_diem_gom",
+      "chot_ngay": "2026-10-25",
+      "trang_thai": "hoan_tat"
+    }
+  ],
+  "hop_dong_khung": [
+    {
+      "ma": "KH-2003",
+      "ban": "TC-B03",
+      "mua": "TC-M03",
+      "lich": [
+        "thu_2",
+        "thu_5"
+      ],
+      "mon": [
+        {
+          "mat_hang": "THANH_LONG",
+          "loai": "L1",
+          "kg": 30,
+          "gia": 20000
+        },
+        {
+          "mat_hang": "XOAI_CAT_CHU",
+          "loai": "L1",
+          "kg": 20,
+          "gia": 26000
+        }
+      ],
+      "coc_khung": 1120000,
+      "cho_no_them": 1500000,
+      "da_giao_chua_tra": 1120000,
+      "da_chot_sap_giao": 1120000,
+      "ky_thanh_toan": "tuan"
+    }
+  ],
+  "bao_tieu": [
+    {
+      "ma": "BT-2005",
+      "mua": "TC-M01",
+      "ban": "TC-B01",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "dot": [
+        {
+          "so": 1,
+          "kg_cam_ket": 3000,
+          "trang_thai": "da_chot"
+        },
+        {
+          "so": 2,
+          "kg_cam_ket": 2800,
+          "trang_thai": "cho_chuan_bi"
+        },
+        {
+          "so": 3,
+          "kg_cam_ket": 3200,
+          "trang_thai": "cho_chuan_bi"
+        }
+      ],
+      "cong_thuc_gia": "max(18000, 0.9 * P_tk_L1_ngay_giao)",
+      "coc_vu": 9000000,
+      "vat_tu_ung": 15000000,
+      "tru_vat_tu_moi_dot": 5000000,
+      "han_tra_dot_ngay": 7
+    }
+  ]
+}
+'::jsonb);
 INSERT INTO ref.provinces(code,name_vi) VALUES('DT','Đồng Tháp (mã thử)');
 INSERT INTO ref.provinces(code,name_vi) VALUES('CT','Cần Thơ (mã thử)');
 INSERT INTO ref.provinces(code,name_vi) VALUES('TN','Tây Ninh (mã thử)');
@@ -1628,6 +1641,8 @@ INSERT INTO core.imported_offtake_batches(plan_id,batch_no,committed_qty,materia
 INSERT INTO core.imported_offtake_batches(plan_id,batch_no,committed_qty,materials_offset_vnd,source_status) VALUES('53f1ec38-7e18-57c4-9cf7-9249517ac512',3,3200000,5000000,'cho_chuan_bi');
 INSERT INTO core.vehicles(id,org_id,plate_no,kind,capacity_qty) VALUES('30083539-10b0-5b92-80a3-df4c547d38ec','c0a22526-e753-5915-b4d0-d0a3ee4076a4','66C-123.45','reefer',2500000);
 INSERT INTO core.vehicles(id,org_id,plate_no,kind,capacity_qty) VALUES('b4863eb3-6121-53f0-8587-fab132912c7c','c0a22526-e753-5915-b4d0-d0a3ee4076a4','66C-678.90','normal',5000000);
+INSERT INTO core.vehicles(id,org_id,plate_no,kind,capacity_qty) VALUES('a15bcbaa-8894-5020-a554-887951d5195c','c0a22526-e753-5915-b4d0-d0a3ee4076a4','66C-246.80','normal',8000000);
+INSERT INTO core.vehicles(id,org_id,plate_no,kind,capacity_qty) VALUES('f14cb5d0-a6bb-5b66-a908-36cff546cfef','c0a22526-e753-5915-b4d0-d0a3ee4076a4','66C-135.79','normal',5000000);
 INSERT INTO core.substandard_receivers(buyer_org_id,product_id,grade_codes,min_qty,radius_km,standing_price_vnd,is_offtake_partner,floor_price_vnd,valid_during) VALUES('d45094f9-fea4-519a-a3c3-c9a50c9808a5','c833b2d4-badc-5575-98cd-83c9c6293313',ARRAY['L2']::text[],500000,200,NULL,false,NULL,daterange('2026-10-01','2027-01-01','[)'));
 INSERT INTO core.substandard_receivers(buyer_org_id,product_id,grade_codes,min_qty,radius_km,standing_price_vnd,is_offtake_partner,floor_price_vnd,valid_during) VALUES('99177a1f-dc84-588e-95bd-199401da0ed3','c833b2d4-badc-5575-98cd-83c9c6293313',ARRAY['L2']::text[],300000,100,12000,true,5000,daterange('2026-10-01','2027-01-01','[)'));
 INSERT INTO core.substandard_receivers(buyer_org_id,product_id,grade_codes,min_qty,radius_km,standing_price_vnd,is_offtake_partner,floor_price_vnd,valid_during) VALUES('99177a1f-dc84-588e-95bd-199401da0ed3','e6b1cf34-b6af-556f-a9ff-f65abcb58055',ARRAY['L2']::text[],500000,100,9000,true,5000,daterange('2026-10-01','2027-01-01','[)'));

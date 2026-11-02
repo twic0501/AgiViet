@@ -1,0 +1,1795 @@
+[
+ {
+  "ma": "GPTBAN-01",
+  "ten": "Bác Năm lớn tuổi lần đầu dùng app, bán xoài và nhận tiền",
+  "tinh_cach": "Đóng vai người lớn tuổi mới thao tác trên app bằng tài khoản mẫu Nguyễn Thị Năm; cần phân biệt đồng ý giá, ký, cọc và nhận tiền.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Đồng hồ sang 03/11/2026, nằm trong cửa sổ mua NC-3001; lô L-0412 đã có hàng và hết cách ly.",
+    "can_cu": "docs/nghiep-vu/du-lieu-cho.json: meta, L-0412, NC-3001; trình chạy hỗ trợ tua_gio.gio.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-03T07:36:56.192Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "bao_gia",
+    "ai": "0918000421",
+    "mong_doi": "Gửi báo giá 1.000 kg xoài L1 đúng nhu cầu; chưa giữ hàng, chưa có hợp đồng hoặc nghĩa vụ giao.",
+    "can_cu": "Chợ mẫu: Năm sở hữu L-0412, lượng 4.000 kg, giá mong muốn 24.000 đ/kg; backend/src/nghiep-vu/loi-chao.ts.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"1efb58e2-5704-442a-9d08-9c71ba53aec8\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-04T07:36:56.264Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "24000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot mua trả 23.300 đ/kg, giữ nguyên 1.000 kg; giá này còn trên mức kín 21.500 đ/kg.",
+    "can_cu": "backend/src/demo/doi-tac-ao.ts: vòng đầu giảm 3%, làm tròn 100 đồng; chợ mẫu L-0412.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "nhan",
+    "ai": "0918000421",
+    "mong_doi": "Gửi nguyên văn; tin hỏi nghiệp vụ không tự đồng ý giá, không ký thay và không xác nhận nhận tiền.",
+    "can_cu": "Trình chạy: nhan chỉ gửi /v1/messages; đồng ý giá và ký là các hành động riêng.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"62a8e6ff-f8b1-42bd-8586-90e9d7335413\",\"gui\":true,\"body\":\"Bác mới dùng, đồng ý giá rồi có phải giao liền không? Bác cần xem rõ lúc nào được nhận tiền.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    },
+    "tin": [
+     "Bác mới dùng, đồng ý giá rồi có phải giao liền không? Bác cần xem rõ lúc nào được nhận tiền."
+    ]
+   },
+   {
+    "buoc": 5,
+    "lam": "dong_y",
+    "ai": "0918000421",
+    "mong_doi": "Chốt 23.300 đ/kg và giữ 1.000 kg trong 24 giờ; thông báo rõ đây chưa phải hợp đồng.",
+    "can_cu": "backend/src/nghiep-vu/loi-chao.ts: dongYLoiChao; CHINH_SACH.han.giuLuongGio=24.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"1efb58e2-5704-442a-9d08-9c71ba53aec8\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"40c7611f-7b9b-46cc-ac23-b4f78ab4e0dc\",\"hold_expires_at\":\"2026-11-04T07:37:26.017Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 1.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot mua lập đơn trả khi nhận on_receipt và ký phía mua; vẫn chờ bác Năm ký, chưa được coi đã cọc.",
+    "can_cu": "backend/src/demo/doi-tac-ao.ts: tự lập đơn với payment_timing=on_receipt; frontend/TIEN-DO.md E74.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "chon_don",
+    "ai": "0918000421",
+    "mong_doi": "Chọn đúng hợp đồng từ báo giá đang xét; điều khoản phải thể hiện lượng, giá, giá hạ cấp, giao tại vườn, bên mua lo xe và trả khi nhận.",
+    "can_cu": "Trình chạy: chon_don tìm theo offer_id; backend/src/nghiep-vu/don.ts.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "ky",
+    "ai": "0918000421",
+    "mong_doi": "Ký bằng OTP và xác nhận cam kết giao hàng; hai bên ký xong mới chuyển sang chờ cọc.",
+    "can_cu": "Trình chạy: ky gửi OTP contract_sign và commitment_ack=true phía bán; CHINH_SACH.cocBps=3000.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"076633ae-86c8-40a9-b91e-25bd882b4185\",\"code\":\"HD-3001\",\"status\":\"awaiting_deposit\",\"revision\":4,\"signed_at\":\"2026-11-03T07:37:42.270Z\",\"document_id\":\"bfd14545-f9be-4a82-98b5-215eae82858a\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Ngân hàng mô phỏng xác nhận đủ cọc; bot chuẩn bị xe và người nhận. Cọc không được hiển thị thành tiền hàng đã chuyển thẳng cho bác.",
+    "can_cu": "Bot thực hiện chuyển cọc qua sim/bank; frontend/TIEN-DO.md E72 phân biệt cọc và tiền trả thẳng.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":20}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "bat_dau_can",
+    "ai": "0918000421",
+    "mong_doi": "Chỉ bắt đầu kiểm khi đủ điều kiện giao và có QR người nhận hợp lệ; chưa tự xác nhận chất lượng hoặc số tiền.",
+    "can_cu": "Trình chạy: bat_dau_can dùng receipt-qr và start-check, đưa đồng hồ vào khung giao.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"e8362c72-880d-4af6-a229-46d9dcbd1f83\",\"status\":\"checking\",\"revision\":4}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Chờ nghiệm thu",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Nghiệm thu"
+      }
+     },
+     "dot": [
+      "checking"
+     ]
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot lập biên bản 1.000 kg đạt; đơn chờ người bán xác nhận kết quả cân.",
+    "can_cu": "backend/src/demo/doi-tac-ao.ts: Nghiệm thu tạo toàn bộ planned_qty_g dưới loại accepted.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Chờ xác nhận số cân",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Xác nhận kết quả nghiệm thu"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 12,
+    "lam": "dong_y_can",
+    "ai": "0918000421",
+    "mong_doi": "PIN chốt 1.000 kg đạt, giá trị hàng 23.300.000 đồng; khoản trả khi nhận được tính sau nghiệm thu, trừ cọc theo hợp đồng.",
+    "can_cu": "Trình chạy: acceptance/agree; frontend/TIEN-DO.md E72–E74: trả theo kết quả đã chốt.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"e8362c72-880d-4af6-a229-46d9dcbd1f83\",\"status\":\"awaiting_seller\",\"lo_con\":null,\"gia_tri_vnd\":\"23300000\",\"xu_ly_thieu\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã chốt số cân · chờ trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Trả tiền hàng khi nhận"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot báo chuyển phần tiền hàng còn phải trả kèm chứng từ; trạng thái chỉ là đã báo trả, chưa phải người bán đã nhận đủ.",
+    "can_cu": "Bot: Trả tiền hàng khi nhận; frontend/TIEN-DO.md E72: người bán xác nhận mới tính.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Bên mua báo đã trả tiền hàng",
+      "chang": "Thanh toán",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Xác nhận đã nhận tiền hàng"
+      }
+     },
+     "dot": [
+      "awaiting_seller"
+     ]
+    }
+   },
+   {
+    "buoc": 14,
+    "lam": "xac_nhan_tien",
+    "ai": "0918000421",
+    "mong_doi": "Sau khi đóng vai đã kiểm tra tiền thực nhận, bác xác nhận đủ bằng OTP và mã giao dịch; không cộng cọc hoặc tiền hàng hai lần.",
+    "can_cu": "Trình chạy: xac_nhan_tien chỉ xác nhận khoản payer_reported bằng money_received, amount_vnd và bank_txn_ref.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"ddc25510-7d4c-43af-b76f-8239e0ee0a21\",\"status\":\"fully_received\",\"received_vnd\":\"16310000\",\"remaining_vnd\":\"0\",\"canh_bao\":[],\"thong_bao\":\"Cọc vẫn ở ngân hàng; xử lý khi hai bên chốt số cân và quyết toán.\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đang giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký nhận tại nơi đến"
+      }
+     },
+     "dot": [
+      "in_transit"
+     ]
+    }
+   },
+   {
+    "buoc": 15,
+    "lam": "xem",
+    "ai": "0918000421",
+    "mong_doi": "Tiền trả thẳng đã được xác nhận, tiến trình giao và quyết toán hiển thị đúng; không tự coi đã hoàn tất mọi bước nhận tại kho hoặc giải ngân cọc.",
+    "can_cu": "frontend/TIEN-DO.md E72; danh sách hành động của trình chạy không có chốt nhận tại kho hoặc xử lý lệnh giải ngân.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đang giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Ký nhận tại nơi đến"
+      }
+     },
+     "dot": [
+      "in_transit"
+     ]
+    },
+    "tin": [
+     "Bác mới dùng, đồng ý giá rồi có phải giao liền không? Bác cần xem rõ lúc nào được nhận tiền.",
+     "Dạ được, bên em cho xe tới đúng giờ hẹn trong hợp đồng, có gì em nhắn trước."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "GPTBAN-02",
+  "ten": "HTX đăng thêm hàng thiếu ảnh, quay về lô thật và thương lượng vòng hai",
+  "tinh_cach": "Chủ nhiệm HTX làm việc có kế hoạch, muốn bổ sung lô mới rồi dùng lô sẵn có khi thiếu hồ sơ đăng bán.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Sang 03/11, L-0492 đã đến ngày có hàng và hết cách ly, NC-3001 đang trong cửa sổ mua.",
+    "can_cu": "Chợ mẫu: L-0492 có hàng và hết cách ly 03/11; NC-3001 từ 03/11 đến 06/11.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-03T07:38:39.582Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "dang_lo",
+    "ai": "0907000300",
+    "mong_doi": "Không cho mở bán khi chưa có ảnh chụp trong app; có thể đã tạo bản nháp nhưng không được báo đăng thành công. Các bước sau dùng L-0492, không dùng @moi.",
+    "can_cu": "backend/src/nghiep-vu/lo.ts: dangLo bắt buộc ít nhất một ảnh captured_in_app; dang_lo của trình chạy không tải ảnh và chỉ gán loMoi sau publish thành công.",
+    "http": 422,
+    "loi": "{\"code\":\"DU_LIEU_KHONG_HOP_LE\",\"message\":\"Cần ít nhất 1 ảnh chụp trong app mới đăng được.\",\"fix\":\"Sửa các trường được chỉ ra rồi gửi lại.\",\"details\":null}"
+   },
+   {
+    "buoc": 3,
+    "lam": "bao_gia",
+    "ai": "0907000300",
+    "mong_doi": "Báo giá từ đúng lô xoài L1 thuộc HTX; lượng 800 kg không vượt 80% của 1.000 kg ước tính.",
+    "can_cu": "Chợ mẫu: HTX sở hữu L-0492, giá kín 23.000; CHINH_SACH.uocTinhCamKetToiDaBps=8000.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"6d336bc6-034a-49d0-aeb4-958c36c13a39\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-04T07:38:39.688Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "24000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "cho",
+    "ai": "0907000300",
+    "mong_doi": "Bot mua trả 23.300 đ/kg, không biết mức kín 23.000 của HTX.",
+    "can_cu": "Bot mua giảm 3% và làm tròn 100 đồng; chính sách giá kín.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "tra_gia",
+    "ai": "0907000300",
+    "mong_doi": "Gửi trả giá 23.800 đ/kg đúng lượt của HTX; chưa tự đồng ý thay bên mua.",
+    "can_cu": "Trình chạy: tra_gia gửi price_vnd và qty_g; CHINH_SACH.luotTraGiaToiDaMoiBen=2.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"6d336bc6-034a-49d0-aeb4-958c36c13a39\",\"status\":\"sent\",\"revision\":3}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 3,
+     "gia": "23800",
+     "luot_con": 1
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": "0907000300",
+    "mong_doi": "Bot đồng ý đề xuất vòng sau, giữ 800 kg và lập hợp đồng 23.800 đ/kg; không tự giảm tiếp 3%.",
+    "can_cu": "backend/src/demo/doi-tac-ao.ts: khi round_no lớn hơn 1 thì accept; bot mua lập đơn sau accepted.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 3,
+     "gia": "23800",
+     "luot_con": 1
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "chon_don",
+    "ai": "0907000300",
+    "mong_doi": "Chọn hợp đồng của L-0492 với 800 kg, giá trị 19.040.000 đồng và cách trả on_receipt; không nhầm sang bản nháp vừa đăng lỗi.",
+    "can_cu": "Trình chạy chọn đơn theo offer_id; 800 × 23.800 = 19.040.000; bot mặc định on_receipt.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "nhan",
+    "ai": "0907000300",
+    "mong_doi": "Tin được giữ nguyên; không sinh hợp đồng bao tiêu theo vụ hoặc hạn mức trả sau từ nội dung trao đổi.",
+    "can_cu": "CHINH_SACH.choPhepBaoTieu và choPhepTraSau mặc định tắt; frontend/TIEN-DO.md E74–E75.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"10c9276d-eac9-4f0c-8744-4e60333deb21\",\"gui\":true,\"body\":\"HTX giao một đợt 800 kg này trong nước. Chưa thỏa thuận bao tiêu cả vụ hay cho nợ tiền hàng.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    },
+    "tin": [
+     "HTX giao một đợt 800 kg này trong nước. Chưa thỏa thuận bao tiêu cả vụ hay cho nợ tiền hàng."
+    ]
+   },
+   {
+    "buoc": 9,
+    "lam": "ky",
+    "ai": "0907000300",
+    "mong_doi": "HTX ký đúng đơn sau khi xem điều khoản; chỉ cam kết đợt 800 kg này.",
+    "can_cu": "Trình chạy ky ký tài liệu contract của đơn đang chọn; E75 không mở bao tiêu theo vụ.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"a38dc339-9301-4a0b-8742-805783d5c11e\",\"code\":\"HD-3001\",\"status\":\"awaiting_deposit\",\"revision\":4,\"signed_at\":\"2026-11-03T07:39:11.689Z\",\"document_id\":\"2b3da9da-0837-4253-95b8-eeb71935d075\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "cho",
+    "ai": "0907000300",
+    "mong_doi": "Bot cọc và chuẩn bị giao; không phát sinh khoản trả trước khi chưa kiểm.",
+    "can_cu": "Bot dùng on_receipt; CHINH_SACH.choPhepTraTruocChuaKiem mặc định tắt; E74.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":20}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "xem",
+    "ai": "0907000300",
+    "mong_doi": "Hợp đồng đã cọc, chờ giao hoặc chuẩn bị giao; chưa có biên bản nghiệm thu thì không được ghi đã nhận đủ hàng hoặc đủ tiền.",
+    "can_cu": "Frontend/TIEN-DO.md E72–E74; bot chỉ nghiệm thu khi đợt ở trạng thái checking.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Sẵn sàng giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Giao hàng, quét QR nhận hàng"
+      }
+     },
+     "dot": [
+      "ready"
+     ]
+    },
+    "tin": [
+     "HTX giao một đợt 800 kg này trong nước. Chưa thỏa thuận bao tiêu cả vụ hay cho nợ tiền hàng.",
+     "Giá này bên em tính theo loại 1 rồi, chị xem trả giá trong lời chào giúp em nha."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "GPTBAN-03",
+  "ten": "Hộ gom thủy sản báo bán tôm nhưng thiếu kiểm kháng sinh",
+  "tinh_cach": "Đóng tình huống hộ gom bằng tài khoản hộ bán Phan Thị Hồng có thật trong chợ mẫu; chỉ dùng lô tôm đã có, không tự tạo chứng nhận hoặc nguồn ao khác.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Đến 05/11, tôm L-0470 đã đến ngày có hàng và hết cách ly; NC-3004 đang nhận hàng.",
+    "can_cu": "Chợ mẫu: L-0470 có hàng và hết cách ly 04/11; NC-3004 nhận từ 05/11 đến 07/11.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-05T07:39:36.429Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "bao_gia",
+    "ai": "0945000880",
+    "mong_doi": "Gửi báo giá đúng tôm thẻ cỡ 48-52; gửi báo giá không có nghĩa lô đã đủ giấy tờ để giao.",
+    "can_cu": "Chợ mẫu L-0470 và NC-3004; yêu cầu nhật ký ao và kiểm định kháng sinh.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"9dcaa368-b5b2-4b2c-ba96-3be7768efd3c\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-06T07:39:36.482Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "136000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "cho",
+    "ai": "0945000880",
+    "mong_doi": "Bot mua trả 131.900 đ/kg, cao hơn mức kín 128.000; không tự xác minh kết quả kiểm kháng sinh.",
+    "can_cu": "Bot giảm 3% từ 136.000 và làm tròn 100 đồng; chợ mẫu Hồng có nhật ký ao nhưng không liệt kê giấy kiểm kháng sinh.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "131900",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "nhan",
+    "ai": "0945000880",
+    "mong_doi": "Giữ nội dung trao đổi; lời tự khai không thay chứng thư kiểm định. Giao dịch vẫn là giao trong nước dù tên bên mua có ngành xuất khẩu.",
+    "can_cu": "NC-3004 yêu cầu kiem_dinh:khang_sinh; địa chỉ nhận TC-M05 là KCN Trà Nóc, Cần Thơ; chính sách chỉ nội địa.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"d6048574-3c8a-4666-b316-291d2412689e\",\"gui\":true,\"body\":\"Nhà em có nhật ký ao, chưa có phiếu kiểm kháng sinh. Khách nhận tại Cần Thơ, nhờ app chỉ rõ còn thiếu gì trước khi giao.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "131900",
+     "luot_con": 2
+    },
+    "tin": [
+     "Nhà em có nhật ký ao, chưa có phiếu kiểm kháng sinh. Khách nhận tại Cần Thơ, nhờ app chỉ rõ còn thiếu gì trước khi giao."
+    ]
+   },
+   {
+    "buoc": 5,
+    "lam": "dong_y",
+    "ai": "0945000880",
+    "mong_doi": "Đồng ý giá và giữ 1.000 kg; không bỏ yêu cầu kiểm kháng sinh của nhu cầu.",
+    "can_cu": "backend/src/nghiep-vu/loi-chao.ts: đồng ý chỉ tạo giữ lượng; chợ mẫu NC-3004.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"9dcaa368-b5b2-4b2c-ba96-3be7768efd3c\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"c2294df3-18c3-4163-9786-4f0722e4e734\",\"hold_expires_at\":\"2026-11-06T07:39:49.746Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 1.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "131900",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": "0945000880",
+    "mong_doi": "Bot lập đơn và ký phía mua; không coi bot đồng ý mua là bằng chứng an toàn thực phẩm.",
+    "can_cu": "Bot mua tự lập đơn sau accepted; đối tác ảo không cấp hoặc tải giấy kiểm định.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "131900",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "chon_don",
+    "ai": "0945000880",
+    "mong_doi": "Chọn đúng đơn tôm của Hồng; yêu cầu giấy kiểm kháng sinh phải còn được áp dụng khi kiểm sẵn sàng giao.",
+    "can_cu": "Trình chạy chon_don; NC-3004 có giay_to_bat_buoc.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "ky",
+    "ai": "0945000880",
+    "mong_doi": "Ký hợp đồng không tự chuyển hồ sơ thiếu thành đã xác minh.",
+    "can_cu": "Trình chạy ky chỉ ký hợp đồng; không có hành động cấp chứng thư.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"e348bd84-09a3-492f-9dc3-36dfebf13c7d\",\"code\":\"HD-3001\",\"status\":\"awaiting_deposit\",\"revision\":4,\"signed_at\":\"2026-11-05T07:40:08.542Z\",\"document_id\":\"3c53ae96-9f91-4c67-9ff8-d5a7233b1747\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "cho",
+    "ai": "0945000880",
+    "mong_doi": "Dù bot đã cọc hoặc đặt xe, đợt giao vẫn không được sẵn sàng nếu thiếu kiểm kháng sinh.",
+    "can_cu": "Mẫu nguoi-ban-0211.json BAN-04: chặn readiness do thiếu hồ sơ kiểm kháng sinh.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":20}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "bat_dau_can",
+    "ai": "0945000880",
+    "mong_doi": "Bị chặn vì chưa đủ hồ sơ bắt buộc; QR và việc tua vào giờ hẹn không được vượt qua điều kiện an toàn.",
+    "can_cu": "Trình chạy bat_dau_can gọi start-check; điều kiện sẵn sàng giao phải được backend kiểm tra.",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":{\"trang_thai\":\"preparing\"}}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "xem",
+    "ai": "0945000880",
+    "mong_doi": "Đơn còn chờ bổ sung điều kiện giao, không có nghiệm thu đủ hoặc khoản tiền hàng đã hoàn tất; lý do thiếu hồ sơ phải rõ.",
+    "can_cu": "NC-3004; mẫu BAN-04; frontend/TIEN-DO.md E72 không cho đồng nhất cọc với hoàn tất tiền hàng.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    },
+    "tin": [
+     "Nhà em có nhật ký ao, chưa có phiếu kiểm kháng sinh. Khách nhận tại Cần Thơ, nhờ app chỉ rõ còn thiếu gì trước khi giao.",
+     "Giá này bên em tính theo loại 1 rồi, chị xem trả giá trong lời chào giúp em nha."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "GPTBAN-04",
+  "ten": "Người dùng phổ thông bán một lần 15 tấn lúa, không hiểu ai lập đơn",
+  "tinh_cach": "Anh Sáu không phải doanh nghiệp bán chuyên nghiệp; muốn bán số lượng lớn, dễ nhầm nhắn tin với thay đổi điều khoản và đồng ý giá với lập hợp đồng.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Đến 03/11, lúa L-0480 có hàng và NC-3006 bắt đầu cửa sổ nhận.",
+    "can_cu": "Chợ mẫu L-0480 và NC-3006.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-03T07:40:33.315Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "bao_gia",
+    "ai": "0919000950",
+    "mong_doi": "Nhận báo giá 15 tấn lúa tươi OM18-am25 từ hộ bán; lượng này dưới giới hạn cam kết 16 tấn của lô ước tính 20 tấn.",
+    "can_cu": "Chợ mẫu: L-0480 có 20.000 kg, NC-3006 cần 15.000 kg; CHINH_SACH.uocTinhCamKetToiDaBps=8000.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"27f4311a-eb61-47ec-a29a-1a044b7c5371\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-04T07:40:33.369Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "7300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot trả 7.100 đ/kg, cao hơn mức kín 6.800; đơn vị kg và tấn không được gây sai lượng hoặc giá trị.",
+    "can_cu": "Bot giảm 3%, làm tròn 100 đồng; chợ mẫu L-0480.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "nhan",
+    "ai": "0919000950",
+    "mong_doi": "Tin được gửi nhưng không tự đổi payment_timing; app chỉ cho hai cách trả hiện hành, không suy diễn thành bao tiêu cả vụ.",
+    "can_cu": "CHINH_SACH tắt trả sau, trả trước chưa kiểm và bao tiêu; E74–E75; nhan không sửa hợp đồng.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"3a580e23-9bfa-4b89-89d2-c50a5b33f98d\",\"gui\":true,\"body\":\"Tôi bán một lần 15 tấn thôi. Nếu chọn kiểm xong trả rồi mới bốc thì phải ghi trong hợp đồng; tôi không bán chịu và không nhận tiền hàng trước khi kiểm.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    },
+    "tin": [
+     "Tôi bán một lần 15 tấn thôi. Nếu chọn kiểm xong trả rồi mới bốc thì phải ghi trong hợp đồng; tôi không bán chịu và không nhận tiền hàng trước khi kiểm."
+    ]
+   },
+   {
+    "buoc": 5,
+    "lam": "dong_y",
+    "ai": "0919000950",
+    "mong_doi": "Giữ 15.000 kg ở giá 7.100 đ/kg; tổng giá trị hàng dự kiến 106.500.000 đồng, chưa phải đã có cọc.",
+    "can_cu": "dongYLoiChao giữ lượng 24 giờ; 15.000 × 7.100 = 106.500.000.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"27f4311a-eb61-47ec-a29a-1a044b7c5371\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"07daabc8-0871-4ffe-a135-4cc2a9c43732\",\"hold_expires_at\":\"2026-11-04T07:40:46.544Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 15.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "lap_don",
+    "ai": "0919000950",
+    "mong_doi": "Từ chối thao tác lập đơn của phía bán; không tự cấp quyền bên mua hoặc tạo đơn thứ hai. Cách trả hợp lệ không làm thay đổi quyền lập đơn.",
+    "can_cu": "backend/src/nghiep-vu/don.ts: lapDon yêu cầu order.create và tổ chức người gọi phải là buyer_org_id; tra_tien là tham số thật của trình chạy.",
+    "http": 403,
+    "loi": "{\"code\":\"KHONG_CO_QUYEN\",\"message\":\"Vai của bạn không được làm việc này.\",\"fix\":\"Nhờ người có quyền trong tổ chức làm, hoặc xin cấp vai.\",\"details\":{\"hanh_dong\":\"order.create\"}}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot mua lập đúng một đơn với on_receipt mặc định; tin nhắn và lần lập đơn bị từ chối không biến nó thành inspect_then_before_loading.",
+    "can_cu": "backend/src/demo/doi-tac-ao.ts: payment_timing cố định on_receipt khi bot tự lập.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "chon_don",
+    "ai": "0919000950",
+    "mong_doi": "Chọn đơn 15.000 kg giá 7.100, giao tại vườn do bot lập; thấy rõ điều khoản thực tế on_receipt trước khi quyết định ký.",
+    "can_cu": "Bot lập delivery_mode=at_farm, transport_by=buyer, payment_timing=on_receipt; không tự lấy kiểu giao tại điểm gom của nhu cầu.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "ky",
+    "ai": "0919000950",
+    "mong_doi": "Anh Sáu chủ động chấp nhận trả khi nhận và giao tại vườn trong hợp đồng đang xem; chỉ sau ký mới có cam kết tương ứng.",
+    "can_cu": "Trình chạy ky gửi OTP và commitment_ack; E74 cho phép on_receipt.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"6ce40f00-7300-4b3b-98b7-7f86d14b76a1\",\"code\":\"HD-3001\",\"status\":\"awaiting_deposit\",\"revision\":4,\"signed_at\":\"2026-11-03T07:41:05.393Z\",\"document_id\":\"6ca4e39d-6b0f-498a-b6ab-82088cde02f5\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot cọc đủ và chuẩn bị xe; chưa tạo yêu cầu trả cố định trước khi kiểm hàng.",
+    "can_cu": "CHINH_SACH.cocBps=3000; E74 cấm before_loading chưa kiểm.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":20}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "bat_dau_can",
+    "ai": "0919000950",
+    "mong_doi": "Bắt đầu kiểm 15.000 kg theo đúng đợt đã cọc, QR người nhận và khung giờ hợp đồng.",
+    "can_cu": "Trình chạy bat_dau_can; bot đặt xe và chỉ định người nhận.",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":{\"trang_thai\":\"preparing\"}}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 12,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot gửi nghiệm thu đủ 15.000 kg đạt, chờ anh Sáu xác nhận; không coi lượng ước tính 20 tấn là lượng giao.",
+    "can_cu": "Bot nghiệm thu theo planned_qty_g của đợt, không theo toàn bộ lô.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "dong_y_can",
+    "ai": "0919000950",
+    "mong_doi": "Chốt 15.000 kg đạt với giá trị 106.500.000 đồng; phần tiền trả thẳng tính theo kết quả và cọc hợp đồng.",
+    "can_cu": "E72–E74; hành động acceptance/agree.",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 14,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot báo đã chuyển khoản tiền hàng còn lại kèm chứng từ; chưa tự đánh dấu người bán đã nhận.",
+    "can_cu": "Bot xử lý Trả tiền hàng khi nhận; E72.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 15,
+    "lam": "xac_nhan_tien",
+    "ai": "0919000950",
+    "mong_doi": "Xác nhận tiền đã thực nhận bằng OTP và mã giao dịch; ghi đúng tiền đồng, không sai hệ số 1.000 do chuyển tấn sang kg.",
+    "can_cu": "Trình chạy chuyển kg thành gam cho lượng, giữ gia theo đ/kg; money_received xác nhận số tiền khoản phải trả.",
+    "http": 0,
+    "loi": "Không có khoản nào bên mua đã báo trả",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 16,
+    "lam": "xem",
+    "ai": "0919000950",
+    "mong_doi": "Tiền trả thẳng đã xác nhận, đơn tiếp tục đúng tiến trình; không sinh công nợ trả sau, ứng vật tư hay các đợt bao tiêu.",
+    "can_cu": "E74–E75; đây là đơn một lần, bot dùng on_receipt.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    },
+    "tin": [
+     "Tôi bán một lần 15 tấn thôi. Nếu chọn kiểm xong trả rồi mới bốc thì phải ghi trong hợp đồng; tôi không bán chịu và không nhận tiền hàng trước khi kiểm.",
+     "Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "GPTBAN-05",
+  "ten": "Anh Tư cố lách số điện thoại, Zalo và tài khoản trước cọc",
+  "tinh_cach": "Muốn kéo khách ra ngoài bằng số viết cách, viết chữ và tên ngân hàng; sau cọc mới trao đổi liên lạc hợp lệ.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Đến 04/11, L-0440 đã có hàng, hết cách ly và NC-3003 đang trong cửa sổ mua nội địa.",
+    "can_cu": "Chợ mẫu L-0440, NC-3003; nơi nhận của TC-M02 là kho Mỹ Tho, Đồng Tháp.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-04T07:42:02.660Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "bao_gia",
+    "ai": "0977000610",
+    "mong_doi": "Gửi báo giá 800 kg sầu riêng A; tên công ty XNK và giấy mã vùng không được tự biến đơn thành giao dịch xuất khẩu.",
+    "can_cu": "Chợ mẫu L-0440, NC-3003; E74 và yêu cầu hiện hành chỉ nội địa.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"6552c97e-75c5-41d5-b1a0-66cb70658082\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-05T07:42:02.721Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "93000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "nhan",
+    "ai": "0977000610",
+    "mong_doi": "Che hoặc chặn số điện thoại trước cọc trong tin bên mua nhận được; không chỉ che ở giao diện người gửi.",
+    "can_cu": "CHINH_SACH.moLienLac.cheToiKhiCoc=true; chính sách chặn liên lạc trước cọc.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"af916064-fbe4-44a4-a149-d49ebc1f9fc2\",\"gui\":true,\"body\":\"Gọi anh số ••• ••• •••để chốt ngoài cho nhanh.\",\"da_che\":true,\"loai_che\":[\"số điện thoại\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "93000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Gọi anh số ••• ••• •••để chốt ngoài cho nhanh."
+    ]
+   },
+   {
+    "buoc": 4,
+    "lam": "nhan",
+    "ai": "0977000610",
+    "mong_doi": "Nhận diện cả Zalo viết tách và số viết bằng chữ, không để bên mua khôi phục nguyên chuỗi liên lạc trước cọc.",
+    "can_cu": "Chính sách chặn số/Zalo trước cọc; mẫu nguoi-ban-0211.json BAN-03 có phép thử chữ và z.a.l.o.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"af3f821c-e7e1-4248-9bb8-6c8b5220dc6e\",\"gui\":true,\"body\":\"Tin có số điện thoại đọc bằng chữ (đã che)\",\"da_che\":true,\"loai_che\":[\"số điện thoại\",\"kênh nhắn ngoài\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "93000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Gọi anh số ••• ••• •••để chốt ngoài cho nhanh.",
+     "Tin có số điện thoại đọc bằng chữ (đã che)"
+    ]
+   },
+   {
+    "buoc": 5,
+    "lam": "nhan",
+    "ai": "0977000610",
+    "mong_doi": "Che hoặc chặn tài khoản có dấu phân cách; không sinh hướng dẫn thanh toán hợp lệ từ số gửi qua tin nhắn.",
+    "can_cu": "Chính sách STK trước cọc; frontend/TIEN-DO.md E73 yêu cầu dùng tài khoản xác minh trong hướng dẫn thanh toán.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"95471a43-3fb1-492d-8206-8c31f718c2dc\",\"gui\":true,\"body\":\"VCB, STK •••, chuyển thẳng cho anh khỏi qua sàn.\",\"da_che\":true,\"loai_che\":[\"số điện thoại\",\"số tài khoản\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "93000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Gọi anh số ••• ••• •••để chốt ngoài cho nhanh.",
+     "Tin có số điện thoại đọc bằng chữ (đã che)",
+     "VCB, STK •••, chuyển thẳng cho anh khỏi qua sàn."
+    ]
+   },
+   {
+    "buoc": 6,
+    "lam": "nhan",
+    "ai": "0977000610",
+    "mong_doi": "Giữ nguyên giá, khối lượng, cỡ trái và ngày giao; không che nhầm dữ liệu hàng hóa thành số liên lạc.",
+    "can_cu": "Mẫu BAN-03: giá, kg và ngày là đối chứng không được che.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"31a9e27d-204b-4555-a6f3-5af0ade50e67\",\"gui\":true,\"body\":\"Sầu riêng loại A, 800 kg, giá 93.000 đ/kg, trái 2-5 kg, hẹn giao 04/11.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "93000",
+     "luot_con": 2
+    },
+    "tin": [
+     "Tin có số điện thoại đọc bằng chữ (đã che)",
+     "VCB, STK •••, chuyển thẳng cho anh khỏi qua sàn.",
+     "Sầu riêng loại A, 800 kg, giá 93.000 đ/kg, trái 2-5 kg, hẹn giao 04/11."
+    ]
+   },
+   {
+    "buoc": 7,
+    "lam": "cho",
+    "ai": "0977000610",
+    "mong_doi": "Bot trả giá 90.200 đ/kg, trên mức kín 86.000; các tin lách không làm mở liên lạc hoặc tự chốt giao dịch.",
+    "can_cu": "Bot giảm 3% từ 93.000, làm tròn 100 đồng; chợ mẫu L-0440.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "90200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "dong_y",
+    "ai": "0977000610",
+    "mong_doi": "Đồng ý 90.200 đ/kg và giữ 800 kg; chưa cọc nên liên lạc vẫn bị che.",
+    "can_cu": "Đồng ý lời chào chỉ giữ lượng; CHINH_SACH.moLienLac.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"6552c97e-75c5-41d5-b1a0-66cb70658082\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"2ed593bb-1285-41ba-9e7c-e4019402fd0b\",\"hold_expires_at\":\"2026-11-05T07:42:18.493Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 800 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "90200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "cho",
+    "ai": "0977000610",
+    "mong_doi": "Bot lập đơn on_receipt và ký phía mua; có hợp đồng chưa đồng nghĩa đã được mở liên lạc.",
+    "can_cu": "Bot tự lập và ký; điều kiện mở liên lạc là cọc, không phải chỉ có đơn.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "90200",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "chon_don",
+    "ai": "0977000610",
+    "mong_doi": "Chuyển sang đúng cuộc trao đổi của hợp đồng từ lời chào hiện tại.",
+    "can_cu": "Trình chạy chon_don gán s.order; nhan sau đó gửi order_id.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "nhan",
+    "ai": "0977000610",
+    "mong_doi": "Số vẫn bị che hoặc chặn vì người bán chưa ký và chưa có cọc; đổi từ offer_id sang order_id không vượt được bộ lọc.",
+    "can_cu": "Chính sách che tới khi cọc áp dụng trước và sau lập hợp đồng.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"4e73a9e0-86e4-4716-842c-860188515324\",\"gui\":true,\"body\":\"Đã có hợp đồng rồi thì gọi ••• ••• •••đi em.\",\"da_che\":true,\"loai_che\":[\"số điện thoại\"],\"canh_bao\":\"Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    },
+    "tin": [
+     "Sầu riêng loại A, 800 kg, giá 93.000 đ/kg, trái 2-5 kg, hẹn giao 04/11.",
+     "Giá này bên em tính theo loại 1 rồi, chị xem trả giá trong lời chào giúp em nha.",
+     "Đã có hợp đồng rồi thì gọi ••• ••• •••đi em."
+    ]
+   },
+   {
+    "buoc": 12,
+    "lam": "ky",
+    "ai": "0977000610",
+    "mong_doi": "Ký hợp đồng chuyển sang chờ cọc; không tự mở số chỉ vì hai bên đã ký.",
+    "can_cu": "CHINH_SACH.moLienLac; trình chạy ky không chuyển tiền cọc.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"232f2060-5a44-4b52-aa33-3c74771831b8\",\"code\":\"HD-3001\",\"status\":\"awaiting_deposit\",\"revision\":4,\"signed_at\":\"2026-11-04T07:42:34.793Z\",\"document_id\":\"44a5a3de-c22b-4748-b7db-56fd3837aa0e\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_deposit",
+     "hien_thi": {
+      "ten": "Chờ cọc",
+      "chang": "Cọc",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chuyển cọc"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "cho",
+    "ai": "0977000610",
+    "mong_doi": "Ngân hàng xác nhận đủ cọc, đạt điều kiện mở liên lạc; không chỉ dựa vào lời nhắn đã chuyển.",
+    "can_cu": "Bot chuyển cọc qua sim/bank/transfers và sim/bank/deliver; moLienLac.nguongVnd=3.000.000, cọc đơn này vượt ngưỡng.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":20}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    }
+   },
+   {
+    "buoc": 14,
+    "lam": "nhan",
+    "ai": "0977000610",
+    "mong_doi": "Tin mới sau khi cọc đã xác nhận được hiển thị đầy đủ số và Zalo; không còn che theo trạng thái trước cọc.",
+    "can_cu": "Chính sách mở liên lạc sau cọc; không yêu cầu khôi phục các tin cũ đã bị che.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"fa1f7583-9bb4-4fec-80eb-9e2445dfe9d1\",\"gui\":true,\"body\":\"Xe tới vườn gọi 0977 000 610, Zalo cũng số này.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    },
+    "tin": [
+     "Đã có hợp đồng rồi thì gọi ••• ••• •••đi em.",
+     "Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên.",
+     "Xe tới vườn gọi 0977 000 610, Zalo cũng số này."
+    ]
+   },
+   {
+    "buoc": 15,
+    "lam": "xem",
+    "ai": "0977000610",
+    "mong_doi": "Cuộc trò chuyện hợp đồng hiển thị tin sau cọc đúng quyền; việc mở liên lạc không làm đổi giá hoặc cách thanh toán.",
+    "can_cu": "Trình chạy xem đọc messages theo order_id; liên lạc và điều khoản hợp đồng là các nghiệp vụ riêng.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "active",
+     "hien_thi": {
+      "ten": "Đã cọc, chờ giao",
+      "chang": "Giao nhận",
+      "toi_luot": {
+       "phia": "buyer",
+       "viec": "Chỉ định người nhận, đặt xe"
+      }
+     },
+     "dot": [
+      "preparing"
+     ]
+    },
+    "tin": [
+     "Đã có hợp đồng rồi thì gọi ••• ••• •••đi em.",
+     "Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên.",
+     "Xe tới vườn gọi 0977 000 610, Zalo cũng số này."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "GPTBAN-06",
+  "ten": "Bác Năm bị trả dưới giá kín rồi gặp giá hạ cấp quá thấp",
+  "tinh_cach": "Giữ mức tối thiểu, không nhận giá hạ cấp bất lợi chỉ để bán được hàng; đọc điều khoản trước ký.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Đến 03/11, L-0412 và NC-3001 phù hợp thời điểm giao.",
+    "can_cu": "Chợ mẫu L-0412 và NC-3001.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-03T07:42:59.497Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "bao_gia",
+    "ai": "0918000421",
+    "mong_doi": "Cho gửi báo giá đúng bằng mức kín 21.500 đ/kg; không công bố đây là mức thấp nhất người bán chấp nhận.",
+    "can_cu": "Chợ mẫu L-0412: gia_thap_nhat_kin=21.500; chính sách giá kín.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"3e926a91-e5a2-4a0e-9a24-70f63f5f50a1\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-04T07:42:59.549Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "21500",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot trả 20.900 đ/kg, dưới mức kín; app tự đóng lời chào, không giữ lượng hoặc lập hợp đồng. Thông báo cho bên mua không tiết lộ con số 21.500.",
+    "can_cu": "Bot giảm 3%, làm tròn 100 đồng; chính sách chào dưới mức người bán chấp nhận tự đóng; trạng thái auto_rejected.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "rejected",
+     "vong": 2,
+     "gia": "20900",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "dong_y",
+    "ai": "0918000421",
+    "mong_doi": "Bị chặn vì lời chào đã tự đóng; không thể hồi sinh bằng cách đồng ý muộn.",
+    "can_cu": "Vòng đời lời chào đã auto_rejected không còn là sent; backend phải kiểm trạng thái khi accept.",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Lời chào đã đóng (bên kia không đồng ý).\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "loi_chao": {
+     "status": "rejected",
+     "vong": 2,
+     "gia": "20900",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "bao_gia",
+    "ai": "0918000421",
+    "mong_doi": "Tạo báo giá mới độc lập; lời chào cũ đã đóng không giữ mất 1.000 kg hoặc làm phát sinh đơn.",
+    "can_cu": "Chính sách tự đóng dưới giá kín; trình chạy bao_gia cập nhật s.offer sang báo giá mới.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"88bca216-2ec9-4b39-a18a-c3f9b0a8dc62\",\"code\":\"LC-0002\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-04T07:43:15.335Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "24000",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot trả 23.300 đ/kg; báo giá mới còn mở vì trên mức kín.",
+    "can_cu": "Bot giảm 3% từ 24.000; chợ mẫu L-0412 có mức kín 21.500.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "dong_y",
+    "ai": "0918000421",
+    "mong_doi": "Chốt giá hàng đạt 23.300 và giữ lượng; chưa mặc nhiên đồng ý mọi giá hạ cấp mà bên mua sẽ đưa vào hợp đồng.",
+    "can_cu": "Đồng ý lời chào chưa phải hợp đồng; giá hạ cấp là điều khoản lập đơn.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"88bca216-2ec9-4b39-a18a-c3f9b0a8dc62\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"a1609fc9-c4ca-4675-8525-dfa93f99a9a3\",\"hold_expires_at\":\"2026-11-04T07:43:31.569Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 1.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 8,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot lập đơn với giá hạ cấp 15.100 đ/kg, khoảng 64,8% giá hàng đạt. Phải trình bày rõ điều khoản bất lợi trước khi người bán ký.",
+    "can_cu": "Bot đặt downgrade_price_vnd bằng 65% giá chốt, làm tròn 100 đồng; 23.300 × 65% làm tròn thành 15.100.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "23300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "chon_don",
+    "ai": "0918000421",
+    "mong_doi": "Chọn đúng đơn mới; tiêu chí nghiệp vụ là giá hạ cấp dưới 70% cần xác nhận riêng trước ký, không được ẩn trong điều khoản chung.",
+    "can_cu": "frontend/TIEN-DO.md E74 ghi ngưỡng 70% đã chốt nhưng phần triển khai còn làm tiếp; đây là mong đợi cần kiểm, không khẳng định đã có.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "nhan",
+    "ai": "0918000421",
+    "mong_doi": "Giữ nguyên ý kiến; tin nhắn không được tính là xác nhận giá hạ cấp, chữ ký hoặc đề nghị sửa đã có hiệu lực.",
+    "can_cu": "Trình chạy nhan chỉ gửi tin; E74 yêu cầu người bán xác nhận riêng điều khoản giá hạ cấp thấp.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"aa5c2cdf-60ec-4d27-91e2-0275acdfd0f8\",\"gui\":true,\"body\":\"Giá đạt thì tôi đồng ý, nhưng giá xuống loại trong hợp đồng quá thấp. Tôi chưa chấp nhận mức đó và chưa ký.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    },
+    "tin": [
+     "Giá đạt thì tôi đồng ý, nhưng giá xuống loại trong hợp đồng quá thấp. Tôi chưa chấp nhận mức đó và chưa ký."
+    ]
+   },
+   {
+    "buoc": 11,
+    "lam": "tu_choi_ky",
+    "ai": "0918000421",
+    "mong_doi": "Đóng đơn chưa đủ chữ ký, giải phóng lượng giữ; không phạt cọc khi chưa có cọc.",
+    "can_cu": "Trình chạy tu_choi_ky gọi orders/decline; mẫu BAN-05 kiểm từ chối ký trước cọc.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"ce303d22-c17c-4589-a059-1043efe62170\",\"code\":\"HD-3001\",\"status\":\"closed\",\"revision\":4,\"close_reason\":\"seller_declined\",\"ly_do_dong\":\"Không chấp nhận giá hạ cấp 15.100 đ/kg; chưa có thỏa thuận phù hợp.\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 12,
+    "lam": "cho",
+    "ai": "0918000421",
+    "mong_doi": "Bot không được cọc hoặc đưa đơn đã từ chối ký sang giao hàng.",
+    "can_cu": "Cọc và giao chỉ tiếp tục khi hợp đồng đạt trạng thái hợp lệ; không tự ký phía người bán.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 13,
+    "lam": "xem",
+    "ai": "0918000421",
+    "mong_doi": "Đơn thể hiện đã đóng hoặc bị từ chối ký; không có tiền hàng phải hoàn. Không coi ca này đã kiểm ngưỡng hạ cấp/trả lại trên 20% vì bot chỉ nghiệm thu đủ.",
+    "can_cu": "E73–E74: hoàn tiền là ngoại lệ, không sinh từ đơn chưa cọc; E74 ngưỡng 20% cần kiểm riêng, bot hiện chỉ tạo accepted.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    },
+    "tin": [
+     "Giá đạt thì tôi đồng ý, nhưng giá xuống loại trong hợp đồng quá thấp. Tôi chưa chấp nhận mức đó và chưa ký.",
+     "Giá này bên em tính theo loại 1 rồi, chị xem trả giá trong lời chào giúp em nha."
+    ]
+   }
+  ]
+ },
+ {
+  "ma": "GPTBAN-07",
+  "ten": "Anh Sáu đổi ý vì mưa, từ chối ký sau khi đã đồng ý giá",
+  "tinh_cach": "Muốn bán nhưng phát hiện lúa chưa chắc đạt độ ẩm; chủ động dừng trước ký thay vì cố giao hoặc nhờ app tự hủy sau cọc.",
+  "buoc": [
+   {
+    "buoc": 1,
+    "lam": "tua_gio",
+    "ai": null,
+    "mong_doi": "Đến 03/11, lô L-0480 đã có hàng và nhu cầu NC-3006 đang mở trong cửa sổ nhận.",
+    "can_cu": "Chợ mẫu L-0480 và NC-3006.",
+    "http": 200,
+    "ket_qua": "{\"now\":\"2026-11-03T07:44:04.442Z\",\"hen_gio\":[]}"
+   },
+   {
+    "buoc": 2,
+    "lam": "bao_gia",
+    "ai": "0919000950",
+    "mong_doi": "Gửi báo giá 8.000 kg lúa đúng mặt hàng và loại; chỉ bán đợt này, không tạo bao tiêu theo vụ.",
+    "can_cu": "Chợ mẫu L-0480, NC-3006; E75 tắt offtake.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"5f14b8ad-5e9c-4a3c-bd26-7af4d87c44b8\",\"code\":\"LC-0001\",\"status\":\"sent\",\"revision\":1,\"canh_bao\":[],\"phan_tram_tham_khao\":null,\"het_han\":\"2026-11-04T07:44:04.502Z\"}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 1,
+     "gia": "7300",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 3,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot trả 7.100 đ/kg, trên mức kín 6.800.",
+    "can_cu": "Bot trả giá vòng đầu giảm 3%, làm tròn 100 đồng; chợ mẫu L-0480.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "loi_chao": {
+     "status": "sent",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 4,
+    "lam": "dong_y",
+    "ai": "0919000950",
+    "mong_doi": "Giữ 8.000 kg trong 24 giờ; thông báo rõ đồng ý giá chưa phải ký hợp đồng hoặc nhận cọc.",
+    "can_cu": "backend/src/nghiep-vu/loi-chao.ts: dongYLoiChao; CHINH_SACH.han.giuLuongGio.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"5f14b8ad-5e9c-4a3c-bd26-7af4d87c44b8\",\"status\":\"accepted\",\"revision\":3,\"hold_id\":\"1fc3211e-8a72-4cbb-8ae3-6804ea487905\",\"hold_expires_at\":\"2026-11-04T07:44:20.293Z\",\"thong_bao\":\"Đây chưa phải hợp đồng. Đã giữ 8.000 kg.\"}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 5,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot mua lập đơn on_receipt và ký phía mua; còn chờ người bán, chưa có quyền tự ký thay anh Sáu.",
+    "can_cu": "backend/src/demo/doi-tac-ao.ts; bot phải loại tổ chức người bán qua NGUOI_THAT.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":16}",
+    "loi_chao": {
+     "status": "accepted",
+     "vong": 2,
+     "gia": "7100",
+     "luot_con": 2
+    }
+   },
+   {
+    "buoc": 6,
+    "lam": "chon_don",
+    "ai": "0919000950",
+    "mong_doi": "Chọn đúng hợp đồng 8.000 kg đang chờ người bán ký.",
+    "can_cu": "Trình chạy chon_don tìm bằng offer_id hiện tại.",
+    "http": 200,
+    "ket_qua": "{\"don\":\"HD-3001\",\"status\":\"awaiting_seller\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 7,
+    "lam": "nhan",
+    "ai": "0919000950",
+    "mong_doi": "Tin giải thích được gửi nhưng không tự đóng hợp đồng; người bán vẫn phải dùng thao tác từ chối ký.",
+    "can_cu": "nhan và tu_choi_ky là hai hành động riêng trong trình chạy.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"6b491368-53ae-4892-8d9b-a7661606c3ce\",\"gui\":true,\"body\":\"Ruộng vừa bị mưa, tôi chưa chắc đạt độ ẩm đã hẹn. Tôi chưa ký và xin dừng đợt này.\",\"da_che\":false,\"loai_che\":[],\"canh_bao\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "awaiting_seller",
+     "hien_thi": {
+      "ten": "Chờ người bán ký",
+      "chang": "Ký",
+      "toi_luot": {
+       "phia": "seller",
+       "viec": "Ký hợp đồng"
+      }
+     },
+     "dot": []
+    },
+    "tin": [
+     "Ruộng vừa bị mưa, tôi chưa chắc đạt độ ẩm đã hẹn. Tôi chưa ký và xin dừng đợt này."
+    ]
+   },
+   {
+    "buoc": 8,
+    "lam": "tu_choi_ky",
+    "ai": "0919000950",
+    "mong_doi": "Ghi nhận lý do và đóng hợp đồng chưa đủ chữ ký; trả lại lượng giữ, không phạt cọc hoặc đòi hoàn tiền chưa nhận.",
+    "can_cu": "Mẫu nguoi-ban-0211.json BAN-05; từ chối ký trước cọc khác với hủy đơn đã có hiệu lực.",
+    "http": 200,
+    "ket_qua": "{\"id\":\"85729bea-86cf-49e2-96f0-54bcc14df339\",\"code\":\"HD-3001\",\"status\":\"closed\",\"revision\":4,\"close_reason\":\"seller_declined\",\"ly_do_dong\":\"Mưa làm lúa chưa chắc đạt độ ẩm, không thể cam kết giao đúng đợt.\"}",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 9,
+    "lam": "ky",
+    "ai": "0919000950",
+    "mong_doi": "Bị chặn do hợp đồng đã đóng; bấm ký muộn không được hồi sinh đơn hoặc tạo cam kết ngược lại.",
+    "can_cu": "Backend phải kiểm trạng thái hợp đồng tại orders/sign, không chỉ kiểm OTP.",
+    "http": 409,
+    "loi": "{\"code\":\"TRANG_THAI_KHONG_CHO_PHEP\",\"message\":\"Bước này không làm được ở trạng thái hiện tại.\",\"fix\":\"Tải lại để xem trạng thái mới nhất.\",\"details\":null}",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 10,
+    "lam": "cho",
+    "ai": "0919000950",
+    "mong_doi": "Bot không chuyển cọc, đặt xe hoặc nghiệm thu cho hợp đồng đã bị từ chối ký.",
+    "can_cu": "Bot chỉ làm việc theo trạng thái và lượt được backend cho phép.",
+    "http": 200,
+    "ket_qua": "{\"cho_giay\":12}",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    }
+   },
+   {
+    "buoc": 11,
+    "lam": "xem",
+    "ai": "0919000950",
+    "mong_doi": "Hợp đồng giữ trạng thái đóng, lý do dừng rõ ràng; không có nghĩa vụ giao hoặc tiền hàng phải hoàn từ giao dịch này.",
+    "can_cu": "Mẫu BAN-05; E73–E74 không được áp luồng hoàn tiền của đơn đã thanh toán cho đơn chưa ký và chưa cọc.",
+    "http": 200,
+    "ket_qua": "null",
+    "don": {
+     "code": "HD-3001",
+     "status": "closed",
+     "hien_thi": {
+      "ten": "Đã đóng · Người bán từ chối",
+      "chang": null,
+      "toi_luot": null
+     },
+     "dot": []
+    },
+    "tin": [
+     "Ruộng vừa bị mưa, tôi chưa chắc đạt độ ẩm đã hẹn. Tôi chưa ký và xin dừng đợt này.",
+     "Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết."
+    ]
+   }
+  ]
+ }
+]
