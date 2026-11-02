@@ -61,9 +61,19 @@ export async function huongDanTraThang(t: GiaoDich, nd: NguoiDung, paymentId: st
   const con = B(p.amount_due_vnd) - daNhan;
   const noiDung = `AGV ${String(p.order_code).replace(/-/g, '')} ${String(p.code).split('-').pop()}`;
   if (p.direction === 'seller_to_buyer') {
-    // Người bán hoàn ngoài app: tài khoản nguồn của bên mua chỉ có số che; không lộ số đầy đủ (chưa có tài khoản nhận hoàn trong hợp đồng).
-    return { payment_id: paymentId, code: p.code, direction: p.direction, so_tien_con_vnd: con.toString(), noi_dung: noiDung, tai_khoan: null, vietqr: null,
-      cau: 'Bên mua chưa khai tài khoản nhận hoàn trong hợp đồng; liên hệ bên mua qua app và giữ chứng từ.' };
+    // Người bán hoàn: chỉ vào tài khoản ĐÃ XÁC MINH, đang hoạt động của tổ chức bên mua (khai qua OTP, có thời gian chờ khi đổi).
+    // Không dùng số tài khoản bên mua tự gõ trong tin nhắn (chống lừa đổi tài khoản).
+    const tkm = await t.mot<any>(`SELECT id, bank_code, account_masked, holder_name, replace(convert_from(account_number_enc,'UTF8'),'TEST:','') so, activated_at
+        FROM pii.bank_accounts WHERE org_id=$1 AND status='active' AND (cooldown_until IS NULL OR cooldown_until <= ref.clock_at()) ORDER BY activated_at DESC NULLS LAST LIMIT 1`, [p.payee_org_id]);
+    if (!tkm) return { payment_id: paymentId, code: p.code, direction: p.direction, status: p.status, so_tien_con_vnd: con.toString(), due_at: p.due_at, noi_dung: noiDung, tai_khoan: null, vietqr: null,
+      cau: 'Bên mua chưa có tài khoản nhận tiền đã xác minh. App bên mua đang hiện chỗ để họ khai; khi có, số tài khoản sẽ hiện ở đây. Bác đừng chuyển theo số tài khoản gửi qua tin nhắn.' };
+    const doiGanDayM = tkm.activated_at && new Date(tkm.activated_at).getTime() > t.thoiDiemMs - 30 * 864e5;
+    let vqr: string | null = null;
+    try { vqr = buildVietQr({ bin: '970499', accountNumber: tkm.so.replace(/[^0-9A-Z]/gi, ''), amountVnd: Number(con), addInfo: noiDung }); } catch { vqr = null; }
+    return { payment_id: paymentId, code: p.code, direction: p.direction, status: p.status, so_tien_con_vnd: con.toString(), due_at: p.due_at, noi_dung: noiDung,
+      tai_khoan: { ngan_hang: tkm.bank_code, so_tai_khoan: tkm.so, so_che: tkm.account_masked, chu_tai_khoan: tkm.holder_name, ghi_chu: 'Tài khoản đã xác minh của bên mua (DỮ LIỆU THỬ)' },
+      vietqr: vqr, canh_bao: doiGanDayM ? `Tài khoản nhận tiền của bên mua vừa đổi ngày ${new Date(tkm.activated_at).toISOString().slice(0, 10)}` : null,
+      cau: `Chỉ hoàn vào tài khoản đã xác minh của bên mua: ${tkm.bank_code} •••• ${String(tkm.account_masked).slice(-4)}, đúng tên ${tkm.holder_name}.` };
   }
   const v = await t.mot<any>(`SELECT seller_bank_account_id, seller_bank_code, seller_account_masked, seller_account_holder FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [p.order_id, p.effective_version_no]);
   const tk = await t.mot<any>(`SELECT replace(convert_from(account_number_enc,'UTF8'),'TEST:','') so, activated_at, status FROM pii.bank_accounts WHERE id=$1`, [v.seller_bank_account_id]);

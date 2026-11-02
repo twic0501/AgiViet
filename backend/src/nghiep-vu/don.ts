@@ -279,6 +279,11 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
     return { ten: 'Đã giao xong · còn công nợ', chang: 'Thanh toán', toi_luot: null };
   }
   if (o.status === 'awaiting_settlement') {
+    // Người bán còn phải hoàn tiền thừa cho bên mua: việc của người bán, không chỉ là "ngân hàng xử lý lệnh".
+    const hoan = await t.mot<any>(`SELECT (amount_due_vnd - coalesce((SELECT sum(amount_vnd) FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=p.id),0))::text con, status FROM core.direct_payments p WHERE order_id=$1 AND direction='seller_to_buyer' AND status NOT IN ('fully_received','cancelled') LIMIT 1`, [o.id]);
+    if (hoan) return hoan.status === 'payer_reported'
+      ? { ten: `Người bán báo đã hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Xác nhận đã nhận tiền hoàn' } }
+      : { ten: `Người bán còn phải hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Hoàn tiền thừa cho bên mua' } };
     const lenh = Number(await t.gtri(`SELECT count(*) FROM core.bank_instructions WHERE order_id=$1 AND status IN ('sent','processing')`, [o.id]));
     return { ten: lenh > 0 ? 'Đã gửi lệnh cọc' : 'Quyết toán', chang: 'Thanh toán', toi_luot: { phia: 'bank', viec: 'Ngân hàng xử lý lệnh' } };
   }

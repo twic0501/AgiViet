@@ -246,6 +246,40 @@ function ve() {
   document.querySelectorAll("[data-dat-xe]").forEach((b) => (b.onclick = () => moDatXe(don.dot.find((d) => d.id === b.dataset.datXe))));
   document.querySelectorAll("[data-can]").forEach((b) => (b.onclick = () => moCan(don.dot.find((d) => d.id === b.dataset.can))));
   document.querySelectorAll("[data-khoan]").forEach((b) => (b.onclick = () => moTien(tienDon.khoan_tra_thang.find((x) => x.id === b.dataset.khoan))));
+  document.querySelectorAll("[data-mo-hoan]").forEach((b) => (b.onclick = () => moHoan(b.dataset.moHoan, b.closest("[data-hoan]"))));
+}
+// Người bán hoàn tiền thừa: chỉ vào tài khoản ĐÃ XÁC MINH của bên mua do AgiViet đưa (không theo số gửi qua tin nhắn).
+async function moHoan(id, khung) {
+  const o = khung.querySelector("[data-hoan-o]"); o.innerHTML = "Đang tải…";
+  try {
+    const r = await fetch(`/v1/payments/${id}/instruction`, H()); const j = await r.json(); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Không tải được");
+    const h = j.data ?? j;
+    if (!h.tai_khoan) { o.innerHTML = `<p style="margin:0;font-size:16px">${esc(h.cau)}</p>`; return; }
+    o.innerHTML = `<div style="display:grid;gap:8px;font-size:16px">
+      <div data-qr style="text-align:center"></div>
+      <span>${esc(h.tai_khoan.ngan_hang)} · ${esc(h.tai_khoan.chu_tai_khoan)}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:20px">${esc(h.tai_khoan.so_tai_khoan)}</b><button type="button" class="nut phu-nut" data-chep="${esc(h.tai_khoan.so_tai_khoan)}" style="min-height:48px">Chép số</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>Nội dung: <b>${esc(h.noi_dung)}</b></span><button type="button" class="nut phu-nut" data-chep="${esc(h.noi_dung)}" style="min-height:48px">Chép</button></div>
+      ${h.canh_bao ? `<p style="margin:0;color:var(--do,#a8392c);font-weight:700">${esc(h.canh_bao)}. Nếu ai nhắn bác chuyển vào số khác thì đừng chuyển, gọi AgiViet.</p>` : ""}
+      <p style="margin:0">${esc(h.cau)}</p>
+      <label style="display:grid;gap:4px;font-weight:700">Chụp biên lai chuyển khoản<input type="file" accept="image/*" capture="environment" data-anh style="min-height:48px;font-size:16px"></label>
+      <button type="button" class="nut chinh-nut" data-gui style="min-height:52px;font-size:17px">Báo đã hoàn ${vnd(h.so_tien_con_vnd)} đ</button>
+      <p data-bao role="status" style="margin:0"></p></div>`;
+    o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
+    if (h.vietqr) try { const { default: QR } = await import("/assets/qr.js"); const c = document.createElement("canvas"); await QR.toCanvas(c, h.vietqr, { width: 220, margin: 2 }); c.style.maxWidth = "100%"; o.querySelector("[data-qr]").append(c); } catch {}
+    o.querySelector("[data-gui]").onclick = async (e) => {
+      const nut = e.currentTarget, bao = o.querySelector("[data-bao]"), tep = o.querySelector("[data-anh]").files?.[0];
+      if (!tep) { bao.textContent = "Bác chụp biên lai để bên mua đối chiếu."; return; }
+      nut.disabled = true; bao.textContent = "Đang gửi…";
+      try {
+        const b64 = await new Promise((ok, loi) => { const rd = new FileReader(); rd.onload = () => ok(String(rd.result).split(",")[1]); rd.onerror = loi; rd.readAsDataURL(tep); });
+        const gui = async (u, than) => { const r2 = await fetch(u, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) }); const j2 = await r2.json(); if (!r2.ok) throw new Error(j2.errors?.[0]?.message || "Chưa gửi được"); return j2.data ?? j2; };
+        const anh = await gui("/v1/files", { mime: tep.type || "image/jpeg", data_base64: b64, entity: "payment", entity_id: id, captured_in_app: true });
+        await gui(`/v1/payments/${id}/report`, { amount_vnd: Number(h.so_tien_con_vnd), method: "bank_transfer", evidence_document_id: anh.id });
+        location.reload();
+      } catch (err) { bao.textContent = err.message; nut.disabled = false; }
+    };
+  } catch (err) { o.textContent = err.message; }
 }
 const VIEC_LS = { drafting: "Bên mua soạn hợp đồng", awaiting_seller: "Bên mua đã ký, chờ bác ký", awaiting_deposit: "Hai bên đã ký, chờ bên mua chuyển cọc", active: "Ngân hàng đã giữ cọc, hợp đồng có hiệu lực", completed: "Hợp đồng hoàn tất", cancelled: "Hợp đồng đã hủy", seller_declined: "Bác không ký" };
 const chuLichSu = (x) => VIEC_LS[x.to_status] || `${x.entity === "order" ? "Hợp đồng" : "Đợt giao"}: ${x.to_status}${x.reason ? ` · ${x.reason}` : ""}`;
@@ -261,6 +295,15 @@ function veTien() {
     ${khoan.map((x) => `<div class="hd-dong"><span>${esc(LOAI_KHOAN[x.kind] || "Khoản bên mua trả")}</span><b>${vnd(x.amount_due_vnd)} đ</b>
       <small>${nhan(TT_KHOAN[x.status] || [x.status, "xam"])} · vào ${esc(x.payee_bank_code || "")} ${esc(x.payee_account_masked || "")}${x.due_at ? ` · hạn ${esc(gioNgay(x.due_at))}` : ""}${Number(x.confirmed_vnd || 0) ? ` · đã xác nhận ${vnd(x.confirmed_vnd)} đ` : ""}${Number(x.reported_vnd) > Number(x.confirmed_vnd || 0) && x.status !== "mismatch" ? ` · <button class="nut-chu" type="button" data-khoan="${esc(x.id)}">Kiểm tiền</button>` : ""}</small></div>`).join("")}
     ${veQuyetToan()}
+    ${(tienDon?.khoan_tra_thang || []).filter((x) => x.direction === "seller_to_buyer").map((x) => {
+      const con = Number(x.amount_due_vnd) - Number(x.confirmed_vnd || 0);
+      const cho = x.status === "payer_reported", xong = x.status === "fully_received";
+      return `<div class="hd-bao" data-hoan="${x.id}" style="display:grid;gap:10px;background:${xong ? "var(--la-nhat,#e7f1e3)" : "var(--vang-lua-nhat,#fbefcf)"};margin-top:8px">
+        <b style="font-size:18px">${xong ? "Bác đã hoàn xong cho bên mua" : cho ? "Bác đã báo hoàn, chờ bên mua xác nhận" : "Bác cần hoàn lại cho bên mua"}</b>
+        <div style="font-size:26px;font-weight:700">${vnd(xong ? x.amount_due_vnd : con)} đ</div>
+        ${!xong && !cho ? `<span>Vì bên mua đã trả trước nhiều hơn tiền hàng thực nhận theo kết quả cân.${x.due_at ? ` Hạn: <b>${esc(gioNgay(x.due_at))}</b>.` : ""}</span>
+          <button type="button" class="nut chinh-nut" data-mo-hoan="${x.id}" style="min-height:52px;font-size:17px">Hoàn tiền</button><div data-hoan-o></div>` : ""}
+      </div>`; }).join("")}
     <div class="hd-dong"><span>Phí AgiViet (bên mua trả)</span><b>${vnd(dk.fee_vnd)} đ</b></div>
     <div class="hd-dong"><span><b style="color:var(--muc)">Bác đã thực nhận</b></span><b style="color:var(--la)">${vnd(thuc)} đ</b><small>Tính theo sổ cái, chỉ cộng khoản bác đã xác nhận nhận được.</small></div>
   </section>`;

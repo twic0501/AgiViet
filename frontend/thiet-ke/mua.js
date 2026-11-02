@@ -1290,6 +1290,78 @@ if (THAT) {
             : `<p class="sl-ghi" style="margin:6px 0 0">Chưa quyết toán: quyết toán lập sau khi chốt nhận hàng.</p>`}
         </section>`);
       };
+      // Tài khoản nhận tiền của tổ chức bên mua (để người bán hoàn): khai qua OTP số chủ tổ chức, ngân hàng tra tên, chờ 24 giờ rồi kích hoạt.
+      const TT_TK = { pending_verification: "Đang tra tên với ngân hàng", cooling_down: "Đang chờ 24 giờ an toàn", active: "Đang dùng", rejected: "Ngân hàng báo sai tên", revoked: "Đã thu hồi" };
+      const veTaiKhoanNhan = async (o) => {
+        const ds = await api("/v1/payout-accounts").catch(() => []);
+        const dung = ds.find((x) => x.status === "active"), cho = ds.find((x) => x.status === "cooling_down");
+        if (dung) { o.innerHTML = `<p style="margin:0">Người bán hoàn vào: <b>${esc(dung.bank_code)} ${esc(dung.account_masked)}</b> (${esc(dung.holder_name)}).</p>`; return; }
+        if (cho) {
+          const het = new Date(cho.cooldown_until), xongCho = true; // backend (đồng hồ nghiệp vụ) quyết định đã hết giờ chờ chưa
+          o.innerHTML = `<p style="margin:0">Tài khoản ${esc(cho.bank_code)} ${esc(cho.account_masked)}: ${false ? "" : `dùng được từ ${het.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })} (chờ 24 giờ để chống kẻ gian đổi tài khoản).`}</p>
+            ${xongCho ? `<button type="button" class="sl-nut sl-vang" data-kich>Kích hoạt tài khoản này</button>` : ""}<p class="sl-ghi" data-tkb></p>`;
+          o.querySelector("[data-kich]")?.addEventListener("click", async (e) => { e.currentTarget.disabled = true; try { await api(`/v1/payout-accounts/${cho.id}/activate`, {}); await ve(); } catch (err) { o.querySelector("[data-tkb]").textContent = err.message; e.currentTarget.disabled = false; } });
+          return;
+        }
+        o.innerHTML = `<details open style="display:grid;gap:10px"><summary style="font-weight:700;cursor:pointer">Tổ chức bạn chưa có tài khoản nhận tiền đã xác minh — khai ngay</summary>
+          <div style="display:grid;gap:10px;margin-top:10px">
+          <p class="sl-ghi" style="margin:0">Người bán chỉ được hoàn vào tài khoản đã xác minh này, không theo số gửi qua tin nhắn. Tên chủ tài khoản phải trùng tên tổ chức hoặc tên bạn.</p>
+          <label style="display:grid;gap:4px;font-weight:600">Ngân hàng<select data-nh style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"><option value="">Chọn</option>${["Vietcombank", "Agribank", "BIDV", "VietinBank", "Techcombank", "MB", "ACB", "VPBank", "Sacombank", "TPBank"].map((x) => `<option>${x}</option>`).join("")}</select></label>
+          <label style="display:grid;gap:4px;font-weight:600">Số tài khoản<input data-so inputmode="numeric" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Tên chủ tài khoản<input data-ten value="${esc(TEN_TC)}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Số điện thoại chủ tổ chức (nhận mã)<input data-dt inputmode="tel" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <button type="button" class="sl-nut sl-vien" data-gui-ma>Gửi mã</button>
+          <label style="display:grid;gap:4px;font-weight:600">Mã OTP<input data-ma6 inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <button type="button" class="sl-nut sl-vang" data-khai disabled>Khai tài khoản</button>
+          <p class="sl-ghi" data-tkb role="status"></p></div></details>`;
+        let chMa = null; const tb = o.querySelector("[data-tkb]");
+        o.querySelector("[data-gui-ma]").onclick = async () => {
+          const dt = o.querySelector("[data-dt]").value.replace(/\D/g, ""); if (!/^0\d{9}$/.test(dt)) return (tb.textContent = "Số điện thoại 10 số, bắt đầu bằng 0.");
+          try { const r = await fetch("/v1/auth/otp/send", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: dt }) }); const j = await r.json(); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được mã");
+            chMa = (j.data ?? j).challenge_id; o.querySelector("[data-khai]").disabled = false; tb.textContent = "Đã gửi mã tới số này."; } catch (err) { tb.textContent = err.message; }
+        };
+        o.querySelector("[data-khai]").onclick = async (e) => {
+          const nh = o.querySelector("[data-nh]").value, so2 = o.querySelector("[data-so]").value.replace(/[\s.]/g, ""), ten = o.querySelector("[data-ten]").value.trim(), ma = o.querySelector("[data-ma6]").value.trim();
+          if (!nh || !/^\d{6,20}$/.test(so2) || !ten) return (tb.textContent = "Điền đủ ngân hàng, số tài khoản (6–20 số), tên chủ tài khoản.");
+          if (!/^\d{6}$/.test(ma)) return (tb.textContent = "Mã OTP gồm 6 số.");
+          e.currentTarget.disabled = true;
+          try { const r = await api("/v1/payout-accounts", { challenge_id: chMa, code: ma, bank_code: nh, account_no: so2, holder_name: ten });
+            if (r.name_match === false) tb.textContent = "Ngân hàng báo tên chủ tài khoản không khớp tên tổ chức. Kiểm lại."; else await ve(); }
+          catch (err) { tb.textContent = err.message; e.currentTarget.disabled = false; }
+        };
+      };
+      // Người bán hoàn tiền thừa cho bạn: theo dõi + xác nhận đã nhận (OTP + mã giao dịch ngân hàng, chống báo khống).
+      const veHoan = async (d) => {
+        const ds = (await api(`/v1/orders/${d.id}/payments`).catch(() => [])).filter((p) => p.direction === "seller_to_buyer");
+        for (const p of ds) {
+          const con = Number(p.amount_due_vnd) - Number(p.confirmed_vnd || 0), cho = p.status === "payer_reported", xong = p.status === "fully_received";
+          khung.insertAdjacentHTML("beforeend", `<section class="sl-the" data-hoan="${p.id}" style="display:grid;gap:10px">
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:18px">Người bán hoàn tiền thừa</h2><span class="sl-nhan${xong ? " sl-n-xong" : ""}">${xong ? "Đã nhận đủ" : cho ? "Người bán báo đã hoàn" : "Người bán chưa hoàn"}</span></div>
+            <div style="font-size:28px;font-weight:700">${vnd(xong ? p.amount_due_vnd : con)}</div>
+            <p class="sl-ghi" style="margin:0">Bạn đã trả trước nhiều hơn tiền hàng theo kết quả cân. Người bán hoàn vào tài khoản đã xác minh của tổ chức bạn.${p.due_at && !xong ? ` Hạn: ${new Date(p.due_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}.` : ""}</p>
+            ${cho ? `<p style="margin:0;font-weight:600">Kiểm tài khoản ngân hàng. Nhận đủ thì xác nhận; chưa thấy tiền thì đừng xác nhận.</p>
+              <button type="button" class="sl-nut sl-vien" data-ma>1. Gửi mã OTP</button>
+              <label style="display:grid;gap:4px;font-weight:600">2. Mã OTP<input data-otp inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+              <label style="display:grid;gap:4px;font-weight:600">Mã giao dịch trên sao kê ngân hàng<input data-ref placeholder="vd FT2611021234" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+              <button type="button" class="sl-nut sl-vang" data-xn disabled>3. Xác nhận đã nhận ${vnd(con)}</button>` : ""}
+            <div data-tk></div>
+            <p class="sl-ghi" data-bao role="status"></p></section>`);
+          const o = khung.querySelector(`[data-hoan="${p.id}"]`), bao7 = o.querySelector("[data-bao]"); let ch = null;
+          if (!xong) await veTaiKhoanNhan(o.querySelector("[data-tk]"));
+          o.querySelector("[data-ma]")?.addEventListener("click", async (e) => {
+            try { ch = (await api("/v1/otp/challenges", { purpose: "money_received", payment_id: p.id, amount_vnd: String(con) })).challenge_id; o.querySelector("[data-xn]").disabled = false; bao7.textContent = "Đã gửi mã."; }
+            catch (err) { bao7.textContent = err.message; }
+          });
+          o.querySelector("[data-xn]")?.addEventListener("click", async (e) => {
+            const ma = o.querySelector("[data-otp]").value.trim(), ref = o.querySelector("[data-ref]").value.trim();
+            if (!/^\d{6}$/.test(ma)) return (bao7.textContent = "Mã OTP gồm 6 số.");
+            if (ref.length < 6) return (bao7.textContent = "Nhập mã giao dịch ngân hàng để đối soát.");
+            e.currentTarget.disabled = true;
+            try { await api(`/v1/payments/${p.id}/confirm`, { challenge_id: ch, code: ma, amount_vnd: con, result: "full", bank_txn_ref: ref }); await ve(); }
+            catch (err) { bao7.textContent = err.message; e.currentTarget.disabled = false; }
+          });
+        }
+      };
       const ve = async () => {
         const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
         const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) * 2 < Number(k.unit_price_vnd);
@@ -1312,6 +1384,7 @@ if (THAT) {
         if (dot && dot.status === "checking") await veNghiemThu(d, dot);
         if (dot && ["in_transit", "arrival_check"].includes(dot.status)) await veDenNoi(d, dot);
         await veTien(d);
+        await veHoan(d);
         await veTongTien(d);
         if (!coKy) return;
         let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
