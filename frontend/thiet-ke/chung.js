@@ -264,11 +264,19 @@ function dungTroLy() {
   const NUT_NGHE = '<button type="button" class="tl-nghe" aria-label="Nghe câu trả lời"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>Nghe</button>';
   const ganNghe = (d) => { d.insertAdjacentHTML("beforeend", NUT_NGHE); const b = d.querySelector(".tl-nghe"); b.onclick = () => docTo(d.dataset.chu || d.textContent.replace(/Nghe$/, "")); };
   const traLoi = (d, chu, noi) => { d.dataset.chu = chu; ganNghe(d); if (noi) docTo(chu); };
+  // Gửi kèm đơn đang mở + màn/bước đang đứng để nhân viên khỏi phải hỏi lại "bác đang ở đơn nào".
+  function nguCanhHoTro(noiDung) {
+    const q = new URLSearchParams(location.search), id = q.get("id") || q.get("don");
+    const laUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "");
+    const buoc = (document.querySelector(".hd-viec, [data-buoc-hien-tai]")?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 160);
+    const man = (document.title || location.pathname).replace(/\s+/g, " ").slice(0, 80);
+    return { message: `${noiDung}\n— Đang ở: ${man}${buoc ? ` · bước: ${buoc}` : ""}`.slice(0, 1900), ...(laUuid ? { order_id: id } : {}) };
+  }
   async function guiNhanVien(noiDung, noi) {
     const cho = them("ai cho", "Đang gửi cho nhân viên…");
     try {
       const token = await phien();
-      const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), message: noiDung }) });
+      const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...nguCanhHoTro(noiDung) }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được.");
       const chu = "Dạ con đã báo nhân viên AgiViet. Nhân viên sẽ gọi lại cho bác trong giờ làm việc, sáu giờ sáng tới chín giờ tối. Bác xem tiến độ ở trang hồ sơ, mục Hỗ trợ.";

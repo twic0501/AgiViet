@@ -85,7 +85,9 @@ export async function doiGoi(t:GiaoDich,nd:NguoiDung,planCode:string){
 /** Yêu cầu hỗ trợ: tạo việc V23 kèm mã lỗi và request_id; trả mã việc, người phụ trách khi có người nhận. */
 export async function taoHoTro(t: GiaoDich, nd: NguoiDung, b: { message: string; error_code?: string; request_id?: string; order_id?: string }) {
   if (!b.message) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần nội dung.');
-  const v = await taoViec(t, 'V23', 3, 'organization', nd.thanhVien.orgId, b.order_id ?? null, 'dispatcher', `hotro:${nd.userId}:${t.thoiDiemMs}`,
+  // Chỉ gắn đơn khi đơn thuộc tổ chức người gửi (bên bán hoặc bên mua); đơn của người khác thì bỏ, không báo lỗi để khỏi dò được đơn.
+  const donCuaMinh = b.order_id ? await t.gtri<string>(`SELECT id FROM core.orders WHERE id=$1 AND (seller_org_id=$2 OR buyer_org_id=$2)`, [b.order_id, nd.thanhVien.orgId]) : null;
+  const v = await taoViec(t, 'V23', 3, 'organization', nd.thanhVien.orgId, donCuaMinh ?? null, 'dispatcher', `hotro:${nd.userId}:${t.thoiDiemMs}`,
     `Hỗ trợ: ${b.message.slice(0, 300)}${b.error_code ? ` [${b.error_code}]` : ''}${b.request_id ? ` (${b.request_id})` : ''}`);
   return { id: v!.id, code: v!.code, status: 'new', cau: 'Đã ghi nhận. Chưa có người nhận việc; bạn sẽ thấy tên người phụ trách khi có người nhận.' };
 }

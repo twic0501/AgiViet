@@ -481,7 +481,7 @@ const bao = (chu, loai = "") => `<div class="sl-bao ${loai}">${icon(loai === "sl
 const timO = (goi) => `<label class="sl-tim">${icon("tim")}<input placeholder="${esc(goi)}" aria-label="${esc(goi)}"></label>`;
 const loc = (ds, chon = 0) => `<div class="sl-loc" role="group">${ds.map((x, i) => `<button type="button" aria-pressed="${i === chon}">${esc(x)}</button>`).join("")}</div>`;
 const ganLoc = (goc) => goc.querySelectorAll(".sl-loc").forEach((g) => g.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; g.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
-const lo = (ma) => LO.find((x) => x.ma === ma) || LO[0];
+const lo = (ma) => LO.find((x) => x.ma === ma) || (THAT ? null : LO[0]);
 
 // ── Các màn ──
 const man = {
@@ -932,7 +932,10 @@ if (THAT) {
     LO.length = 0; LO.push(...d.lo);
     const ten = d.me.name || "Bên mua";
     NGUOI = { viet: ten.split(/\s+/).slice(-2).map((x) => x[0]).join("").toUpperCase(), ten, vai: "Dữ liệu thật" }; TEN_TC = d.me.org?.name || TEN_TC;
-  } catch (e) { console.error("Chưa nạp được dữ liệu thật:", e); }
+  } catch (e) {
+    // Không giữ lô mẫu khi đang ở bản thật: thà trống + báo lỗi còn hơn để người mua chào giá vào hàng không có thật.
+    console.error("Chưa nạp được dữ liệu thật:", e); LO.length = 0; window.__agvLoiNap = e.message || "Không tải được dữ liệu";
+  }
   man["nguon-hang"].phu = "Lô đang bán trên chợ · giá người bán là giá kín, bạn chào giá";
   {
     const goc = man["nguon-hang"];
@@ -952,9 +955,9 @@ if (THAT) {
     };
   }
   man["chi-tiet-lo"] = {
-    tieuDe: () => lo(new URLSearchParams(location.search).get("lo")).ten, thuoc: "nguon-hang", lui: "nguon-hang",
-    phu: () => { const l = lo(new URLSearchParams(location.search).get("lo")); return `${l.ma} · ${l.nguoi} · ${l.noi}`; },
-    ve: () => { const l = lo(new URLSearchParams(location.search).get("lo")); return `
+    tieuDe: () => lo(new URLSearchParams(location.search).get("lo"))?.ten || "Không tìm thấy lô", thuoc: "nguon-hang", lui: "nguon-hang",
+    phu: () => { const l = lo(new URLSearchParams(location.search).get("lo")); return l ? `${l.ma} · ${l.nguoi} · ${l.noi}` : ""; },
+    ve: () => { const l = lo(new URLSearchParams(location.search).get("lo")); if (!l) return `<section class="sl-the" style="display:grid;gap:10px"><p style="margin:0">Lô này không còn trên chợ (đã bán hết, người bán đã gỡ, hoặc chưa tải được dữ liệu).</p><a class="sl-nut sl-vang" href="?man=nguon-hang">Về Nguồn hàng</a></section>`; return `
     <div class="sl-luoi sl-chinh-phu">
       <div style="display:grid;gap:16px">
         <div class="sl-lo-anh sl-anh-${l.anh}" style="border-radius:12px;min-height:180px"></div>
@@ -971,7 +974,7 @@ if (THAT) {
       </div>
     </div>`; },
     sau: (g) => {
-      const l = lo(new URLSearchParams(location.search).get("lo"));
+      const l = lo(new URLSearchParams(location.search).get("lo")); if (!l) return;
       g.querySelector("#cg-gui").onclick = async (e) => { const nut = e.currentTarget;
         const gia = Number(g.querySelector("#cg-gia").value.replace(/\D/g, "")), soKg = Number(g.querySelector("#cg-kg").value.replace(/\D/g, "")), bao2 = g.querySelector("#cg-bao");
         if (!(gia >= 1000) || !(soKg > 0)) { bao2.textContent = "Nhập giá (đ/kg) và lượng (kg) hợp lệ."; return; }
@@ -1116,6 +1119,17 @@ if (THAT) {
       };
       try { await ve(); } catch (e) { khung.textContent = e.message; }
     } };
+}
+if (THAT) {
+  // Màn nào đã nối dữ liệu thật thì ghi ở đây; các màn còn lại hiện dải cảnh báo "mô phỏng" để không lẫn số mẫu với số thật.
+  const MAN_THAT = new Set(["nguon-hang", "chi-tiet-lo", "bao-gia", "don-hang", "chi-tiet-don"]);
+  const dai = `<div role="note" style="background:#fdecc8;border:1.5px solid #c98a12;color:#5a3d00;border-radius:10px;padding:10px 14px;font-weight:600">Màn này còn là <b>bản mô phỏng</b>: số liệu là số mẫu, thao tác chưa lưu thật. Dữ liệu thật hiện có ở Nguồn hàng, Lời chào giá và Đơn.</div>`;
+  const daiLoi = () => `<div role="alert" style="background:#fbe3df;border:1.5px solid #a8392c;color:#6b1d13;border-radius:10px;padding:10px 14px;font-weight:600">Không tải được dữ liệu thật: ${esc(window.__agvLoiNap)}. Kiểm tra mạng rồi tải lại trang. Chưa có hàng nào hiện ra để tránh nhầm với hàng mẫu.</div>`;
+  for (const [k, m] of Object.entries(man)) {
+    const ve0 = m.ve; if (typeof ve0 !== "function") continue;
+    if (!MAN_THAT.has(k)) m.ve = (...a) => dai + ve0(...a);
+    else if (k === "nguon-hang" || k === "chi-tiet-lo") m.ve = (...a) => (window.__agvLoiNap ? daiLoi() : "") + ve0(...a);
+  }
 }
 chayApp({ ten: "AgiViet Mua", phu: TEN_TC, menu: MENU, tab: TAB, man, kho, macDinh: THAT ? "nguon-hang" : "tong-quan", nguoi: NGUOI });
 export { man as MAN_MUA };
