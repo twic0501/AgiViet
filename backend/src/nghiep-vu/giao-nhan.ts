@@ -74,7 +74,8 @@ export async function theSanSang(t: GiaoDich, deliveryId: string): Promise<DongT
   const d = await t.mot<any>(`SELECT * FROM core.deliveries WHERE id=$1`, [deliveryId]);
   const o = await t.mot<any>(`SELECT * FROM core.orders WHERE id=$1`, [d.order_id]);
   const v = await t.mot<any>(`SELECT * FROM core.order_versions WHERE order_id=$1 AND version_no=$2`, [d.order_id, d.version_no]);
-  const camKet = B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM ledger.qty_balances WHERE lot_id=$1 AND order_key=$2 AND bucket='committed'`, [o.lot_id, o.id]));
+  // Đơn nhiều lô (gọi hàng khung, lot_id null): cộng cam kết mọi lô của đơn — cùng cách DB bỏ qua kiểm một lô khi lot_id null.
+  const camKet = B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM ledger.qty_balances WHERE ($1::uuid IS NULL OR lot_id=$1) AND order_key=$2 AND bucket='committed'`, [o.lot_id, o.id]));
   const khoa = !!(await t.gtri(`SELECT safety_locked_at FROM core.lots WHERE id=$1`, [o.lot_id]));
   const coc = B(await t.gtri<string>(`SELECT coalesce(sum(balance_vnd),0)::text FROM ledger.v_account_balances WHERE order_id=$1 AND account_type='deposit_escrow'`, [o.id]));
   const thieuTien = await t.q<any>(`SELECT p.code,(p.amount_due_vnd-coalesce((SELECT sum(amount_vnd) FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=p.id),0))::text con FROM core.direct_payments p
@@ -172,7 +173,7 @@ export async function batDauNghiemThu(ht: HeThong, t: GiaoDich, nd: NguoiDung, d
 
 // ---------------- Nghiệm thu ----------------
 
-export interface DongKetQua { kind: 'accepted' | 'downgraded' | 'rejected' | 'transit_damage'; qty_g: unknown; reason_code?: string; evidence_document_id?: string }
+export interface DongKetQua { kind: 'accepted' | 'downgraded' | 'rejected' | 'transit_damage'; qty_g: unknown; reason_code?: string; evidence_document_id?: string; order_line_no?: number }
 
 export async function guiKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliveryId: string, x: { weighed_g: unknown; lines: DongKetQua[]; seal_code?: string; device_id?: string; accept_overage?: boolean; withdrawn_g?: unknown; pin?: string }) {
   const { d, o, v } = await layDot(t, deliveryId);
@@ -208,15 +209,21 @@ export async function guiKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliver
   if (rut > 0n && can + rut > keHoach) throw loi('DU_LIEU_KHONG_HOP_LE', 'Lượng rút cộng lượng cân vượt lượng đợt.');
   if (!Array.isArray(x.lines) || x.lines.length === 0) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần các dòng kết quả.');
   let tong = 0n; let traLai = 0n;
+  // Gọi hàng khung nhiều món: mỗi dòng cân ghi dòng món (order_line_no); giá, giá xuống loại, lô lấy từ dòng món đã ký (DB 0020 kiểm lại).
+  const dongMon = o.contract_type === 'framework_calloff'
+    ? await t.q<any>(`SELECT line_no, lot_id, unit_price_vnd::text gia, downgrade_price_vnd::text gia_hc FROM core.order_lines WHERE order_id=$1 AND version_no=$2`, [o.id, d.version_no]) : null;
   const dong2 = x.lines.map((l, i) => {
     const q = soGam(l.qty_g);
     if (q < 0n) throw loi('KET_QUA_AM');
     if ((l.kind === 'downgraded' || l.kind === 'rejected') && !l.reason_code) throw loi('THIEU_LY_DO');
-    if (l.kind === 'downgraded' && v.downgrade_price_vnd == null) throw loi('DU_LIEU_KHONG_HOP_LE', 'Hợp đồng không có giá hạ cấp.');
+    const mon = dongMon ? dongMon.find((m: any) => m.line_no === Number(l.order_line_no)) : null;
+    if (dongMon && !mon) throw loi('DU_LIEU_KHONG_HOP_LE', 'Buổi gọi hàng nhiều món: mỗi dòng cân phải chọn món (order_line_no).');
+    const giaGoc = mon ? B(mon.gia) : B(v.unit_price_vnd), giaHc = mon ? (mon.gia_hc == null ? null : B(mon.gia_hc)) : (v.downgrade_price_vnd == null ? null : B(v.downgrade_price_vnd));
+    if (l.kind === 'downgraded' && giaHc == null) throw loi('DU_LIEU_KHONG_HOP_LE', 'Hợp đồng không có giá hạ cấp.');
     tong += q; if (l.kind === 'rejected') traLai += q;
-    const gia = l.kind === 'rejected' ? 0n : l.kind === 'downgraded' ? B(v.downgrade_price_vnd) : B(v.unit_price_vnd);
+    const gia = l.kind === 'rejected' ? 0n : l.kind === 'downgraded' ? giaHc! : giaGoc;
     const payable = l.kind === 'rejected' ? 0n : q;
-    return { ...l, line_no: i + 1, q, gia, payable, value: tienDong(payable, gia) };
+    return { ...l, line_no: i + 1, q, gia, payable, value: tienDong(payable, gia), lot: mon?.lot_id ?? null, order_line_no: mon ? mon.line_no : null };
   }).filter((l) => l.q > 0n);
   if (tong !== can) throw loi('KET_QUA_KHONG_KHOP_TONG', `Tổng ba phần ${kg(tong)} khác lượng cân ${kg(can)}.`);
   if (traLai * 10000n > can * BigInt(v.reject_allowance_bps) && dong2.some((l) => l.kind === 'rejected' && !l.evidence_document_id)) throw loi('THIEU_ANH_TRA_LAI');
@@ -283,7 +290,7 @@ export async function guiKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliver
     const row = await t.mot<any>(`SELECT status,version FROM core.deliveries WHERE id=$1`, [deliveryId]);
     return { id: deliveryId, status: row.status, revision: row.version, acceptance_id: avId, document_id: doc.id, content_sha256: doc.contentSha256, gia_tri_vnd: V.toString(), da_rut_g: rut.toString() };
   }
-  const avId=await appCmd<string>(t,nd,'buyer','submit_acceptance',[deliveryId,can.toString(),doc.payload,dong2.map(l=>({lot_id:o.lot_id,kind:l.kind,qty:l.q.toString(),payable_qty:l.payable.toString(),unit_price_vnd:l.gia.toString(),value_vnd:l.value.toString(),reason_code:l.reason_code??null,evidence_document_id:l.evidence_document_id??null})),!!x.accept_overage&&can>keHoach]);
+  const avId=await appCmd<string>(t,nd,'buyer','submit_acceptance',[deliveryId,can.toString(),doc.payload,dong2.map(l=>({lot_id:l.lot??o.lot_id,order_line_no:l.order_line_no,kind:l.kind,qty:l.q.toString(),payable_qty:l.payable.toString(),unit_price_vnd:l.gia.toString(),value_vnd:l.value.toString(),reason_code:l.reason_code??null,evidence_document_id:l.evidence_document_id??null})),!!x.accept_overage&&can>keHoach]);
   doc.id=await t.gtri<string>(`SELECT document_id FROM core.acceptance_versions WHERE id=$1`,[avId]);
   await kyBienBan(ht,t,nd,doc.id,'buyer',x.pin,x.device_id);
   await appCmd(t,nd,'buyer','send_acceptance',[avId]);await dongBoTaiLieu(t,doc.id,'partially_signed');

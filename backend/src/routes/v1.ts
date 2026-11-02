@@ -412,6 +412,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.get('/v1/frameworks/:id', async (req) => { const nd = await bo.xacThuc(req); const m = await KH(); return bo.doc((t) => m.xemKhung(t, nd, P(req).id)); });
   app.post('/v1/frameworks/:id/week-prices', async (req) => bo.lenh(req, 'de_nghi_gia_tuan', async (t, n) => (await t.gtri<string>(`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_contracts WHERE id=$2`, [n.thanhVien.orgId, P(req).id])) as any, async (t, n, b) => (await KH()).deNghiGiaTuan(t, n, P(req).id, b)));
   app.post('/v1/framework-week-prices/:id/answer', async (req) => bo.lenh(req, 'tra_loi_gia_tuan', async (t, n) => (await t.gtri<string>(`SELECT CASE WHEN f.buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_week_prices w JOIN core.framework_contracts f ON f.id=w.framework_id WHERE w.id=$2`, [n.thanhVien.orgId, P(req).id])) as any, async (t, n, b) => (await KH()).traLoiGiaTuan(t, n, P(req).id, b)));
+  app.post('/v1/frameworks/:id/calloffs', async (req) => bo.lenh(req, 'goi_hang_khung', 'buyer', async (t, n, b) => (await KH()).goiHang(t, n, P(req).id, b)));
   app.post('/v1/frameworks/:id/sign', async (req) => {
     const nd = await bo.xacThuc(req);
     const b = z.object({ challenge_id: z.string(), code: z.string(), device_id: z.string().optional() }).passthrough().parse(req.body);

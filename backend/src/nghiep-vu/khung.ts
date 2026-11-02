@@ -153,3 +153,25 @@ export async function giaTuanCuaKhung(t: GiaoDich, frameworkId: string) {
   return t.q<any>(`SELECT id, week_start::text tuan, items, proposed_by_side de_nghi_boi, status trang_thai, proposed_at, answered_at FROM core.framework_week_prices
     WHERE framework_id=$1 AND status IN ('proposed','agreed','rejected') ORDER BY week_start, created_at`, [frameworkId]);
 }
+
+// ---------------- Bước 3a: gọi hàng một buổi (đơn con framework_calloff) ----------------
+/** Bên mua gọi hàng cho một buổi giao: trước 24 giờ, trong kỳ, đúng ngày lịch, tuần đó đã chốt giá (DB 0084 chặn nếu chưa).
+ *  Giao tại vườn, bên mua lo xe, người gọi là người nhận. Đơn con kích hoạt ngay (không cọc riêng — cọc khung bảo đảm). */
+export async function goiHang(t: GiaoDich, nd: NguoiDung, id: string, d: { ngay: string; gio_tu?: string; gio_den?: string; dong: { lot_id: string; kg: number }[] }) {
+  const { f, phia } = await layKhung(t, nd, id);
+  if (phia !== 'buyer') throw loi('KHONG_CO_QUYEN', 'Chỉ bên mua gọi hàng.');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d.ngay ?? '')) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần ngày giao (YYYY-MM-DD).');
+  const thu = new Date(d.ngay + 'T00:00:00Z').getUTCDay();
+  if (!(f.schedule?.weekdays ?? []).includes(thu)) throw loi('DU_LIEU_KHONG_HOP_LE', `Ngày ${d.ngay} không phải ngày giao trong lịch khung.`);
+  if (!Array.isArray(d.dong) || !d.dong.length) throw loi('DU_LIEU_KHONG_HOP_LE', 'Chọn lô và lượng cho buổi giao.');
+  const tu = new Date(`${d.ngay}T${d.gio_tu ?? '07:00'}:00+07:00`), den = new Date(`${d.ngay}T${d.gio_den ?? '15:00'}:00+07:00`);
+  if (!(tu < den)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Giờ giao không hợp lệ.');
+  const terms = { delivery_window: `[${tu.toISOString()},${den.toISOString()})`, delivery_mode: 'at_farm', acceptance_point: 'tai_vuon', transport_by: 'buyer',
+    designated_receiver_user_id: nd.userId, inspection_before_loading: false, silent_accept_hours: 2 };
+  const lines = d.dong.map((x) => ({ lot_id: x.lot_id, qty: String(soGam(Math.round(Number(x.kg) * 1000), 'kg')) }));
+  const code = await maMoi(t, 'core.orders', 'HD', 3001);
+  const orderId = await appCmd<string>(t, nd, 'buyer', 'create_calloff', [id, code, JSON.stringify(terms), JSON.stringify(lines)]);
+  const dotId = await systemCmd<string>(t, 'activate_calloff', [orderId]);
+  const v = await t.mot<any>(`SELECT contract_value_vnd::text gia_tri FROM core.order_versions WHERE order_id=$1 AND version_no=1`, [orderId]);
+  return { order_id: orderId, code, delivery_id: dotId, gia_tri_vnd: v?.gia_tri };
+}
