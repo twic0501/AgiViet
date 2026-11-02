@@ -108,6 +108,7 @@ export async function lapDon(t: GiaoDich, nd: NguoiDung, d: LapDon, vu?: ThongTi
   }
   const diem = d.delivery_mode === 'at_farm' ? (d.site_kind ?? 'tai_vuon') : DIEM[d.delivery_mode];
   if (!diem) throw loi('DU_LIEU_KHONG_HOP_LE', 'Kiểu giao không hỗ trợ.');
+  if (d.payment_timing === 'before_loading' && !CHINH_SACH.choPhepTraTruocChuaKiem) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Trả trước khi bốc phải kiểm hàng tại vườn trước rồi trả theo kết quả: chọn "kiểm rồi trả trước khi bốc" (inspect_then_before_loading).');
   if (d.payment_timing === 'after_days' && !vu && !CHINH_SACH.choPhepTraSau) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Trả sau chưa mở ở giai đoạn này. Chọn trả khi nhận hàng hoặc trả trước khi bốc.');
   if (d.payment_timing === 'after_days' && !(Number(d.pay_after_days) > 0)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần số ngày trả sau.');
   if (d.designated_receiver_user_id) {

@@ -301,7 +301,7 @@ function veTien() {
       return `<div class="hd-bao" data-hoan="${x.id}" style="display:grid;gap:10px;background:${xong ? "var(--la-nhat,#e7f1e3)" : "var(--vang-lua-nhat,#fbefcf)"};margin-top:8px">
         <b style="font-size:18px">${xong ? "Bác đã hoàn xong cho bên mua" : cho ? "Bác đã báo hoàn, chờ bên mua xác nhận" : "Bác cần hoàn lại cho bên mua"}</b>
         <div style="font-size:26px;font-weight:700">${vnd(xong ? x.amount_due_vnd : con)} đ</div>
-        ${!xong && !cho ? `<span>Vì bên mua đã trả trước nhiều hơn tiền hàng thực nhận theo kết quả cân.${x.due_at ? ` Hạn: <b>${esc(gioNgay(x.due_at))}</b>.` : ""}</span>
+        ${!xong && !cho ? `<span>Theo quyết toán AgiViet gửi bác (trường hợp ngoại lệ). Có gì chưa rõ bác bấm Hỗ trợ trước khi chuyển.${x.due_at ? ` Hạn: <b>${esc(gioNgay(x.due_at))}</b>.` : ""}</span>
           <button type="button" class="nut chinh-nut" data-mo-hoan="${x.id}" style="min-height:52px;font-size:17px">Hoàn tiền</button><div data-hoan-o></div>` : ""}
       </div>`; }).join("")}
     <div class="hd-dong"><span>Phí AgiViet (bên mua trả)</span><b>${vnd(dk.fee_vnd)} đ</b></div>

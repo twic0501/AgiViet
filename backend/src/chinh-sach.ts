@@ -9,6 +9,9 @@ export const CHINH_SACH = Object.freeze({
   // ---- Trả sau (người sáng lập chốt 02/11/2026): TẮT ở giai đoạn này, để dành khi scale. ----
   // Logic trả sau + cấp hạn mức vẫn giữ và được kiểm thử (bộ test bật AGV_TRA_SAU=1); môi trường chạy thật mặc định tắt.
   choPhepTraSau: process.env.AGV_TRA_SAU === '1',
+  // Trả trước khi bốc mà CHƯA kiểm (số cố định = giá trị hợp đồng − cọc) sinh ra tiền thừa phải hoàn → tắt (02/11/2026).
+  // Trả trước khi bốc đúng mô hình = 'inspect_then_before_loading': kiểm tại vườn, chốt số, trả theo kết quả, trả đủ mới được lăn bánh.
+  choPhepTraTruocChuaKiem: process.env.AGV_TRA_TRUOC_CHUA_KIEM === '1',
 
   // ---- Cọc và phí (04 mục 3–4) ----
   cocBps: 3000, // r_coc = 30%

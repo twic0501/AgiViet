@@ -1008,7 +1008,7 @@ if (THAT) {
       <details data-lap><summary class="sl-nut sl-vang" style="list-style:none;display:inline-flex">Lập đơn từ giá này</summary>
         <div style="display:grid;gap:10px;margin-top:10px">
           <label style="display:grid;gap:4px;font-weight:600">Ngày nhận hàng tại vườn (bạn lo xe)<input type="date" data-ngay style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;background:var(--giay,#fff);color:inherit;width:100%;box-sizing:border-box" value="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}"></label>
-          <label style="display:grid;gap:4px;font-weight:600">Trả tiền hàng<select data-tra style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"><option value="on_receipt">Khi nhận hàng</option><option value="before_loading">Trước khi bốc hàng</option></select></label>
+          <label style="display:grid;gap:4px;font-weight:600">Trả tiền hàng<select data-tra style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"><option value="inspect_then_before_loading">Kiểm tại vườn xong, trả rồi mới bốc</option><option value="on_receipt">Trả khi nhận hàng</option></select></label>
           <label data-o-ngay hidden style="display:grid;gap:4px;font-weight:600">Số ngày trả sau<input inputmode="numeric" data-sau value="7" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
           <label style="display:grid;gap:4px;font-weight:600">Giá nếu hàng xuống loại (đ/kg)<input inputmode="numeric" data-hc value="${Math.round(gia * 0.65 / 100) * 100}" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label>
           <p class="sl-ghi">Người bán thấy và chấp thuận riêng giá xuống loại khi ký. Dưới 50% giá đơn sẽ bị cảnh báo đỏ.</p>
@@ -1067,7 +1067,7 @@ if (THAT) {
   // GĐ3 bước 4: Đơn bên mua thật (danh sách + chi tiết + ký OTP).
   const maHD = (c) => String(c || "").replace(/^HD-/, "HĐ-");
   const vnd = (x) => `${so(Number(x || 0))} đ`;
-  const TRA = { on_receipt: "Khi nhận hàng", before_loading: "Trước khi bốc hàng", after_days: "Trả sau" };
+  const TRA = { on_receipt: "Khi nhận hàng", inspect_then_before_loading: "Kiểm tại vườn xong, trả rồi mới bốc", before_loading: "Trước khi bốc hàng", after_days: "Trả sau" };
   const qDon = () => new URLSearchParams(location.search).get("don");
   man["don-hang"] = { tieuDe: "Đơn", phu: "Đơn của bạn · tới lượt bạn xếp trước · dữ liệu thật",
     ve: () => `<div id="dn-ds" style="display:grid;gap:12px"><p class="sl-ghi">Đang tải…</p></div>`,
@@ -1338,7 +1338,7 @@ if (THAT) {
           khung.insertAdjacentHTML("beforeend", `<section class="sl-the" data-hoan="${p.id}" style="display:grid;gap:10px">
             <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:18px">Người bán hoàn tiền thừa</h2><span class="sl-nhan${xong ? " sl-n-xong" : ""}">${xong ? "Đã nhận đủ" : cho ? "Người bán báo đã hoàn" : "Người bán chưa hoàn"}</span></div>
             <div style="font-size:28px;font-weight:700">${vnd(xong ? p.amount_due_vnd : con)}</div>
-            <p class="sl-ghi" style="margin:0">Bạn đã trả trước nhiều hơn tiền hàng theo kết quả cân. Người bán hoàn vào tài khoản đã xác minh của tổ chức bạn.${p.due_at && !xong ? ` Hạn: ${new Date(p.due_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}.` : ""}</p>
+            <p class="sl-ghi" style="margin:0">Trường hợp ngoại lệ (kiểm định sau giao, hủy có tranh chấp…) do AgiViet xác định. Người bán hoàn vào tài khoản đã xác minh của tổ chức bạn.${p.due_at && !xong ? ` Hạn: ${new Date(p.due_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}.` : ""}</p>
             ${cho ? `<p style="margin:0;font-weight:600">Kiểm tài khoản ngân hàng. Nhận đủ thì xác nhận; chưa thấy tiền thì đừng xác nhận.</p>
               <button type="button" class="sl-nut sl-vien" data-ma>1. Gửi mã OTP</button>
               <label style="display:grid;gap:4px;font-weight:600">2. Mã OTP<input data-otp inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
