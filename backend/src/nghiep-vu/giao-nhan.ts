@@ -343,7 +343,13 @@ export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliv
   // 0050: tại nguồn, BBNT hai chữ ký đã chuyển phần trả lại sang returned_pending ngay khi chốt (đợt còn in_transit).
   if(status==='closed'||(['in_transit','awaiting_seller'].includes(status)&&DIEM_TAI_CHO.includes(v.acceptance_point))){
     const qty=B(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM core.acceptance_lines WHERE acceptance_id=$1 AND kind='rejected'`,[av.id]));
-    if(qty>0n && DIEM_TAI_CHO.includes(v.acceptance_point))loCon=await taoLoConTraLai(t,o,qty,av.id,nd);
+    if(qty>0n && DIEM_TAI_CHO.includes(v.acceptance_point)){
+      if(o.lot_id)loCon=await taoLoConTraLai(t,o,qty,av.id,nd);
+      else{ // 0088: buổi gọi hàng nhiều lô — mỗi lô nguồn một lô con trả lại
+        const theoLo=await t.q<any>(`SELECT lot_id,sum(qty)::text q FROM core.acceptance_lines WHERE acceptance_id=$1 AND kind='rejected' GROUP BY lot_id HAVING sum(qty)>0`,[av.id]);
+        const ds=[];for(const r of theoLo)ds.push(await taoLoConTraLai(t,o,B(r.q),av.id,nd,r.lot_id));loCon=ds.length===1?ds[0]:ds;
+      }
+    }
   }
   const V=await t.gtri<string>(`SELECT coalesce(sum(value_vnd),0)::text FROM core.acceptance_lines WHERE acceptance_id=$1`,[av.id]);
   return {id:deliveryId,status,lo_con:loCon,gia_tri_vnd:V,xu_ly_thieu:xuLyThieu};
@@ -370,10 +376,10 @@ export async function sauNghiemThuChot(ht:HeThong,t:GiaoDich,deliveryId:string,n
  return t.gtri<string>(`SELECT status FROM core.deliveries WHERE id=$1`,[deliveryId]);
 }
 
-async function taoLoConTraLai(t:GiaoDich,o:any,qty:bigint,avId:string,nd:NguoiDung){
- const cha=await t.mot<any>(`SELECT * FROM core.lots WHERE id=$1`,[o.lot_id]);const n=Number(await t.gtri(`SELECT count(*) FROM core.lots WHERE parent_lot_id=$1`,[cha.id]))+1;const code=`${cha.code}-T${n}`;
+async function taoLoConTraLai(t:GiaoDich,o:any,qty:bigint,avId:string,nd:NguoiDung,loNguon?:string){
+ const cha=await t.mot<any>(`SELECT * FROM core.lots WHERE id=$1`,[loNguon??o.lot_id]);const n=Number(await t.gtri(`SELECT count(*) FROM core.lots WHERE parent_lot_id=$1`,[cha.id]))+1;const code=`${cha.code}-T${n}`;
  const grade=await t.gtri<string>(`SELECT grade_code FROM core.product_grades WHERE product_id=$1 AND profile_version=$2 AND rank>(SELECT rank FROM core.product_grades WHERE product_id=$1 AND profile_version=$2 AND grade_code=$3) ORDER BY rank LIMIT 1`,[cha.product_id,cha.profile_version,cha.grade_code])??cha.grade_code;
- const id=await appCmd<string>(t,nd,'seller','create_return_lot',[o.id,qty,grade,code]);return {id,code,grade_code:grade,qty_g:qty.toString()};
+ const id=await appCmd<string>(t,nd,'seller','create_return_lot',loNguon?[o.id,qty,grade,code,loNguon]:[o.id,qty,grade,code]);return {id,code,grade_code:grade,qty_g:qty.toString()};
 }
 
 /** Người bán phản đối một dòng: dòng sang tranh chấp, các dòng khác vẫn chốt. */
