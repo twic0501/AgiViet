@@ -315,7 +315,7 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
 export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
   const { o, phia } = await layDon(t, nd, id, false);
   canQuyen(nd, phia === 'buyer' ? 'order.view.buyer' : 'order.view.seller');
-  const v = await t.mot<any>(`SELECT * FROM core.order_versions WHERE order_id=$1 AND version_no=coalesce($2,(SELECT max(version_no) FROM core.order_versions WHERE order_id=$1))`, [id, o.effective_version_no]);
+  const v = await t.mot<any>(`SELECT *, lower(delivery_window) window_from, upper(delivery_window) window_to FROM core.order_versions WHERE order_id=$1 AND version_no=coalesce($2,(SELECT max(version_no) FROM core.order_versions WHERE order_id=$1))`, [id, o.effective_version_no]);
   const hien = await trangThaiHienThi(t, o);
   const buyer = await t.mot<any>(`SELECT code, display_name FROM core.organizations WHERE id=$1`, [o.buyer_org_id]);
   const seller = await t.mot<any>(`SELECT code, display_name FROM core.organizations WHERE id=$1`, [o.seller_org_id]);
@@ -339,7 +339,7 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
       ref_price_vnd: v.ref_price_vnd == null ? null : String(v.ref_price_vnd), deposit_price_vnd: String(v.deposit_price_vnd), contract_value_vnd: String(v.contract_value_vnd),
       deposit_vnd: String(v.deposit_vnd), fee_vnd: String(v.fee_vnd), payment_timing: v.payment_timing, pay_after_days: v.pay_after_days,
       delivery_mode: v.delivery_mode, acceptance_point: v.acceptance_point, transport_by: v.transport_by,
-      delivery_from: v.delivery_window ? null : null, seller_account: { bank_code: v.seller_bank_code, masked: v.seller_account_masked, holder: v.seller_account_holder },
+      delivery_from: v.window_from ? new Date(v.window_from).toISOString() : null, delivery_to: v.window_to ? new Date(v.window_to).toISOString() : null, seller_account: { bank_code: v.seller_bank_code, masked: v.seller_account_masked, holder: v.seller_account_holder },
       designated_receiver_user_id: v.designated_receiver_user_id, silent_accept_hours: v.silent_accept_hours, reject_allowance_bps: v.reject_allowance_bps,
     } : null,
     lien_lac: lien?.mode ?? 'chua_mo', dot_giao: dots, han, lich_su: lichSu, tai_lieu: taiLieu,
