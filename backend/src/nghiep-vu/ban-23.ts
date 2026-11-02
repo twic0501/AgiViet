@@ -1,3 +1,4 @@
+import { CHINH_SACH } from '../chinh-sach.ts';
 // Bản 23 (khóa 28/10/2026): API cho hộp việc hồ sơ mở, phân bổ phí kiểm định, khiếu nại sau giao,
 // tìm nguồn định kỳ nhiều người bán. Mọi ghi đều qua cmd.* trong DB (DB là nơi giữ luật).
 import type { GiaoDich } from '../db/co-so-du-lieu.ts';
@@ -94,6 +95,7 @@ export async function duyetNguon(t: GiaoDich, nd: NguoiDung, id: string) { await
 export async function camKetNguon(t: GiaoDich, nd: NguoiDung, id: string) { await appCmd(t, nd, 'seller', 'commit_allocation', [id]); return { status: 'committed' }; }
 export async function datDieuKhoanTra(t: GiaoDich, nd: NguoiDung, b: any) {
   can(b, ['buyer_org_id', 'pay_after_days', 'credit_limit_vnd']);
+  if (!CHINH_SACH.choPhepTraSau) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Trả sau chưa mở ở giai đoạn này.');
   await appCmd(t, nd, 'seller', 'set_credit_terms', [b.buyer_org_id, Number(so(b.pay_after_days, 'pay_after_days')), so(b.credit_limit_vnd, 'credit_limit_vnd')]);
   return { status: 'saved' };
 }

@@ -6,6 +6,10 @@
 export const CHINH_SACH = Object.freeze({
   phienBan: 'v2-thu-2026-10-26',
 
+  // ---- Trả sau (người sáng lập chốt 02/11/2026): TẮT ở giai đoạn này, để dành khi scale. ----
+  // Logic trả sau + cấp hạn mức vẫn giữ và được kiểm thử (bộ test bật AGV_TRA_SAU=1); môi trường chạy thật mặc định tắt.
+  choPhepTraSau: process.env.AGV_TRA_SAU === '1',
+
   // ---- Cọc và phí (04 mục 3–4) ----
   cocBps: 3000, // r_coc = 30%
   cocLamTronVnd: 1000, // cọc làm tròn nửa lên tới nghìn đồng
