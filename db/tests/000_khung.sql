@@ -47,3 +47,21 @@ BEGIN
   END;
   PERFORM test.check(p_name, v_msg = '__rollback__', CASE WHEN v_msg <> '__rollback__' THEN v_msg END);
 END $$;
+
+-- Ngưỡng 70% (0082): dữ liệu mẫu cũ có giá hạ cấp 15.000/23.000 (65%) và nhiều bộ thử chèn chữ ký người bán trực tiếp.
+-- Chỉ trong CSDL thử: tự thêm xác nhận riêng cho chữ ký người bán, trừ khi phiên đặt test.strict_ack='1' để thử chính luật này.
+-- Trigger "j_" chạy trước "k_ha_cap_thap" (thứ tự tên). Không nằm trong migration nên không có ở CSDL thật.
+CREATE OR REPLACE FUNCTION test.auto_low_ack() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN
+ IF NEW.party='seller' AND coalesce(current_setting('test.strict_ack',true),'')<>'1' AND NOT ('low_downgrade_price_ack'=ANY(coalesce(NEW.statements,'{}'))) THEN
+  NEW.statements:=coalesce(NEW.statements,'{}')||'low_downgrade_price_ack'::text; END IF; RETURN NEW; END $$;
+DROP TRIGGER IF EXISTS j_test_auto_low_ack ON core.signatures;
+CREATE TRIGGER j_test_auto_low_ack BEFORE INSERT ON core.signatures FOR EACH ROW EXECUTE FUNCTION test.auto_low_ack();
+
+-- Giá chốt mỗi tuần (0084): bộ thử khung cũ gọi hàng theo giá trong lịch. Chốt sẵn giá tuần của ngày giao = đúng giá lịch khung.
+CREATE OR REPLACE FUNCTION test.agree_week_price(p_framework uuid,p_terms jsonb) RETURNS void LANGUAGE plpgsql AS $$
+DECLARE f core.framework_contracts%ROWTYPE; u uuid; BEGIN
+ SELECT * INTO f FROM core.framework_contracts WHERE id=p_framework;
+ SELECT m.user_id INTO u FROM core.memberships m WHERE m.org_id=f.buyer_org_id LIMIT 1;
+ INSERT INTO core.framework_week_prices(framework_id,week_start,items,proposed_by_side,proposed_by,answered_by,answered_at,status)
+ VALUES(f.id,date_trunc('week',(lower((p_terms->>'delivery_window')::tstzrange) AT TIME ZONE 'Asia/Ho_Chi_Minh'))::date,f.schedule->'items','buyer',u,u,now(),'agreed')
+ ON CONFLICT DO NOTHING; END $$;

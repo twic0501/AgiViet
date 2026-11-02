@@ -175,7 +175,8 @@ export async function baoDaTra(t:GiaoDich,nd:NguoiDung,id:string,d:{amount_vnd:u
  const p=await layKhoan(t,nd,id);if(p.payer_org_id!==nd.thanhVien.orgId)throw loi('KHONG_CO_QUYEN');
  canQuyen(nd,p.direction==='buyer_to_seller'?'money.pay.buyer':'money.confirm.seller');
  if(!d.evidence_document_id)throw loi('DU_LIEU_KHONG_HOP_LE','Cần chứng từ đúng đơn.');
- const o=await t.mot<any>(`SELECT buyer_org_id FROM core.orders WHERE id=$1`,[p.order_id]);
+ // Khoản trả gộp kỳ tuần không gắn đơn: lấy bên mua từ khung.
+ const o=await t.mot<any>(p.order_id?`SELECT buyer_org_id FROM core.orders WHERE id=$1`:`SELECT buyer_org_id FROM core.framework_contracts WHERE id=$1`,[p.order_id??p.framework_id]);
  await appCmd(t,nd,o.buyer_org_id===nd.thanhVien.orgId?'buyer':'seller','report_payment',[id,soGam(d.amount_vnd),d.method,d.evidence_document_id]);
  return {id,status:await t.gtri(`SELECT status FROM core.direct_payments WHERE id=$1`,[id]),thong_bao:'Đã báo trả; chỉ tính đã nhận sau xác nhận của bên nhận.'};
 }
@@ -206,7 +207,8 @@ export async function xacNhanDaNhan(ht: HeThong, t: GiaoDich, nd: NguoiDung, id:
   await phat(t, 'direct_payment', id, 'khoan.nb_xac_nhan', { so_tien_vnd: so.toString(), status: sau.status });
 
   await lamHeThong(t);
-  await sauKhiNhanTien(ht, t, p.order_id, nd);
+  if (p.order_id) await sauKhiNhanTien(ht, t, p.order_id, nd);
+  else if (p.framework_id) await (await import('./khung.ts')).lamMoiBaoDam(t, p.framework_id); // trả kỳ tuần xong → nợ giảm, khung chạy lại
   const canhBao = method === 'cash' && so >= BigInt(CHINH_SACH.canhBaoTienMatVnd) ? [{ ma: 'TIEN_MAT_LON', cau: 'Nên chuyển khoản để có chứng từ ngân hàng.' }] : [];
   const con = B(sau.due) - B(sau.da);
   return { id, status: sau.status, received_vnd: sau.da, remaining_vnd: con.toString(), canh_bao: canhBao,

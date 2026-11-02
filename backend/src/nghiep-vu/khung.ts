@@ -113,6 +113,8 @@ export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
     gia_tri_moi_lan_vnd: f.gia_tri_ky, coc_khung_vnd: String(f.framework_deposit_vnd), tai_khoan_ban: f.seller_bank_code ? `${f.seller_bank_code} ${f.seller_account_masked}` : null, document_id: f.document_id,
     nhap_tu_du_lieu_cu: !f.document_id, // khung nạp thẳng từ dữ liệu cũ (chưa có văn bản ký trên app)
     gia_tuan: await giaTuanCuaKhung(t, id),
+    han_muc: await t.mot<any>(`SELECT allowed_vnd::text duoc_vnd, used_vnd::text dang_dung_vnd, greatest(allowed_vnd-used_vnd,0)::text con_vnd FROM core.v_framework_limits WHERE id=$1`, [id]),
+    ky_tuan: await t.q<any>(`SELECT p.id, lower(p.period) tu, upper(p.period) den, p.value_vnd::text gia_tri_vnd, p.fee_vnd::text phi_vnd, p.payment_id, dp.status trang_thai_tra, dp.due_at han_tra FROM core.framework_periods p LEFT JOIN core.direct_payments dp ON dp.id=p.payment_id WHERE p.framework_id=$1 ORDER BY p.period`, [id]),
     coc: dep ? { trang_thai: dep.status, payment_ref: dep.payment_ref, virtual_account_no: dep.virtual_account_no, so_tien_vnd: dep.coc_vnd } : null,
   };
 }
@@ -174,4 +176,25 @@ export async function goiHang(t: GiaoDich, nd: NguoiDung, id: string, d: { ngay:
   const dotId = await systemCmd<string>(t, 'activate_calloff', [orderId]);
   const v = await t.mot<any>(`SELECT contract_value_vnd::text gia_tri FROM core.order_versions WHERE order_id=$1 AND version_no=1`, [orderId]);
   return { order_id: orderId, code, delivery_id: dotId, gia_tri_vnd: v?.gia_tri };
+}
+
+// ---------------- Bước 3b: trả gộp cuối tuần + chặn nợ vượt cọc ----------------
+/** Chốt kỳ tuần: gộp quyết toán cuối của mọi buổi gọi hàng lập trong tuần thành MỘT khoản bên mua trả thẳng người bán (hạn 72 giờ).
+ *  DB (0043) chặn khi tuần chưa hết hoặc còn buổi chưa quyết toán; gọi lại cùng tuần trả về kỳ cũ. Sau đó làm mới trạng thái bảo đảm:
+ *  nợ (phải thu người bán + buổi đã gọi chưa quyết toán) vượt cọc → khung "Tạm dừng: nợ vượt cọc", DB chặn gọi hàng mới (0016). Không cấp thêm tín dụng. */
+export async function chotTuan(t: GiaoDich, nd: NguoiDung, id: string, d: { tuan: string }) {
+  await layKhung(t, nd, id);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d?.tuan ?? '')) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần tuần (YYYY-MM-DD).');
+  const tu = dauTuan(d.tuan);
+  const den = new Date(new Date(tu + 'T00:00:00Z').getTime() + 7 * 864e5).toISOString().slice(0, 10);
+  const ky = `[${tu}T00:00:00+07:00,${den}T00:00:00+07:00)`;
+  const kyId = await systemCmd<string>(t, 'bill_framework_period', [id, ky]);
+  const trangThai = await systemCmd<string>(t, 'refresh_framework_security', [id]);
+  const r = await t.mot<any>(`SELECT p.value_vnd::text gia_tri_vnd, p.fee_vnd::text phi_vnd, p.payment_id, dp.code ma_khoan, dp.due_at han_tra FROM core.framework_periods p JOIN core.direct_payments dp ON dp.id=p.payment_id WHERE p.id=$1`, [kyId]);
+  return { ky_id: kyId, tuan: tu, ...r, trang_thai_khung: trangThai };
+}
+
+/** Làm mới trạng thái bảo đảm sau khi tiền kỳ được xác nhận (nợ giảm → khung chạy lại). */
+export async function lamMoiBaoDam(t: GiaoDich, frameworkId: string) {
+  return systemCmd<string>(t, 'refresh_framework_security', [frameworkId]);
 }

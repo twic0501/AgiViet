@@ -12,6 +12,7 @@ SELECT test.as_login('db_test_seller',$$SELECT cmd.finalize_framework(current_se
 SELECT test.apply_bank_event(test.bank_receipt('C47-FW-FUND',1000000,'C47-FW-REF'));
 SELECT test.as_login('db_test_system',$$SELECT cmd.activate_framework(current_setting('test.fw.id')::uuid)$$);
 SELECT set_config('test.fw.terms',jsonb_build_object('delivery_window',tstzrange(now()+interval '2 days',now()+interval '3 days'),'delivery_mode','at_buyer_warehouse','acceptance_point','tai_kho_ben_mua','transport_by','seller','designated_receiver_user_id',test.person('Võ Hoàng Phúc'))::text,true);
+SELECT test.agree_week_price(current_setting('test.fw.id')::uuid,current_setting('test.fw.terms')::jsonb);
 SELECT test.as_login('db_test_buyer',$$SELECT set_config('test.fw.order',cmd.create_calloff(current_setting('test.fw.id')::uuid,'C47-FW-CALL',current_setting('test.fw.terms')::jsonb,current_setting('test.fw.lines')::jsonb)::text,true)$$);
 SELECT test.as_login('db_test_system',$$SELECT set_config('test.c47.delivery',cmd.activate_calloff(current_setting('test.fw.order')::uuid)::text,true)$$);
 SELECT set_config('test.c47.receiver',test.person('Võ Hoàng Phúc')::text,true);
@@ -31,7 +32,8 @@ SELECT test.as_login('db_test_seller',$$SELECT cmd.agree_acceptance(current_sett
 SELECT test.as_login('db_test_seller',$$SELECT cmd.finish_warehouse_delivery(current_setting('test.c47.delivery')::uuid)$$);
 SELECT test.as_login('db_test_system',$$SELECT cmd.create_settlement(current_setting('test.fw.order')::uuid,true,'C47-FW-FINAL')$$);
 SELECT test.check('C47 gọi hàng quyết toán 230000 không tạo nghĩa vụ riêng',EXISTS(SELECT 1 FROM core.settlements WHERE order_id=current_setting('test.fw.order')::uuid AND is_final AND n_vnd=230000) AND NOT EXISTS(SELECT 1 FROM core.direct_payments WHERE order_id=current_setting('test.fw.order')::uuid));
-SELECT set_config('test.fw.period',tstzrange(now()-interval '1 hour',now()+interval '1 hour')::text,true);
+-- 0085: kỳ tính theo NGÀY GIAO: kỳ dưới đây KHÔNG chứa lúc lập lệnh (now) mà chỉ chứa ngày giao (+2 ngày) vẫn lập đúng khoản.
+SELECT set_config('test.fw.period',tstzrange(now()+interval '1 day',now()+interval '2 days 30 minutes')::text,true);
 SELECT test.as_login('db_test_system',$$SELECT set_config('test.fw.periodid',cmd.bill_framework_period(current_setting('test.fw.id')::uuid,current_setting('test.fw.period')::tstzrange)::text,true)$$);
 SELECT test.as_login('db_test_system',$$SELECT cmd.bill_framework_period(current_setting('test.fw.id')::uuid,current_setting('test.fw.period')::tstzrange)$$);
 SELECT set_config('test.fw.payment',(SELECT payment_id::text FROM core.framework_periods WHERE id=current_setting('test.fw.periodid')::uuid),true),set_config('test.fw.evidence',test.command_doc('C47-FW-PAYMENT-PROOF')::text,true);

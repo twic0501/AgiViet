@@ -40,9 +40,13 @@ async function phiaDot(t: GiaoDich, nd: NguoiDung, deliveryId: string): Promise<
   return phiaDon(t, nd, id);
 }
 async function phiaKhoan(t: GiaoDich, nd: NguoiDung, paymentId: string): Promise<Phia> {
-  const id = await t.gtri<string>(`SELECT order_id FROM core.direct_payments WHERE id=$1`, [paymentId]);
-  if (!id) throw loi('KHONG_TIM_THAY');
-  return phiaDon(t, nd, id);
+  const k = await t.mot<any>(`SELECT order_id, framework_id FROM core.direct_payments WHERE id=$1`, [paymentId]);
+  if (k?.order_id) return phiaDon(t, nd, k.order_id);
+  // Khoản trả gộp kỳ tuần của hợp đồng khung: không gắn đơn, lấy phía từ khung.
+  const f = k?.framework_id ? await t.mot<any>(`SELECT buyer_org_id, seller_org_id FROM core.framework_contracts WHERE id=$1`, [k.framework_id]) : null;
+  if (f?.buyer_org_id === nd.thanhVien.orgId) return 'buyer';
+  if (f?.seller_org_id === nd.thanhVien.orgId) return 'seller';
+  throw loi('KHONG_TIM_THAY');
 }
 async function phiaLoiChao(t: GiaoDich, nd: NguoiDung, id: string): Promise<Phia> {
   const o = await t.mot<any>(`SELECT buyer_org_id FROM core.offers WHERE id=$1`, [id]);
@@ -198,7 +202,9 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     if (x.entity === 'lot') { const l = await t.mot<any>(`SELECT seller_org_id FROM core.lots WHERE id=$1`, [x.entity_id]); if (!l || l.seller_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY'); }
     else if (x.entity === 'order') { await phiaDon(t, nd, x.entity_id); orderId = x.entity_id; }
     else if (x.entity === 'delivery') { await phiaDot(t, nd, x.entity_id); orderId = await t.gtri(`SELECT order_id FROM core.deliveries WHERE id=$1`, [x.entity_id]); }
-    else if (x.entity === 'payment') { await phiaKhoan(t, nd, x.entity_id); orderId = await t.gtri(`SELECT order_id FROM core.direct_payments WHERE id=$1`, [x.entity_id]); }
+    else if (x.entity === 'payment') { await phiaKhoan(t, nd, x.entity_id); const k = await t.mot<any>(`SELECT order_id, framework_id FROM core.direct_payments WHERE id=$1`, [x.entity_id]); orderId = k.order_id;
+      // Chứng từ trả gộp kỳ tuần (khoản không gắn đơn) gắn vào hợp đồng khung (cmd.attach_framework_evidence, 0046).
+      if (!k.order_id && k.framework_id) return luuBangChung(t, nd.userId, nd.thanhVien.orgId, { ...x, entity: 'framework', entity_id: k.framework_id } as any, null); }
     else if (x.entity === 'organization') {
       const laVanHanh = nd.vaiVanHanh.some((v) => ['field', 'risk', 'supervisor', 'support'].includes(v));
       if (!laVanHanh && x.entity_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
@@ -412,6 +418,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.get('/v1/frameworks/:id', async (req) => { const nd = await bo.xacThuc(req); const m = await KH(); return bo.doc((t) => m.xemKhung(t, nd, P(req).id)); });
   app.post('/v1/frameworks/:id/week-prices', async (req) => bo.lenh(req, 'de_nghi_gia_tuan', async (t, n) => (await t.gtri<string>(`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_contracts WHERE id=$2`, [n.thanhVien.orgId, P(req).id])) as any, async (t, n, b) => (await KH()).deNghiGiaTuan(t, n, P(req).id, b)));
   app.post('/v1/framework-week-prices/:id/answer', async (req) => bo.lenh(req, 'tra_loi_gia_tuan', async (t, n) => (await t.gtri<string>(`SELECT CASE WHEN f.buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_week_prices w JOIN core.framework_contracts f ON f.id=w.framework_id WHERE w.id=$2`, [n.thanhVien.orgId, P(req).id])) as any, async (t, n, b) => (await KH()).traLoiGiaTuan(t, n, P(req).id, b)));
+  app.post('/v1/frameworks/:id/weeks/bill', async (req) => bo.lenh(req, 'chot_ky_tuan', async (t, n) => (await t.gtri<string>(`SELECT CASE WHEN buyer_org_id=$1 THEN 'buyer' ELSE 'seller' END FROM core.framework_contracts WHERE id=$2`, [n.thanhVien.orgId, P(req).id])) as any, async (t, n, b) => (await KH()).chotTuan(t, n, P(req).id, b)));
   app.post('/v1/frameworks/:id/calloffs', async (req) => bo.lenh(req, 'goi_hang_khung', 'buyer', async (t, n, b) => (await KH()).goiHang(t, n, P(req).id, b)));
   app.post('/v1/frameworks/:id/sign', async (req) => {
     const nd = await bo.xacThuc(req);

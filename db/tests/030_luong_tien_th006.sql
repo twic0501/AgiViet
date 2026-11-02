@@ -66,7 +66,7 @@ SELECT set_config('app.test_receipt_token',core.issue_qr('receipt',test.id('deli
 INSERT INTO core.trips(id,code,vehicle_id,driver_user_id,payer_org_id,scheduled_during,freight_vnd)
 SELECT test.id('trip'),'TEST-TH006-TRIP',id,test.person('Hồ Văn Lộc'),test.org('TC-M01'),tstzrange('2026-11-04 06:00+07','2026-11-04 12:00+07'),3200000 FROM core.vehicles WHERE plate_no='66C-123.45';
 UPDATE core.trips SET status='accepted' WHERE id=test.id('trip');
-INSERT INTO core.trip_deliveries(trip_id,delivery_id,loaded_qty,freight_share_vnd) VALUES(test.id('trip'),test.id('delivery'),1970000,3200000);
+INSERT INTO core.trip_deliveries(trip_id,delivery_id,loaded_qty,freight_share_vnd) VALUES(test.id('trip'),test.id('delivery'),2000000,3200000);
 UPDATE core.deliveries SET status='ready' WHERE id=test.id('delivery');
 SELECT test.context('Võ Hoàng Phúc','TC-M01','buyer');
 SELECT core.scan_qr(ref.ctx('test_receipt_token'),'device-receiver');
