@@ -117,6 +117,7 @@
   .hd-bao.do { background: var(--dau-do-nen); color: var(--dau-do); }
   .hd-bao.xanh { background: var(--la-nhat); color: var(--la-dam); }
   .hd-anh { display: block; width: 100%; max-height: 220px; object-fit: contain; border-radius: 12px; background: var(--giay-lot); }
+  .nut-xem-anh { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; margin-top: 4px; border-radius: 999px; border: 1.5px solid var(--la); background: transparent; color: var(--la); font: 700 14px var(--chu); cursor: pointer; }
 </style>
 </head>
 <body>
@@ -743,6 +744,20 @@ function moXinHuy() {
   });
 }
 
+// Ảnh bằng chứng từng dòng nghiệm thu: bấm "Xem ảnh" → tải có xác thực, hiện ngay dưới dòng; lỗi thì báo rõ.
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-anh]"); if (!b) return;
+  const dong = b.closest("tr"); const cu = dong?.nextElementSibling;
+  if (cu?.classList.contains("dong-anh")) { cu.remove(); b.textContent = "Xem ảnh"; return; } // bấm lần nữa để ẩn
+  b.disabled = true; b.textContent = "Đang tải…";
+  try {
+    const f = await fetch(`/v1/documents/${b.dataset.anh}/file`, H()); if (!f.ok) throw new Error();
+    const url = URL.createObjectURL(await f.blob());
+    dong.insertAdjacentHTML("afterend", `<tr class="dong-anh"><td colspan="2"><img class="hd-anh" src="${url}" alt="Ảnh bằng chứng của dòng này do bên mua chụp" style="width:100%;border-radius:12px"></td></tr>`);
+    b.textContent = "Ẩn ảnh";
+  } catch { b.textContent = "Chưa tải được ảnh, bấm thử lại"; }
+  b.disabled = false;
+});
 // Kết quả cân: xem 3 phần, đồng ý ký bằng PIN, hoặc báo dòng không đúng
 function moCan(d) {
   const kq = (d.ket_qua || []).at(-1); if (!kq) return;
@@ -752,7 +767,7 @@ function moCan(d) {
       <div class="hd-dong"><span>Cân được / kế hoạch</span><b>${esc(can(kq.weighed_g).join(" "))} / ${esc(can(d.planned_qty_g).join(" "))}</b>${thieu > 0 ? `<small>Thiếu ${esc(can(thieu).join(" "))} so với kế hoạch.</small>` : ""}</div>
     </div>
     <table class="hd-can"><tbody>
-      ${kq.lines.map((x) => `<tr><td>${nhan(LOAI_DONG[x.kind] || [x.kind, "xam"])} ${esc(can(x.qty_g).join(" "))}<small>${x.reason_code ? esc(LY_DO[x.reason_code] || x.reason_code) + " · " : ""}${Number(x.unit_price_vnd) ? `${vnd(x.unit_price_vnd)} đ/kg` : "không tính tiền"}${x.evidence_document_id ? " · có ảnh" : ""}</small></td><td>${vnd(x.value_vnd)} đ</td></tr>`).join("")}
+      ${kq.lines.map((x) => `<tr><td>${nhan(LOAI_DONG[x.kind] || [x.kind, "xam"])} ${esc(can(x.qty_g).join(" "))}<small>${x.reason_code ? esc(LY_DO[x.reason_code] || x.reason_code) + " · " : ""}${Number(x.unit_price_vnd) ? `${vnd(x.unit_price_vnd)} đ/kg` : "không tính tiền"}${x.evidence_document_id ? ` <button type="button" class="nut-xem-anh" data-anh="${esc(x.evidence_document_id)}">Xem ảnh</button>` : ""}</small></td><td>${vnd(x.value_vnd)} đ</td></tr>`).join("")}
       <tr><td>Thành tiền đợt này</td><td>${vnd(tong)} đ</td></tr>
     </tbody></table>
     <p class="hd-ghi">Phần trả lại vẫn là hàng của bác: app tạo lô riêng để bác bán tiếp. Phần hạ cấp tính theo giá hạ cấp đã ký.</p>
