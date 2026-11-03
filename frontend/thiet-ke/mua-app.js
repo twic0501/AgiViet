@@ -55,7 +55,8 @@ function moChao(xong) {
 
 // ---------- tải dữ liệu ----------
 async function taiHet() {
-  const [don, khung, lots, tien, nhuCau, tin, sp] = await Promise.all([api("/v1/orders"), api("/v1/frameworks"), api("/v1/lots"), thu(api("/v1/money/summary")), thu(api("/v1/demands?mine=true")), thu(api("/v1/messages/summary")), thu(api("/v1/products"))]);
+  const [don, khung, lots, tien, nhuCau, tin, sp, loiChao] = await Promise.all([api("/v1/orders"), api("/v1/frameworks"), api("/v1/lots"), thu(api("/v1/money/summary")), thu(api("/v1/demands?mine=true")), thu(api("/v1/messages/summary")), thu(api("/v1/products")), thu(api("/v1/offers"))]);
+  DL.loiChao = (loiChao?.items ?? loiChao ?? []).filter((o) => o.la_ben_mua);
   DL.don = don.items || don; DL.khung = (khung || []).filter((k) => k.phia === "buyer"); DL.tien = tien; DL.nhuCau = nhuCau || []; DL.tin = tin || []; DL.sp = sp || [];
   DL.lo = await Promise.all((lots || []).slice(0, 30).map((l) => thu(api(`/v1/lots/${l.id}`)).then((c) => ({ ...l, ...(c || {}) }))));
   // Khoản phải trả: theo từng đơn + khoản tuần của khung.
@@ -83,6 +84,9 @@ function veHomNay() {
     ...DL.don.filter((d) => d.hien_thi?.toi_luot?.phia === "buyer").map((d) => ({ gap: /cọc|trả|ký/i.test(d.hien_thi.toi_luot.viec), ten: `${maHD(d.code)} · ${d.seller_name || ""}`, phu: d.hien_thi.toi_luot.viec, href: MO("chi-tiet-don", `don=${d.id}`) })),
     ...DL.khung.filter((k) => k.toi_luot === "buyer").map((k) => ({ gap: true, ten: `${k.code} · ${k.ben_ban}`, phu: k.ten_trang_thai, href: MO("chi-tiet-khung", `khung=${k.id}`) })),
     ...DL.khung.flatMap((k) => (k.gia_tuan || []).filter((g) => g.trang_thai === "proposed" && g.de_nghi_boi === "seller").map((g) => ({ ten: `Duyệt giá tuần ${ngay(g.tuan)}`, phu: `${k.code} · ${k.ben_ban} đề nghị`, href: MO("chi-tiet-khung", `khung=${k.id}`) }))),
+    // Lời chào: người bán trả giá lại → tới lượt mình trả lời; đã đồng ý mà chưa có đơn → lập đơn.
+    ...DL.loiChao.filter((o) => o.status === "sent" && o.vong_cuoi?.from_side === "seller").map((o) => ({ gap: true, ten: `Người bán trả giá ${vnd(o.vong_cuoi.price_vnd)} đ/kg`, phu: `${o.code} · lô ${o.lot_code || ""} · trả lời trong 24 giờ`, href: MO("bao-gia", `loi-chao=${o.id}`) })),
+    ...DL.loiChao.filter((o) => o.status === "accepted" && !DL.don.some((d) => d.offer_id === o.id)).map((o) => ({ gap: true, ten: "Lập đơn", phu: `${o.code} · lô ${o.lot_code || ""} · hai bên đã chốt giá`, href: MO("bao-gia", `loi-chao=${o.id}`) })),
     ...DL.khoan.filter(canTra).map((p) => ({ gap: true, ten: `Trả ${vnd(conTra(p))} đ`, phu: `${p.nguon}${p.due_at ? ` · hạn ${ngay(p.due_at)}` : ""}`, khoan: p.id })),
   ];
   $("#hang-doi").innerHTML = viec.length ? viec.map((v) => v.href ? `<a class="viec" href="${v.href}"><i class="${v.gap ? "do" : ""}"></i><div><b>${esc(v.ten)}</b><p class="phu">${esc(v.phu)}</p></div><span aria-hidden="true">›</span></a>`
