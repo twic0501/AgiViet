@@ -89,7 +89,8 @@
   .o-nhap { display: grid; gap: 6px; font-weight: 600; } .o-nhap input, .o-nhap select { min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: #fff; padding: 0 14px; font: inherit; width: 100%; }
   .chep { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--giay-noi); border-radius: 12px; padding: 10px 12px; box-shadow: 0 0 0 1px var(--ke); }
   .chep b { font-size: 17px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
-  .ghi { font-size: 12.5px; color: var(--muc-mo); text-align: center; margin: 6px 0 0; }
+  .mau { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--chin); background: var(--chin-nen); border-radius: 10px; padding: 8px 12px; }
+  .ghi { font-size: 13px; color: var(--muc-nhat); text-align: center; margin: 6px 0 0; }
   .bao { position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%); background: var(--muc); color: var(--giay); padding: 10px 16px; border-radius: 12px; font-weight: 600; z-index: 30; display: none; max-width: 90vw; }
   @media (prefers-reduced-motion: no-preference) { section[data-man].hien { animation: vao .22s var(--cham); } .phu-man.mo .tam { animation: len .26s var(--cham); } @keyframes vao { from { opacity: 0; transform: translateY(4px); } } @keyframes len { from { transform: translateY(40px); opacity: .6; } } }
 </style>
@@ -101,24 +102,23 @@
     <button class="nut-tron" data-mo="nhan" aria-label="Tin nhắn, 1 tin mới"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="dem">1</span></button>
   </header>
   <main>
+    <p class="mau" role="note">Bản mẫu để duyệt giao diện: số liệu mẫu, thao tác chưa lưu vào hệ thống.</p>
     <!-- HÔM NAY · T1 chắc nguồn, T5 việc tới lượt, T6 tiền -->
     <section data-man="hom-nay" class="hien">
       <div class="the">
-        <div class="hang"><p class="nhan">Nguồn tuần này · 9–15/11</p><span class="chip do">Thiếu 30 kg</span></div>
-        <div class="so-lon so">170 <small>/ 200 kg đã chắc</small></div>
+        <div class="hang"><p class="nhan">Nguồn tuần này · 9–15/11</p><span class="chip do" id="thieu-chip"></span></div>
+        <div class="so-lon so" id="tong-tuan"></div>
         <div id="mon-tuan"></div>
-        <button class="nut chinh rong" data-di="nguon-hang" data-loc="Xoài">Tìm 30 kg xoài còn thiếu</button>
+        <button class="nut chinh rong" data-di="nguon-hang" id="nut-thieu"></button>
       </div>
       <div class="the">
-        <div class="hang"><p class="nhan">Tới lượt bạn</p><span class="chip toi">3 việc</span></div>
-        <button class="viec" data-mo="tra-tien"><i class="do"></i><div><b>Trả tiền tuần 2–8/11</b><p class="phu">HTX Tân Thuận · hạn 9h sáng mai</p></div><span class="chip do so">1.175.000 đ</span></button>
-        <button class="viec" data-di="don"><i></i><div><b>Duyệt giá tuần 16/11</b><p class="phu">Thanh long 21.000 đ/kg · tuần trước 21.500</p></div><span class="chip la">Rẻ hơn 500</span></button>
-        <button class="viec" data-di="don"><i></i><div><b>Đặt xe nhận thứ Năm 12/11</b><p class="phu">50 kg tại vườn Chợ Gạo · 5:30 sáng</p></div><span class="chip">Đặt xe</span></button>
+        <div class="hang"><p class="nhan">Tới lượt bạn</p><span class="chip toi" id="so-viec"></span></div>
+        <div id="hang-doi"></div>
       </div>
       <div class="the">
         <p class="nhan">Lịch nhận 7 ngày</p>
         <div class="lich" id="lich"></div>
-        <p class="phu">2 buổi đã chắc · 1 ngày còn trống (thứ Bảy)</p>
+        <p class="phu" id="lich-ghi"></p>
       </div>
       <div class="the">
         <p class="nhan">Tiền đang ở đâu</p>
@@ -131,7 +131,7 @@
     <section data-man="nguon-hang">
       <div class="tim"><input type="search" placeholder="Tìm mặt hàng, tỉnh, người bán" aria-label="Tìm nguồn hàng"><button class="nut chinh nho" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>
       <div class="loc" role="group" aria-label="Lọc theo mặt hàng" id="loc"></div>
-      <div class="the" style="background:var(--chin-nen);box-shadow:none"><p class="phu" style="color:var(--chin)"><b>Bạn đang thiếu 30 kg xoài tuần này.</b> AgiViet xếp nguồn hợp nhất lên đầu theo khoảng cách, lịch sử giao đủ và giá.</p></div>
+      <div class="the" style="background:var(--chin-nen);box-shadow:none"><p class="phu" style="color:var(--chin)" id="ghi-thieu"></p></div>
       <div id="ds-lo" style="display:grid;gap:14px"></div>
       <button class="nut vien rong" id="nut-so-sanh" data-mo="so-sanh" hidden>So sánh nguồn đã chọn</button>
       <p class="ghi">Giá người bán là giá kín. Bạn chào giá, dưới mức người bán chấp nhận thì lời chào tự đóng, không ai bị ghi gì.</p>
@@ -142,8 +142,9 @@
       <div class="the">
         <div class="hang"><div><b>Khung tuần KH-2101 · HTX Tân Thuận</b><p class="phu">Thanh long 30 kg + xoài 20 kg · T2, T5</p></div><span class="chip la">Đang chạy</span></div>
         <div class="luoi2"><div class="o"><span class="phu">Còn gọi được</span><b>1.065.000 đ</b></div><div class="o"><span class="phu">Giá tuần 16/11</span><b>Chờ bạn</b></div></div>
-        <div class="neo"><div class="hang"><span class="phu">Thanh long đề nghị 21.000 đ/kg</span><span class="chip la">Thấp hơn giá chợ</span></div><div class="vach" aria-label="Giá chợ 20.500 đến 23.000, đề nghị 21.000"><span style="left:20%"></span></div><div class="hang"><span class="phu so">20.500</span><span class="phu">giá chợ tuần này</span><span class="phu so">23.000</span></div></div>
-        <div class="luoi2"><button class="nut chinh" data-bao="Đã đồng ý giá tuần 16/11">Đồng ý giá</button><button class="nut vien" data-bao="Đã gửi đề nghị giá khác">Trả giá</button></div>
+        <div class="neo"><div class="hang"><span class="phu">Thanh long đề nghị 21.000 đ/kg</span><span class="chip la">Trong khoảng giá chợ · thấp hơn tuần trước 500</span></div><div class="vach" aria-label="Giá chợ 20.500 đến 23.000, đề nghị 21.000"><span style="left:20%"></span></div><div class="hang"><span class="phu so">20.500</span><span class="phu">giá chợ tuần này</span><span class="phu so">23.000</span></div></div>
+        <p class="phu">Giá chợ: trung bình giao dịch thật trên AgiViet tuần 2–8/11, cùng loại, giao tại vườn.</p>
+        <div class="luoi2"><button class="nut chinh" data-xong="gia16" data-bao="Bản mẫu: đồng ý giá tuần 16/11 (chưa lưu)">Đồng ý giá</button><button class="nut vien" data-mo="chao-gia" data-ctx="tuan">Trả giá</button></div>
       </div>
       <div class="the">
         <div class="hang"><b>HĐ-3001 · buổi thứ Hai 9/11</b><span class="chip bien">Đang chở về</span></div>
@@ -154,7 +155,7 @@
       <div class="the">
         <div class="hang"><b>HĐ-0018 · Xoài cát Chu 2 tấn</b><span class="chip toi">Tới lượt bạn</span></div>
         <p class="phu">Người bán đã ký. Chuyển cọc 13.800.000 đ vào tài khoản ngân hàng giữ để khóa hàng. Không chuyển trong 24 giờ thì hàng được mở cho người khác.</p>
-        <button class="nut vien rong" data-mo="tra-tien">Xem cách chuyển cọc</button>
+        <button class="nut vien rong" data-mo="tra-tien" data-khoan="coc0018">Xem cách chuyển cọc 13.800.000 đ</button>
       </div>
     </section>
 
@@ -163,12 +164,12 @@
       <div class="the">
         <p class="nhan">Bạn còn phải trả</p>
         <div class="so-lon so">1.175.000 <small>đ</small></div>
-        <p class="phu">1 khoản · hạn sớm nhất 9:00 ngày 19/11</p>
-        <button class="nut chinh rong" data-mo="tra-tien">Trả 1.175.000 đ cho HTX Tân Thuận</button>
+        <p class="phu">1 khoản · hạn 9:00 sáng mai (tuần 2–8/11)</p>
+        <button class="nut chinh rong" data-mo="tra-tien" data-khoan="tuan">Trả 1.175.000 đ cho HTX Tân Thuận</button>
       </div>
       <div class="the">
         <p class="nhan">Theo người bán</p>
-        <button class="viec" data-mo="tra-tien"><i class="do"></i><div><b>HTX Tân Thuận</b><p class="phu">Tuần 9–15/11 · người bán đã nhận 0 / 1.175.000</p></div><span class="chip do">Hạn 19/11</span></button>
+        <button class="viec" data-mo="tra-tien" data-khoan="tuan"><i class="do"></i><div><b>HTX Tân Thuận</b><p class="phu">Tuần 2–8/11 · người bán đã nhận 0 / 1.175.000</p></div><span class="chip do">Hạn sáng mai</span></button>
         <button class="viec"><i class="la"></i><div><b>Chị Năm</b><p class="phu">HĐ-0018 · chưa tới hạn</p></div><span class="chip">0 đ</span></button>
       </div>
       <div class="the">
@@ -177,7 +178,7 @@
         <p class="phu">Cọc chỉ được chi khi hai bên chốt số cân và quyết toán.</p>
       </div>
       <div class="the">
-        <div class="hang"><div><b>Bảng kê mua hàng tháng 11</b><p class="phu">4 hóa đơn · 4.850.000 đ · gửi kế toán</p></div><button class="nut vien nho" data-bao="Đã tạo bảng kê PDF + Excel">Xuất</button></div>
+        <div class="hang"><div><b>Bảng kê mua hàng tháng 11</b><p class="phu">Các khoản đã trả và còn nợ trong tháng · mở bằng Excel</p></div><button class="nut vien nho" id="xuat-bang-ke">Tải CSV</button></div>
       </div>
     </section>
 
@@ -185,11 +186,11 @@
     <section data-man="them">
       <div class="the">
         <p class="nhan">Công cụ mua</p>
-        <button class="muc" data-bao="Kế hoạch tuần: cần 200 kg, đã chắc 170 kg"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><div><b>Kế hoạch mua tuần</b><p class="phu">Cần bao nhiêu mỗi món, đã chắc bao nhiêu</p></div><span>›</span></button>
+        <button class="muc" data-di="hom-nay"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span><div><b>Kế hoạch mua tuần</b><p class="phu">Cần bao nhiêu mỗi món, đã chắc bao nhiêu</p></div><span>›</span></button>
         <button class="muc" data-mo="gui-nhu-cau"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></span><div><b>Gửi nhu cầu cho nhiều người bán</b><p class="phu">Nhận nhiều báo giá, chọn cái tốt nhất</p></div><span>›</span></button>
-        <button class="muc" data-bao="2 khung đang chạy"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><div><b>Lập hợp đồng khung tuần</b><p class="phu">Giá chốt mỗi tuần, trả gộp cuối tuần</p></div><span>›</span></button>
-        <button class="muc" data-bao="3 người bán quen"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11l2 2 4-4"/></svg></span><div><b>Người bán quen</b><p class="phu">Gọi lại nhanh nguồn đã giao đủ</p></div><span>›</span></button>
-        <button class="muc" data-bao="Thành viên: Chị Hà (mua), Anh Long (duyệt chi > 5 triệu)"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><div><b>Thành viên và duyệt chi</b><p class="phu">Ai được ký, ai duyệt khoản lớn</p></div><span>›</span></button>
+        <button class="muc" data-di="don"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><div><b>Lập hợp đồng khung tuần</b><p class="phu">Giá chốt mỗi tuần, trả gộp cuối tuần</p></div><span>›</span></button>
+        <button class="muc" data-bao="Bản mẫu: màn Người bán quen chưa dựng"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11l2 2 4-4"/></svg></span><div><b>Người bán quen</b><p class="phu">Gọi lại nhanh nguồn đã giao đủ</p></div><span>›</span></button>
+        <button class="muc" data-bao="Bản mẫu: màn Thành viên chưa dựng"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><div><b>Thành viên và duyệt chi</b><p class="phu">Ai được ký, ai duyệt khoản lớn</p></div><span>›</span></button>
       </div>
       <div class="the">
         <p class="nhan">Dịch vụ đối tác</p>
@@ -197,7 +198,7 @@
         <button class="muc"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V9l7-5 7 5v12"/></svg></span><div><b>Tồn kho</b><p class="phu">Hàng đã nhận, còn bao nhiêu</p></div><span class="phu-mp">Mô phỏng</span></button>
       </div>
       <div class="the">
-        <button class="muc" data-bao="Đang nối với nhân viên AgiViet"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><rect x="2" y="16" width="4" height="5" rx="1"/><rect x="18" y="16" width="4" height="5" rx="1"/></svg></span><div><b>Hỗ trợ</b><p class="phu">Hỏi nhân viên AgiViet, gắn sẵn đơn đang xem</p></div><span>›</span></button>
+        <button class="muc" data-bao="Bản mẫu: hỗ trợ chưa nối"><span class="bt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><rect x="2" y="16" width="4" height="5" rx="1"/><rect x="18" y="16" width="4" height="5" rx="1"/></svg></span><div><b>Hỗ trợ</b><p class="phu">Hỏi nhân viên AgiViet, gắn sẵn đơn đang xem</p></div><span>›</span></button>
       </div>
     </section>
   </main>
@@ -206,10 +207,19 @@
 <!-- Tấm so sánh nguồn · T2 -->
 <div class="phu-man" id="so-sanh" role="dialog" aria-modal="true" aria-labelledby="ss-t"><div class="tam"><h2 id="ss-t">So sánh nguồn</h2><div id="ss-bang"></div><button class="nut chinh rong" data-bao="Đã gửi lời chào giá cho nguồn hợp nhất">Chào giá nguồn hợp nhất</button><button class="nut vien rong" data-dong>Đóng</button></div></div>
 <!-- Tấm trả tiền · T6 -->
-<div class="phu-man" id="tra-tien" role="dialog" aria-modal="true" aria-labelledby="tt-t"><div class="tam">
-  <h2 id="tt-t">Trả HTX Tân Thuận</h2>
-  <div class="so-lon so">1.175.000 <small>đ · tuần 9–15/11</small></div>
-  <div class="chep"><div><span class="phu">Ngân hàng</span><br><b>Agribank</b></div></div>
+<div class="phu-man" id="tra-tien" role="dialog" aria-modal="true" aria-labelledby="tt-t"><div class="tam" id="tt-tam"></div></div>
+<!-- Tấm chào giá / trả giá · T4 -->
+<div class="phu-man" id="chao-gia" role="dialog" aria-modal="true" aria-labelledby="cg-t"><div class="tam" id="cg-tam"></div></div>
+<!-- Tấm đặt xe · T7 -->
+<div class="phu-man" id="dat-xe" role="dialog" aria-modal="true" aria-labelledby="dx-t"><div class="tam">
+  <h2 id="dx-t">Đặt xe nhận thứ Năm 12/11</h2>
+  <p class="phu">50 kg tại vườn Chợ Gạo · nhận 5:30–8:00 sáng · bạn lo xe</p>
+  <label class="o-nhap">Biển số xe<input id="dx-bien" placeholder="vd 63C-123.45" autocomplete="off"></label>
+  <label class="o-nhap">Tiền xe (đ, tùy chọn)<input id="dx-tien" inputmode="numeric"></label>
+  <p class="phu" id="dx-bao" role="status"></p>
+  <button class="nut chinh rong" id="dx-gui">Lưu xe cho buổi này</button>
+  <button class="nut vien rong" data-dong>Để sau</button>
+</div></div>
   <div class="chep"><div><span class="phu">Số tài khoản (đã ghi trong hợp đồng)</span><br><b>5100 2050 3000</b></div><button class="nut vien nho" data-bao="Đã chép số tài khoản">Chép</button></div>
   <div class="chep"><div><span class="phu">Nội dung chuyển khoản</span><br><b>AGV KH2101 T46</b></div><button class="nut vien nho" data-bao="Đã chép nội dung">Chép</button></div>
   <p class="phu">Chỉ chuyển vào tài khoản ghi trong hợp đồng. Ai nhắn số tài khoản khác qua tin nhắn là dấu hiệu lừa.</p>
@@ -223,8 +233,8 @@
   <label class="o-nhap">Mặt hàng<select><option>Xoài cát Chu loại 1</option><option>Thanh long ruột đỏ</option><option>Tôm thẻ</option></select></label>
   <div class="luoi2"><label class="o-nhap">Lượng (kg)<input inputmode="decimal" value="30"></label><label class="o-nhap">Ngày nhận<input type="date" value="2026-11-14"></label></div>
   <label class="o-nhap">Giá bạn muốn (đ/kg)<input inputmode="numeric" placeholder="Giá chợ 21.500–24.000"></label>
-  <p class="phu">Gửi tới 5 người bán hợp nhất trong 50 km. Họ có 12 giờ báo giá; bạn so sánh rồi chọn.</p>
-  <button class="nut chinh rong" data-bao="Đã gửi nhu cầu cho 5 người bán">Gửi cho 5 người bán</button>
+  <p class="phu">Gửi tới người bán đang có món này. Họ có 12 giờ báo giá; bạn so sánh rồi chọn.</p>
+  <button class="nut chinh rong" data-bao="Bản mẫu: nhu cầu chưa được gửi thật">Gửi nhu cầu</button>
   <button class="nut vien rong" data-dong>Để sau</button>
 </div></div>
 <!-- Tấm tin nhắn -->
@@ -246,61 +256,144 @@
 <div class="bao" id="bao" role="status" aria-live="polite"></div>
 
 <script>
-// Bộ dữ liệu mẫu (giống stack thử: Bếp Sen ↔ HTX Tân Thuận, chị Năm).
+// Bộ dữ liệu mẫu (giống stack thử: Bếp Sen ↔ HTX Tân Thuận, chị Năm). Mọi con số trên màn tính từ đây, không ghi cứng.
 const DL = {
-  monTuan: [{ ten: "Thanh long", can: 90, khung: 90, le: 0 }, { ten: "Xoài cát Chu", can: 80, khung: 30, le: 20 }, { ten: "Tôm thẻ", can: 30, khung: 0, le: 30 }],
+  monTuan: [{ ten: "Thanh long", mon: "Thanh long", can: 90, khung: 90, le: 0 }, { ten: "Xoài cát Chu", mon: "Xoài", can: 80, khung: 30, le: 20 }, { ten: "Tôm thẻ", mon: "Thủy sản", can: 30, khung: 0, le: 30 }],
   lich: [["T2", 9, 1], ["T3", 10, 0], ["T4", 11, 0], ["T5", 12, 1], ["T6", 13, 0], ["T7", 14, 0], ["CN", 15, 0]],
   lo: [
-    { ten: "Xoài cát Chu loại 1", mon: "Xoài", nguoi: "Chị Năm", noi: "Cao Lãnh, Đồng Tháp · 42 km", con: 3500, anh: "/assets/products/xoai-cat-chu.jpg", kiem: true, giaoDu: 12, dat: 96, gan: "Có ngay", goiY: true, cho: "21.500–24.000" },
-    { ten: "Xoài cát Hòa Lộc", mon: "Xoài", nguoi: "Anh Sáu", noi: "Cái Bè, Tiền Giang · 68 km", con: 1200, anh: "/assets/products/xoai-cat-chu.jpg", kiem: false, giaoDu: 3, dat: 88, gan: "Có ngay", cho: "24.000–27.000" },
-    { ten: "Thanh long ruột đỏ", mon: "Thanh long", nguoi: "HTX Tân Thuận", noi: "Chợ Gạo, Tiền Giang · 55 km", con: 6000, anh: "/assets/products/thanh-long.jpg", kiem: true, giaoDu: 31, dat: 98, gan: "Đặt trước", khung: true, cho: "20.500–23.000" },
+    { ten: "Xoài cát Chu loại 1", mon: "Xoài", nguoi: "Chị Năm", noi: "Cao Lãnh, Đồng Tháp", km: 42, con: 3500, anh: "/assets/products/xoai-cat-chu.jpg", kiem: "Nhân viên AgiViet kiểm vườn 28/10", giaoDu: 12, tongDon: 13, dat: 96, gan: "Có ngay", cho: [21500, 24000] },
+    { ten: "Xoài cát Hòa Lộc", mon: "Xoài", nguoi: "Anh Sáu", noi: "Cái Bè, Tiền Giang", km: 68, con: 1200, anh: "/assets/products/xoai-cat-chu.jpg", kiem: null, giaoDu: 3, tongDon: 4, dat: 88, gan: "Có ngay", cho: [24000, 27000] },
+    { ten: "Thanh long ruột đỏ", mon: "Thanh long", nguoi: "HTX Tân Thuận", noi: "Chợ Gạo, Tiền Giang", km: 55, con: 6000, anh: "/assets/products/thanh-long.jpg", kiem: "Nhân viên AgiViet kiểm vườn 20/10", giaoDu: 31, tongDon: 32, dat: 98, gan: "Đặt trước", khung: true, cho: [20500, 23000] },
   ],
+  viec: [
+    { id: "tra-tuan", gap: true, ten: "Trả tiền tuần 2–8/11", phu: "HTX Tân Thuận · hạn 9h sáng mai", chip: "1.175.000 đ", mo: "tra-tien", khoan: "tuan" },
+    { id: "gia16", ten: "Duyệt giá tuần 16/11", phu: "Thanh long 21.000 đ/kg · tuần trước 21.500", chip: "Rẻ hơn 500", di: "don" },
+    { id: "xe12", ten: "Đặt xe nhận thứ Năm 12/11", phu: "50 kg tại vườn Chợ Gạo · 5:30 sáng", chip: "Đặt xe", mo: "dat-xe" },
+  ],
+  khoan: {
+    tuan: { tieu: "Trả HTX Tân Thuận", so: 1175000, ky: "tiền hàng tuần 2–8/11", nhan: "HTX Tân Thuận", nh: "Agribank", tk: "510020503000", nd: "AGV KH2101 T45", ghi: "Tiền hàng trả thẳng cho người bán. Chỉ chuyển vào tài khoản ghi trong hợp đồng khung; ai nhắn số tài khoản khác qua tin nhắn là dấu hiệu lừa.", xong: "tra-tuan" },
+    coc0018: { tieu: "Chuyển cọc HĐ-0018", so: 13800000, ky: "cọc 30% đơn 2 tấn xoài, ngân hàng giữ", nhan: "Tài khoản giữ cọc tại ngân hàng (không phải chị Năm)", nh: "Ngân hàng đối tác AgiViet", tk: "9704 0018 0000 1234", nd: "AGV HD0018 COC", ghi: "Cọc vào tài khoản ngân hàng giữ, không chuyển cho người bán. Ngân hàng chỉ chi khi hai bên chốt số cân và quyết toán. Quá 24 giờ chưa đủ cọc thì hàng được mở lại cho người khác." },
+  },
 };
 const $ = (s) => document.querySelector(s), vnd = (n) => n.toLocaleString("vi-VN");
-$("#mon-tuan").innerHTML = DL.monTuan.map((m) => { const chac = m.khung + m.le, thieu = m.can - chac;
-  return `<div class="mon"><div class="hang"><b>${m.ten}</b><span class="phu so">${chac} / ${m.can} kg${thieu > 0 ? ` · <b style="color:var(--do)">thiếu ${thieu}</b>` : " · đủ"}</span></div>
-  <div class="thanh" aria-label="${m.ten}: ${m.khung} kg khung, ${m.le} kg đơn lẻ, cần ${m.can}"><span style="width:${m.khung / m.can * 100}%;background:var(--la)"></span><span style="width:${m.le / m.can * 100}%;background:#5b8a6e"></span></div></div>`; }).join("")
-  + `<p class="phu"><span style="color:var(--la)">■</span> khung tuần · <span style="color:#5b8a6e">■</span> đơn lẻ · ▢ còn thiếu</p>`;
-$("#lich").innerHTML = DL.lich.map(([t, d, co], i) => `<div class="${co ? "co" : ""}${i === 0 ? " nay" : ""}">${t}<b>${d}</b></div>`).join("");
+// Nguồn tuần: tổng, thiếu, món thiếu nhiều nhất — tính từ DL.monTuan.
+const veTuan = () => {
+  const can = DL.monTuan.reduce((a, m) => a + m.can, 0), chac = DL.monTuan.reduce((a, m) => a + m.khung + m.le, 0);
+  const thieuNhat = [...DL.monTuan].sort((a, b) => (b.can - b.khung - b.le) - (a.can - a.khung - a.le))[0], tn = thieuNhat.can - thieuNhat.khung - thieuNhat.le;
+  $("#tong-tuan").innerHTML = `${chac} <small>/ ${can} kg đã có nguồn</small>`;
+  $("#thieu-chip").textContent = can - chac > 0 ? `Thiếu ${can - chac} kg` : "Đủ hàng";
+  $("#nut-thieu").textContent = tn > 0 ? `Tìm ${tn} kg ${thieuNhat.ten.toLowerCase()} còn thiếu` : "Xem nguồn hàng";
+  $("#nut-thieu").dataset.loc = thieuNhat.mon; $("#nut-thieu").dataset.can = tn;
+  $("#mon-tuan").innerHTML = DL.monTuan.map((m) => { const c = m.khung + m.le, t = m.can - c;
+    return `<div class="mon"><div class="hang"><b>${m.ten}</b><span class="phu so">${c} / ${m.can} kg${t > 0 ? ` · <b style="color:var(--do)">thiếu ${t}</b>` : " · đủ"}</span></div>
+    <div class="thanh" aria-label="${m.ten}: ${m.khung} kg khung, ${m.le} kg đơn lẻ, cần ${m.can}"><span style="width:${m.khung / m.can * 100}%;background:var(--la)"></span><span style="width:${m.le / m.can * 100}%;background:#5b8a6e"></span></div></div>`; }).join("")
+    + `<p class="phu"><span style="color:var(--la)">■</span> khung tuần (giá đã chốt) · <span style="color:#5b8a6e">■</span> đơn lẻ đã ký · ▢ còn thiếu</p>`;
+  const co = DL.lich.filter((x) => x[2]).length;
+  $("#lich").innerHTML = DL.lich.map(([t, d, c], i) => `<div class="${c ? "co" : ""}${i === 0 ? " nay" : ""}">${t}<b>${d}</b></div>`).join("");
+  $("#lich-ghi").textContent = `${co} buổi nhận đã hẹn trong 7 ngày`;
+};
+// Hàng đợi: làm xong thì bỏ khỏi danh sách, số việc và chấm đỏ cập nhật theo.
+const veViec = () => {
+  $("#hang-doi").innerHTML = DL.viec.length ? DL.viec.map((v) => `<button class="viec" ${v.mo ? `data-mo="${v.mo}"` : `data-di="${v.di}"`} ${v.khoan ? `data-khoan="${v.khoan}"` : ""}><i class="${v.gap ? "do" : ""}"></i><div><b>${v.ten}</b><p class="phu">${v.phu}</p></div><span class="chip ${v.gap ? "do" : v.id === "gia16" ? "la" : ""} so">${v.chip}</span></button>`).join("") : `<p class="phu">Không còn việc nào chờ bạn.</p>`;
+  $("#so-viec").textContent = `${DL.viec.length} việc`;
+  const dem = document.querySelector('.tab [data-di="hom-nay"] .dem'); dem.textContent = DL.viec.length; dem.hidden = !DL.viec.length;
+};
+const xong = (id) => { DL.viec = DL.viec.filter((v) => v.id !== id); veViec(); };
+// Nguồn hàng: tìm + lọc + xếp hạng có lý do (đủ lượng còn thiếu, đã kiểm, giao đủ, gần).
 const MON = ["Xoài", "Thanh long", "Thủy sản", "Tất cả"];
-let loc = "Xoài";
+let loc = "Xoài", tu = "";
+const canMon = (mon) => { const m = DL.monTuan.find((x) => x.mon === mon); return m ? Math.max(0, m.can - m.khung - m.le) : 0; };
+const diem = (l) => (l.con >= canMon(l.mon) ? 40 : 0) + (l.kiem ? 25 : 0) + (l.giaoDu / l.tongDon) * 20 + Math.max(0, 15 - l.km / 10);
+const lyDo = (l) => [l.con >= canMon(l.mon) && canMon(l.mon) ? `đủ ${canMon(l.mon)} kg bạn thiếu` : null, l.kiem ? "đã kiểm vườn" : null, `${l.giaoDu}/${l.tongDon} đơn giao đủ`, `${l.km} km`].filter(Boolean).join(" · ");
 const veLo = () => {
   $("#loc").innerHTML = MON.map((m) => `<button aria-pressed="${m === loc}" data-loc-chon="${m}">${m}</button>`).join("");
-  const ds = DL.lo.filter((l) => loc === "Tất cả" || l.mon === loc);
-  $("#ds-lo").innerHTML = ds.length ? ds.map((l, i) => `<div class="the${l.goiY ? " goi-y" : ""}">
-    ${l.goiY ? `<span class="chip la" style="justify-self:start">Hợp nhất cho bạn</span>` : ""}
+  const q = tu.trim().toLowerCase();
+  const ds = DL.lo.filter((l) => (loc === "Tất cả" || l.mon === loc) && (!q || `${l.ten} ${l.nguoi} ${l.noi}`.toLowerCase().includes(q))).sort((a, b) => diem(b) - diem(a));
+  const t = canMon(loc);
+  $("#ghi-thieu").hidden = !t; $("#ghi-thieu").innerHTML = `<b>Bạn đang thiếu ${t} kg ${loc.toLowerCase()} tuần này.</b> Nguồn xếp theo: đủ lượng còn thiếu, đã kiểm vườn, tỉ lệ giao đủ, khoảng cách.`;
+  $("#ds-lo").innerHTML = ds.length ? ds.map((l, i) => `<div class="the${i === 0 && t ? " goi-y" : ""}">
+    ${i === 0 && t ? `<span class="chip la" style="justify-self:start">Hợp nhất: ${lyDo(l)}</span>` : ""}
     <div class="lo"><div class="anh" style="background-image:url(${l.anh})" role="img" aria-label="Ảnh ${l.ten}"></div>
       <div><div class="hang"><b>${l.ten}</b><span class="chip ${l.gan === "Có ngay" ? "la" : "bien"}">${l.gan}</span></div>
-        <p class="phu">${l.nguoi} · ${l.noi}</p><p class="phu so">Còn ${vnd(l.con)} kg</p></div></div>
-    <div class="tin">${l.kiem ? `<span class="chip la">Đã kiểm vườn</span>` : `<span class="chip">Người bán tự khai</span>`}<span class="chip">${l.giaoDu} đơn giao đủ</span><span class="chip">${l.dat}% hàng đạt</span>${l.khung ? `<span class="chip bien">Đang có khung với bạn</span>` : ""}</div>
-    <div class="hang"><label class="so-sanh-chon"><input type="checkbox" data-ss="${DL.lo.indexOf(l)}"> So sánh</label><button class="nut vien nho" data-bao="Mở chào giá ${l.ten} · giá chợ ${l.cho} đ/kg">Chào giá</button></div>
-    <p class="phu">Giá chợ tuần này ${l.cho} đ/kg</p></div>`).join("") : `<p class="phu">Chưa có nguồn ở nhóm này. Gửi nhu cầu để người bán báo giá.</p>`;
+        <p class="phu">${l.nguoi} · ${l.noi} · ${l.km} km</p><p class="phu so">Còn ${vnd(l.con)} kg</p></div></div>
+    <div class="tin">${l.kiem ? `<span class="chip la" title="${l.kiem}">Đã kiểm vườn</span>` : `<span class="chip">Người bán tự khai</span>`}<span class="chip">${l.giaoDu}/${l.tongDon} đơn giao đủ</span><span class="chip">${l.dat}% hàng đạt khi nghiệm thu</span>${l.khung ? `<span class="chip bien">Đang có khung với bạn</span>` : ""}</div>
+    ${l.kiem ? `<p class="phu">${l.kiem}. Tỉ lệ đạt tính trên ${l.tongDon} đơn đã nghiệm thu.</p>` : ""}
+    <div class="hang"><label class="so-sanh-chon"><input type="checkbox" data-ss="${DL.lo.indexOf(l)}" ${ssChon.has(DL.lo.indexOf(l)) ? "checked" : ""}> So sánh</label><button class="nut vien nho" data-mo="chao-gia" data-lo="${DL.lo.indexOf(l)}">Chào giá</button></div>
+    <p class="phu">Giá chợ tuần này ${vnd(l.cho[0])}–${vnd(l.cho[1])} đ/kg</p></div>`).join("") : `<p class="phu">Không có nguồn khớp. Gửi nhu cầu để người bán báo giá.</p>`;
 };
-veLo();
 const ssChon = new Set();
-document.addEventListener("change", (e) => { const c = e.target.closest("[data-ss]"); if (!c) return; c.checked ? ssChon.add(+c.dataset.ss) : ssChon.delete(+c.dataset.ss); if (ssChon.size > 3) { c.checked = false; ssChon.delete(+c.dataset.ss); bao("So sánh tối đa 3 nguồn"); } $("#nut-so-sanh").hidden = ssChon.size < 2; $("#nut-so-sanh").textContent = `So sánh ${ssChon.size} nguồn đã chọn`; });
-const veSoSanh = () => { const ds = [...ssChon].map((i) => DL.lo[i]); const tot = (k, lon) => { const v = ds.map((l) => l[k]); return lon ? Math.max(...v) : Math.min(...v); };
-  const dong = (nhan, f, k, lon) => `<tr><th>${nhan}</th>${ds.map((l) => `<td class="${k && l[k] === tot(k, lon) ? "tot" : ""}">${f(l)}</td>`).join("")}</tr>`;
-  $("#ss-bang").innerHTML = `<table class="bang"><tr><th></th>${ds.map((l) => `<td><b>${l.nguoi}</b></td>`).join("")}</tr>${dong("Mặt hàng", (l) => l.ten)}${dong("Còn", (l) => vnd(l.con) + " kg", "con", true)}${dong("Giao đủ", (l) => l.giaoDu + " đơn", "giaoDu", true)}${dong("Hàng đạt", (l) => l.dat + "%", "dat", true)}${dong("Đã kiểm vườn", (l) => (l.kiem ? "Có" : "Chưa"))}${dong("Giá chợ", (l) => l.cho)}</table><p class="phu">Chữ xanh là nguồn tốt nhất ở dòng đó.</p>`; };
+const capNhatSS = () => { $("#nut-so-sanh").hidden = ssChon.size < 2; $("#nut-so-sanh").textContent = `So sánh ${ssChon.size} nguồn đã chọn`; };
+// So sánh chỉ giữa nguồn cùng món — so xoài với thanh long không giúp chọn.
+const veSoSanh = () => { const ds = [...ssChon].map((i) => DL.lo[i]); const t = canMon(ds[0].mon);
+  const tot = (f, lon) => { const v = ds.map(f); return lon ? Math.max(...v) : Math.min(...v); };
+  const dong = (nhan, hien, f, lon) => `<tr><th>${nhan}</th>${ds.map((l) => `<td class="${f && f(l) === tot(f, lon) ? "tot" : ""}">${hien(l)}</td>`).join("")}</tr>`;
+  $("#ss-bang").innerHTML = `<table class="bang"><tr><th></th>${ds.map((l) => `<td><b>${l.nguoi}</b><br><span class="phu">${l.ten}</span></td>`).join("")}</tr>
+  ${dong(`Đủ ${t} kg bạn thiếu?`, (l) => (l.con >= t ? "Đủ" : "Không đủ"))}${dong("Giao đủ", (l) => `${l.giaoDu}/${l.tongDon} đơn`, (l) => l.giaoDu / l.tongDon, true)}${dong("Hàng đạt", (l) => l.dat + "%", (l) => l.dat, true)}${dong("Kiểm vườn", (l) => (l.kiem ? "Có" : "Tự khai"))}${dong("Khoảng cách", (l) => l.km + " km", (l) => l.km, false)}${dong("Giá chợ", (l) => `${vnd(l.cho[0])}–${vnd(l.cho[1])}`, (l) => l.cho[0], false)}</table>
+  <p class="phu">Chữ xanh là nguồn tốt nhất ở dòng đó. Chưa tính tiền xe và kiểm định.</p>`; };
+// Chào giá / trả giá: nhập giá + lượng, thấy giá neo và tổng tiền trước khi gửi.
+const veChaoGia = (ctx) => { const tuan = ctx.ctx === "tuan", l = tuan ? DL.lo[2] : DL.lo[+ctx.lo]; const kg = tuan ? 30 : canMon(l.mon) || 100;
+  $("#cg-tam").innerHTML = `<h2 id="cg-t">${tuan ? "Trả giá tuần 16/11 · thanh long" : `Chào giá ${l.ten}`}</h2>
+    <p class="phu">${l.nguoi} · giá chợ tuần này <b>${vnd(l.cho[0])}–${vnd(l.cho[1])} đ/kg</b>${tuan ? " · người bán đề nghị 21.000 · tuần trước 21.500" : ""}</p>
+    <div class="luoi2"><label class="o-nhap">Giá (đ/kg)<input id="cg-gia" inputmode="numeric" value="${tuan ? 20800 : l.cho[0]}"></label><label class="o-nhap">Lượng (kg)<input id="cg-kg" inputmode="decimal" value="${kg}"></label></div>
+    <p class="phu" id="cg-tong" role="status"></p>
+    <p class="phu">Giao tại vườn, bạn lo xe. Giá dưới mức người bán chấp nhận thì lời chào tự đóng, không ai bị ghi gì.</p>
+    <button class="nut chinh rong" id="cg-gui">${tuan ? "Gửi giá tuần đề nghị" : "Gửi lời chào giá"}</button><button class="nut vien rong" data-dong>Để sau</button>`;
+  const tinh = () => { const g = Number($("#cg-gia").value.replace(/\D/g, "")), k = Number($("#cg-kg").value.replace(",", ".")); const ok = g >= 1000 && k > 0;
+    $("#cg-tong").innerHTML = ok ? `Thành tiền <b class="so">${vnd(Math.round(g * k))} đ</b> · ${g < l.cho[0] ? `thấp hơn giá chợ ${vnd(l.cho[0] - g)} đ/kg, dễ bị từ chối` : g > l.cho[1] ? "cao hơn giá chợ" : "trong khoảng giá chợ"}` : "Nhập giá và lượng hợp lệ."; return ok; };
+  $("#cg-tam").oninput = tinh; tinh();
+  $("#cg-gui").onclick = () => { if (!tinh()) return; if (tuan) xong("gia16"); dong(); bao("Bản mẫu: lời chào chưa được gửi thật"); };
+};
+// Trả tiền: tấm dựng theo đúng khoản (tiền hàng ≠ cọc), nút Chép chép thật.
+const veTraTien = (k) => { const x = DL.khoan[k];
+  $("#tt-tam").innerHTML = `<h2 id="tt-t">${x.tieu}</h2><div class="so-lon so">${vnd(x.so)} <small>đ</small></div><p class="phu">${x.ky}</p>
+    <div class="chep"><div><span class="phu">Người nhận</span><br><b style="font-size:15px">${x.nhan}</b></div></div>
+    <div class="chep"><div><span class="phu">Ngân hàng</span><br><b>${x.nh}</b></div></div>
+    <div class="chep"><div><span class="phu">Số tài khoản</span><br><b>${x.tk}</b></div><button class="nut vien nho" data-chep="${x.tk.replace(/\s/g, "")}">Chép</button></div>
+    <div class="chep"><div><span class="phu">Nội dung chuyển khoản</span><br><b>${x.nd}</b></div><button class="nut vien nho" data-chep="${x.nd}">Chép</button></div>
+    <div class="chep"><div><span class="phu">Số tiền</span><br><b>${vnd(x.so)}</b></div><button class="nut vien nho" data-chep="${x.so}">Chép</button></div>
+    <p class="phu">${x.ghi}</p>
+    ${x.xong ? `<label class="o-nhap">Ảnh biên lai chuyển khoản<input type="file" accept="image/*" id="tt-anh"></label><p class="phu" id="tt-bao" role="status"></p><button class="nut chinh rong" id="tt-gui">Tôi đã chuyển ${vnd(x.so)} đ</button>` : ""}
+    <button class="nut vien rong" data-dong>Để sau</button>`;
+  const g = $("#tt-gui"); if (g) g.onclick = () => { if (!$("#tt-anh").files.length) return ($("#tt-bao").textContent = "Chọn ảnh biên lai để người bán đối chiếu."); xong(x.xong); dong(); bao("Bản mẫu: đã ghi báo chuyển (chưa lưu). Người bán xác nhận mới tính là đã nhận."); };
+};
+$("#dx-gui").onclick = () => { if (!/^\d{2}[A-Z]{1,2}-?\d{3,5}(\.\d{2})?$/i.test($("#dx-bien").value.trim())) return ($("#dx-bao").textContent = "Nhập biển số đúng dạng, vd 63C-123.45."); xong("xe12"); dong(); bao("Bản mẫu: đã ghi xe (chưa lưu)"); };
+// Bảng kê: tải CSV thật từ dữ liệu khoản.
+$("#xuat-bang-ke").onclick = () => { const dong2 = [["Khoản", "Người nhận", "Số tiền (đ)", "Trạng thái"], ...Object.values(DL.khoan).map((x) => [x.ky, x.nhan, x.so, DL.viec.some((v) => v.id === x.xong) ? "Còn phải trả" : "Đã báo chuyển"])];
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + dong2.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" })); a.download = "bang-ke-thang-11.csv"; a.click(); };
 const TEN = { "hom-nay": "Hôm nay", "nguon-hang": "Nguồn hàng", don: "Đơn", tien: "Tiền", them: "Thêm" };
 const di = (m) => { document.querySelectorAll("section[data-man]").forEach((s) => s.classList.toggle("hien", s.dataset.man === m));
   document.querySelectorAll(".tab button").forEach((b) => (b.dataset.di === m ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   $("#tieu").textContent = TEN[m]; scrollTo(0, 0); };
 let truoc = null;
-const mo = (id) => { if (id === "so-sanh") veSoSanh(); truoc = document.activeElement; $("#" + id).classList.add("mo"); $("#" + id).querySelector("button, input, select")?.focus(); };
-const dong = () => { document.querySelectorAll(".phu-man.mo").forEach((x) => x.classList.remove("mo")); truoc?.focus(); };
-let hen; const bao = (t) => { const b = $("#bao"); b.textContent = t; b.style.display = "block"; clearTimeout(hen); hen = setTimeout(() => (b.style.display = "none"), 2400); };
-document.addEventListener("click", (e) => {
-  const t = e.target.closest("[data-di],[data-mo],[data-dong],[data-bao],[data-loc-chon]");
+const mo = (id, t) => { if (id === "so-sanh") veSoSanh(); if (id === "tra-tien") veTraTien(t.dataset.khoan || "tuan"); if (id === "chao-gia") veChaoGia(t.dataset);
+  truoc = document.activeElement; $("#" + id).classList.add("mo"); document.querySelector(".app").inert = true; document.querySelector(".tab").inert = true; $("#" + id).querySelector("input, select, button")?.focus(); };
+const dong = () => { document.querySelectorAll(".phu-man.mo").forEach((x) => x.classList.remove("mo")); document.querySelector(".app").inert = false; document.querySelector(".tab").inert = false; truoc?.focus(); };
+let hen; const bao = (t) => { const b = $("#bao"); b.textContent = t; b.style.display = "block"; clearTimeout(hen); hen = setTimeout(() => (b.style.display = "none"), 3000); };
+document.addEventListener("click", async (e) => {
   if (e.target.classList.contains("phu-man")) return dong();
+  const t = e.target.closest("[data-di],[data-mo],[data-dong],[data-bao],[data-loc-chon],[data-chep],[data-xong]");
   if (!t) return;
-  if (t.dataset.locChon) { loc = t.dataset.locChon; ssChon.clear(); $("#nut-so-sanh").hidden = true; return veLo(); }
+  if (t.dataset.chep) { try { await navigator.clipboard.writeText(t.dataset.chep); t.textContent = "Đã chép"; } catch { t.textContent = "Chép tay"; } return; }
+  if (t.dataset.locChon) { loc = t.dataset.locChon; ssChon.clear(); capNhatSS(); return veLo(); }
   if (t.dataset.di) { if (t.dataset.loc) { loc = t.dataset.loc; veLo(); } return di(t.dataset.di); }
-  if (t.dataset.mo) return mo(t.dataset.mo);
+  if (t.dataset.mo) return mo(t.dataset.mo, t);
   if ("dong" in t.dataset) return dong();
+  if (t.dataset.xong) xong(t.dataset.xong);
   if (t.dataset.bao) { if (t.closest(".phu-man")) dong(); bao(t.dataset.bao); }
 });
-document.addEventListener("keydown", (e) => e.key === "Escape" && dong());
+document.addEventListener("change", (e) => { const c = e.target.closest("[data-ss]"); if (!c) return; const i = +c.dataset.ss;
+  if (c.checked && ssChon.size && DL.lo[[...ssChon][0]].mon !== DL.lo[i].mon) { c.checked = false; return bao("Chỉ so sánh các nguồn cùng món."); }
+  if (c.checked && ssChon.size >= 3) { c.checked = false; return bao("So sánh tối đa 3 nguồn."); }
+  c.checked ? ssChon.add(i) : ssChon.delete(i); capNhatSS(); });
+document.querySelector('.tim input').addEventListener("input", (e) => { tu = e.target.value; veLo(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") return dong();
+  const m = document.querySelector(".phu-man.mo"); if (e.key !== "Tab" || !m) return; // giữ tiêu điểm trong tấm đang mở
+  const f = [...m.querySelectorAll("button, input, select")].filter((x) => !x.disabled && x.offsetParent); if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); } else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); }
+});
+veTuan(); veViec(); veLo();
 </script>
+
 </body>
 </html>
