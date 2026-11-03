@@ -29,7 +29,7 @@
   .hang > :first-child { min-width: 0; }
   .phu { color: var(--muc-phu); font-size: 14px; margin: 0; }
   .so { font-variant-numeric: tabular-nums; }
-  .chip { font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; background: var(--cho-nen); color: var(--cho); }
+  .chip { font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; max-width: 100%; overflow-wrap: anywhere; background: var(--cho-nen); color: var(--cho); }
   .chip.toi { background: var(--vang); color: var(--tren-vang); } .chip.do { background: var(--do-nen); color: var(--do); }
   .chip.la { background: var(--la-nhat); color: var(--la); } .chip.bien { background: var(--bien-nen); color: var(--bien); }
   .nut { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border-radius: 12px; border: 0; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; transition: transform .12s var(--cham), background .15s; }
@@ -141,8 +141,8 @@
     <section data-man="don">
       <div class="the">
         <div class="hang"><div><b>Khung tuần KH-2101 · HTX Tân Thuận</b><p class="phu">Thanh long 30 kg + xoài 20 kg · T2, T5</p></div><span class="chip la">Đang chạy</span></div>
-        <div class="luoi2"><div class="o"><span class="phu">Còn gọi được</span><b>1.065.000 đ</b></div><div class="o"><span class="phu">Giá tuần 16/11</span><b>Chờ bạn</b></div></div>
-        <div class="neo"><div class="hang"><span class="phu">Thanh long đề nghị 21.000 đ/kg</span><span class="chip la">Trong khoảng giá chợ · thấp hơn tuần trước 500</span></div><div class="vach" aria-label="Giá chợ 20.500 đến 23.000, đề nghị 21.000"><span style="left:20%"></span></div><div class="hang"><span class="phu so">20.500</span><span class="phu">giá chợ tuần này</span><span class="phu so">23.000</span></div></div>
+        <div class="luoi2"><div class="o"><span class="phu">Còn gọi được</span><b>1.065.000 đ</b></div><div class="o"><span class="phu">Giá tuần 16/11</span><b id="gia16-tt">Chờ bạn</b></div></div>
+        <div class="neo"><div style="display:grid;gap:6px"><span class="phu">Thanh long đề nghị 21.000 đ/kg</span><span class="chip la" style="justify-self:start">Trong khoảng giá chợ · thấp hơn tuần trước 500</span></div><div class="vach" aria-label="Giá chợ 20.500 đến 23.000, đề nghị 21.000"><span style="left:20%"></span></div><div class="hang"><span class="phu so">20.500</span><span class="phu">giá chợ tuần này</span><span class="phu so">23.000</span></div></div>
         <p class="phu">Giá chợ: trung bình giao dịch thật trên AgiViet tuần 2–8/11, cùng loại, giao tại vườn.</p>
         <div class="luoi2"><button class="nut chinh" data-xong="gia16" data-bao="Bản mẫu: đồng ý giá tuần 16/11 (chưa lưu)">Đồng ý giá</button><button class="nut vien" data-mo="chao-gia" data-ctx="tuan">Trả giá</button></div>
       </div>
@@ -150,6 +150,7 @@
         <div class="hang"><b>HĐ-3001 · buổi thứ Hai 9/11</b><span class="chip bien">Đang chở về</span></div>
         <div class="thanh" aria-label="Bước 4 trên 5"><span style="width:80%;background:var(--la)"></span></div>
         <p class="phu">Gọi buổi → Đặt xe → Kiểm tại vườn → <b>Đang chở về</b> → Nhận kho</p>
+        <p class="phu" id="xe12-tt">Buổi thứ Năm 12/11: chưa có xe.</p>
         <p class="phu">Nghiệm thu: thanh long 28 kg đạt, 2 kg trả lại (dập) · xoài 20 kg đạt · <b class="so">1.132.000 đ</b></p>
       </div>
       <div class="the">
@@ -205,7 +206,7 @@
 </div>
 
 <!-- Tấm so sánh nguồn · T2 -->
-<div class="phu-man" id="so-sanh" role="dialog" aria-modal="true" aria-labelledby="ss-t"><div class="tam"><h2 id="ss-t">So sánh nguồn</h2><div id="ss-bang"></div><button class="nut chinh rong" data-bao="Đã gửi lời chào giá cho nguồn hợp nhất">Chào giá nguồn hợp nhất</button><button class="nut vien rong" data-dong>Đóng</button></div></div>
+<div class="phu-man" id="so-sanh" role="dialog" aria-modal="true" aria-labelledby="ss-t"><div class="tam"><h2 id="ss-t">So sánh nguồn</h2><div id="ss-bang"></div><button class="nut chinh rong" id="ss-chao">Chào giá nguồn tốt nhất</button><button class="nut vien rong" data-dong>Đóng</button></div></div>
 <!-- Tấm trả tiền · T6 -->
 <div class="phu-man" id="tra-tien" role="dialog" aria-modal="true" aria-labelledby="tt-t"><div class="tam" id="tt-tam"></div></div>
 <!-- Tấm chào giá / trả giá · T4 -->
@@ -218,13 +219,6 @@
   <label class="o-nhap">Tiền xe (đ, tùy chọn)<input id="dx-tien" inputmode="numeric"></label>
   <p class="phu" id="dx-bao" role="status"></p>
   <button class="nut chinh rong" id="dx-gui">Lưu xe cho buổi này</button>
-  <button class="nut vien rong" data-dong>Để sau</button>
-</div></div>
-  <div class="chep"><div><span class="phu">Số tài khoản (đã ghi trong hợp đồng)</span><br><b>5100 2050 3000</b></div><button class="nut vien nho" data-bao="Đã chép số tài khoản">Chép</button></div>
-  <div class="chep"><div><span class="phu">Nội dung chuyển khoản</span><br><b>AGV KH2101 T46</b></div><button class="nut vien nho" data-bao="Đã chép nội dung">Chép</button></div>
-  <p class="phu">Chỉ chuyển vào tài khoản ghi trong hợp đồng. Ai nhắn số tài khoản khác qua tin nhắn là dấu hiệu lừa.</p>
-  <label class="o-nhap">Ảnh biên lai chuyển khoản<input type="file" accept="image/*"></label>
-  <button class="nut chinh rong" data-bao="Đã báo chuyển. Chờ người bán xác nhận đã nhận">Tôi đã chuyển 1.175.000 đ</button>
   <button class="nut vien rong" data-dong>Để sau</button>
 </div></div>
 <!-- Tấm gửi nhu cầu · T2 -->
@@ -298,7 +292,7 @@ const veViec = () => {
   $("#so-viec").textContent = `${DL.viec.length} việc`;
   const dem = document.querySelector('.tab [data-di="hom-nay"] .dem'); dem.textContent = DL.viec.length; dem.hidden = !DL.viec.length;
 };
-const xong = (id) => { DL.viec = DL.viec.filter((v) => v.id !== id); veViec(); };
+const xong = (id) => { DL.viec = DL.viec.filter((v) => v.id !== id); veViec(); if (id === "gia16") $("#gia16-tt").textContent = DL.giaTuan || "Đã đồng ý"; };
 // Nguồn hàng: tìm + lọc + xếp hạng có lý do (đủ lượng còn thiếu, đã kiểm, giao đủ, gần).
 const MON = ["Xoài", "Thanh long", "Thủy sản", "Tất cả"];
 let loc = "Xoài", tu = "";
@@ -341,7 +335,7 @@ const veChaoGia = (ctx) => { const tuan = ctx.ctx === "tuan", l = tuan ? DL.lo[2
   const tinh = () => { const g = Number($("#cg-gia").value.replace(/\D/g, "")), k = Number($("#cg-kg").value.replace(",", ".")); const ok = g >= 1000 && k > 0;
     $("#cg-tong").innerHTML = ok ? `Thành tiền <b class="so">${vnd(Math.round(g * k))} đ</b> · ${g < l.cho[0] ? `thấp hơn giá chợ ${vnd(l.cho[0] - g)} đ/kg, dễ bị từ chối` : g > l.cho[1] ? "cao hơn giá chợ" : "trong khoảng giá chợ"}` : "Nhập giá và lượng hợp lệ."; return ok; };
   $("#cg-tam").oninput = tinh; tinh();
-  $("#cg-gui").onclick = () => { if (!tinh()) return; if (tuan) xong("gia16"); dong(); bao("Bản mẫu: lời chào chưa được gửi thật"); };
+  $("#cg-gui").onclick = () => { if (!tinh()) return; if (tuan) { DL.giaTuan = `Bạn đề nghị ${vnd(Number($("#cg-gia").value.replace(/\D/g, "")))}`; xong("gia16"); } dong(); bao("Bản mẫu: lời chào chưa được gửi thật"); };
 };
 // Trả tiền: tấm dựng theo đúng khoản (tiền hàng ≠ cọc), nút Chép chép thật.
 const veTraTien = (k) => { const x = DL.khoan[k];
@@ -356,9 +350,9 @@ const veTraTien = (k) => { const x = DL.khoan[k];
     <button class="nut vien rong" data-dong>Để sau</button>`;
   const g = $("#tt-gui"); if (g) g.onclick = () => { if (!$("#tt-anh").files.length) return ($("#tt-bao").textContent = "Chọn ảnh biên lai để người bán đối chiếu."); xong(x.xong); dong(); bao("Bản mẫu: đã ghi báo chuyển (chưa lưu). Người bán xác nhận mới tính là đã nhận."); };
 };
-$("#dx-gui").onclick = () => { if (!/^\d{2}[A-Z]{1,2}-?\d{3,5}(\.\d{2})?$/i.test($("#dx-bien").value.trim())) return ($("#dx-bao").textContent = "Nhập biển số đúng dạng, vd 63C-123.45."); xong("xe12"); dong(); bao("Bản mẫu: đã ghi xe (chưa lưu)"); };
+$("#dx-gui").onclick = () => { if (!/^\d{2}[A-Z]{1,2}-?\d{3,5}(\.\d{2})?$/i.test($("#dx-bien").value.trim())) return ($("#dx-bao").textContent = "Nhập biển số đúng dạng, vd 63C-123.45."); DL.xe12 = { bien: $("#dx-bien").value.trim().toUpperCase(), tien: Number($("#dx-tien").value.replace(/\D/g, "")) || 0 }; $("#xe12-tt").textContent = `Buổi thứ Năm 12/11: xe ${DL.xe12.bien}${DL.xe12.tien ? ` · tiền xe ${vnd(DL.xe12.tien)} đ` : ""} (bản mẫu, chưa lưu).`; xong("xe12"); dong(); bao("Bản mẫu: đã ghi xe (chưa lưu)"); };
 // Bảng kê: tải CSV thật từ dữ liệu khoản.
-$("#xuat-bang-ke").onclick = () => { const dong2 = [["Khoản", "Người nhận", "Số tiền (đ)", "Trạng thái"], ...Object.values(DL.khoan).map((x) => [x.ky, x.nhan, x.so, DL.viec.some((v) => v.id === x.xong) ? "Còn phải trả" : "Đã báo chuyển"])];
+$("#xuat-bang-ke").onclick = () => { const dong2 = [["Khoản", "Người nhận", "Số tiền (đ)", "Trạng thái"], ...Object.values(DL.khoan).map((x) => [x.ky, x.nhan, x.so, !x.xong ? "Cọc: chờ chuyển vào ngân hàng giữ" : DL.viec.some((v) => v.id === x.xong) ? "Còn phải trả" : "Đã báo chuyển, chờ người bán xác nhận"])];
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + dong2.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" })); a.download = "bang-ke-thang-11.csv"; a.click(); };
 const TEN = { "hom-nay": "Hôm nay", "nguon-hang": "Nguồn hàng", don: "Đơn", tien: "Tiền", them: "Thêm" };
 const di = (m) => { document.querySelectorAll("section[data-man]").forEach((s) => s.classList.toggle("hien", s.dataset.man === m));
@@ -392,6 +386,7 @@ document.addEventListener("keydown", (e) => {
   const f = [...m.querySelectorAll("button, input, select")].filter((x) => !x.disabled && x.offsetParent); if (!f.length) return;
   if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); } else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); }
 });
+$("#ss-chao").onclick = () => { const tot = [...ssChon].map((i) => DL.lo[i]).sort((a, b) => diem(b) - diem(a))[0]; dong(); mo("chao-gia", { dataset: { lo: DL.lo.indexOf(tot) } }); };
 veTuan(); veViec(); veLo();
 </script>
 
