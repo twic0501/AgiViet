@@ -454,7 +454,7 @@ if (typeof document !== "undefined") document.addEventListener("click", (e) => {
   let t = document.getElementById("agv-dang-phat-trien");
   if (!t) {
     t = Object.assign(document.createElement("div"), { id: "agv-dang-phat-trien" }); t.setAttribute("role", "status");
-    t.style.cssText = "position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;max-width:min(92vw,420px);padding:12px 16px;border-radius:12px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.45 inherit;box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center";
+    t.style.cssText = "position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;width:max-content;max-width:min(92vw,420px);padding:12px 16px;border-radius:12px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.45 inherit;box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center";
     document.body.append(t);
   }
   t.textContent = `${n.dataset.dangPhatTrien || "Tính năng này"} đang phát triển, sẽ có ở bản sau.`;
