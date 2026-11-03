@@ -45,10 +45,11 @@ for (const f of docThuMuc("seed-cho")) {
 console.log(`chợ mẫu: nạp mới ${seed} tệp`);
 
 // 3) vai runtime — thay đúng hai lệnh psql của runtime-roles.sql (\getenv, \i)
-const capQuyen = readFileSync(path.join(goc, "db/scripts/cap-quyen-cong.sql"), "utf8").replace(":'gateway_password'", c.escapeLiteral(GATEWAY_PASSWORD));
+// Neon: vai không phải superuser không được nhắc thuộc tính SUPERUSER (kể cả NOSUPERUSER); vai tạo ra vốn đã không phải superuser.
+const capQuyen = readFileSync(path.join(goc, "db/scripts/cap-quyen-cong.sql"), "utf8").replace(":'gateway_password'", c.escapeLiteral(GATEWAY_PASSWORD)).replace(/ NOSUPERUSER\b/g, "");
 const db = c.escapeIdentifier(tenDb);
-await tx(`SET LOCAL log_statement = 'none';
-SELECT pg_advisory_xact_lock(768503212);
+// Không SET LOCAL log_statement: Neon/owner thường không có quyền (42501); máy tự quản thì dùng runtime-roles.sql.
+await tx(`SELECT pg_advisory_xact_lock(768503212);
 ${capQuyen}
 REVOKE CONNECT,TEMPORARY ON DATABASE ${db} FROM PUBLIC;
 GRANT CONNECT ON DATABASE ${db} TO agv_backend_gateway;
@@ -61,7 +62,7 @@ console.log("vai runtime: xong (agv_backend_gateway)");
 // 4) Chỉ bản thử (THU=1): vai ghi đồng hồ nghiệp vụ để nút tua giờ chạy — như chuanBiRuntime() của PGlite.
 //    Production KHÔNG đặt THU (cap-quyen-cong.sql: không tạo agv_backend_clock, cmd.test_clock rỗng).
 if (process.env.THU === "1") {
-  await tx(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='agv_backend_clock') THEN CREATE ROLE agv_backend_clock NOLOGIN NOSUPERUSER BYPASSRLS; END IF; END $$;
+  await tx(`DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='agv_backend_clock') THEN CREATE ROLE agv_backend_clock NOLOGIN BYPASSRLS; END IF; END $$;
 GRANT USAGE ON SCHEMA cmd TO agv_backend_clock;
 GRANT SELECT,INSERT,UPDATE ON cmd.test_clock TO agv_backend_clock;
 GRANT agv_backend_clock TO agv_backend_gateway WITH INHERIT FALSE;`);
