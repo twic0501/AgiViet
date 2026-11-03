@@ -9,13 +9,15 @@ const nam = (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', h
 const goi = async (m, u, b) => { const r = await fetch(B + u, { method: m, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + nam }, body: m === 'POST' ? JSON.stringify(u.startsWith('/v1/otp/') ? b : { idempotency_key: crypto.randomUUID(), ...(b || {}) }) : undefined }); return [r.status, await j(r)]; };
 const ds = async (u) => { const [, v] = await goi('GET', u); return v?.items ?? v ?? []; };
 const otp = async (purpose, extra) => (await goi('POST', '/v1/otp/challenges', { purpose, ...extra }))[1]?.challenge_id;
-const moc = []; let truoc = '';
+const moc = []; let truoc = ''; let soHaLoai = 0;
+const GAN = process.env.TEP_GAN ? Object.values(JSON.parse(process.env.TEP_GAN)) : ['tra-lai'];
 // TEP_GAN='{"TC-M01":"tra-lai"}' → kiểm qua tệp khách (kiểu gắn với bên mua AI); không có thì dùng kịch bản 'lần tới' như cũ.
 if (process.env.TEP_GAN) { const [, r] = await goi('POST', '/v1/test/tep-khach', { gan: JSON.parse(process.env.TEP_GAN) }); console.log('tệp khách:', JSON.stringify(r?.doi_tac)); }
 else { await fetch(B + '/v1/test/kich-ban', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ten: 'tra-lai-nhieu' }) }); console.log('đặt kịch bản: trả lại 80% cho lần nghiệm thu kế tiếp'); }
 for (let n = 1; n <= 40; n++) {
   const [, v] = await goi('POST', '/v1/test/doi-tac-ao/vong', {});
   const ai = (v?.viec ?? []).filter((x) => x.ket_qua === 'xong').map((x) => `${x.viec} ${x.doi_tuong}`);
+  soHaLoai += ai.filter((x) => /hạ loại/.test(x)).length;
   // người bán thật: lời chào bên mua → trả giá một lần rồi để AI đồng ý
   for (const o of await ds('/v1/offers')) if (o.status === 'sent' && o.vong_cuoi?.from_side === 'buyer') {
     // Vòng 1: trả giá một lần; bên mua ảo trả giá ngược lại (tính cách, E107) thì đồng ý.
@@ -29,8 +31,10 @@ for (let n = 1; n <= 40; n++) {
     const o = (await goi('GET', `/v1/orders/${d.id}`))[1];
     const luot = d.hien_thi?.toi_luot;
     for (const p of await ds(`/v1/orders/${d.id}/payments`)) if (p.status === 'payer_reported') {
-      const c = await otp('money_received', { payment_id: p.id, amount_vnd: String(p.amount_due_vnd) });
-      const [s] = await goi('POST', `/v1/payments/${p.id}/confirm`, { challenge_id: c, code: OTP, amount_vnd: Number(p.amount_due_vnd), result: 'full', bank_txn_ref: 'FT' + Date.now().toString().slice(-10) }); ai.push(`Năm xác nhận tiền ${s}`);
+      // Người bán xác nhận đúng số bên mua đã báo (bên mua AI kiểu 'trả thiếu' báo 70%) → thiếu thì 'partial'.
+      const so = Number(p.reported_vnd ?? p.amount_due_vnd) - Number(p.confirmed_vnd ?? 0), du = so >= Number(p.amount_due_vnd) - Number(p.confirmed_vnd ?? 0);
+      const c = await otp('money_received', { payment_id: p.id, amount_vnd: String(so) });
+      const [s] = await goi('POST', `/v1/payments/${p.id}/confirm`, { challenge_id: c, code: OTP, amount_vnd: so, result: du ? 'full' : 'partial', bank_txn_ref: 'FT' + Date.now().toString().slice(-10) }); ai.push(`Năm xác nhận tiền ${so}${du ? '' : ' (một phần)'} ${s}`);
     }
     if (luot?.phia === 'seller') {
       if (/Ký/.test(luot.viec)) { const doc = [...(o.tai_lieu ?? [])].reverse().find((x) => x.doc_type === 'contract'); const c = await otp('contract_sign', { document_id: doc?.id });
@@ -66,7 +70,14 @@ for (const d of await ds('/v1/orders')) { const [, tien] = await goi('GET', `/v1
   const lh = (tien.lenh_ngan_hang ?? []).find((l) => /refund.*buyer/.test(l.kind));
   if (!lh || Number(lh.amount_vnd) !== Number(qt.refund_vnd)) loi.push(`${d.code} lệnh hoàn ${lh?.amount_vnd} ≠ ${qt.refund_vnd}`);
   else if (!/succeeded|reconciled|executed|fully_processed/.test(lh.status)) loi.push(`${d.code} lệnh hoàn chưa chuyển xong (${lh.status})`); }
-if (!hoan) loi.push('không đơn nào có tiền cọc hoàn cho bên mua');
+if (!hoan && GAN.includes('tra-lai')) loi.push('không đơn nào có tiền cọc hoàn cho bên mua');
+if (GAN.includes('kho-tinh') && !soHaLoai) loi.push('bên mua khó tính không hạ loại lần nào');
+if (GAN.includes('tra-thieu')) {
+  let thieu = 0; for (const d of await ds('/v1/orders')) for (const p of await ds(`/v1/orders/${d.id}/payments`)) if (p.direction !== 'seller_to_buyer') thieu += Number(p.amount_due_vnd) - Number(p.confirmed_vnd ?? 0);
+  const [, tm] = await goi('GET', '/v1/money/summary'); const cn = Number(tm?.tong?.con_phai_nhan);
+  console.log('trả thiếu: còn phải nhận', cn, '· tổng chưa xác nhận', thieu);
+  if (!(cn > 0) || cn !== thieu) loi.push(`còn phải nhận ${cn} ≠ tổng chưa xác nhận ${thieu}`);
+}
 const acc = await (await fetch(B + '/v1/test/accounts')).json();
 for (const a of acc.filter((x) => (x.org_code || '').startsWith('TC-M') && (x.roles || '').includes('owner'))) {
   const tk = (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: a.phone }) }))).token;
@@ -75,4 +86,4 @@ for (const a of acc.filter((x) => (x.org_code || '').startsWith('TC-M') && (x.ro
 }
 if (hoan && !hoan.thay) loi.push(`không bên mua nào thấy đúng ${hoan.vnd} ngân hàng đã chuyển đến`);
 if (loi.length) { console.error('THẤT BẠI:\n- ' + loi.join('\n- ')); process.exit(1); }
-console.log('ĐẠT: hoàn', hoan.vnd, 'đúng số, lệnh đã chuyển, bên mua thấy');
+console.log('ĐẠT:', GAN.join(', '), hoan ? `· hoàn ${hoan.vnd} đúng số, lệnh đã chuyển, bên mua thấy` : '');
