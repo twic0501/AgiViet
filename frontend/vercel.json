@@ -3,11 +3,15 @@
   "buildCommand": "npm run build && node -e \"require('fs').writeFileSync('dist/frontend-capabilities.json', JSON.stringify({ test_tools: true }))\"",
   "outputDirectory": "dist",
   "installCommand": "npm ci",
+  "redirects": [
+    { "source": "/", "has": [{ "type": "host", "value": "app.agiviet.id.vn" }], "destination": "/thiet-ke/dang-nhap.html", "permanent": false },
+    { "source": "/", "has": [{ "type": "host", "value": "mua.agiviet.id.vn" }], "destination": "/thiet-ke/dang-nhap.html?ben=mua", "permanent": false },
+    { "source": "/mo-hinh-quy-trinh", "destination": "/mo-phong-quy-trinh/", "permanent": false },
+    { "source": "/mo-hinh-quy-trinh/", "destination": "/mo-phong-quy-trinh/", "permanent": false },
+    { "source": "/www", "destination": "/", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/v1/:path*", "destination": "https://agiviet-api.onrender.com/v1/:path*" },
     { "source": "/health/:path*", "destination": "https://agiviet-api.onrender.com/health/:path*" }
-  ],
-  "redirects": [
-    { "source": "/", "destination": "/thiet-ke/dang-nhap.html", "permanent": false }
   ]
 }

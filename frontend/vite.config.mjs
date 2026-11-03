@@ -5,7 +5,8 @@ import { readdirSync, statSync, existsSync, mkdirSync, copyFileSync } from "node
 import path from "node:path";
 
 const goc = path.dirname(new URL(import.meta.url).pathname);
-const BO = new Set(["node_modules", "dist", "tests", "tham-khao", "scripts", ".git"]);
+// tham-khao: KHÔNG build thành trang (bản mẫu tham khảo) nhưng PHẢI chép nguyên: app lấy font, ảnh trâu, hiệu ứng từ đó.
+const BO = new Set(["node_modules", "dist", "tests", "scripts", ".git"]);
 const duyet = (d, ra = []) => {
   for (const ten of readdirSync(d)) {
     if (BO.has(ten) || ten.startsWith(".")) continue;
@@ -15,7 +16,7 @@ const duyet = (d, ra = []) => {
   return ra;
 };
 const tatCa = duyet(goc);
-const trang = Object.fromEntries(tatCa.filter((p) => p.endsWith(".html")).map((p) => [path.relative(goc, p).replace(/\.html$/, ""), p]));
+const trang = Object.fromEntries(tatCa.filter((p) => p.endsWith(".html") && !path.relative(goc, p).startsWith("tham-khao" + path.sep)).map((p) => [path.relative(goc, p).replace(/\.html$/, ""), p]));
 
 const chepPhanCon = () => ({
   name: "chep-file-tinh-con-lai",

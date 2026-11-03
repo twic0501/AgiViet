@@ -1,15 +1,584 @@
 <!doctype html>
 <html lang="vi">
-  <meta charset="utf-8" /><meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  /><title>AgiViet</title
-  ><link rel="stylesheet" href="/shared/style.css" />
-  <main class="entry">
-    <img src="/assets/logo.svg" width="64" height="64" alt="AgiViet" />
-    <h1>Sổ làm ăn AgiViet</h1>
-    <p>Nông sản và thủy sản Việt Nam</p>
-    <a class="button" href="/ban/">App bán</a
-    ><a class="button secondary" href="/mua/">App mua</a>
-  </main>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgiViet · Bán đúng giá, tiền về chắc</title>
+<meta name="description" content="AgiViet nối nông dân, hợp tác xã miền Tây với vựa, nhà máy, nhà hàng. Ngân hàng đối tác giữ cọc, mọi bước của đơn ghi trên một mã đơn chung.">
+<meta property="og:title" content="AgiViet · Bán đúng giá, tiền về chắc">
+<meta property="og:description" content="Sàn nông sản, thủy sản: ngân hàng giữ cọc, một mã đơn từ chào giá tới tiền về tay.">
+<meta property="og:image" content="/assets/cai-rang-floating-market-1.jpg">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="preload" href="/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-600-vietnamese.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 400; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-400-vietnamese.woff2) format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 400; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-400-latin.woff2) format("woff2"); }
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 600 700; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-600-vietnamese.woff2) format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 600 700; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-600-latin.woff2) format("woff2"); }
+
+:root {
+  /* Thương hiệu app: giấy sổ, lá xoài, xoài chín (tiền, ngân hàng giữ) */
+  --giay: #f6f2e7; --giay-buoc: #ece6d6; --giay-noi: #fbf8f1;
+  --muc: #1d2a22; --muc-phu: #4d5a51;
+  --la: #1f4d3a; --la-dam: #163a2b; --la-buoc: #24533f; --tren-la: #f6f2e7; --tren-la-phu: #c9d6cc;
+  --chin: #85600c; --chin-nen: #f5ead0; --chin-sang: #e9b949;
+  --chu: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --c1: clamp(48px, 7.4vw, 124px); --c2: clamp(30px, 3.6vw, 52px); --c3: 22px; --c4: 17px; --c5: 14px;
+  --le: clamp(16px, 4vw, 56px); --bo: 6px; --khoang: clamp(112px, 13vw, 200px);
+  --vao: cubic-bezier(.16, 1, .3, 1);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--giay); color: var(--muc); font: 400 var(--c4)/1.6 var(--chu); }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+p { margin: 0; }
+.khung { width: 100%; padding-inline: var(--le); margin-inline: auto; max-width: 1520px; }
+.so { font-variant-numeric: tabular-nums; }
+b.so, .giu b, .ket b { white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--chin-sang); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--chin-sang); color: var(--muc); }
+.an { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.nut { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border-radius: var(--bo);
+  font: 600 var(--c4)/1 var(--chu); text-decoration: none; border: 2px solid transparent; cursor: pointer; transition: transform .18s var(--vao), background-color .18s; }
+.nut:active { transform: translateY(1px) scale(.98); }
+.nut-giay { background: var(--tren-la); color: var(--la-dam); }
+.nut-giay:hover { background: #fff; }
+.nut-vien { border-color: var(--tren-la-phu); color: var(--tren-la); }
+.nut-vien:hover { border-color: var(--tren-la); }
+.nut-la { background: var(--la); color: var(--tren-la); }
+.nut-la:hover { background: var(--la-dam); }
+.lien { font-weight: 600; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+.lien:hover { text-decoration-color: var(--chin-sang); }
+
+.thanh { position: absolute; inset: 0 0 auto 0; z-index: 3; }
+.thanh .khung { display: flex; align-items: center; gap: 32px; height: 84px; color: var(--tren-la); }
+.ten-hieu { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: var(--c3); text-decoration: none; letter-spacing: -0.01em; }
+.ten-hieu img { width: 30px; height: 30px; }
+.thanh nav { display: flex; gap: 28px; margin-left: auto; font-size: var(--c5); }
+.thanh nav a { text-decoration: none; color: var(--tren-la-phu); }
+.thanh nav a:hover { color: var(--tren-la); }
+.thanh .nut { min-height: 44px; padding: 0 18px; font-size: var(--c5); }
+
+.dau { background: var(--la-dam); color: var(--tren-la); padding: 150px 0 112px; }
+.dau .khung { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 96px); align-items: center; }
+.dau h1 { font-size: var(--c1); line-height: .98; letter-spacing: -0.035em; }
+.dong-tieu { display: block; overflow: hidden; padding-bottom: .06em; }
+.dong-tieu > span { display: block; }
+.dau .noi { margin-top: 40px; font-size: var(--c3); line-height: 1.45; color: var(--tren-la); max-width: 34ch; }
+.dau .cua { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; }
+.dau .them { margin-top: 28px; font-size: var(--c5); color: var(--tren-la-phu); }
+.dau .them a { color: var(--tren-la); }
+
+.phieu { background: var(--giay-noi); color: var(--muc); border-radius: 12px; padding: 24px; font-size: 15px; }
+.phieu-dau { display: flex; gap: 14px; align-items: center; }
+.phieu-dau img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
+.phieu-dau b { font-size: 17px; display: block; }
+.phieu-dau small { color: var(--muc-phu); font-size: 14px; }
+.ma-don { margin-left: auto; align-self: flex-start; background: var(--giay-buoc); border-radius: 4px; padding: 3px 8px; font-size: 13px; font-weight: 600; }
+.giu { margin-top: 18px; background: var(--chin-nen); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.giu span { color: #5f450a; font-size: 14px; }
+.giu b { font-size: 22px; color: var(--chin); }
+.dk { margin-top: 18px; display: grid; gap: 14px; }
+.dk label { display: grid; gap: 8px; font-size: 14px; color: var(--muc-phu); }
+.dk .hang { display: flex; justify-content: space-between; color: var(--muc); font-weight: 600; font-size: 15px; }
+.dk input[type=range] { width: 100%; accent-color: var(--la); height: 28px; }
+.cong-tac { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muc); }
+.cong-tac button { width: 52px; height: 30px; border-radius: 15px; border: 0; background: #c7cbc3; position: relative; cursor: pointer; flex: none; transition: background-color .2s; }
+.cong-tac button::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: transform .22s var(--vao); }
+.cong-tac button[aria-checked=true] { background: var(--la); }
+.cong-tac button[aria-checked=true]::after { transform: translateX(22px); }
+.ket { margin-top: 18px; display: grid; gap: 2px; }
+.ket div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(29,42,34,.1); font-size: 14px; } /* taste-skill-ignore: dòng kẻ sổ tiền của chính app, nằm trong mảnh data-ui */
+.ket div b { font-size: 15px; transition: color .2s; }
+.ket .noi-bat b { color: var(--la); }
+.ket .hoan b { color: var(--chin); }
+.thanh-chia { margin-top: 14px; display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--giay-buoc); }
+.thanh-chia i { display: block; height: 100%; transition: width .35s var(--vao); }
+.thanh-chia .c1 { background: var(--la); } .thanh-chia .c2 { background: var(--chin-sang); }
+.phieu-chu { margin-top: 12px; font-size: 13px; color: var(--muc-phu); min-height: 2.6em; }
+
+.van-de { padding-top: var(--khoang); }
+.van-de .khung { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 120px); }
+.van-de h2 { font-size: var(--c2); position: sticky; top: 48px; max-width: 12ch; align-self: start; }
+.chuyen { display: grid; gap: 72px; }
+.chuyen p { font-size: var(--c4); color: var(--muc); max-width: 60ch; }
+.chuyen p b { font-weight: 600; }
+.chuyen figure { margin: 20px 0 0; }
+.chuyen figure img { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; }
+.chuyen figcaption { margin-top: 10px; font-size: var(--c5); color: var(--muc-phu); }
+.troi-nhe { overflow: hidden; }
+.troi-nhe img { transform: scale(1.06); transition: transform 1.6s var(--vao); }
+.troi-nhe.da-vao img { transform: scale(1); }
+
+.buoc { margin-top: var(--khoang); background: var(--la-dam); color: var(--tren-la); padding: 120px 0; }
+.buoc .dau-muc { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 32px; align-items: end; }
+.buoc h2 { font-size: var(--c2); max-width: 16ch; }
+.buoc .dau-muc p { font-size: var(--c4); color: var(--tren-la-phu); max-width: 46ch; }
+.day { margin: 64px auto 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 0 var(--le); list-style: none; max-width: 1520px; }
+.the-buoc { background: var(--la-buoc); border-radius: var(--bo); padding: 26px; display: grid; grid-template-rows: auto auto auto 1fr; gap: 14px; min-height: 380px; transition: background-color .25s; }
+.the-buoc:hover, .the-buoc:focus-within { background: #2a5c47; }
+.the-buoc .ai { font-size: var(--c5); color: var(--tren-la-phu); }
+.the-buoc h3 { font-size: var(--c3); line-height: 1.2; }
+.the-buoc > p { font-size: var(--c5); color: var(--tren-la-phu); }
+.the-buoc [data-ui] { align-self: end; background: var(--giay-noi); color: var(--muc); border-radius: 8px; padding: 14px 16px; font-size: 14px; display: grid; gap: 6px; }
+.the-buoc [data-ui] div { display: flex; justify-content: space-between; gap: 10px; }
+.the-buoc [data-ui] b { font-weight: 600; }
+.nhan-tt { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 13px; font-weight: 600; background: var(--giay-buoc); }
+.nhan-tt.vang { background: var(--chin-nen); color: #5f450a; }
+.nhan-tt.xanh { background: #dde8df; color: var(--la); }
+.dieu-day { margin-top: 20px; display: flex; gap: 12px; }
+.dieu-day button { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--tren-la-phu); background: transparent; color: var(--tren-la); font-size: 22px; cursor: pointer; transition: border-color .2s, transform .15s; }
+.dieu-day button:hover { border-color: var(--tren-la); }
+.dieu-day button:active { transform: scale(.94); }
+
+.hai-app { padding-top: var(--khoang); }
+.hai-app h2 { font-size: var(--c2); max-width: 18ch; }
+.hai-app .mo { margin-top: 20px; font-size: var(--c4); color: var(--muc); max-width: 60ch; }
+.luoi { margin-top: 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.o { background: var(--giay-buoc); border-radius: var(--bo); min-height: 440px; display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
+.o.dao { grid-template-rows: 1fr auto; }
+.o .chu-o { padding: 28px; }
+.o .chu-o .ben { font-size: var(--c5); color: var(--la); font-weight: 600; }
+.o h3 { margin-top: 6px; font-size: var(--c3); line-height: 1.2; }
+.o .chu-o p { margin-top: 10px; font-size: var(--c4); color: var(--muc-phu); }
+.o .manh { padding: 0 28px 28px; display: flex; align-items: end; }
+.o.dao .manh { order: -1; padding: 28px 28px 0; align-items: start; }
+.manh [data-ui] { width: 100%; background: var(--giay-noi); border-radius: 10px; padding: 16px; font-size: 14px; display: grid; gap: 10px; }
+.mic { display: flex; align-items: center; gap: 14px; }
+.mic > span:first-child { width: 48px; height: 48px; border-radius: 50%; background: var(--la); display: grid; place-items: center; flex: none; }
+.song { display: flex; gap: 3px; align-items: center; height: 28px; }
+.song i { width: 4px; border-radius: 2px; background: var(--la); animation: song 1.1s ease-in-out infinite; }
+@keyframes song { 0%,100% { height: 6px } 50% { height: 26px } }
+.tin-noi { background: var(--giay-buoc); border-radius: 8px; padding: 10px 12px; }
+.hang-lo { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; }
+.hang-lo img { width: 52px; height: 52px; object-fit: cover; border-radius: 6px; }
+.hang-lo small { display: block; color: var(--muc-phu); font-size: 13px; }
+.so-sanh { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.so-sanh > div { background: var(--giay-buoc); border-radius: 8px; padding: 10px 12px; display: grid; gap: 2px; }
+.so-sanh > div.hon { background: #dde8df; }
+.so-sanh small { color: var(--muc-phu); font-size: 13px; }
+.cot-tuan { display: grid; gap: 12px; }
+.cot-tuan .vach { margin-top: 4px; height: 10px; border-radius: 5px; background: var(--giay-buoc); overflow: hidden; }
+.cot-tuan .vach i { display: block; height: 100%; background: var(--la); }
+.nghe { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.nghe button { border: 0; border-radius: 6px; background: var(--la); color: var(--tren-la); font: 600 14px/1 var(--chu); padding: 12px 16px; min-height: 44px; cursor: pointer; }
+.nghe button:active { transform: scale(.97); }
+.dong-nhan { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+
+.mo-phong { margin-top: var(--khoang); background: var(--la-dam); color: var(--tren-la); }
+.mo-phong .khung { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 96px); align-items: stretch; }
+.mo-phong .chu-mp { padding-block: 112px; align-self: center; }
+.mo-phong h2 { font-size: var(--c2); max-width: 15ch; }
+.mo-phong p { margin-top: 24px; font-size: var(--c4); color: var(--tren-la-phu); max-width: 48ch; }
+.so-lieu { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, auto)); justify-content: start; gap: 40px; }
+.so-lieu b { display: block; font-size: var(--c2); line-height: 1; color: var(--tren-la); }
+.so-lieu span { display: block; margin-top: 8px; font-size: var(--c5); color: var(--tren-la-phu); max-width: 18ch; }
+.mo-phong .nut { margin-top: 40px; }
+.mo-phong figure { margin: 0; min-height: 560px; }
+.mo-phong figure img { width: 100%; height: 100%; object-fit: cover; }
+
+.gia { padding-top: var(--khoang); }
+.gia .khung { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 96px); align-items: start; }
+.ten-goi { display: grid; gap: 4px; justify-items: start; }
+.ten-goi button { all: unset; cursor: pointer; font: 600 var(--c2)/1.2 var(--chu); letter-spacing: -0.03em; color: #6f766c; display: flex; align-items: center; gap: .3em; transition: color .2s; }
+.ten-goi button:hover { color: var(--muc-phu); }
+.ten-goi button[aria-selected=true] { color: var(--muc); }
+.ten-goi button[aria-selected=true]::before { content: ""; width: .28em; height: .28em; border-radius: 50%; background: var(--la); flex: none; }
+.ten-goi button:focus-visible { outline: 3px solid var(--chin-sang); outline-offset: 4px; }
+.san-khau { position: sticky; top: 48px; background: var(--giay-buoc); border-radius: var(--bo); padding: clamp(28px, 3vw, 48px); }
+.san-khau .gia-so { font-size: var(--c1); font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+.san-khau .ai-dung { margin-top: 16px; font-size: var(--c4); color: var(--muc); }
+.san-khau .gia-so small { font-size: var(--c4); font-weight: 400; letter-spacing: 0; color: var(--muc-phu); }
+.san-khau ul { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: var(--c4); }
+.san-khau li { display: flex; gap: 12px; }
+.san-khau li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--la); margin-top: .62em; flex: none; }
+.san-khau .nut { margin-top: 32px; }
+.san-khau .doi { transition: opacity .2s; }
+.ghi-phi { margin-top: 18px; font-size: var(--c5); color: var(--muc-phu); max-width: 52ch; }
+.gia-dau h2 { font-size: var(--c2); }
+.gia-dau p { margin: 16px 0 40px; font-size: var(--c4); color: var(--muc); max-width: 40ch; }
+
+.hoi { padding-top: var(--khoang); }
+.hoi .khung { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(32px, 5vw, 96px); align-items: start; }
+.hoi h2 { font-size: var(--c2); position: sticky; top: 48px; }
+.ds-hoi { display: grid; gap: 8px; }
+.ds-hoi details { background: var(--giay-buoc); border-radius: var(--bo); transition: background-color .2s; }
+.ds-hoi summary { list-style: none; cursor: pointer; min-height: 72px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: var(--c4); font-weight: 600; }
+.ds-hoi summary::-webkit-details-marker { display: none; }
+.cong { position: relative; width: 16px; height: 16px; flex: none; }
+.cong::before, .cong::after { content: ""; position: absolute; left: 0; top: 6.5px; width: 16px; height: 3px; border-radius: 2px; background: currentColor; transition: transform .25s var(--vao); }
+.cong::after { transform: rotate(90deg); }
+.ds-hoi details[open] { background: var(--la); color: var(--tren-la); }
+.ds-hoi details[open] .cong::after { transform: rotate(0); }
+.ds-hoi details > div { padding: 0 24px 24px; font-size: var(--c4); max-width: 64ch; color: var(--tren-la); }
+.ds-hoi summary:hover { opacity: .85; }
+
+.moi { padding-top: var(--khoang); }
+.moi form { display: flex; flex-wrap: wrap; align-items: center; gap: .35em; font: 600 var(--c2)/1.25 var(--chu); letter-spacing: -0.02em; }
+.moi select { font: inherit; letter-spacing: inherit; color: var(--la); background: var(--giay-buoc); border: 0; border-radius: var(--bo); padding: 0 .4em; height: 1.35em; cursor: pointer; }
+.moi .nut { font-size: inherit; min-height: 1.35em; padding: 0 .5em; letter-spacing: inherit; }
+.moi .duoi { margin-top: 20px; font-size: var(--c4); color: var(--muc); max-width: 60ch; }
+.moi .duoi a { color: var(--muc); }
+.anh-cuoi { margin-top: 80px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+.anh-cuoi img { width: 100%; height: 300px; object-fit: cover; }
+
+.chan { padding: 26vh 0 30px; }
+.chan .khung { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 24px; font-size: var(--c5); color: var(--muc-phu); }
+.chan nav { display: flex; gap: 24px; }
+.chan nav a { color: var(--muc); text-decoration: none; }
+.chan nav a:hover { text-decoration: underline; }
+.chan .phai { text-align: right; }
+.nguon { padding-bottom: 30px; font-size: var(--c5); color: var(--muc-phu); } .nguon p { max-width: 75ch; }
+.nguon a { color: var(--muc-phu); }
+
+.len { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--vao), transform .7s var(--vao); transition-delay: var(--tre, 0ms); }
+.len.da-vao { opacity: 1; transform: none; }
+.dong-tieu > span { transform: translateY(105%); animation: mo-dong .9s var(--vao) forwards; }
+.dong-tieu:nth-child(2) > span { animation-delay: .11s; }
+.dau .sau-tieu { opacity: 0; animation: hien .7s var(--vao) .55s forwards; }
+@keyframes mo-dong { to { transform: none; } }
+@keyframes hien { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.khong-js .len { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .len, .dau .sau-tieu, .dong-tieu > span { opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important; }
+  .troi-nhe img { transform: none; transition: none; }
+  .song i { animation: none; height: 14px; }
+  html { scroll-behavior: auto; }
+}
+
+@media (max-width: 1100px) { .day { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .thanh nav { display: none; }
+  .thanh .nut { margin-left: auto; }
+  .dau { padding-top: 120px; }
+  .dau .khung, .van-de .khung, .buoc .dau-muc, .gia .khung, .hoi .khung, .mo-phong .khung { grid-template-columns: minmax(0, 1fr); }
+  .dau h1 { font-size: clamp(44px, 13vw, 72px); }
+  .dau .noi { font-size: 19px; }
+  .van-de h2, .hoi h2, .san-khau { position: static; }
+  .chuyen { gap: 56px; }
+  .luoi { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .o, .o.dao { min-height: 0; grid-template-rows: auto auto; }
+  .o.dao .manh { order: 0; padding: 0 28px 28px; }
+  .mo-phong .chu-mp { padding-block: 88px 24px; }
+  .mo-phong figure { min-height: 0; padding-bottom: 88px; }
+  .mo-phong figure img { aspect-ratio: 1; height: auto; }
+  .so-lieu { gap: 24px; }
+  .ten-goi button { font-size: clamp(30px, 9vw, 44px); }
+  .anh-cuoi { grid-template-columns: 1fr 1fr; }
+  .anh-cuoi img { height: 180px; }
+  .anh-cuoi img:first-child { grid-column: 1 / -1; height: 220px; }
+  .chan { padding-top: 16vh; }
+  .chan .khung { grid-template-columns: minmax(0, 1fr); gap: 8px; font-size: 14px; }
+  .chan nav { flex-wrap: wrap; }
+  .chan .phai { text-align: left; }
+}
+@media (max-width: 600px) { .day { grid-template-columns: minmax(0, 1fr); } .the-buoc { min-height: 0; } }
+@media (max-width: 480px) {
+  .so-lieu { grid-template-columns: repeat(2, minmax(0, auto)); }
+  .moi form { font-size: 26px; }
+}
+</style>
+</head>
+<body class="khong-js">
+
+<header class="thanh">
+  <div class="khung">
+    <a class="ten-hieu" href="/" aria-label="AgiViet, về đầu trang"><img src="/assets/logo.svg" alt="" width="30" height="30">AgiViet</a>
+    <nav aria-label="Mục chính">
+      <a href="#cach-hoat-dong">Cách hoạt động</a>
+      <a href="#hai-app">Hai app</a>
+      <a href="#bang-gia">Bảng giá</a>
+      <a href="#hoi-dap">Hỏi đáp</a>
+    </nav>
+    <a class="nut nut-giay" href="/thiet-ke/dang-nhap.html">Vào app</a>
+  </div>
+</header>
+
+<main>
+<section class="dau" aria-labelledby="tieu-de">
+  <div class="khung">
+    <div>
+      <h1 id="tieu-de"><span class="dong-tieu"><span>Bán đúng giá,</span></span><span class="dong-tieu"><span>tiền về chắc.</span></span></h1>
+      <div class="sau-tieu">
+        <p class="noi">AgiViet nối nông dân, hợp tác xã miền Tây với vựa, nhà máy, nhà hàng. Cọc do ngân hàng giữ, mọi bước ghi trên một mã đơn chung.</p>
+        <div class="cua">
+          <a class="nut nut-giay" href="/thiet-ke/dang-nhap.html">Tôi bán hàng</a>
+          <a class="nut nut-vien" href="/thiet-ke/dang-nhap.html?ben=mua">Tôi thu mua</a>
+        </div>
+        <p class="them">Giám khảo, nhà đầu tư: <a class="lien" href="/mo-hinh-quy-trinh">xem 59 tình huống của quy trình</a></p>
+      </div>
+    </div>
+
+    <div class="phieu" data-ui role="group" aria-labelledby="phieu-ten">
+      <div class="phieu-dau">
+        <img src="/assets/products/xoai-cat-chu.jpg" alt="Xoài cát Chu" width="64" height="64">
+        <div><b id="phieu-ten">Xoài cát Chu loại 1</b><small class="so">500 kg × 23.400 đ · Hộ Nguyễn Thị Năm, Cao Lãnh</small></div>
+        <span class="ma-don">HĐ-3001</span>
+      </div>
+      <div class="giu"><span>Ngân hàng đối tác đang giữ cọc 30%</span><b class="so" id="p-coc">3.510.000 đ</b></div>
+      <div class="dk">
+        <label for="p-nhan"><span class="hang"><span>Bên mua nhận hàng</span><span class="so" id="p-pt">20%</span></span>
+          <input id="p-nhan" type="range" min="0" max="100" step="10" value="20" aria-describedby="p-chu">
+        </label>
+        <div class="cong-tac"><span id="p-anh-ten">Phần trả lại có ảnh nghiệm thu</span><button id="p-anh" type="button" role="switch" aria-checked="true" aria-labelledby="p-anh-ten"></button></div>
+      </div>
+      <div class="ket" aria-live="polite">
+        <div class="noi-bat"><span>Ngân hàng chuyển cho người bán</span><b class="so" id="p-chi">2.340.000 đ</b></div>
+        <div class="hoan"><span>Ngân hàng hoàn cho bên mua</span><b class="so" id="p-hoan">1.170.000 đ</b></div>
+        <div><span>Bên mua trả thẳng phần còn lại</span><b class="so" id="p-thang">0 đ</b></div>
+      </div>
+      <div class="thanh-chia" aria-hidden="true"><i class="c1" id="p-v1" style="width:66.7%"></i><i class="c2" id="p-v2" style="width:33.3%"></i></div>
+      <p class="phieu-chu" id="p-chu">Bên mua trả lại 80% có ảnh. Người bán không phải tự hoàn tiền: ngân hàng chia cọc theo kết quả cân hai bên đã ký.</p>
+    </div>
+  </div>
+</section>
+
+<section class="van-de" aria-labelledby="vd-tieu">
+  <div class="khung">
+    <h2 id="vd-tieu" class="len">Mua bán vẫn bằng lời nói</h2>
+    <div class="chuyen">
+      <div class="len">
+        <p><b>Giá chốt qua điện thoại,</b> lượng ghi tay, mỗi bên giữ một con số. Ghe chuyền hàng xong là xong, tới lúc lệch mới biết không ai có giấy tờ để đối chiếu.</p>
+        <figure class="troi-nhe"><img src="/assets/cai-rang-floating-market-1.jpg" alt="Hai ghe chuyền hàng cho nhau ở chợ nổi Cái Răng" width="1920" height="1440" loading="lazy"><figcaption>Chợ nổi Cái Răng, Cần Thơ</figcaption></figure>
+      </div>
+      <div class="len">
+        <p><b>Cân xong mới biết bị trừ.</b> Trái dập, hao hụt, hạ loại: người bán đứng ngoài lúc cân, bên mua giữ hàng. Người lớn tuổi lại ngại gõ chữ để cãi lại trên điện thoại.</p>
+        <figure class="troi-nhe"><img src="/assets/vietnam-08-163-oranges-and-fruit-at.jpg" alt="Sạp cam và trái cây ở chợ Châu Đốc" width="1920" height="1440" loading="lazy"><figcaption>Chợ Châu Đốc, An Giang</figcaption></figure>
+      </div>
+      <div class="len">
+        <p><b>Tiền về lúc nào thì tùy bên mua.</b> Cọc đưa tay, trả chậm, trả thiếu, có khi bên mua mất cọc vì người bán không giao. Rủi ro dồn về phía người không cầm tiền.</p>
+        <figure class="troi-nhe"><img src="/assets/a-farmer-plies-the-waters-of-the.jpg" alt="Người nông dân chống xuồng trên kênh ở đồng bằng sông Cửu Long" width="1920" height="1275" loading="lazy"><figcaption>Kênh rạch đồng bằng sông Cửu Long</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="buoc" id="cach-hoat-dong" aria-labelledby="b-tieu">
+  <div class="khung dau-muc">
+    <h2 id="b-tieu" class="len">Một mã đơn đi hết tám bước</h2>
+    <div class="len" style="--tre:80ms">
+      <p>Mỗi bước do đúng bên có quyền bấm. Bên nào chưa xác nhận thì app ghi rõ; im lặng không bao giờ được coi là đồng ý.</p>
+    </div>
+  </div>
+  <ol class="day" id="day" aria-label="Tám bước của đơn HĐ-3001">
+    <li class="the-buoc"><span class="ai">Bên mua và người bán</span><h3>Chào giá, trả giá</h3><p>Chào giá kín: bên mua không thấy giá đáy của người bán. Mỗi bên trả giá tối đa hai lượt.</p>
+      <div data-ui><div><span>LC-0001 · Xoài cát Chu</span><span class="nhan-tt xanh">Đã đồng ý</span></div><div><span>Chào</span><b class="so">23.600 đ/kg</b></div><div><span>Chốt</span><b class="so">23.400 đ/kg</b></div></div></li>
+    <li class="the-buoc"><span class="ai">Hai bên</span><h3>Ký hợp đồng</h3><p>Ký bằng mã OTP trên điện thoại. Hợp đồng PDF có chữ ký số, hai bên giữ cùng một bản.</p>
+      <div data-ui><div><span>HĐ-3001</span><span class="nhan-tt xanh">Đã ký 2/2</span></div><div><span>Giá trị</span><b class="so">11.700.000 đ</b></div><div><span>Giao</span><b>Tại vườn, Cao Lãnh</b></div></div></li>
+    <li class="the-buoc"><span class="ai">Bên mua, qua ngân hàng</span><h3>Chuyển cọc</h3><p>Cọc vào tài khoản ngân hàng đối tác giữ hộ, không vào túi AgiViet, không vào túi bên nào.</p>
+      <div data-ui><div><span>Cọc 30%</span><span class="nhan-tt vang">Ngân hàng đang giữ</span></div><div><span>Số tiền</span><b class="so">3.510.000 đ</b></div></div></li>
+    <li class="the-buoc"><span class="ai">Bên mua</span><h3>Chỉ định người nhận, đặt xe</h3><p>Người nhận có mã riêng cho đợt giao. Người lạ đến lấy hàng không có mã thì không giao.</p>
+      <div data-ui><div><span>Đợt HĐ-3001-D1</span><span class="nhan-tt">Chờ giao</span></div><div><span>Khung giờ</span><b>07:00–11:00</b></div></div></li>
+    <li class="the-buoc"><span class="ai">Người bán</span><h3>Giao, quét mã người nhận</h3><p>Quét đúng mã của người nhận mới bắt đầu cân. Ngoài khung giờ giao, app chặn.</p>
+      <div data-ui><div><span>Mã người nhận</span><span class="nhan-tt xanh">Khớp</span></div><div><span>Bắt đầu cân</span><b>07:42</b></div></div></li>
+    <li class="the-buoc"><span class="ai">Bên mua, rồi người bán</span><h3>Nghiệm thu có ảnh</h3><p>Phần trả lại hay hạ loại phải có ảnh. Số cân bên mua nhập mang nhãn tự khai tới khi người bán ký đồng ý.</p>
+      <div data-ui><div><span>Nhận</span><b class="so">100 kg</b></div><div><span>Trả lại, có ảnh</span><b class="so">400 kg</b></div><div><span>Người bán</span><span class="nhan-tt xanh">Đã ký đồng ý</span></div></div></li>
+    <li class="the-buoc"><span class="ai">Bên mua, rồi người bán</span><h3>Trả tiền hàng</h3><p>Bên mua báo đã chuyển kèm chứng từ. Tiền chỉ được tính khi người bán tự bấm “đã nhận đủ”.</p>
+      <div data-ui><div><span>Phần còn phải trả</span><b class="so">0 đ</b></div><div><span>Vì sao</span><span class="nhan-tt">Cọc đã đủ phần nhận</span></div></div></li>
+    <li class="the-buoc"><span class="ai">Ngân hàng và AgiViet</span><h3>Quyết toán, đối soát</h3><p>Ngân hàng chia cọc theo kết quả đã ký, nhân viên đối soát từng lệnh. Không bên nào phải tự hoàn tiền cho bên kia.</p>
+      <div data-ui><div><span>Chuyển người bán</span><b class="so">2.340.000 đ</b></div><div><span>Hoàn bên mua</span><b class="so">1.170.000 đ</b></div><div><span>Lệnh ngân hàng</span><span class="nhan-tt xanh">Đã đối soát</span></div></div></li>
+  </ol>
+</section>
+
+<section class="hai-app" id="hai-app" aria-labelledby="ha-tieu">
+  <div class="khung">
+    <h2 id="ha-tieu" class="len">Hai app, cho hai cách làm ăn</h2>
+    <p class="mo len" style="--tre:80ms">Người bán dùng điện thoại, nút to, có đọc thành tiếng, con trâu dẫn đường. Bên mua dùng máy tính hay điện thoại, đủ công cụ để lo nguồn hàng cả tuần.</p>
+    <div class="luoi">
+      <article class="o len">
+        <div class="chu-o"><span class="ben">App bán</span><h3>Nói để đăng hàng</h3><p>“Mười tấn xoài, tuần sau hái.” App ghi thành tin đăng; chưa cân vẫn đăng được, ghi rõ là ước tính.</p></div>
+        <div class="manh"><div data-ui><div class="mic"><span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f6f2e7" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><span class="song" aria-hidden="true"><i style="animation-delay:0s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.15s"></i><i style="animation-delay:.25s"></i><i style="animation-delay:.05s"></i></span></div><div class="tin-noi">Xoài cát Chu loại 1 · 10 tấn ước tính · hái 12–14/11</div></div></div>
+      </article>
+      <article class="o dao len" style="--tre:80ms">
+        <div class="chu-o"><span class="ben">App bán</span><h3>So tiền về tay, không chỉ giá</h3><p>Giá cao chưa chắc nhiều tiền: trừ tiền xe, bốc xếp, ngày trả. App đặt hai khách cạnh nhau.</p></div>
+        <div class="manh"><div data-ui><div class="so-sanh"><div><small>Nhà máy · 24.000 đ/kg</small><b class="so">226 triệu</b><small>trả sau 7 ngày, bác tự chở</small></div><div class="hon"><small>Vựa · 23.200 đ/kg</small><b class="so">232 triệu</b><small>trả khi nhận, vựa tới lấy</small></div></div></div></div>
+      </article>
+      <article class="o len" style="--tre:160ms">
+        <div class="chu-o"><span class="ben">App bán</span><h3>Nút Nghe ở mọi màn</h3><p>App đọc nội dung và đọc số tiền thành lời. Con cháu nhập giúp được nhưng không ký thay.</p></div>
+        <div class="manh"><div data-ui><div class="nghe"><span>Ngân hàng đang giữ cọc<br><b class="so">3.510.000 đ</b></span><button type="button" id="nut-nghe">Nghe</button></div><small style="color:var(--muc-phu)" id="nghe-chu">Bấm Nghe để app đọc số tiền.</small></div></div>
+      </article>
+      <article class="o dao len">
+        <div class="chu-o"><span class="ben">App mua</span><h3>Nguồn hàng có nhãn rõ</h3><p>Lô đã cân hay ước tính, ngày hái, lượng còn bán được. Lô hết lượng tự rời khỏi kết quả.</p></div>
+        <div class="manh"><div data-ui>
+          <div class="hang-lo"><img src="/assets/products/sau-rieng.jpg" alt="Sầu riêng" width="52" height="52" loading="lazy"><span>Sầu riêng Ri6 loại A<small>Cái Bè · 3,2 tấn còn bán</small></span><span class="nhan-tt xanh">Đã cân</span></div>
+          <div class="hang-lo"><img src="/assets/products/tom.jpg" alt="Tôm thẻ" width="52" height="52" loading="lazy"><span>Tôm thẻ 48–52 con/kg<small>Bạc Liêu · 1,5 tấn</small></span><span class="nhan-tt">Ước tính</span></div>
+          <div class="hang-lo"><img src="/assets/products/thanh-long.jpg" alt="Thanh long" width="52" height="52" loading="lazy"><span>Thanh long ruột trắng<small>Bình Thuận · 6 tấn</small></span><span class="nhan-tt xanh">Đã cân</span></div>
+        </div></div>
+      </article>
+      <article class="o len" style="--tre:80ms">
+        <div class="chu-o"><span class="ben">App mua</span><h3>Tuần này đủ hay thiếu</h3><p>Cần bao nhiêu kg mỗi món, đơn đã ký chắc được bao nhiêu. Báo giá chưa chốt không được tính là đủ.</p></div>
+        <div class="manh"><div data-ui class="cot-tuan">
+          <div><span>Xoài cát Chu · cần 3.500 kg</span><div class="vach"><i style="width:57%"></i></div><small style="color:var(--muc-phu)">đã chắc 2.000 kg · thiếu 1.500 kg</small></div>
+          <div><span>Cá tra · cần 2.000 kg</span><div class="vach"><i style="width:100%"></i></div><small style="color:var(--muc-phu)">đã chắc đủ</small></div>
+        </div></div>
+      </article>
+      <article class="o dao len" style="--tre:160ms">
+        <div class="chu-o"><span class="ben">Hai bên</span><h3>Mỗi con số có nguồn</h3><p>Ai nói, đã ai xác nhận. Đổi tài khoản nhận tiền phải chờ 24 giờ, bên mua thấy cảnh báo 30 ngày.</p></div>
+        <div class="manh"><div data-ui>
+          <div class="dong-nhan"><span>Số cân 480 kg</span><span class="nhan-tt">Bên mua tự khai</span></div>
+          <div class="dong-nhan"><span>Số cân 480 kg</span><span class="nhan-tt xanh">Hai bên đã ký</span></div>
+          <div class="dong-nhan"><span>Tài khoản nhận tiền</span><span class="nhan-tt vang">Vừa đổi · chờ 24 giờ</span></div>
+        </div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="mo-phong" aria-labelledby="mp-tieu">
+  <div class="khung">
+    <div class="chu-mp">
+      <h2 id="mp-tieu" class="len">Đã chạy thử từng tình huống</h2>
+      <p class="len" style="--tre:80ms">Cân lệch, giao thiếu, bên mua bỏ cọc, trả chậm, lệnh ngân hàng lỗi, xe hỏng lúc nửa đêm. Mỗi tình huống có sơ đồ từng bước: ai bấm, tiền nằm ở đâu, đơn ở trạng thái nào.</p>
+      <div class="so-lieu len" style="--tre:160ms">
+        <div><b class="so">59</b><span>tình huống quy trình</span></div>
+        <div><b class="so">6</b><span>vai: bán, mua, ngân hàng, nhân viên, đối tác, hệ thống</span></div>
+        <div><b class="so">1</b><span>mã đơn cho mỗi giao dịch</span></div>
+      </div>
+      <a class="nut nut-giay len" style="--tre:240ms" href="/mo-hinh-quy-trinh">Xem mô hình quy trình</a>
+    </div>
+    <figure class="len" style="--tre:120ms"><img src="/assets/vietnam-s-mekong-delta-esa219993.jpg" alt="Ảnh vệ tinh đồng bằng sông Cửu Long" width="1920" height="1871" loading="lazy"></figure>
+  </div>
+</section>
+
+<section class="gia" id="bang-gia" aria-labelledby="g-tieu">
+  <div class="khung">
+    <div>
+      <div class="gia-dau"><h2 id="g-tieu" class="len">Người bán không trả đồng nào</h2><p class="len" style="--tre:80ms">Bên mua chọn gói theo cách mua. Phí tính trên giá trị hàng được nhận, không trừ vào tiền của người bán.</p></div>
+      <div class="ten-goi" role="tablist" aria-label="Các gói">
+        <button role="tab" type="button" id="g-ban" aria-controls="g-san" aria-selected="false" data-goi="ban">Người bán</button>
+        <button role="tab" type="button" id="g-free" aria-controls="g-san" aria-selected="false" data-goi="free">Miễn phí</button>
+        <button role="tab" type="button" id="g-thu" aria-controls="g-san" aria-selected="true" data-goi="thu">Thu mua</button>
+        <button role="tab" type="button" id="g-dn" aria-controls="g-san" aria-selected="false" data-goi="dn">Doanh nghiệp</button>
+        <button role="tab" type="button" id="g-bep" aria-controls="g-san" aria-selected="false" data-goi="bep">Bếp</button>
+      </div>
+    </div>
+    <div class="san-khau" id="g-san" role="tabpanel" aria-labelledby="g-thu">
+      <div class="doi" aria-live="polite">
+        <div class="gia-so so" id="g-so"><span id="g-tien">1,5 triệu</span> <small id="g-ky">đồng / tháng</small></div>
+        <p class="ai-dung">Dành cho <span id="g-ai">vựa, nhà máy mua đều</span>.</p>
+        <ul id="g-ds"><li>Phí 0,3% đơn đầu với mỗi người bán</li><li>0% từ đơn thứ hai với mối quen</li><li>3 tài khoản, phân quyền ký và duyệt chi</li><li>Kế hoạch mua theo tuần, so sánh nguồn</li></ul>
+        <a class="nut nut-la" id="g-nut" href="/thiet-ke/dang-nhap.html?ben=mua">Dùng gói Thu mua</a>
+      </div>
+      <p class="ghi-phi">Phí mỗi đơn có mức sàn 20.000 đ và mức trần theo gói. Cọc 30% do ngân hàng đối tác giữ, không phải phí.</p>
+    </div>
+  </div>
+</section>
+
+<section class="hoi" id="hoi-dap" aria-labelledby="h-tieu">
+  <div class="khung">
+    <h2 id="h-tieu" class="len">Bà con và doanh nghiệp hay hỏi</h2>
+    <div class="ds-hoi">
+      <details name="hoi" open><summary>Tiền cọc nằm ở đâu?<span class="cong" aria-hidden="true"></span></summary><div>Ở tài khoản của ngân hàng đối tác, giữ hộ cho đơn. AgiViet không cầm tiền, người bán cũng không tự giữ cọc. Ngân hàng chỉ chuyển hay hoàn theo kết quả nghiệm thu hai bên đã ký, rồi nhân viên đối soát từng lệnh.</div></details>
+      <details name="hoi"><summary>Bên mua trả lại hàng thì ai hoàn tiền?<span class="cong" aria-hidden="true"></span></summary><div>Ngân hàng. Phần cọc vượt quá giá trị hàng được nhận tự hoàn về đúng tài khoản bên mua đã chuyển. Người bán không phải đưa lại đồng nào bằng tay.</div></details>
+      <details name="hoi"><summary>Tôi lớn tuổi, không rành điện thoại thì sao?<span class="cong" aria-hidden="true"></span></summary><div>Nút to, ít chữ, màn nào cũng có nút Nghe. Đăng hàng bằng cách nói. Con trâu chỉ đúng nút cần bấm. Con cháu nhập giúp được nhưng không ký thay và không đổi được tài khoản nhận tiền.</div></details>
+      <details name="hoi"><summary>Cân lệch hoặc bị hạ loại vô lý thì sao?<span class="cong" aria-hidden="true"></span></summary><div>Số cân bên mua nhập mang nhãn tự khai tới khi người bán ký đồng ý. Trả lại hay hạ loại phải có ảnh. Người bán không đồng ý thì phần đó tách ra đối soát, phần không tranh chấp vẫn được chia đúng hạn.</div></details>
+      <details name="hoi"><summary>Người bán không giao thì bên mua mất cọc không?<span class="cong" aria-hidden="true"></span></summary><div>Không. Cọc vẫn ở ngân hàng. Người bán vi phạm thì ngân hàng hoàn cọc cho bên mua, chi phí dịch vụ đã phát sinh được bồi hoàn theo hợp đồng.</div></details>
+      <details name="hoi"><summary>Im lặng có bị coi là đồng ý không?<span class="cong" aria-hidden="true"></span></summary><div>Không bao giờ. Bước nào chưa có người bấm thì app ghi rõ đang chờ ai. Quá hạn thì xử lý theo điều khoản đã ký, không tự kết luận thay người dùng.</div></details>
+      <details name="hoi"><summary>Bản trên trang này là bản thật chưa?<span class="cong" aria-hidden="true"></span></summary><div>Là bản đi thi chạy trên máy chủ thật. Khi vào app, bạn chọn một vai mẫu; các bên còn lại (bên kia, ngân hàng, nhân viên) do AI đóng để bạn thấy trọn một giao dịch. Ngân hàng là ngân hàng mô phỏng, chưa chuyển tiền thật.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="moi" aria-labelledby="m-tieu">
+  <div class="khung">
+    <h2 id="m-tieu" class="an">Bắt đầu</h2>
+    <form action="/thiet-ke/dang-nhap.html" method="get" class="len">
+      <span>Mùa này nhà mình có</span>
+      <label class="an" for="mat-hang">Mặt hàng</label>
+      <select id="mat-hang" name="hang">
+        <option>xoài</option><option>sầu riêng</option><option>thanh long</option><option>bưởi</option><option>lúa</option><option>tôm</option><option>cá tra</option>
+      </select>
+      <button class="nut nut-la" type="submit">Đăng bán</button>
+    </form>
+    <p class="duoi len" style="--tre:80ms">Vào app bán, chọn một vai mẫu là thấy ngay hàng của mình trên chợ. Bên thu mua thì <a class="lien" href="/thiet-ke/dang-nhap.html?ben=mua">vào app mua</a>.</p>
+    <div class="anh-cuoi">
+      <img src="/assets/scenic-mekong-delta-in-vietnam-9147955699.jpg" alt="Ruộng và kênh nước ở đồng bằng sông Cửu Long" width="1920" height="2757" loading="lazy" style="object-position:50% 30%">
+      <img src="/assets/products/buoi.jpg" alt="Bưởi da xanh" width="800" height="597" loading="lazy">
+      <img src="/assets/products/ca-tra.jpg" alt="Cá tra" width="800" height="597" loading="lazy">
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="chan">
+    <div class="khung">
+      <span>AgiViet · sàn nông sản và thủy sản miền Tây</span>
+      <nav aria-label="Liên kết cuối trang"><a href="/thiet-ke/dang-nhap.html">App bán</a><a href="/thiet-ke/dang-nhap.html?ben=mua">App mua</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a></nav>
+      <span class="phai">© 2026 AgiViet</span>
+    </div>
+  </div>
+  <div class="khung nguon"><p>Ảnh: “Cai Rang Floating Market 1”, Christophe95, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>; “Vietnam 08 - 163 - oranges and fruit at the market”, McKay Savage, <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a>; “A farmer plies the waters of the Mekong Delta” và “Scenic Mekong Delta in Vietnam”, USAID Vietnam, phạm vi công cộng; “Vietnam's Mekong Delta”, European Space Agency, <a href="https://creativecommons.org/licenses/by-sa/3.0/igo/">CC BY-SA 3.0 IGO</a>; tất cả qua Wikimedia Commons.</p></div>
+</footer>
+
+<script>
+document.body.classList.remove("khong-js");
+const $ = (id) => document.getElementById(id);
+const vnd = (n) => Math.round(n).toLocaleString("vi-VN") + " đ";
+const itDong = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Phiếu cọc HĐ-3001: giá trị 11.700.000 đ, cọc 30% ngân hàng giữ (số của bản chạy thử)
+const GIA_TRI = 11700000, COC = 3510000;
+function tinh() {
+  const pt = Number($("p-nhan").value), coAnh = $("p-anh").getAttribute("aria-checked") === "true";
+  const nhan = coAnh ? pt : 100; // trả lại không có ảnh không được chấp nhận → tính như nhận đủ
+  const v = GIA_TRI * nhan / 100, chi = Math.min(v, COC), hoan = COC - chi, thang = Math.max(0, v - COC);
+  $("p-pt").textContent = pt + "%";
+  $("p-chi").textContent = vnd(chi); $("p-hoan").textContent = vnd(hoan); $("p-thang").textContent = vnd(thang);
+  $("p-v1").style.width = (chi / COC * 100) + "%"; $("p-v2").style.width = (hoan / COC * 100) + "%";
+  $("p-chu").textContent = !coAnh && pt < 100
+    ? "Không có ảnh thì phần trả lại không được chấp nhận: tính như bên mua nhận đủ, bên mua trả thẳng phần còn lại."
+    : pt === 100 ? "Bên mua nhận đủ: ngân hàng chuyển hết cọc cho người bán, bên mua trả thẳng phần còn lại khi nhận."
+    : pt === 0 ? "Trả lại toàn bộ có ảnh: ngân hàng hoàn hết cọc cho bên mua, người bán nhận lại hàng."
+    : `Bên mua trả lại ${100 - pt}% có ảnh. Người bán không phải tự hoàn tiền: ngân hàng chia cọc theo kết quả cân hai bên đã ký.`;
+}
+$("p-nhan").addEventListener("input", tinh);
+$("p-anh").addEventListener("click", (e) => { const b = e.currentTarget; b.setAttribute("aria-checked", String(b.getAttribute("aria-checked") !== "true")); tinh(); });
+tinh();
+
+// Nút Nghe: đọc thành tiếng nếu máy hỗ trợ
+$("nut-nghe").addEventListener("click", () => {
+  const cau = "Ngân hàng đang giữ cọc ba triệu năm trăm mười nghìn đồng.";
+  if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(cau); u.lang = "vi-VN"; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+  $("nghe-chu").textContent = "“" + cau + "”";
+});
+
+// Bảng giá: tên gói là nút, nội dung đổi tại chỗ
+const GOI = {
+  ban: { ai: "nông dân, chủ ao, hợp tác xã", so: "0 đ", ky: "mãi mãi", ds: ["Đăng hàng bằng giọng nói, ảnh chụp", "So tiền về tay giữa các khách", "Cọc do ngân hàng giữ, xác nhận tiền từng khoản", "Hợp đồng khung giao theo tuần cho hợp tác xã"], nut: "Vào app bán", href: "/thiet-ke/dang-nhap.html" },
+  free: { ai: "bên mua mới thử", so: "0 đ", ky: "đồng / tháng", ds: ["Phí 1% đơn đầu, 0,5% từ đơn thứ hai", "Phí tối đa 2 triệu mỗi đơn", "1 tài khoản", "Lọc nguồn, chào giá, đơn, công nợ cơ bản"], nut: "Dùng gói Miễn phí", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+  thu: { ai: "vựa, nhà máy mua đều", so: "1,5 triệu", ky: "đồng / tháng", ds: ["Phí 0,3% đơn đầu với mỗi người bán", "0% từ đơn thứ hai với mối quen", "3 tài khoản, phân quyền ký và duyệt chi", "Kế hoạch mua theo tuần, so sánh nguồn"], nut: "Dùng gói Thu mua", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+  dn: { ai: "nhà máy, công ty xuất nhập khẩu", so: "4 triệu", ky: "đồng / tháng", ds: ["Phí 0,2% mọi đơn, tối đa 3 triệu mỗi đơn", "10 tài khoản, nhiều điểm nhận hàng", "Hợp đồng khung, gom nhiều vườn một đơn", "Hồ sơ đối soát cho kế toán"], nut: "Dùng gói Doanh nghiệp", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+  bep: { ai: "nhà hàng, bếp ăn", so: "490 nghìn", ky: "đồng / tháng", ds: ["Không phí giao dịch", "2 tài khoản", "Đặt giao đều mỗi tuần theo thực đơn", "Gom nhiều mặt hàng trong một lần nhận"], nut: "Dùng gói Bếp", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+};
+const tabs = [...document.querySelectorAll(".ten-goi button")], doi = document.querySelector(".san-khau .doi");
+function chonGoi(b, focus) {
+  const g = GOI[b.dataset.goi];
+  tabs.forEach((t) => { t.setAttribute("aria-selected", String(t === b)); t.tabIndex = t === b ? 0 : -1; });
+  $("g-san").setAttribute("aria-labelledby", b.id);
+  const doiNoi = () => { $("g-ai").textContent = g.ai; $("g-tien").textContent = g.so; $("g-ky").textContent = g.ky;
+    $("g-ds").innerHTML = g.ds.map((x) => `<li>${x}</li>`).join(""); $("g-nut").textContent = g.nut; $("g-nut").href = g.href; doi.style.opacity = 1; };
+  if (itDong()) doiNoi(); else { doi.style.opacity = 0; setTimeout(doiNoi, 180); }
+  if (focus) b.focus();
+}
+tabs.forEach((b, i) => {
+  b.tabIndex = b.getAttribute("aria-selected") === "true" ? 0 : -1;
+  b.addEventListener("click", () => chonGoi(b));
+  b.addEventListener("keydown", (e) => { const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (d) { e.preventDefault(); chonGoi(tabs[(i + d + tabs.length) % tabs.length], true); } });
+});
+
+// Lời mời: vào app bán
+document.querySelector(".moi form").addEventListener("submit", (e) => { e.preventDefault(); location.href = "/thiet-ke/dang-nhap.html"; });
+
+// Hiện dần khi cuộn tới
+const canHien = [...document.querySelectorAll(".len, .troi-nhe")];
+const io = "IntersectionObserver" in window ? new IntersectionObserver((ds) => ds.forEach((d) => { if (d.isIntersecting) { d.target.classList.add("da-vao"); io.unobserve(d.target); } })) : null;
+canHien.forEach((el) => io ? io.observe(el) : el.classList.add("da-vao"));
+// Phần sát đáy trang có thể không bao giờ chạm ngưỡng: cuộn gần hết trang thì hiện tất cả
+addEventListener("scroll", () => { if (scrollY + innerHeight >= document.documentElement.scrollHeight - 240) canHien.forEach((el) => el.classList.add("da-vao")); }, { passive: true });
+</script>
+</body>
 </html>
