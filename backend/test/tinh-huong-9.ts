@@ -55,7 +55,9 @@ them('GD-05', 'Outbox gửi thông báo; sổ tiền; gói; hỗ trợ; hồ sơ
   const doi = await thinh.post('/v1/org/subscription', { plan_code: 'kitchen' });
   th.bang('Hạ xuống Bếp (2 thành viên) bị chặn vì đang 4', doi.json.errors?.[0]?.code, 'GOI_HET_THANH_VIEN');
   const nang = await thinh.ok('/v1/org/subscription', { plan_code: 'enterprise' });
-  th.bang('Nâng Doanh nghiệp: tháng đầu 29/30', nang.data.tien_thang_dau_vnd, '3866667');
+  // Kỳ vọng tính theo ngày chạy (giờ VN), không ghi cứng 29/30 — phép thử từng hỏng khi chạy sang ngày khác.
+  const g7 = new Date(Date.now() + 7 * 3600e3), nTh = new Date(Date.UTC(g7.getUTCFullYear(), g7.getUTCMonth() + 1, 0)).getUTCDate(), con = nTh - g7.getUTCDate() + 1;
+  th.bang(`Nâng Doanh nghiệp: tháng đầu ${con}/${nTh}`, nang.data.tien_thang_dau_vnd, String((4000000n * BigInt(con) + BigInt(nTh) / 2n) / BigInt(nTh)));
   th.bang('Đọc lại gói sau khi đổi: enterprise', (await thinh.get('/v1/org/subscription')).json.plan_code, 'enterprise');
   const ht = await b.lan.ok('/v1/support', { message: 'Không thấy mã QR', error_code: 'QR_HET_HAN', request_id: 'req-x' });
   th.kiem('Yêu cầu hỗ trợ tạo việc V23 (mã do DB cấp TASK-)', /^TASK-/.test(ht.data.code), ht.data);
