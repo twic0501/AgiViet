@@ -71,6 +71,21 @@ const conTra = (p) => Number(p.amount_due_vnd || 0) - Number(p.da_nhan_vnd || p.
 const canTra = (p) => ["due", "partially_received", "overdue", "partially_confirmed"].includes(p.status);
 
 // ---------- Hôm nay ----------
+// Tuần này đủ hay thiếu (T1): theo món — cần (nhu cầu đang mở) / đã chắc (đơn còn hiệu lực + khung tuần đang chạy) / còn thiếu.
+async function veDuThieu() {
+  const can = new Map(), chac = new Map(), cong = (m, k, g) => m.set(k, (m.get(k) || 0) + g);
+  const nc = (DL.nhuCau || []).filter((n) => n.status === "open");
+  const ctNc = await Promise.all(nc.map((n) => thu(api(`/v1/demands/${n.id}`))));
+  ctNc.forEach((ct, i) => (ct?.lines || []).forEach((l) => cong(can, nc[i].product_code, Number(l.qty_g || 0))));
+  const conHieuLuc = DL.don.filter((d) => !/completed|cancel|closed|expired/.test(d.status || ""));
+  const ctDon = await Promise.all(conHieuLuc.map((d) => thu(api(`/v1/orders/${d.id}`))));
+  ctDon.forEach((o) => { if (o?.san_pham?.code) cong(chac, o.san_pham.code, Number(o.dieu_khoan?.qty_g || 0)); });
+  DL.khung.filter((k) => k.status === "running").forEach((k) => (k.mon || []).forEach((m) => m.ma && cong(chac, m.ma, Number(m.luong_g || 0) * Math.max(1, (k.ngay_giao || []).length))));
+  const mon = [...new Set([...can.keys(), ...chac.keys()])];
+  const ten = (ma) => DL.sp.find((s) => s.code === ma)?.name_vi || ma;
+  $("#du-thieu").innerHTML = mon.length ? `<p class="nhan" style="margin-top:4px">Tuần này</p>${mon.map((ma) => { const c = can.get(ma) || 0, d = chac.get(ma) || 0, thieu = c - d;
+    return `<div class="hang" style="padding:6px 0"><div><b>${esc(ten(ma))}</b><p class="phu">${c ? `cần ${vnd(kg(c))} kg · ` : ""}đã chắc ${vnd(kg(d))} kg</p></div>${c ? `<span class="chip ${thieu > 0 ? "do" : "la"}">${thieu > 0 ? `thiếu ${vnd(kg(thieu))} kg` : "đủ"}</span>` : ""}</div>`; }).join("")}` : "";
+}
 function veHomNay() {
   const tuan = DL.khung.filter((k) => k.status === "running" && (k.mon || []).length);
   const dangGiao = DL.don.filter((d) => /active|signed|deposit/.test(d.status || ""));
@@ -80,6 +95,7 @@ function veHomNay() {
     ${nc.length ? `<p class="phu">${nc.length} nhu cầu đang chờ người bán báo giá.</p>` : ""}
     ${!tuan.length && !dangGiao.length ? `<div class="trong"><p>Chưa có nguồn nào đang chạy. Tìm người bán và chào giá, hoặc lập khung tuần để nhận hàng đều.</p></div>` : ""}
     <button class="nut chinh rong" data-di="nguon-hang">Tìm nguồn hàng</button>`;
+  $("#the-tuan .hang").insertAdjacentHTML("afterend", `<div id="du-thieu"></div>`); veDuThieu();
   const viec = [
     ...DL.don.filter((d) => d.hien_thi?.toi_luot?.phia === "buyer").map((d) => ({ gap: /cọc|trả|ký/i.test(d.hien_thi.toi_luot.viec), ten: `${maHD(d.code)} · ${d.seller_name || ""}`, phu: d.hien_thi.toi_luot.viec, href: MO("chi-tiet-don", `don=${d.id}`) })),
     ...DL.khung.filter((k) => k.toi_luot === "buyer").map((k) => ({ gap: true, ten: `${k.code} · ${k.ben_ban}`, phu: k.ten_trang_thai, href: MO("chi-tiet-khung", `khung=${k.id}`) })),
