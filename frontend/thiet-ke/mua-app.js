@@ -42,6 +42,7 @@ function moDangNhap() {
   $("#dn-b1").onsubmit = async (e) => { e.preventDefault(); const loi = $("#dn-loi1"); loi.textContent = "";
     if (!/^0\d{9}$/.test(sdt())) return (loi.textContent = "Số điện thoại gồm 10 số, bắt đầu bằng 0.");
     if (che === "dang-ky" && (!$("#dn-ten").value.trim() || !$("#dn-cs").value.trim())) return (loi.textContent = "Nhập họ tên và tên cơ sở.");
+    if (che === "dang-ky" && !/^\d{10}(\d{3})?$/.test($("#dn-mst").value.replace(/[\s-]/g, ""))) return (loi.textContent = "Bên mua cần mã số thuế (10 hoặc 13 số) để ký hợp đồng và xuất chứng từ.");
     $("#dn-gui").disabled = true;
     try { const r = await fetch("/v1/auth/otp/send", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt() }) });
       const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được mã, thử lại sau.");
@@ -55,9 +56,11 @@ function moDangNhap() {
     $("#dn-xac").disabled = true;
     try { const dk = che === "dang-ky", than = { challenge_id: thach, phone: sdt(), code: ma };
       const r = await fetch(dk ? "/v1/auth/register" : "/v1/auth/otp/verify", { method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify(dk ? { ...than, name: $("#dn-ten").value.trim(), org: { side: "buy", kind: "enterprise", display_name: $("#dn-cs").value.trim(), segment_code: $("#dn-ph").value } } : than) });
+        body: JSON.stringify(dk ? { ...than, name: $("#dn-ten").value.trim(), org: { side: "buy", kind: "enterprise", display_name: $("#dn-cs").value.trim(), tax_code: $("#dn-mst").value.replace(/[\s-]/g, ""), segment_code: $("#dn-ph").value } } : than) });
       const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Mã chưa đúng.");
-      luuPhien(j.token); location.reload();
+      if (j.token) { luuPhien(j.token); return location.reload(); }
+      // Đăng ký tổ chức mới: chờ nhân viên AgiViet xác minh (hai người duyệt) rồi mới dùng được — chưa có phiên.
+      $("#dn-b2").innerHTML = `<h2 style="margin:0;font-size:20px">Đã đăng ký ${esc($("#dn-cs").value.trim())}</h2><p class="phu">${esc(j.thong_bao || "Nhân viên AgiViet sẽ gọi xác minh rồi mở tài khoản.")}</p><p class="phu">Khi được duyệt, bạn đăng nhập bằng số ${esc(sdt())}.</p><button type="button" class="nut vien rong" onclick="location.reload()">Về màn đăng nhập</button>`;
     } catch (err) { loi.textContent = err.message; $("#dn-xac").disabled = false; }
   };
 }
@@ -260,6 +263,8 @@ async function lamMoi() { await taiHet(); veHomNay(); veNguon(); veDon(); veTien
   try {
     me = await api("/v1/me");
     if (!me.org?.can_buy) { tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><p>Tài khoản <b>${esc(me.org?.name || "")}</b> là bên bán. App này dành cho bên mua.</p><a class="nut chinh" href="ban-hom-nay.html">Mở app người bán</a><button class="nut vien" id="dx2">Đăng xuất</button></div></div>`); $("#dx2").onclick = dangXuat; return; }
+    // Tổ chức mới đăng ký: chưa có vai (chờ nhân viên AgiViet xác minh, hai người duyệt) → chưa dùng được chức năng mua.
+    if (!(me.roles || []).length) { await tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><h2 style="margin:0;font-size:20px">${esc(me.org?.name || "")} đang chờ xác minh</h2><p>Nhân viên AgiViet sẽ gọi số ${esc(me.phone_masked)} để xác minh cơ sở và mã số thuế. Được duyệt (hai người duyệt, hiệu lực sau 24 giờ) thì bạn tìm nguồn, chào giá và ký hợp đồng được.</p><button class="nut vien" id="dx2">Đăng xuất</button></div></div>`); $("#dx2").onclick = dangXuat; return; }
     $("#ten-tc").textContent = `${me.org.name} · ${me.name}`;
     splash("Đang tải nguồn hàng, đơn và tiền…");
     await lamMoi();
