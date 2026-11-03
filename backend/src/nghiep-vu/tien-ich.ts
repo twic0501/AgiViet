@@ -31,9 +31,15 @@ export function xoaBoDemTienIch() { boDem.clear(); }
 async function quaBoDem<T>(khoa: string, fn: () => Promise<T>): Promise<T & { tu_bo_dem?: boolean }> {
   const c = boDem.get(khoa);
   if (c && c.het > Date.now()) return { ...c.du, tu_bo_dem: true };
-  const du = await fn();
-  boDem.set(khoa, { het: Date.now() + GIO_MS, du });
-  return du as any;
+  try {
+    const du = await fn();
+    boDem.set(khoa, { het: Date.now() + GIO_MS, du });
+    return du as any;
+  } catch (e) {
+    // Nguồn ngoài lỗi (vd 429 do IP máy chủ dùng chung): trả bản đã lấy trong 24 giờ, ghi rõ là bản cũ.
+    if (c && c.het + 23 * GIO_MS > Date.now()) return { ...c.du, tu_bo_dem: true, ban_cu: true };
+    throw e;
+  }
 }
 
 // ---------------- Thời tiết ----------------
@@ -45,13 +51,17 @@ export async function thoiTiet(t: GiaoDich, nd: NguoiDung, layMang: LayMang, pro
   return quaBoDem(`tt:${ma}`, async () => {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${tinh.vi_do}&longitude=${tinh.kinh_do}`
       + '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max&timezone=Asia%2FHo_Chi_Minh&forecast_days=7';
-    let j: any;
+    let j: any, nguon = 'Open-Meteo (open-meteo.com), dự báo theo tọa độ trung tâm tỉnh';
     try {
       const r = await layMang(url, { signal: AbortSignal.timeout(5000) });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       j = await r.json();
     } catch (e: any) {
-      throw loi('DICH_VU_NGOAI_LOI', `Chưa lấy được dự báo thời tiết (${String(e?.message ?? e).slice(0, 80)}). Thử lại sau ít phút.`);
+      // Dự phòng: Viện Khí tượng Na Uy (api.met.no, không cần khóa, bắt buộc User-Agent định danh ứng dụng).
+      try { j = { daily: await theoNgayMetNo(layMang, tinh.vi_do, tinh.kinh_do) }; nguon = 'MET Norway (api.met.no), dự báo theo tọa độ trung tâm tỉnh'; }
+      catch (e2: any) {
+        throw loi('DICH_VU_NGOAI_LOI', `Chưa lấy được dự báo thời tiết (${String(e?.message ?? e).slice(0, 40)}; ${String(e2?.message ?? e2).slice(0, 40)}). Thử lại sau ít phút.`);
+      }
     }
     const d = j?.daily;
     if (!d || !Array.isArray(d.time)) throw loi('DICH_VU_NGOAI_LOI', 'Nguồn thời tiết trả dữ liệu không đúng định dạng.');
@@ -68,9 +78,38 @@ export async function thoiTiet(t: GiaoDich, nd: NguoiDung, layMang: LayMang, pro
     return {
       tinh: { ma, ten: tinh.ten, vi_do: tinh.vi_do, kinh_do: tinh.kinh_do }, ngay,
       canh_bao: ngay.flatMap((x: any) => x.loi_khuyen.map((c: string) => `${x.ngay}: ${c}`)),
-      nguon: 'Open-Meteo (open-meteo.com), dự báo theo tọa độ trung tâm tỉnh', lay_luc: new Date().toISOString(),
+      nguon, lay_luc: new Date().toISOString(),
     };
   });
+}
+
+/** Gom dự báo theo giờ của api.met.no thành dạng 'daily' như Open-Meteo, theo ngày giờ Việt Nam (UTC+7). Không có xác suất mưa. */
+export async function theoNgayMetNo(layMang: LayMang, viDo: number, kinhDo: number) {
+  const r = await layMang(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${viDo.toFixed(3)}&lon=${kinhDo.toFixed(3)}`,
+    { headers: { 'User-Agent': 'AgiViet/1.0 (+https://agiviet.vercel.app)' }, signal: AbortSignal.timeout(6000) });
+  if (!r.ok) throw new Error(`met.no HTTP ${r.status}`);
+  const ts: any[] = (await r.json())?.properties?.timeseries ?? [];
+  const ngay = new Map<string, { max: number; min: number; mua: number; gio: number }>();
+  for (const x of ts) {
+    const k = new Date(Date.parse(x.time) + 7 * 3600_000).toISOString().slice(0, 10);
+    const nd = x.data?.instant?.details ?? {}, mua = x.data?.next_1_hours?.details?.precipitation_amount ?? (x.data?.next_6_hours ? undefined : 0);
+    const o = ngay.get(k) ?? { max: -Infinity, min: Infinity, mua: 0, gio: 0 };
+    if (typeof nd.air_temperature === 'number') { o.max = Math.max(o.max, nd.air_temperature); o.min = Math.min(o.min, nd.air_temperature); }
+    o.mua += typeof mua === 'number' ? mua : (x.data?.next_6_hours?.details?.precipitation_amount ?? 0) / 6;
+    if (typeof nd.wind_speed === 'number') o.gio = Math.max(o.gio, nd.wind_speed * 3.6);
+    ngay.set(k, o);
+  }
+  const ds = [...ngay].slice(0, 7);
+  if (!ds.length) throw new Error('met.no không có dữ liệu');
+  const lam = (v: number) => Math.round(v * 10) / 10;
+  return {
+    time: ds.map(([k]) => k),
+    temperature_2m_max: ds.map(([, o]) => (Number.isFinite(o.max) ? lam(o.max) : null)),
+    temperature_2m_min: ds.map(([, o]) => (Number.isFinite(o.min) ? lam(o.min) : null)),
+    precipitation_sum: ds.map(([, o]) => lam(o.mua)),
+    precipitation_probability_max: ds.map(() => null),
+    wind_speed_10m_max: ds.map(([, o]) => lam(o.gio)),
+  };
 }
 
 // ---------------- Tin tức ----------------

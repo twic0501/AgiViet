@@ -12,6 +12,7 @@
   ],
   "rewrites": [
     { "source": "/v1/:path*", "destination": "https://agiviet-api.onrender.com/v1/:path*" },
+    { "source": "/health", "destination": "https://agiviet-api.onrender.com/health" },
     { "source": "/health/:path*", "destination": "https://agiviet-api.onrender.com/health/:path*" }
   ]
 }
