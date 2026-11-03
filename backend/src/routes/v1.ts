@@ -560,6 +560,19 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     };
     return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
   });
+  // Bản trình diễn: bên mua là AI nên người bán thật không thấy QR người nhận → môi trường thử đóng vai người nhận
+  // MỞ QR nhận hàng (đúng API receipt-qr của họ) rồi đưa mã 6 số đang hiện trên máy người nhận (như mã OTP thử).
+  app.get('/v1/test/deliveries/:id/receipt-code', async (req) => {
+    thu(); await bo.xacThuc(req);
+    const nhan = await ht.db.doc((t) => t.gtri<string>(`SELECT receiver_user_id FROM core.deliveries WHERE id=$1`, [P(req).id]));
+    if (!nhan) throw loi('KHONG_TIM_THAY', 'Chưa có người nhận.');
+    const vai = await app.inject({ method: 'POST', url: '/v1/test/impersonate', payload: { user_id: nhan } });
+    const tk = vai.json()?.token ?? vai.json()?.data?.token;
+    const r = await app.inject({ method: 'POST', url: `/v1/deliveries/${P(req).id}/receipt-qr`, payload: { idempotency_key: `thu-qr-${P(req).id}-${Date.now()}` }, headers: { authorization: `Bearer ${tk}` } });
+    const j = r.json(); const kq = j?.data ?? j;
+    if (r.statusCode >= 300 || !kq?.ma_6_so) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Người nhận chưa mở được QR.', { http: r.statusCode });
+    return { ma_6_so: kq.ma_6_so };
+  });
   app.post('/v1/test/impersonate', async (req) => {
     thu();
     const b = z.object({ phone: z.string().optional(), user_id: uuid.optional(), org_code: z.string().optional() }).parse(req.body);

@@ -580,6 +580,11 @@ function moBanGiao(d) {
     <div class="day"><button class="nut vang" type="button" data-r="tiep">${taiCho ? "Bắt đầu cân" : "Xác nhận xuất hàng"}</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
     goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-bg");
     let dang = false;
+    // Môi trường thử: bên mua là AI → hiện mã người nhận (như mã OTP thử); bản thật không có route này.
+    fetch(`/v1/test/deliveries/${d.id}/receipt-code`, { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).then((m) => {
+      const ma = (m?.data ?? m)?.ma_6_so; if (!ma) return;
+      r("ma6").insertAdjacentHTML("afterend", `<p class="ma-thu" style="margin:8px 0 0;font-size:14px;color:var(--chin,#7a5a10)">Môi trường thử · mã người nhận: <b>${esc(ma)}</b></p>`);
+    }).catch(() => {});
     r("huy").onclick = dongTam;
     r("tiep").onclick = async () => {
       if (dang) return; dang = true; r("tiep").disabled = true; baoTam("");

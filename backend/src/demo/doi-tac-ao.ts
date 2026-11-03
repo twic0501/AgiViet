@@ -13,6 +13,7 @@ export const DAI_DIEN: Record<string, string> = {
   'TC-B06': '0918000601', 'TC-B07': '0918000602', 'TC-B08': '0918000603', 'TC-B09': '0918000604', 'TC-B10': '0918000605',
   'TC-M06': '0908000601', 'TC-M07': '0908000602', 'TC-M08': '0908000603', 'TC-M09': '0908000604', 'TC-M10': '0908000605',
 };
+const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
 const DA_CHAO = new Set<string>();          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
 let luotMua = 0;
@@ -104,7 +105,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       // Bên mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
       if (of.status === 'accepted' && phia === 'buyer' && !of.order_id) {
         const now = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
-        const tu = new Date(now.getTime() + 2 * 3600e3);
+        const tu = new Date(now.getTime() + 15 * 60e3); // trình diễn: giao sau 15 phút để người thật làm tiếp ngay
         const r = await post('/v1/orders', { offer_id: of.id, downgrade_price_vnd: Math.round(Number(v?.price_vnd ?? 0) * 0.65 / 100) * 100, delivery_mode: 'at_farm', transport_by: 'buyer',
           delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: 'on_receipt', designated_receiver_user_id: me.user.user_id, silent_accept_hours: 2 }, t);
         if (r.status < 300) nhat_ky.push({ to_chuc: tc, viec: 'lập đơn', doi_tuong: of.code, ket_qua: 'xong' });
@@ -182,7 +183,14 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           return r;
           }); break;
         }
+        case 'Ký nhận tại nơi đến': await lam(tc, 'ký nhận tại nơi đến', d.code, async () => {
+          const dd = o.dot_giao?.find((x: any) => x.status === 'in_transit'); if (!dd) return;
+          const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.loaded_g ?? dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) return;
+          return post(`/v1/deliveries/${dd.id}/arrival`, { weighed_g: q }, t); // cân lại đúng số đã bốc (không hao hụt)
+        }); break;
         case 'Nghiệm thu': await lam(tc, 'nghiệm thu đủ', d.code, async () => {
+          const den = o.dot_giao?.find((x: any) => x.status === 'arrival_check');
+          if (den) return post(`/v1/deliveries/${den.id}/arrival/confirm`, {}, t); // tới nơi đủ hàng → xác nhận đến đạt (hệ thống chốt quyết toán)
           const dd = o.dot_giao?.find((x: any) => x.status === 'checking'); if (!dd) return;
           const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) return;
           return post(`/v1/deliveries/${dd.id}/acceptance`, { pin: PIN, weighed_g: q, seal_code: 'M-' + (1000 + (dem % 8999)), lines: [{ kind: 'accepted', qty_g: q }] }, t);
@@ -191,9 +199,23 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const dd = o.dot_giao?.find((x: any) => x.status === 'awaiting_seller'); if (!dd) return;
           return post(`/v1/deliveries/${dd.id}/acceptance/agree`, { pin: PIN }, t);
         }); break;
-        default: break; // việc cần người thật/ngân hàng/vận hành: để nguyên
+        default: break; // việc cần người thật/vận hành: để nguyên
       }
     }
+  }
+  // 5) Ngân hàng giữ hộ (giả lập): xử lý lệnh chi cọc / hoàn tiền thừa đang chờ rồi báo kết quả về hệ thống.
+  const nh = await goi('POST', '/v1/sim/bank/process-instructions', {});
+  const soLenh = Array.isArray(nh.json?.queued) ? nh.json.queued.length : Number(nh.json?.queued ?? 0);
+  if (nh.status < 300 && soLenh > 0) {
+    await goi('POST', '/v1/sim/bank/deliver', {});
+    nhat_ky.push({ to_chuc: 'NGAN_HANG', viec: `xử lý ${soLenh} lệnh chi/hoàn`, doi_tuong: 'ngân hàng', ket_qua: 'xong' });
+  }
+  // 6) Nhân viên tài chính AgiViet (AI): đối soát sao kê với lệnh đã thành công → đơn quyết toán xong thì hoàn tất.
+  const tc = await vai(NV_TAI_CHINH);
+  if (tc?.token) {
+    const r = await post('/v1/ops/reconcile', {}, tc.token);
+    const xong = r.status < 300 ? (r.json?.reconciled ?? []) : [];
+    if (xong.length) nhat_ky.push({ to_chuc: 'AGIVIET', viec: `đối soát ${xong.length} lệnh`, doi_tuong: 'tài chính', ket_qua: 'xong' });
   }
   return nhat_ky;
 }
