@@ -410,6 +410,42 @@ if (typeof window !== "undefined") window.nhacTrau = nhacTrau;
 // trauTuThe("11-mung", "Đã đồng ý giá") → ảnh trâu nhỏ + bong bóng lời; trang trí, không thay chữ (alt rỗng).
 export const trauTuThe = (ma, cau = "", co = 96) => `<div class="trau-tt"><img src="/assets/trau/tu-the/${ma}.webp" width="${co}" height="${co}" alt="" loading="lazy" decoding="async">${cau ? `<p class="trau-tt-loi">${esc(cau)}</p>` : ""}</div>`;
 if (typeof window !== "undefined") window.trauTuThe = trauTuThe;
+
+// ---- Trâu động: ảnh tư thế tĩnh → Rive V4g (trau-v4.riv, máy trạng thái "trau", đầu vào số hanh_dong) cùng dáng ----
+// Ảnh tĩnh giữ làm dự phòng (giảm chuyển động, lỗi tải, quá số con). Số dáng theo tên hoạt ảnh "Hành động N" trong tệp.
+// Giữ ảnh tĩnh (soi lưới 03/11): 03-chao (Rive "1" không thấy vẫy), 20-xe-tai (xe tràn mép khung), 26-dong-ho (thiếu đồng hồ cát).
+export const DANG_RIVE = { "01-dung": 0, "02-chop": 0, "04-nghe": 0, "05-nghi": 6, "06-vui": 4, "07-lo": 5, "08-chi": 2, "09-be": 13,
+  "10-dien-thoai": 14, "11-mung": 16, "12-ghi-so": 15, "13-chi-trai": 17, "14-chi-xuong": 18, "15-chi-len": 19, "16-cam-tien": 20, "17-ky-giay": 21,
+  "18-canh-bao": 22, "19-can": 25, "21-tui-mau": 27, "22-binh-xit-lich": 28, "23-tai-nghe": 29, "24-ngon-cai": 30, "25-binh-tinh": 31,
+  "27-non-la": 33, "29-so-sanh": 35 };
+const TOI_DA_TRAU = 4; // shortcut: tối đa 4 trâu động mỗi trang cho máy yếu; đo thêm trên máy thật rồi chỉnh
+let soTrau = 0, napRive = null;
+const layRive = () => napRive ??= (window.rive ? Promise.resolve(window.rive) : new Promise((ok, loi) => {
+  const s = document.createElement("script"); s.src = "/assets/vendor/rive/rive.js"; s.onload = () => ok(window.rive); s.onerror = loi; document.head.appendChild(s);
+})).then((rv) => { rv.RuntimeLoader.setWasmUrl("/assets/vendor/rive/rive.wasm"); return rv; });
+function lamTrauDong(img) {
+  const ma = (img.getAttribute("src") || "").match(/tu-the\/([\w-]+)\.webp/)?.[1];
+  if (!(ma in DANG_RIVE) || soTrau >= TOI_DA_TRAU) return;
+  soTrau++; img.dataset.trauDong = "1";
+  layRive().then((rv) => {
+    const c = document.createElement("canvas"); c.width = img.width * 2; c.height = img.height * 2;
+    c.style.cssText = `width:${img.width}px;height:${img.height}px;flex:none`; c.setAttribute("aria-hidden", "true");
+    const r = new rv.Rive({ src: "/assets/trau/trau-v4.riv", canvas: c, autoplay: true, stateMachines: "trau",
+      layout: new rv.Layout({ fit: rv.Fit.Contain, alignment: rv.Alignment.BottomCenter }),
+      onLoad: () => {
+        const vao = r.stateMachineInputs("trau") || [];
+        const hd = vao.find((x) => x.name === "hanh_dong"); if (hd) hd.value = DANG_RIVE[ma];
+        img.replaceWith(c); // chỉ thay khi Rive đã sẵn sàng, không có khoảng trống
+        c.addEventListener("pointerdown", () => vao.find((x) => x.name === "cham")?.fire());
+      } });
+  }).catch(() => { soTrau--; });
+}
+if (typeof document !== "undefined" && typeof IntersectionObserver !== "undefined" && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const thay = new IntersectionObserver((ds) => ds.forEach((e) => { if (e.isIntersecting) { thay.unobserve(e.target); lamTrauDong(e.target); } }), { rootMargin: "120px" });
+  const quet = (goc) => goc.querySelectorAll?.('.trau-tt img[src*="/tu-the/"]:not([data-trau-dong])').forEach((i) => thay.observe(i));
+  const chay = () => { quet(document); new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => n.nodeType === 1 && quet(n.parentNode || n)))).observe(document.body, { childList: true, subtree: true }); };
+  if (document.body) chay(); else addEventListener("DOMContentLoaded", chay);
+}
 if (typeof document !== "undefined" && !document.getElementById("css-trau-tt")) {
   const st = document.createElement("style"); st.id = "css-trau-tt";
   st.textContent = `.trau-tt{display:flex;align-items:center;gap:10px;margin:4px 0}.trau-tt img{flex:none;object-fit:contain}
