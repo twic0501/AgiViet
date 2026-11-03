@@ -16,7 +16,20 @@ export const DAI_DIEN: Record<string, string> = {
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
 const DA_CHAO = new Set<string>();          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
-let luotMua = 0;
+let luotMua = 0, luotCham = 0;
+// Tính cách giao dịch của người mẫu — khớp dòng mô tả trên thẻ chọn vai (frontend/thiet-ke/dang-nhap.html, bảng TINH).
+// tra: số lần trả giá trước khi đồng ý · buoc: mỗi lần nhích giá về phía mình · cham: trả lời cách một vòng.
+const KIEU: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = {
+  'TC-B01': { tra: 0 },               // dễ chốt nếu giá sát giá tham khảo
+  'TC-B04': { cham: true },           // cẩn thận, trả lời chậm
+  'TC-B05': { tra: 0 },               // cần bán gấp, chịu bớt
+  'TC-B08': { tra: 2, buoc: 0.05 },   // giữ giá
+  'TC-B09': { tra: 0, cham: true },   // mới dùng app
+  'TC-B10': { buoc: 0.06 },           // đòi giá cao hơn thị trường
+  'TC-M04': { tra: 2, buoc: 0.06 },   // trả giá gắt
+  'TC-M07': { tra: 0 },               // chốt nhanh khi hàng đẹp
+  'TC-M09': { tra: 0 },               // ít trả giá
+};
 // Giá mua dự kiến của bên mua ảo (ngân sách riêng của họ, theo giá thị trường trong docs/nghiep-vu/du-lieu-cho.json),
 // chỉ dùng khi chợ chưa đủ giao dịch để có giá tham khảo. Không hiển thị cho người dùng như giá tham khảo.
 const GIA_MUA: Record<string, number> = { 'XOAI_CAT_CHU|L1': 25000, 'XOAI_CAT_CHU|L2': 15000, 'CHANH_KHONG_HAT|L1': 14000, 'TOM_THE|48-52': 120000,
@@ -93,13 +106,15 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     if (toChucThat.has(tc)) continue;
     const me = await vai(sdt); if (!me?.token) continue;
     const t = me.token;
-    // 1) Lời chào: tới lượt mình → vòng 1 trả giá nhích 3% về phía mình, từ vòng 2 đồng ý.
+    // 1) Lời chào: tới lượt mình → trả giá theo tính cách (số lần, bước giá), hết lượt trả giá thì đồng ý.
+    const kieu = KIEU[tc] ?? {}; const soLanTra = kieu.tra ?? 1, buoc = kieu.buoc ?? 0.03;
     for (const of of (await get('/v1/offers', t)) ?? []) {
       const phia = of.la_ben_mua ? 'buyer' : 'seller';
       const v = of.vong_cuoi;
       if (of.status === 'sent' && v && v.from_side !== phia) {
-        if (Number(v.round_no) <= 1) {
-          const gia = Math.round(Number(v.price_vnd) * (phia === 'seller' ? 1.03 : 0.97) / 100) * 100;
+        if (kieu.cham && (luotCham++ % 2)) continue; // người cẩn thận / mới dùng app trả lời chậm (cách một vòng)
+        if (Math.ceil(Number(v.round_no) / 2) <= soLanTra) {
+          const gia = Math.round(Number(v.price_vnd) * (phia === 'seller' ? 1 + buoc : 1 - buoc) / 100) * 100;
           await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
         } else await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
       }

@@ -156,20 +156,20 @@ const mstHopLe = () => !MUA || /^\d{10}(\d{3})?$/.test(chuan($("mst").value));
 const hopLe = () => /^0\d{9}$/.test(sdt()) && (cheDo === "dang-nhap" || ($("ho-ten").value.trim() && $("ten-cs").value.trim() && mstHopLe()));
 const buoc = (n) => { for (const b of ["b0", "b1", "b2", "b3"]) $(b).hidden = b !== `b${n}`; $("tam").setAttribute("aria-labelledby", ["tieu-de-0", "tieu-de", "tieu-de-2", "tieu-de-3"][n]); };
 
-// Bản trình diễn: chọn người mẫu. Tính cách là thứ AI đóng vai dùng để trả lời.
+// Bản trình diễn: chọn người mẫu. Tính cách khớp hành vi AI ở backend/src/demo/doi-tac-ao.ts (bảng KIEU).
 const TINH = {
   "TC-B01": "Xoài cát. Dễ chốt nếu giá sát giá tham khảo, trả lời nhanh.",
   "TC-B02": "Sầu riêng. Hay trả giá thêm một lần trước khi đồng ý.",
   "TC-B03": "HTX gom nhiều hộ, sản lượng lớn, thích hợp đồng khung theo tuần.",
-  "TC-B04": "Cẩn thận, đọc kỹ điều khoản, trả lời chậm.",
+  "TC-B04": "Cẩn thận, trả lời chậm, trả giá một lần.",
   "TC-B05": "Hay cần bán gấp khi hàng chín, chịu bớt chút giá.",
-  "TC-B06": "Lúa. Chỉ nhận đơn đủ lớn, đòi cọc đầy đủ.",
-  "TC-B07": "Thanh long. Hay giao thiếu vài phần trăm vì hao hụt.",
-  "TC-B08": "Cá tra. Giữ giá, từ chối chào giá thấp hơn 5%.",
-  "TC-B09": "Chanh không hạt. Mới dùng app, cần trâu hướng dẫn từng bước.",
+  "TC-B06": "Lúa. Trả giá một lần rồi đồng ý.",
+  "TC-B07": "Thanh long. Trả giá một lần rồi đồng ý.",
+  "TC-B08": "Cá tra. Giữ giá: trả giá lên 2 lần rồi mới chốt.",
+  "TC-B09": "Chanh không hạt. Mới dùng app, trả lời chậm, đồng ý ngay.",
   "TC-B10": "Bưởi da xanh. Có giấy kiểm nghiệm, đòi giá cao hơn thị trường.",
-  "TC-M01": "Nhà máy sấy. Mua số lượng lớn, khó tính khâu nghiệm thu.",
-  "TC-M02": "Xuất nhập khẩu. Cần đúng quy cách, hay hạ cấp khi không đạt.",
+  "TC-M01": "Nhà máy sấy. Mua số lượng lớn, trả giá một lần.",
+  "TC-M02": "Xuất nhập khẩu. Cần đúng quy cách, trả giá một lần.",
   "TC-M03": "Nhà hàng. Mua giỏ nhiều món nhỏ mỗi tuần.",
   "TC-M04": "Vựa đầu mối. Vừa mua vừa bán lại, trả giá gắt.",
   "TC-M05": "Thủy sản. Mua định kỳ, chuộng hợp đồng khung theo tuần.",
