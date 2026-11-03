@@ -66,7 +66,7 @@ async function taiHet() {
 const maHD = (c) => String(c || "").replace(/^HD-/, "HĐ-");
 const ngay = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }) : "");
 const MO = (man, q) => `mua.html?man=${man}&${q}${THU ? `&thu=${THU}` : ""}`;
-const conTra = (p) => Number(p.amount_due_vnd || 0) - Number(p.da_nhan_vnd || p.received_vnd || 0);
+const conTra = (p) => Number(p.amount_due_vnd || 0) - Number(p.da_nhan_vnd || p.confirmed_vnd || p.received_vnd || 0);
 const canTra = (p) => ["due", "partially_received", "overdue", "partially_confirmed"].includes(p.status);
 
 // ---------- Hôm nay ----------
@@ -257,7 +257,7 @@ $("#nc-gui").onclick = async () => { const loi = $("#nc-loi"); loi.textContent =
     const n = await api("/v1/demands", { product_code: $("#nc-sp").value, segment_code: seg, needed_from: $("#nc-tu").value, needed_to: $("#nc-den").value, delivery_mode: "self_pickup", lines: [{ grade_code: $("#nc-loai").value.trim(), qty_g: String(qty), max_price_vnd: String(gia), min_source_qty_g: String(Math.min(qty, 20000)) }] });
     dong(); bao(`Đã đăng nhu cầu ${n.code}. Người bán đang có món này sẽ báo giá.`); await lamMoi();
   } catch (e) { loi.textContent = e.message; } $("#nc-gui").disabled = false; };
-$("#xuat-bang-ke").onclick = () => { const dong2 = [["Khoản", "Số tiền (đ)", "Đã nhận (đ)", "Trạng thái", "Hạn"], ...DL.khoan.map((p) => [p.nguon, p.amount_due_vnd, p.da_nhan_vnd || 0, p.status, p.due_at ? new Date(p.due_at).toLocaleString("vi-VN") : ""])];
+$("#xuat-bang-ke").onclick = () => { const dong2 = [["Khoản", "Số tiền (đ)", "Đã nhận (đ)", "Trạng thái", "Hạn"], ...DL.khoan.map((p) => [p.nguon, p.amount_due_vnd, p.da_nhan_vnd || p.confirmed_vnd || 0, p.status, p.due_at ? new Date(p.due_at).toLocaleString("vi-VN") : ""])];
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + dong2.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" })); a.download = `bang-ke-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); };
 $("#dang-xuat").onclick = dangXuat;
 $("#xem-lai-chao").onclick = () => { $("#app").hidden = true; $("#tab").hidden = true; moChao(() => { $("#app").hidden = false; $("#tab").hidden = false; }); };

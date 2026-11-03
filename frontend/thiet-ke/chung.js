@@ -485,7 +485,7 @@ if (typeof document !== "undefined" && typeof MutationObserver !== "undefined") 
 }
 // Bản trình diễn: AI đóng mọi bên còn lại (POST /v1/test/doi-tac-ao/vong, chỉ môi trường thử). Mỗi 8 giây khi tab đang xem,
 // bên kia làm xong việc gì thì báo một dòng + nút "Xem" tải lại màn. Bản thật không có test_tools → không chạy.
-if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app)\.html$/.test(location.pathname)) (async () => {
+if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(location.pathname)) (async () => {
   const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));
   if (!cap.test_tools) return;
   let tk = null; try { tk = await phien(); } catch { return; }

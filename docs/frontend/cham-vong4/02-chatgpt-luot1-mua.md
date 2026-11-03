@@ -1,0 +1,64 @@
+**B: 57/100 — tăng 8 điểm so với lượt 2 cũ. C: 29/50 — thấp hơn Claude 8 điểm.** Bản mới đã có nghiệp vụ qua API, nhưng đường trình diễn bên mua còn các điểm kẹt ở cọc, vòng AI khi chuyển màn và thời gian giao.
+
+Tôi chỉ đọc ảnh, mã, kịch bản và nhật ký; không sửa tệp, không chạy E2E/API làm đổi dữ liệu. Mốc mã khi chốt là `5e22b08`, đã có sửa tính cách AI sau bài chấm của Claude. Không trừ điểm đối tác mô phỏng, đăng nhập chọn vai, mã người nhận thử hay các mục chủ ý báo “đang phát triển”.
+
+**1. Nhật ký nhập vai bên mua**
+
+Đây là nhật ký đọc ảnh trong vai chị Hà; tài khoản mẫu trên ảnh là Trịnh Quốc Thịnh của Nhà máy sấy Đồng Xanh.
+
+| Ảnh | Giọng người dùng |
+|---|---|
+| M00 | “Tôi chọn đúng Nhà máy sấy Đồng Xanh, có lời giải thích rõ những người còn lại do AI đóng.” |
+| M01 | “Tôi biết đang có một đơn chạy và ngân hàng giữ bao nhiêu cọc, nhưng chưa biết tuần này đủ hay thiếu bao nhiêu hàng.” |
+| M02 | “Tôi tìm được hàng theo món, tỉnh, người bán và xem giá giao dịch tham khảo, nhưng các thẻ chưa giúp tôi kiểm chứng chất lượng lô.” |
+| M03 | “Tôi đặt ba lô cạnh nhau để xem lượng, loại và ngày có hàng; ba lô này cùng một người bán nên chưa phải ba nhà cung cấp khác nhau.” |
+| M04 | “Tôi thấy giá chào, lượng mua, thành tiền và điều kiện tại vườn trước khi gửi.” |
+| M05 | “Tôi phân biệt được đơn hoàn tất với đơn đang chờ người bán giao hàng.” |
+| M06 | “Tôi hiểu tiền hàng trả người bán và cọc ngân hàng giữ là hai khoản khác nhau, nhưng ảnh chưa cho thấy một lần ngân hàng hoàn tiền thực sự.” |
+| M07 | “Tôi thấy nhu cầu mua tuần và người bán từng giao dịch, nhưng dòng ‘Chủ tổ chức · duyệt chi tới 0 đ’ làm tôi bối rối.” |
+| M08 | “Tôi mở được tấm Tin nhắn, nhưng ở tài khoản này chưa có cuộc trao đổi nào để đọc hoặc trả lời.” |
+| M09 | “Tôi được báo rõ dịch vụ xe, kho lạnh, kiểm định đang phát triển nên hiểu đây là giới hạn của bản trình diễn.” |
+
+**2. Bảng B — App mua**
+
+Các đường dẫn dưới đây trỏ vào mã hiện tại; bằng chứng trình duyệt/E2E trong nhật ký là kết quả đã được ghi lại, không phải lần chạy lại của tôi.
+
+| Mục | Điểm | Căn cứ và lý do |
+|---|---:|---|
+| **T1. Chắc nguồn** | **4/10** | M01 chỉ có số khung, số đơn và nhu cầu đang chờ. [mua-app.js:73](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:73) chưa tính **kg cần / đã chắc / còn thiếu** theo món và tuần. M07 có lượng cần nhưng nằm ở màn khác. Chưa đáp ứng câu hỏi chính của T1. |
+| **T2. Tìm & so sánh** | **7/10** | M02–M03 có tìm, lọc và bảng so lượng, loại, ngày, nơi; mã giới hạn ba lựa chọn tại [mua-app.js:271](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:271). E104 ghi đã kiểm thao tác chọn bốn, giữ ba, bảng đúng dữ liệu ([TIEN-DO.md:133](/home/twictrn/agiviet-production-v2/frontend/TIEN-DO.md:133)). Bảng chưa có đường chào giá trực tiếp cho từng cột; phải đóng rồi tìm lại thẻ. |
+| **T3. Tin người bán** | **4/10** | M02–M03 nói thật “ước tính”, “chưa có ảnh chụp trong app”, nhưng ảnh thẻ lấy từ bộ minh họa; không có đường mở hồ sơ/chứng cứ tại [mua-app.js:128](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:128). Backend đã có mức xác minh, giấy tờ và số đơn hoàn tất ở [trung-binh.ts:102](/home/twictrn/agiviet-production-v2/backend/src/nghiep-vu/trung-binh.ts:102), nhưng app mới chưa đưa chúng tới quyết định mua. |
+| **T4. Quyết định giá** | **7/10** | M04 có neo giá, lượng, tổng tiền; mã còn so chênh lệch với giá gần đây tại [mua-app.js:140](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:140). E94 ghi chào giá bị tự đóng đúng luật; E106 ghi chào bưởi được đối tác phản hồi. Tuy nhiên [mua-app.js:147](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:147) vẫn xóa mọi ký tự không phải số: **`-1000` trở thành `1000`**, làm đổi ý nghĩa đầu vào. |
+| **T5. Việc tới lượt** | **5/10** | Hàng đợi đã dựng từ đơn, khung, giá tuần và khoản trả, không còn cơ chế xóa việc giả của bản cũ. Nhưng [mua-app.js:82](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:82) **không đưa lời chào người bán vừa trả giá vào hàng đợi**. M01 “0 việc” vì vậy chưa bảo đảm không còn việc mua hàng cần xử lý. Vòng AI cũng không chạy ở các màn sâu, như phân tích D3. |
+| **T6. Tiền minh bạch** | **5/10** | M06 tách cọc, tiền hàng và xác nhận của người bán; hướng dẫn chuyển/báo chuyển gọi API tại [mua-app.js:181](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:181). Nhưng API trả **`confirmed_vnd`** ([tien.ts:247](/home/twictrn/agiviet-production-v2/backend/src/nghiep-vu/tien.ts:247)), trong khi phép tính còn trả đọc `da_nhan_vnd/received_vnd`, CSV đọc `da_nhan_vnd` ([mua-app.js:69](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:69), [mua-app.js:260](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:260)). Khoản đơn đã xác nhận có thể xuất “Đã nhận = 0”; khoản nhận một phần có thể bị tính sai phần còn trả. |
+| **T7. Giao nhận & chất lượng** | **6/10** | Đã có mã gọi API đặt xe, QR và nghiệm thu, gồm từng món, lý do và ảnh: [mua.js:1116](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1116), [mua.js:1148](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1148). E105–E106 chứng minh nghiệp vụ có thể tới hoàn tất. **Không kiểm được** toàn chuỗi chị Hà tự thao tác giao nhận, hạ loại/trả lại trên điện thoại: kịch bản bên mua cho AI làm cả hai phía và nghiệm thu đủ. |
+| **T8. Điều hướng điện thoại** | **7/10** | M01–M09 có năm tab, nút chính rõ; kích thước nút chính 44–48px trong [mua-app.html:37](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.html:37). Tuy nhiên các luồng chính chuyển sang `mua.html` ([mua-app.js:68](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:68)), nơi bộ tab đổi và có đường sang màn mẫu. Chưa giữ được một trải nghiệm điều hướng thống nhất xuyên suốt. |
+| **T9. Công cụ doanh nghiệp** | **6/10** | Kế hoạch đọc nhu cầu, lượng, khoảng ngày, số báo giá từ API; người bán quen gom từ đơn. E104 ghi đã kiểm các màn này; xem [mua-app.js:227](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:227). CSV có mã tải tệp nhưng sai ánh xạ số đã nhận; “kế hoạch” hiện là danh sách nhu cầu, chưa đối chiếu với lượng đã được đáp ứng. Không trừ vì thiếu quản lý thành viên/duyệt chi ngoài danh sách thi. |
+| **T10. Tin cậy kỹ thuật & tiếp cận** | **6/10** | Có phiên đăng nhập, thông báo lỗi chính, nhãn ô nhập, khóa nền và giữ focus trong tấm ([mua-app.js:274](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:274)). Nhưng lỗi API tiền/nhu cầu/tin nhắn bị đổi thành rỗng hoặc 0 qua `thu()` ([mua-app.js:20](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:20)); người xem khó phân biệt “không có” với “không tải được”. CSS còn chữ 12–12,5px. **Không kiểm được** toàn bộ màn mua ở 360px và tương phản thực tế. |
+| **Tổng B** | **57/100** | **+8 so với 49/100 trước**, chấm theo phạm vi thi hiện tại. |
+
+**3. Bảng C — nhìn từ bên mua, phản biện Claude**
+
+| Mục | Tôi | Claude | Căn cứ và phản biện |
+|---|---:|---:|---|
+| **D1. Vào vai nhanh** | **7/10** | 8 | **Đồng ý phần chọn vai:** Đăng nhập → chọn nhà máy là hai chạm, tên tổ chức rõ ở M01. Nhưng lần đầu còn màn chào trước khi vào Hôm nay ([mua-app.js:313](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:313)); cần thêm ít nhất nút Bỏ qua. Vì vậy chưa đạt trọn yêu cầu hai chạm tới màn làm việc. |
+| **D2. Chợ sống** | **7/10** | 6 | **Không đồng ý căn cứ “ai cũng trả giá 3%” ở mã hiện tại:** đã có số lượt, bước giá và phản hồi chậm theo vai tại [doi-tac-ao.ts:22](/home/twictrn/agiviet-production-v2/backend/src/demo/doi-tac-ao.ts:22), được ghi thêm ở E107. Giá kín, giá tham khảo và lọc thông báo theo giao dịch của mình có mã hỗ trợ. Chưa lên 8 vì AI chưa có nhánh chủ động báo giá cho nhu cầu mới; E102 còn ghi việc này chưa xong, trong khi giao diện hứa người bán sẽ báo giá. |
+| **D3. Trọn luồng không kẹt** | **4/10** | 8 | **Không đồng ý 8.** Vòng AI chỉ bật cho `ban-*` và `mua-app.html` tại [chung.js:488](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/chung.js:488), còn trả giá/ký/giao nhận ở `mua.html`. Đăng nhập chọn vai không thêm `?thu=` ([dang-nhap.html:204](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/dang-nhap.html:204)), nhưng nút ngân hàng giả lập lại đòi tham số đó ([mua.js:1104](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1104)). Kịch bản bên mua gọi vòng bằng **nhân viên để AI làm cả hai phía**, có tua giờ ([kiem-cho-ai-ben-mua.mjs:12](/home/twictrn/agiviet-production-v2/backend/scripts/kiem-cho-ai-ben-mua.mjs:12)); chưa chứng minh đường người mua tự bấm không cần can thiệp. |
+| **D4. Tiền ngân hàng minh bạch** | **6/10** | 8 | **Đồng ý nền nghiệp vụ đã có bằng chứng:** B06 khớp **7.900.000 = 5.530.000 trả thẳng + 2.370.000 cọc**, có đối soát. Nhưng phía mua còn sai trường tiền đã nhận ở T6; tab Tiền không cộng cọc khung như Hôm nay. Bảng dịch trạng thái tiền cũng thiếu `succeeded`, `reconciled`, `fully_processed`, khiến mã có thể hiện nguyên văn ([mua.js:1321](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1321)). M06 hoàn 0 đồng **không chứng minh đã hoàn được tiền thừa**. |
+| **D5. Phạm vi sạch** | **5/10** | 7 | **Đồng ý không tính M09 là lỗi.** Tuy nhiên màn sâu vẫn cho đi tới Hôm nay/Tiền/Tin nhắn cũ chứa số mẫu; chính [mua.js:1642](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1642) xác định các màn này chưa nối thật. Dải “mô phỏng” giúp cảnh báo nhưng vẫn làm lẫn hai bộ số trong cùng đường thi. Nhận xét “0 mã nội bộ trong tiền” cũng chưa đúng với các trường hợp thiếu ánh xạ nêu ở D4. |
+| **Tổng C** | **29/50** | **37/50** | **−8 điểm** |
+
+**Giới hạn bằng chứng E2E:** Tôi ghi nhận kết quả “hoàn tất trong 10 vòng” theo E106. Tuy nhiên script hiện chọn đơn đầu danh sách, không buộc đó là đơn sinh từ lời chào vừa tạo, và hết vòng mà chưa hoàn tất cũng không có kiểm tra bắt buộc báo thất bại ([kiem-cho-ai-ben-mua.mjs:14](/home/twictrn/agiviet-production-v2/backend/scripts/kiem-cho-ai-ben-mua.mjs:14)). Vì vậy kết quả này chưa đủ bảo chứng cho toàn bộ luồng trình diễn bên mua.
+
+**4. Tám việc cần sửa trước buổi thi — nặng trước**
+
+| Ưu tiên | Việc cần sửa | Tệp:dòng và cách sửa ngắn |
+|---|---|---|
+| **1** | **Cho người chọn vai mô phỏng chuyển cọc được** | [mua.js:1104](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1104): bật nút ngân hàng theo `frontend-capabilities.test_tools`, đồng nhất với đăng nhập chọn vai; không phụ thuộc riêng `?thu=`. |
+| **2** | **Giữ AI chạy khi vào màn sâu** | [chung.js:488](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/chung.js:488): bao phủ `mua.html`, tiếp tục loại tổ chức người đang cầm máy; có cách cập nhật trạng thái sau phản hồi của đối tác. |
+| **3** | **Gỡ chờ ngày giao và kiểm đúng đường người mua thật** | [mua.js:1010](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1010): bản thi cần lịch giao trong phiên hoặc thao tác tua giờ được ghi rõ. [kiem-cho-ai-ben-mua.mjs:12](/home/twictrn/agiviet-production-v2/backend/scripts/kiem-cho-ai-ben-mua.mjs:12): gọi vòng bằng tài khoản mua để loại đúng người thật; bám `offer_id/order_id` vừa tạo, chưa hoàn tất phải báo thất bại. |
+| **4** | **Sửa số tiền và nhãn quyết toán** | [mua-app.js:62](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:62): chuẩn hóa `confirmed_vnd` cho tính còn trả và CSV; dùng cùng phép tính cọc khung ở Hôm nay/Tiền; API tiền lỗi phải hiện chưa tải được. [mua.js:1321](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1321): bổ sung đúng loại lệnh/trạng thái backend. |
+| **5** | **Chặn đường từ màn sâu quay vào số mẫu** | [mua.js:920](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:920), [mua.js:1642](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua.js:1642): trong đường thi, Hôm nay/Tiền/Tin nhắn quay về chức năng tương ứng của app mới; giữ các màn sâu đã nối nghiệp vụ. |
+| **6** | **Đưa phản hồi lời chào vào “Tới lượt bạn”** | [mua-app.js:58](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:58), [mua-app.js:82](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:82): tải lời chào, thêm việc trả lời giá khi tới lượt mua và lập đơn khi đã đồng ý. |
+| **7** | **Cho Hôm nay trả lời được đủ/thiếu hàng** | [mua-app.js:73](/home/twictrn/agiviet-production-v2/frontend/thiet-ke/mua-app.js:73): đối chiếu nhu cầu tuần với lượng đơn/khung đã xác nhận theo món và ngày; tách lượng đang chờ, tránh chỉ đếm số đơn. |
+| **8** | **Có bằng chứng hoàn tiền thừa khác 0** | [backend/scripts/kiem-cho-ai-ben-mua.mjs:9](/home/twictrn/agiviet-production-v2/backend/scripts/kiem-cho-ai-ben-mua.mjs:9): bổ sung một ca thuộc luồng đang show tạo phần thừa, kiểm lệnh hoàn, đối soát và số hiện ở app mua. M06 hiện tại chưa kiểm được việc này. |

@@ -1101,9 +1101,11 @@ if (THAT) {
           ${chep("coc-nd", h.payment_ref, "Nội dung chuyển khoản (ghi đúng)")}
           <p style="margin:0;font-weight:600">Hạn chót: ${han.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}. Quá hạn chưa đủ cọc thì đơn tự đóng.</p>
           ${bao(esc(h.cau), "sl-bao-nh")}
-          ${new URLSearchParams(location.search).has("thu") ? `<button type="button" class="sl-nut sl-vien" id="coc-gia-lap">Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>` : ""}
+          <button type="button" class="sl-nut sl-vien" id="coc-gia-lap" hidden>Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>
           <p class="sl-ghi" id="coc-bao" role="status"></p></section>`);
         const o = khung.querySelector("#coc");
+        // Nút giả lập ngân hàng theo máy chủ (test_tools), không theo ?thu= — đăng nhập chọn vai ở bản thi không có tham số này.
+        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) o.querySelector("#coc-gia-lap")?.removeAttribute("hidden"); }).catch(() => {});
         if (h.vietqr) await veQr(o.querySelector("#coc-qr"), h.vietqr);
         o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
         const gl = o.querySelector("#coc-gia-lap");
