@@ -12,7 +12,8 @@ COPY security/lib /opt/security/lib
 COPY db/migrations /opt/db/migrations
 COPY db/seed /opt/db/seed
 COPY db/seed-cho /opt/db/seed-cho
-RUN mkdir -p /tmp/agv-tai-lieu && chown node:node /tmp/agv-tai-lieu
+# Backend ghi tài liệu (bản trình bày, PDF) vào .du-lieu cạnh mã: thư mục phải thuộc user node (trước: EACCES khi chốt nhận hàng).
+RUN mkdir -p /tmp/agv-tai-lieu /opt/backend/.du-lieu && chown node:node /tmp/agv-tai-lieu /opt/backend/.du-lieu
 USER node
 ENV NODE_ENV=production AGV_MOI_TRUONG=thu AGV_DU_LIEU=cho AGV_DONG_HO_THU=1 AGV_PG_POOL_MAX=4 \
     HOST=0.0.0.0 PORT=10000 LOG_LEVEL=warn AGV_DOC_DIR=/tmp/agv-tai-lieu
