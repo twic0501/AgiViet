@@ -100,6 +100,23 @@ const NHOM = (ma = "") => (/^(TOM|CA_|CUA|NGHEU|SO_|OC|MUC)/.test(ma) ? "Thủy 
 const giaCho = new Map();
 async function layGiaCho(ma, loai) { const k = ma + "|" + loai; if (!giaCho.has(k)) giaCho.set(k, thu(api(`/v1/reference-prices?product=${encodeURIComponent(ma)}&grade=${encodeURIComponent(loai)}`))); return giaCho.get(k); }
 const TINH = { DT: "Đồng Tháp", CT: "Cần Thơ", TN: "Tây Ninh", VL: "Vĩnh Long", AG: "An Giang", TG: "Tiền Giang", BT: "Bến Tre", HCM: "TP.HCM", ST: "Sóc Trăng", CM: "Cà Mau", KG: "Kiên Giang", LA: "Long An" };
+// So sánh nguồn: chọn 2–3 lô → bảng cùng tiêu chí (lượng, cân/ước, ngày, nơi, ảnh, giá giao dịch cùng loại).
+const SS = new Set();
+const veNutSS = () => { const n = [...SS].filter((id) => DL.lo?.some((l) => l.id === id)).length; $("#nut-ss").hidden = n < 2; $("#nut-ss").textContent = `So sánh ${n} nguồn`; };
+async function veSoSanh() {
+  const ds = DL.lo.filter((l) => SS.has(l.id));
+  const gia = await Promise.all(ds.map((l) => layGiaCho(l.product_code, l.grade_code)));
+  const dong = (nhan, f) => `<tr><th scope="row">${nhan}</th>${ds.map((l, i) => `<td>${f(l, i)}</td>`).join("")}</tr>`;
+  $("#ss-bang").innerHTML = `<table class="bang-ss"><thead><tr><th></th>${ds.map((l) => `<th scope="col">${esc(l.product_name || l.product_code)} ${esc(l.grade_code)}</th>`).join("")}</tr></thead><tbody>
+    ${dong("Người bán", (l) => esc(l.seller_name || ""))}
+    ${dong("Nơi", (l) => esc(TINH[l.province_code] || l.province_code || ""))}
+    ${dong("Còn", (l) => `<span class="so">${vnd(kg(l.available_g ?? l.qty?.available))} kg</span>`)}
+    ${dong("Lượng", (l) => (l.qty_basis === "weighed" ? "Đã cân" : "Ước tính"))}
+    ${dong("Có hàng từ", (l) => ngay(l.available_from))}
+    ${dong("Ảnh trong app", (l) => String((l.photos || []).filter((p) => p.captured_in_app).length))}
+    ${dong("Giá giao dịch cùng loại", (l, i) => (gia[i]?.status === "du_du_lieu" ? `<span class="so">${vnd(gia[i].price_vnd)} đ/kg</span>` : "Chưa đủ dữ liệu"))}
+    </tbody></table>`;
+}
 function veNguon() {
   const ds0 = (DL.lo || []).filter((l) => !l.is_substandard || l.ban_gap);
   const nhom = ["Tất cả", ...new Set(ds0.map((l) => NHOM(l.product_code)))];
@@ -114,7 +131,9 @@ function veNguon() {
         <p class="phu">${esc(l.seller_name || "")} · ${esc(TINH[l.province_code] || l.province_code || "")}</p><p class="phu so">Còn ${vnd(kg(l.available_g ?? l.qty?.available))} kg · từ ${ngay(l.available_from)}</p></div></div>
     <div class="tin">${l.qty_basis === "weighed" ? `<span class="chip la">Đã cân</span>` : `<span class="chip">Người bán ước tính</span>`}${anhApp ? `<span class="chip la">${anhApp} ảnh chụp trong app</span>` : `<span class="chip">Chưa có ảnh chụp trong app</span>`}${l.ban_gap ? `<span class="chip do">Bán gấp</span>` : ""}</div>
     <p class="phu" data-gia-cho="${esc(l.product_code)}|${esc(l.grade_code)}">Đang lấy giá chợ…</p>
+    <label class="so-sanh-chon"><input type="checkbox" data-ss="${l.id}" ${SS.has(l.id) ? "checked" : ""}> So sánh</label>
     <button class="nut vien rong" data-mo="chao-gia" data-lo="${l.id}">Chào giá</button></div>`; }).join("") : `<div class="trong"><p>Không có lô nào khớp. Gửi nhu cầu để người bán báo giá cho bạn.</p><button class="nut vien" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>`;
+  veNutSS();
   document.querySelectorAll("[data-gia-cho]").forEach(async (el) => { const [ma, loai] = el.dataset.giaCho.split("|"); const g = await layGiaCho(ma, loai);
     el.textContent = g?.status === "du_du_lieu" ? `Giá giao dịch trên AgiViet: ${vnd(g.price_vnd)} đ/kg (${g.order_count} đơn, đến ${ngay(g.as_of)})` : ""; el.hidden = g?.status !== "du_du_lieu"; });
 }
@@ -204,9 +223,25 @@ $("#ds-tin").addEventListener("click", (e) => {
   const c = e.target.closest("[data-cuoc]"); if (c) moCuoc(JSON.parse(c.dataset.cuoc), c.dataset.ten);
 });
 
+// Kế hoạch mua tuần: mỗi nhu cầu đang mở — cần bao nhiêu (chi tiết nhu cầu), đã có mấy báo giá (offer-comparison).
+async function veKeHoach() {
+  const mo = (DL.nhuCau || []).filter((n) => n.status === "open");
+  if (!mo.length) { $("#ke-hoach").innerHTML = `<p class="phu">Chưa có nhu cầu đang mở. Gửi nhu cầu để người bán báo giá.</p>`; return; }
+  const ds = await Promise.all(mo.map(async (n) => { const [ct, so] = await Promise.all([thu(api(`/v1/demands/${n.id}`)), thu(api(`/v1/demands/${n.id}/offer-comparison`))]); return { n, ct, so }; }));
+  const ten = (ma) => DL.sp.find((s) => s.code === ma)?.name_vi || ma;
+  $("#ke-hoach").innerHTML = ds.map(({ n, ct, so }) => { const can = (ct?.lines || []).reduce((a, l) => a + Number(l.qty_g || 0), 0) / 1000; const bg = (so?.items ?? so ?? []).length || 0;
+    return `<div class="viec" style="cursor:default"><i class="${bg ? "la" : ""}"></i><div><b>${esc(ten(n.product_code))} · cần ${vnd(can)} kg</b><p class="phu">${ct?.needed_from ? `Từ ${ngay(ct.needed_from)} tới ${ngay(ct.needed_to)} · ` : ""}${bg ? `${bg} báo giá` : "Chưa có báo giá"}</p></div><span class="chip">${esc(n.code)}</span></div>`; }).join("");
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-tim-ban]"); if (!b) return; tu = b.dataset.timBan; $("#tim").value = tu; di("nguon-hang"); veNguon(); });
+
 // ---------- Thêm, tin nhắn, nhu cầu ----------
 function veThem() {
   $("#tk-thong-tin").innerHTML = `<p style="margin:0"><b>${esc(me.name)}</b> · ${esc(me.phone_masked)}</p><p class="phu">${esc(me.org?.name)} · ${me.roles.includes("owner") ? "Chủ tổ chức" : "Thành viên"} · duyệt chi tới ${vnd(me.approval_limit_vnd)} đ</p>`;
+  // Người bán quen: gom từ đơn của mình, ai giao xong nhiều đứng trước; "Xem hàng" = sang Nguồn lọc theo tên.
+  const theo = new Map(); for (const d of DL.don) { const k = d.seller_name || "Người bán"; const x = theo.get(k) || { n: 0, xong: 0 }; x.n++; if (d.status === "completed") x.xong++; theo.set(k, x); }
+  $("#ban-quen").innerHTML = theo.size ? [...theo].sort((a, b) => b[1].xong - a[1].xong || b[1].n - a[1].n).slice(0, 5).map(([ten, x]) => `<button type="button" class="viec" data-tim-ban="${esc(ten)}"><i class="${x.xong ? "la" : ""}"></i><div><b>${esc(ten)}</b><p class="phu">${x.n} đơn · ${x.xong} đã xong</p></div><span class="chip">Xem hàng</span></button>`).join("")
+    : `<p class="phu">Chưa có. Sau đơn đầu tiên, người bán sẽ hiện ở đây để đặt lại nhanh.</p>`;
+  veKeHoach();
   veDsTin();
   // Chấm đỏ = số cuộc mà tin cuối là của bên kia (chưa trả lời); API chưa có cờ đã đọc.
   const moi = DL.tin.filter((c) => !c.la_cua_toi).length; $("#dem-tin").textContent = moi; $("#dem-tin").hidden = !moi;
@@ -233,7 +268,10 @@ const di = (m) => { document.querySelectorAll("section[data-man]").forEach((s) =
   document.querySelectorAll(".tab button").forEach((b) => (b.dataset.di === m ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   $("#tieu").textContent = TEN[m]; scrollTo(0, 0); try { history.replaceState(null, "", `#${m}`); } catch {} };
 let truoc = null;
-const mo = (id, t) => { if (id === "tra-tien") veTraTien(t.dataset.khoan); if (id === "chao-gia") veChaoGia(t.dataset.lo);
+$("#ds-lo").addEventListener("change", (e) => { const c = e.target.closest("[data-ss]"); if (!c) return;
+  if (c.checked && SS.size >= 3) { c.checked = false; bao("So sánh tối đa 3 nguồn. Bỏ chọn một nguồn trước."); return; }
+  c.checked ? SS.add(c.dataset.ss) : SS.delete(c.dataset.ss); veNutSS(); });
+const mo = (id, t) => { if (id === "tra-tien") veTraTien(t.dataset.khoan); if (id === "chao-gia") veChaoGia(t.dataset.lo); if (id === "so-sanh") veSoSanh();
   truoc = document.activeElement; $("#" + id).classList.add("mo"); $("#app").inert = true; $("#tab").inert = true; setTimeout(() => $("#" + id).querySelector("input, select, button")?.focus(), 50); };
 const dong = () => { document.querySelectorAll(".phu-man.mo").forEach((x) => x.classList.remove("mo")); $("#app").inert = false; $("#tab").inert = false; truoc?.focus(); };
 let hen; const bao = (t) => { const b = $("#bao"); b.textContent = t; b.style.display = "block"; clearTimeout(hen); hen = setTimeout(() => (b.style.display = "none"), 3500); };

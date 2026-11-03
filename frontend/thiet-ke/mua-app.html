@@ -46,6 +46,13 @@
   .viec i { align-self: stretch; border-radius: 4px; background: var(--vang); } .viec i.do { background: var(--do); } .viec i.la { background: var(--la); }
   .viec b { display: block; font-size: 15px; }
   .viec .phu { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nut-ss { position: sticky; bottom: calc(84px + env(safe-area-inset-bottom)); width: 100%; z-index: 5; }
+  .nut-ss[hidden] { display: none; }
+  .ss-cuon { overflow-x: auto; margin: 0 -4px; scrollbar-width: none; } .ss-cuon::-webkit-scrollbar { display: none; }
+  .bang-ss { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 300px; }
+  .bang-ss th, .bang-ss td { text-align: left; padding: 10px 6px; border-top: 1px solid var(--ke); vertical-align: top; }
+  .bang-ss .so { white-space: nowrap; }
+  .bang-ss thead th { border-top: 0; font-size: 15px; } .bang-ss tbody th { color: var(--muc-phu, #55604f); font-weight: 500; width: 30%; }
   .luong-tin { display: flex; flex-direction: column; gap: 8px; max-height: 50dvh; overflow-y: auto; padding: 12px 0; scrollbar-width: none; }
   .luong-tin::-webkit-scrollbar { display: none; }
   .bong { max-width: 82%; align-self: flex-start; background: var(--giay-noi, #fff); border: 1px solid var(--ke); border-radius: 14px 14px 14px 4px; padding: 8px 12px; }
@@ -148,6 +155,7 @@
       <div class="tim"><input type="search" id="tim" placeholder="Tìm mặt hàng, tỉnh, người bán" aria-label="Tìm nguồn hàng"><button class="nut chinh nho" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>
       <div class="loc" role="group" aria-label="Lọc theo mặt hàng" id="loc"></div>
       <div id="ds-lo" style="display:grid;gap:14px"></div>
+      <button class="nut chinh nut-ss" id="nut-ss" data-mo="so-sanh" hidden>So sánh</button>
       <p class="ghi">Giá người bán là giá kín. Bạn chào giá; dưới mức người bán chấp nhận thì lời chào tự đóng, không ai bị ghi gì.</p>
     </section>
     <section data-man="don"><div id="ds-khung" style="display:grid;gap:14px"></div><div id="ds-don" style="display:grid;gap:14px"></div></section>
@@ -162,6 +170,8 @@
       <div class="the"><p class="nhan">Dịch vụ đối tác</p>
         <button type="button" class="muc" data-dang-phat-trien="Đặt xe, kho lạnh, kiểm định"><span class="bt"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg></span><div><b>Xe, kho lạnh, kiểm định</b><p class="phu">Đặt dịch vụ cho buổi nhận</p></div><span class="phu-mp">Sắp có</span></button>
       </div>
+      <div class="the"><p class="nhan">Kế hoạch mua tuần</p><div id="ke-hoach"><p class="phu">Đang tải…</p></div></div>
+      <div class="the"><p class="nhan">Người bán quen</p><div id="ban-quen"></div></div>
       <div class="the"><button class="muc" id="xem-lai-chao"><span class="bt">?</span><div><b>Xem lại hướng dẫn</b><p class="phu">4 bước dùng app mua</p></div><span>›</span></button>
         <button class="muc" id="dang-xuat"><span class="bt">⎋</span><div><b>Đăng xuất</b></div><span>›</span></button></div>
     </section>
@@ -181,6 +191,7 @@
   <button class="nut chinh rong" id="nc-gui">Gửi nhu cầu</button>
   <button class="nut vien rong" data-dong>Để sau</button>
 </div></div>
+<div class="phu-man" id="so-sanh" role="dialog" aria-modal="true" aria-labelledby="ss-t"><div class="tam"><h2 id="ss-t">So sánh nguồn</h2><div id="ss-bang" class="ss-cuon"></div><p class="phu">Giá giao dịch là giá các đơn đã xong trên AgiViet cùng mặt hàng, cùng loại; giá người bán đặt được giữ kín.</p><button class="nut vien rong" data-dong>Đóng</button></div></div>
 <div class="phu-man" id="nhan" role="dialog" aria-modal="true" aria-labelledby="tn-t"><div class="tam"><h2 id="tn-t">Tin nhắn</h2><div id="ds-tin"></div><p class="phu">Số điện thoại hai bên được che tới khi ngân hàng giữ cọc.</p><button class="nut vien rong" data-dong>Đóng</button></div></div>
 
 <div class="tab" id="tab" hidden><nav aria-label="Mục chính">

@@ -94,7 +94,7 @@ const DS = [
       ["m-chao-gia", "Chào giá kín", "Nhập giá + lượng, thấy thành tiền và so giá gần đây; dưới mức thì tự đóng.", "that", true, `mua-app.html${T}${M}#nguon-hang`],
       ["m-loi-chao", "Lời chào giá đã gửi", "Người bán đồng ý / trả giá / từ chối; lập đơn từ giá đã đồng ý.", "that", true, `mua.html?man=bao-gia&thu=${M}`],
       ["m-nhu-cau", "Gửi nhu cầu cho người bán", "Món, lượng, ngày, giá tối đa → người bán báo giá.", "that", true, `mua-app.html${T}${M}#them`],
-      ["m-so-sanh", "So sánh nguồn (tối đa 3)", "Bảng so cùng món: đủ lượng, giao đủ, hàng đạt, khoảng cách.", "mp", false, "mua-moi.html"],
+      ["m-so-sanh", "So sánh nguồn (tối đa 3)", "Chọn 2–3 lô ở Nguồn: người bán, nơi, lượng còn, cân/ước, ngày có hàng, ảnh, giá giao dịch cùng loại.", "that", false, `mua-app.html${T}${M}`],
     ]],
     ["Đơn và giao nhận", [
       ["m-don", "Danh sách đơn", "Tới lượt bạn xếp trước, ai đang giữ việc.", "that", true, `mua-app.html${T}${M}#don`],
@@ -110,9 +110,9 @@ const DS = [
       ["m-hoan", "Nhận tiền hoàn", "Tiền thừa trong cọc: ngân hàng giữ hộ tự hoàn về đúng tài khoản đã chuyển, hệ thống đối soát. Ngoại lệ: tiền đã trả thẳng cho người bán mà kiểm định sau xác định thừa thì người bán hoàn, có chứng từ ngân hàng.", "that", false, `mua.html?man=don-hang&thu=${M}`],
     ]],
     ["Công cụ doanh nghiệp", [
-      ["m-tin-nhan", "Tin nhắn theo đơn", "Danh sách có; mở hội thoại trong app mới chưa nối.", "mp", false, `mua-app.html${T}${M}`],
-      ["m-ke-hoach", "Kế hoạch mua tuần", "Cần bao nhiêu mỗi món, đã chắc bao nhiêu.", "mp", false, "mua-moi.html"],
-      ["m-moi-quen", "Người bán quen", "Gọi lại nhanh nguồn đã giao đủ.", "mp", false, `mua.html?man=moi-quen&thu=${M}`],
+      ["m-tin-nhan", "Tin nhắn theo đơn", "Đọc luồng tin theo đơn / lời chào, gửi tin; người bán ảo trả lời ở bản trình diễn.", "that", false, `mua-app.html${T}${M}`],
+      ["m-ke-hoach", "Kế hoạch mua tuần", "Mỗi nhu cầu đang mở: cần bao nhiêu kg, từ ngày nào, đã có mấy báo giá.", "that", false, `mua-app.html${T}${M}#them`],
+      ["m-moi-quen", "Người bán quen", "Người bán từng có đơn, ai giao xong nhiều đứng trước; Xem hàng lọc Nguồn theo người đó.", "that", false, `mua-app.html${T}${M}#them`],
       ["m-thanh-vien", "Thành viên và duyệt chi", "Ai được ký, hạn mức duyệt chi.", "mp", false, `mua.html?man=thanh-vien&thu=${M}`],
       ["m-goi", "Gói dịch vụ và thanh toán", "Gói Miễn phí / Business (billing mô phỏng).", "mp", false, `mua.html?man=goi-cua-toi&thu=${M}`],
       ["m-ton-kho", "Nhập kho, tồn kho, truy xuất lô", "Hàng đã nhận, còn bao nhiêu.", "mp", false, `mua.html?man=ton-kho&thu=${M}`],
