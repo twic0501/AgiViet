@@ -14,8 +14,10 @@ for (let n = 1; n <= 40; n++) {
   const [, v] = await goi('POST', '/v1/test/doi-tac-ao/vong', {});
   const ai = (v?.viec ?? []).filter((x) => x.ket_qua === 'xong').map((x) => `${x.viec} ${x.doi_tuong}`);
   // người bán thật: lời chào bên mua → trả giá một lần rồi để AI đồng ý
-  for (const o of await ds('/v1/offers')) if (o.status === 'sent' && o.vong_cuoi?.from_side === 'buyer' && Number(o.vong_cuoi.round_no) <= 1) {
-    const g = Math.round(Number(o.vong_cuoi.price_vnd) * 1.02 / 100) * 100; await goi('POST', `/v1/offers/${o.id}/counter`, { price_vnd: g, qty_g: Number(o.vong_cuoi.qty_g) }); ai.push(`Năm trả giá ${g}`);
+  for (const o of await ds('/v1/offers')) if (o.status === 'sent' && o.vong_cuoi?.from_side === 'buyer') {
+    // Vòng 1: trả giá một lần; bên mua ảo trả giá ngược lại (tính cách, E107) thì đồng ý.
+    if (Number(o.vong_cuoi.round_no) <= 1) { const g = Math.round(Number(o.vong_cuoi.price_vnd) * 1.02 / 100) * 100; await goi('POST', `/v1/offers/${o.id}/counter`, { price_vnd: g, qty_g: Number(o.vong_cuoi.qty_g) }); ai.push(`Năm trả giá ${g}`); }
+    else { const [s] = await goi('POST', `/v1/offers/${o.id}/accept`, { expected_revision: o.revision }); ai.push(`Năm đồng ý giá ${o.code} ${s}`); }
   }
   const tatCa = await ds('/v1/orders');
   for (const d of tatCa) {

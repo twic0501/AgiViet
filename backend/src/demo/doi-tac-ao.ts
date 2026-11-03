@@ -13,6 +13,8 @@ export const DAI_DIEN: Record<string, string> = {
   'TC-B06': '0918000601', 'TC-B07': '0918000602', 'TC-B08': '0918000603', 'TC-B09': '0918000604', 'TC-B10': '0918000605',
   'TC-M06': '0908000601', 'TC-M07': '0908000602', 'TC-M08': '0908000603', 'TC-M09': '0908000604', 'TC-M10': '0908000605',
 };
+/** Đạo diễn buổi trình diễn: kịch bản cho lần nghiệm thu kế tiếp do bên mua ảo làm (dùng một lần rồi về bình thường). */
+export const KICH_BAN: { lanToi: null | 'ha-cap' | 'tra-lai-nhieu' } = { lanToi: null };
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
 const DA_CHAO = new Set<string>();          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
@@ -215,13 +217,21 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.loaded_g ?? dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) return;
           return post(`/v1/deliveries/${dd.id}/arrival`, { weighed_g: q }, t); // cân lại đúng số đã bốc (không hao hụt)
         }); break;
-        case 'Nghiệm thu': await lam(tc, 'nghiệm thu đủ', d.code, async () => {
+        case 'Nghiệm thu': {
           const den = o.dot_giao?.find((x: any) => x.status === 'arrival_check');
-          if (den) return post(`/v1/deliveries/${den.id}/arrival/confirm`, {}, t); // tới nơi đủ hàng → xác nhận đến đạt (hệ thống chốt quyết toán)
-          const dd = o.dot_giao?.find((x: any) => x.status === 'checking'); if (!dd) return;
-          const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) return;
-          return post(`/v1/deliveries/${dd.id}/acceptance`, { pin: PIN, weighed_g: q, seal_code: 'M-' + (1000 + (dem % 8999)), lines: [{ kind: 'accepted', qty_g: q }] }, t);
-        }); break;
+          if (den) { await lam(tc, 'xác nhận hàng tới đủ', d.code, () => post(`/v1/deliveries/${den.id}/arrival/confirm`, {}, t)); break; } // tới nơi đủ hàng → hệ thống chốt quyết toán
+          const dd = o.dot_giao?.find((x: any) => x.status === 'checking'); if (!dd) break;
+          const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) break;
+          // Kịch bản người trình diễn đặt trước (một lần): hạ loại 10% hoặc trả lại 80% — có ảnh bằng chứng như luật đòi.
+          const kb = KICH_BAN.lanToi; KICH_BAN.lanToi = null;
+          const phan = kb === 'tra-lai-nhieu' ? { kind: 'rejected', ty: 0.8, ly: 'THOI' } : kb === 'ha-cap' ? { kind: 'downgraded', ty: 0.1, ly: 'DAP' } : null;
+          await lam(tc, phan ? (phan.kind === 'rejected' ? 'nghiệm thu: trả lại 80%' : 'nghiệm thu: hạ loại 10%') : 'nghiệm thu đủ', d.code, async () => {
+            if (!phan) return post(`/v1/deliveries/${dd.id}/acceptance`, { pin: PIN, weighed_g: q, seal_code: 'M-' + (1000 + (dem % 8999)), lines: [{ kind: 'accepted', qty_g: q }] }, t);
+            const anh = (await post('/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'delivery', entity_id: dd.id, captured_in_app: true }, t)).json;
+            const xau = Math.round(q * phan.ty / 1000) * 1000;
+            return post(`/v1/deliveries/${dd.id}/acceptance`, { pin: PIN, weighed_g: q, seal_code: 'M-' + (1000 + (dem % 8999)), lines: [{ kind: 'accepted', qty_g: q - xau }, { kind: phan.kind, qty_g: xau, reason_code: phan.ly, evidence_document_id: anh.id }] }, t);
+          }); break;
+        }
         case 'Xác nhận kết quả nghiệm thu': await lam(tc, 'đồng ý số cân', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'awaiting_seller'); if (!dd) return;
           return post(`/v1/deliveries/${dd.id}/acceptance/agree`, { pin: PIN }, t);

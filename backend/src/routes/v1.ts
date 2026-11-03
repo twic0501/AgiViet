@@ -560,6 +560,13 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     };
     return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
   });
+  // Bản trình diễn — đạo diễn: đặt kịch bản cho lần nghiệm thu kế tiếp của bên mua ảo (hạ loại 10% / trả lại 80%).
+  app.post('/v1/test/kich-ban', async (req) => {
+    thu();
+    const b = z.object({ ten: z.enum(['ha-cap', 'tra-lai-nhieu']).nullable() }).parse(req.body ?? {});
+    const m = await import('../demo/doi-tac-ao.ts'); m.KICH_BAN.lanToi = b.ten;
+    return { lan_toi: m.KICH_BAN.lanToi };
+  });
   // Bản trình diễn: bên mua là AI nên người bán thật không thấy QR người nhận → môi trường thử đóng vai người nhận
   // MỞ QR nhận hàng (đúng API receipt-qr của họ) rồi đưa mã 6 số đang hiện trên máy người nhận (như mã OTP thử).
   app.get('/v1/test/deliveries/:id/receipt-code', async (req) => {
