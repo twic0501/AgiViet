@@ -7,7 +7,7 @@ import { mkdirSync } from "node:fs";
 const { chromium } = createRequire(process.env.HOME + "/rnd idea/package.json")("playwright");
 const OUT = process.argv[2] || "/tmp/soat-giao-dien"; mkdirSync(OUT, { recursive: true });
 const CO = (process.argv[3] || "360,390").split(",").map(Number);
-const G = "http://127.0.0.1:18980", F = "http://127.0.0.1:18990/thiet-ke";
+const G = "http://127.0.0.1:18980", F = (process.env.FRONTEND_URL || "http://127.0.0.1:18990") + "/thiet-ke";
 const dn = async (sdt) => (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
 const lay = async (sdt, d) => (await fetch(G + d, { headers: { authorization: "Bearer " + (await dn(sdt)) } })).json();
 const donDau = async (sdt, dk = () => true) => { const ds = await lay(sdt, "/v1/orders"); const l = ds.items ?? ds.data?.items ?? ds.data ?? ds; if (!Array.isArray(l)) return null; for (const o of l) if (!/^DEMO56/.test(o.code) && (await dk(o))) return o; return null; };

@@ -2,7 +2,8 @@ import http from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-const root = fileURLToPath(new URL(".", import.meta.url));
+// AGV_STATIC=dist → phục vụ bản build Vite (giống bản host); mặc định phục vụ mã nguồn như cũ.
+const root = process.env.AGV_STATIC ? path.resolve(fileURLToPath(new URL(".", import.meta.url)), process.env.AGV_STATIC) + path.sep : fileURLToPath(new URL(".", import.meta.url));
 const backend = process.env.API_ORIGIN || "http://127.0.0.1:8080";
 // Công cụ thử (đăng nhập thay ?thu=, trang mô phỏng) CHỈ bật khi khai báo rõ — mặc định TẮT để bản thật an toàn kể cả khi quên cấu hình.
 const CONG_CU_THU = process.env.AGV_TEST_TOOLS === "1" || process.env.AGV_MOI_TRUONG === "thu";

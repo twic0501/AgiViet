@@ -113,7 +113,7 @@ veTab("tin-nhan");
 fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})).then((cc) => { // Trò chuyện mô phỏng (HĐ-0018 dựng sẵn) chỉ bật khi xin rõ ?mophong=1 — app thật chỉ hiện dữ liệu backend, không trộn.
   // Trò chuyện: dữ liệu thật (tro-chuyen-that.js); bản mô phỏng HĐ-0018 chỉ khi ?mophong=1 trên môi trường thử.
   const moPhong = cc.test_tools && new URLSearchParams(location.search).has("mophong");
-  import(moPhong ? "./tro-chuyen.js" : "./tro-chuyen-that.js").then(async (TC) => {
+  (moPhong ? import("./tro-chuyen.js") : import("./tro-chuyen-that.js")).then(async (TC) => {
   if (TC.tai) await TC.tai().catch(() => null);
   const nhom = $("tc-chon");
   const chuaDoc = TC.soChuaDoc(); if (chuaDoc) nhom.querySelector('[data-muc="tro"]').insertAdjacentHTML("beforeend", `<small>${chuaDoc}</small>`);

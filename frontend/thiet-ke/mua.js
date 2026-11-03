@@ -1650,6 +1650,8 @@ if (THAT) {
     const ve0 = m.ve; if (typeof ve0 !== "function") continue;
     // Chỉ chuyển khi đúng màn được mở bằng ?man= (lần vẽ màn mặc định trước đó không được đá màn thật như chi-tiet-don ra ngoài).
     if (!MAN_THAT.has(k)) m.ve = (...a) => { if (new URLSearchParams(location.search).get("man") === k) { location.replace(`./mua-app.html#${SANG_APP_MOI[k] || "them"}`); return dai; } return dai + ve0(...a); };
+    // Đang chuyển sang app mới thì màn cũ không vẽ, nên bỏ luôn phần gắn nút (trước: lỗi null.addEventListener ở tin-nhan).
+    if (!MAN_THAT.has(k) && typeof m.sau === "function") { const sau0 = m.sau; m.sau = (...a) => (new URLSearchParams(location.search).get("man") === k ? undefined : sau0(...a)); }
     else if (k === "nguon-hang" || k === "chi-tiet-lo") m.ve = (...a) => (window.__agvLoiNap ? daiLoi() : "") + ve0(...a);
   }
 }

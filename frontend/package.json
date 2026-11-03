@@ -13,6 +13,11 @@
     "test:admin": "node tests/admin.mjs",
     "test:login": "node tests/login-resilience.mjs",
     "test:cases": "node tests/admin-cases.mjs",
-    "test:opponent": "node tests/opponent-flow.mjs"
+    "test:opponent": "node tests/opponent-flow.mjs",
+    "build": "vite build",
+    "start:dist": "AGV_STATIC=dist node server.mjs"
+  },
+  "devDependencies": {
+    "vite": "^6.4.5"
   }
 }
