@@ -321,3 +321,7 @@ table.sl-bang { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   .sl-tien-o > div + div { border-left: 0; border-top: 1px solid var(--ke); }
   .sl-tien-o > div > :nth-child(n+3) { grid-column: 1 / -1; }
 }
+
+/* Ẩn thanh cuộn của trang (vẫn cuộn được bằng chạm/chuột) — người sáng lập 03/11 */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }

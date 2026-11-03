@@ -2,7 +2,8 @@
 // Không có thì app mua giữ bản mô phỏng (trang thử quy trình dùng). Bên mua KHÔNG thấy giá của lô khi tìm nguồn (quyết định A3.10).
 import { phien } from "./chung.js";
 
-export const THAT = new URLSearchParams(location.search).has("thu");
+// Dữ liệu thật khi có số thử (?thu=, chỉ môi trường thử) hoặc đã đăng nhập OTP (phiên trong sessionStorage).
+export const THAT = new URLSearchParams(location.search).has("thu") || (() => { try { return !!sessionStorage.getItem("agv-phien"); } catch { return false; } })();
 let token = null;
 export async function api(duong, than) {
   token ||= await phien();
@@ -41,7 +42,7 @@ export async function chaoGia(loId, kg, gia) {
 }
 
 // Giữ ?thu= khi đi giữa các màn (link nội bộ ?man=...), nếu không sẽ rơi về bản mô phỏng.
-if (THAT) {
+if (THAT && new URLSearchParams(location.search).has("thu")) {
   const thu = new URLSearchParams(location.search).get("thu");
   document.addEventListener("click", (e) => {
     const a = e.target.closest?.("a[href]"); if (!a) return;

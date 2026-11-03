@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4d3a">
+<title>AgiViet Mua</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-lam-an.css">
+<style>
+  /* App MUA thật: thiết kế theo 10 tiêu chí (docs/frontend/app-mua-tieu-chi/), dữ liệu từ API backend. */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--giay); color: var(--muc); font-family: var(--chu); font-size: 15px; line-height: 1.45; -webkit-tap-highlight-color: transparent; }
+  .app { max-width: 460px; margin: 0 auto; min-height: 100vh; padding-bottom: 96px; }
+  header { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--giay) 94%, transparent); backdrop-filter: blur(8px); padding: 12px 16px 10px; border-bottom: 1px solid var(--ke); display: flex; align-items: center; gap: 12px; }
+  header .tt { flex: 1; min-width: 0; }
+  header .tc { font-size: 12px; color: var(--muc-nhat); font-weight: 600; letter-spacing: .03em; text-transform: uppercase; margin: 0; }
+  header h1 { margin: 1px 0 0; font-size: 22px; letter-spacing: -.01em; }
+  .nut-tron { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--giay-lot); color: var(--muc); display: grid; place-items: center; cursor: pointer; }
+  .nut-tron svg { width: 22px; height: 22px; }
+  .nut-tron .dem { position: absolute; top: 2px; right: 2px; }
+  main { padding: 16px; }
+  section[data-man] { display: none; gap: 14px; }
+  section[data-man].hien { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .the { background: var(--giay-noi); border-radius: 16px; box-shadow: 0 0 0 1px var(--ke); padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+  .nhan { font-size: 12px; font-weight: 700; color: var(--muc-nhat); text-transform: uppercase; letter-spacing: .04em; margin: 0; }
+  .so-lon { font-size: 30px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .so-lon small { font-size: 15px; font-weight: 600; color: var(--muc-phu); }
+  .hang { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-width: 0; }
+  .hang > :first-child { min-width: 0; }
+  .phu { color: var(--muc-phu); font-size: 14px; margin: 0; }
+  .so { font-variant-numeric: tabular-nums; }
+  .chip { font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; max-width: 100%; overflow-wrap: anywhere; background: var(--cho-nen); color: var(--cho); }
+  .chip.toi { background: var(--vang); color: var(--tren-vang); } .chip.do { background: var(--do-nen); color: var(--do); }
+  .chip.la { background: var(--la-nhat); color: var(--la); } .chip.bien { background: var(--bien-nen); color: var(--bien); }
+  .nut { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border-radius: 12px; border: 0; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; transition: transform .12s var(--cham), background .15s; }
+  .nut:active { transform: scale(.97); }
+  .nut.chinh { background: var(--la); color: var(--tren-la); } .nut.chinh:hover { background: var(--la-dam); }
+  .nut.vien { background: transparent; color: var(--la); box-shadow: inset 0 0 0 1.5px var(--la); }
+  .nut.nho { min-height: 44px; padding: 0 14px; font-size: 14px; }
+  .nut.rong { width: 100%; }
+  :focus-visible { outline: 3px solid var(--vang); outline-offset: 2px; }
+  .viec { display: grid; grid-template-columns: 4px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--ke); background: none; border-left: 0; border-right: 0; border-bottom: 0; font: inherit; color: inherit; text-align: left; width: 100%; cursor: pointer; }
+  .viec:first-of-type { border-top: 0; }
+  .viec i { align-self: stretch; border-radius: 4px; background: var(--vang); } .viec i.do { background: var(--do); } .viec i.la { background: var(--la); }
+  .viec b { display: block; font-size: 15px; }
+  .thanh { height: 10px; border-radius: 999px; background: var(--giay-sau); overflow: hidden; display: flex; }
+  .thanh span { display: block; height: 100%; }
+  .mon { display: grid; gap: 6px; padding: 10px 0; border-top: 1px solid var(--ke); } .mon:first-of-type { border-top: 0; }
+  .luoi2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+  .o { background: var(--giay-lot); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+  .o b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .lich { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; }
+  .lich div { background: var(--giay-lot); border-radius: 10px; padding: 8px 2px; text-align: center; font-size: 12px; color: var(--muc-phu); }
+  .lich div b { display: block; font-size: 15px; color: var(--muc); }
+  .lich div.co { background: var(--la); color: var(--tren-la); } .lich div.co b { color: var(--tren-la); }
+  .lich div.nay { box-shadow: inset 0 0 0 2px var(--vang); }
+  .tim { display: flex; gap: 8px; } .tim input { flex: 1; min-width: 0; min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: #fff; padding: 0 14px; font: inherit; }
+  .loc { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; }
+  .loc button { flex: none; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 0; background: var(--giay-lot); font: inherit; font-weight: 600; color: var(--muc-phu); cursor: pointer; }
+  .loc button[aria-pressed="true"] { background: var(--muc); color: var(--giay); }
+  .lo { display: grid; grid-template-columns: 68px minmax(0,1fr); gap: 12px; }
+  .lo .anh { width: 68px; height: 68px; border-radius: 12px; background: var(--la-nhat) center/cover; }
+  .tin { display: flex; gap: 6px; flex-wrap: wrap; }
+  .the.goi-y { box-shadow: 0 0 0 2px var(--la); }
+  .so-sanh-chon { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; min-height: 44px; cursor: pointer; }
+  .so-sanh-chon input { width: 22px; height: 22px; accent-color: var(--la); }
+  .neo { display: grid; gap: 4px; } .neo .vach { position: relative; height: 8px; border-radius: 999px; background: linear-gradient(90deg, var(--la-nhat), var(--chin-nen)); }
+  .neo .vach span { position: absolute; top: -4px; width: 4px; height: 16px; border-radius: 2px; background: var(--muc); }
+  .tab { position: fixed; bottom: 0; left: 0; right: 0; z-index: 6; background: var(--giay-noi); border-top: 1px solid var(--ke); padding: 4px 8px calc(4px + env(safe-area-inset-bottom)); }
+  .tab nav { max-width: 460px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); }
+  .tab button { border: 0; background: none; font: inherit; font-size: 12px; font-weight: 600; color: var(--muc-nhat); min-height: 56px; display: grid; justify-items: center; align-content: center; gap: 2px; position: relative; cursor: pointer; }
+  .tab button svg { width: 24px; height: 24px; }
+  .tab button[aria-current="page"] { color: var(--la); }
+  .tab button[aria-current="page"]::before { content: ""; position: absolute; top: 0; width: 28px; height: 3px; border-radius: 0 0 3px 3px; background: var(--la); }
+  .dem { position: absolute; top: 4px; left: 56%; background: var(--do); color: #fff; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: grid; place-items: center; padding: 0 4px; }
+  .muc { display: grid; grid-template-columns: 40px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--ke); background: none; border-left: 0; border-right: 0; border-bottom: 0; width: 100%; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+  .muc:first-of-type { border-top: 0; }
+  .muc .bt { width: 40px; height: 40px; border-radius: 12px; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; } .muc .bt svg { width: 22px; height: 22px; }
+  .muc b { display: block; }
+  .phu-mp { font-size: 11.5px; font-weight: 700; color: var(--chin); background: var(--chin-nen); padding: 2px 8px; border-radius: 999px; }
+  /* Tấm trượt (sheet) cho so sánh, trả tiền, gửi nhu cầu */
+  .phu-man { position: fixed; inset: 0; z-index: 20; background: rgba(29,42,34,.38); display: none; align-items: flex-end; justify-content: center; }
+  .phu-man.mo { display: flex; }
+  .tam { width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto; background: var(--giay); border-radius: 22px 22px 0 0; padding: 8px 16px calc(20px + env(safe-area-inset-bottom)); display: grid; gap: 12px; }
+  .tam::before { content: ""; justify-self: center; width: 40px; height: 5px; border-radius: 3px; background: var(--ke-dam); margin: 4px 0; }
+  .tam h2 { margin: 0; font-size: 20px; }
+  .bang { width: 100%; border-collapse: collapse; font-size: 14px; } .bang th, .bang td { padding: 9px 6px; border-top: 1px solid var(--ke); text-align: left; vertical-align: top; } .bang th { color: var(--muc-phu); font-weight: 600; width: 34%; }
+  .bang td.tot { color: var(--la); font-weight: 700; }
+  .o-nhap { display: grid; gap: 6px; font-weight: 600; } .o-nhap input, .o-nhap select { min-height: 48px; border-radius: 12px; border: 1.5px solid var(--ke-dam); background: #fff; padding: 0 14px; font: inherit; width: 100%; }
+  .chep { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--giay-noi); border-radius: 12px; padding: 10px 12px; box-shadow: 0 0 0 1px var(--ke); }
+  .chep b { font-size: 17px; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+  .mau { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--chin); background: var(--chin-nen); border-radius: 10px; padding: 8px 12px; }
+  .ghi { font-size: 13px; color: var(--muc-nhat); text-align: center; margin: 6px 0 0; }
+  .bao { position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%); background: var(--muc); color: var(--giay); padding: 10px 16px; border-radius: 12px; font-weight: 600; z-index: 30; display: none; max-width: 90vw; }
+  @media (prefers-reduced-motion: no-preference) { section[data-man].hien { animation: vao .22s var(--cham); } .phu-man.mo .tam { animation: len .26s var(--cham); } @keyframes vao { from { opacity: 0; transform: translateY(4px); } } @keyframes len { from { transform: translateY(40px); opacity: .6; } } }
+  /* Màn chờ tải, đăng nhập, màn chào (app thật) */
+  html { scrollbar-width: none; } html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+  #splash { position: fixed; inset: 0; z-index: 50; background: var(--la); color: var(--tren-la); display: grid; place-content: center; justify-items: center; gap: 10px; transition: opacity .3s var(--cham); }
+  #splash b { font-size: 24px; } #splash span { opacity: .85; }
+  #splash.tat { opacity: 0; pointer-events: none; }
+  .xoay { width: 28px; height: 28px; border-radius: 50%; border: 3px solid rgba(246,242,231,.3); border-top-color: var(--tren-la); animation: xoay .9s linear infinite; margin-top: 8px; }
+  @keyframes xoay { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .xoay { animation-duration: 3s; } }
+  .man-full { max-width: 460px; margin: 0 auto; min-height: 100vh; padding: 32px 16px; display: grid; align-content: start; gap: 16px; }
+  .dn-dau { text-align: center; display: grid; justify-items: center; gap: 6px; padding: 12px 0; } .dn-dau h1 { margin: 0; font-size: 26px; }
+  .loi { color: var(--do); font-weight: 600; margin: 0; font-size: 14px; } .loi:empty { display: none; }
+  .chao-the { display: grid; gap: 14px; justify-items: center; text-align: center; padding-top: 6vh; }
+  .chao-hinh { width: 120px; height: 120px; border-radius: 32px; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; }
+  .chao-hinh svg { width: 60px; height: 60px; }
+  .chao-the h2 { margin: 0; font-size: 24px; } .chao-the p { margin: 0; color: var(--muc-phu); max-width: 34ch; }
+  .cham-buoc { display: flex; gap: 8px; justify-content: center; } .cham-buoc i { width: 8px; height: 8px; border-radius: 4px; background: var(--ke-dam); transition: width .2s var(--cham); } .cham-buoc i.dang { width: 24px; background: var(--la); }
+  a.muc { text-decoration: none; }
+  .trong { text-align: center; padding: 18px 8px; color: var(--muc-phu); display: grid; gap: 10px; justify-items: center; }
+  .khung-tai { height: 92px; border-radius: 16px; background: linear-gradient(90deg, var(--giay-lot), var(--giay-noi), var(--giay-lot)); background-size: 200% 100%; animation: tai 1.2s infinite; }
+  @keyframes tai { to { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+<!-- Màn chờ tải -->
+<div id="splash" role="status" aria-live="polite"><img src="/assets/logo.svg" alt="" width="72" height="72"><b>AgiViet Mua</b><span id="splash-chu">Đang mở sổ mua…</span><div class="xoay" aria-hidden="true"></div></div>
+
+<!-- Đăng nhập / đăng ký -->
+<div id="dang-nhap" class="man-full" hidden>
+  <div class="dn-dau"><img src="/assets/logo.svg" alt="" width="56" height="56"><h1>AgiViet Mua</h1><p class="phu">Nguồn nông sản đều mỗi tuần, tiền cọc ngân hàng giữ.</p></div>
+  <div class="loc" role="tablist" id="dn-che-do" style="margin:0"><button role="tab" aria-pressed="true" data-che="dang-nhap">Đăng nhập</button><button role="tab" aria-pressed="false" data-che="dang-ky">Đăng ký bên mua</button></div>
+  <form id="dn-b1" class="the" novalidate>
+    <label class="o-nhap">Số điện thoại<input id="dn-sdt" inputmode="tel" autocomplete="tel" placeholder="09xx xxx xxx" required></label>
+    <div id="dn-dk" hidden style="display:grid;gap:10px">
+      <label class="o-nhap">Họ tên người phụ trách mua<input id="dn-ten" autocomplete="name"></label>
+      <label class="o-nhap">Tên cơ sở (nhà hàng, đại lý, công ty)<input id="dn-cs"></label>
+      <label class="o-nhap">Loại bên mua<select id="dn-ph"><option value="horeca">Nhà hàng, bếp ăn</option><option value="wholesaler">Đại lý, chợ đầu mối</option><option value="processor">Nhà máy chế biến</option><option value="export">Xuất nhập khẩu</option></select></label>
+    </div>
+    <p class="loi" id="dn-loi1" role="alert"></p>
+    <button class="nut chinh rong" id="dn-gui">Gửi mã OTP</button>
+  </form>
+  <form id="dn-b2" class="the" hidden novalidate>
+    <p class="phu" id="dn-toi"></p>
+    <label class="o-nhap">Mã 6 số<input id="dn-ma" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="letter-spacing:6px;font-size:22px"></label>
+    <p class="phu" id="dn-ma-thu" hidden></p>
+    <p class="loi" id="dn-loi2" role="alert"></p>
+    <button class="nut chinh rong" id="dn-xac">Xác nhận</button>
+    <button type="button" class="nut vien rong" id="dn-doi">Đổi số điện thoại</button>
+  </form>
+</div>
+
+<!-- Màn chào, hướng dẫn lần đầu -->
+<div id="chao" class="man-full" hidden>
+  
+</div>
+
+<div class="app" id="app" hidden>
+  <header>
+    <div class="tt"><p class="tc" id="ten-tc"></p><h1 id="tieu">Hôm nay</h1></div>
+    <button class="nut-tron" data-mo="nhan" aria-label="Tin nhắn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="dem" id="dem-tin" hidden></span></button>
+  </header>
+  <main>
+    <section data-man="hom-nay" class="hien">
+      <div class="the" id="the-tuan"></div>
+      <div class="the"><div class="hang"><p class="nhan">Tới lượt bạn</p><span class="chip toi" id="so-viec"></span></div><div id="hang-doi"></div></div>
+      <div class="the"><p class="nhan">Tiền đang ở đâu</p><div class="luoi2"><div class="o"><span class="phu">Ngân hàng giữ cọc</span><b id="hn-coc"></b></div><div class="o"><span class="phu">Bạn còn phải trả</span><b id="hn-no"></b></div></div><p class="phu">Cọc nằm ở ngân hàng, không bên nào tự rút. Tiền hàng bạn chuyển thẳng cho người bán, người bán xác nhận mới tính.</p></div>
+    </section>
+    <section data-man="nguon-hang">
+      <div class="tim"><input type="search" id="tim" placeholder="Tìm mặt hàng, tỉnh, người bán" aria-label="Tìm nguồn hàng"><button class="nut chinh nho" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>
+      <div class="loc" role="group" aria-label="Lọc theo mặt hàng" id="loc"></div>
+      <div id="ds-lo" style="display:grid;gap:14px"></div>
+      <p class="ghi">Giá người bán là giá kín. Bạn chào giá; dưới mức người bán chấp nhận thì lời chào tự đóng, không ai bị ghi gì.</p>
+    </section>
+    <section data-man="don"><div id="ds-khung" style="display:grid;gap:14px"></div><div id="ds-don" style="display:grid;gap:14px"></div></section>
+    <section data-man="tien"><div id="tien-tong" class="the"></div><div id="ds-khoan" style="display:grid;gap:14px"></div><div class="the"><div class="hang"><div><b>Bảng kê các khoản</b><p class="phu">Tải về mở bằng Excel, gửi kế toán</p></div><button class="nut vien nho" id="xuat-bang-ke">Tải CSV</button></div></div></section>
+    <section data-man="them">
+      <div class="the"><p class="nhan">Tài khoản</p><div id="tk-thong-tin"></div></div>
+      <div class="the"><p class="nhan">Công cụ mua</p>
+        <button class="muc" data-mo="gui-nhu-cau"><span class="bt">↗</span><div><b>Gửi nhu cầu cho người bán</b><p class="phu">Người bán đang có món này báo giá cho bạn</p></div><span>›</span></button>
+        <a class="muc" href="mua.html?man=lap-khung"><span class="bt">▦</span><div><b>Lập hợp đồng khung tuần</b><p class="phu">Giá chốt mỗi tuần, trả gộp cuối tuần</p></div><span>›</span></a>
+        <a class="muc" href="mua.html?man=bao-gia"><span class="bt">⇄</span><div><b>Lời chào giá đã gửi</b><p class="phu">Người bán đồng ý, trả giá hay từ chối</p></div><span>›</span></a>
+      </div>
+      <div class="the"><p class="nhan">Dịch vụ đối tác</p>
+        <div class="muc"><span class="bt">⛟</span><div><b>Xe, kho lạnh, kiểm định</b><p class="phu">Đặt dịch vụ cho buổi nhận</p></div><span class="phu-mp">Sắp có</span></div>
+      </div>
+      <div class="the"><button class="muc" id="xem-lai-chao"><span class="bt">?</span><div><b>Xem lại hướng dẫn</b><p class="phu">4 bước dùng app mua</p></div><span>›</span></button>
+        <button class="muc" id="dang-xuat"><span class="bt">⎋</span><div><b>Đăng xuất</b></div><span>›</span></button></div>
+    </section>
+  </main>
+</div>
+
+<div class="phu-man" id="chao-gia" role="dialog" aria-modal="true" aria-labelledby="cg-t"><div class="tam" id="cg-tam"></div></div>
+<div class="phu-man" id="tra-tien" role="dialog" aria-modal="true" aria-labelledby="tt-t"><div class="tam" id="tt-tam"></div></div>
+<div class="phu-man" id="gui-nhu-cau" role="dialog" aria-modal="true" aria-labelledby="nc-t"><div class="tam">
+  <h2 id="nc-t">Gửi nhu cầu cho người bán</h2>
+  <label class="o-nhap">Mặt hàng<select id="nc-sp"></select></label>
+  <div class="luoi2"><label class="o-nhap">Loại<input id="nc-loai" value="L1"></label><label class="o-nhap">Lượng (kg)<input id="nc-kg" inputmode="decimal" value="100"></label></div>
+  <div class="luoi2"><label class="o-nhap">Từ ngày<input type="date" id="nc-tu"></label><label class="o-nhap">Đến ngày<input type="date" id="nc-den"></label></div>
+  <label class="o-nhap">Giá tối đa (đ/kg)<input id="nc-gia" inputmode="numeric"></label>
+  <p class="phu" id="nc-neo"></p>
+  <p class="loi" id="nc-loi" role="alert"></p>
+  <button class="nut chinh rong" id="nc-gui">Gửi nhu cầu</button>
+  <button class="nut vien rong" data-dong>Để sau</button>
+</div></div>
+<div class="phu-man" id="nhan" role="dialog" aria-modal="true" aria-labelledby="tn-t"><div class="tam"><h2 id="tn-t">Tin nhắn</h2><div id="ds-tin"></div><p class="phu">Số điện thoại hai bên được che tới khi ngân hàng giữ cọc.</p><button class="nut vien rong" data-dong>Đóng</button></div></div>
+
+<div class="tab" id="tab" hidden><nav aria-label="Mục chính">
+  <button data-di="hom-nay" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Hôm nay<span class="dem" id="dem-viec" hidden></span></button>
+  <button data-di="nguon-hang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Nguồn</button>
+  <button data-di="don"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Đơn</button>
+  <button data-di="tien"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/></svg>Tiền</button>
+  <button data-di="them"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>Thêm</button>
+</nav></div>
+<div class="bao" id="bao" role="status" aria-live="polite"></div>
+<script type="module" src="./mua-app.js"></script>
+</body>
+</html>

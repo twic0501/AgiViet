@@ -290,6 +290,8 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
     if (hoan) return hoan.status === 'payer_reported'
       ? { ten: `Người bán báo đã hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Xác nhận đã nhận tiền hoàn' } }
       : { ten: `Người bán còn phải hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Hoàn tiền thừa cho bên mua' } };
+    // Buổi gọi hàng khung không có cọc riêng hay lệnh ngân hàng: tiền gộp vào khoản tuần của khung.
+    if (o.contract_type === 'framework_calloff') return { ten: 'Đã chốt số · tính vào khoản trả cuối tuần', chang: 'Thanh toán', toi_luot: null };
     const lenh = Number(await t.gtri(`SELECT count(*) FROM core.bank_instructions WHERE order_id=$1 AND status IN ('sent','processing')`, [o.id]));
     return { ten: lenh > 0 ? 'Đã gửi lệnh cọc' : 'Quyết toán', chang: 'Thanh toán', toi_luot: { phia: 'bank', viec: 'Ngân hàng xử lý lệnh' } };
   }

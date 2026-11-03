@@ -78,7 +78,10 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     return { token: r.token, user: hoSo(r.nguoi_dung) };
   });
   app.get('/v1/auth/session', async (req) => hoSo(await bo.xacThuc(req)));
-  app.get('/v1/me', async (req) => hoSo(await bo.xacThuc(req)));
+  app.get('/v1/me', async (req) => { const nd = await bo.xacThuc(req); const h: any = hoSo(nd);
+    // Phân khúc bên mua (nhà hàng, chế biến…) để app mua tạo nhu cầu đúng phân khúc.
+    if (nd.thanhVien.canBuy) h.org.segment_code = await bo.doc((t) => t.gtri<string>(`SELECT segment_code FROM core.org_buyer_segments WHERE org_id=$1 ORDER BY 1 LIMIT 1`, [nd.thanhVien.orgId]));
+    return h; });
   app.get('/v1/test/demo-numbers', async () => { thu(); const { SO_DEMO } = await import('../demo/so-demo.ts'); return SO_DEMO; });
   app.post('/v1/auth/switch-org', async (req) => {
     const b = z.object({ org_code: z.string() }).parse(req.body);

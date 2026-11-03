@@ -338,3 +338,7 @@ header.dau-lui.nen-xanh > a:focus-visible, header.dau.dau-xanh .nut-tron:focus-v
 .m-ghi { font-size: 14px; color: var(--muc-nhat); line-height: 1.45; }
 .m-the-xanh { background: linear-gradient(160deg, #2b5b47, #1f4d3a); color: #f4f1e8; box-shadow: none; }
 .m-the-xanh .m-loi-khuyen { background: rgba(244, 241, 232, .12); padding: 10px 12px; border-radius: 12px; margin: 0; font-size: 16px; line-height: 1.45; }
+
+/* Ẩn thanh cuộn của trang (vẫn cuộn được bằng chạm/chuột) — người sáng lập 03/11 */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
