@@ -10,7 +10,9 @@ const goi = async (m, u, b) => { const r = await fetch(B + u, { method: m, heade
 const ds = async (u) => { const [, v] = await goi('GET', u); return v?.items ?? v ?? []; };
 const otp = async (purpose, extra) => (await goi('POST', '/v1/otp/challenges', { purpose, ...extra }))[1]?.challenge_id;
 const moc = []; let truoc = '';
-await fetch(B + '/v1/test/kich-ban', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ten: 'tra-lai-nhieu' }) }); console.log('đặt kịch bản: trả lại 80% cho lần nghiệm thu kế tiếp');
+// TEP_GAN='{"TC-M01":"tra-lai"}' → kiểm qua tệp khách (kiểu gắn với bên mua AI); không có thì dùng kịch bản 'lần tới' như cũ.
+if (process.env.TEP_GAN) { const [, r] = await goi('POST', '/v1/test/tep-khach', { gan: JSON.parse(process.env.TEP_GAN) }); console.log('tệp khách:', JSON.stringify(r?.doi_tac)); }
+else { await fetch(B + '/v1/test/kich-ban', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ten: 'tra-lai-nhieu' }) }); console.log('đặt kịch bản: trả lại 80% cho lần nghiệm thu kế tiếp'); }
 for (let n = 1; n <= 40; n++) {
   const [, v] = await goi('POST', '/v1/test/doi-tac-ao/vong', {});
   const ai = (v?.viec ?? []).filter((x) => x.ket_qua === 'xong').map((x) => `${x.viec} ${x.doi_tuong}`);

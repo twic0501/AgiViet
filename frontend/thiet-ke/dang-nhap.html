@@ -79,14 +79,10 @@
   <div id="b0" hidden>
     <h2 id="tieu-de-0">Chọn vai để xem</h2>
     <p class="phu-de">Bản trình diễn: chạm một người là vào app đúng vai đó. Những người còn lại do AI đóng.</p>
-    <span class="nhan-o" style="margin-top:0">Kịch bản cho lần nghiệm thu tới (AI bên mua làm)</span>
-    <div class="chon-loai" id="kich-ban" style="margin-bottom:14px">
-      <label><input type="radio" name="kb" value="" checked><span>Bình thường</span></label>
-      <label><input type="radio" name="kb" value="ha-cap"><span>Hạ loại 10%</span></label>
-      <label><input type="radio" name="kb" value="tra-lai-nhieu"><span>Trả lại 80%</span></label>
-    </div>
     <div id="ds-vai" class="ds-vai"></div>
     <p class="bao loi" id="loi-0" hidden style="margin-top:12px"></p>
+    <div id="tep" hidden style="margin-top:12px"><span class="nhan-o" style="margin-top:0">Bạn sẽ gặp (AI đóng, rút ngẫu nhiên mỗi lần chọn vai)</span><div id="ds-tep"></div>
+      <button class="nut chinh-nut" type="button" id="vao-tep" style="margin-top:12px;width:100%">Vào app</button></div>
     <p class="ghi-nho"><button type="button" id="dn-so">Đăng nhập bằng số điện thoại</button></p>
   </div>
   <!-- Bước 1: số điện thoại (+ thông tin đăng ký) -->
@@ -207,12 +203,17 @@ $("ds-vai").onclick = async (e) => {
     const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: b.dataset.sdt }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.token) throw new Error(j.errors?.[0]?.message || "Chưa vào được vai này, thử lại nhé.");
-    luuPhien(j.token); location.href = APP;
+    luuPhien(j.token);
+    const [t, ds] = await Promise.all([fetch("/v1/test/tep-khach", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + j.token }, body: "{}" }).then((x) => x.json()).catch(() => null),
+      fetch("/v1/test/accounts").then((x) => x.json()).catch(() => [])]);
+    const ten = new Map((ds || []).map((a) => [a.org_code, a.org_name]));
+    if (!t?.doi_tac?.length) { location.href = APP; return; }
+    $("ds-vai").hidden = true; $("tep").hidden = false;
+    $("ds-tep").innerHTML = t.doi_tac.map((d) => `<div class="the" style="padding:10px 12px;margin-top:8px"><b>${esc(ten.get(d.to_chuc) || d.to_chuc)}</b><p class="phu-de" style="margin:2px 0 0">${esc(d.mo_ta)}</p></div>`).join("");
+    $("vao-tep").onclick = () => (location.href = APP); $("vao-tep").focus();
   } catch (err) { hienLoi("loi-0", err.message); b.disabled = false; }
 };
 $("dn-so").onclick = () => { buoc(1); $("sdt").focus(); };
-// Đạo diễn buổi trình diễn: chọn kịch bản nghiệm thu kế tiếp (trả lại 80% → cọc thừa, ngân hàng tự hoàn bên mua).
-$("kich-ban").onchange = (e) => fetch("/v1/test/kich-ban", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ten: e.target.value || null }) }).catch(() => {});
 
 // Câu báo giới hạn gửi mã: "Đợi 554 giây…" → "Bác thử lại sau 10 phút nhé" + đếm ngược
 function cauGioiHan(j, r) {

@@ -560,6 +560,13 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     };
     return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
   });
+  // Bản trình diễn: chọn vai xong rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu khách.
+  app.post('/v1/test/tep-khach', async (req) => {
+    thu(); const nd = await bo.xacThuc(req);
+    const m = await import('../demo/doi-tac-ao.ts');
+    const b = z.object({ gan: z.record(z.string()).optional() }).parse(req.body ?? {});
+    return { doi_tac: m.rutTep(nd.thanhVien.orgCode, Math.random, b.gan) };
+  });
   // Bản trình diễn — đạo diễn: đặt kịch bản cho lần nghiệm thu kế tiếp của bên mua ảo (hạ loại 10% / trả lại 80%).
   app.post('/v1/test/kich-ban', async (req) => {
     thu();

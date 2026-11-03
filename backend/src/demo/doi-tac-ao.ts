@@ -15,6 +15,22 @@ export const DAI_DIEN: Record<string, string> = {
 };
 /** Đạo diễn buổi trình diễn: kịch bản cho lần nghiệm thu kế tiếp do bên mua ảo làm (dùng một lần rồi về bình thường). */
 export const KICH_BAN: { lanToi: null | 'ha-cap' | 'tra-lai-nhieu' } = { lanToi: null };
+// Tệp khách: chọn vai xong, rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu (theo tình huống ở docs/mo-phong-quy-trinh).
+export const KIEU_MUA: Record<string, string> = { 'song-phang': 'Sòng phẳng, nhận đủ trả đủ', 'kho-tinh': 'Khó tính: hạ loại 10% có ảnh', /* can-khong-dung, khac-mau */
+  'tra-lai': 'Trả lại 80% có ảnh', /* hang-tra-lai, nghiem-thu-thap */ 'tra-thieu': 'Trả tiền hàng thiếu 30%', /* tra-mot-phan, chua-tra */ 'tra-gia-gat': 'Trả giá gắt 2 lần' /* de-nghi */ };
+export const KIEU_BAN: Record<string, string> = { 'giao-deu': 'Giao đều, đúng hẹn', 'giu-gia': 'Giữ giá, trả giá 2 lần', /* nhieu-de-nghi */
+  'cham': 'Trả lời chậm', /* theo-sat-don */ 'giao-thieu': 'Xuất thiếu 15%' /* dinh-ky-thieu-luong */ };
+export const TEP = new Map<string, string>(); // mã tổ chức AI → kiểu
+const KIEU_TEP: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = { 'tra-gia-gat': { tra: 2, buoc: 0.06 }, 'giu-gia': { tra: 2, buoc: 0.05 }, cham: { cham: true }, 'song-phang': { tra: 0 } };
+export function rutTep(orgThat: string, ngauNhien = Math.random, gan?: Record<string, string>) {
+  const tron = <T,>(a: T[]) => a.map((x) => [ngauNhien(), x] as const).sort((x, y) => x[0] - y[0]).map((x) => x[1]);
+  const laBan = orgThat.startsWith('TC-B'), kieu = Object.keys(laBan ? KIEU_MUA : KIEU_BAN);
+  const doiTac = tron(Object.keys(DAI_DIEN).filter((tc) => tc !== orgThat && tc.startsWith(laBan ? 'TC-M' : 'TC-B'))).slice(0, 3 + (ngauNhien() < 0.5 ? 1 : 0));
+  const k = tron(kieu); TEP.clear();
+  doiTac.forEach((tc, i) => TEP.set(tc, k[i % k.length]));
+  if (gan) { TEP.clear(); for (const [tc, v] of Object.entries(gan)) TEP.set(tc, v); return [...TEP].map(([tc, v]) => ({ to_chuc: tc, kieu: v, mo_ta: (laBan ? KIEU_MUA : KIEU_BAN)[v] })); } // script kiểm gán sẵn
+  return doiTac.map((tc) => ({ to_chuc: tc, kieu: TEP.get(tc)!, mo_ta: (laBan ? KIEU_MUA : KIEU_BAN)[TEP.get(tc)!] }));
+}
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
 const DA_CHAO = new Set<string>();
 const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
@@ -85,7 +101,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
 
   // 0) Chủ động: lô đang bán của người bán thật chưa ai (ảo) chào → một bên mua ảo (xoay vòng) chào đúng giá tham khảo
   //    (chào giá kín: bên mua không thấy giá người bán), chưa đủ dữ liệu thì theo giá mua dự kiến GIA_MUA; không có cả hai thì không chào.
-  const muaAo = Object.keys(DAI_DIEN).filter((tc) => tc.startsWith('TC-M') && !toChucThat.has(tc));
+  const muaAo = Object.keys(DAI_DIEN).filter((tc) => tc.startsWith('TC-M') && !toChucThat.has(tc) && (!TEP.size || TEP.has(tc)));
   if (idThat.length && muaAo.length) {
     const tc = muaAo[luotMua++ % muaAo.length]; const me = await vai(DAI_DIEN[tc]);
     if (me?.token) {
@@ -108,7 +124,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   // 0b) Nhu cầu đang mở của người mua thật → người bán ảo có lô đúng món + loại gửi báo giá (giá tham khảo +2%; mỗi dòng một báo giá).
   if (idThat.length) {
     for (const [tc, sdt] of Object.entries(DAI_DIEN)) {
-      if (!tc.startsWith('TC-B') || toChucThat.has(tc)) continue;
+      if (!tc.startsWith('TC-B') || toChucThat.has(tc) || (TEP.size && !TEP.has(tc))) continue;
       const me = await vai(sdt); if (!me?.token) continue;
       const nc = ((await get('/v1/demands', me.token)) ?? []).filter((n: any) => n.status === 'open' && idThat.includes(n.buyer_org_id));
       if (!nc.length) break; // không có nhu cầu của người thật → khỏi hỏi người bán khác
@@ -130,7 +146,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     const me = await vai(sdt); if (!me?.token) continue;
     const t = me.token;
     // 1) Lời chào: tới lượt mình → trả giá theo tính cách (số lần, bước giá), hết lượt trả giá thì đồng ý.
-    const kieu = KIEU[tc] ?? {}; const soLanTra = kieu.tra ?? 1, buoc = kieu.buoc ?? 0.03;
+    const kieu = { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }; const soLanTra = kieu.tra ?? 1, buoc = kieu.buoc ?? 0.03;
     for (const of of (await get('/v1/offers', t)) ?? []) {
       const phia = of.la_ben_mua ? 'buyer' : 'seller';
       const v = of.vong_cuoi;
@@ -206,7 +222,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const p = ((await get(`/v1/orders/${d.id}/payments`, t)) ?? []).find((x: any) => x.kind === 'goods_on_receipt' && x.status === 'due');
           if (!p) return;
           const anh = (await post('/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, t)).json;
-          return post(`/v1/payments/${p.id}/report`, { amount_vnd: Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, t);
+          return post(`/v1/payments/${p.id}/report`, { amount_vnd: TEP.get(tc) === 'tra-thieu' ? Math.round(Number(p.amount_due_vnd) * 0.7 / 1000) * 1000 : Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, t);
         }); break;
         case 'Chỉ định người nhận, đặt xe': {
           const did = o.dot_giao?.find((x: any) => x.status === 'preparing')?.id; if (!did) break;
@@ -231,7 +247,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const ma = (await get(`/v1/test/deliveries/${dd.id}/receipt-code`, t))?.ma_6_so; if (!ma) return;
           const taiCho = ['tai_vuon', 'tai_ao', 'tai_ruong', 'tai_diem_gom'].includes(dv?.acceptance_point); // như DIEM_TAI_CHO ở giao-nhan.ts
           return taiCho ? post(`/v1/deliveries/${dd.id}/start-check`, { ma_6_so: ma }, t)
-            : post(`/v1/deliveries/${dd.id}/ship`, { ma_6_so: ma, loaded_g: String(dv?.planned_qty_g ?? 0), plate_no: 'DEMO-66C-001' }, t);
+            : post(`/v1/deliveries/${dd.id}/ship`, { ma_6_so: ma, loaded_g: String(TEP.get(tc) === 'giao-thieu' ? Math.round(Number(dv?.planned_qty_g ?? 0) * 0.85 / 1000) * 1000 : dv?.planned_qty_g ?? 0), plate_no: 'DEMO-66C-001' }, t);
         }); break;
         case 'Ký nhận tại nơi đến': await lam(tc, 'ký nhận tại nơi đến', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'in_transit'); if (!dd) return;
@@ -244,7 +260,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const dd = o.dot_giao?.find((x: any) => x.status === 'checking'); if (!dd) break;
           const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) break;
           // Kịch bản người trình diễn đặt trước (một lần): hạ loại 10% hoặc trả lại 80% — có ảnh bằng chứng như luật đòi.
-          const kb = KICH_BAN.lanToi; KICH_BAN.lanToi = null;
+          const kb = KICH_BAN.lanToi ?? ({ 'kho-tinh': 'ha-cap', 'tra-lai': 'tra-lai-nhieu' } as Record<string, 'ha-cap' | 'tra-lai-nhieu'>)[TEP.get(tc) ?? ''] ?? null; KICH_BAN.lanToi = null;
           const phan = kb === 'tra-lai-nhieu' ? { kind: 'rejected', ty: 0.8, ly: 'THOI' } : kb === 'ha-cap' ? { kind: 'downgraded', ty: 0.1, ly: 'DAP' } : null;
           await lam(tc, phan ? (phan.kind === 'rejected' ? 'nghiệm thu: trả lại 80%' : 'nghiệm thu: hạ loại 10%') : 'nghiệm thu đủ', d.code, async () => {
             if (!phan) return post(`/v1/deliveries/${dd.id}/acceptance`, { pin: PIN, weighed_g: q, seal_code: 'M-' + (1000 + (dem % 8999)), lines: [{ kind: 'accepted', qty_g: q }] }, t);
