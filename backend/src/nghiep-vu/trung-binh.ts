@@ -13,10 +13,12 @@ import { taoViec } from './tien.ts';
 export async function soTien(t: GiaoDich, nd: NguoiDung, q: { from?: string; to?: string }) {
   const org = nd.thanhVien.orgId;
   const tu = q.from ? new Date(q.from) : new Date(0); const den = q.to ? new Date(q.to) : new Date('2100-01-01');
-  const r = await t.mot<any>(`WITH don AS (SELECT id, buyer_org_id=$1 la_mua FROM core.orders WHERE buyer_org_id=$1 OR seller_org_id=$1)
+  // Cọc theo đơn + cọc của hợp đồng khung mình là một bên (tài khoản khung không gắn đơn; mỗi tài khoản một dòng nên không cộng hai lần).
+  const r = await t.mot<any>(`WITH don AS (SELECT id, buyer_org_id=$1 la_mua FROM core.orders WHERE buyer_org_id=$1 OR seller_org_id=$1),
+     khung AS (SELECT id FROM core.framework_contracts WHERE buyer_org_id=$1 OR seller_org_id=$1)
     SELECT
-     (SELECT coalesce(sum(b.balance_vnd),0)::text FROM ledger.v_account_balances b JOIN don ON don.id=b.order_id WHERE b.account_type='deposit_escrow') coc_dang_giu,
-     (SELECT coalesce(sum(b.balance_vnd),0)::text FROM ledger.v_account_balances b JOIN don ON don.id=b.order_id WHERE b.account_type='deposit_pending') tien_treo,
+     (SELECT coalesce(sum(b.balance_vnd),0)::text FROM ledger.v_account_balances b WHERE b.account_type='deposit_escrow' AND (b.order_id IN (SELECT id FROM don) OR b.framework_id IN (SELECT id FROM khung))) coc_dang_giu,
+     (SELECT coalesce(sum(b.balance_vnd),0)::text FROM ledger.v_account_balances b WHERE b.account_type='deposit_pending' AND (b.order_id IN (SELECT id FROM don) OR b.framework_id IN (SELECT id FROM khung))) tien_treo,
      (SELECT coalesce(sum(c.amount_vnd),0)::text FROM core.direct_payment_confirmations c JOIN core.direct_payments p ON p.id=c.direct_payment_id WHERE p.payee_org_id=$1 AND c.confirmed_at BETWEEN $2 AND $3) da_nhan_truc_tiep,
      (SELECT coalesce(sum(c.amount_vnd),0)::text FROM core.direct_payment_confirmations c JOIN core.direct_payments p ON p.id=c.direct_payment_id WHERE p.payer_org_id=$1 AND c.confirmed_at BETWEEN $2 AND $3) da_tra_truc_tiep_duoc_xac_nhan,
      (SELECT coalesce(sum(i.amount_vnd),0)::text FROM core.bank_instructions i WHERE i.target_org_id=$1 AND i.status IN ('succeeded','reconciled') AND i.updated_at BETWEEN $2 AND $3) ngan_hang_da_chuyen_den,

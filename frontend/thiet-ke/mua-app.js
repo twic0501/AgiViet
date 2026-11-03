@@ -94,7 +94,7 @@ function veHomNay() {
   $("#so-viec").textContent = `${viec.length} việc`;
   $("#dem-viec").textContent = viec.length; $("#dem-viec").hidden = !viec.length;
   const t = DL.tien?.tong || {};
-  $("#hn-coc").textContent = `${vnd(Number(t.coc_dang_giu || 0) + DL.khung.reduce((a, k) => a + (k.coc?.trang_thai === "held" ? Number(k.coc.so_tien_vnd || 0) : 0), 0))} đ`;
+  $("#hn-coc").textContent = `${vnd(Number(t.coc_dang_giu || 0))} đ`; // backend đã gồm cọc khung (trung-binh.ts) — không cộng lại
   $("#hn-no").textContent = `${vnd(DL.khoan.filter(canTra).reduce((a, p) => a + conTra(p), 0))} đ`;
 }
 
