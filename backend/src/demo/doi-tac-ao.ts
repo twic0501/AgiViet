@@ -10,7 +10,16 @@ const ANH = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwA
 export const DAI_DIEN: Record<string, string> = {
   'TC-B01': '0918000421', 'TC-B02': '0977000610', 'TC-B03': '0907000300', 'TC-B04': '0945000880', 'TC-B05': '0919000950',
   'TC-M01': '0909000213', 'TC-M02': '0903000410', 'TC-M03': '0908000510', 'TC-M04': '0938000610', 'TC-M05': '0902000810',
+  'TC-B06': '0918000601', 'TC-B07': '0918000602', 'TC-B08': '0918000603', 'TC-B09': '0918000604', 'TC-B10': '0918000605',
+  'TC-M06': '0908000601', 'TC-M07': '0908000602', 'TC-M08': '0908000603', 'TC-M09': '0908000604', 'TC-M10': '0908000605',
 };
+const DA_CHAO = new Set<string>();          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
+const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
+let luotMua = 0;
+// Giá mua dự kiến của bên mua ảo (ngân sách riêng của họ, theo giá thị trường trong docs/nghiep-vu/du-lieu-cho.json),
+// chỉ dùng khi chợ chưa đủ giao dịch để có giá tham khảo. Không hiển thị cho người dùng như giá tham khảo.
+const GIA_MUA: Record<string, number> = { 'XOAI_CAT_CHU|L1': 25000, 'XOAI_CAT_CHU|L2': 15000, 'CHANH_KHONG_HAT|L1': 14000, 'TOM_THE|48-52': 120000,
+  'LUA_TUOI|OM18-am25': 6600, 'SAU_RIENG|A': 75000, 'BUOI_DA_XANH|L1': 32000, 'THANH_LONG|L1': 18000, 'THANH_LONG|L2': 9000, 'CA_TRA|0.8-1.2': 30000 };
 let dem = 0;
 const DA_LOI = new Set<string>();
 const DA_TRA_LOI = new Set<string>();
@@ -28,14 +37,16 @@ export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
 
 export interface ViecAo { to_chuc: string; viec: string; doi_tuong: string; ket_qua: 'xong' | 'loi'; chi_tiet?: string }
 
-/** Một vòng quét. nguoiThat: số điện thoại người thật đang dùng (tổ chức của họ không bị đóng vai). */
-export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> {
+/** Một vòng quét. nguoiThat: số điện thoại hoặc mã tổ chức ('TC-…') người thật đang dùng (tổ chức của họ không bị đóng vai).
+ *  idThat: id tổ chức người thật — để bên mua ảo chủ động chào giá lô của họ. */
+export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = []): Promise<ViecAo[]> {
   const nhat_ky: ViecAo[] = [];
   const vai = async (phone: string) => (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
   const toChucThat = new Set<string>();
-  for (const p of nguoiThat) { const v = await vai(p); if (v?.user?.org?.code) toChucThat.add(v.user.org.code); }
+  for (const p of nguoiThat) { if (p.startsWith('TC-')) { toChucThat.add(p); continue; } const v = await vai(p); if (v?.user?.org?.code) toChucThat.add(v.user.org.code); }
   const post = (u: string, b: any, t: string) => goi('POST', u, u.startsWith('/v1/otp/') || u.startsWith('/v1/sim/') ? b : { idempotency_key: khoa(), ...b }, t);
-  const get = async (u: string, t: string) => { const r = await goi('GET', u, undefined, t); return r.status < 300 ? r.json : null; };
+  // Danh sách có phân trang trả {items, …} → lấy mảng items cho mọi vòng lặp bên dưới.
+  const get = async (u: string, t: string) => { const r = await goi('GET', u, undefined, t); return r.status < 300 ? (Array.isArray(r.json?.items) ? r.json.items : r.json) : null; };
   const lam = async (tc: string, viec: string, dt: string, fn: () => Promise<{ status: number; json: any } | void>) => {
     const k = `${tc}|${viec}|${dt}`; if (DA_LOI.has(k)) return; // việc đã lỗi thì không thử lại mỗi vòng (cần người/vận hành)
     const cu = nhat_ky.length;
@@ -53,6 +64,28 @@ export async function motVong(goi: Goi, nguoiThat: string[]): Promise<ViecAo[]> 
     const doc = [...(o.tai_lieu ?? [])].reverse().find((d: any) => d.doc_type === 'contract');
     return post(`/v1/orders/${o.id}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, expected_revision: o.revision, ...(phia === 'seller' ? { commitment_ack: true, low_downgrade_price_ack: true } : {}) }, t);
   };
+
+  // 0) Chủ động: lô đang bán của người bán thật chưa ai (ảo) chào → một bên mua ảo (xoay vòng) chào đúng giá tham khảo
+  //    (chào giá kín: bên mua không thấy giá người bán), chưa đủ dữ liệu thì theo giá mua dự kiến GIA_MUA; không có cả hai thì không chào.
+  const muaAo = Object.keys(DAI_DIEN).filter((tc) => tc.startsWith('TC-M') && !toChucThat.has(tc));
+  if (idThat.length && muaAo.length) {
+    const tc = muaAo[luotMua++ % muaAo.length]; const me = await vai(DAI_DIEN[tc]);
+    if (me?.token) {
+      const ds = await get('/v1/lots', me.token); const lots = ds?.items ?? ds ?? [];
+      for (const l of lots) {
+        if (l.status !== 'on_sale' || DA_CHAO.has(l.id)) continue;
+        if (!CHU_LO.has(l.id)) { const ct = await get(`/v1/lots/${l.id}`, me.token); if (ct?.seller_org_id) CHU_LO.set(l.id, ct.seller_org_id); }
+        if (!idThat.includes(CHU_LO.get(l.id) ?? '')) continue;
+        DA_CHAO.add(l.id);
+        const tk = await get(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`, me.token);
+        const gia = tk?.status === 'du_du_lieu' ? Math.round(Number(tk.price_vnd) / 100) * 100 : (GIA_MUA[`${l.product_code}|${l.grade_code}`] ?? 0), con = Number(l.available_g ?? 0);
+        if (!gia || !con) continue;
+        const qty = Math.min(con, 500000);
+        await lam(tc, `chào giá ${gia} đ/kg`, l.code, () => post('/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: qty, price_vnd: gia }, me.token));
+        break; // mỗi vòng một lời chào cho tự nhiên
+      }
+    }
+  }
 
   for (const [tc, sdt] of Object.entries(DAI_DIEN)) {
     if (toChucThat.has(tc)) continue;

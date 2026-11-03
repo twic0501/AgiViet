@@ -483,6 +483,40 @@ if (typeof document !== "undefined" && typeof MutationObserver !== "undefined") 
   };
   if (document.body) chay(); else addEventListener("DOMContentLoaded", chay);
 }
+// Bản trình diễn: AI đóng mọi bên còn lại (POST /v1/test/doi-tac-ao/vong, chỉ môi trường thử). Mỗi 8 giây khi tab đang xem,
+// bên kia làm xong việc gì thì báo một dòng + nút "Xem" tải lại màn. Bản thật không có test_tools → không chạy.
+if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app)\.html$/.test(location.pathname)) (async () => {
+  const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));
+  if (!cap.test_tools) return;
+  let tk = null; try { tk = await phien(); } catch { return; }
+  const ten = (v) => `${v.to_chuc.startsWith("TC-M") ? "Bên mua" : "Người bán"} ${v.viec} · ${v.doi_tuong}`;
+  const bao = (ds) => {
+    let d = document.getElementById("agv-ai-bao");
+    if (!d) { d = Object.assign(document.createElement("div"), { id: "agv-ai-bao" }); d.setAttribute("role", "status");
+      d.style.cssText = "position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9998;width:min(92vw,420px);display:flex;gap:10px;align-items:center;padding:10px 10px 10px 14px;border-radius:14px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.4 inherit;box-shadow:0 8px 24px rgba(0,0,0,.2)";
+      document.body.append(d); }
+    d.innerHTML = `<span style="flex:1;min-width:0">${esc(ds.map(ten).join(" · "))}</span><button type="button" style="min-height:44px;padding:0 14px;border-radius:999px;border:0;background:#f4c84e;color:#1f1503;font:700 15px inherit;cursor:pointer">Xem</button>`;
+    d.querySelector("button").onclick = () => location.reload();
+    d.hidden = false; clearTimeout(d._an); d._an = setTimeout(() => (d.hidden = true), 12000);
+  };
+  let dangChay = false;
+  const vong = async () => {
+    if (document.hidden || dangChay) return;
+    dangChay = true; setTimeout(() => (dangChay = false), 30000);
+    const r = await fetch("/v1/test/doi-tac-ao/vong", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: "{}" }).catch(() => null);
+    const j = r?.ok ? await r.json().catch(() => null) : null;
+    dangChay = false;
+    let xong = (j?.data ?? j)?.viec?.filter((v) => v.ket_qua === "xong") ?? [];
+    if (!xong.length) return;
+    // Chỉ báo việc dính tới tổ chức đang đăng nhập (lời chào / lô / đơn của mình), không lộ giao dịch người khác.
+    const lay = (u) => fetch(u, { headers: { authorization: "Bearer " + tk } }).then((x) => x.json()).then((x) => { const v = x?.data ?? x; return v?.items ?? v ?? []; }).catch(() => []);
+    const [of, don] = await Promise.all([lay("/v1/offers"), lay("/v1/orders")]);
+    const cua = new Set([...of.flatMap((o) => [o.code, o.lot_code]), ...don.map((d) => d.code)].filter(Boolean).map((c) => c.replace("HĐ-", "HD-")));
+    xong = xong.filter((v) => cua.has(String(v.doi_tuong).replace("HĐ-", "HD-")));
+    if (xong.length) bao(xong);
+  };
+  setTimeout(vong, 2500); setInterval(vong, 8000);
+})();
 // Tính năng chưa làm (gắn data-dang-phat-trien="Tên"): bấm vào báo đang phát triển thay vì im lặng hay đi trang trống.
 if (typeof document !== "undefined") document.addEventListener("click", (e) => {
   const n = e.target.closest?.("[data-dang-phat-trien]"); if (!n) return;

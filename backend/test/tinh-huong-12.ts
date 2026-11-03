@@ -44,9 +44,9 @@ them('TH-NV-02', 'Nhật ký canh tác: danh sách theo vụ, phun thuốc tính
 them('TH-NV-03', 'Bán gấp: bật có hạn và lý do, bên mua thấy cờ ở đầu danh sách, tắt được', async (may, th) => {
   const nam = await may.dangNhap(SDT.nam); const ha = await may.dangNhap(SDT.ha);
   const lot = await may.v<string>(`SELECT id FROM core.lots WHERE code='L-0412'`);
-  const thieu = await nam.post(`/v1/lots/${lot}/urgent-sale`, { until: '2026-11-03T18:00:00+07:00' });
+  const thieu = await nam.post(`/v1/lots/${lot}/urgent-sale`, { until: new Date(Date.now() + 6 * 3600e3).toISOString() });
   th.bang('Thiếu lý do: 422', thieu.status, 422);
-  const r = await nam.ok(`/v1/lots/${lot}/urgent-sale`, { until: '2026-11-03T18:00:00+07:00', reason: 'Trái chín nhanh sau mưa' });
+  const r = await nam.ok(`/v1/lots/${lot}/urgent-sale`, { until: new Date(Date.now() + 6 * 3600e3).toISOString(), reason: 'Trái chín nhanh sau mưa' });
   th.kiem('Có ban_gap từ/đến/lý do', !!r.data.ban_gap?.tu && !!r.data.ban_gap?.den && r.data.ban_gap?.ly_do === 'Trái chín nhanh sau mưa', r.data);
   const ds = (await ha.get('/v1/lots?product=XOAI_CAT_CHU')).json;
   th.kiem('Bên mua thấy lô bán gấp ở đầu danh sách', ds[0]?.id === lot && ds[0]?.ban_gap === true, ds.slice(0, 2));

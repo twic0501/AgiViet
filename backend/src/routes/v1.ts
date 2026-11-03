@@ -548,6 +548,18 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     return { now: ht.dongHo.now().toISOString(), hen_gio: r };
   });
   app.post('/v1/test/timers/run', async () => { thu(); return chayHenGio(ht); });
+  // Bản trình diễn: một vòng đối tác ảo (AI đóng mọi bên còn lại) quanh người đang bấm; app gọi đều đặn khi đang mở.
+  app.post('/v1/test/doi-tac-ao/vong', async (req) => {
+    thu();
+    const nd = await bo.xacThuc(req);
+    const m = await import('../demo/doi-tac-ao.ts');
+    const goi = async (method: 'GET' | 'POST', url: string, body?: any, token?: string) => {
+      const r = await app.inject({ method, url, payload: method === 'POST' ? (body ?? {}) : undefined, headers: token ? { authorization: `Bearer ${token}` } : {} });
+      const j = r.headers['content-type']?.toString().includes('json') ? r.json() : null;
+      return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j };
+    };
+    return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
+  });
   app.post('/v1/test/impersonate', async (req) => {
     thu();
     const b = z.object({ phone: z.string().optional(), user_id: uuid.optional(), org_code: z.string().optional() }).parse(req.body);
