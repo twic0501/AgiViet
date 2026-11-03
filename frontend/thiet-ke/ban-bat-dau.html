@@ -72,6 +72,7 @@
 <body>
 <div class="bd-trang" id="trang"></div>
 <script type="module" src="./hieu-ung-ghep.js"></script>
+<script type="module" src="./chung.js"></script>
 <script>
 const I = {
   vuon: "M12 21V11M12 11c-4 0-7-3-7-7 4 0 7 3 7 7zM12 11c4 0 7-3 7-7-4 0-7 3-7 7zM5 21h14",
@@ -124,7 +125,7 @@ const MAN = {
     ${day("Tiếp tục", di("khai-bao-vuon"))}`,
   "khai-bao-vuon": () => `${dau("Khai báo vườn")}<main class="noi"><p class="bd-hoi">Vườn của bác ở đâu?</p><p class="bd-giai">Đứng trong vườn rồi bấm "Lấy vị trí". Bên mua chỉ thấy tới cấp ấp.</p>
     <div class="bd-ban-do" role="img" aria-label="Bản đồ vườn"><i></i></div>
-    <a class="nut phu-nut" href="#" style="text-decoration:none">Lấy vị trí đang đứng</a>
+    <a class="nut phu-nut" href="#" data-dang-phat-trien="Lấy vị trí vườn" style="text-decoration:none">Lấy vị trí đang đứng</a>
     <div class="bd-the"><label class="bd-truong"><span>Tên vườn</span><input value="Vườn xoài ấp 3"></label>
     <label class="bd-truong"><span>Diện tích</span><input value="1,2 ha"></label>
     <label class="bd-truong"><span>Mã vùng trồng (nếu có)</span><input placeholder="VD: VN-DT-0412"><small>Không có cũng được. Bên xuất khẩu hay hỏi mã này.</small></label></div></main>
@@ -132,14 +133,14 @@ const MAN = {
   "xac-minh": () => `${dau("Xác minh")}<main class="noi"><p class="bd-hoi">Còn 2 việc để bác bán được</p><p class="bd-giai">Xác minh để bên mua tin, và để tiền về đúng tài khoản bác.</p>
     <div class="bd-the">
       <div class="bd-dong"><span class="bd-hinh bd-xong">${ic("tich")}</span><div><b>Số điện thoại</b><small>0918 234 421</small></div><span class="bd-nhan bd-xong">Xong</span></div>
-      <div class="bd-dong"><span class="bd-hinh bd-dang">${ic("may")}</span><div><b>Chụp căn cước</b><small>Mặt trước và mặt sau, đủ sáng</small></div><a class="nut phu-nut" href="#" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>
-      <div class="bd-dong"><span class="bd-hinh bd-chua">${ic("nguoi")}</span><div><b>Chụp mặt bác</b><small>Để so với ảnh căn cước</small></div><a class="nut phu-nut" href="#" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>
+      <div class="bd-dong"><span class="bd-hinh bd-dang">${ic("may")}</span><div><b>Chụp căn cước</b><small>Mặt trước và mặt sau, đủ sáng</small></div><a class="nut phu-nut" href="#" data-dang-phat-trien="Chụp căn cước" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>
+      <div class="bd-dong"><span class="bd-hinh bd-chua">${ic("nguoi")}</span><div><b>Chụp mặt bác</b><small>Để so với ảnh căn cước</small></div><a class="nut phu-nut" href="#" data-dang-phat-trien="Chụp mặt xác minh" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>
     </div>
     <div class="bd-the" style="background:#f8ecc9;box-shadow:0 0 0 1px #e3c77a"><b>Sau khi gửi</b><p style="color:var(--muc-phu)">Nhân viên AgiViet duyệt trong 24 giờ. Trong lúc chờ, bác vẫn ghi nhật ký và đăng bài nháp được.</p></div></main>
     ${day("Gửi xác minh", "./ban-hom-nay.html?thu=0918000421", `<a class="nut bd-lui" href="./ban-hom-nay.html?thu=0918000421" style="text-decoration:none">Để sau, vào app trước</a>`)}`,
   "tro-giup": () => `${dau("Trợ giúp đăng nhập", "Không vào được app?")}<main class="noi"><p class="bd-hoi">Bác gặp chuyện gì?</p>
     ${chon("loi", [["ma", "Không nhận được mã", "Chờ 1 phút rồi bấm gửi lại, hoặc nhận qua cuộc gọi", "dong_ho"], ["so", "Đổi số điện thoại", "Cần chụp căn cước để giữ tài khoản cũ", "dien"], ["pin", "Quên mã PIN", "Nhận mã qua tin nhắn để đặt PIN mới", "khien"]], 0)}
-    <div class="bd-goi"><a href="tel:19001234"><span>${ic("dien")}</span>Gọi tổng đài<small style="font-weight:400;color:var(--muc-nhat)">1900 1234 · 6:00–21:00</small></a><a href="#"><span>${ic("nguoi")}</span>Nhờ người giúp<small style="font-weight:400;color:var(--muc-nhat)">Con cháu đăng nhập hộ</small></a></div></main>
+    <div class="bd-goi"><a href="tel:19001234"><span>${ic("dien")}</span>Gọi tổng đài<small style="font-weight:400;color:var(--muc-nhat)">1900 1234 · 6:00–21:00</small></a><a href="#" data-dang-phat-trien="Nhờ người giúp đăng nhập"><span>${ic("nguoi")}</span>Nhờ người giúp<small style="font-weight:400;color:var(--muc-nhat)">Con cháu đăng nhập hộ</small></a></div></main>
     ${day("Nhận mã qua cuộc gọi", "./dang-nhap.html")}`,
 };
 document.getElementById("trang").innerHTML = (MAN[buoc] || MAN["chao-mung"])();
