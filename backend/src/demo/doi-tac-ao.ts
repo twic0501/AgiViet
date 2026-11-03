@@ -16,7 +16,8 @@ export const DAI_DIEN: Record<string, string> = {
 /** Đạo diễn buổi trình diễn: kịch bản cho lần nghiệm thu kế tiếp do bên mua ảo làm (dùng một lần rồi về bình thường). */
 export const KICH_BAN: { lanToi: null | 'ha-cap' | 'tra-lai-nhieu' } = { lanToi: null };
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
-const DA_CHAO = new Set<string>();          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
+const DA_CHAO = new Set<string>();
+const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
 let luotMua = 0, luotCham = 0;
 // Tính cách giao dịch của người mẫu — khớp dòng mô tả trên thẻ chọn vai (frontend/thiet-ke/dang-nhap.html, bảng TINH).
@@ -100,6 +101,26 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         const qty = Math.min(con, 500000);
         await lam(tc, `chào giá ${gia.toLocaleString("vi-VN")} đ/kg`, l.code, () => post('/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: qty, price_vnd: gia }, me.token));
         break; // mỗi vòng một lời chào cho tự nhiên
+      }
+    }
+  }
+
+  // 0b) Nhu cầu đang mở của người mua thật → người bán ảo có lô đúng món + loại gửi báo giá (giá tham khảo +2%; mỗi dòng một báo giá).
+  if (idThat.length) {
+    for (const [tc, sdt] of Object.entries(DAI_DIEN)) {
+      if (!tc.startsWith('TC-B') || toChucThat.has(tc)) continue;
+      const me = await vai(sdt); if (!me?.token) continue;
+      const nc = ((await get('/v1/demands', me.token)) ?? []).filter((n: any) => n.status === 'open' && idThat.includes(n.buyer_org_id));
+      if (!nc.length) break; // không có nhu cầu của người thật → khỏi hỏi người bán khác
+      const lots = ((await get('/v1/lots?mine=true', me.token)) ?? []).filter((l: any) => l.status === 'on_sale');
+      for (const n of nc) for (const dl of n.lines ?? []) {
+        if (DA_BAO.has(dl.id)) continue;
+        const l = lots.find((x: any) => x.product_code === n.product_code && x.grade_code === dl.grade_code && Number(x.available_g ?? 0) > 0); if (!l) continue;
+        const tk = await get(`/v1/reference-prices?product=${encodeURIComponent(n.product_code)}&grade=${encodeURIComponent(dl.grade_code)}`, me.token);
+        const goc = tk?.status === 'du_du_lieu' ? Number(tk.price_vnd) : (GIA_MUA[`${n.product_code}|${dl.grade_code}`] ?? 0); if (!goc) continue;
+        const gia = Math.round(goc * 1.02 / 100) * 100, qty = Math.min(Number(dl.qty_g), Number(l.available_g));
+        DA_BAO.add(dl.id);
+        await lam(tc, `báo giá ${gia.toLocaleString('vi-VN')} đ/kg cho nhu cầu`, n.code, () => post('/v1/offers', { direction: 'seller_quote', lot_id: l.id, demand_line_id: dl.id, qty_g: qty, price_vnd: gia }, me.token));
       }
     }
   }
