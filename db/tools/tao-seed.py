@@ -11,7 +11,9 @@ source=ROOT/('docs/nghiep-vu/du-lieu-cho.json' if CHO else 'docs/nghiep-vu/du-li
 SKEY=source.name
 raw=source.read_bytes(); x=json.loads(raw,parse_float=Decimal)
 def ident(s): return str(uuid.uuid5(uuid.NAMESPACE_URL,'agiviet-v2:'+s))
+class Raw(str): pass  # biểu thức SQL chèn nguyên (vd ngày tương đối theo đồng hồ hệ thống)
 def q(v):
+ if isinstance(v,Raw):return str(v)
  if v is None:return 'NULL'
  if isinstance(v,bool):return 'true' if v else 'false'
  if isinstance(v,(int,Decimal)):return str(v)
@@ -106,7 +108,7 @@ for n in x['nhu_cau']:
   ins('core.demand_lines',id=uid(n['ma']+':'+str(i+1)),demand_id=uid(n['ma']),grade_code=line['loai'][0],qty=int(Decimal(line['kg'])*1000),min_source_qty=line.get('kg_toi_thieu_moi_nguon',20)*1000)
   ins('core.demand_line_max_prices',demand_line_id=uid(n['ma']+':'+str(i+1)),max_price_vnd=line['gia_toi_da_kin'],set_at=T)
 for h in x['don_nen']:
- ins('core.historical_trades',id=uid(h['ma']),code=h['ma'],buyer_org_id=uid(h['mua']),seller_org_id=uid(h['ban']),product_id=uid(h['mat_hang']),grade_code=h['loai'],qty=h['kg_dat']*1000,unit_price_vnd=h['gia'],accepted_at=h['chot_ngay']+'T12:00:00+07:00',province_code='DT',excluded_from_ref_price=h.get('loai_khoi_gia_tham_khao',False),is_test_data=True,source_key=SKEY)
+ ins('core.historical_trades',id=uid(h['ma']),code=h['ma'],buyer_org_id=uid(h['mua']),seller_org_id=uid(h['ban']),product_id=uid(h['mat_hang']),grade_code=h['loai'],qty=h['kg_dat']*1000,unit_price_vnd=h['gia'],accepted_at=Raw(f"ref.clock_at()-interval '{h['cach_ngay']} days'") if 'cach_ngay' in h else h['chot_ngay']+'T12:00:00+07:00',province_code='DT',excluded_from_ref_price=h.get('loai_khoi_gia_tham_khao',False),is_test_data=True,source_key=SKEY)
 for g in x['gia_tham_khao']:ins('mkt.external_prices',product_id=uid(g['mat_hang']),grade_code=g['loai'],unit_price_vnd=g['gia'],source_label='Giá giả định từ JSON, không dùng tính cọc',observed_on=g['den_ngay'],is_test_data=True)
 for f in x['hop_dong_khung']:
  code=f['ma'];sql('INSERT INTO core.framework_contracts(id,code,buyer_org_id,seller_org_id,segment_code,schedule,price_period,billing_period,framework_deposit_vnd,extra_credit_vnd,fee_bps,active_during,policy_version_id,status) VALUES('+','.join([q(uid(code)),q(code),q(uid(f['mua'])),q(uid(f['ban'])),"'horeca'",q({'lich':f['lich'],'mon':f['mon']}),"'week'","'week'",q(f['coc_khung']),q(f['cho_no_them']),q(f.get('phi_bps',100 if (f['mua']=='TC-M06' and not CHO) else 0)),"daterange('2026-10-01','2027-01-01','[)')",'1',"'running'"])+')')

@@ -2,14 +2,14 @@ SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có 
 -- Tự sinh từ du-lieu-cho.json bằng db/tools/tao-seed.py. Không sửa tay.
 DO $seed$ BEGIN
 IF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json') THEN
- IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json' AND sha256=decode('89feb18ad9a2297dea8d16b6316d1f0c608e6954aeddfc1b32f4b0c3ca18ba61','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json' AND sha256=decode('100a373bbbf44667d66fa8e01d927add5b890c326876473bf6cafbc666e29c6a','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;
  RETURN; END IF;
 ALTER TABLE core.membership_role_grants DISABLE TRIGGER a_privilege;
 ALTER TABLE core.membership_role_grants DISABLE TRIGGER z_notify_grant;
 PERFORM set_config('app.allow_any_initial','on',true);
 PERFORM set_config('app.actor_kind','system',true);
 PERFORM set_config('app.test_time','2026-11-02T08:00:00+07:00',true);
-INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json',decode('89feb18ad9a2297dea8d16b6316d1f0c608e6954aeddfc1b32f4b0c3ca18ba61','hex'),'{
+INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json',decode('100a373bbbf44667d66fa8e01d927add5b890c326876473bf6cafbc666e29c6a','hex'),'{
   "meta": {
     "ten": "Chợ mẫu AgiViet: 5 nhà bán + 5 bên mua",
     "phien_ban": "2026-11-01",
@@ -1562,6 +1562,438 @@ INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json
       "noi_giao": "tai_diem_gom",
       "chot_ngay": "2026-10-25",
       "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-001",
+      "ban": "TC-B10",
+      "mua": "TC-M01",
+      "mat_hang": "BUOI_DA_XANH",
+      "loai": "L1",
+      "gia": 31000,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 2,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-002",
+      "ban": "TC-B10",
+      "mua": "TC-M02",
+      "mat_hang": "BUOI_DA_XANH",
+      "loai": "L1",
+      "gia": 32000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 8,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-003",
+      "ban": "TC-B10",
+      "mua": "TC-M03",
+      "mat_hang": "BUOI_DA_XANH",
+      "loai": "L1",
+      "gia": 33000,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 14,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-004",
+      "ban": "TC-B08",
+      "mua": "TC-M02",
+      "mat_hang": "CA_TRA",
+      "loai": "0.8-1.2",
+      "gia": 29100,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 3,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-005",
+      "ban": "TC-B08",
+      "mua": "TC-M03",
+      "mat_hang": "CA_TRA",
+      "loai": "0.8-1.2",
+      "gia": 30000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 9,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-006",
+      "ban": "TC-B08",
+      "mua": "TC-M04",
+      "mat_hang": "CA_TRA",
+      "loai": "0.8-1.2",
+      "gia": 30900,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 15,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-007",
+      "ban": "TC-B09",
+      "mua": "TC-M03",
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L1",
+      "gia": 13600,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 4,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-008",
+      "ban": "TC-B09",
+      "mua": "TC-M04",
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L1",
+      "gia": 14000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 10,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-009",
+      "ban": "TC-B09",
+      "mua": "TC-M05",
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L1",
+      "gia": 14400,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 16,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-010",
+      "ban": "TC-B05",
+      "mua": "TC-M04",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "gia": 6400,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 2,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-011",
+      "ban": "TC-B05",
+      "mua": "TC-M05",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "gia": 6600,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 8,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-012",
+      "ban": "TC-B06",
+      "mua": "TC-M06",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "gia": 6800,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 14,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-013",
+      "ban": "TC-B02",
+      "mua": "TC-M05",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "gia": 72800,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 3,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-014",
+      "ban": "TC-B02",
+      "mua": "TC-M06",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "gia": 75000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 9,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-015",
+      "ban": "TC-B02",
+      "mua": "TC-M07",
+      "mat_hang": "SAU_RIENG",
+      "loai": "A",
+      "gia": 77200,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 15,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-016",
+      "ban": "TC-B02",
+      "mua": "TC-M06",
+      "mat_hang": "SAU_RIENG",
+      "loai": "B",
+      "gia": 58200,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 4,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-017",
+      "ban": "TC-B02",
+      "mua": "TC-M07",
+      "mat_hang": "SAU_RIENG",
+      "loai": "B",
+      "gia": 60000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 10,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-018",
+      "ban": "TC-B02",
+      "mua": "TC-M08",
+      "mat_hang": "SAU_RIENG",
+      "loai": "B",
+      "gia": 61800,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 16,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-019",
+      "ban": "TC-B03",
+      "mua": "TC-M07",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "gia": 17500,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 2,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-020",
+      "ban": "TC-B07",
+      "mua": "TC-M08",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "gia": 18000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 8,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-021",
+      "ban": "TC-B03",
+      "mua": "TC-M09",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "gia": 18500,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 14,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-022",
+      "ban": "TC-B03",
+      "mua": "TC-M08",
+      "mat_hang": "THANH_LONG",
+      "loai": "L2",
+      "gia": 8700,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 3,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-023",
+      "ban": "TC-B03",
+      "mua": "TC-M09",
+      "mat_hang": "THANH_LONG",
+      "loai": "L2",
+      "gia": 9000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 9,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-024",
+      "ban": "TC-B03",
+      "mua": "TC-M10",
+      "mat_hang": "THANH_LONG",
+      "loai": "L2",
+      "gia": 9300,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 15,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-025",
+      "ban": "TC-B04",
+      "mua": "TC-M09",
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "gia": 116400,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 4,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-026",
+      "ban": "TC-B04",
+      "mua": "TC-M10",
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "gia": 120000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 10,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-027",
+      "ban": "TC-B04",
+      "mua": "TC-M01",
+      "mat_hang": "TOM_THE",
+      "loai": "48-52",
+      "gia": 123600,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 16,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-028",
+      "ban": "TC-B04",
+      "mua": "TC-M10",
+      "mat_hang": "TOM_THE",
+      "loai": "53-60",
+      "gia": 101800,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 2,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-029",
+      "ban": "TC-B04",
+      "mua": "TC-M01",
+      "mat_hang": "TOM_THE",
+      "loai": "53-60",
+      "gia": 105000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 8,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-030",
+      "ban": "TC-B04",
+      "mua": "TC-M02",
+      "mat_hang": "TOM_THE",
+      "loai": "53-60",
+      "gia": 108200,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 14,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-031",
+      "ban": "TC-B01",
+      "mua": "TC-M01",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "gia": 24200,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 3,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-032",
+      "ban": "TC-B01",
+      "mua": "TC-M02",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "gia": 25000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 9,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-033",
+      "ban": "TC-B03",
+      "mua": "TC-M03",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L1",
+      "gia": 25800,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 15,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-034",
+      "ban": "TC-B01",
+      "mua": "TC-M02",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L2",
+      "gia": 14600,
+      "kg_dat": 500,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 4,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-035",
+      "ban": "TC-B01",
+      "mua": "TC-M03",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L2",
+      "gia": 15000,
+      "kg_dat": 800,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 10,
+      "trang_thai": "hoan_tat"
+    },
+    {
+      "ma": "GD-LS-036",
+      "ban": "TC-B01",
+      "mua": "TC-M04",
+      "mat_hang": "XOAI_CAT_CHU",
+      "loai": "L2",
+      "gia": 15400,
+      "kg_dat": 1100,
+      "noi_giao": "tai_vuon",
+      "cach_ngay": 16,
+      "trang_thai": "hoan_tat"
     }
   ],
   "hop_dong_khung": [
@@ -2053,6 +2485,42 @@ INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id
 INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('d47de70a-85ff-50ea-927b-fec3f46a0337','HĐ-1908','0c4280e9-e23b-55f1-898e-ce29dfe45ace','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','48-52',1000000,134000,'2026-10-24T12:00:00+07:00','DT',false,true,'du-lieu-cho.json');
 INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('93bcc276-81e7-5473-a1ae-fe8ab37b9bd1','HĐ-1909','99177a1f-dc84-588e-95bd-199401da0ed3','7895283a-cbd1-5055-bafb-af5de4f9a570','5aded288-3224-5d1e-b474-7b59d2098852','OM18-am25',10000000,7100,'2026-10-11T12:00:00+07:00','DT',false,true,'du-lieu-cho.json');
 INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('f58a42f4-1a05-51d6-94dd-d7307a320a5b','HĐ-1910','99177a1f-dc84-588e-95bd-199401da0ed3','7895283a-cbd1-5055-bafb-af5de4f9a570','5aded288-3224-5d1e-b474-7b59d2098852','OM18-am25',8000000,7000,'2026-10-25T12:00:00+07:00','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('9c31e16a-01b7-51ce-b925-3503bb1392a5','GD-LS-001','d45094f9-fea4-519a-a3c3-c9a50c9808a5','2c77b992-6510-5526-a265-800366ba8f0a','3197ac78-8690-508d-ab58-eba8e7df742e','L1',500000,31000,ref.clock_at()-interval '2 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('017c00fe-4739-5813-9604-6b9a697f8f62','GD-LS-002','5dafca77-a17a-5f90-b68a-7766e3c64f71','2c77b992-6510-5526-a265-800366ba8f0a','3197ac78-8690-508d-ab58-eba8e7df742e','L1',800000,32000,ref.clock_at()-interval '8 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('99295941-a628-5f7b-818c-a8698c6ad3d1','GD-LS-003','a9179290-5f66-5741-8c32-412e6df6659a','2c77b992-6510-5526-a265-800366ba8f0a','3197ac78-8690-508d-ab58-eba8e7df742e','L1',1100000,33000,ref.clock_at()-interval '14 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('2a64c031-6cfe-5656-850b-66672aabdc17','GD-LS-004','5dafca77-a17a-5f90-b68a-7766e3c64f71','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','a201a368-04e1-5da1-a80e-53280e3106a8','0.8-1.2',500000,29100,ref.clock_at()-interval '3 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('39e32c98-fb3f-59a5-8ee8-c5568a3fc2df','GD-LS-005','a9179290-5f66-5741-8c32-412e6df6659a','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','a201a368-04e1-5da1-a80e-53280e3106a8','0.8-1.2',800000,30000,ref.clock_at()-interval '9 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('d5edda3b-62e8-5a48-bc40-7ed28bd8443c','GD-LS-006','99177a1f-dc84-588e-95bd-199401da0ed3','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','a201a368-04e1-5da1-a80e-53280e3106a8','0.8-1.2',1100000,30900,ref.clock_at()-interval '15 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('507dd7df-575f-5442-86e4-4da095165bea','GD-LS-007','a9179290-5f66-5741-8c32-412e6df6659a','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','c7dbdc6e-ec3c-540b-bd13-0ecf2c0fe6ed','L1',500000,13600,ref.clock_at()-interval '4 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('b9d7504a-852f-57ef-9dd7-c7eff5982f7a','GD-LS-008','99177a1f-dc84-588e-95bd-199401da0ed3','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','c7dbdc6e-ec3c-540b-bd13-0ecf2c0fe6ed','L1',800000,14000,ref.clock_at()-interval '10 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('b4d38252-b565-5d1c-b17b-1d871d51c709','GD-LS-009','0c4280e9-e23b-55f1-898e-ce29dfe45ace','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','c7dbdc6e-ec3c-540b-bd13-0ecf2c0fe6ed','L1',1100000,14400,ref.clock_at()-interval '16 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('e3a80993-8179-58ca-84d0-8ca738002452','GD-LS-010','99177a1f-dc84-588e-95bd-199401da0ed3','7895283a-cbd1-5055-bafb-af5de4f9a570','5aded288-3224-5d1e-b474-7b59d2098852','OM18-am25',500000,6400,ref.clock_at()-interval '2 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('c2fe1557-e4a7-5f59-8cf3-1b8ec70cb5fd','GD-LS-011','0c4280e9-e23b-55f1-898e-ce29dfe45ace','7895283a-cbd1-5055-bafb-af5de4f9a570','5aded288-3224-5d1e-b474-7b59d2098852','OM18-am25',800000,6600,ref.clock_at()-interval '8 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('1f20dac3-bc03-5a05-894f-bef0632cbcaf','GD-LS-012','e8571283-c2ff-578c-8e7a-becaa244774a','8a156877-0fdb-530f-9e5e-9edc90407a76','5aded288-3224-5d1e-b474-7b59d2098852','OM18-am25',1100000,6800,ref.clock_at()-interval '14 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('0e21d7d7-0ab5-5ebb-8397-0335afe25ab5','GD-LS-013','0c4280e9-e23b-55f1-898e-ce29dfe45ace','7ed1d074-9269-579f-bd58-252d11f24586','8ebec77f-09a6-5ef3-b660-69a681ca86bc','A',500000,72800,ref.clock_at()-interval '3 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('5408c485-64dc-5f76-8ece-d72e335b89cc','GD-LS-014','e8571283-c2ff-578c-8e7a-becaa244774a','7ed1d074-9269-579f-bd58-252d11f24586','8ebec77f-09a6-5ef3-b660-69a681ca86bc','A',800000,75000,ref.clock_at()-interval '9 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('2e87b37a-52bf-58d8-9a8f-c15f36c2d41f','GD-LS-015','82ccf63a-b708-55a4-919d-3d94904bc60d','7ed1d074-9269-579f-bd58-252d11f24586','8ebec77f-09a6-5ef3-b660-69a681ca86bc','A',1100000,77200,ref.clock_at()-interval '15 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('0cef634f-affe-53a2-a243-5aeacbb4d2bd','GD-LS-016','e8571283-c2ff-578c-8e7a-becaa244774a','7ed1d074-9269-579f-bd58-252d11f24586','8ebec77f-09a6-5ef3-b660-69a681ca86bc','B',500000,58200,ref.clock_at()-interval '4 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('44064551-0290-56f9-a461-7fd1dd2b34da','GD-LS-017','82ccf63a-b708-55a4-919d-3d94904bc60d','7ed1d074-9269-579f-bd58-252d11f24586','8ebec77f-09a6-5ef3-b660-69a681ca86bc','B',800000,60000,ref.clock_at()-interval '10 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('49534ce4-aa23-5a74-936a-45139f95b08d','GD-LS-018','53d91dba-4084-5f67-a40a-73bf4c3c74e2','7ed1d074-9269-579f-bd58-252d11f24586','8ebec77f-09a6-5ef3-b660-69a681ca86bc','B',1100000,61800,ref.clock_at()-interval '16 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('8587cab7-0bf4-5f21-99a7-46fd6aece31d','GD-LS-019','82ccf63a-b708-55a4-919d-3d94904bc60d','d191fddf-821f-503c-b45c-2461f1c1eba7','e6b1cf34-b6af-556f-a9ff-f65abcb58055','L1',500000,17500,ref.clock_at()-interval '2 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('529b13ff-ba7f-56fc-9ddb-0af0383d02eb','GD-LS-020','53d91dba-4084-5f67-a40a-73bf4c3c74e2','b1e78de3-922a-54aa-a02c-e6b7c326a667','e6b1cf34-b6af-556f-a9ff-f65abcb58055','L1',800000,18000,ref.clock_at()-interval '8 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('2ea91822-8064-5e30-8c1c-6ab34570f60f','GD-LS-021','fca153f9-10e8-5b7e-9bc5-aa78692028f1','d191fddf-821f-503c-b45c-2461f1c1eba7','e6b1cf34-b6af-556f-a9ff-f65abcb58055','L1',1100000,18500,ref.clock_at()-interval '14 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('651c0802-9a21-543c-9ed0-b6602b9d597e','GD-LS-022','53d91dba-4084-5f67-a40a-73bf4c3c74e2','d191fddf-821f-503c-b45c-2461f1c1eba7','e6b1cf34-b6af-556f-a9ff-f65abcb58055','L2',500000,8700,ref.clock_at()-interval '3 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('b79acaf4-06c0-558b-85f7-aad216650177','GD-LS-023','fca153f9-10e8-5b7e-9bc5-aa78692028f1','d191fddf-821f-503c-b45c-2461f1c1eba7','e6b1cf34-b6af-556f-a9ff-f65abcb58055','L2',800000,9000,ref.clock_at()-interval '9 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('d1309e8b-5372-5a12-8e0c-44243f26f3ff','GD-LS-024','8c496449-10a6-5069-a4ad-47c67809d7fe','d191fddf-821f-503c-b45c-2461f1c1eba7','e6b1cf34-b6af-556f-a9ff-f65abcb58055','L2',1100000,9300,ref.clock_at()-interval '15 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('4ad05ce3-a9e9-558e-8ba4-d0378dbc038f','GD-LS-025','fca153f9-10e8-5b7e-9bc5-aa78692028f1','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','48-52',500000,116400,ref.clock_at()-interval '4 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('c0b3dbef-fa50-584b-a59d-c185e598f70f','GD-LS-026','8c496449-10a6-5069-a4ad-47c67809d7fe','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','48-52',800000,120000,ref.clock_at()-interval '10 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('0b58bb37-9e0e-5350-9429-b99f60be331f','GD-LS-027','d45094f9-fea4-519a-a3c3-c9a50c9808a5','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','48-52',1100000,123600,ref.clock_at()-interval '16 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('39d76ecd-cb26-5e58-8586-0786a7a8ae6f','GD-LS-028','8c496449-10a6-5069-a4ad-47c67809d7fe','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','53-60',500000,101800,ref.clock_at()-interval '2 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('6f53d131-3490-5537-88e7-f384ae084baf','GD-LS-029','d45094f9-fea4-519a-a3c3-c9a50c9808a5','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','53-60',800000,105000,ref.clock_at()-interval '8 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('9a1e8533-001b-58ee-ad57-1b97532140a2','GD-LS-030','5dafca77-a17a-5f90-b68a-7766e3c64f71','4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','9dcf7b9d-fc31-5909-b243-0bd0b4a0d3f2','53-60',1100000,108200,ref.clock_at()-interval '14 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('9b907ac0-bc73-5325-b594-fc57cb0fb505','GD-LS-031','d45094f9-fea4-519a-a3c3-c9a50c9808a5','91020315-f111-5802-ae6e-81df0b59def1','c833b2d4-badc-5575-98cd-83c9c6293313','L1',500000,24200,ref.clock_at()-interval '3 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('7a5f8268-e2cb-50da-8e48-882f2101e1f0','GD-LS-032','5dafca77-a17a-5f90-b68a-7766e3c64f71','91020315-f111-5802-ae6e-81df0b59def1','c833b2d4-badc-5575-98cd-83c9c6293313','L1',800000,25000,ref.clock_at()-interval '9 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('63c1593e-157d-5b62-9398-d8c8acb5311b','GD-LS-033','a9179290-5f66-5741-8c32-412e6df6659a','d191fddf-821f-503c-b45c-2461f1c1eba7','c833b2d4-badc-5575-98cd-83c9c6293313','L1',1100000,25800,ref.clock_at()-interval '15 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('4c0f2977-1bb5-5d52-a1e6-030610fc343f','GD-LS-034','5dafca77-a17a-5f90-b68a-7766e3c64f71','91020315-f111-5802-ae6e-81df0b59def1','c833b2d4-badc-5575-98cd-83c9c6293313','L2',500000,14600,ref.clock_at()-interval '4 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('d8a562f4-4fbb-50dc-be95-4971066997d4','GD-LS-035','a9179290-5f66-5741-8c32-412e6df6659a','91020315-f111-5802-ae6e-81df0b59def1','c833b2d4-badc-5575-98cd-83c9c6293313','L2',800000,15000,ref.clock_at()-interval '10 days','DT',false,true,'du-lieu-cho.json');
+INSERT INTO core.historical_trades(id,code,buyer_org_id,seller_org_id,product_id,grade_code,qty,unit_price_vnd,accepted_at,province_code,excluded_from_ref_price,is_test_data,source_key) VALUES('8f4387a7-2b5f-5d2f-8608-4d9837a01315','GD-LS-036','99177a1f-dc84-588e-95bd-199401da0ed3','91020315-f111-5802-ae6e-81df0b59def1','c833b2d4-badc-5575-98cd-83c9c6293313','L2',1100000,15400,ref.clock_at()-interval '16 days','DT',false,true,'du-lieu-cho.json');
 INSERT INTO mkt.external_prices(product_id,grade_code,unit_price_vnd,source_label,observed_on,is_test_data) VALUES('c833b2d4-badc-5575-98cd-83c9c6293313','L1',25000,'Giá giả định từ JSON, không dùng tính cọc','2026-11-02',true);
 INSERT INTO mkt.external_prices(product_id,grade_code,unit_price_vnd,source_label,observed_on,is_test_data) VALUES('c833b2d4-badc-5575-98cd-83c9c6293313','L2',15000,'Giá giả định từ JSON, không dùng tính cọc','2026-11-02',true);
 INSERT INTO mkt.external_prices(product_id,grade_code,unit_price_vnd,source_label,observed_on,is_test_data) VALUES('c833b2d4-badc-5575-98cd-83c9c6293313','L3',6000,'Giá giả định từ JSON, không dùng tính cọc','2026-11-02',true);
