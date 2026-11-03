@@ -177,11 +177,39 @@ async function veTraTien(id) {
   } catch (e) { $("#tt-tam").innerHTML = `<h2 id="tt-t">Chưa lấy được hướng dẫn</h2><p class="loi">${esc(e.message)}</p><button class="nut vien rong" data-dong>Đóng</button>`; }
 }
 
+// ---------- Tin nhắn theo đơn / lời chào (GET/POST /v1/messages) ----------
+const tenCuoc = (c) => { const d = DL.don.find((x) => x.id === c.order_id); return d ? `${d.seller_name || "Người bán"} · ${d.code}` : "Lời chào giá"; };
+const gioTin = (s) => new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+function veDsTin() {
+  $("#tn-t").textContent = "Tin nhắn";
+  $("#ds-tin").innerHTML = DL.tin.length ? DL.tin.map((c) => `<button type="button" class="viec" data-cuoc="${esc(JSON.stringify(c.order_id ? { order_id: c.order_id } : { offer_id: c.offer_id }))}" data-ten="${esc(tenCuoc(c))}"><i class="${c.la_cua_toi ? "la" : ""}"></i><div><b>${esc(tenCuoc(c))}</b><p class="phu">${c.la_cua_toi ? "Bạn: " : ""}${esc(c.body)}</p></div><span class="chip">${c.so_tin}</span></button>`).join("")
+    : `<p class="phu">Chưa có tin nhắn. Tin nhắn mở theo từng lời chào giá hoặc đơn.</p>`;
+}
+async function moCuoc(q, ten) {
+  $("#tn-t").textContent = ten;
+  try {
+    const x = await api(`/v1/messages?${new URLSearchParams(q)}`);
+    $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button>
+      <div class="luong-tin">${x.tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("") || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
+      <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
+    const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
+    $("#tn-gui").onsubmit = async (e) => { e.preventDefault(); const body = $("#tn-o").value.trim(); if (!body) return;
+      e.submitter && (e.submitter.disabled = true);
+      try { await api("/v1/messages", { ...q, body }); DL.tin = await api("/v1/messages/summary"); await moCuoc(q, ten); $("#tn-o")?.focus(); }
+      catch (err) { $("#tn-loi").textContent = err.message; e.submitter && (e.submitter.disabled = false); } };
+  } catch (err) { $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button><p class="loi">${esc(err.message)}</p>`; }
+}
+$("#ds-tin").addEventListener("click", (e) => {
+  if (e.target.closest("[data-tin-lui]")) return veDsTin();
+  const c = e.target.closest("[data-cuoc]"); if (c) moCuoc(JSON.parse(c.dataset.cuoc), c.dataset.ten);
+});
+
 // ---------- Thêm, tin nhắn, nhu cầu ----------
 function veThem() {
   $("#tk-thong-tin").innerHTML = `<p style="margin:0"><b>${esc(me.name)}</b> · ${esc(me.phone_masked)}</p><p class="phu">${esc(me.org?.name)} · ${me.roles.includes("owner") ? "Chủ tổ chức" : "Thành viên"} · duyệt chi tới ${vnd(me.approval_limit_vnd)} đ</p>`;
-  $("#ds-tin").innerHTML = DL.tin.length ? DL.tin.map((c) => `<div class="viec" style="cursor:default"><i class="${c.chua_doc ? "" : "la"}"></i><div><b>${esc(c.ten_ben_kia || c.title || "Trao đổi")}</b><p class="phu">${esc(c.tin_cuoi || c.last_body || "")}</p></div>${c.chua_doc ? `<span class="chip toi">${c.chua_doc} mới</span>` : ""}</div>`).join("") : `<p class="phu">Chưa có tin nhắn. Tin nhắn mở theo từng lời chào giá hoặc đơn.</p>`;
-  const moi = DL.tin.reduce((a, c) => a + (c.chua_doc || 0), 0); $("#dem-tin").textContent = moi; $("#dem-tin").hidden = !moi;
+  veDsTin();
+  // Chấm đỏ = số cuộc mà tin cuối là của bên kia (chưa trả lời); API chưa có cờ đã đọc.
+  const moi = DL.tin.filter((c) => !c.la_cua_toi).length; $("#dem-tin").textContent = moi; $("#dem-tin").hidden = !moi;
   $("#nc-sp").innerHTML = DL.sp.map((s) => `<option value="${esc(s.code)}">${esc(s.name_vi)}</option>`).join("");
   const homNay = new Date(), d = (n) => new Date(homNay.getTime() + n * 864e5).toISOString().slice(0, 10);
   $("#nc-tu").value ||= d(2); $("#nc-den").value ||= d(9);
@@ -215,6 +243,7 @@ document.addEventListener("click", async (e) => {
   if (t.dataset.chep) { try { await navigator.clipboard.writeText(t.dataset.chep); t.textContent = "Đã chép"; } catch { t.textContent = "Chép tay"; } return; }
   if (t.dataset.locChon) { loc = t.dataset.locChon; return veNguon(); }
   if (t.dataset.di) return di(t.dataset.di);
+  if (t.dataset.mo === "nhan") veDsTin(); // mở lại luôn về danh sách
   if (t.dataset.mo) return mo(t.dataset.mo, t);
   if ("dong" in t.dataset) return dong();
 });
