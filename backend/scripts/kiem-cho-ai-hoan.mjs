@@ -54,11 +54,23 @@ writeFileSync(process.env.MOC ?? '/tmp/moc-don.json', JSON.stringify(moc, null, 
 console.log('mốc:', moc.map((m) => m.k).join('  →  '));
 
 // Kiểm ca tiền thừa: quyết toán có refund > 0 và bên mua thấy ngân hàng đã chuyển đến.
+const loi = []; let hoan = null;
 for (const d of await ds('/v1/orders')) { const [, tien] = await goi('GET', `/v1/orders/${d.id}/money`); const qt = (tien?.quyet_toan ?? []).at(-1);
-  console.log(d.code, d.status, 'hoàn bên mua', qt?.refund_vnd, 'chi người bán', qt?.release_vnd, 'lệnh', JSON.stringify((tien?.lenh_ngan_hang ?? []).map((l) => [l.kind, l.amount_vnd, l.status]))); }
+  console.log(d.code, d.status, 'hoàn bên mua', qt?.refund_vnd, 'chi người bán', qt?.release_vnd, 'lệnh', JSON.stringify((tien?.lenh_ngan_hang ?? []).map((l) => [l.kind, l.amount_vnd, l.status])));
+  if (!(Number(qt?.refund_vnd) > 0)) continue;
+  hoan = { code: d.code, vnd: Number(qt.refund_vnd) };
+  if (d.status !== 'completed') loi.push(`${d.code} chưa hoàn tất (${d.status})`);
+  if (Number(qt.release_vnd) + Number(qt.refund_vnd) !== Number(tien.coc?.deposit_vnd)) loi.push(`${d.code} chi ${qt.release_vnd} + hoàn ${qt.refund_vnd} ≠ cọc ${tien.coc?.deposit_vnd}`);
+  const lh = (tien.lenh_ngan_hang ?? []).find((l) => /refund.*buyer/.test(l.kind));
+  if (!lh || Number(lh.amount_vnd) !== Number(qt.refund_vnd)) loi.push(`${d.code} lệnh hoàn ${lh?.amount_vnd} ≠ ${qt.refund_vnd}`);
+  else if (!/succeeded|reconciled|executed|fully_processed/.test(lh.status)) loi.push(`${d.code} lệnh hoàn chưa chuyển xong (${lh.status})`); }
+if (!hoan) loi.push('không đơn nào có tiền cọc hoàn cho bên mua');
 const acc = await (await fetch(B + '/v1/test/accounts')).json();
 for (const a of acc.filter((x) => (x.org_code || '').startsWith('TC-M') && (x.roles || '').includes('owner'))) {
   const tk = (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: a.phone }) }))).token;
   const m = await j(await fetch(B + '/v1/money/summary', { headers: { authorization: 'Bearer ' + tk } }));
-  if (Number(m.tong?.ngan_hang_da_chuyen_den) > 0) console.log('BÊN MUA', a.org_name, 'ngân hàng đã chuyển đến', m.tong.ngan_hang_da_chuyen_den);
+  if (Number(m.tong?.ngan_hang_da_chuyen_den) > 0) { console.log('BÊN MUA', a.org_name, 'ngân hàng đã chuyển đến', m.tong.ngan_hang_da_chuyen_den); if (hoan && Number(m.tong.ngan_hang_da_chuyen_den) === hoan.vnd) hoan.thay = true; }
 }
+if (hoan && !hoan.thay) loi.push(`không bên mua nào thấy đúng ${hoan.vnd} ngân hàng đã chuyển đến`);
+if (loi.length) { console.error('THẤT BẠI:\n- ' + loi.join('\n- ')); process.exit(1); }
+console.log('ĐẠT: hoàn', hoan.vnd, 'đúng số, lệnh đã chuyển, bên mua thấy');
