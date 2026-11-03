@@ -62,7 +62,11 @@ function ve() {
 function dong() {
   try { speechSynthesis.cancel(); } catch {}
   ghiXong(); o?.remove(); o = null; dang = false; removeEventListener("resize", ve2);
+  daKhoa.forEach((c) => { c.inert = false; }); daKhoa = [];
+  try { truoc?.focus?.(); } catch {}
 }
+// Hộp thoại thật: nền không bấm/Tab tới được khi tour mở; đóng thì trả tiêu điểm về chỗ cũ.
+let daKhoa = [], truoc = null;
 const ve2 = () => o && ve();
 
 /** Mở tour. tuDong=true chỉ mở khi chưa xem lần nào. */
@@ -72,8 +76,18 @@ export function moHuongDan(tuDong = false) {
   dang = true; i = 0;
   o = document.createElement("div");
   o.innerHTML = `<div class="hd-che"></div><div class="hd-ro"></div><section class="hd-the" role="dialog" aria-modal="true" aria-labelledby="hd-t"></section>`;
+  truoc = document.activeElement;
   document.body.appendChild(o);
-  o.addEventListener("keydown", (e) => { if (e.key === "Escape") dong(); });
+  [...document.body.children].forEach((c) => { if (c !== o && !c.inert) { c.inert = true; daKhoa.push(c); } });
+  o.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") return dong();
+    if (e.key !== "Tab") return;
+    const ds = [...o.querySelectorAll(".hd-the button")].filter((b) => b.offsetParent !== null && b.textContent.trim() !== ""); // bỏ nút "Bỏ qua" rỗng ở bước cuối
+    if (!ds.length) return;
+    const dau = ds[0], cuoi = ds[ds.length - 1];
+    if (e.shiftKey && document.activeElement === dau) { e.preventDefault(); cuoi.focus(); }
+    else if (!e.shiftKey && document.activeElement === cuoi) { e.preventDefault(); dau.focus(); }
+  });
   addEventListener("resize", ve2);
   ve();
 }
