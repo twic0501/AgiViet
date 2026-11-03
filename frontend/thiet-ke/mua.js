@@ -1644,9 +1644,12 @@ if (THAT) {
   const MAN_THAT = new Set(["nguon-hang", "chi-tiet-lo", "bao-gia", "don-hang", "chi-tiet-don", "khung", "lap-khung", "chi-tiet-khung"]);
   const dai = `<div role="note" style="background:#fdecc8;border:1.5px solid #c98a12;color:#5a3d00;border-radius:10px;padding:10px 14px;font-weight:600">Màn này còn là <b>bản mô phỏng</b>: số liệu là số mẫu, thao tác chưa lưu thật. Dữ liệu thật hiện có ở Nguồn hàng, Lời chào giá và Đơn.</div>`;
   const daiLoi = () => `<div role="alert" style="background:#fbe3df;border:1.5px solid #a8392c;color:#6b1d13;border-radius:10px;padding:10px 14px;font-weight:600">Không tải được dữ liệu thật: ${esc(window.__agvLoiNap)}. Kiểm tra mạng rồi tải lại trang. Chưa có hàng nào hiện ra để tránh nhầm với hàng mẫu.</div>`;
+  // Màn chưa nối dữ liệu thật → chuyển sang tab tương ứng của app mua mới (mua-app), không hiện số mẫu trong đường thi.
+  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "hom-nay", "nhu-cau": "nguon-hang", "ke-hoach": "them", "moi-quen": "them" };
   for (const [k, m] of Object.entries(man)) {
     const ve0 = m.ve; if (typeof ve0 !== "function") continue;
-    if (!MAN_THAT.has(k)) m.ve = (...a) => dai + ve0(...a);
+    // Chỉ chuyển khi đúng màn được mở bằng ?man= (lần vẽ màn mặc định trước đó không được đá màn thật như chi-tiet-don ra ngoài).
+    if (!MAN_THAT.has(k)) m.ve = (...a) => { if (new URLSearchParams(location.search).get("man") === k) { location.replace(`./mua-app.html#${SANG_APP_MOI[k] || "them"}`); return dai; } return dai + ve0(...a); };
     else if (k === "nguon-hang" || k === "chi-tiet-lo") m.ve = (...a) => (window.__agvLoiNap ? daiLoi() : "") + ve0(...a);
   }
 }
