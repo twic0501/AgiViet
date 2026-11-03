@@ -37,3 +37,12 @@ Vào Vercel → Settings → Domains → thêm `agiviet.id.vn` (và `www`). Ở 
 
 ## Đặt lại dữ liệu demo
 Dữ liệu trên Neon được giữ qua các lần khởi động lại. Muốn làm sạch trước buổi thi: tạo branch mới từ thời điểm ngay sau khi nạp ở Neon (hoặc xóa DB rồi chạy lại bước 1.2), sau đó khởi động lại dịch vụ Render.
+
+## Làm sạch dữ liệu Neon ngay trước buổi thi (đã chuẩn bị, chưa chạy)
+Mọi lần kiểm thử để lại đơn, chào giá, tiền trong CSDL. Trước buổi thi, đưa nhánh `production` về đúng mốc vừa nạp xong chợ mẫu:
+1. Lấy mốc: `cd backend && node ../infra/render/moc-sach-neon.mjs`. Dòng `moc_sach_de_xuat` là 2 giây trước lời chào giá đầu tiên (đo 04/11: `2026-11-03T18:31:13.981Z`).
+2. Khôi phục, Neon giữ bản cũ dưới tên khác nên vẫn quay lại được: `neon branches restore production ^self@<mốc> --preserve-under-name production_truoc_thi`
+3. Chạy lại `nap-csdl.mjs` (`THU=1`, xem mục 1.2) để chắc vai runtime + vai đồng hồ đủ; lệnh này chạy lại nhiều lần không sao.
+4. Khởi động lại dịch vụ Render (xóa trạng thái AI đóng vai trong bộ nhớ): Manual Deploy → Restart, hoặc `python3 rapi.py deploy`.
+5. Kiểm: `moc-sach-neon.mjs` phải báo `so_don: 0`, `so_chao_gia: 0`; mở https://agiviet.vercel.app → chọn vai chạy được.
+Không chạy backend trên máy cùng lúc với Render trên cùng CSDL (tranh hàng đợi việc nền).
