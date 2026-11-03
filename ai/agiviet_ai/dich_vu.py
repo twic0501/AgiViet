@@ -39,7 +39,8 @@ MAX_BODY=2_000_000
 async def bao_ve(request:Request,call_next):
     rid=str(uuid.uuid4());request.state.request_id=rid;t0=time.perf_counter()
     key=os.getenv('AGV_AI_API_KEY')
-    if key and not secrets.compare_digest(request.headers.get('x-ai-key',''),key):
+    # /health không cần khóa: bộ kiểm sức khỏe của nền tảng host không gửi x-ai-key; chỉ trả trạng thái, không dữ liệu
+    if key and request.url.path!='/health' and not secrets.compare_digest(request.headers.get('x-ai-key',''),key):
         return JSONResponse({'ma_loi':'KHONG_DU_QUYEN','request_id':rid},status_code=401)
     try:
         chunks=[];total=0

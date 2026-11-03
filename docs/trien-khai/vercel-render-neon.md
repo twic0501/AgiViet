@@ -46,3 +46,11 @@ Mọi lần kiểm thử để lại đơn, chào giá, tiền trong CSDL. Trư�
 4. Khởi động lại dịch vụ Render (xóa trạng thái AI đóng vai trong bộ nhớ): Manual Deploy → Restart, hoặc `python3 rapi.py deploy`.
 5. Kiểm: `moc-sach-neon.mjs` phải báo `so_don: 0`, `so_chao_gia: 0`; mở https://agiviet.vercel.app → chọn vai chạy được.
 Không chạy backend trên máy cùng lúc với Render trên cùng CSDL (tranh hàng đợi việc nền).
+
+## Bật trợ lý AI trên bản host (đã chuẩn bị, chờ khóa)
+Hiện trợ lý trả "Trợ lý AI đang tạm nghỉ" vì Render chưa có dịch vụ AI. `render.yaml` đã khai báo dịch vụ `agiviet-ai` (free, Singapore, `infra/render/ai.Dockerfile`, đo trên máy ~65 MB RAM, trả lời ~1 s) và nối backend tự động (`AI_URL`, `AGV_AI_API_KEY` do Render sinh, `AI_TIMEOUT_MS=8000`).
+1. Render → Blueprints → dự án AgiViet → **Manual Sync** (hoặc New → Blueprint nếu chưa có) để thêm dịch vụ `agiviet-ai`.
+2. Khi Render hỏi, tự dán `GEMINI_API_KEY` và `NVIDIA_API_KEY` (khóa của anh; không gửi vào chat).
+3. Deploy `agiviet-ai`, rồi deploy lại `agiviet-api` để nhận `AI_URL` + mã bí mật chung.
+4. Kiểm: `https://agiviet-ai.onrender.com/health` trả `san_sang`; trong app bán bấm nút tai nghe hỏi "Cọc thế nào?".
+Thêm `https://agiviet-ai.onrender.com/health` vào UptimeRobot để dịch vụ không ngủ.

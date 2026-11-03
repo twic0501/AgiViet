@@ -1,4 +1,4 @@
-# Render Blueprint — backend AgiViet bản đi thi (gói free). DATABASE_URL nhập tay trên Render (không ghi vào repo).
+# Render Blueprint — bản đi thi (gói free). Giá trị bí mật nhập tay trên Render, không ghi vào repo.
 services:
   - type: web
     name: agiviet-api
@@ -11,4 +11,31 @@ services:
     autoDeploy: false
     envVars:
       - key: DATABASE_URL
+        sync: false
+      - key: AI_URL
+        value: https://agiviet-ai.onrender.com
+      - key: AI_TIMEOUT_MS
+        value: "8000"
+      - key: AGV_AI_API_KEY
+        fromService:
+          type: web
+          name: agiviet-ai
+          envVarKey: AGV_AI_API_KEY
+
+  # Trợ lý AI + ghép nguồn + quét tin (~65 MB RAM). Thiếu khóa thì backend tự về câu soạn sẵn / luật.
+  - type: web
+    name: agiviet-ai
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: infra/render/ai.Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: AGV_AI_API_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: NVIDIA_API_KEY
         sync: false
