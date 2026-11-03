@@ -74,12 +74,16 @@ const canTra = (p) => ["due", "partially_received", "overdue", "partially_confir
 // Tuần này đủ hay thiếu (T1): theo món — cần (nhu cầu đang mở) / đã chắc (đơn còn hiệu lực + khung tuần đang chạy) / còn thiếu.
 async function veDuThieu() {
   const can = new Map(), chac = new Map(), cong = (m, k, g) => m.set(k, (m.get(k) || 0) + g);
+  // Tuần này = 7 ngày tới. Cần: nhu cầu có khoảng ngày giao với tuần. Đã chắc: chỉ đơn ĐÃ KÝ giao trong tuần
+  // (đơn chưa ký không làm giảm thiếu); buổi gọi của khung (dong_mon) bỏ vì đã tính theo khung đang chạy.
+  const tu = new Date(); tu.setHours(0, 0, 0, 0); const den = new Date(tu.getTime() + 7 * 864e5);
+  const trongTuan = (a, b) => (!a || new Date(a) < den) && (!b || new Date(b) >= tu);
   const nc = (DL.nhuCau || []).filter((n) => n.status === "open");
   const ctNc = await Promise.all(nc.map((n) => thu(api(`/v1/demands/${n.id}`))));
-  ctNc.forEach((ct, i) => (ct?.lines || []).forEach((l) => cong(can, nc[i].product_code, Number(l.qty_g || 0))));
-  const conHieuLuc = DL.don.filter((d) => !/completed|cancel|closed|expired/.test(d.status || ""));
-  const ctDon = await Promise.all(conHieuLuc.map((d) => thu(api(`/v1/orders/${d.id}`))));
-  ctDon.forEach((o) => { if (o?.san_pham?.code) cong(chac, o.san_pham.code, Number(o.dieu_khoan?.qty_g || 0)); });
+  ctNc.forEach((ct, i) => { if (ct && trongTuan(ct.needed_from, ct.needed_to ? `${ct.needed_to}T23:59:59` : null)) (ct.lines || []).forEach((l) => cong(can, nc[i].product_code, Number(l.qty_g || 0))); });
+  const daKy = DL.don.filter((d) => /awaiting_deposit|active|awaiting_settlement/.test(d.status || ""));
+  const ctDon = await Promise.all(daKy.map((d) => thu(api(`/v1/orders/${d.id}`))));
+  ctDon.forEach((o) => { if (o?.san_pham?.code && !o.dong_mon && trongTuan(o.dieu_khoan?.delivery_from, o.dieu_khoan?.delivery_to)) cong(chac, o.san_pham.code, Number(o.dieu_khoan?.qty_g || 0)); });
   DL.khung.filter((k) => k.status === "running").forEach((k) => (k.mon || []).forEach((m) => m.ma && cong(chac, m.ma, Number(m.luong_g || 0) * Math.max(1, (k.ngay_giao || []).length))));
   const mon = [...new Set([...can.keys(), ...chac.keys()])];
   const ten = (ma) => DL.sp.find((s) => s.code === ma)?.name_vi || ma;
