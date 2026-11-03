@@ -1321,8 +1321,8 @@ if (THAT) {
       };
       // Tổng kết tiền của đơn: cọc đang ở đâu, các khoản trả thẳng, lệnh ngân hàng, quyết toán.
       const LENH = { release_deposit_to_seller: "Chuyển cọc cho người bán", refund_deposit_to_buyer: "Hoàn cọc cho bạn", refund_to_buyer: "Hoàn tiền cho bạn", pay_seller: "Chuyển cho người bán", refund_fee: "Hoàn phí" };
-      const TT_LENH2 = { created: "Đã lập", sent: "Ngân hàng đang xử lý", accepted: "Ngân hàng đã nhận lệnh", executed: "Đã chuyển xong", fully_processed: "Đã chuyển xong", failed: "Lỗi, AgiViet đang xử lý", rejected: "Ngân hàng từ chối, AgiViet đang xử lý" };
-      const TT_COC = { processing: "Ngân hàng đang chuyển theo quyết toán", awaiting_transfer: "Chờ bạn chuyển", held: "Ngân hàng đang giữ", partially_received: "Ngân hàng nhận một phần", released: "Đã chuyển theo quyết toán", refunded: "Đã hoàn cho bạn", forfeited: "Đã chuyển cho người bán do vi phạm" };
+      const TT_LENH2 = { created: "Đã lập", sent: "Ngân hàng đang xử lý", accepted: "Ngân hàng đã nhận lệnh", processing: "Ngân hàng đang chuyển", succeeded: "Đã chuyển xong", reconciled: "Đã chuyển xong · đã đối soát", executed: "Đã chuyển xong", fully_processed: "Đã chuyển xong", failed: "Lỗi, AgiViet đang xử lý", rejected: "Ngân hàng từ chối, AgiViet đang xử lý" };
+      const TT_COC = { processing: "Ngân hàng đang chuyển theo quyết toán", awaiting_transfer: "Chờ bạn chuyển", held: "Ngân hàng đang giữ", partially_received: "Ngân hàng nhận một phần", released: "Đã chuyển theo quyết toán", refunded: "Đã hoàn cho bạn", forfeited: "Đã chuyển cho người bán do vi phạm", fully_processed: "Ngân hàng đã chuyển hết theo quyết toán", void: "Đã hủy" };
       const veTongTien = async (d) => {
         const m = await api(`/v1/orders/${d.id}/money`).catch(() => null); if (!m?.coc) return;
         const daTra = (m.khoan_tra_thang || []).filter((p) => p.direction === "buyer_to_seller").reduce((a, p) => a + Number(p.confirmed_vnd || 0), 0);
