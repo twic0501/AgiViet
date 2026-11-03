@@ -64,7 +64,12 @@ function lam(o) {
     n.innerHTML = `<span>${c || "Chọn ngày"}</span>${ICON_LICH}`;
     // Vẫn gãy dòng (ô quá hẹp) → thứ viết tắt "T3, 3/11"; nhãn đọc to (aria-label) giữ chữ đầy đủ.
     const sp = n.firstChild;
-    if (c && sp.getClientRects().length > 1) sp.textContent = c.replace(/^Chủ nhật/, "CN").replace(/^Thứ (\S+)/, (_, t) => "T" + ({ Hai: 2, Ba: 3, Tư: 4, Năm: 5, Sáu: 6, Bảy: 7 })[t]);
+    // span trong nút flex là khối → getClientRects() của nó luôn 1; phải đo từng dòng của đoạn chữ bên trong.
+    const soDong = () => { const r = document.createRange(); r.selectNodeContents(sp); return new Set([...r.getClientRects()].filter((x) => x.width > 2).map((x) => Math.round(x.top + x.height / 2))).size; };
+    const rutGon = () => { if (c && soDong() > 1) sp.textContent = c.replace(/^Chủ nhật/, "CN").replace(/^Thứ ([^,\s]+)/, (_, t) => "T" + ({ Hai: 2, Ba: 3, Tư: 4, Năm: 5, Sáu: 6, Bảy: 7 })[t]); };
+    rutGon();
+    // Nút nằm trong tấm đang ẩn thì lúc vẽ chưa đo được → đo lại khi nút có kích thước thật (tấm mở ra, xoay màn hình).
+    if (typeof ResizeObserver !== "undefined") { n._ro?.disconnect(); n._ro = new ResizeObserver(rutGon); n._ro.observe(n); }
     n.classList.toggle("lich-rong", !c);
     n.setAttribute("aria-label", `${lb ? lb.textContent.trim() + ": " : ""}${c || "chưa chọn ngày"}`);
   };

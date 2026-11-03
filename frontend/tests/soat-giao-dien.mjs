@@ -15,7 +15,7 @@ const donDau = async (sdt, dk = () => true) => { const ds = await lay(sdt, "/v1/
 const doLoi = (p) => p.evaluate(() => {
   const loi = [], thay = (e) => { const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden" || +cs.opacity === 0) return false; const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const lum = (c) => { const m = c.match(/[\d.]+/g); if (!m) return null; const [r, g, b] = m.slice(0, 3).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-  const nen = (e) => { for (let x = e; x; x = x.parentElement) { const cs = getComputedStyle(x); if (cs.backgroundImage !== "none" && !/gradient/.test(cs.backgroundImage)) return null; const m = cs.backgroundColor.match(/[\d.]+/g); if (m && (m[3] === undefined || +m[3] > 0.9)) return cs.backgroundColor; } return "rgb(246,242,231)"; };
+  const nen = (e) => { for (let x = e; x; x = x.parentElement) { const cs = getComputedStyle(x); const m = cs.backgroundColor.match(/[\d.]+/g); if (m && (m[3] === undefined || +m[3] > 0.9)) return cs.backgroundColor; if (cs.backgroundImage !== "none") return null; } /* ảnh/chuyển sắc không có màu đặc → không đo được (trước đi tiếp lên màu trang → báo nhầm 1.0 với chữ trắng trên nền xanh) */ return "rgb(246,242,231)"; };
   const moTam = document.querySelector('[role="dialog"]');
   const goc = moTam || document;
   if (document.documentElement.scrollWidth > innerWidth + 1) loi.push("tràn ngang trang");
@@ -24,7 +24,9 @@ const doLoi = (p) => p.evaluate(() => {
     const r = e.getBoundingClientRect(), ten = (e.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 28);
     if (Math.round(r.height) < 44 && Math.round(r.width) < 44 && !e.closest(".nut-chu,.hd-ghi")) loi.push(`vùng chạm ${Math.round(r.width)}×${Math.round(r.height)}: ${ten}`);
     // Nút chữ gãy dòng: đếm số dòng chữ thật
-    const rg = document.createRange(); rg.selectNodeContents(e); const dong = new Set([...rg.getClientRects()].filter((x) => x.width > 2).map((x) => Math.round(x.top)));
+    // Chỉ đếm dòng của chữ (từng text node), không tính hình SVG/biểu tượng cạnh chữ (trước báo nhầm 'Chọn ngày' gãy 2 dòng).
+    const tw = document.createTreeWalker(e, NodeFilter.SHOW_TEXT), cacO = []; for (let n = tw.nextNode(); n; n = tw.nextNode()) { if (!n.textContent.trim()) continue; const rg = document.createRange(); rg.selectNodeContents(n); cacO.push(...rg.getClientRects()); }
+    const dong = new Set(cacO.filter((x) => x.width > 2).map((x) => Math.round(x.top + x.height / 2)));
     if (dong.size > 1 && /nut|chinh-nut|phu-nut/.test(e.className) && ten.length) loi.push(`nút gãy ${dong.size} dòng: "${ten}" (${Math.round(r.width)}px)`);
   }
   if (moTam) { // đáy tấm: nút cuối phải cách mép dưới ≥ 12px
