@@ -1,6 +1,6 @@
 // Kiểm E2E chợ AI chiều ngược: AI đóng cả bên mua M01 lẫn người bán (gọi vòng bằng nhân viên nên không tổ chức nào bị loại).
 // M01 chào giá bưởi L-0604 đúng giá tham khảo → người bán ảo trả giá, giao bằng mã người nhận… → đơn hoàn tất. Chạy trên stack thử mới khởi động.
-const B = 'http://127.0.0.1:18980';
+const B = process.env.API ?? 'http://127.0.0.1:18980';
 const j = async (r) => { const x = await r.json().catch(() => ({})); return x && typeof x === 'object' && 'data' in x ? x.data : x; };
 const vai = async (p) => (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: p }) }))).token;
 const mua = await vai('0909000213'), nv = await vai('0901000004');

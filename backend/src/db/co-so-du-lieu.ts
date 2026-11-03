@@ -191,7 +191,8 @@ export class CoSoDuLieu {
         const raw: PgTx = { query: (sql, params) => c.query(sql, params) as any, exec: (sql) => c.query(sql) };
         const t = new GiaoDich(raw, gio.getTime(), this.chuSoHuu, 'pg');
         await c.query('SET LOCAL ROLE agv_backend_read');
-        const gioThu = this.templateDb ? gio : null;
+        // Đồng hồ thử trên Postgres thật: có DB mẫu (bộ kiểm thử) hoặc bản thi trên Neon đã tạo vai đồng hồ (nap-csdl.mjs THU=1).
+        const gioThu = this.templateDb || (this.laThu && process.env.AGV_DONG_HO_THU === '1') ? gio : null;
         await t.datNguCanh(nc, gioThu);
         if (gioThu && ghi) await t.datDongHoThu(gioThu);
         const kq = await fn(t);

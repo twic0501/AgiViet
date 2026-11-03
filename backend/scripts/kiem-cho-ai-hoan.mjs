@@ -3,7 +3,7 @@
 // Đẩy một đơn thật qua vòng đời: AI đóng bên mua (vòng đối tác ảo), script làm phần người bán (chị Năm) qua API như người dùng bấm.
 // Mỗi lần trạng thái/việc đổi: ghi lại để Playwright chụp màn ban-don ở trạng thái đó.
 import { writeFileSync } from 'node:fs';
-const B = 'http://127.0.0.1:18980'; const OTP = '123456', PIN = '2468';
+const B = process.env.API ?? 'http://127.0.0.1:18980'; const OTP = '123456', PIN = '2468';
 const j = async (r) => { const x = await r.json().catch(() => ({})); return x && typeof x === 'object' && 'data' in x ? x.data : x; };
 const nam = (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: '0918000421' }) }))).token;
 const goi = async (m, u, b) => { const r = await fetch(B + u, { method: m, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + nam }, body: m === 'POST' ? JSON.stringify(u.startsWith('/v1/otp/') ? b : { idempotency_key: crypto.randomUUID(), ...(b || {}) }) : undefined }); return [r.status, await j(r)]; };

@@ -1,0 +1,14 @@
+# Render Blueprint — backend AgiViet bản đi thi (gói free). DATABASE_URL nhập tay trên Render (không ghi vào repo).
+services:
+  - type: web
+    name: agiviet-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: infra/render/backend.Dockerfile
+    dockerContext: .
+    healthCheckPath: /health/ready
+    autoDeploy: false
+    envVars:
+      - key: DATABASE_URL
+        sync: false

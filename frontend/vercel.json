@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build && node -e \"require('fs').writeFileSync('dist/frontend-capabilities.json', JSON.stringify({ test_tools: true }))\"",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci",
+  "rewrites": [
+    { "source": "/v1/:path*", "destination": "https://agiviet-api.onrender.com/v1/:path*" },
+    { "source": "/health/:path*", "destination": "https://agiviet-api.onrender.com/health/:path*" }
+  ],
+  "redirects": [
+    { "source": "/", "destination": "/thiet-ke/dang-nhap.html", "permanent": false }
+  ]
+}
