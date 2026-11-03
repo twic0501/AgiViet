@@ -24,7 +24,8 @@
   .man-che { position: fixed; inset: 0; background: rgba(20, 28, 23, 0.32); opacity: 0; pointer-events: none; transition: opacity 220ms var(--cham); }
   .man-che.mo { opacity: 1; pointer-events: auto; }
   .tam { position: fixed; left: 50%; bottom: 0; width: min(100%, 480px); transform: translate(-50%, 104%); background: var(--giay);
-    border-radius: 24px 24px 0 0; padding: 10px 20px calc(24px + env(safe-area-inset-bottom)); transition: transform 320ms var(--cham); max-height: 92dvh; overflow-y: auto; }
+    border-radius: 24px 24px 0 0; padding: 10px 20px calc(24px + env(safe-area-inset-bottom)); transition: transform 320ms var(--cham); max-height: 92dvh; overflow-y: auto; scrollbar-width: none; }
+  .tam::-webkit-scrollbar { display: none; }
   .tam.mo { transform: translate(-50%, 0); }
   .tam .tay-cam { width: 40px; height: 4px; border-radius: 2px; background: var(--ke-dam); margin: 0 auto 16px; }
   .tam h2 { font-size: 24px; letter-spacing: -0.015em; }
@@ -50,6 +51,11 @@
   .ma-thu { font-size: 13px; color: var(--chin); background: var(--chin-nen); padding: 8px 12px; border-radius: 8px; margin-top: 12px; }
   .nut:disabled { opacity: .45; cursor: not-allowed; }
   .xong { text-align: center; padding: 8px 0; }
+  .ds-vai { display: grid; gap: 8px; }
+  .ds-vai button { text-align: left; min-height: 56px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--ke-dam); background: var(--giay-noi); font: inherit; color: var(--muc); cursor: pointer; }
+  .ds-vai button:hover, .ds-vai button:focus-visible { border-color: var(--la); outline: none; }
+  .ds-vai b { display: block; font-size: 16px; }
+  .ds-vai small { display: block; color: var(--muc-phu); font-size: 13px; margin-top: 2px; line-height: 1.4; }
   .xong .dau-tich { width: 64px; height: 64px; border-radius: 50%; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; margin: 0 auto 12px; }
 </style>
 </head>
@@ -61,7 +67,7 @@
     <p class="cau-ngan">Kết nối nông sản Việt</p>
     <div class="hai-nut">
       <button class="nut chinh-nut" type="button" data-mo="dang-nhap">Đăng nhập</button>
-      <button class="nut vien" type="button" data-mo="dang-ky">Đăng ký bán hàng</button>
+      <button class="nut vien" type="button" data-mo="dang-ky" id="nut-dk">Đăng ký bán hàng</button>
     </div>
   </div>
 </div>
@@ -69,6 +75,14 @@
 <div class="man-che" id="che"></div>
 <section class="tam" id="tam" role="dialog" aria-modal="true" aria-labelledby="tieu-de" inert>
   <div class="tay-cam"></div>
+  <!-- Bước 0 (chỉ bản trình diễn): chọn người mẫu thay cho nhập số + OTP -->
+  <div id="b0" hidden>
+    <h2 id="tieu-de-0">Chọn vai để xem</h2>
+    <p class="phu-de">Bản trình diễn: chạm một người là vào app đúng vai đó. Những người còn lại do AI đóng.</p>
+    <div id="ds-vai" class="ds-vai"></div>
+    <p class="bao loi" id="loi-0" hidden style="margin-top:12px"></p>
+    <p class="ghi-nho"><button type="button" id="dn-so">Đăng nhập bằng số điện thoại</button></p>
+  </div>
   <!-- Bước 1: số điện thoại (+ thông tin đăng ký) -->
   <div id="b1">
     <h2 id="tieu-de">Đăng nhập</h2>
@@ -76,14 +90,22 @@
     <div id="them-dk" hidden>
       <label class="nhan-o" for="ho-ten" style="margin-top:0">Họ và tên</label>
       <input class="o-chu" id="ho-ten" autocomplete="name" placeholder="Nguyễn Văn An">
-      <span class="nhan-o">Bác bán với tư cách</span>
-      <div class="chon-loai">
-        <label><input type="radio" name="loai" value="household" checked><span>Hộ gia đình</span></label>
-        <label><input type="radio" name="loai" value="cooperative"><span>Hợp tác xã</span></label>
-        <label><input type="radio" name="loai" value="coop_group"><span>Tổ hợp tác</span></label>
+      <div id="dk-ban">
+        <span class="nhan-o">Bác bán với tư cách</span>
+        <div class="chon-loai">
+          <label><input type="radio" name="loai" value="household" checked><span>Hộ gia đình</span></label>
+          <label><input type="radio" name="loai" value="cooperative"><span>Hợp tác xã</span></label>
+          <label><input type="radio" name="loai" value="coop_group"><span>Tổ hợp tác</span></label>
+        </div>
       </div>
-      <label class="nhan-o" for="ten-cs">Tên vườn / cơ sở</label>
+      <label class="nhan-o" for="ten-cs" id="nhan-cs">Tên vườn / cơ sở</label>
       <input class="o-chu" id="ten-cs" placeholder="Vườn xoài Tư An">
+      <div id="dk-mua" hidden>
+        <label class="nhan-o" for="mst">Mã số thuế</label>
+        <input class="o-chu" id="mst" inputmode="numeric" placeholder="10 hoặc 13 số">
+        <label class="nhan-o" for="phan-khuc">Loại bên mua</label>
+        <select class="o-chu" id="phan-khuc"><option value="horeca">Nhà hàng, bếp ăn</option><option value="wholesaler">Đại lý, chợ đầu mối</option><option value="processor">Nhà máy chế biến</option><option value="export">Xuất nhập khẩu</option></select>
+      </div>
       <span class="nhan-o">Số điện thoại</span>
     </div>
     <div class="o-nhap"><span class="ma-vung">+84</span><input id="sdt" inputmode="numeric" autocomplete="tel" placeholder="0909 000 000" aria-label="Số điện thoại"></div>
@@ -105,7 +127,7 @@
   <div id="b3" hidden class="xong">
     <div class="dau-tich"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 8"/></svg></div>
     <h2 id="tieu-de-3">Đã nhận đăng ký</h2>
-    <p class="phu-de">Nhân viên AgiViet sẽ gọi hẹn tới xác minh vườn. Xác minh xong, bác nhận tin nhắn và đăng nhập bằng số này.</p>
+    <p class="phu-de" id="xong-ghi">Nhân viên AgiViet sẽ gọi hẹn tới xác minh vườn. Xác minh xong, bác nhận tin nhắn và đăng nhập bằng số này.</p>
     <button class="nut chinh-nut" id="vao-app" type="button">Xong</button>
   </div>
 </section>
@@ -117,11 +139,72 @@ const $ = (id) => document.getElementById(id);
 const cau = quaCau($("cau"), { anh: ["xoai-cat-chu", "tom", "lua-gao", "ca-phe", "thanh-long", "sau-rieng", "buoi", "vai", "chuoi", "dua-hau", "rau-cai", "cu", "ho-tieu", "hat-dieu", "ca-tra", "cua"].map((n) => `/assets/products/${n}.jpg`) });
 
 let cheDo = "dang-nhap", thuThach = null, demNguoc = null, nutMo = null, dangGui = false, dangXacNhan = 0;
+// Một màn đăng nhập cho cả hai app: ?ben=mua là app bên mua.
+const MUA = new URLSearchParams(location.search).get("ben") === "mua";
+const APP = MUA ? "./mua-app.html" : "./ban-hom-nay.html";
+if (MUA) {
+  document.title = "Đăng nhập · AgiViet mua";
+  $("nut-dk").textContent = "Đăng ký mua hàng";
+  $("dk-ban").hidden = true; $("dk-mua").hidden = false;
+  $("nhan-cs").textContent = "Tên cơ sở / công ty"; $("ten-cs").placeholder = "Nhà hàng Bếp Sen";
+  $("xong-ghi").textContent = "Nhân viên AgiViet sẽ gọi xác minh cơ sở và mã số thuế. Được duyệt, bạn nhận tin nhắn và đăng nhập bằng số này.";
+}
 const chuan = (s) => s.replace(/\D/g, "");
 const sdt = () => chuan($("sdt").value);
 const hienLoi = (id, m) => { $(id).textContent = m; $(id).hidden = !m; };
-const hopLe = () => /^0\d{9}$/.test(sdt()) && (cheDo === "dang-nhap" || ($("ho-ten").value.trim() && $("ten-cs").value.trim()));
-const buoc = (n) => { for (const b of ["b1", "b2", "b3"]) $(b).hidden = b !== `b${n}`; $("tam").setAttribute("aria-labelledby", ["tieu-de", "tieu-de-2", "tieu-de-3"][n - 1]); };
+const mstHopLe = () => !MUA || /^\d{10}(\d{3})?$/.test(chuan($("mst").value));
+const hopLe = () => /^0\d{9}$/.test(sdt()) && (cheDo === "dang-nhap" || ($("ho-ten").value.trim() && $("ten-cs").value.trim() && mstHopLe()));
+const buoc = (n) => { for (const b of ["b0", "b1", "b2", "b3"]) $(b).hidden = b !== `b${n}`; $("tam").setAttribute("aria-labelledby", ["tieu-de-0", "tieu-de", "tieu-de-2", "tieu-de-3"][n]); };
+
+// Bản trình diễn: chọn người mẫu. Tính cách là thứ AI đóng vai dùng để trả lời.
+const TINH = {
+  "TC-B01": "Xoài cát. Dễ chốt nếu giá sát giá tham khảo, trả lời nhanh.",
+  "TC-B02": "Sầu riêng. Hay trả giá thêm một lần trước khi đồng ý.",
+  "TC-B03": "HTX gom nhiều hộ, sản lượng lớn, thích hợp đồng khung theo tuần.",
+  "TC-B04": "Cẩn thận, đọc kỹ điều khoản, trả lời chậm.",
+  "TC-B05": "Hay cần bán gấp khi hàng chín, chịu bớt chút giá.",
+  "TC-B06": "Lúa. Chỉ nhận đơn đủ lớn, đòi cọc đầy đủ.",
+  "TC-B07": "Thanh long. Hay giao thiếu vài phần trăm vì hao hụt.",
+  "TC-B08": "Cá tra. Giữ giá, từ chối chào giá thấp hơn 5%.",
+  "TC-B09": "Chanh không hạt. Mới dùng app, cần trâu hướng dẫn từng bước.",
+  "TC-B10": "Bưởi da xanh. Có giấy kiểm nghiệm, đòi giá cao hơn thị trường.",
+  "TC-M01": "Nhà máy sấy. Mua số lượng lớn, khó tính khâu nghiệm thu.",
+  "TC-M02": "Xuất nhập khẩu. Cần đúng quy cách, hay hạ cấp khi không đạt.",
+  "TC-M03": "Nhà hàng. Mua giỏ nhiều món nhỏ mỗi tuần.",
+  "TC-M04": "Vựa đầu mối. Vừa mua vừa bán lại, trả giá gắt.",
+  "TC-M05": "Thủy sản. Mua định kỳ, chuộng hợp đồng khung theo tuần.",
+  "TC-M06": "Quán cơm. Đơn nhỏ, cần giao sớm buổi sáng.",
+  "TC-M07": "Vựa trái cây. Chốt nhanh khi hàng đẹp, ít đọc điều khoản.",
+  "TC-M08": "Vựa lúa. Mua theo vụ, thích đặt trước.",
+  "TC-M09": "Chế biến. Trả tiền đúng hạn, ít trả giá.",
+  "TC-M10": "Xuất khẩu. Đòi mã vùng trồng, giấy kiểm nghiệm đầy đủ."
+};
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// null = không phải bản trình diễn (máy chủ thật không có /v1/test/*) → đăng nhập OTP như thường.
+const NGUOI_MAU = fetch("/v1/test/accounts").then((r) => (r.ok ? r.json() : null)).then((ds) => {
+  if (!Array.isArray(ds)) return null;
+  const gap = new Set();
+  return ds.filter((a) => TINH[a.org_code] && a.org_code.startsWith(MUA ? "TC-M" : "TC-B") && a.roles.split(",").includes("owner") && !gap.has(a.org_code) && gap.add(a.org_code))
+    .sort((a, b) => a.org_code.localeCompare(b.org_code));
+}).catch(() => null);
+async function moChonVai() {
+  const ds = await NGUOI_MAU;
+  if (!ds?.length) return false;
+  $("ds-vai").innerHTML = ds.map((a) => `<button type="button" data-sdt="${esc(a.phone)}"><b>${esc(a.org_name)}</b><small>${esc(a.display_name)} · ${esc(TINH[a.org_code])}</small></button>`).join("");
+  buoc(0); hienLoi("loi-0", "");
+  return true;
+}
+$("ds-vai").onclick = async (e) => {
+  const b = e.target.closest("[data-sdt]"); if (!b) return;
+  b.disabled = true;
+  try {
+    const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: b.dataset.sdt }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.token) throw new Error(j.errors?.[0]?.message || "Chưa vào được vai này, thử lại nhé.");
+    luuPhien(j.token); location.href = APP;
+  } catch (err) { hienLoi("loi-0", err.message); b.disabled = false; }
+};
+$("dn-so").onclick = () => { buoc(1); $("sdt").focus(); };
 
 // Câu báo giới hạn gửi mã: "Đợi 554 giây…" → "Bác thử lại sau 10 phút nhé" + đếm ngược
 function cauGioiHan(j, r) {
@@ -134,15 +217,16 @@ function cauGioiHan(j, r) {
   return { cau: e.message || "Chưa gửi được mã. Bác thử lại sau ít phút." };
 }
 
-function moTam(che, nut) {
+async function moTam(che, nut) {
   cheDo = che; nutMo = nut;
-  $("tieu-de").textContent = che === "dang-ky" ? "Đăng ký bán hàng" : "Đăng nhập";
+  $("tieu-de").textContent = che === "dang-ky" ? (MUA ? "Đăng ký mua hàng" : "Đăng ký bán hàng") : "Đăng nhập";
   $("phu-de").textContent = che === "dang-ky" ? "Điền vài thông tin, AgiViet gửi mã 6 số để xác nhận số điện thoại." : "Nhập số điện thoại, AgiViet gửi mã 6 số.";
   $("them-dk").hidden = che !== "dang-ky";
   buoc(1); hienLoi("loi-1", ""); $("gui").disabled = !hopLe();
+  const chonVai = che === "dang-nhap" && await moChonVai();
   $("tam").inert = false; $("tam").classList.add("mo"); $("che").classList.add("mo");
   document.querySelector(".vao").inert = true; cau?.dung?.();
-  setTimeout(() => (che === "dang-ky" ? $("ho-ten") : $("sdt")).focus(), 320);
+  setTimeout(() => (chonVai ? $("ds-vai").querySelector("button") : che === "dang-ky" ? $("ho-ten") : $("sdt"))?.focus(), 320);
 }
 function dongTam() {
   $("tam").classList.remove("mo"); $("che").classList.remove("mo"); $("tam").inert = true;
@@ -157,7 +241,7 @@ $("sdt").addEventListener("input", (e) => {
   e.target.value = so.replace(/(\d{4})(\d{0,3})(\d{0,3})/, (_, a, b, c) => [a, b, c].filter(Boolean).join(" "));
   $("gui").disabled = !hopLe() || dangGui;
 });
-for (const id of ["ho-ten", "ten-cs"]) $(id).addEventListener("input", () => ($("gui").disabled = !hopLe() || dangGui));
+for (const id of ["ho-ten", "ten-cs", "mst"]) $(id).addEventListener("input", () => ($("gui").disabled = !hopLe() || dangGui));
 
 // Gửi mã; lỗi hiện ở bước đang mở (bước 1 lúc gửi lần đầu, bước 2 lúc gửi lại)
 async function guiMa() {
@@ -210,7 +294,7 @@ o6.forEach((o, i) => {
   o.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !o.value && o6[i - 1]) { o6[i - 1].value = ""; o6[i - 1].focus(); e.preventDefault(); } });
   o.addEventListener("paste", (e) => { e.preventDefault(); dien(i, e.clipboardData.getData("text")); });
 });
-const vaoApp = () => (location.href = "./ban-hom-nay.html");
+const vaoApp = () => (location.href = APP);
 async function xacNhan() {
   const luot = ++dangXacNhan;               // chỉ phản hồi của lượt mới nhất được xử lý
   hienLoi("loi-2", ""); o6.forEach((x) => (x.disabled = true)); $("gui-toi").textContent = "Đang xác nhận…";
@@ -218,7 +302,9 @@ async function xacNhan() {
     const than = { challenge_id: thuThach, phone: sdt(), code: ma() };
     const dk = cheDo === "dang-ky";
     const r = await fetch(dk ? "/v1/auth/register" : "/v1/auth/otp/verify", { method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify(dk ? { ...than, name: $("ho-ten").value.trim(), org: { side: "sell", kind: document.querySelector('[name="loai"]:checked').value, display_name: $("ten-cs").value.trim() } } : than) });
+      body: JSON.stringify(dk ? { ...than, name: $("ho-ten").value.trim(), org: MUA
+        ? { side: "buy", kind: "enterprise", display_name: $("ten-cs").value.trim(), tax_code: chuan($("mst").value), segment_code: $("phan-khuc").value }
+        : { side: "sell", kind: document.querySelector('[name="loai"]:checked').value, display_name: $("ten-cs").value.trim() } } : than) });
     const j = await r.json().catch(() => ({}));
     if (luot !== dangXacNhan) return;
     if (!r.ok) throw new Error(j.errors?.[0]?.message || "Mã chưa đúng. Bác kiểm tra lại tin nhắn.");

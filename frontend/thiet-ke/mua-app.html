@@ -104,7 +104,6 @@
   @keyframes xoay { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .xoay { animation-duration: 3s; } }
   .man-full { max-width: 460px; margin: 0 auto; min-height: 100vh; padding: 32px 16px; display: grid; align-content: start; gap: 16px; }
-  .dn-dau { text-align: center; display: grid; justify-items: center; gap: 6px; padding: 12px 0; } .dn-dau h1 { margin: 0; font-size: 26px; }
   .loi { color: var(--do); font-weight: 600; margin: 0; font-size: 14px; } .loi:empty { display: none; }
   .chao-the { display: grid; gap: 14px; justify-items: center; text-align: center; padding-top: 6vh; }
   .chao-hinh { width: 120px; height: 120px; border-radius: 32px; background: var(--la-nhat); color: var(--la); display: grid; place-items: center; }
@@ -121,30 +120,6 @@
 <!-- Màn chờ tải -->
 <div id="splash" role="status" aria-live="polite"><img src="/assets/logo.svg" alt="" width="72" height="72"><b>AgiViet Mua</b><span id="splash-chu">Đang mở sổ mua…</span><div class="xoay" aria-hidden="true"></div></div>
 
-<!-- Đăng nhập / đăng ký -->
-<div id="dang-nhap" class="man-full" hidden>
-  <div class="dn-dau"><img src="/assets/logo.svg" alt="" width="56" height="56"><h1>AgiViet Mua</h1><p class="phu">Nguồn nông sản đều mỗi tuần, tiền cọc ngân hàng giữ.</p></div>
-  <div class="loc" role="tablist" id="dn-che-do" style="margin:0"><button role="tab" aria-pressed="true" data-che="dang-nhap">Đăng nhập</button><button role="tab" aria-pressed="false" data-che="dang-ky">Đăng ký bên mua</button></div>
-  <form id="dn-b1" class="the" novalidate>
-    <label class="o-nhap">Số điện thoại<input id="dn-sdt" inputmode="tel" autocomplete="tel" placeholder="09xx xxx xxx" required></label>
-    <div id="dn-dk" hidden style="display:grid;gap:10px">
-      <label class="o-nhap">Họ tên người phụ trách mua<input id="dn-ten" autocomplete="name"></label>
-      <label class="o-nhap">Tên cơ sở (nhà hàng, đại lý, công ty)<input id="dn-cs"></label>
-      <label class="o-nhap">Mã số thuế của cơ sở<input id="dn-mst" inputmode="numeric" placeholder="10 hoặc 13 số"></label>
-      <label class="o-nhap">Loại bên mua<select id="dn-ph"><option value="horeca">Nhà hàng, bếp ăn</option><option value="wholesaler">Đại lý, chợ đầu mối</option><option value="processor">Nhà máy chế biến</option><option value="export">Xuất nhập khẩu</option></select></label>
-    </div>
-    <p class="loi" id="dn-loi1" role="alert"></p>
-    <button class="nut chinh rong" id="dn-gui">Gửi mã OTP</button>
-  </form>
-  <form id="dn-b2" class="the" hidden novalidate>
-    <p class="phu" id="dn-toi"></p>
-    <label class="o-nhap">Mã 6 số<input id="dn-ma" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="letter-spacing:6px;font-size:22px"></label>
-    <p class="phu" id="dn-ma-thu" hidden></p>
-    <p class="loi" id="dn-loi2" role="alert"></p>
-    <button class="nut chinh rong" id="dn-xac">Xác nhận</button>
-    <button type="button" class="nut vien rong" id="dn-doi">Đổi số điện thoại</button>
-  </form>
-</div>
 
 <!-- Màn chào, hướng dẫn lần đầu -->
 <div id="chao" class="man-full" hidden>

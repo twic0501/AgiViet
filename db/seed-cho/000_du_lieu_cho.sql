@@ -2,14 +2,14 @@ SELECT set_config('app.nap_du_lieu_cu','on',false); -- dữ liệu ảo cũ có 
 -- Tự sinh từ du-lieu-cho.json bằng db/tools/tao-seed.py. Không sửa tay.
 DO $seed$ BEGIN
 IF EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json') THEN
- IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json' AND sha256=decode('4404a3b07e3b0e8df71a71a7332ee938a1504d786a79f5a6179bc34421e0f15c','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM ops.seed_sources WHERE source_key='du-lieu-cho.json' AND sha256=decode('89feb18ad9a2297dea8d16b6316d1f0c608e6954aeddfc1b32f4b0c3ca18ba61','hex')) THEN RAISE EXCEPTION 'Nguồn seed đổi: dùng DB thử mới'; END IF;
  RETURN; END IF;
 ALTER TABLE core.membership_role_grants DISABLE TRIGGER a_privilege;
 ALTER TABLE core.membership_role_grants DISABLE TRIGGER z_notify_grant;
 PERFORM set_config('app.allow_any_initial','on',true);
 PERFORM set_config('app.actor_kind','system',true);
 PERFORM set_config('app.test_time','2026-11-02T08:00:00+07:00',true);
-INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json',decode('4404a3b07e3b0e8df71a71a7332ee938a1504d786a79f5a6179bc34421e0f15c','hex'),'{
+INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json',decode('89feb18ad9a2297dea8d16b6316d1f0c608e6954aeddfc1b32f4b0c3ca18ba61','hex'),'{
   "meta": {
     "ten": "Chợ mẫu AgiViet: 5 nhà bán + 5 bên mua",
     "phien_ban": "2026-11-01",
@@ -447,6 +447,136 @@ INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json
       "uy_tin": 84,
       "so_don_hoan_tat": 12,
       "giay_to": []
+    },
+    {
+      "ma": "TC-B06",
+      "ten": "Hộ Lê Thị Hai",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Cờ Đỏ, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "field",
+      "mat_hang": [
+        "LUA_TUOI"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7900000600000",
+        "chu": "Lê Thị Hai"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 80,
+      "so_don_hoan_tat": 3,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B07",
+      "ten": "Hộ Đặng Thị Bích",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Chợ Gạo, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "THANH_LONG"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7900000600001",
+        "chu": "Đặng Thị Bích"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 82,
+      "so_don_hoan_tat": 5,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B08",
+      "ten": "Trang trại cá Huỳnh Văn Bảy",
+      "phia": "ban",
+      "loai": "trang_trai",
+      "dia_ban": "Thốt Nốt, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "pond",
+      "mat_hang": [
+        "CA_TRA"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Vietcombank",
+        "so": "THU-7900000600002",
+        "chu": "Huỳnh Văn Bảy"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 84,
+      "so_don_hoan_tat": 7,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B09",
+      "ten": "Hộ Châu Văn Lực",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Lai Vung, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "CHANH_KHONG_HAT"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Sacombank",
+        "so": "THU-7900000600003",
+        "chu": "Châu Văn Lực"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 86,
+      "so_don_hoan_tat": 9,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B10",
+      "ten": "Hộ Võ Thị Lan",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Phong Điền, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "BUOI_DA_XANH"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7900000600004",
+        "chu": "Võ Thị Lan"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 88,
+      "so_don_hoan_tat": 11,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
     }
   ],
   "to_chuc_mua": [
@@ -563,6 +693,86 @@ INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json
       "xac_minh": "da_xac_minh",
       "han_muc_ky": {
         "ND-108": 400000000
+      }
+    },
+    {
+      "ma": "TC-M06",
+      "ten": "Quán Cơm Nhà Mười",
+      "phia": "mua",
+      "phan_khuc": [
+        "nha_hang"
+      ],
+      "goi": "bep",
+      "mst": "0319990016",
+      "dia_chi_nhan": "Quận 10, TP.HCM",
+      "tinh": "HCM",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-700": 10000000
+      }
+    },
+    {
+      "ma": "TC-M07",
+      "ten": "Vựa trái cây Tư Hùng",
+      "phia": "mua",
+      "phan_khuc": [
+        "dau_moi"
+      ],
+      "goi": "thu_mua",
+      "mst": "0319990017",
+      "dia_chi_nhan": "Cái Răng, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-701": 40000000
+      }
+    },
+    {
+      "ma": "TC-M08",
+      "ten": "Vựa lúa Ba Thành",
+      "phia": "mua",
+      "phan_khuc": [
+        "dau_moi"
+      ],
+      "goi": "thu_mua",
+      "mst": "0319990018",
+      "dia_chi_nhan": "Ô Môn, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-702": 60000000
+      }
+    },
+    {
+      "ma": "TC-M09",
+      "ten": "Nhà máy chế biến Mekong",
+      "phia": "mua",
+      "phan_khuc": [
+        "che_bien"
+      ],
+      "goi": "doanh_nghiep",
+      "mst": "0319990019",
+      "dia_chi_nhan": "KCN Trà Nóc, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-703": 80000000
+      }
+    },
+    {
+      "ma": "TC-M10",
+      "ten": "Công ty XNK Cửu Long Xanh",
+      "phia": "mua",
+      "phan_khuc": [
+        "xuat_khau"
+      ],
+      "goi": "doanh_nghiep",
+      "mst": "0319990020",
+      "dia_chi_nhan": "Quận 7, TP.HCM",
+      "tinh": "HCM",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-704": 100000000
       }
     }
   ],
@@ -790,6 +1000,76 @@ INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json
       "dien_thoai": "0901000008",
       "to_chuc": "AGV",
       "vai": "VH-QL"
+    },
+    {
+      "ma": "ND-600",
+      "ho_ten": "Lê Thị Hai",
+      "dien_thoai": "0918000601",
+      "to_chuc": "TC-B06",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-601",
+      "ho_ten": "Đặng Thị Bích",
+      "dien_thoai": "0918000602",
+      "to_chuc": "TC-B07",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-602",
+      "ho_ten": "Huỳnh Văn Bảy",
+      "dien_thoai": "0918000603",
+      "to_chuc": "TC-B08",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-603",
+      "ho_ten": "Châu Văn Lực",
+      "dien_thoai": "0918000604",
+      "to_chuc": "TC-B09",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-604",
+      "ho_ten": "Võ Thị Lan",
+      "dien_thoai": "0918000605",
+      "to_chuc": "TC-B10",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-700",
+      "ho_ten": "Mười Quán",
+      "dien_thoai": "0908000601",
+      "to_chuc": "TC-M06",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-701",
+      "ho_ten": "Lê Tư Hùng",
+      "dien_thoai": "0908000602",
+      "to_chuc": "TC-M07",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-702",
+      "ho_ten": "Nguyễn Ba Thành",
+      "dien_thoai": "0908000603",
+      "to_chuc": "TC-M08",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-703",
+      "ho_ten": "Phạm Mekong",
+      "dien_thoai": "0908000604",
+      "to_chuc": "TC-M09",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-704",
+      "ho_ten": "Đỗ Cửu Long",
+      "dien_thoai": "0908000605",
+      "to_chuc": "TC-M10",
+      "vai": "quan_ly"
     }
   ],
   "lo": [
@@ -961,6 +1241,71 @@ INSERT INTO ops.seed_sources(source_key,sha256,payload) VALUES('du-lieu-cho.json
       "gia_mong_muon": 7300,
       "gia_thap_nhat_kin": 6900,
       "trang_thai": "sap_co_hang"
+    },
+    {
+      "ma": "L-0600",
+      "ban": "TC-B06",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "luong_kg": 20000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 7600,
+      "gia_thap_nhat_kin": 7100,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0601",
+      "ban": "TC-B07",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "luong_kg": 3000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 18000,
+      "gia_thap_nhat_kin": 16000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0602",
+      "ban": "TC-B08",
+      "mat_hang": "CA_TRA",
+      "loai": "0.8-1.2",
+      "luong_kg": 8000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 29000,
+      "gia_thap_nhat_kin": 27500,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0603",
+      "ban": "TC-B09",
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L1",
+      "luong_kg": 2500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 15000,
+      "gia_thap_nhat_kin": 13000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0604",
+      "ban": "TC-B10",
+      "mat_hang": "BUOI_DA_XANH",
+      "loai": "L1",
+      "luong_kg": 3500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 42000,
+      "gia_thap_nhat_kin": 38000,
+      "trang_thai": "dang_ban"
     }
   ],
   "nhu_cau": [
@@ -1293,6 +1638,11 @@ INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_b
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('d191fddf-821f-503c-b45c-2461f1c1eba7','TC-B03','cooperative','HTX Tân Thuận',NULL,true,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','TC-B04','household','Hộ Phan Thị Hồng',NULL,true,false,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('7895283a-cbd1-5055-bafb-af5de4f9a570','TC-B05','household','Hộ Trần Văn Sáu',NULL,true,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('8a156877-0fdb-530f-9e5e-9edc90407a76','TC-B06','household','Hộ Lê Thị Hai',NULL,true,false,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('b1e78de3-922a-54aa-a02c-e6b7c326a667','TC-B07','household','Hộ Đặng Thị Bích',NULL,true,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','TC-B08','household','Trang trại cá Huỳnh Văn Bảy',NULL,true,false,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','TC-B09','household','Hộ Châu Văn Lực',NULL,true,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('2c77b992-6510-5526-a265-800366ba8f0a','TC-B10','household','Hộ Võ Thị Lan',NULL,true,false,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('d45094f9-fea4-519a-a3c3-c9a50c9808a5','TC-M01','enterprise','Nhà máy sấy Đồng Xanh','0319990001',false,true,false,'HCM',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('d45094f9-fea4-519a-a3c3-c9a50c9808a5','processor','declared');
 INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('d45094f9-fea4-519a-a3c3-c9a50c9808a5','procurement',tstzrange('2026-10-01','2027-01-01','[)'));
@@ -1308,6 +1658,21 @@ INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('99177a1f-
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('0c4280e9-e23b-55f1-898e-ce29dfe45ace','TC-M05','enterprise','Công ty Thủy sản Biển Xanh','0319990003',false,true,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('0c4280e9-e23b-55f1-898e-ce29dfe45ace','export','declared');
 INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('0c4280e9-e23b-55f1-898e-ce29dfe45ace','enterprise',tstzrange('2026-10-01','2027-01-01','[)'));
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('e8571283-c2ff-578c-8e7a-becaa244774a','TC-M06','enterprise','Quán Cơm Nhà Mười','0319990016',false,true,false,'HCM',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('e8571283-c2ff-578c-8e7a-becaa244774a','horeca','declared');
+INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('e8571283-c2ff-578c-8e7a-becaa244774a','kitchen',tstzrange('2026-10-01','2027-01-01','[)'));
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('82ccf63a-b708-55a4-919d-3d94904bc60d','TC-M07','trader','Vựa trái cây Tư Hùng','0319990017',true,true,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('82ccf63a-b708-55a4-919d-3d94904bc60d','wholesaler','declared');
+INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('82ccf63a-b708-55a4-919d-3d94904bc60d','procurement',tstzrange('2026-10-01','2027-01-01','[)'));
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('53d91dba-4084-5f67-a40a-73bf4c3c74e2','TC-M08','trader','Vựa lúa Ba Thành','0319990018',false,true,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('53d91dba-4084-5f67-a40a-73bf4c3c74e2','wholesaler','declared');
+INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('53d91dba-4084-5f67-a40a-73bf4c3c74e2','procurement',tstzrange('2026-10-01','2027-01-01','[)'));
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('fca153f9-10e8-5b7e-9bc5-aa78692028f1','TC-M09','enterprise','Nhà máy chế biến Mekong','0319990019',false,true,false,'CT',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('fca153f9-10e8-5b7e-9bc5-aa78692028f1','processor','declared');
+INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('fca153f9-10e8-5b7e-9bc5-aa78692028f1','enterprise',tstzrange('2026-10-01','2027-01-01','[)'));
+INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('8c496449-10a6-5069-a4ad-47c67809d7fe','TC-M10','enterprise','Công ty XNK Cửu Long Xanh','0319990020',false,true,false,'HCM',2,'active','2026-11-02T08:00:00+07:00');
+INSERT INTO core.org_buyer_segments(org_id,segment_code,source) VALUES('8c496449-10a6-5069-a4ad-47c67809d7fe','export','declared');
+INSERT INTO core.subscriptions(org_id,plan_code,active_during) VALUES('8c496449-10a6-5069-a4ad-47c67809d7fe','enterprise',tstzrange('2026-10-01','2027-01-01','[)'));
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('1702acf7-d345-5968-b614-56a14408b33a','DT-NH','service_partner','Ngân hàng TMCP Thử Nghiệm (mô phỏng)',NULL,false,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('f985623a-39b4-5ba2-a5fb-d6071d24080b','DT-KD','service_partner','Trung tâm kiểm định Phương Nam (mô phỏng)',NULL,false,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
 INSERT INTO core.organizations(id,code,kind,display_name,tax_code,can_sell,can_buy,is_platform,province_code,verification_level,status,created_at) VALUES('c0a22526-e753-5915-b4d0-d0a3ee4076a4','DT-XE','service_partner','Nhà xe Lộc Phát',NULL,false,false,false,'DT',2,'active','2026-11-02T08:00:00+07:00');
@@ -1438,6 +1803,46 @@ INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('cecb6cb9-535
 INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('cecb6cb9-535c-53fd-98bd-053adfc71219',convert_to('TEST-PLAINTEXT:0901000008','UTF8'),digest('0901000008','sha256'),'0901***008','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
 INSERT INTO ops.staff_assignments(user_id,role_code) VALUES('cecb6cb9-535c-53fd-98bd-053adfc71219','supervisor');
 INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('c22fcd60-f0a2-5c7e-9157-9ddc43f4b932','e0e5975b-29c5-59aa-8a83-8c3792d488ec','cecb6cb9-535c-53fd-98bd-053adfc71219',NULL,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('08de4116-61a5-599a-8f87-a48c6e25a1ba','Lê Thị Hai',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('08de4116-61a5-599a-8f87-a48c6e25a1ba',convert_to('TEST-PLAINTEXT:0918000601','UTF8'),digest('0918000601','sha256'),'0918***601','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('b10bb118-52a1-5043-9b69-be8fcceef44b','8a156877-0fdb-530f-9e5e-9edc90407a76','08de4116-61a5-599a-8f87-a48c6e25a1ba',NULL,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('b10bb118-52a1-5043-9b69-be8fcceef44b','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('fbdfb339-78ef-5992-9169-cdad172743fb','Đặng Thị Bích',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('fbdfb339-78ef-5992-9169-cdad172743fb',convert_to('TEST-PLAINTEXT:0918000602','UTF8'),digest('0918000602','sha256'),'0918***602','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('d3c0bf4f-a93a-5ed8-a09a-1debc519db6f','b1e78de3-922a-54aa-a02c-e6b7c326a667','fbdfb339-78ef-5992-9169-cdad172743fb',NULL,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('d3c0bf4f-a93a-5ed8-a09a-1debc519db6f','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('526432dc-ee17-5a50-a89b-ea6ff5b72796','Huỳnh Văn Bảy',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('526432dc-ee17-5a50-a89b-ea6ff5b72796',convert_to('TEST-PLAINTEXT:0918000603','UTF8'),digest('0918000603','sha256'),'0918***603','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('d2ee429b-4b88-5205-b1e9-b1ea261ab803','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','526432dc-ee17-5a50-a89b-ea6ff5b72796',NULL,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('d2ee429b-4b88-5205-b1e9-b1ea261ab803','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('e9317225-a34b-51fd-9033-be73cc6ee366','Châu Văn Lực',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('e9317225-a34b-51fd-9033-be73cc6ee366',convert_to('TEST-PLAINTEXT:0918000604','UTF8'),digest('0918000604','sha256'),'0918***604','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('7236553a-15da-5303-ad19-8ed80f8849b0','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','e9317225-a34b-51fd-9033-be73cc6ee366',NULL,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('7236553a-15da-5303-ad19-8ed80f8849b0','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('1596d43f-0351-54a9-a9fb-3504431074c9','Võ Thị Lan',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('1596d43f-0351-54a9-a9fb-3504431074c9',convert_to('TEST-PLAINTEXT:0918000605','UTF8'),digest('0918000605','sha256'),'0918***605','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('d0d8ca0e-b474-5626-819c-31ff33afe17b','2c77b992-6510-5526-a265-800366ba8f0a','1596d43f-0351-54a9-a9fb-3504431074c9',NULL,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('d0d8ca0e-b474-5626-819c-31ff33afe17b','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('75c350f9-e443-55d3-8a05-1b870d6ca434','Mười Quán',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('75c350f9-e443-55d3-8a05-1b870d6ca434',convert_to('TEST-PLAINTEXT:0908000601','UTF8'),digest('0908000601','sha256'),'0908***601','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('c54c68d5-1edf-5019-b913-96ea53f19677','e8571283-c2ff-578c-8e7a-becaa244774a','75c350f9-e443-55d3-8a05-1b870d6ca434',10000000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('c54c68d5-1edf-5019-b913-96ea53f19677','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('56bf33d3-7dbf-5abb-b4da-315591541f4c','Lê Tư Hùng',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('56bf33d3-7dbf-5abb-b4da-315591541f4c',convert_to('TEST-PLAINTEXT:0908000602','UTF8'),digest('0908000602','sha256'),'0908***602','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('38ee16c6-2e27-5b9a-92cc-d8dd00504e75','82ccf63a-b708-55a4-919d-3d94904bc60d','56bf33d3-7dbf-5abb-b4da-315591541f4c',40000000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('38ee16c6-2e27-5b9a-92cc-d8dd00504e75','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('dd3a3a46-15c2-5059-96fd-5fd8dbad4f87','Nguyễn Ba Thành',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('dd3a3a46-15c2-5059-96fd-5fd8dbad4f87',convert_to('TEST-PLAINTEXT:0908000603','UTF8'),digest('0908000603','sha256'),'0908***603','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('6201d243-6c7f-5b32-be97-8252e56871df','53d91dba-4084-5f67-a40a-73bf4c3c74e2','dd3a3a46-15c2-5059-96fd-5fd8dbad4f87',60000000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('6201d243-6c7f-5b32-be97-8252e56871df','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('2b45d810-9f12-5d45-b5a2-f7d78d7d7566','Phạm Mekong',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('2b45d810-9f12-5d45-b5a2-f7d78d7d7566',convert_to('TEST-PLAINTEXT:0908000604','UTF8'),digest('0908000604','sha256'),'0908***604','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('0143ea19-9055-5a5d-9daf-005573f3de24','fca153f9-10e8-5b7e-9bc5-aa78692028f1','2b45d810-9f12-5d45-b5a2-f7d78d7d7566',80000000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('0143ea19-9055-5a5d-9daf-005573f3de24','owner');
+INSERT INTO core.users(id,display_name,is_staff,created_at) VALUES('f6aef0fb-d231-5bb0-9702-bc5cd70f4af3','Đỗ Cửu Long',false,'2026-11-02T08:00:00+07:00');
+INSERT INTO pii.user_contacts(user_id,phone_enc,phone_hash,phone_masked,key_id,phone_verified_at) VALUES('f6aef0fb-d231-5bb0-9702-bc5cd70f4af3',convert_to('TEST-PLAINTEXT:0908000605','UTF8'),digest('0908000605','sha256'),'0908***605','TEST-NOT-ENCRYPTED','2026-11-02T08:00:00+07:00');
+INSERT INTO core.memberships(id,org_id,user_id,approval_limit_vnd,created_at) VALUES('64d9796c-3d97-5523-8176-7e3d9583f187','8c496449-10a6-5069-a4ad-47c67809d7fe','f6aef0fb-d231-5bb0-9702-bc5cd70f4af3',100000000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.membership_roles(membership_id,role_code) VALUES('64d9796c-3d97-5523-8176-7e3d9583f187','owner');
 UPDATE core.membership_role_grants SET effective_at='2026-10-01';
 ALTER TABLE core.membership_role_grants ENABLE TRIGGER a_privilege;
 ALTER TABLE core.membership_role_grants ENABLE TRIGGER z_notify_grant;
@@ -1459,6 +1864,21 @@ INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('a3c59f94-22f0-590
 INSERT INTO core.certifications(org_id,site_id,kind,number,market,valid_during,verified_by,verified_at) VALUES('4d87ab74-52fd-5ba7-b01a-fce130b1d4b6','a3c59f94-22f0-5904-a369-4879931e9953','pond_diary',NULL,NULL,daterange('2026-01-01','2027-01-01'::date+1,'[)'),'33e12bc3-91de-58db-8dbf-bc3d058cdbbe','2026-11-02T08:00:00+07:00');
 INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('e40f38d6-8e22-5cc4-9ca2-4d0ac59bf3a6','7895283a-cbd1-5055-bafb-af5de4f9a570','Agribank',convert_to('TEST:THU-7300000009500','UTF8'),digest('THU-7300000009500','sha256'),'****9500','Trần Văn Sáu',true,'adba1794-1552-53b3-b11c-28160bcd4770',ARRAY['otp','in_person'],'TEST-NOT-ENCRYPTED','active','2026-10-01','2026-10-02');
 INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('c19e3589-929e-53cb-826f-485ceedffb02','7895283a-cbd1-5055-bafb-af5de4f9a570','field','Tháp Mười, Đồng Tháp');
+INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('cf5658c5-70be-5268-a655-3443c9553bd4','8a156877-0fdb-530f-9e5e-9edc90407a76','Agribank',convert_to('TEST:THU-7900000600000','UTF8'),digest('THU-7900000600000','sha256'),'****0000','Lê Thị Hai',true,'08de4116-61a5-599a-8f87-a48c6e25a1ba',ARRAY['otp','in_person'],'TEST-NOT-ENCRYPTED','active','2026-10-01','2026-10-02');
+INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('aa96521e-588a-5358-a144-a00234034579','8a156877-0fdb-530f-9e5e-9edc90407a76','field','Cờ Đỏ, Cần Thơ');
+INSERT INTO core.certifications(org_id,site_id,kind,number,market,valid_during,verified_by,verified_at) VALUES('8a156877-0fdb-530f-9e5e-9edc90407a76','aa96521e-588a-5358-a144-a00234034579','vietgap',NULL,NULL,daterange('2026-01-01','2027-01-01'::date+1,'[)'),'33e12bc3-91de-58db-8dbf-bc3d058cdbbe','2026-11-02T08:00:00+07:00');
+INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('798c2d08-1456-5a0e-be07-de35b4af3142','b1e78de3-922a-54aa-a02c-e6b7c326a667','Agribank',convert_to('TEST:THU-7900000600001','UTF8'),digest('THU-7900000600001','sha256'),'****0001','Đặng Thị Bích',true,'fbdfb339-78ef-5992-9169-cdad172743fb',ARRAY['otp','in_person'],'TEST-NOT-ENCRYPTED','active','2026-10-01','2026-10-02');
+INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('574d25bb-b204-56d9-a486-c439458256b0','b1e78de3-922a-54aa-a02c-e6b7c326a667','orchard','Chợ Gạo, Đồng Tháp');
+INSERT INTO core.certifications(org_id,site_id,kind,number,market,valid_during,verified_by,verified_at) VALUES('b1e78de3-922a-54aa-a02c-e6b7c326a667','574d25bb-b204-56d9-a486-c439458256b0','vietgap',NULL,NULL,daterange('2026-01-01','2027-01-01'::date+1,'[)'),'33e12bc3-91de-58db-8dbf-bc3d058cdbbe','2026-11-02T08:00:00+07:00');
+INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('e397b9d0-4096-533d-810f-e03185b1c69d','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','Vietcombank',convert_to('TEST:THU-7900000600002','UTF8'),digest('THU-7900000600002','sha256'),'****0002','Huỳnh Văn Bảy',true,'526432dc-ee17-5a50-a89b-ea6ff5b72796',ARRAY['otp','in_person'],'TEST-NOT-ENCRYPTED','active','2026-10-01','2026-10-02');
+INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('c4efb127-1ce9-582b-b8e5-1858c100756c','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','pond','Thốt Nốt, Cần Thơ');
+INSERT INTO core.certifications(org_id,site_id,kind,number,market,valid_during,verified_by,verified_at) VALUES('b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','c4efb127-1ce9-582b-b8e5-1858c100756c','vietgap',NULL,NULL,daterange('2026-01-01','2027-01-01'::date+1,'[)'),'33e12bc3-91de-58db-8dbf-bc3d058cdbbe','2026-11-02T08:00:00+07:00');
+INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('b2ff5aa8-240e-5e99-9374-76acb8c896e2','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','Sacombank',convert_to('TEST:THU-7900000600003','UTF8'),digest('THU-7900000600003','sha256'),'****0003','Châu Văn Lực',true,'e9317225-a34b-51fd-9033-be73cc6ee366',ARRAY['otp','in_person'],'TEST-NOT-ENCRYPTED','active','2026-10-01','2026-10-02');
+INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('589d52a6-9ed2-5fb6-a6a8-2b7a3020c1b2','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','orchard','Lai Vung, Đồng Tháp');
+INSERT INTO core.certifications(org_id,site_id,kind,number,market,valid_during,verified_by,verified_at) VALUES('7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','589d52a6-9ed2-5fb6-a6a8-2b7a3020c1b2','vietgap',NULL,NULL,daterange('2026-01-01','2027-01-01'::date+1,'[)'),'33e12bc3-91de-58db-8dbf-bc3d058cdbbe','2026-11-02T08:00:00+07:00');
+INSERT INTO pii.bank_accounts(id,org_id,bank_code,account_number_enc,account_number_hash,account_masked,holder_name,name_match,requested_by,verify_factors,key_id,status,created_at,activated_at) VALUES('f734cb13-0c2c-5bde-bc13-a2939833339e','2c77b992-6510-5526-a265-800366ba8f0a','Agribank',convert_to('TEST:THU-7900000600004','UTF8'),digest('THU-7900000600004','sha256'),'****0004','Võ Thị Lan',true,'1596d43f-0351-54a9-a9fb-3504431074c9',ARRAY['otp','in_person'],'TEST-NOT-ENCRYPTED','active','2026-10-01','2026-10-02');
+INSERT INTO core.production_sites(id,org_id,kind,name) VALUES('9d9abad0-024b-5ba4-9898-e1af6abbe890','2c77b992-6510-5526-a265-800366ba8f0a','orchard','Phong Điền, Cần Thơ');
+INSERT INTO core.certifications(org_id,site_id,kind,number,market,valid_during,verified_by,verified_at) VALUES('2c77b992-6510-5526-a265-800366ba8f0a','9d9abad0-024b-5ba4-9898-e1af6abbe890','vietgap',NULL,NULL,daterange('2026-01-01','2027-01-01'::date+1,'[)'),'33e12bc3-91de-58db-8dbf-bc3d058cdbbe','2026-11-02T08:00:00+07:00');
 ALTER TABLE pii.bank_accounts ENABLE TRIGGER a_activation_clock;
 INSERT INTO core.products(id,code,name_vi,group_code,open_tier) VALUES('c833b2d4-badc-5575-98cd-83c9c6293313','XOAI_CAT_CHU','Xoài cát Chu','fresh_fruit',1);
 INSERT INTO core.product_profiles(product_id,profile_version,quality_mode,qty_tolerance_bps,reject_allowance_bps,shelf_life_days,config) VALUES('c833b2d4-badc-5575-98cd-83c9c6293313',1,'grade',500,500,7,'{"source": "docs/nghiep-vu/01-mat-hang.md", "test_parameters": true}'::jsonb);
@@ -1562,6 +1982,11 @@ INSERT INTO core.facilities(id,org_id,kind,name) VALUES('ced136e3-3a01-5fc1-a9d4
 INSERT INTO core.facilities(id,org_id,kind,name) VALUES('a33a6a0f-1c08-56d1-b350-659ac581488f','a9179290-5f66-5741-8c32-412e6df6659a','restaurant','Quận 3, TP.HCM');
 INSERT INTO core.facilities(id,org_id,kind,name) VALUES('3389b945-a3eb-510a-a1ab-c1b96f7c1e6c','99177a1f-dc84-588e-95bd-199401da0ed3','buyer_warehouse','Cao Lãnh, Đồng Tháp');
 INSERT INTO core.facilities(id,org_id,kind,name) VALUES('7ab38b1a-c78d-5935-a0b4-21ad9def59ac','0c4280e9-e23b-55f1-898e-ce29dfe45ace','buyer_warehouse','KCN Trà Nóc, Cần Thơ');
+INSERT INTO core.facilities(id,org_id,kind,name) VALUES('bf060ae7-7c36-55d5-a964-35433d638c11','e8571283-c2ff-578c-8e7a-becaa244774a','buyer_warehouse','Quận 10, TP.HCM');
+INSERT INTO core.facilities(id,org_id,kind,name) VALUES('b6e7daa4-1d7f-5ee5-8c08-c8d8306f8f65','82ccf63a-b708-55a4-919d-3d94904bc60d','buyer_warehouse','Cái Răng, Cần Thơ');
+INSERT INTO core.facilities(id,org_id,kind,name) VALUES('9c42fe22-6d90-561b-b32f-aae4bc611233','53d91dba-4084-5f67-a40a-73bf4c3c74e2','buyer_warehouse','Ô Môn, Cần Thơ');
+INSERT INTO core.facilities(id,org_id,kind,name) VALUES('ff79d59d-ebae-5bb9-9c4f-e15113602ed2','fca153f9-10e8-5b7e-9bc5-aa78692028f1','buyer_warehouse','KCN Trà Nóc, Cần Thơ');
+INSERT INTO core.facilities(id,org_id,kind,name) VALUES('e85c6865-6c42-52cd-95a3-741447f43697','8c496449-10a6-5069-a4ad-47c67809d7fe','buyer_warehouse','Quận 7, TP.HCM');
 INSERT INTO core.facilities(id,org_id,kind,name,collection_fee_vnd_per_kg) VALUES('cf69fed2-4711-59c4-87db-f7d4b1118684','d191fddf-821f-503c-b45c-2461f1c1eba7','collection_point','Điểm gom HTX Tân Thuận',300);
 INSERT INTO core.facilities(id,org_id,kind,name,cold_min_dc,cold_max_dc) VALUES('7f8f0e42-328a-5fc6-9cb5-c39450644648','41d17c73-7e0f-5630-b13a-4e3bf39bbf52','cold_storage','Kho lạnh Tân Phú Lạnh',20,130);
 INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('f31d2bc3-0673-592d-9f6f-fb3948913de0','L-0412','91020315-f111-5802-ae6e-81df0b59def1','c833b2d4-badc-5575-98cd-83c9c6293313',1,'L1','05c58fa7-622f-58e7-ab2d-c7f8985a93e4','estimated',4000000,'2026-11-02','2026-11-01',24000,'2026-11-02T08:00:00+07:00','on_sale','2026-11-02T08:00:00+07:00');
@@ -1590,6 +2015,16 @@ INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_cod
 INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('32f60d74-ff0d-52a7-b7e9-6e51733c7d8d',7200,6800,'2026-11-02T08:00:00+07:00');
 INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('1526715b-7b63-5364-aeca-89a669ca1352','L-0481','7895283a-cbd1-5055-bafb-af5de4f9a570','5aded288-3224-5d1e-b474-7b59d2098852',1,'OM18-am25','c19e3589-929e-53cb-826f-485ceedffb02','estimated',12000000,'2026-11-25','2026-11-25',7300,'2026-11-02T08:00:00+07:00','upcoming','2026-11-02T08:00:00+07:00');
 INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('1526715b-7b63-5364-aeca-89a669ca1352',7300,6900,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('1744c547-ba40-5695-bdeb-03eeaf604e74','L-0600','8a156877-0fdb-530f-9e5e-9edc90407a76','5aded288-3224-5d1e-b474-7b59d2098852',1,'OM18-am25','aa96521e-588a-5358-a144-a00234034579','estimated',20000000,'2026-11-02','2026-11-01',7600,'2026-11-02T08:00:00+07:00','on_sale','2026-11-02T08:00:00+07:00');
+INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('1744c547-ba40-5695-bdeb-03eeaf604e74',7600,7100,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('3f7278f0-f412-5361-bb12-8a9b23b1129c','L-0601','b1e78de3-922a-54aa-a02c-e6b7c326a667','e6b1cf34-b6af-556f-a9ff-f65abcb58055',1,'L1','574d25bb-b204-56d9-a486-c439458256b0','estimated',3000000,'2026-11-02','2026-11-01',18000,'2026-11-02T08:00:00+07:00','on_sale','2026-11-02T08:00:00+07:00');
+INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('3f7278f0-f412-5361-bb12-8a9b23b1129c',18000,16000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('3815e56c-9ff5-5ed5-b5f0-5efe18975f1f','L-0602','b57a1a80-943c-5fc3-93f1-3bf25dd35ea5','a201a368-04e1-5da1-a80e-53280e3106a8',1,'0.8-1.2','c4efb127-1ce9-582b-b8e5-1858c100756c','estimated',8000000,'2026-11-02','2026-11-01',29000,'2026-11-02T08:00:00+07:00','on_sale','2026-11-02T08:00:00+07:00');
+INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('3815e56c-9ff5-5ed5-b5f0-5efe18975f1f',29000,27500,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('5204fadb-2267-51c4-9955-2e73d180fbf6','L-0603','7fcb5c94-36cb-5ecb-a5e3-fb7217cf38c7','c7dbdc6e-ec3c-540b-bd13-0ecf2c0fe6ed',1,'L1','589d52a6-9ed2-5fb6-a6a8-2b7a3020c1b2','estimated',2500000,'2026-11-02','2026-11-01',15000,'2026-11-02T08:00:00+07:00','on_sale','2026-11-02T08:00:00+07:00');
+INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('5204fadb-2267-51c4-9955-2e73d180fbf6',15000,13000,'2026-11-02T08:00:00+07:00');
+INSERT INTO core.lots(id,code,seller_org_id,product_id,profile_version,grade_code,site_id,qty_basis,declared_qty,available_from,spray_clear_on,ask_price_vnd,last_confirmed_at,status,created_at) VALUES('e0c67816-4ee1-5659-b9a1-7ac5cdb98cf8','L-0604','2c77b992-6510-5526-a265-800366ba8f0a','3197ac78-8690-508d-ab58-eba8e7df742e',1,'L1','9d9abad0-024b-5ba4-9898-e1af6abbe890','estimated',3500000,'2026-11-02','2026-11-01',42000,'2026-11-02T08:00:00+07:00','on_sale','2026-11-02T08:00:00+07:00');
+INSERT INTO core.lot_price_versions(lot_id,ask_price_vnd,floor_price_vnd,set_at) VALUES('e0c67816-4ee1-5659-b9a1-7ac5cdb98cf8',42000,38000,'2026-11-02T08:00:00+07:00');
 INSERT INTO core.demands(id,code,buyer_org_id,segment_code,product_id,profile_version,needed_during,delivery_mode,delivery_facility_id,demand_form,required_docs,status,created_at) VALUES('3aa573f7-1eca-58b2-8837-61eda8cd3c1b','NC-3001','d45094f9-fea4-519a-a3c3-c9a50c9808a5','processor','c833b2d4-badc-5575-98cd-83c9c6293313',1,daterange('2026-11-03','2026-11-06'::date+1,'[)'),'self_pickup','6bf44f2f-b9cd-5e3b-aeb0-bb5d7b1c4db2','single_lot',ARRAY[]::text[],'open','2026-11-02T08:00:00+07:00');
 INSERT INTO core.demand_lines(id,demand_id,grade_code,qty,min_source_qty) VALUES('3ff70ce5-033e-5184-813a-53416331d298','3aa573f7-1eca-58b2-8837-61eda8cd3c1b','L1',2000000,20000);
 INSERT INTO core.demand_line_max_prices(demand_line_id,max_price_vnd,set_at) VALUES('3ff70ce5-033e-5184-813a-53416331d298',24000,'2026-11-02T08:00:00+07:00');

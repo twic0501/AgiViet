@@ -436,6 +436,136 @@
       "uy_tin": 84,
       "so_don_hoan_tat": 12,
       "giay_to": []
+    },
+    {
+      "ma": "TC-B06",
+      "ten": "Hộ Lê Thị Hai",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Cờ Đỏ, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "field",
+      "mat_hang": [
+        "LUA_TUOI"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7900000600000",
+        "chu": "Lê Thị Hai"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 80,
+      "so_don_hoan_tat": 3,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B07",
+      "ten": "Hộ Đặng Thị Bích",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Chợ Gạo, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "THANH_LONG"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7900000600001",
+        "chu": "Đặng Thị Bích"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 82,
+      "so_don_hoan_tat": 5,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B08",
+      "ten": "Trang trại cá Huỳnh Văn Bảy",
+      "phia": "ban",
+      "loai": "trang_trai",
+      "dia_ban": "Thốt Nốt, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "pond",
+      "mat_hang": [
+        "CA_TRA"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Vietcombank",
+        "so": "THU-7900000600002",
+        "chu": "Huỳnh Văn Bảy"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 84,
+      "so_don_hoan_tat": 7,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B09",
+      "ten": "Hộ Châu Văn Lực",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Lai Vung, Đồng Tháp",
+      "tinh": "DT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "CHANH_KHONG_HAT"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Sacombank",
+        "so": "THU-7900000600003",
+        "chu": "Châu Văn Lực"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 86,
+      "so_don_hoan_tat": 9,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
+    },
+    {
+      "ma": "TC-B10",
+      "ten": "Hộ Võ Thị Lan",
+      "phia": "ban",
+      "loai": "ho",
+      "dia_ban": "Phong Điền, Cần Thơ",
+      "tinh": "CT",
+      "kieu_vung": "orchard",
+      "mat_hang": [
+        "BUOI_DA_XANH"
+      ],
+      "tai_khoan_nhan_tien": {
+        "ngan_hang": "Agribank",
+        "so": "THU-7900000600004",
+        "chu": "Võ Thị Lan"
+      },
+      "xac_minh": "da_xac_minh",
+      "uy_tin": 88,
+      "so_don_hoan_tat": 11,
+      "giay_to": [
+        {
+          "loai": "vietgap",
+          "trang_thai": "da_xac_minh"
+        }
+      ]
     }
   ],
   "to_chuc_mua": [
@@ -552,6 +682,86 @@
       "xac_minh": "da_xac_minh",
       "han_muc_ky": {
         "ND-108": 400000000
+      }
+    },
+    {
+      "ma": "TC-M06",
+      "ten": "Quán Cơm Nhà Mười",
+      "phia": "mua",
+      "phan_khuc": [
+        "nha_hang"
+      ],
+      "goi": "bep",
+      "mst": "0319990016",
+      "dia_chi_nhan": "Quận 10, TP.HCM",
+      "tinh": "HCM",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-700": 10000000
+      }
+    },
+    {
+      "ma": "TC-M07",
+      "ten": "Vựa trái cây Tư Hùng",
+      "phia": "mua",
+      "phan_khuc": [
+        "dau_moi"
+      ],
+      "goi": "thu_mua",
+      "mst": "0319990017",
+      "dia_chi_nhan": "Cái Răng, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-701": 40000000
+      }
+    },
+    {
+      "ma": "TC-M08",
+      "ten": "Vựa lúa Ba Thành",
+      "phia": "mua",
+      "phan_khuc": [
+        "dau_moi"
+      ],
+      "goi": "thu_mua",
+      "mst": "0319990018",
+      "dia_chi_nhan": "Ô Môn, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-702": 60000000
+      }
+    },
+    {
+      "ma": "TC-M09",
+      "ten": "Nhà máy chế biến Mekong",
+      "phia": "mua",
+      "phan_khuc": [
+        "che_bien"
+      ],
+      "goi": "doanh_nghiep",
+      "mst": "0319990019",
+      "dia_chi_nhan": "KCN Trà Nóc, Cần Thơ",
+      "tinh": "CT",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-703": 80000000
+      }
+    },
+    {
+      "ma": "TC-M10",
+      "ten": "Công ty XNK Cửu Long Xanh",
+      "phia": "mua",
+      "phan_khuc": [
+        "xuat_khau"
+      ],
+      "goi": "doanh_nghiep",
+      "mst": "0319990020",
+      "dia_chi_nhan": "Quận 7, TP.HCM",
+      "tinh": "HCM",
+      "xac_minh": "da_xac_minh",
+      "han_muc_ky": {
+        "ND-704": 100000000
       }
     }
   ],
@@ -779,6 +989,76 @@
       "dien_thoai": "0901000008",
       "to_chuc": "AGV",
       "vai": "VH-QL"
+    },
+    {
+      "ma": "ND-600",
+      "ho_ten": "Lê Thị Hai",
+      "dien_thoai": "0918000601",
+      "to_chuc": "TC-B06",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-601",
+      "ho_ten": "Đặng Thị Bích",
+      "dien_thoai": "0918000602",
+      "to_chuc": "TC-B07",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-602",
+      "ho_ten": "Huỳnh Văn Bảy",
+      "dien_thoai": "0918000603",
+      "to_chuc": "TC-B08",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-603",
+      "ho_ten": "Châu Văn Lực",
+      "dien_thoai": "0918000604",
+      "to_chuc": "TC-B09",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-604",
+      "ho_ten": "Võ Thị Lan",
+      "dien_thoai": "0918000605",
+      "to_chuc": "TC-B10",
+      "vai": "chu"
+    },
+    {
+      "ma": "ND-700",
+      "ho_ten": "Mười Quán",
+      "dien_thoai": "0908000601",
+      "to_chuc": "TC-M06",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-701",
+      "ho_ten": "Lê Tư Hùng",
+      "dien_thoai": "0908000602",
+      "to_chuc": "TC-M07",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-702",
+      "ho_ten": "Nguyễn Ba Thành",
+      "dien_thoai": "0908000603",
+      "to_chuc": "TC-M08",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-703",
+      "ho_ten": "Phạm Mekong",
+      "dien_thoai": "0908000604",
+      "to_chuc": "TC-M09",
+      "vai": "quan_ly"
+    },
+    {
+      "ma": "ND-704",
+      "ho_ten": "Đỗ Cửu Long",
+      "dien_thoai": "0908000605",
+      "to_chuc": "TC-M10",
+      "vai": "quan_ly"
     }
   ],
   "lo": [
@@ -950,6 +1230,71 @@
       "gia_mong_muon": 7300,
       "gia_thap_nhat_kin": 6900,
       "trang_thai": "sap_co_hang"
+    },
+    {
+      "ma": "L-0600",
+      "ban": "TC-B06",
+      "mat_hang": "LUA_TUOI",
+      "loai": "OM18-am25",
+      "luong_kg": 20000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 7600,
+      "gia_thap_nhat_kin": 7100,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0601",
+      "ban": "TC-B07",
+      "mat_hang": "THANH_LONG",
+      "loai": "L1",
+      "luong_kg": 3000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 18000,
+      "gia_thap_nhat_kin": 16000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0602",
+      "ban": "TC-B08",
+      "mat_hang": "CA_TRA",
+      "loai": "0.8-1.2",
+      "luong_kg": 8000,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 29000,
+      "gia_thap_nhat_kin": 27500,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0603",
+      "ban": "TC-B09",
+      "mat_hang": "CHANH_KHONG_HAT",
+      "loai": "L1",
+      "luong_kg": 2500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 15000,
+      "gia_thap_nhat_kin": 13000,
+      "trang_thai": "dang_ban"
+    },
+    {
+      "ma": "L-0604",
+      "ban": "TC-B10",
+      "mat_hang": "BUOI_DA_XANH",
+      "loai": "L1",
+      "luong_kg": 3500,
+      "uoc_tinh": true,
+      "ngay_co_hang": "2026-11-02",
+      "het_cach_ly": "2026-11-01",
+      "gia_mong_muon": 42000,
+      "gia_thap_nhat_kin": 38000,
+      "trang_thai": "dang_ban"
     }
   ],
   "nhu_cau": [

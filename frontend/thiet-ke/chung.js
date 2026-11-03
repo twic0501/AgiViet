@@ -111,7 +111,7 @@ export async function phien() {
   try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   const sdt = new URLSearchParams(location.search).get("thu");
   // Chưa đăng nhập: đưa về màn đăng nhập của đúng app thay vì để màn trống báo lỗi.
-  const veDangNhap = () => { if (!/dang-nhap|mua-app/.test(location.pathname)) location.replace(/\/mua/.test(location.pathname) ? "./mua-app.html" : "./dang-nhap.html"); return new Error("Bác đăng nhập trước nhé."); };
+  const veDangNhap = () => { if (!/dang-nhap|mua-app/.test(location.pathname)) location.replace(/\/mua/.test(location.pathname) ? "./dang-nhap.html?ben=mua" : "./dang-nhap.html"); return new Error("Bác đăng nhập trước nhé."); };
   if (!sdt) throw veDangNhap();
   // Đăng nhập thay bằng số thử chỉ có ở môi trường thử (máy chủ báo test_tools); bản thật luôn bắt đăng nhập OTP
   const thu = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));

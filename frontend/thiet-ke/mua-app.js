@@ -33,37 +33,6 @@ async function layPhien() {
   return r.ok ? (await r.json()).token : null;
 }
 
-function moDangNhap() {
-  tatSplash(); $("#dang-nhap").hidden = false;
-  let che = "dang-nhap", thach = null;
-  const sdt = () => $("#dn-sdt").value.replace(/\D/g, "");
-  $("#dn-che-do").onclick = (e) => { const b = e.target.closest("[data-che]"); if (!b) return; che = b.dataset.che;
-    document.querySelectorAll("#dn-che-do button").forEach((x) => x.setAttribute("aria-pressed", x === b)); $("#dn-dk").hidden = che !== "dang-ky"; };
-  $("#dn-b1").onsubmit = async (e) => { e.preventDefault(); const loi = $("#dn-loi1"); loi.textContent = "";
-    if (!/^0\d{9}$/.test(sdt())) return (loi.textContent = "Số điện thoại gồm 10 số, bắt đầu bằng 0.");
-    if (che === "dang-ky" && (!$("#dn-ten").value.trim() || !$("#dn-cs").value.trim())) return (loi.textContent = "Nhập họ tên và tên cơ sở.");
-    if (che === "dang-ky" && !/^\d{10}(\d{3})?$/.test($("#dn-mst").value.replace(/[\s-]/g, ""))) return (loi.textContent = "Bên mua cần mã số thuế (10 hoặc 13 số) để ký hợp đồng và xuất chứng từ.");
-    $("#dn-gui").disabled = true;
-    try { const r = await fetch("/v1/auth/otp/send", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt() }) });
-      const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được mã, thử lại sau.");
-      thach = j.challenge_id; $("#dn-b1").hidden = true; $("#dn-b2").hidden = false; $("#dn-toi").textContent = `Mã đã gửi tới ${sdt()}.`; $("#dn-ma").focus();
-      fetch(`/v1/test/sms/${sdt()}`).then((x) => (x.ok ? x.json() : null)).then((m) => { const ma = JSON.stringify(m || "").match(/\b\d{6}\b/)?.[0]; if (ma) { $("#dn-ma-thu").textContent = `Môi trường thử · mã: ${ma}`; $("#dn-ma-thu").hidden = false; } }).catch(() => {});
-    } catch (err) { loi.textContent = err.message; }
-    $("#dn-gui").disabled = false; };
-  $("#dn-doi").onclick = () => { $("#dn-b2").hidden = true; $("#dn-b1").hidden = false; };
-  $("#dn-b2").onsubmit = async (e) => { e.preventDefault(); const loi = $("#dn-loi2"); loi.textContent = ""; const ma = $("#dn-ma").value.trim();
-    if (!/^\d{6}$/.test(ma)) return (loi.textContent = "Mã gồm 6 số.");
-    $("#dn-xac").disabled = true;
-    try { const dk = che === "dang-ky", than = { challenge_id: thach, phone: sdt(), code: ma };
-      const r = await fetch(dk ? "/v1/auth/register" : "/v1/auth/otp/verify", { method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify(dk ? { ...than, name: $("#dn-ten").value.trim(), org: { side: "buy", kind: "enterprise", display_name: $("#dn-cs").value.trim(), tax_code: $("#dn-mst").value.replace(/[\s-]/g, ""), segment_code: $("#dn-ph").value } } : than) });
-      const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Mã chưa đúng.");
-      if (j.token) { luuPhien(j.token); return location.reload(); }
-      // Đăng ký tổ chức mới: chờ nhân viên AgiViet xác minh (hai người duyệt) rồi mới dùng được — chưa có phiên.
-      $("#dn-b2").innerHTML = `<h2 style="margin:0;font-size:20px">Đã đăng ký ${esc($("#dn-cs").value.trim())}</h2><p class="phu">${esc(j.thong_bao || "Nhân viên AgiViet sẽ gọi xác minh rồi mở tài khoản.")}</p><p class="phu">Khi được duyệt, bạn đăng nhập bằng số ${esc(sdt())}.</p><button type="button" class="nut vien rong" onclick="location.reload()">Về màn đăng nhập</button>`;
-    } catch (err) { loi.textContent = err.message; $("#dn-xac").disabled = false; }
-  };
-}
 
 const BUOC = [
   ["Thấy ngay tuần này thiếu gì", "Trang Hôm nay cho biết bạn đang có bao nhiêu nguồn, việc nào đang chờ bạn và tiền đang ở đâu.", '<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>'],
@@ -259,7 +228,7 @@ async function lamMoi() { await taiHet(); veHomNay(); veNguon(); veDon(); veTien
 (async () => {
   splash("Đang mở sổ mua…");
   token = await layPhien();
-  if (!token) return moDangNhap();
+  if (!token) return location.replace("./dang-nhap.html?ben=mua");
   try {
     me = await api("/v1/me");
     if (!me.org?.can_buy) { tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><p>Tài khoản <b>${esc(me.org?.name || "")}</b> là bên bán. App này dành cho bên mua.</p><a class="nut chinh" href="ban-hom-nay.html">Mở app người bán</a><button class="nut vien" id="dx2">Đăng xuất</button></div></div>`); $("#dx2").onclick = dangXuat; return; }
