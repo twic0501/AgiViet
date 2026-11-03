@@ -498,6 +498,8 @@ if (typeof document !== "undefined" && typeof MutationObserver !== "undefined") 
 if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(location.pathname)) (async () => {
   const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));
   if (!cap.test_tools) return;
+  // Chưa đăng nhập, không số thử (vd mua.html mô phỏng trong trang thử quy trình) → không chạy; gọi phien() lúc này sẽ đá trang về đăng nhập.
+  try { if (!sessionStorage.getItem(KHOA_PHIEN) && !new URLSearchParams(location.search).has("thu")) return; } catch { return; }
   let tk = null; try { tk = await phien(); } catch { return; }
   const ten = (v) => `${v.to_chuc.startsWith("TC-M") ? "Bên mua" : "Người bán"} ${v.viec} · ${v.doi_tuong}`;
   const bao = (ds) => {
