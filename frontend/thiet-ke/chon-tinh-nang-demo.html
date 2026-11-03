@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chọn tính năng bản demo</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-lam-an.css">
+<style>
+  /* Danh mục đầy đủ màn/tính năng/công cụ của app bán + app mua để người sáng lập tick chọn cho bản demo dự thi. */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--giay); color: var(--muc); font-family: var(--chu); font-size: 15px; line-height: 1.45; }
+  .trang { max-width: 980px; margin: 0 auto; padding: 20px 16px 120px; display: grid; gap: 18px; }
+  h1 { margin: 0; font-size: 26px; } h2 { margin: 0; font-size: 20px; } h3 { margin: 6px 0 0; font-size: 14px; color: var(--muc-nhat); text-transform: uppercase; letter-spacing: .04em; }
+  .phu { color: var(--muc-phu); margin: 0; font-size: 14px; }
+  .chu-giai { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--cho-nen); color: var(--cho); white-space: nowrap; }
+  .chip.that { background: var(--la-nhat); color: var(--la); } .chip.mp { background: var(--chin-nen); color: var(--chin); } .chip.chua { background: var(--do-nen); color: var(--do); }
+  .chip.goi-y { background: var(--vang); color: var(--tren-vang); }
+  .app { background: var(--giay-noi); border-radius: 18px; box-shadow: 0 0 0 1px var(--ke); padding: 16px; display: grid; gap: 10px; }
+  .muc { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--ke); }
+  .muc input { width: 24px; height: 24px; accent-color: var(--la); margin-top: 2px; }
+  .muc b { display: block; } .muc .the-chip { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .muc a { color: var(--la); font-weight: 600; font-size: 13.5px; }
+  .day { position: fixed; left: 0; right: 0; bottom: 0; background: var(--giay-noi); border-top: 1px solid var(--ke); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .day div { max-width: 980px; margin: 0 auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+  .nut { min-height: 44px; padding: 0 16px; border-radius: 12px; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+  .nut.chinh { background: var(--la); color: var(--tren-la); } .nut.vien { background: none; box-shadow: inset 0 0 0 1.5px var(--la); color: var(--la); }
+  html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; }
+  @media (max-width: 560px) { .muc { grid-template-columns: 28px minmax(0, 1fr); } .muc .the-chip { grid-column: 2; justify-content: flex-start; } }
+</style>
+</head>
+<body>
+<div class="trang">
+  <div><h1>Chọn tính năng cho bản demo dự thi</h1>
+    <p class="phu">Tick vào mục muốn hiện trong bản demo. Mục không tick sẽ ẩn hoặc hiện "Sắp có". Lựa chọn tự lưu trên máy này; bấm "Tải lựa chọn" để gửi lại.</p></div>
+  <div class="chu-giai"><span class="chip that">Chạy thật</span><span class="chip mp">Mô phỏng (số mẫu)</span><span class="chip chua">Chưa có</span><span class="chip goi-y">Gợi ý cho demo</span></div>
+  <div id="ds"></div>
+</div>
+<div class="day"><div><span id="dem" class="phu"></span><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="nut vien" id="theo-goi-y">Chọn theo gợi ý</button><button class="nut vien" id="bo-het">Bỏ hết</button><button class="nut chinh" id="tai">Tải lựa chọn</button></span></div></div>
+<script>
+// [mã, tên, mô tả, trạng thái: that|mp|chua, gợi ý demo (true/false), đường mở thử trên stack thử]
+const T = "?thu=", B = "0918000421", M = "0908000510";
+const DS = [
+  ["App BÁN (người nông dân, HTX)", [
+    ["Vào app", [
+      ["b-dang-nhap", "Đăng nhập / đăng ký OTP", "Số điện thoại → mã OTP; đăng ký hộ, HTX, tổ hợp tác.", "that", true, "dang-nhap.html"],
+      ["b-bat-dau", "Bắt đầu: khai vườn, xác minh", "Chọn mặt hàng, khai vườn/ao, nộp giấy tờ để được xác minh.", "that", true, "ban-bat-dau.html"],
+      ["b-tour", "Tour hướng dẫn + trâu dẫn đường", "Trâu chỉ từng nút lần đầu dùng.", "that", true, `ban-hom-nay.html${T}${B}`],
+    ]],
+    ["Bán hàng", [
+      ["b-trang-chu", "Trang chủ Hôm nay", "Việc cần bác làm, hợp đồng đang chạy, thời tiết, giá hôm nay, tin mới.", "that", true, `ban-hom-nay.html${T}${B}`],
+      ["b-dang-bai", "Đăng bài lô hàng", "Mặt hàng → lượng → giá mong muốn + giá thấp nhất → ảnh chụp trong app.", "that", true, `ban-dang-bai.html${T}${B}`],
+      ["b-hang-hoa", "Chợ / hàng của tôi", "Lô đang bán, sắp có, bán gấp; xác nhận còn hàng; lời chào trên từng lô.", "that", true, `ban-hang-hoa.html${T}${B}`],
+      ["b-lo", "Chi tiết + quản lý lô", "Sửa giá, sửa lượng, đóng lô, bán gấp.", "that", true, `ban-hang-hoa.html${T}${B}`],
+      ["b-nhu-cau", "Nhu cầu bên mua", "Bên mua cần gì, gửi báo giá cho nhu cầu.", "that", false, `ban-nhu-cau.html${T}${B}`],
+      ["b-tin-nhan", "Tin nhắn + lời chào giá", "Đồng ý / trả giá / không bán; chat có che số điện thoại, tài khoản.", "that", true, `ban-tin-nhan.html${T}${B}`],
+    ]],
+    ["Hợp đồng và giao nhận", [
+      ["b-hop-dong", "Sổ hợp đồng", "Hợp đồng cần bác làm, đang chạy, đã xong; thanh 5 chặng.", "that", true, `ban-hop-dong.html${T}${B}`],
+      ["b-ky", "Ký hợp đồng bằng OTP", "Xem điều khoản, cam kết, xác nhận giá xuống loại dưới 70%.", "that", true, `ban-hop-dong.html${T}${B}`],
+      ["b-giao-nhan", "Giao nhận + nghiệm thu", "Quét QR bên mua, bắt đầu cân, đồng ý / phản đối từng dòng, ngưỡng 20%.", "that", true, `ban-hop-dong.html${T}${B}`],
+      ["b-khung", "Hợp đồng khung theo tuần", "Ký khung, duyệt giá tuần, xác nhận tiền gộp cuối tuần.", "that", false, `ban-hop-dong.html${T}0907000300`],
+      ["b-tranh-chap", "Tranh chấp, kiểm định", "Phản đối dòng nghiệm thu → AgiViet gửi kiểm định.", "that", false, `ban-hop-dong.html${T}${B}`],
+    ]],
+    ["Tiền", [
+      ["b-tien", "Tiền của bác", "Đã nhận, ngân hàng giữ cọc, bên mua còn phải trả, chờ ngân hàng xác nhận.", "that", true, `ban-tien.html${T}${B}`],
+      ["b-xac-nhan-tien", "Xác nhận đã nhận tiền (OTP)", "Bên mua báo chuyển → bác xem app ngân hàng → xác nhận đủ hoặc một phần.", "that", true, `ban-tien.html${T}${B}`],
+      ["b-tk-nhan", "Tài khoản nhận tiền", "Khai/đổi tài khoản, có thời gian chờ khi đổi (chống lừa).", "that", false, `ban-toi.html${T}${B}`],
+      ["b-hoan", "Hoàn tiền thừa cho bên mua", "Khi hàng trả lại / xuống loại.", "that", false, `ban-tien.html${T}${B}`],
+    ]],
+    ["Công cụ cho nông dân", [
+      ["b-vuon", "Vườn + nhật ký canh tác", "Ghi việc phun, bón, thu hoạch; ngày cách ly.", "that", true, `ban-vuon.html${T}${B}`],
+      ["b-thoi-tiet", "Thời tiết", "Theo tỉnh vườn, mưa, nhiệt độ.", "that", true, `ban-thoi-tiet.html${T}${B}`],
+      ["b-tin-tuc", "Giá & tin tức", "Biểu đồ giá 7 tuần, tin nông nghiệp đúng mặt hàng.", "that", true, `ban-tin-tuc.html${T}${B}`],
+      ["b-tro-ly", "Trợ lý AI (tai nghe)", "Hỏi bằng chữ/giọng: cọc là gì, đăng hàng thế nào; chặn bịa số.", "that", true, `ban-hom-nay.html${T}${B}`],
+      ["b-nghe", "Nghe đọc to, cỡ chữ", "Đọc to nội dung; chữ lớn cho người mắt kém.", "that", true, `ban-toi.html${T}${B}`],
+      ["b-thong-bao", "Thông báo", "Lời chào mới, hợp đồng, tiền về.", "that", true, `ban-thong-bao.html${T}${B}`],
+      ["b-nguoi-giup", "Người giúp (con cháu làm thay)", "Ủy quyền một số việc cho người nhà.", "that", false, `ban-toi.html${T}${B}`],
+      ["b-toi", "Tôi: hồ sơ, giấy tờ, cài đặt, hỗ trợ", "Nộp giấy tờ, quyền riêng tư, hỗ trợ.", "that", true, `ban-toi.html${T}${B}`],
+      ["b-dat-truoc", "Đặt trước khi hái (theo vụ)", "Bán trước sản lượng vụ tới.", "that", false, ""],
+      ["b-offline", "Dùng khi mất mạng", "Ghi nhật ký, soạn tin đăng nháp chờ gửi.", "that", false, ""],
+    ]],
+  ]],
+  ["App MUA (nhà hàng, đại lý, chế biến, XNK)", [
+    ["Vào app", [
+      ["m-man-cho", "Màn chờ tải", "Logo + vòng xoay trong lúc tải.", "that", true, `mua-app.html${T}${M}`],
+      ["m-dang-nhap", "Đăng nhập / đăng ký bên mua", "OTP; đăng ký có mã số thuế, loại bên mua; chờ AgiViet xác minh.", "that", true, "mua-app.html"],
+      ["m-chao", "Màn chào 4 bước", "Hướng dẫn lần đầu; xem lại ở Thêm.", "that", true, `mua-app.html${T}${M}`],
+    ]],
+    ["Mua hàng", [
+      ["m-hom-nay", "Hôm nay", "Nguồn đang chạy, việc tới lượt bạn, cọc ngân hàng giữ, còn phải trả.", "that", true, `mua-app.html${T}${M}#hom-nay`],
+      ["m-nguon", "Nguồn hàng: tìm, lọc, giá tham khảo", "Lô thật của người bán, giá giao dịch gần đây.", "that", true, `mua-app.html${T}${M}#nguon-hang`],
+      ["m-chao-gia", "Chào giá kín", "Nhập giá + lượng, thấy thành tiền và so giá gần đây; dưới mức thì tự đóng.", "that", true, `mua-app.html${T}${M}#nguon-hang`],
+      ["m-loi-chao", "Lời chào giá đã gửi", "Người bán đồng ý / trả giá / từ chối; lập đơn từ giá đã đồng ý.", "that", true, `mua.html?man=bao-gia&thu=${M}`],
+      ["m-nhu-cau", "Gửi nhu cầu cho người bán", "Món, lượng, ngày, giá tối đa → người bán báo giá.", "that", true, `mua-app.html${T}${M}#them`],
+      ["m-so-sanh", "So sánh nguồn (tối đa 3)", "Bảng so cùng món: đủ lượng, giao đủ, hàng đạt, khoảng cách.", "mp", false, "mua-moi.html"],
+    ]],
+    ["Đơn và giao nhận", [
+      ["m-don", "Danh sách đơn", "Tới lượt bạn xếp trước, ai đang giữ việc.", "that", true, `mua-app.html${T}${M}#don`],
+      ["m-ky-coc", "Ký OTP + chuyển cọc VietQR", "Cọc vào tài khoản ngân hàng giữ.", "that", true, `mua.html?man=don-hang&thu=${M}`],
+      ["m-giao", "Đặt xe, QR nhận hàng", "Nhiều chuyến xe cho đơn lớn.", "that", true, `mua.html?man=don-hang&thu=${M}`],
+      ["m-nghiem-thu", "Nghiệm thu từng món", "Đạt / xuống loại / trả lại, ảnh + lý do, PIN ký biên bản.", "that", true, `mua.html?man=don-hang&thu=${M}`],
+      ["m-khung", "Hợp đồng khung theo tuần", "Lập, ký, cọc khung, giá tuần, gọi buổi, trả gộp cuối tuần, chặn vượt cọc.", "that", true, `mua.html?man=khung&thu=${M}`],
+    ]],
+    ["Tiền", [
+      ["m-tien", "Khoản phải trả + trả tiền", "Hướng dẫn chuyển khoản đúng tài khoản trong hợp đồng, báo chuyển kèm biên lai.", "that", true, `mua-app.html${T}${M}#tien`],
+      ["m-bang-ke", "Bảng kê CSV cho kế toán", "Tải các khoản đã trả / còn nợ.", "that", false, `mua-app.html${T}${M}#tien`],
+      ["m-cong-no", "Công nợ theo người bán", "Màn riêng gom nợ theo từng người bán.", "mp", false, `mua.html?man=cong-no&thu=${M}`],
+      ["m-hoan", "Nhận tiền hoàn", "Người bán hoàn tiền thừa, bạn xác nhận.", "that", false, `mua.html?man=don-hang&thu=${M}`],
+    ]],
+    ["Công cụ doanh nghiệp", [
+      ["m-tin-nhan", "Tin nhắn theo đơn", "Danh sách có; mở hội thoại trong app mới chưa nối.", "mp", false, `mua-app.html${T}${M}`],
+      ["m-ke-hoach", "Kế hoạch mua tuần", "Cần bao nhiêu mỗi món, đã chắc bao nhiêu.", "mp", false, "mua-moi.html"],
+      ["m-moi-quen", "Người bán quen", "Gọi lại nhanh nguồn đã giao đủ.", "mp", false, `mua.html?man=moi-quen&thu=${M}`],
+      ["m-thanh-vien", "Thành viên và duyệt chi", "Ai được ký, hạn mức duyệt chi.", "mp", false, `mua.html?man=thanh-vien&thu=${M}`],
+      ["m-goi", "Gói dịch vụ và thanh toán", "Gói Miễn phí / Business (billing mô phỏng).", "mp", false, `mua.html?man=goi-cua-toi&thu=${M}`],
+      ["m-ton-kho", "Nhập kho, tồn kho, truy xuất lô", "Hàng đã nhận, còn bao nhiêu.", "mp", false, `mua.html?man=ton-kho&thu=${M}`],
+      ["m-bao-cao", "Báo cáo, bảng kê thuế", "Tổng hợp chi mua theo kỳ.", "mp", false, `mua.html?man=bao-cao&thu=${M}`],
+      ["m-dich-vu", "Xe, kho lạnh, kiểm định", "Đặt dịch vụ đối tác.", "mp", false, `mua.html?man=dich-vu&thu=${M}`],
+      ["m-uy-tin", "Uy tín, hồ sơ tổ chức", "Điểm uy tín, hồ sơ công khai.", "mp", false, `mua.html?man=uy-tin&thu=${M}`],
+      ["m-ho-so-nb", "Hồ sơ người bán / hồ sơ lô", "Báo cáo kiểm vườn, chứng nhận tải được.", "chua", false, ""],
+    ]],
+  ]],
+  ["Chung hai app (hệ thống)", [
+    ["Nền tảng", [
+      ["c-ngan-hang", "Ngân hàng giữ cọc (giả lập)", "Cọc vào tài khoản ảo, ngân hàng xác nhận, chi khi quyết toán.", "that", true, ""],
+      ["c-pdf", "Hợp đồng, biên bản PDF + mã kiểm chứng", "Mỗi bản ký có mã tra công khai.", "that", false, ""],
+      ["c-chan-lien-lac", "Che số điện thoại / tài khoản trong chat", "Mở liên lạc sau khi ngân hàng giữ cọc.", "that", true, ""],
+      ["c-chinh-sach", "Luật 02/11: không trả sau, 70%, 20%, khung tuần", "Chặn ép giá, chặn nợ vượt cọc.", "that", true, ""],
+      ["c-quan-tri", "App quản trị cho nhân viên AgiViet", "Duyệt xác minh, tranh chấp, đối soát.", "that", false, "van-hanh.html"],
+      ["c-ai-cho", "Chợ mô phỏng + AI điều phối (bản demo)", "10 người bán + 10 người mua mẫu, AI đóng vai bên kia theo kịch bản.", "chua", true, ""],
+    ]],
+  ]],
+];
+const KHOA = "agv-chon-demo";
+let chon = {}; try { chon = JSON.parse(localStorage.getItem(KHOA) || "{}"); } catch {}
+const NHAN = { that: ["that", "Chạy thật"], mp: ["mp", "Mô phỏng"], chua: ["chua", "Chưa có"] };
+const ve = () => {
+  document.getElementById("ds").innerHTML = DS.map(([app, nhom]) => `<section class="app"><h2>${app}</h2>${nhom.map(([ten, ds]) => `<h3>${ten}</h3>${ds.map(([ma, t, mo, tt, gy, link]) => `<label class="muc"><input type="checkbox" data-ma="${ma}" ${chon[ma] ? "checked" : ""}><div><b>${t}</b><p class="phu">${mo}</p>${link ? `<a href="${link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Mở thử ›</a>` : ""}</div><div class="the-chip"><span class="chip ${NHAN[tt][0]}">${NHAN[tt][1]}</span>${gy ? '<span class="chip goi-y">Gợi ý demo</span>' : ""}</div></label>`).join("")}`).join("")}</section>`).join("");
+  dem();
+};
+const tat = () => DS.flatMap(([, n]) => n.flatMap(([, ds]) => ds));
+const dem = () => { const ds = tat(), c = ds.filter((x) => chon[x[0]]).length; document.getElementById("dem").textContent = `Đã chọn ${c}/${ds.length} mục`; };
+const luu = () => { try { localStorage.setItem(KHOA, JSON.stringify(chon)); } catch {} dem(); };
+document.addEventListener("change", (e) => { const c = e.target.closest("[data-ma]"); if (!c) return; chon[c.dataset.ma] = c.checked; luu(); });
+document.getElementById("theo-goi-y").onclick = () => { chon = Object.fromEntries(tat().map((x) => [x[0], x[4]])); luu(); ve(); };
+document.getElementById("bo-het").onclick = () => { chon = {}; luu(); ve(); };
+document.getElementById("tai").onclick = () => { const ra = tat().map(([ma, t, , tt]) => ({ ma, ten: t, trang_thai: tt, demo: !!chon[ma] }));
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify({ ngay: new Date().toISOString(), muc: ra }, null, 1)], { type: "application/json" })); a.download = "chon-tinh-nang-demo.json"; a.click(); };
+ve();
+</script>
+</body>
+</html>
