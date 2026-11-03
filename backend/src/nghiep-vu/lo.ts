@@ -165,5 +165,6 @@ export async function danhSachLo(t: GiaoDich, nd: NguoiDung, q: { mine?: boolean
       FROM core.lots l JOIN core.products p ON p.id=l.product_id JOIN core.organizations o ON o.id=l.seller_org_id
       WHERE l.status IN ('on_sale','upcoming') AND l.safety_locked_at IS NULL AND l.seller_org_id<>$1
         AND coalesce(l.last_confirmed_at, l.created_at) > $5::timestamptz - make_interval(days => $4)
+        AND (SELECT coalesce(sum(qty),0) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND b.bucket='available') > 0 -- lô hết lượng rời khỏi kết quả tìm nguồn
         AND ($2::text IS NULL OR p.code=$2) AND ($3::text IS NULL OR l.grade_code=$3) ORDER BY (l.urgent_sale_until > $5::timestamptz) IS TRUE DESC, l.code`, [nd.thanhVien.orgId, q.product_code ?? null, q.grade_code ?? null, CHINH_SACH.han.hienThiLoNgay, new Date(t.thoiDiemMs)]);
 }

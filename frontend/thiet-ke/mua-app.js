@@ -60,7 +60,8 @@ async function taiHet() {
   DL.don = don.items || don; DL.khung = (khung || []).filter((k) => k.phia === "buyer"); DL.tien = tien; DL.nhuCau = nhuCau || []; DL.tin = tin || []; DL.sp = sp || [];
   DL.lo = await Promise.all((lots || []).slice(0, 30).map((l) => thu(api(`/v1/lots/${l.id}`)).then((c) => ({ ...l, ...(c || {}) }))));
   // Khoản phải trả: theo từng đơn + khoản tuần của khung.
-  const theoDon = await Promise.all(DL.don.map((d) => thu(api(`/v1/orders/${d.id}/payments`)).then((ps) => (ps || []).filter((p) => p.direction === "buyer_to_seller").map((p) => ({ ...p, nguon: `${maHD(d.code)} · ${d.seller_name || ""}`, don_id: d.id })))));
+  DL.thieuKhoan = 0; // số đơn không tải được khoản trả: không được hiện 'còn phải trả 0 đ'
+  const theoDon = await Promise.all(DL.don.map((d) => thu(api(`/v1/orders/${d.id}/payments`)).then((ps) => (ps === null ? (DL.thieuKhoan++, []) : ps).filter((p) => p.direction === "buyer_to_seller").map((p) => ({ ...p, nguon: `${maHD(d.code)} · ${d.seller_name || ""}`, don_id: d.id })))));
   const theoKhung = DL.khung.flatMap((k) => (k.ky_tuan || []).map((p) => ({ id: p.payment_id, kind: "framework_period", status: p.trang_thai_tra, amount_due_vnd: p.gia_tri_vnd, da_nhan_vnd: p.da_nhan_vnd, due_at: p.han_tra, nguon: `${k.code} · ${k.ben_ban} · tuần từ ${ngay(p.tu)}` })));
   DL.khoan = [...theoDon.flat(), ...theoKhung];
 }
@@ -115,7 +116,7 @@ function veHomNay() {
   $("#dem-viec").textContent = viec.length; $("#dem-viec").hidden = !viec.length;
   const t = DL.tien?.tong || {};
   $("#hn-coc").textContent = DL.tien ? `${vnd(Number(t.coc_dang_giu || 0))} đ` : "Chưa tải được"; // backend đã gồm cọc khung (trung-binh.ts) — không cộng lại
-  $("#hn-no").textContent = `${vnd(DL.khoan.filter(canTra).reduce((a, p) => a + conTra(p), 0))} đ`;
+  $("#hn-no").textContent = DL.thieuKhoan ? "Chưa tính đủ" : `${vnd(DL.khoan.filter(canTra).reduce((a, p) => a + conTra(p), 0))} đ`;
 }
 
 // ---------- Nguồn hàng ----------
@@ -194,7 +195,7 @@ function veDon() {
 // ---------- Tiền ----------
 function veTien() {
   const no = DL.khoan.filter(canTra), tong = no.reduce((a, p) => a + conTra(p), 0);
-  $("#tien-tong").innerHTML = `<p class="nhan">Bạn còn phải trả</p><div class="so-lon so">${vnd(tong)} <small>đ</small></div><p class="phu">${no.length ? `${no.length} khoản · hạn sớm nhất ${ngay(no.map((p) => p.due_at).filter(Boolean).sort()[0])}` : "Không có khoản nào tới hạn."}</p>`;
+  $("#tien-tong").innerHTML = DL.thieuKhoan ? `<p class="nhan">Bạn còn phải trả</p><div class="so-lon">Chưa tính đủ</div><p class="phu">Chưa tải được khoản trả của ${DL.thieuKhoan} đơn. <button class="nut" type="button" onclick="location.reload()">Tải lại</button></p>` : `<p class="nhan">Bạn còn phải trả</p><div class="so-lon so">${vnd(tong)} <small>đ</small></div><p class="phu">${no.length ? `${no.length} khoản · hạn sớm nhất ${ngay(no.map((p) => p.due_at).filter(Boolean).sort()[0])}` : "Không có khoản nào tới hạn."}</p>`;
   // Tiền ngân hàng giữ hộ: cọc thừa ngân hàng tự hoàn về tài khoản đã chuyển, hệ thống đối soát; người bán không đụng vào.
   const nh = DL.tien?.tong || {}, giu = Number(nh.coc_dang_giu || 0), hoan = Number(nh.ngan_hang_da_chuyen_den || 0);
   $("#tien-tong").insertAdjacentHTML("beforeend", `<div class="hang" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--ke)"><div><span class="phu">Cọc ngân hàng giữ</span><br><b class="so">${DL.tien ? vnd(giu) + " đ" : "Chưa tải được"}</b></div><div style="text-align:right"><span class="phu">Ngân hàng đã hoàn</span><br><b class="so">${DL.tien ? vnd(hoan) + " đ" : "Chưa tải được"}</b></div></div><p class="phu" style="margin:8px 0 0">Tiền thừa trong cọc do ngân hàng tự hoàn về đúng tài khoản bạn đã chuyển, sau khi đơn quyết toán.</p>`);

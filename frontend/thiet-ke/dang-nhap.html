@@ -142,7 +142,7 @@ const cau = quaCau($("cau"), { anh: ["xoai-cat-chu", "tom", "lua-gao", "ca-phe",
 
 let cheDo = "dang-nhap", thuThach = null, demNguoc = null, nutMo = null, dangGui = false, dangXacNhan = 0;
 // Một màn đăng nhập cho cả hai app: ?ben=mua là app bên mua.
-const MUA = new URLSearchParams(location.search).get("ben") === "mua";
+const MUA = new URLSearchParams(location.search).get("ben") === "mua" || location.hostname.startsWith("mua."); // mua.agiviet.id.vn luôn là cửa bên mua
 const APP = MUA ? "./mua-app.html" : "./ban-hom-nay.html";
 if (MUA) {
   document.title = "Đăng nhập · AgiViet mua";
@@ -192,6 +192,7 @@ const NGUOI_MAU = fetch("/v1/test/accounts").then((r) => (r.ok ? r.json() : null
 async function moChonVai() {
   const ds = await NGUOI_MAU;
   if (!ds?.length) return false;
+  $("ds-vai").hidden = false; $("tep").hidden = true; // mở lại sau lần chọn trước: về đúng danh sách vai
   $("ds-vai").innerHTML = ds.map((a) => `<button type="button" data-sdt="${esc(a.phone)}"><b>${esc(a.org_name)}</b><small>${esc(a.display_name)} · ${esc(TINH[a.org_code])}</small></button>`).join("");
   buoc(0); hienLoi("loi-0", "");
   return true;
