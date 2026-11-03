@@ -59,8 +59,12 @@ function lam(o) {
   o.setAttribute("aria-hidden", "true");
   o.after(n);
   const ve = () => {
-    const c = chuNgay(o.value);
+    // Nút hẹp (ô nửa hàng) gãy dòng khi đủ năm → năm nay thì bỏ năm; năm khác vẫn ghi đủ.
+    const c = (docIso(o.value)?.getFullYear() === new Date().getFullYear() ? chuNgay(o.value).replace(/\/\d{4}$/, "") : chuNgay(o.value));
     n.innerHTML = `<span>${c || "Chọn ngày"}</span>${ICON_LICH}`;
+    // Vẫn gãy dòng (ô quá hẹp) → thứ viết tắt "T3, 3/11"; nhãn đọc to (aria-label) giữ chữ đầy đủ.
+    const sp = n.firstChild;
+    if (c && sp.getClientRects().length > 1) sp.textContent = c.replace(/^Chủ nhật/, "CN").replace(/^Thứ (\S+)/, (_, t) => "T" + ({ Hai: 2, Ba: 3, Tư: 4, Năm: 5, Sáu: 6, Bảy: 7 })[t]);
     n.classList.toggle("lich-rong", !c);
     n.setAttribute("aria-label", `${lb ? lb.textContent.trim() + ": " : ""}${c || "chưa chọn ngày"}`);
   };

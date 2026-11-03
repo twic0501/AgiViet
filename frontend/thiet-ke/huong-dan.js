@@ -49,7 +49,7 @@ function ve() {
     <p>${esc(loi)}</p>
     ${chon === "@co-chu" ? `<div class="hd-co" role="group" aria-label="Cỡ chữ">${CO_CHU.map(([v, t]) => `<button type="button" data-co="${v}" aria-pressed="${v === coChu}" style="font-size:${15 * Number(v)}px">${t}</button>`).join("")}</div>` : ""}
     <div class="hd-day"><button type="button" class="hd-bo" data-bo>${i === BUOC.length - 1 ? "" : "Bỏ qua"}</button>
-      <button type="button" class="hd-nghe" data-nghe>🔊 Nghe</button>
+      <button type="button" class="hd-nghe" data-nghe><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>Nghe</button>
       ${i ? `<button type="button" class="nut phu-nut" data-lui>Lùi</button>` : ""}
       <button type="button" class="nut chinh-nut" data-tiep>${i === BUOC.length - 1 ? "Bắt đầu dùng" : "Tiếp"}</button></div>`;
   the.querySelector("[data-tiep]").onclick = () => { try { speechSynthesis.cancel(); } catch {} if (i < BUOC.length - 1) { i++; ve(); } else dong(); };

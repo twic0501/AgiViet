@@ -10,7 +10,7 @@ const CO = (process.argv[3] || "360,390").split(",").map(Number);
 const G = "http://127.0.0.1:18980", F = "http://127.0.0.1:18990/thiet-ke";
 const dn = async (sdt) => (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
 const lay = async (sdt, d) => (await fetch(G + d, { headers: { authorization: "Bearer " + (await dn(sdt)) } })).json();
-const donDau = async (sdt, dk = () => true) => { for (const o of await lay(sdt, "/v1/orders")) if (!/^DEMO56/.test(o.code) && (await dk(o))) return o; return null; };
+const donDau = async (sdt, dk = () => true) => { const ds = await lay(sdt, "/v1/orders"); const l = ds.items ?? ds.data?.items ?? ds.data ?? ds; if (!Array.isArray(l)) return null; for (const o of l) if (!/^DEMO56/.test(o.code) && (await dk(o))) return o; return null; };
 
 const doLoi = (p) => p.evaluate(() => {
   const loi = [], thay = (e) => { const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden" || +cs.opacity === 0) return false; const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
