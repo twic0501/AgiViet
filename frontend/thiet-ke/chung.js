@@ -39,6 +39,15 @@ export const can = (g) => {
   return kg >= 10000 ? [(kg / 1000).toLocaleString("vi-VN", { maximumFractionDigits: 1 }), "tấn"] : [kg.toLocaleString("vi-VN", { maximumFractionDigits: 0 }), "kg"];
 };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+// Đọc số người nhập (kg, giá): có phẩy → phẩy là thập phân, chấm là nghìn ("1.234,5"); chỉ có chấm theo nhóm 3 số → nghìn
+// ("1.500", "12.000"); còn lại chấm là thập phân ("12.5" — bàn phím số Android, hoặc app tự điền lại khi sửa). Trước đây
+// mọi dấu chấm bị bỏ nên "12.5" thành 125.
+export const docSo = (s) => {
+  const t = String(s ?? "").trim().replace(/\s/g, "");
+  if (t.includes(",")) return Number(t.replace(/\./g, "").replace(",", "."));
+  return Number(/^\d{1,3}(\.\d{3})+$/.test(t) ? t.replace(/\./g, "") : t);
+};
+console.assert(docSo("12.5") === 12.5 && docSo("12,5") === 12.5 && docSo("1.500") === 1500 && docSo("1.234,5") === 1234.5 && docSo("1500") === 1500 && docSo("0.8") === 0.8, "docSo");
 // Số hữu hạn trong khoảng, sai thì null (không chèn chuỗi lạ vào HTML)
 export const so = (v, min = -Infinity, max = Infinity) => { const n = Number(v); return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : null; };
 

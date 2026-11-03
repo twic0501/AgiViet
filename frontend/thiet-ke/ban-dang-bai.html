@@ -313,7 +313,7 @@
 </div>
 
 <script type="module">
-import { esc, phien, ANH_SP, giuThamSo, tienDu, tenLoai, can } from "./chung.js";
+import { esc, phien, ANH_SP, giuThamSo, tienDu, tenLoai, can, docSo } from "./chung.js";
 import { anhThanhBase64 } from "/shared/ngoai-tuyen.js";
 const $ = (id) => document.getElementById(id);
 const nhom = (id) => [...$(id).querySelectorAll("button")];
@@ -330,7 +330,7 @@ const st = { thuoc: null, sp: null, loai: null, dv: "kg", coSo: "estimated", khi
 const LUONG = { noi: ["noi", "anh", "xem"], nk: ["nk", "luong", "gia", "anh", "xem"], go: ["luong", "gia", "anh", "xem"] };
 const TEN = { noi: "Trả lời", nk: "Nhật ký", luong: "Lượng, ngày", gia: "Giá", anh: "Ảnh", xem: "Xem lại" };
 let token, man = "dau", ds = [], homNay = new Date().toISOString().slice(0, 10);
-const so = (s) => Number(String(s).replace(/\./g, "").replace(",", "."));
+const so = docSo;
 const vnd = (n) => Number(n).toLocaleString("vi-VN");
 const luongG = () => { const n = so($("luong").value); return Number.isFinite(n) && n > 0 ? Math.round(n * (st.dv === "tan" ? 1e6 : 1e3)) : 0; };
 const hienLoi = (m) => { $("loi").textContent = m; $("loi").hidden = !m; };

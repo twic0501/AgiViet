@@ -128,7 +128,7 @@
 </div>
 
 <script type="module">
-import { esc, phien, giuThamSo, tien, tienDu, can, tenLoai, CHANG, chiSoChang, viecCho, LUOT } from "./chung.js";
+import { esc, phien, giuThamSo, tien, tienDu, can, tenLoai, CHANG, chiSoChang, viecCho, LUOT, docSo } from "./chung.js";
 const $ = (id) => document.getElementById(id);
 const thamSo = new URLSearchParams(location.search);
 const ID = thamSo.get("id");
@@ -595,7 +595,7 @@ function moBanGiao(d) {
           await lenh(`/v1/deliveries/${d.id}/start-check`, { ma_6_so: ma6 }, "bat-dau-can");
           return xongViec("Đã mở bước cân. Hai bên cùng cân, bên mua nhập kết quả, bác xem rồi ký ở đây.");
         }
-        const kg = Number(String(r("kg").value).replace(/\./g, "").replace(",", "."));
+        const kg = docSo(r("kg").value);
         if (!(kg > 0)) throw new Error("Bác ghi số ký đã bốc lên xe.");
         if (!r("bien").value.trim()) throw new Error("Bác ghi biển số xe chở hàng.");
         await lenh(`/v1/deliveries/${d.id}/ship`, { ma_6_so: ma6, loaded_g: String(Math.round(kg * 1000)), plate_no: r("bien").value.trim().toUpperCase(), seal_code: r("niem").value.trim() || undefined }, "xuat-hang");
