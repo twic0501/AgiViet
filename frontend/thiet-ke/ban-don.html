@@ -584,6 +584,14 @@ function moBanGiao(d) {
     fetch(`/v1/test/deliveries/${d.id}/receipt-code`, { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).then((m) => {
       const ma = (m?.data ?? m)?.ma_6_so; if (!ma) return;
       r("ma6").insertAdjacentHTML("afterend", `<p class="ma-thu" style="margin:8px 0 0;font-size:14px;color:var(--chin,#7a5a10)">Môi trường thử · mã người nhận: <b>${esc(ma)}</b></p>`);
+      // Chưa tới giờ giao: bản thử cho tua đồng hồ thử tới đầu khung giờ (buổi trình diễn không phải ngồi chờ). Bản thật không có.
+      fetch(`/v1/deliveries/${d.id}`, { headers: { authorization: "Bearer " + token } }).then((x) => x.json()).then(async (j) => {
+        const dv = j?.data ?? j; const tu = dv?.window_from ? new Date(dv.window_from) : null;
+        const now = new Date((await fetch("/v1/test/clock").then((x) => x.json()).catch(() => ({})))?.now ?? Date.now());
+        if (!tu || tu <= now) return;
+        r("ma6").closest("div").insertAdjacentHTML("afterend", `<div class="hd-bao vang" data-r="cho-gio">Chưa tới giờ giao (từ ${tu.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}). <button type="button" class="nut lui" data-r="tua" style="margin-top:8px;width:100%">Bản thử: tới giờ giao</button></div>`);
+        r("tua").onclick = async () => { r("tua").disabled = true; await fetch("/v1/test/clock", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ set: tu.toISOString() }) }); r("cho-gio").remove(); };
+      }).catch(() => {});
     }).catch(() => {});
     r("huy").onclick = dongTam;
     r("tiep").onclick = async () => {

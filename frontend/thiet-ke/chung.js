@@ -400,7 +400,8 @@ export function nhacTrau({ khoa, mat = "vui", chu, an = 14000, luonHien = false 
 .nhac-trau p{margin:2px 0 6px;font-size:16px;line-height:1.45;color:var(--muc,#1d2a22)}
 .nhac-trau .nt-day{display:flex;gap:6px}.nhac-trau button{min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--ke-dam,rgba(29,42,34,.22));background:#fff;color:var(--la,#1f4d3a);font:700 14px var(--chu,system-ui);cursor:pointer}
 .nhac-trau .nt-dong{margin-left:auto;border:0;background:none;color:var(--muc-nhat,#5c645c);font-size:20px;min-width:44px;min-height:44px;padding:0}
-@media (prefers-reduced-motion: reduce){.nhac-trau{transition:none}}`;
+@media (prefers-reduced-motion: reduce){.nhac-trau{transition:none}}
+body:has(.hd-che, .man-che.mo, [role="dialog"].mo, dialog[open]) .nhac-trau{display:none}`; /* đang mở tấm thao tác → không che nút chính */
     document.head.appendChild(st);
   }
   document.querySelector(".nhac-trau")?.remove();
