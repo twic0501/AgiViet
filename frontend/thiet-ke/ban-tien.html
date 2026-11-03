@@ -104,7 +104,9 @@ veDau($("dau"), { chao: "Tiền của bác", ten: "Sổ tiền", chuDau: "" });
 // Trạng thái cọc (core.deposits.status) → chữ cho bác
 const COC = { null: ["Chưa cọc", ""], pending: ["Chờ bên mua cọc", ""], held: ["Ngân hàng đang giữ cọc", "giu"], processing: ["Ngân hàng đang xử lý cọc", "giu"],
   fully_processed: ["Cọc đã xử lý xong", "xong"], refunded: ["Cọc đã hoàn bên mua", ""], expired: ["Quá hạn cọc", ""] };
-const ghiSo = (id, v) => { $(id).textContent = tien(v); $(id).title = tienDu(v); };
+// Số lớn làm tròn cho dễ đọc; bị làm tròn thì thêm dòng nhỏ số đồng đầy đủ để đối chiếu tin nhắn ngân hàng.
+const dayDu = (v) => `${Number(v || 0).toLocaleString("vi-VN")} đ`;
+const ghiSo = (id, v) => { const tron = tien(v); $(id).innerHTML = esc(tron) + (tron.replace(/\s/g, "") === dayDu(v).replace(/\s/g, "") ? "" : `<small style="display:block;font-size:13px;font-weight:500;opacity:.8;margin-top:2px">${esc(dayDu(v))}</small>`); $(id).title = tienDu(v); };
 
 let token, tenHd = new Map();
 const get = (d) => fetch(d, { headers: { authorization: "Bearer " + token } }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`${d}: ${r.status}`))));
@@ -158,7 +160,7 @@ async function taiLichSu() {
     return `<div class="lt-thang"><h4><span>Tháng ${esc(k)}</span>${vao ? `<b>+${esc(tien(vao))}</b>` : ""}</h4>${ds.map((x) => { const ve = laVao(x), cho = dangChuyen(x);
       return `<a class="lt-dong" href="${x.order_id ? `./ban-don.html?id=${encodeURIComponent(x.order_id)}` : "#"}"><span class="ic ${ve ? "" : "ra"}" aria-hidden="true">${ve ? IC_VAO : IC_RA}</span>
         <span style="min-width:0"><b>${esc(tenKhoan(x))}</b><small>${esc(new Date(x.luc).toLocaleString("vi-VN", { ...VN, hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" }))}${x.ma && x.ma.length <= 20 ? ` · ${esc(x.ma)}` : ""}${cho ? " · đang chuyển, chưa tính là đã về" : ""}</small></span>
-        <span class="so ${cho ? "cho" : ve ? "vao" : "ra"}" title="${esc(tienDu(x.so_tien_vnd))}">${ve ? "+" : "−"}${esc(tien(x.so_tien_vnd))}</span></a>`; }).join("")}</div>`;
+        <span class="so ${cho ? "cho" : ve ? "vao" : "ra"}" title="${esc(tienDu(x.so_tien_vnd))}">${ve ? "+" : "−"}${esc(dayDu(x.so_tien_vnd))}</span></a>`; }).join("")}</div>`;
   }).join("");
   giuThamSo($("ls-tien"));
 }
