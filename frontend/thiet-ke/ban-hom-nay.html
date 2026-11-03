@@ -173,7 +173,8 @@ async function mo() {
     $("cau-chinh").textContent = "Hôm nay bác chưa có việc gấp";
     $("cau-phu").textContent = `${choNguoi.length} hợp đồng đang chờ ${(LUOT[choNguoi[0].hien_thi.toi_luot.phia]?.[1] || "bên kia").toLowerCase()}.`;
   } else {
-    $("cau-chinh").textContent = "Chưa có hợp đồng nào";
+    const daXong = d.don.filter((x) => x.status === "completed").length;
+    $("cau-chinh").textContent = daXong ? `Đã xong ${daXong} hợp đồng, chưa có việc mới` : "Chưa có hợp đồng nào";
     $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô, chờ bên mua chào giá.` : "Đăng một lô hàng để bên mua thấy và chào giá.";
     $("nut-chinh").textContent = "Đăng hàng"; $("nut-chinh").hidden = false;
   }

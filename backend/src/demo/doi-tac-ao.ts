@@ -83,7 +83,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         const gia = tk?.status === 'du_du_lieu' ? Math.round(Number(tk.price_vnd) / 100) * 100 : (GIA_MUA[`${l.product_code}|${l.grade_code}`] ?? 0), con = Number(l.available_g ?? 0);
         if (!gia || !con) continue;
         const qty = Math.min(con, 500000);
-        await lam(tc, `chào giá ${gia} đ/kg`, l.code, () => post('/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: qty, price_vnd: gia }, me.token));
+        await lam(tc, `chào giá ${gia.toLocaleString("vi-VN")} đ/kg`, l.code, () => post('/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: qty, price_vnd: gia }, me.token));
         break; // mỗi vòng một lời chào cho tự nhiên
       }
     }
@@ -100,7 +100,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       if (of.status === 'sent' && v && v.from_side !== phia) {
         if (Number(v.round_no) <= 1) {
           const gia = Math.round(Number(v.price_vnd) * (phia === 'seller' ? 1.03 : 0.97) / 100) * 100;
-          await lam(tc, `trả giá ${gia}`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
+          await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
         } else await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
       }
       // Bên mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
