@@ -409,7 +409,10 @@ body:has(.hd-che, .man-che.mo, [role="dialog"].mo, dialog[open]) .nhac-trau{disp
   d.innerHTML = `<img src="/assets/trau/anh/dau-${mat}@2x.webp" alt=""><div style="flex:1;min-width:0"><p>${esc(chu)}</p><div class="nt-day"><button type="button" data-nghe>Nghe</button></div></div><button type="button" class="nt-dong" aria-label="Đóng lời nhắc">✕</button>`;
   document.body.appendChild(d);
   requestAnimationFrame(() => d.classList.add("hien"));
-  const tat = () => { d.classList.remove("hien"); setTimeout(() => d.remove(), 350); };
+  const y0 = scrollY;
+  const khiCuon = () => { if (Math.abs(scrollY - y0) > 120) tat(); }; // đang cuộn đọc nội dung → không che (Codex: che màn Tiền)
+  const tat = () => { removeEventListener("scroll", khiCuon); d.classList.remove("hien"); setTimeout(() => d.remove(), 350); };
+  addEventListener("scroll", khiCuon, { passive: true });
   d.querySelector(".nt-dong").onclick = tat;
   d.querySelector("[data-nghe]").onclick = () => { clearTimeout(hen); docTo(chu); };
   const hen = setTimeout(tat, an);
