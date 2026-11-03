@@ -1,0 +1,18 @@
+// Kiểm E2E chợ AI chiều ngược: AI đóng cả bên mua M01 lẫn người bán (gọi vòng bằng nhân viên nên không tổ chức nào bị loại).
+// M01 chào giá bưởi L-0604 đúng giá tham khảo → người bán ảo trả giá, giao bằng mã người nhận… → đơn hoàn tất. Chạy trên stack thử mới khởi động.
+const B = 'http://127.0.0.1:18980';
+const j = async (r) => { const x = await r.json().catch(() => ({})); return x && typeof x === 'object' && 'data' in x ? x.data : x; };
+const vai = async (p) => (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: p }) }))).token;
+const mua = await vai('0909000213'), nv = await vai('0901000004');
+const H = (t) => ({ 'content-type': 'application/json', authorization: 'Bearer ' + t });
+const lots = await j(await fetch(B + '/v1/lots', { headers: H(mua) })); const l = (lots.items ?? lots).find((x) => x.code === 'L-0604');
+const of = await fetch(B + '/v1/offers', { method: 'POST', headers: H(mua), body: JSON.stringify({ idempotency_key: crypto.randomUUID(), direction: 'buyer_bid', lot_id: l.id, qty_g: 500000, price_vnd: 40000 }) });
+console.log('M01 chào giá L-0604 (bưởi, chị Lan):', of.status, (await j(of)).status);
+for (let n = 1; n <= 25; n++) {
+  const v = await j(await fetch(B + '/v1/test/doi-tac-ao/vong', { method: 'POST', headers: H(nv), body: '{}' }));
+  const viec = (v.viec ?? []).map((x) => `${x.ket_qua === 'loi' ? 'LỖI ' : ''}${x.to_chuc} ${x.viec} ${x.doi_tuong}${x.ket_qua === 'loi' ? ' ' + (x.chi_tiet ?? '').slice(0, 120) : ''}`).filter((s) => /HD|LC|lệnh|đối soát|LỖI/.test(s));
+  const ds = await j(await fetch(B + '/v1/orders', { headers: H(mua) })); const d = (ds.items ?? ds)[0];
+  console.log(`vòng ${n}:`, d ? `${d.code} ${d.status} ${d.hien_thi?.toi_luot?.phia ?? ''}:${d.hien_thi?.toi_luot?.viec ?? ''}` : '-', '|', viec.join(' | ').slice(0, 400));
+  if (d?.status === 'completed') break;
+  if (d?.hien_thi?.toi_luot?.viec === 'Giao hàng, quét QR nhận hàng' && n > 3) await fetch(B + '/v1/test/clock', { method: 'POST', headers: H(nv), body: JSON.stringify({ advance_minutes: 20 }) });
+}

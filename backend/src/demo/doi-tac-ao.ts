@@ -55,6 +55,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     async function lam0() {
     try {
       const r = await fn();
+      if (r === undefined) return; // chưa tới lúc / không có việc → không ghi "xong" (tránh báo sai cho người thật)
       if (r && r.status >= 300) nhat_ky.push({ to_chuc: tc, viec, doi_tuong: dt, ket_qua: 'loi', chi_tiet: JSON.stringify(r.json).slice(0, 200) });
       else nhat_ky.push({ to_chuc: tc, viec, doi_tuong: dt, ket_qua: 'xong' });
     } catch (e) { nhat_ky.push({ to_chuc: tc, viec, doi_tuong: dt, ket_qua: 'loi', chi_tiet: String(e).slice(0, 200) }); }
@@ -183,6 +184,17 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           return r;
           }); break;
         }
+        case 'Giao hàng, quét QR nhận hàng': await lam(tc, 'giao hàng (quét mã người nhận)', d.code, async () => {
+          // Người bán ảo quét QR người nhận đang mở (bản thử: lấy mã qua route thử như khi người nhận đưa máy cho quét).
+          const dd = o.dot_giao?.find((x: any) => ['ready', 'preparing'].includes(x.status)); if (!dd) return;
+          const dv = await get(`/v1/deliveries/${dd.id}`, t);
+          const bayGio = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
+          if (dv?.window_from && new Date(dv.window_from) > bayGio) return; // chưa tới giờ giao → vòng sau
+          const ma = (await get(`/v1/test/deliveries/${dd.id}/receipt-code`, t))?.ma_6_so; if (!ma) return;
+          const taiCho = ['tai_vuon', 'tai_ao', 'tai_ruong', 'tai_diem_gom'].includes(dv?.acceptance_point); // như DIEM_TAI_CHO ở giao-nhan.ts
+          return taiCho ? post(`/v1/deliveries/${dd.id}/start-check`, { ma_6_so: ma }, t)
+            : post(`/v1/deliveries/${dd.id}/ship`, { ma_6_so: ma, loaded_g: String(dv?.planned_qty_g ?? 0), plate_no: 'DEMO-66C-001' }, t);
+        }); break;
         case 'Ký nhận tại nơi đến': await lam(tc, 'ký nhận tại nơi đến', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'in_transit'); if (!dd) return;
           const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.loaded_g ?? dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) return;
