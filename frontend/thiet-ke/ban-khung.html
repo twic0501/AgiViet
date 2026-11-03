@@ -38,7 +38,7 @@
 <script type="module">
 import { esc, phien, giuThamSo } from "./chung.js";
 const $ = (id) => document.getElementById(id);
-const id = new URLSearchParams(location.search).get("id");
+let id = new URLSearchParams(location.search).get("id");
 $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
   <div style="flex:1;min-width:0"><p class="chao">Hợp đồng khung theo tuần</p><h1 id="tieu">Đang tải…</h1></div>`;
 $("dong").onclick = () => (history.length > 1 ? history.back() : (location.href = "./ban-hop-dong.html" + location.search));
@@ -47,6 +47,7 @@ const vnd = (x) => `${Number(x || 0).toLocaleString("vi-VN")} đ`;
 const kg = (g) => `${(Number(g || 0) / 1000).toLocaleString("vi-VN")} kg`;
 const THU = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
 const ngay = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }) : "");
+const ngayDu = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }) : "");
 const dong = (a, b) => `<div class="hd-dong"><span>${a}</span><b>${b}</b></div>`;
 async function goi(duong, than) {
   const r = await fetch(duong, than ? { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) } : { headers: { authorization: "Bearer " + token } });
@@ -73,6 +74,18 @@ function khoiOtp(goc, guiMa, xacNhan, chuNut) {
   };
 }
 async function ve() {
+  // Vào từ menu (không có ?id=): một khung thì mở luôn, nhiều khung thì cho chọn.
+  if (!id) {
+    const ds = (await goi("/v1/frameworks")).filter((x) => x.phia !== "buyer");
+    if (ds.length === 1) id = ds[0].id;
+    else {
+      $("tieu").textContent = ds.length ? "Chọn hợp đồng khung" : "Chưa có hợp đồng khung";
+      const q = new URLSearchParams(location.search);
+      $("noi").innerHTML = ds.length ? ds.map((x) => { q.set("id", x.id); return `<a class="hd-dong" href="./ban-khung.html?${q}"><span>${esc(x.code)} · ${esc(x.ben_mua || "")}</span><b>›</b></a>`; }).join("")
+        : `<p class="hd-bao">Bác chưa có hợp đồng khung theo tuần. Khi bên mua đặt giao đều mỗi tuần và hai bên ký, khung hiện ở đây.</p>`;
+      return;
+    }
+  }
   const k = await goi("/v1/frameworks/" + id);
   $("tieu").textContent = `${k.code} · ${k.ben_mua}`;
   const hm = k.han_muc || {}, chay = ["running", "needs_security"].includes(k.status);
@@ -80,9 +93,9 @@ async function ve() {
   $("noi").innerHTML = `
     <p class="hd-bao${toiKy ? "" : " "}">${toiKy ? "<b>Tới lượt bác ký.</b> Bên mua đã ký trước." : `<b>${esc(k.ten_trang_thai)}</b>`}</p>
     <section class="hd-the"><h3><i class="cham"></i>Điều khoản</h3>
-      ${dong("Ngày giao", (k.ngay_giao || []).map((x) => THU[x]).join(", "))}${dong("Kỳ khung", `${esc(String(k.ky?.tu || "").slice(0, 10))} → ${esc(String(k.ky?.den || "").slice(0, 10))}`)}
+      ${dong("Ngày giao", (k.ngay_giao || []).map((x) => THU[x]).join(", ") || "Theo buổi bên mua gọi")}${dong("Kỳ khung", `${ngayDu(k.ky?.tu)} → ${ngayDu(k.ky?.den)}`)}
       ${(k.mon || []).map((m) => dong(`${esc(m.mat_hang)} ${esc(m.loai)} mỗi buổi`, `${kg(m.luong_g)} · ${Number(m.gia_vnd).toLocaleString("vi-VN")} đ/kg`)).join("")}
-      ${dong("Cọc khung (ngân hàng giữ)", vnd(k.coc_khung_vnd))}${dong("Tiền về tài khoản", esc(k.tai_khoan_ban || ""))}
+      ${dong("Cọc khung (ngân hàng giữ)", vnd(k.coc_khung_vnd))}${dong("Tiền về tài khoản", esc(k.tai_khoan_ban || "Tài khoản nhận tiền của HTX (đặt ở Tôi)"))}
       <p class="hd-ghi">Giá chốt lại mỗi tuần: bác không đồng ý giá tuần nào thì tuần đó tạm dừng. Bên mua trả gộp cuối tuần trong 72 giờ; nợ chưa trả vượt cọc thì bên mua không gọi buổi mới được.</p></section>
     <div id="ky"></div><div id="gia"></div><div id="buoi"></div><div id="tien"></div>`;
   if (toiKy) {
