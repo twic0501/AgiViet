@@ -21,6 +21,7 @@ export const KIEU_MUA: Record<string, string> = { 'song-phang': 'Sòng phẳng, 
 export const KIEU_BAN: Record<string, string> = { 'giao-deu': 'Giao đều, đúng hẹn', 'giu-gia': 'Giữ giá, trả giá 2 lần', /* nhieu-de-nghi */
   'cham': 'Trả lời chậm', /* theo-sat-don */ 'giao-thieu': 'Xuất thiếu 15%' /* dinh-ky-thieu-luong */ };
 export const TEP = new Map<string, string>(); // mã tổ chức AI → kiểu
+const THIEU = new Map<string, number>(); // đợt giao do người bán AI 'giao-thieu' → số gam thực giao (bên mua AI cân đúng số này)
 const KIEU_TEP: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = { 'tra-gia-gat': { tra: 2, buoc: 0.06 }, 'giu-gia': { tra: 2, buoc: 0.05 }, cham: { cham: true }, 'song-phang': { tra: 0 } };
 export function rutTep(orgThat: string, ngauNhien = Math.random, gan?: Record<string, string>) {
   const tron = <T,>(a: T[]) => a.map((x) => [ngauNhien(), x] as const).sort((x, y) => x[0] - y[0]).map((x) => x[1]);
@@ -246,8 +247,12 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           if (dv?.window_from && new Date(dv.window_from) > bayGio) return; // chưa tới giờ giao → vòng sau
           const ma = (await get(`/v1/test/deliveries/${dd.id}/receipt-code`, t))?.ma_6_so; if (!ma) return;
           const taiCho = ['tai_vuon', 'tai_ao', 'tai_ruong', 'tai_diem_gom'].includes(dv?.acceptance_point); // như DIEM_TAI_CHO ở giao-nhan.ts
+          if (TEP.get(tc) === 'giao-thieu' && !THIEU.has(dd.id)) {
+            const kh = Number(dv?.planned_qty_g ?? 0), co = Math.round(kh * 0.85 / 1000) * 1000; THIEU.set(dd.id, co);
+            await post('/v1/messages', { order_id: d.id, body: `Đợt này vườn chỉ đủ ${(co / 1000).toLocaleString('vi-VN')} kg, thiếu ${((kh - co) / 1000).toLocaleString('vi-VN')} kg so với hợp đồng. Mong bên mình thông cảm, cân theo số thực nhận.` }, t);
+          }
           return taiCho ? post(`/v1/deliveries/${dd.id}/start-check`, { ma_6_so: ma }, t)
-            : post(`/v1/deliveries/${dd.id}/ship`, { ma_6_so: ma, loaded_g: String(TEP.get(tc) === 'giao-thieu' ? Math.round(Number(dv?.planned_qty_g ?? 0) * 0.85 / 1000) * 1000 : dv?.planned_qty_g ?? 0), plate_no: 'DEMO-66C-001' }, t);
+            : post(`/v1/deliveries/${dd.id}/ship`, { ma_6_so: ma, loaded_g: String(THIEU.get(dd.id) ?? dv?.planned_qty_g ?? 0), plate_no: 'DEMO-66C-001' }, t);
         }); break;
         case 'Ký nhận tại nơi đến': await lam(tc, 'ký nhận tại nơi đến', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'in_transit'); if (!dd) return;
@@ -258,7 +263,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const den = o.dot_giao?.find((x: any) => x.status === 'arrival_check');
           if (den) { await lam(tc, 'xác nhận hàng tới đủ', d.code, () => post(`/v1/deliveries/${den.id}/arrival/confirm`, {}, t)); break; } // tới nơi đủ hàng → hệ thống chốt quyết toán
           const dd = o.dot_giao?.find((x: any) => x.status === 'checking'); if (!dd) break;
-          const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) break;
+          const dv = await get(`/v1/deliveries/${dd.id}`, t); const q = THIEU.get(dd.id) ?? Number(dv?.planned_qty_g ?? dv?.qty_g ?? 0); if (!q) break;
           // Kịch bản người trình diễn đặt trước (một lần): hạ loại 10% hoặc trả lại 80% — có ảnh bằng chứng như luật đòi.
           const kb = KICH_BAN.lanToi ?? ({ 'kho-tinh': 'ha-cap', 'tra-lai': 'tra-lai-nhieu' } as Record<string, 'ha-cap' | 'tra-lai-nhieu'>)[TEP.get(tc) ?? ''] ?? null; KICH_BAN.lanToi = null;
           const phan = kb === 'tra-lai-nhieu' ? { kind: 'rejected', ty: 0.8, ly: 'THOI' } : kb === 'ha-cap' ? { kind: 'downgraded', ty: 0.1, ly: 'DAP' } : null;
@@ -271,7 +276,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         }
         case 'Xác nhận kết quả nghiệm thu': await lam(tc, 'đồng ý số cân', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'awaiting_seller'); if (!dd) return;
-          return post(`/v1/deliveries/${dd.id}/acceptance/agree`, { pin: PIN }, t);
+          return post(`/v1/deliveries/${dd.id}/acceptance/agree`, { pin: PIN, ...(THIEU.has(dd.id) ? { shortfall: { choice: 'end' } } : {}) }, t); // giao thiếu: kết thúc phần thiếu (luật Q04)
         }); break;
         default: break; // việc cần người thật/vận hành: để nguyên
       }
