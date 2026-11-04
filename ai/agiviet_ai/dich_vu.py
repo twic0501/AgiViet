@@ -168,6 +168,8 @@ class DocToRequest(BaseModel):
     van_ban: str = Field(min_length=1, max_length=400)
 
 _TTS_NHO: 'OrderedDict[str, bytes]' = None
+_TTS_KHOA: dict = {}
+_TTS_KHOA_CHUNG = threading.Lock()
 
 @app.post('/tts')
 def tts(req: DocToRequest, request: Request):
@@ -178,13 +180,18 @@ def tts(req: DocToRequest, request: Request):
     from agiviet_ai.nha_cung_cap import NhaCungCap, LoiNhaCungCap
     if _TTS_NHO is None: _TTS_NHO = OrderedDict()
     cau = ' '.join(req.van_ban.split())
-    wav = _TTS_NHO.get(cau)
-    if wav is None:
-        try: wav = NhaCungCap().doc_thanh_tieng(cau)
-        except LoiNhaCungCap as e: raise HTTPException(503, f'CHUA_DOC_DUOC: {e}')
-        _TTS_NHO[cau] = wav
-        while len(_TTS_NHO) > 300: _TTS_NHO.popitem(last=False)
-    else: _TTS_NHO.move_to_end(cau)
+    # Gom yêu cầu trùng đang chạy: mỗi câu một khóa → người đến sau chờ rồi lấy từ bộ nhớ (không tốn thêm lượt Gemini)
+    with _TTS_KHOA_CHUNG: khoa = _TTS_KHOA.setdefault(cau, threading.Lock())
+    with khoa:
+        wav = _TTS_NHO.get(cau)
+        if wav is None:
+            try: wav = NhaCungCap().doc_thanh_tieng(cau)
+            except LoiNhaCungCap as e: raise HTTPException(503, f'CHUA_DOC_DUOC: {e}')
+            _TTS_NHO[cau] = wav
+            while len(_TTS_NHO) > 300: _TTS_NHO.popitem(last=False)
+        else: _TTS_NHO.move_to_end(cau)
+    with _TTS_KHOA_CHUNG:
+        if len(_TTS_KHOA) > 500: _TTS_KHOA.clear()
     request.state.tom_tat = {'so_chu': len(cau), 'byte': len(wav)}
     return Response(content=wav, media_type='audio/wav', headers={'cache-control': 'private, max-age=86400'})
 
