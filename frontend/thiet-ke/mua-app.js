@@ -1,5 +1,5 @@
 // App MUA thật: đăng nhập OTP → màn chào (lần đầu) → 5 tab dữ liệu từ API. Luồng sâu (ký, cọc, giao nhận, khung) mở màn thật sẵn có trong mua.html.
-import { esc, ANH_SP, luuPhien } from "./chung.js";
+import { esc, ANH_SP, luuPhien, tenLoai } from "./chung.js";
 
 const $ = (s) => document.querySelector(s);
 const vnd = (n) => Number(n || 0).toLocaleString("vi-VN");
@@ -132,7 +132,7 @@ async function veSoSanh() {
   const ds = DL.lo.filter((l) => SS.has(l.id));
   const gia = await Promise.all(ds.map((l) => layGiaCho(l.product_code, l.grade_code)));
   const dong = (nhan, f) => `<tr><th scope="row">${nhan}</th>${ds.map((l, i) => `<td>${f(l, i)}</td>`).join("")}</tr>`;
-  $("#ss-bang").innerHTML = `<table class="bang-ss"><thead><tr><th></th>${ds.map((l) => `<th scope="col">${esc(l.product_name || l.product_code)} ${esc(l.grade_code)}</th>`).join("")}</tr></thead><tbody>
+  $("#ss-bang").innerHTML = `<table class="bang-ss"><thead><tr><th></th>${ds.map((l) => `<th scope="col">${esc(l.product_name || l.product_code)} ${esc(tenLoai(l.grade_code))}</th>`).join("")}</tr></thead><tbody>
     ${dong("Người bán", (l) => esc(l.seller_name || ""))}
     ${dong("Nơi", (l) => esc(TINH[l.province_code] || l.province_code || ""))}
     ${dong("Còn", (l) => `<span class="so">${vnd(kg(l.available_g ?? l.qty?.available))} kg</span>`)}
@@ -152,7 +152,7 @@ function veNguon() {
     const anhApp = (l.photos || []).filter((p) => p.captured_in_app).length;
     return `<div class="the" data-lo-the="${l.id}">
     <div class="lo"><div class="anh" style="background-image:url(${ANH_SP(l.product_code)})" role="img" aria-label="Ảnh minh họa ${esc(l.product_name)}"></div>
-      <div><div class="hang"><b>${esc(l.product_name || l.product_code)} ${esc(l.grade_code)}</b><span class="chip ${l.status === "upcoming" ? "bien" : "la"}">${l.status === "upcoming" ? "Sắp có" : "Có ngay"}</span></div>
+      <div><div class="hang"><b>${esc(l.product_name || l.product_code)} ${esc(tenLoai(l.grade_code))}</b><span class="chip ${l.status === "upcoming" ? "bien" : "la"}">${l.status === "upcoming" ? "Sắp có" : "Có ngay"}</span></div>
         <p class="phu">${esc(l.seller_name || "")} · ${esc(TINH[l.province_code] || l.province_code || "")}</p><p class="phu so">Còn ${vnd(kg(l.available_g ?? l.qty?.available))} kg · từ ${ngay(l.available_from)}</p></div></div>
     <div class="tin">${l.qty_basis === "weighed" ? `<span class="chip la">Đã cân</span>` : `<span class="chip">Người bán ước tính</span>`}${anhApp ? `<span class="chip la">${anhApp} ảnh chụp trong app</span>` : `<span class="chip">Chưa có ảnh chụp trong app</span>`}${l.ban_gap ? `<span class="chip do">Bán gấp</span>` : ""}</div>
     <p class="phu" data-gia-cho="${esc(l.product_code)}|${esc(l.grade_code)}">Đang lấy giá chợ…</p>
@@ -164,7 +164,7 @@ function veNguon() {
 }
 async function veChaoGia(loId) {
   const l = DL.lo.find((x) => x.id === loId), g = await layGiaCho(l.product_code, l.grade_code), neo = g?.status === "du_du_lieu" ? Number(g.price_vnd) : null;
-  $("#cg-tam").innerHTML = `<h2 id="cg-t">Chào giá ${esc(l.product_name)} ${esc(l.grade_code)}</h2>
+  $("#cg-tam").innerHTML = `<h2 id="cg-t">Chào giá ${esc(l.product_name)} ${esc(tenLoai(l.grade_code))}</h2>
     <p class="phu">${esc(l.seller_name || "")} · còn ${vnd(kg(l.available_g ?? l.qty?.available))} kg · ${neo ? `giá giao dịch gần đây <b>${vnd(neo)} đ/kg</b>` : "chưa đủ dữ liệu giá chợ"}</p>
     <div class="luoi2"><label class="o-nhap">Giá (đ/kg)<input id="cg-gia" inputmode="numeric" value="${neo || ""}"></label><label class="o-nhap">Lượng (kg)<input id="cg-kg" inputmode="decimal" value="${Math.min(1000, kg(l.available_g ?? l.qty?.available))}"></label></div>
     <p class="phu" id="cg-tong" role="status"></p><p class="phu">Giao tại vườn, bạn lo xe. Người bán có 24 giờ trả lời: đồng ý, trả giá hoặc không bán. Đồng ý giá chưa phải hợp đồng.</p>
@@ -275,6 +275,10 @@ function veThem() {
   // Chấm đỏ = số cuộc mà tin cuối là của bên kia (chưa trả lời); API chưa có cờ đã đọc.
   const moi = DL.tin.filter((c) => !c.la_cua_toi).length; $("#dem-tin").textContent = moi; $("#dem-tin").hidden = !moi;
   $("#nc-sp").innerHTML = DL.sp.map((s) => `<option value="${esc(s.code)}">${esc(s.name_vi)}</option>`).join("");
+  // Loại theo đúng mặt hàng (nhãn dễ hiểu, gửi mã gốc); đổi mặt hàng thì đổi danh sách loại trước khi form lấy giá chợ
+  const veLoai = () => { const sp = DL.sp.find((x) => x.code === $("#nc-sp").value);
+    $("#nc-loai").innerHTML = (sp?.grades?.length ? sp.grades : [{ grade_code: "L1" }]).map((g) => `<option value="${esc(g.grade_code)}">${esc(tenLoai(g.grade_code))}</option>`).join(""); };
+  veLoai(); $("#nc-sp").oninput = veLoai;
   const homNay = new Date(), d = (n) => new Date(homNay.getTime() + n * 864e5).toISOString().slice(0, 10);
   $("#nc-tu").value ||= d(2); $("#nc-den").value ||= d(9);
 }
