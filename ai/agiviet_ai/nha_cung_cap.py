@@ -84,14 +84,14 @@ class NhaCungCap:
             raise LoiNhaCungCap(f"Gemini trả sai dạng: {type(e).__name__}") from e
 
     def doc_thanh_tieng(self, van_ban: str, timeout_s: float = 20.0) -> bytes:
-        """Đọc câu tiếng Việt thành WAV bằng Gemini TTS (giọng ấm, chậm, rõ cho người lớn tuổi). Lỗi → LoiNhaCungCap."""
+        """Đọc câu tiếng Việt thành WAV bằng Gemini TTS (giọng Sulafat ấm; tốc độ do app chỉnh). Lỗi → LoiNhaCungCap."""
         k = self.khoa.get("GEMINI_API_KEY")
         if not k:
             raise LoiNhaCungCap("thiếu khóa Gemini")
         model = self.khoa.get("AGV_TTS_MODEL") or "gemini-3.8-flash-lite-tts"
         giong = self.khoa.get("AGV_TTS_GIONG") or "Sulafat"
         r = self.client.post(GEMINI_URL.format(m=model), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
-            "contents": [{"parts": [{"text": "Đọc bằng giọng miền Nam, ấm áp, chậm rãi, rõ ràng cho người lớn tuổi: " + van_ban}]}],
+            "contents": [{"parts": [{"text": van_ban}]}],  # chỉ gửi đúng câu: lời dặn giọng bị mô hình đọc thành tiếng
             "generationConfig": {"responseModalities": ["AUDIO"],
                                  "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": giong}}}},
         })
