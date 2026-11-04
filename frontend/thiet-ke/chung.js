@@ -194,6 +194,8 @@ export function veTab(dangMo, soTin = 0) {
   giuThamSo(nav);
   // Cuộn xuống: thanh trượt xuống ẩn; cuộn lên, chạm màn hình hoặc gần đầu trang: trượt lên hiện lại
   let truoc = scrollY, cho = false;
+  const danhDau = () => document.documentElement.classList.toggle("da-cuon", scrollY > 4); // header liền khối xanh khi ở đầu trang
+  danhDau(); addEventListener("scroll", danhDau, { passive: true });
   addEventListener("scroll", () => {
     if (cho) return; cho = true;
     requestAnimationFrame(() => {

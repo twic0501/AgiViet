@@ -342,3 +342,6 @@ header.dau-lui.nen-xanh > a:focus-visible, header.dau.dau-xanh .nut-tron:focus-v
 /* Ẩn thanh cuộn của trang (vẫn cuộn được bằng chạm/chuột) — người sáng lập 03/11 */
 html { scrollbar-width: none; }
 html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+/* Đầu trang: header liền với khối xanh (không viền vàng, không bo); chỉ khi đã cuộn mới thành thanh riêng */
+html:not(.da-cuon) header.dau.dau-xanh:not(:has(.nut-tron[aria-label*="Quay"], .nut-tron[aria-label*="Về"])) { box-shadow: none; border-radius: 0; }
