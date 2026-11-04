@@ -142,6 +142,8 @@ async function tai() {
         <li><b>Sau khi ngân hàng giữ cọc:</b> số điện thoại người liên hệ và địa chỉ giao hàng để hai bên hẹn giao.</li>
         <li>Số điện thoại, Zalo trong tin nhắn bị che trước khi có cọc, để hai bên không bỏ qua bảo đảm của ngân hàng.</li></ul></details>
 
+    <button class="to-ra" type="button" id="thu-xong" hidden>Thử xong, làm lại từ đầu</button>
+    <p class="phu-de" id="thu-xong-bao" role="status"></p>
     <button class="to-ra" type="button" id="dang-xuat">Đăng xuất</button>`;
   document.querySelectorAll("[data-co]").forEach((b) => (b.onclick = () => { datCoChu(b.dataset.co); document.querySelectorAll("[data-co]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
   document.querySelectorAll("[data-doc]").forEach((b) => (b.onclick = () => {
@@ -155,6 +157,20 @@ async function tai() {
   $("sua-hs") && ($("sua-hs").onclick = moSuaHoSo);
   $("doi-tk").onclick = () => moHoTro("Tôi muốn đổi tài khoản nhận tiền sang: ngân hàng …, số tài khoản …, chủ tài khoản …");
   $("dang-xuat").onclick = dangXuat;
+  // Chỉ bản thử: người thử xong trả hộ lại cho người sau; không còn ai thử thì dữ liệu về ban đầu
+  fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c?.test_tools) $("thu-xong").hidden = false; }).catch(() => {});
+  let chac = false;
+  $("thu-xong").onclick = async () => {
+    const b = $("thu-xong"), bao = $("thu-xong-bao");
+    if (!chac) { chac = true; b.textContent = "Bấm lần nữa để xóa dữ liệu thử của hộ này"; bao.textContent = "Đơn, lời chào, tin nhắn bác đã thử sẽ về như ban đầu."; return; }
+    b.disabled = true; bao.textContent = "Đang làm lại…";
+    const r = await fetch("/v1/test/thu-xong", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: "{}" }).then((x) => x.json()).catch(() => null);
+    const kq = r?.data ?? r;
+    if (!kq) { b.disabled = false; bao.textContent = "Chưa làm lại được, bác thử lại nhé."; return; }
+    try { sessionStorage.removeItem("agv-phien"); sessionStorage.removeItem("agv-phien-thu"); } catch {}
+    bao.textContent = kq.lam_moi ? "Đã làm lại từ đầu. Đang về màn chọn hộ…" : `Đã trả hộ cho người sau. Còn ${kq.con_nguoi_thu} người khác đang thử nên dữ liệu chưa xóa, sẽ làm mới khi họ thử xong.`;
+    setTimeout(() => (location.href = "./dang-nhap.html"), kq.lam_moi ? 1200 : 3500);
+  };
 }
 
 let traVe = null;

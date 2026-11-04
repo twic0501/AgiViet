@@ -618,6 +618,17 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     return { token: r.token, user: hoSo(r.nguoi_dung), canh_bao: 'Chỉ môi trường thử: đóng vai bên kia.' };
   });
   app.get('/v1/test/sms/:phone', async (req) => { thu(); return ht.phien.hopThuSms.get(P(req).phone) ?? []; });
+  // Người thử bấm "Thử xong": nhả hộ của mình; không còn ai khác đang thử thì đưa dữ liệu thử về ban đầu
+  // (không xóa ngang việc người khác đang làm dở).
+  app.post('/v1/test/thu-xong', async (req) => {
+    thu(); const nd = await bo.xacThuc(req);
+    const m = await import('../demo/doi-tac-ao.ts');
+    m.DANG_DUNG.delete(nd.thanhVien.orgCode);
+    const con = m.dangDung();
+    if (con.length) return { lam_moi: false, con_nguoi_thu: con.length };
+    await ht.datLai(); m.DANG_DUNG.clear();
+    return { lam_moi: true };
+  });
   // Hộ/tổ chức đang có người thử (30 phút gần nhất) → màn chọn vai ghi chú để người khác chọn hộ khác.
   app.get('/v1/test/dang-dung', async () => { thu(); return (await import('../demo/doi-tac-ao.ts')).dangDung(); });
   app.get('/v1/test/accounts', async () => { thu(); return ht.db.doc((t) => t.q(`SELECT u.display_name, replace(convert_from(c.phone_enc,'UTF8'),'TEST-PLAINTEXT:','') phone, o.code org_code, o.display_name org_name, o.kind org_kind, o.can_sell, o.can_buy,
