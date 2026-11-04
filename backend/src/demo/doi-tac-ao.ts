@@ -231,7 +231,10 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         }
       }
       const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
-        tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa })) || traLoiTheoBuoc(tin, phiaTin, buocTin);
+        tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa })) ||
+        // Tin trong hợp đồng mà chatbot lỗi: nói đúng trạng thái hợp đồng, không dò từ khóa (dễ lạc đề, vd "bao giờ" → "xe tới")
+        (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
+          : traLoiTheoBuoc(tin, phiaTin, buocTin));
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
     }
     // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).
