@@ -104,7 +104,7 @@ const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval
   active: 'đã có hiệu lực, cọc ngân hàng đang giữ, chờ tới ngày giao', in_delivery: 'đang giao nhận', completed: 'đã hoàn tất', cancelled: 'đã hủy', disputed: 'đang có tranh chấp' };
 
 /** Chatbot đối tác (dịch vụ AI /doi-tac/tra-loi, gemma4 trên Ollama → NIM); null nếu không gọi được hoặc câu bị bỏ (bịa số). */
-async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null | undefined, body: Record<string, string>): Promise<string | null> {
+async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null | undefined, body: Record<string, string | boolean>): Promise<string | null> {
   if (!aiUrl) return null;
   try {
     const r = await fetch(`${aiUrl}/doi-tac/tra-loi`, { method: 'POST', headers: { 'content-type': 'application/json', ...(aiKey ? { 'x-ai-key': aiKey } : {}) }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) });
@@ -215,7 +215,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       DA_TRA_LOI.add(s.id);
       const phiaTin: 'buyer' | 'seller' = tc.startsWith('TC-M') ? 'buyer' : 'seller', tin = String(s.body ?? '');
       // Tình trạng thật của lời chào / hợp đồng để chatbot trả lời đúng bước (không bịa giá, ngày)
-      let tinhTrang = '', buocTin = '';
+      let tinhTrang = '', buocTin = '', dangMacCa = false;
       if (s.order_id) {
         const d = await get(`/v1/orders/${s.order_id}`, t);
         if (d) { tinhTrang = `Hợp đồng ${d.code ?? ''}: ${TEN_TT[d.status] ?? d.status}.`; buocTin = d.status === 'awaiting_signatures' ? 'cho_ky' : ['draft', 'pending_approval'].includes(d.status) ? 'soan_hd' : ''; }
@@ -227,11 +227,11 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           tinhTrang = of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
             : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'tới lượt bạn trả lời (bạn sẽ trả lời bằng nút trong app)'}.`
             : `Lời chào ${of.code ?? ''}: ${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã đóng'}.`;
-          if (of.status === 'accepted') buocTin = 'da_dong_y';
+          if (of.status === 'accepted') buocTin = 'da_dong_y'; else if (of.status === 'sent') dangMacCa = true;
         }
       }
       const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
-        tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin })) || traLoiTheoBuoc(tin, phiaTin, buocTin);
+        tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa })) || traLoiTheoBuoc(tin, phiaTin, buocTin);
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
     }
     // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).
