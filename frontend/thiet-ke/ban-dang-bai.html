@@ -568,32 +568,33 @@ function traLoiNhanh(k, v) {
 const ht = { bat: false, lanLoi: 0, ghi: null };
 function datThe(the, chu) { $("mic").dataset.the = the; $("mic-chu").textContent = chu; $("mic").classList.toggle("dang", the === "nghe"); }
 function noiRa(cau) {
+  // Giọng chung của app (máy chủ, lỗi thì giọng máy); hẹn giờ phòng máy không báo đọc xong
   return new Promise((xong) => {
-    if (!("speechSynthesis" in window)) return xong();
-    try {
-      speechSynthesis.cancel();
-      const u = window.giongViet ? window.giongViet.taoGiong(cau) : Object.assign(new SpeechSynthesisUtterance(cau), { lang: "vi-VN" });
-      const hen = setTimeout(xong, 1500 + cau.length * 90);   // có máy không báo đọc xong
-      u.onend = u.onerror = () => { clearTimeout(hen); xong(); };
-      speechSynthesis.speak(u);
-    } catch { xong(); }
+    const hen = setTimeout(xong, 9000 + cau.length * 120);
+    const doc = window.giongViet?.docTo; if (!doc) { clearTimeout(hen); return xong(); }
+    doc(cau).then(() => { clearTimeout(hen); xong(); }, () => { clearTimeout(hen); xong(); });
   });
 }
 const cauHienTai = () => CAU[noi.i]?.doc?.() || $("cau-hoi").textContent;
 async function hoiVaNghe(cau) { if (!ht.bat) return; datThe("noi", "App đang nói…"); await noiRa(cau); if (ht.bat) nghe(); }
 function nghe() {
   if (!ht.bat || ht.ghi) return;
+  // Máy không có nhận giọng nói (vd Chromium trên Linux): dừng, không để kẹt "App đang nói…"
+  if (!SR) return tatHoiThoai("Máy này chưa nghe được giọng nói. Bác gõ câu trả lời bên dưới.");
   const r = new SR(); r.lang = "vi-VN"; r.interimResults = true; ht.ghi = r; let chu = "";
   datThe("nghe", "Đang nghe bác nói… (bấm để tạm dừng)");
   r.onresult = (e) => { chu = [...e.results].map((x) => x[0].transcript).join(" "); $("nghe-duoc").textContent = `“${chu}”`; $("nghe-duoc").hidden = false; };
-  r.onerror = (e) => { if (/not-allowed/.test(e.error)) tatHoiThoai("Máy chưa cho dùng micro. Bác gõ câu trả lời bên dưới."); };
+  r.onerror = (e) => {
+    if (/not-allowed|service-not-allowed/.test(e.error)) tatHoiThoai("Máy chưa cho dùng micro. Bác gõ câu trả lời bên dưới.");
+    else if (/network|audio-capture|language-not-supported/.test(e.error)) tatHoiThoai("Chưa nghe được lúc này. Bác gõ câu trả lời bên dưới.");
+  };
   r.onend = () => {
     ht.ghi = null; if (!ht.bat) return;
     if (chu.trim()) { ht.lanLoi = 0; nhanCau(chu.trim()); }
     else if (++ht.lanLoi <= 2) hoiVaNghe("Em chưa nghe rõ. Bác nói lại giúp em.");
     else tatHoiThoai("Đã tạm dừng. Bấm để nói tiếp.");
   };
-  try { r.start(); } catch { ht.ghi = null; }
+  try { r.start(); } catch { ht.ghi = null; tatHoiThoai("Chưa nghe được lúc này. Bác gõ câu trả lời bên dưới."); }
 }
 const DONG_Y = /^(dạ |ừ |vâng )?(đúng|phải|đồng ý|ừ|ừa|ờ|ok|oke|được|vâng|rồi|chuẩn)/i, SAI = /^(dạ )?(sai|không|chưa đúng|nói lại|sửa)/i;
 // Câu đồng ý phải ngắn và không có phủ định/sửa ("dạ không, giá đó thấp quá", "đúng loại nhưng lượng sai" KHÔNG phải đồng ý)

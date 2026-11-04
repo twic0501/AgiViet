@@ -156,6 +156,31 @@ def assistant_ask(req: HoiTroLyRequest, request: Request):
     return {'tra_loi': k.van_ban, 'loai': k.loai, 'nguon': k.nguon}
 
 
+class DocToRequest(BaseModel):
+    van_ban: str = Field(min_length=1, max_length=400)
+
+_TTS_NHO: 'OrderedDict[str, bytes]' = None
+
+@app.post('/tts')
+def tts(req: DocToRequest, request: Request):
+    """Đọc thành tiếng (WAV). Nhớ 300 câu gần nhất: câu hướng dẫn lặp lại không gọi lại mô hình."""
+    global _TTS_NHO
+    from collections import OrderedDict
+    from fastapi import Response
+    from agiviet_ai.nha_cung_cap import NhaCungCap, LoiNhaCungCap
+    if _TTS_NHO is None: _TTS_NHO = OrderedDict()
+    cau = ' '.join(req.van_ban.split())
+    wav = _TTS_NHO.get(cau)
+    if wav is None:
+        try: wav = NhaCungCap().doc_thanh_tieng(cau)
+        except LoiNhaCungCap as e: raise HTTPException(503, f'CHUA_DOC_DUOC: {e}')
+        _TTS_NHO[cau] = wav
+        while len(_TTS_NHO) > 300: _TTS_NHO.popitem(last=False)
+    else: _TTS_NHO.move_to_end(cau)
+    request.state.tom_tat = {'so_chu': len(cau), 'byte': len(wav)}
+    return Response(content=wav, media_type='audio/wav', headers={'cache-control': 'private, max-age=86400'})
+
+
 @app.post('/messages/scan')
 def messages_scan(req:QuetTinRequest,request:Request):
     r=quet(req.noi_dung)

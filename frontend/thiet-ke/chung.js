@@ -104,15 +104,40 @@ export function taoGiong(cau, toc) {
 }
 // Máy không có bộ đọc (vd Chrome trên Linux chưa cài speech-dispatcher) thì nói rõ thay vì im lặng
 const baoKhongGiong = () => baoNhanh("Máy này chưa có giọng đọc nên chưa phát tiếng được. Trên điện thoại bác sẽ nghe bình thường.");
-export function docTo(doan) {
+// Giọng máy chủ (Gemini TTS, giọng ấm miền Nam) đều trên mọi máy; lỗi/chưa đăng nhập thì dùng giọng của máy.
+let amDangPhat = null;
+const nhoAm = new Map();
+try { const goc = speechSynthesis.cancel.bind(speechSynthesis);
+  speechSynthesis.cancel = () => { const a = amDangPhat; amDangPhat = null; if (a) { a.pause(); a.onended?.(); } goc(); }; } catch {}
+async function tokenDoc() {
+  try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
+  return new URLSearchParams(location.search).has("thu") ? phien().catch(() => null) : null;
+}
+async function docMayChu(doan, toc) {
+  const tk = await tokenDoc(); if (!tk || doan.length > 400) return false;
+  let url = nhoAm.get(doan);
+  if (!url) {
+    const r = await fetch("/v1/tts", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: JSON.stringify({ van_ban: doan }) }).catch(() => null);
+    if (!r?.ok) return false;
+    url = URL.createObjectURL(await r.blob()); nhoAm.set(doan, url);
+  }
   return new Promise((xong) => {
+    const a = new Audio(url); a.playbackRate = Math.min(1.6, Math.max(0.6, (toc || tocDoDoc()) / 0.9)); amDangPhat = a;
+    a.onended = a.onerror = () => { a.onended = a.onerror = null; if (amDangPhat === a) amDangPhat = null; xong(true); };
+    a.play().catch(() => { if (amDangPhat === a) amDangPhat = null; xong(false); });
+  });
+}
+export function docTo(doan, toc) {
+  return new Promise(async (xong) => {
     try {
+      try { speechSynthesis.cancel(); } catch {}
+      const chu = String(doan || "").replace(/\s+/g, " ").trim();
+      if (!chu) return xong();
+      if (await docMayChu(chu, toc).catch(() => false)) return xong();
       if (!("speechSynthesis" in window)) { baoKhongGiong(); return xong(); }
       if (!speechSynthesis.getVoices().length) setTimeout(() => { if (!speechSynthesis.getVoices().length) baoKhongGiong(); }, 400);
-      speechSynthesis.cancel();
-      const cau = String(doan || "").split(/(?<=[.!?…:;])\s+/).map((c) => c.trim()).filter(Boolean);
-      if (!cau.length) return xong();
-      cau.forEach((c, i) => { const u = taoGiong(c); if (i === cau.length - 1) u.onend = u.onerror = () => xong(); speechSynthesis.speak(u); });
+      const cau = chu.split(/(?<=[.!?…:;])\s+/).map((c) => c.trim()).filter(Boolean);
+      cau.forEach((c, i) => { const u = taoGiong(c, toc); if (i === cau.length - 1) u.onend = u.onerror = () => xong(); speechSynthesis.speak(u); });
     } catch { xong(); }
   });
 }

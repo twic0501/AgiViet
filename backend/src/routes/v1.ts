@@ -502,6 +502,26 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Trợ lý chưa trả lời được lúc này.', fix: 'Bác thử lại sau ít phút hoặc nhắn nhân viên AgiViet.' }] });
     }
   });
+  // Đọc thành tiếng bằng giọng máy chủ (Gemini TTS qua dịch vụ AI): giọng đều trên mọi máy. Chỉ người đã đăng nhập (giữ hạn mức).
+  const nhoTts = new Map<string, Buffer>();
+  app.post('/v1/tts', async (req, reply) => {
+    await bo.xacThuc(req);
+    const cau = z.object({ van_ban: z.string().min(1).max(400) }).parse(req.body).van_ban.replace(/\s+/g, ' ').trim();
+    if (!ht.cfg.aiUrl) return reply.status(503).send({ errors: [{ code: 'AI_CHUA_BAT', message: 'Chưa đọc được lúc này.', fix: 'App dùng giọng đọc của máy.' }] });
+    let wav = nhoTts.get(cau);
+    if (!wav) {
+      try {
+        const r = await fetch(`${ht.cfg.aiUrl}/tts`, { method: 'POST', signal: AbortSignal.timeout(25000),
+          headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify({ van_ban: cau }) });
+        if (!r.ok) throw new Error(String(r.status));
+        wav = Buffer.from(await r.arrayBuffer());
+      } catch {
+        return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Chưa đọc được lúc này.', fix: 'App dùng giọng đọc của máy.' }] });
+      }
+      nhoTts.set(cau, wav); if (nhoTts.size > 300) nhoTts.delete(nhoTts.keys().next().value!);
+    }
+    return reply.header('content-type', 'audio/wav').header('cache-control', 'private, max-age=86400').send(wav);
+  });
   // Đăng bài bằng giọng nói: chữ đã nghe (trình duyệt tự chuyển giọng) → AI bóc trường; chỉ lưu nháp, không ghi gì vào DB.
   app.post('/v1/voice/extract', async (req, reply) => {
     await bo.xacThuc(req);
