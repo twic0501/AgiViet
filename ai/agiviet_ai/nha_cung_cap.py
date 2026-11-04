@@ -11,6 +11,7 @@ from __future__ import annotations
 import base64
 
 import os
+import re
 import threading
 import time
 from collections import deque
@@ -84,31 +85,43 @@ class NhaCungCap:
             raise LoiNhaCungCap(f"Gemini trả sai dạng: {type(e).__name__}") from e
 
     def doc_thanh_tieng(self, van_ban: str, timeout_s: float = 20.0) -> bytes:
-        """Đọc câu tiếng Việt thành WAV bằng Gemini TTS (giọng Sulafat ấm; tốc độ do app chỉnh). Lỗi → LoiNhaCungCap."""
+        """Đọc câu tiếng Việt thành WAV bằng Gemini TTS (giọng Sulafat ấm; tốc độ do app chỉnh). Lỗi → LoiNhaCungCap.
+        Gói miễn phí chỉ ~10 lượt/ngày mỗi mô hình → thử lần lượt nhiều mô hình (mỗi cái hạn mức riêng)."""
         k = self.khoa.get("GEMINI_API_KEY")
         if not k:
             raise LoiNhaCungCap("thiếu khóa Gemini")
-        model = self.khoa.get("AGV_TTS_MODEL") or "gemini-3.8-flash-lite-tts"
+        cac_mo_hinh = [m for m in (self.khoa.get("AGV_TTS_MODEL") or
+                       "gemini-3.8-flash-lite-tts,gemini-3.8-flash-tts,gemini-3.1-flash-tts-preview,gemini-2.5-flash-preview-tts").split(",") if m.strip()]
         giong = self.khoa.get("AGV_TTS_GIONG") or "Sulafat"
-        r = self.client.post(GEMINI_URL.format(m=model), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
-            "contents": [{"parts": [{"text": van_ban}]}],  # chỉ gửi đúng câu: lời dặn giọng bị mô hình đọc thành tiếng
-            "generationConfig": {"responseModalities": ["AUDIO"],
-                                 "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": giong}}}},
-        })
-        if r.status_code != 200:
-            raise LoiNhaCungCap(f"Gemini TTS HTTP {r.status_code}")
-        try:
-            du_lieu = base64.b64decode(r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
-        except (KeyError, IndexError, ValueError, TypeError) as e:
-            raise LoiNhaCungCap(f"Gemini TTS trả sai dạng: {type(e).__name__}") from e
-        if du_lieu[:4] == b"RIFF":
-            return du_lieu
-        # PCM 16-bit 24 kHz một kênh → bọc đầu WAV
-        import io, wave
-        b = io.BytesIO()
-        with wave.open(b, "wb") as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(du_lieu)
-        return b.getvalue()
+        # chỉ gửi đúng câu (lời dặn giọng bị mô hình đọc thành tiếng); tên riêng viết theo âm Việt để đọc đúng
+        chu = re.sub(r"(?i)agi ?vi[eệ]t", "AgiViệt", van_ban)
+        loi = []
+        for model in cac_mo_hinh:
+            bac = f"tts:{model.strip()}"
+            if self._dang_nghi(bac):
+                loi.append(f"{bac} đang nghỉ"); continue
+            try:
+                r = self.client.post(GEMINI_URL.format(m=model.strip()), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
+                    "contents": [{"parts": [{"text": chu}]}],
+                    "generationConfig": {"responseModalities": ["AUDIO"],
+                                         "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": giong}}}},
+                })
+                if r.status_code != 200:
+                    raise LoiNhaCungCap(f"HTTP {r.status_code}")
+                du_lieu = base64.b64decode(r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
+            except (LoiNhaCungCap, httpx.HTTPError, KeyError, IndexError, ValueError, TypeError) as e:
+                self._ghi(bac, True); loi.append(f"{bac}: {type(e).__name__}: {e}"); continue
+            self._ghi(bac, False)
+            if du_lieu[:4] == b"RIFF":
+                return du_lieu
+            # PCM 16-bit 24 kHz một kênh → bọc đầu WAV
+            import io, wave
+            b = io.BytesIO()
+            with wave.open(b, "wb") as w:
+                w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(du_lieu)
+            return b.getvalue()
+        print("nha_cung_cap tts loi:", loi, flush=True)
+        raise LoiNhaCungCap("; ".join(loi) or "không có mô hình đọc")
 
     def doc_anh(self, mime: str, du_lieu_b64: str, timeout_s: float = 15.0) -> dict:
         """Đọc ảnh bằng Gemini (vision): trả {chu: mọi chữ/số thấy trong ảnh, qr: bool, app_nhan_tin: bool}.

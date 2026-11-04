@@ -113,10 +113,14 @@ async function tokenDoc() {
   try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   return new URLSearchParams(location.search).has("thu") ? phien().catch(() => null) : null;
 }
+// Câu cố định (hướng dẫn…) đã tạo sẵn thành MP3 ở /am-thanh/ (gói miễn phí chỉ ~10 lượt đọc/ngày mỗi mô hình)
+let dsAmSan = null;
+const amSan = () => (dsAmSan ??= fetch("/am-thanh/ds.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
 async function docMayChu(doan, toc) {
-  const tk = await tokenDoc(); if (!tk || doan.length > 400) return false;
-  let url = nhoAm.get(doan);
+  const san = (await amSan())[doan];
+  let url = san ? "/am-thanh/" + san : nhoAm.get(doan);
   if (!url) {
+    const tk = await tokenDoc(); if (!tk || doan.length > 400) return false;
     const r = await fetch("/v1/tts", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: JSON.stringify({ van_ban: doan }) }).catch(() => null);
     if (!r?.ok) return false;
     url = URL.createObjectURL(await r.blob()); nhoAm.set(doan, url);
