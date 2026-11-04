@@ -194,7 +194,11 @@ export function veTab(dangMo, soTin = 0) {
   giuThamSo(nav);
   // Cuộn xuống: thanh trượt xuống ẩn; cuộn lên, chạm màn hình hoặc gần đầu trang: trượt lên hiện lại
   let truoc = scrollY, cho = false;
-  const danhDau = () => document.documentElement.classList.toggle("da-cuon", scrollY > 4); // header liền khối xanh khi ở đầu trang
+  // header liền khối xanh khi ở đầu trang; --tien (0→1) cho nội dung khối xanh mờ dần trước khi trượt dưới header
+  let choTien = false;
+  const danhDau = () => { const h = document.documentElement; h.classList.toggle("da-cuon", scrollY > 4);
+    if (choTien) return; choTien = true;
+    requestAnimationFrame(() => { h.style.setProperty("--tien", Math.min(1, Math.max(0, scrollY / 130)).toFixed(3)); choTien = false; }); };
   danhDau(); addEventListener("scroll", danhDau, { passive: true });
   addEventListener("scroll", () => {
     if (cho) return; cho = true;

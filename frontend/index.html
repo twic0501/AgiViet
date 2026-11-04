@@ -448,7 +448,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
     <div>
       <div class="gia-dau"><h2 id="g-tieu" class="len">Người bán không trả đồng nào</h2><p class="len" style="--tre:80ms">Bên mua chọn gói theo cách mua. Phí tính trên giá trị hợp đồng, bên mua nộp cùng cọc, không trừ vào tiền của người bán.</p></div>
       <div class="ten-goi" role="tablist" aria-label="Các gói">
-        <button role="tab" type="button" id="g-ban" aria-controls="g-san" aria-selected="false" data-goi="ban">Người bán</button>
+        <button role="tab" type="button" id="g-ban" aria-controls="g-san" aria-selected="false" data-goi="ban">Người bán · 0 đ</button>
         <button role="tab" type="button" id="g-free" aria-controls="g-san" aria-selected="false" data-goi="free">Miễn phí</button>
         <button role="tab" type="button" id="g-thu" aria-controls="g-san" aria-selected="true" data-goi="thu">Thu mua</button>
         <button role="tab" type="button" id="g-dn" aria-controls="g-san" aria-selected="false" data-goi="dn">Doanh nghiệp</button>
@@ -459,10 +459,10 @@ b.so, .giu b, .ket b { white-space: nowrap; }
       <div class="doi" aria-live="polite">
         <div class="gia-so so" id="g-so"><span id="g-tien">1,5 triệu</span> <small id="g-ky">đồng / tháng</small></div>
         <p class="ai-dung">Dành cho <span id="g-ai">vựa, nhà máy mua đều</span>.</p>
-        <ul id="g-ds"><li>Phí 0,3% đơn đầu với mỗi người bán</li><li>0% từ đơn thứ hai với mối quen</li><li>5 tài khoản, phân quyền ký và duyệt chi</li><li>Kế hoạch mua theo tuần, so sánh nguồn</li></ul>
+        <ul id="g-ds"><li>Bên mua trả phí 0,3% đơn đầu với mỗi nguồn hàng mới</li><li>0% từ đơn thứ hai với mối quen</li><li>5 tài khoản, phân quyền ký và duyệt chi</li><li>Kế hoạch mua theo tuần, so sánh nguồn</li></ul>
         <a class="nut nut-la" id="g-nut" href="/thiet-ke/dang-nhap.html?ben=mua">Dùng gói Thu mua</a>
       </div>
-      <p class="ghi-phi">Đơn có thu phí áp dụng mức sàn 20.000 đ và mức trần theo gói; đơn miễn phí không áp dụng. Cọc 30% do ngân hàng đối tác giữ, không phải phí.</p>
+      <p class="ghi-phi">Người bán không trả phí nào: không phí đăng hàng, không phí giao dịch, không bị trừ vào tiền hàng. Đơn có thu phí áp dụng mức sàn 20.000 đ và mức trần theo gói; đơn miễn phí không áp dụng. Cọc 30% do ngân hàng đối tác giữ, không phải phí.</p>
     </div>
   </div>
 </section>
@@ -549,9 +549,9 @@ $("nut-nghe").addEventListener("click", () => {
 // Bảng giá: tên gói là nút, nội dung đổi tại chỗ
 const GOI = {
   ban: { ai: "nông dân, chủ ao, hợp tác xã", so: "0 đ", ky: "mãi mãi", ds: ["Đăng hàng bằng giọng nói, ảnh chụp", "So tiền về tay giữa các khách", "Cọc do ngân hàng giữ, xác nhận tiền từng khoản", "Hợp đồng khung giao theo tuần cho hợp tác xã"], nut: "Vào app bán", href: "/thiet-ke/dang-nhap.html" },
-  free: { ai: "bên mua mới thử", so: "0 đ", ky: "đồng / tháng", ds: ["Phí 1% đơn đầu, 0,5% từ đơn thứ hai", "Phí tối đa 2 triệu mỗi đơn", "1 tài khoản", "Lọc nguồn, chào giá, đơn, công nợ cơ bản"], nut: "Dùng gói Miễn phí", href: "/thiet-ke/dang-nhap.html?ben=mua" },
-  thu: { ai: "vựa, nhà máy mua đều", so: "1,5 triệu", ky: "đồng / tháng", ds: ["Phí 0,3% đơn đầu với mỗi người bán", "0% từ đơn thứ hai với mối quen", "5 tài khoản, phân quyền ký và duyệt chi", "Kế hoạch mua theo tuần, so sánh nguồn"], nut: "Dùng gói Thu mua", href: "/thiet-ke/dang-nhap.html?ben=mua" },
-  dn: { ai: "nhà máy, công ty xuất nhập khẩu", so: "4 triệu", ky: "đồng / tháng", ds: ["Phí 0,2% mọi đơn, tối đa 3 triệu mỗi đơn", "10 tài khoản, nhiều điểm nhận hàng", "Hợp đồng khung, gom nhiều vườn một đơn", "Hồ sơ đối soát cho kế toán"], nut: "Dùng gói Doanh nghiệp", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+  free: { ai: "bên mua mới thử", so: "0 đ", ky: "đồng / tháng", ds: ["Bên mua trả phí 1% đơn đầu, 0,5% từ đơn thứ hai", "Phí tối đa 2 triệu mỗi đơn", "1 tài khoản", "Lọc nguồn, chào giá, đơn, công nợ cơ bản"], nut: "Dùng gói Miễn phí", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+  thu: { ai: "vựa, nhà máy mua đều", so: "1,5 triệu", ky: "đồng / tháng", ds: ["Bên mua trả phí 0,3% đơn đầu với mỗi nguồn hàng mới", "0% từ đơn thứ hai với mối quen", "5 tài khoản, phân quyền ký và duyệt chi", "Kế hoạch mua theo tuần, so sánh nguồn"], nut: "Dùng gói Thu mua", href: "/thiet-ke/dang-nhap.html?ben=mua" },
+  dn: { ai: "nhà máy, công ty xuất nhập khẩu", so: "4 triệu", ky: "đồng / tháng", ds: ["Bên mua trả phí 0,2% mọi đơn, tối đa 3 triệu mỗi đơn", "10 tài khoản, nhiều điểm nhận hàng", "Hợp đồng khung, gom nhiều vườn một đơn", "Hồ sơ đối soát cho kế toán"], nut: "Dùng gói Doanh nghiệp", href: "/thiet-ke/dang-nhap.html?ben=mua" },
   bep: { ai: "nhà hàng, bếp ăn", so: "490 nghìn", ky: "đồng / tháng", ds: ["Không phí giao dịch", "2 tài khoản", "Đặt giao đều mỗi tuần theo thực đơn", "Gom nhiều mặt hàng trong một lần nhận"], nut: "Dùng gói Bếp", href: "/thiet-ke/dang-nhap.html?ben=mua" },
 };
 const tabs = [...document.querySelectorAll(".ten-goi button")], doi = document.querySelector(".san-khau .doi");
