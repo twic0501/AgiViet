@@ -256,8 +256,10 @@ async function veKeHoach() {
   if (!mo.length) { $("#ke-hoach").innerHTML = `<p class="phu">Chưa có nhu cầu đang mở. Gửi nhu cầu để người bán báo giá.</p>`; return; }
   const ds = await Promise.all(mo.map(async (n) => { const [ct, so] = await Promise.all([thu(api(`/v1/demands/${n.id}`)), thu(api(`/v1/demands/${n.id}/offer-comparison`))]); return { n, ct, so }; }));
   const ten = (ma) => DL.sp.find((s) => s.code === ma)?.name_vi || ma;
-  $("#ke-hoach").innerHTML = ds.map(({ n, ct, so }) => { const can = (ct?.lines || []).reduce((a, l) => a + Number(l.qty_g || 0), 0) / 1000; const bg = (so?.items ?? so ?? []).length || 0;
-    return `<div class="viec" style="cursor:default"><i class="${bg ? "la" : ""}"></i><div><b>${esc(ten(n.product_code))} · cần ${vnd(can)} kg</b><p class="phu">${ct?.needed_from ? `Từ ${ngay(ct.needed_from)} tới ${ngay(ct.needed_to)} · ` : ""}${bg ? `${bg} báo giá` : "Chưa có báo giá"}</p></div><span class="chip">${esc(n.code)}</span></div>`; }).join("");
+  $("#ke-hoach").innerHTML = ds.map(({ n, ct, so }) => { // ct/so = null là tải lỗi: nói rõ "chưa tải được", không biến lỗi thành 0 kg / chưa có báo giá
+    const can = (ct?.lines || []).reduce((a, l) => a + Number(l.qty_g || 0), 0) / 1000; const bg = (so?.items ?? so ?? []).length || 0;
+    const chuCan = ct ? `cần ${vnd(can)} kg` : "chưa tải được lượng cần", chuBg = !so ? "chưa tải được báo giá" : bg ? `${bg} báo giá` : "Chưa có báo giá";
+    return `<div class="viec" style="cursor:default"><i class="${bg ? "la" : ""}"></i><div><b>${esc(ten(n.product_code))} · ${chuCan}</b><p class="phu">${ct?.needed_from ? `Từ ${ngay(ct.needed_from)} tới ${ngay(ct.needed_to)} · ` : ""}${chuBg}${!ct || !so ? ` <button class="nut" type="button" onclick="location.reload()">Tải lại</button>` : ""}</p></div><span class="chip">${esc(n.code)}</span></div>`; }).join("");
 }
 document.addEventListener("click", (e) => { const b = e.target.closest("[data-tim-ban]"); if (!b) return; tu = b.dataset.timBan; $("#tim").value = tu; di("nguon-hang"); veNguon(); });
 
