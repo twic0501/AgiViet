@@ -30,10 +30,12 @@
   const anToan = (x) => { try { const l = new URL(x, location.origin);
     return l.origin === location.origin && /^\/thiet-ke\/(ban-[\w-]+|dang-nhap|mua-app)\.html$/.test(l.pathname) ? l.pathname + l.search + l.hash : null; } catch { return null; } };
   f.src = anToan(u) || "/thiet-ke/dang-nhap.html";
-  f.addEventListener("load", () => {
-    try { const l = f.contentWindow.location; document.title = f.contentDocument.title;
-      history.replaceState(null, "", "/thiet-ke/khung-dt.html?u=" + encodeURIComponent(l.pathname + l.search + l.hash)); } catch {}
-  });
+  // Đồng bộ địa chỉ + tiêu đề: cả khi chuyển trang (load) lẫn khi app đổi tab bằng history.replaceState/hash (không có load)
+  let truoc = "";
+  const dongBo = () => { try { const l = f.contentWindow.location, d = l.pathname + l.search + l.hash;
+    if (d === truoc || !anToan(d)) return; truoc = d; document.title = f.contentDocument.title;
+    history.replaceState(null, "", "/thiet-ke/khung-dt.html?u=" + encodeURIComponent(d)); } catch {} };
+  f.addEventListener("load", dongBo); setInterval(dongBo, 500);
 </script>
 </body>
 </html>
