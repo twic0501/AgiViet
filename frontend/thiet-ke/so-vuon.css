@@ -297,7 +297,7 @@ a.nut { text-decoration: none; text-align: center; }
 
 /* Bề mặt trình duyệt theo hệ màu (craft floor): bôi chọn chữ, viền focus bàn phím */
 ::selection { background: var(--vang-lua-nhat); color: var(--muc); }
-:focus-visible { outline: 3px solid var(--vang-lua); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 3px solid #1f4d3a; outline-offset: 2px; border-radius: 6px; } /* xanh đậm trên nền giấy (vàng chỉ 2:1); header xanh có luật riêng màu sáng */
 input:focus-visible, textarea:focus-visible, select:focus-visible { outline-offset: 0; }
 
 /* Thanh chặng: nhãn không gãy dòng ở 360px */
@@ -353,3 +353,5 @@ header.dau.dau-xanh { transition: box-shadow 200ms ease, border-radius 200ms eas
 html.da-cuon header.dau.dau-xanh { box-shadow: inset 0 -2px 0 rgba(217, 165, 33, 0.55), 0 6px 14px -6px rgba(17, 41, 31, 0.45); }
 .tb-xanh .chu, .tb-xanh #trau { opacity: calc(1 - var(--tien, 0) * 1.25); transform: translateY(calc(var(--tien, 0) * 34px)); will-change: opacity, transform; }
 @media (prefers-reduced-motion: reduce) { .tb-xanh .chu, .tb-xanh #trau { transform: none; } }
+/* Trên nền xanh (header, khối việc cần làm): viền tập trung vàng sáng để thấy rõ */
+.nen-xanh :focus-visible { outline-color: #f2c14e; }
