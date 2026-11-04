@@ -450,6 +450,17 @@ function dungTroLy() {
     nghe.onend = () => { mic.setAttribute("aria-pressed", "false"); mic.classList.remove("dang-nghe"); nghe = null; if (cuoi) { bao(""); $t("#tl-o").value = ""; gui(cuoi, true); } };
     try { nghe.start(); } catch { bao("Chưa bật được micro, bác thử lại."); nghe = null; mic.classList.remove("dang-nghe"); }
   };
+  // Đóng hộp: hủy nghe, KHÔNG gửi câu nói dở
+  tam.__dungNghe = () => { if (!nghe) return; const n = nghe; nghe = null; n.onresult = null;
+    n.onend = () => { mic.setAttribute("aria-pressed", "false"); mic.classList.remove("dang-nghe"); bao(""); }; try { n.abort(); } catch {} };
+  // Giữ Tab trong hộp khi đang mở
+  tam.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const ds = [...tam.querySelectorAll('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])')].filter((x) => !x.disabled && !x.hidden && x.offsetParent !== null);
+    if (!ds.length) return; const dau = ds[0], cuoi = ds[ds.length - 1];
+    if (e.shiftKey && document.activeElement === dau) { e.preventDefault(); cuoi.focus(); }
+    else if (!e.shiftKey && document.activeElement === cuoi) { e.preventDefault(); dau.focus(); }
+  });
   $t("#tl-goi-y").querySelectorAll("button").forEach((b) => (b.onclick = () => gui(b.textContent)));
   $t("#tl-go").onsubmit = (e) => { e.preventDefault(); const o = $t("#tl-o"); const v = o.value; o.value = ""; gui(v); };
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dongTroLy));
@@ -460,12 +471,17 @@ export function moTroLy(nut) {
   troLy ||= dungTroLy(); nutMoTroLy = nut || null;
   const tam = troLy.querySelector(".tl-tam");
   tam.inert = false; tam.classList.add("mo"); troLy.querySelector(".tl-che").classList.add("mo");
+  // Khóa nền (aria-modal thật): phần ngoài hộp không bấm/Tab tới được
+  nenKhoa = [...document.body.children].filter((c) => c !== troLy && !c.inert); nenKhoa.forEach((c) => (c.inert = true));
   setTimeout(() => troLy.querySelector("#tl-o").focus(), 300);
-  if (!troLy.dataset.daChao) { troLy.dataset.daChao = "1"; setTimeout(() => docTo(LOI_CHAO_TL), 350); }   // nhân viên trâu nói trước: tiếng + chữ
+  if (!troLy.dataset.daChao) { troLy.dataset.daChao = "1"; henChao = setTimeout(() => docTo(LOI_CHAO_TL), 350); }   // nhân viên trâu nói trước: tiếng + chữ
 }
+let nenKhoa = [], henChao = null;
 function dongTroLy() {
+  clearTimeout(henChao); henChao = null;
   try { speechSynthesis.cancel(); } catch {}
   const tam = troLy.querySelector(".tl-tam");
+  troLy.__dungNghe?.(); nenKhoa.forEach((c) => (c.inert = false)); nenKhoa = [];  // __dungNghe gắn trên khung bọc (troLy), không phải .tl-tam
   tam.classList.remove("mo"); troLy.querySelector(".tl-che").classList.remove("mo"); tam.inert = true; nutMoTroLy?.focus();
 }
 
