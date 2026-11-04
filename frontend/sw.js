@@ -2,8 +2,8 @@
 // KHÔNG lưu phiên đăng nhập, API (/v1, /health), ảnh chứng từ hay phản hồi giao dịch.
 // Vỏ app (HTML/JS/CSS): ưu tiên mạng, mất mạng thì dùng bản đã lưu (online luôn có mã mới).
 // Ảnh, font, ảnh trâu: dùng bản đã lưu trước, cập nhật nền.
-const VO = "agiviet-shell-v3";
-const ANH = "agiviet-asset-v3";
+const VO = "agiviet-shell-v4";
+const ANH = "agiviet-asset-v4";
 const SAN = [
   "/ban/", "/ban/seller.css", "/ban/manifest.webmanifest",
   "/shared/style.css", "/shared/select.css", "/shared/app.js", "/shared/seller.js",
@@ -13,6 +13,9 @@ const SAN = [
   "/assets/logo.svg", "/assets/icon-192.png", "/assets/qr.js",
   "/tham-khao/hieu-ung-va-linh-vat/hieu-ung-app.js", "/tham-khao/hieu-ung-va-linh-vat/hieu-ung-app.css",
   "/tham-khao/hieu-ung-va-linh-vat/linh-vat-nguyen.js",
+  // App đi thi (thiet-ke): màn chính + trang báo mất mạng
+  "/thiet-ke/ngoai-tuyen.html", "/thiet-ke/dang-nhap.html", "/thiet-ke/ban-hom-nay.html", "/thiet-ke/ban-tien.html",
+  "/thiet-ke/ban-hang-hoa.html", "/thiet-ke/ban-don.html", "/thiet-ke/mua-app.html",
 ];
 self.addEventListener("install", (event) => {
   // Tệp nào lỗi thì bỏ qua, không làm hỏng cả lần cài.
@@ -45,7 +48,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(req)
         .then((r) => { if (r.ok) { const ban = r.clone(); caches.open(VO).then((c) => c.put(req, ban)); } return r; })
-        .catch(async () => (await caches.match(req)) || (req.mode === "navigate" ? caches.match("/ban/") : Response.error())),
+        .catch(async () => (await caches.match(req, { ignoreSearch: req.mode === "navigate" })) || (req.mode === "navigate" ? caches.match(u.pathname.startsWith("/thiet-ke/") ? "/thiet-ke/ngoai-tuyen.html" : "/ban/") : Response.error())),
     );
   }
 });

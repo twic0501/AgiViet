@@ -119,13 +119,19 @@ export const luuPhien = (token) => { try { sessionStorage.setItem(KHOA_PHIEN, to
 export async function phien() {
   try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   const sdt = new URLSearchParams(location.search).get("thu");
+  // Mất mạng: không được coi là chưa đăng nhập (đá về màn đăng nhập làm bác tưởng bị đăng xuất)
+  if (typeof navigator !== "undefined" && navigator.onLine === false) throw new Error("Chưa có mạng. Bác kết nối lại rồi thử lại; trang đã mở trước đó vẫn xem được.");
   // Chưa đăng nhập: đưa về màn đăng nhập của đúng app thay vì để màn trống báo lỗi.
   const veDangNhap = () => { if (!/dang-nhap|mua-app/.test(location.pathname)) location.replace(/\/mua/.test(location.pathname) ? "./dang-nhap.html?ben=mua" : "./dang-nhap.html"); return new Error("Bác đăng nhập trước nhé."); };
   if (!sdt) throw veDangNhap();
   // Đăng nhập thay bằng số thử chỉ có ở môi trường thử (máy chủ báo test_tools); bản thật luôn bắt đăng nhập OTP
-  const thu = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));
+  const MAT_MANG = "Chưa có mạng. Bác kết nối lại rồi thử lại; trang đã mở trước đó vẫn xem được.";
+  // Không gọi được máy chủ = mất mạng (navigator.onLine có thể vẫn báo true lúc vừa tải lại) → báo, KHÔNG đá về đăng nhập
+  const thu = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => null);
+  if (thu === null) throw new Error(MAT_MANG);
   if (!thu.test_tools) throw veDangNhap();
-  const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) });
+  const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) }).catch(() => null);
+  if (!r) throw new Error(MAT_MANG);
   if (!r.ok) throw new Error("Không mở được tài khoản thử.");
   return (await r.json()).token;
 }
@@ -565,3 +571,8 @@ if (typeof document !== "undefined") document.addEventListener("click", (e) => {
   t.textContent = `${n.dataset.dangPhatTrien || "Tính năng này"} đang phát triển, sẽ có ở bản sau.`;
   t.hidden = false; clearTimeout(t._an); t._an = setTimeout(() => (t.hidden = true), 2800);
 }, true);
+
+// Mở được khi mạng yếu/mất: service worker lưu vỏ app (ưu tiên mạng, mất mạng dùng bản đã lưu), KHÔNG lưu API/phiên/giao dịch.
+// Phạm vi /thiet-ke/ để không đụng app cũ /ban/, /mua/ (tự đăng ký riêng).
+if (typeof navigator !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "127.0.0.1" || location.hostname === "localhost"))
+  navigator.serviceWorker.register("/sw.js", { scope: "/thiet-ke/" }).catch(() => {});
