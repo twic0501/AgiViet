@@ -100,6 +100,19 @@ export interface ViecAo { to_chuc: string; viec: string; doi_tuong: string; ket_
 
 /** Một vòng quét. nguoiThat: số điện thoại hoặc mã tổ chức ('TC-…') người thật đang dùng (tổ chức của họ không bị đóng vai).
  *  idThat: id tổ chức người thật — để bên mua ảo chủ động chào giá lô của họ. */
+/** Mức chịu được của AI theo tính: bên mua trả tối đa giá mình đưa gần nhất × (1+bước); bên bán bán tối thiểu × (1−bước).
+ *  Lời chatbot nói ("bác chào X là em lấy") và luật đồng ý dùng CHUNG mức này để lời nói khớp việc làm. */
+export function mucChiu(rounds: any[], phia: 'buyer' | 'seller', buoc: number): number | null {
+  const minh = [...(rounds ?? [])].reverse().find((r: any) => r.from_side === phia); if (!minh) return null;
+  return Math.round(Number(minh.price_vnd) * (phia === 'buyer' ? 1 + buoc : 1 - buoc) / 100) * 100;
+}
+const soVN = (n: number) => `${Math.round(n).toLocaleString('vi-VN')} đ/kg`;
+/** Tính cách để chatbot nói đúng vai (tệp khách đã rút trước, không thì theo bảng tính cách người mẫu). */
+function tinhCach(tc: string, phia: 'buyer' | 'seller', k: { tra?: number; cham?: boolean }): string {
+  const tep = (phia === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? '']; if (tep) return tep;
+  return [k.tra === 0 ? 'dễ chốt, ít mặc cả' : (k.tra ?? 1) >= 2 ? 'giữ giá, mặc cả kỹ' : 'mặc cả vừa phải', k.cham ? 'cẩn thận, nói chậm rãi' : ''].filter(Boolean).join(', ');
+}
+
 const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval: 'chờ duyệt nội bộ', awaiting_signatures: 'chờ hai bên ký', awaiting_deposit: 'đã ký, chờ bên mua đặt cọc qua ngân hàng',
   active: 'đã có hiệu lực, cọc ngân hàng đang giữ, chờ tới ngày giao', in_delivery: 'đang giao nhận', completed: 'đã hoàn tất', cancelled: 'đã hủy', disputed: 'đang có tranh chấp' };
 
@@ -195,10 +208,26 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       const v = of.vong_cuoi;
       if (of.status === 'sent' && v && v.from_side !== phia) {
         if (kieu.cham && (luotCham++ % 2)) continue; // người cẩn thận / mới dùng app trả lời chậm (cách một vòng)
-        if (Math.ceil(Number(v.round_no) / 2) <= soLanTra) {
-          const gia = Math.round(Number(v.price_vnd) * (phia === 'seller' ? 1 + buoc : 1 - buoc) / 100) * 100;
+        const ct = await get(`/v1/offers/${of.id}`, t); const muc = mucChiu(ct?.rounds, phia, buoc), giaKia = Number(v.price_vnd);
+        const trongMuc = muc != null && (phia === 'buyer' ? giaKia <= muc : giaKia >= muc);
+        const cu = nhat_ky.length; let bao = '';
+        if (!trongMuc && Math.ceil(Number(v.round_no) / 2) <= soLanTra) {
+          // Trả giá về phía mình nhưng không vượt mức chịu và không lùi so với giá mình đã đưa
+          let gia = Math.round(giaKia * (phia === 'seller' ? 1 + buoc : 1 - buoc) / 100) * 100;
+          if (muc != null) gia = phia === 'buyer' ? Math.min(gia, muc) : Math.max(gia, muc);
           await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
-        } else await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
+          bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách.`;
+        } else {
+          await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
+          bao = `Bạn vừa đồng ý giá ${soVN(giaKia)} trong lời chào ${of.code}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký. Viết 1–2 câu báo cho người kia.`;
+        }
+        // Làm xong thì nhắn báo, như người thật (chatbot; lỗi thì câu ngắn soạn sẵn)
+        if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'xong') {
+          const cau = await hoiChatbot(aiUrl, aiKey, { vai: phia, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc, tinh: tinhCach(tc, phia, kieu), tinh_trang: bao, tin: '(bạn chủ động nhắn báo, không trả lời câu nào)', dang_mac_ca: false })
+            || (bao.startsWith('Bạn vừa đồng ý') ? (phia === 'buyer' ? `Dạ em đồng ý ${soVN(giaKia)} nha bác, em gửi hợp đồng để bác xem và ký.` : `Bên tôi đồng ý ${soVN(giaKia)}, anh/chị gửi hợp đồng để bên tôi ký nhé.`)
+              : (phia === 'buyer' ? `Em trả lại được mức này thôi bác, bác xem trong lời chào giúp em nha.` : `Bên tôi chào lại mức này, anh/chị xem trong lời chào nhé.`));
+          await post('/v1/messages', { offer_id: of.id, body: cau }, t);
+        }
       }
       // Bên mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
       if (of.status === 'accepted' && phia === 'buyer' && !of.order_id) {
@@ -206,7 +235,12 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         const tu = new Date(now.getTime() + 15 * 60e3); // trình diễn: giao sau 15 phút để người thật làm tiếp ngay
         const r = await post('/v1/orders', { offer_id: of.id, downgrade_price_vnd: Math.round(Number(v?.price_vnd ?? 0) * 0.65 / 100) * 100, delivery_mode: 'at_farm', transport_by: 'buyer',
           delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: 'on_receipt', designated_receiver_user_id: me.user.user_id, silent_accept_hours: 2 }, t);
-        if (r.status < 300) nhat_ky.push({ to_chuc: tc, viec: 'lập đơn', doi_tuong: of.code, ket_qua: 'xong' });
+        if (r.status < 300) {
+          nhat_ky.push({ to_chuc: tc, viec: 'lập đơn', doi_tuong: of.code, ket_qua: 'xong' });
+          // Như người thật: báo ngay hợp đồng vừa lập, nói rõ giá xuống loại (góp ý người thử: trước chỉ thấy lúc ký)
+          const hc = Math.round(Number(v?.price_vnd ?? 0) * 0.65 / 100) * 100, gio = tu.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+          if (r.json?.id) await post('/v1/messages', { order_id: r.json.id, body: `Bên em đã lập hợp đồng ${r.json.code ?? ''} giá ${soVN(Number(v?.price_vnd ?? 0))}. Phần nào bị xuống loại lúc cân thì tính ${soVN(hc)}; xe bên em tới vườn từ ${gio}. Bác xem kỹ rồi ký giúp em nha, chưa ưng chỗ nào bác nhắn em.` }, t);
+        }
       }
     }
     // 1b) Tin nhắn: tin mới nhất của cuộc là của bên kia → trả lời một câu ngắn theo nội dung (luật đơn giản, không gửi liên lạc).
@@ -224,14 +258,20 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         if (of && v) {
           const gia = `${Number(v.price_vnd).toLocaleString('vi-VN')} đ/kg`, kg = v.qty_g ? `, ${Math.round(Number(v.qty_g) / 1000).toLocaleString('vi-VN')} kg` : '';
           const ai = v.from_side === phiaTin ? 'bạn' : 'người kia';
+          const ctTin = of.status === 'sent' ? await get(`/v1/offers/${of.id}`, t) : null;
+          const kieuTin = { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) };
+          const mucTin = ctTin ? mucChiu(ctTin.rounds, phiaTin, kieuTin.buoc ?? 0.03) : null;
+          const mucCau = mucTin == null || v.from_side !== phiaTin ? '' : phiaTin === 'buyer'
+            ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)}. Nếu người bán đòi cao hơn thì từ chối khéo và có thể nói "bác chào ${soVN(mucTin)} là em đồng ý"; nếu họ đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
+            : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)}. Nếu bên mua trả thấp hơn thì từ chối khéo và có thể nói mức này; nếu họ trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
           tinhTrang = of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
-            : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'tới lượt bạn trả lời (bạn sẽ trả lời bằng nút trong app)'}.`
+            : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'tới lượt bạn trả lời (bạn sẽ trả lời trong lời chào ngay sau đây)'}.${mucCau}`
             : `Lời chào ${of.code ?? ''}: ${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã đóng'}.`;
           if (of.status === 'accepted') buocTin = 'da_dong_y'; else if (of.status === 'sent') dangMacCa = true;
         }
       }
       const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
-        tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa })) ||
+        tinh: tinhCach(tc, phiaTin, { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }), tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa })) ||
         // Tin trong hợp đồng mà chatbot lỗi: nói đúng trạng thái hợp đồng, không dò từ khóa (dễ lạc đề, vd "bao giờ" → "xe tới")
         (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
           : traLoiTheoBuoc(tin, phiaTin, buocTin));
@@ -270,7 +310,12 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       if (!luot || luot.phia !== phia) continue;
       const o = await get(`/v1/orders/${d.id}`, t); if (!o) continue;
       switch (luot.viec) {
-        case 'Ký hợp đồng': case 'Ký và gửi': await lam(tc, 'ký hợp đồng', d.code, () => ky(t, o, phia)); break;
+        case 'Ký hợp đồng': case 'Ký và gửi': {
+          const cu = nhat_ky.length; await lam(tc, 'ký hợp đồng', d.code, () => ky(t, o, phia));
+          if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'xong')
+            await post('/v1/messages', { order_id: d.id, body: phia === 'buyer' ? `Bên em đã ký hợp đồng ${d.code} rồi bác. Bác ký xong thì bên em chuyển cọc qua ngân hàng giữ, tới ngày xe vào vườn cân.` : `Bên tôi đã ký hợp đồng ${d.code}. Anh/chị ký xong thì chuyển cọc qua ngân hàng giữ giúp nhé.` }, t);
+          break;
+        }
         case 'Chuyển cọc': await lam(tc, 'chuyển cọc', d.code, async () => {
           const hd = await get(`/v1/orders/${d.id}/deposit-instruction`, t);
           await post('/v1/sim/bank/transfers', { payment_ref: hd.payment_ref, amount_vnd: Number(hd.total_vnd), payer: { bank_code: 'VCB', account_no: '0071000123456', name: o.buyer?.display_name ?? 'BEN MUA' } }, t);
