@@ -241,6 +241,23 @@ export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
 
 // ---- Trợ lý AgiViet: dẫn đường ngay trên máy (nhanh, không cần mạng) + hỏi AI qua backend cho câu tự do ----
 const BO_DAU = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
+// Câu soạn sẵn khi trợ lý AI chưa bật: chép đúng lời đã duyệt trong ai/agiviet_ai/tro_ly.py (CAU_LUA, QUY_TRINH), không thêm số.
+const CAU_LUA_BAN = "Bác cẩn thận nhé: AgiViet không bao giờ hỏi mã OTP hay mật khẩu, và tiền chỉ đi qua tài khoản đảm bảo ngân hàng trong app. Đừng chuyển tiền hay đọc mã cho ai. Nếu có người yêu cầu, bác bấm Báo cáo trong mục Hỗ trợ.";
+const SOAN_SAN = [
+  [/quyet toan|hoan (coc|tien)|ket thuc don|xu ly coc|don xong/, "Cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được bác xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."], // trước 'coc': 'hoàn cọc' là câu quyết toán
+  [/coc|dam bao|ngan hang giu/, "Bên mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở."],
+  [/dang (ban|lo|hang|bai)|ban (xoai|hang|lua|tom|ca)|dang len/, "Đăng lô: bác đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, bên mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng."],
+  [/chao gia|tra gia|tu choi|khong ban|thuong luong/, "Chào giá: bác đồng ý, trả giá hoặc không bán. Mỗi lượt 24 giờ; mỗi bên trả giá tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng."],
+  [/\bky\b|hop dong/, "Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút."],
+  [/nhu cau|ben mua can|ghep|tim khach/, "Ghép: bác thấy bên mua đang cần hàng của mình trong mục Chợ và có thể chào hàng."], // trước 'giao': bỏ dấu thì 'cần' = 'cân'
+  [/giao|boc|can|nghiem thu|xe/, "Giao nhận: đủ thẻ Sẵn sàng giao mới bốc; quét mã, bốc hàng, lập biên bản; bác xác nhận số cân trong 24 giờ, quá hạn thì người vận hành đối chiếu, cọc vẫn giữ."],
+  [/tien (ve|con lai|hang)|tra tien|chuyen khoan|tien mat|da nhan/, "Phần tiền còn lại hai bên tự trả cho nhau theo hợp đồng. App ghi nhận và đối soát. Bác xác nhận đúng số đã nhận; im lặng không bao giờ bị coi là đã nhận."],
+];
+export function cauSoanSan(t) {
+  if (/\botp\b|mat khau|ma xac|doc ma|gui ma|tai khoan rieng|chuyen (truoc|ngoai)|ngoai app/.test(t)) return CAU_LUA_BAN;
+  const g = SOAN_SAN.find(([m]) => m.test(t));
+  return g ? g[1] : "Trợ lý AI đang tạm nghỉ. Bác hỏi về cọc, đăng hàng, chào giá, ký, giao nhận hay tiền thì con trả lời được, hoặc nhắn nhân viên AgiViet.";
+}
 const DUONG = [
   [/dang (hang|bai|lo|ban)|ban hang moi|them lo/, "Đăng hàng mới", "./ban-dang-bai.html", "Bác bấm vào đây để đăng lô hàng: chọn mặt hàng, nhập lượng, giá và chụp ảnh."],
   [/chao gia|tra gia|tin nhan|nhan tin/, "Xem chào giá", "./ban-tin-nhan.html", "Lời chào giá của bên mua nằm ở mục Tin nhắn."],
@@ -332,6 +349,9 @@ function dungTroLy() {
       const token = await phien();
       const r = await fetch("/v1/assistant/ask", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ cau }) });
       const j = await r.json().catch(() => ({}));
+      // AI chưa bật / lỗi máy chủ: trả câu soạn sẵn đã duyệt (lời của ai/agiviet_ai/tro_ly.py), không bịa
+      const soan = !r.ok && (j.errors?.[0]?.code === "AI_CHUA_BAT" || r.status >= 500) ? cauSoanSan(t) : null;
+      if (soan) { cho.classList.remove("cho"); cho.innerHTML = `${esc(soan)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Hỏi thêm nhân viên ›</a>`; giuThamSo(cho); traLoi(cho, soan, noi); return; }
       if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || "Trợ lý chưa trả lời được.");
       cho.classList.remove("cho"); cho.textContent = j.tra_loi; traLoi(cho, j.tra_loi, noi);
     } catch (e) {
