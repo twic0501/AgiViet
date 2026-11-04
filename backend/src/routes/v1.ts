@@ -578,7 +578,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       const j = r.headers['content-type']?.toString().includes('json') ? r.json() : null;
       return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j };
     };
-    m.DANG_DUNG.set(nd.thanhVien.orgCode, Date.now());
+    m.giuHo(nd.thanhVien.orgCode, may(req));
     return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
   });
   // Bản trình diễn: chọn vai xong rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu khách.
@@ -586,7 +586,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     thu(); const nd = await bo.xacThuc(req);
     const m = await import('../demo/doi-tac-ao.ts');
     const b = z.object({ gan: z.record(z.string()).optional() }).parse(req.body ?? {});
-    m.DANG_DUNG.set(nd.thanhVien.orgCode, Date.now());
+    if (!m.giuHo(nd.thanhVien.orgCode, may(req))) throw dangGiu(m, nd.thanhVien.orgCode);
     return { doi_tac: m.rutTep(nd.thanhVien.orgCode, Math.random, b.gan) };
   });
   // Bản trình diễn — đạo diễn: đặt kịch bản cho lần nghiệm thu kế tiếp của bên mua ảo (hạ loại 10% / trả lại 80%).
@@ -609,12 +609,21 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     if (r.statusCode >= 300 || !kq?.ma_6_so) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Người nhận chưa mở được QR.', { http: r.statusCode });
     return { ma_6_so: kq.ma_6_so };
   });
+  // Bản thử: mã máy (trình duyệt) của người thử, để khóa hộ cho riêng người đang dùng
+  const may = (req: any) => String(req.headers['x-agv-may'] ?? '').slice(0, 64);
+  const dangGiu = (m: any, tc: string) => { const g = m.nguoiGiu(tc); const phut = g ? Math.max(1, Math.ceil((m.HAN_DANG_DUNG_MS - (Date.now() - g.t)) / 60e3)) : 0;
+    return loi('TRANG_THAI_KHONG_CHO_PHEP', `Hộ này đang có người khác thử. Bác chọn hộ khác, hoặc chờ khoảng ${phut} phút sau khi họ ngừng dùng.`, { con_phut: phut }); };
   app.post('/v1/test/impersonate', async (req) => {
     thu();
     const b = z.object({ phone: z.string().optional(), user_id: uuid.optional(), org_code: z.string().optional() }).parse(req.body);
     const uid = b.user_id ?? await ht.db.doc((t) => t.gtri<string>(`SELECT user_id FROM pii.user_contacts WHERE phone_hash=digest($1,'sha256')`, [b.phone ?? '']));
     if (!uid) throw loi('KHONG_TIM_THAY');
+    const m = await import('../demo/doi-tac-ao.ts'), mm = may(req);
+    // Mọi hộ hết người giữ (quá 30 phút không dùng) → làm mới dữ liệu thử cho người sau, trước khi mở phiên
+    if (mm && m.LAM_MOI.can && !m.dangDung().length) { await ht.datLai(); m.DANG_DUNG.clear(); m.LAM_MOI.can = false; }
     const r = await ht.phien.taoPhien(uid, b.org_code, 'thiet-bi-dong-vai');
+    const tc = (hoSo(r.nguoi_dung) as any)?.org?.code;
+    if (tc && mm) { if (!m.giuHo(tc, mm)) throw dangGiu(m, tc); }
     return { token: r.token, user: hoSo(r.nguoi_dung), canh_bao: 'Chỉ môi trường thử: đóng vai bên kia.' };
   });
   app.get('/v1/test/sms/:phone', async (req) => { thu(); return ht.phien.hopThuSms.get(P(req).phone) ?? []; });
@@ -623,14 +632,15 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/test/thu-xong', async (req) => {
     thu(); const nd = await bo.xacThuc(req);
     const m = await import('../demo/doi-tac-ao.ts');
+    if (!m.duocDung(nd.thanhVien.orgCode, may(req))) throw dangGiu(m, nd.thanhVien.orgCode); // người khác không làm lại hộ đang có người giữ
     m.DANG_DUNG.delete(nd.thanhVien.orgCode);
     const con = m.dangDung();
     if (con.length) return { lam_moi: false, con_nguoi_thu: con.length };
-    await ht.datLai(); m.DANG_DUNG.clear();
+    await ht.datLai(); m.DANG_DUNG.clear(); m.LAM_MOI.can = false;
     return { lam_moi: true };
   });
   // Hộ/tổ chức đang có người thử (30 phút gần nhất) → màn chọn vai ghi chú để người khác chọn hộ khác.
-  app.get('/v1/test/dang-dung', async () => { thu(); return (await import('../demo/doi-tac-ao.ts')).dangDung(); });
+  app.get('/v1/test/dang-dung', async (req) => { thu(); const m = await import('../demo/doi-tac-ao.ts'); return m.dangDung().filter((tc) => !m.duocDung(tc, may(req))); });
   app.get('/v1/test/accounts', async () => { thu(); return ht.db.doc((t) => t.q(`SELECT u.display_name, replace(convert_from(c.phone_enc,'UTF8'),'TEST-PLAINTEXT:','') phone, o.code org_code, o.display_name org_name, o.kind org_kind, o.can_sell, o.can_buy,
       coalesce((SELECT string_agg(r.role_code,',') FROM core.membership_roles r WHERE r.membership_id=m.id),'') roles, m.approval_limit_vnd::text approval_limit_vnd,
       (SELECT string_agg(role_code,',') FROM ops.staff_assignments s WHERE s.user_id=u.id) staff_roles

@@ -58,9 +58,22 @@ let dem = 0;
 const DA_LOI = new Set<string>();
 /** Tổ chức có người thật mở app trong 30 phút gần nhất (mã → giờ thật, ms). AI không bao giờ đóng vai các tổ chức này,
  *  kể cả khi vòng do người khác gọi — tránh AI ký/làm thay hộ đang có người thử (góp ý 04/11). */
-export const DANG_DUNG = new Map<string, number>();
+export const DANG_DUNG = new Map<string, { t: number; may: string }>(); // may = mã máy người giữ hộ ('' = script/không rõ)
 export const HAN_DANG_DUNG_MS = 30 * 60e3;
-export const dangDung = (bayGio = Date.now()) => [...DANG_DUNG].filter(([, t]) => bayGio - t < HAN_DANG_DUNG_MS).map(([tc]) => tc);
+export const LAM_MOI = { can: false }; // đã có người thật thử → khi mọi hộ hết người giữ, dữ liệu thử cần làm mới
+export const dangDung = (bayGio = Date.now()) => [...DANG_DUNG].filter(([, v]) => bayGio - v.t < HAN_DANG_DUNG_MS).map(([tc]) => tc);
+/** Người giữ hộ còn hạn (null nếu hộ trống). */
+export const nguoiGiu = (tc: string, bayGio = Date.now()) => { const v = DANG_DUNG.get(tc); return v && bayGio - v.t < HAN_DANG_DUNG_MS ? v : null; };
+/** Máy này có được dùng hộ không: hộ trống, hoặc chính máy này đang giữ, hoặc gọi không kèm mã máy (script kiểm). */
+export const duocDung = (tc: string, may: string, bayGio = Date.now()) => { const g = nguoiGiu(tc, bayGio); return !may || !g || !g.may || g.may === may; };
+/** Ghi hoạt động: chỉ người đang giữ (hoặc hộ trống) mới gia hạn/giành giữ. */
+export function giuHo(tc: string, may: string, bayGio = Date.now()) {
+  if (!duocDung(tc, may, bayGio)) return false;
+  const g = nguoiGiu(tc, bayGio);
+  DANG_DUNG.set(tc, { t: bayGio, may: may || g?.may || '' });
+  if (may) LAM_MOI.can = true;
+  return true;
+}
 const DA_TRA_LOI = new Set<string>();
 const khoa = () => `ao-${Date.now().toString(36)}-${(dem++).toString(36)}`;
 

@@ -168,7 +168,10 @@ if (typeof window !== "undefined" && !window.__agv401) {
   window.__agv401 = true;
   const CO = "agv-401-tai-lai", goc = window.fetch.bind(window);
   setTimeout(() => { try { sessionStorage.removeItem(CO); } catch {} }, 8000);
+  // Bản thử: mỗi trình duyệt một mã máy, gửi kèm mọi lệnh /v1/test/ → máy chủ khóa hộ cho riêng người đang thử
+  let may = ""; try { may = localStorage.getItem("agv-may") || ""; if (!may) { may = (crypto.randomUUID?.() || String(Math.random()).slice(2) + Date.now()); localStorage.setItem("agv-may", may); } } catch {}
   window.fetch = async (u, o) => {
+    if (may && /\/v1\/test\//.test(String(u?.url ?? u)) && (!o?.headers || typeof o.headers === "object" && !(o.headers instanceof Headers))) o = { ...(o || {}), headers: { ...(o?.headers || {}), "x-agv-may": may } };
     const r = await goc(u, o);
     try {
       const url = String(u?.url ?? u), h = o?.headers || {}, gui = String(h.authorization || h.Authorization || "");
@@ -198,7 +201,7 @@ export async function phien() {
   if (!thu.test_tools) throw veDangNhap();
   const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) }).catch(() => null);
   if (!r) throw new Error(MAT_MANG);
-  if (!r.ok) throw new Error("Không mở được tài khoản thử.");
+  if (!r.ok) throw new Error((await r.json().catch(() => null))?.errors?.[0]?.message || "Không mở được tài khoản thử.");
   const tk = (await r.json()).token;
   // Lưu phiên thử để màn sâu (link không còn ?thu=) vẫn dùng dữ liệu thật
   try { sessionStorage.setItem(KHOA_PHIEN, tk); sessionStorage.setItem("agv-phien-thu", sdt); } catch {}

@@ -192,11 +192,11 @@ const NGUOI_MAU = fetch("/v1/test/accounts").then((r) => (r.ok ? r.json() : null
 async function moChonVai() {
   const ds = await NGUOI_MAU;
   if (!ds?.length) return false;
-  // Hộ đang có người khác thử (30 phút gần nhất): ghi chú + xếp xuống cuối để mỗi người thử một hộ riêng
+  // Hộ đang có người khác giữ (dùng trong 30 phút gần nhất): khóa nút + xếp xuống cuối — mỗi người thử một hộ riêng
   const dung = new Set(await fetch("/v1/test/dang-dung").then((r) => (r.ok ? r.json() : [])).catch(() => []));
   ds.sort((x, y) => dung.has(x.org_code) - dung.has(y.org_code) || x.org_code.localeCompare(y.org_code));
   $("ds-vai").hidden = false; $("tep").hidden = true; // mở lại sau lần chọn trước: về đúng danh sách vai
-  $("ds-vai").innerHTML = ds.map((a) => `<button type="button" data-sdt="${esc(a.phone)}"><b>${esc(a.org_name)}</b><small>${esc(a.display_name)} · ${esc(TINH[a.org_code])}</small>${dung.has(a.org_code) ? `<small style="color:#9a3b1f;font-weight:600">Đang có người khác thử, bác nên chọn hộ khác để không lẫn đơn.</small>` : ""}</button>`).join("");
+  $("ds-vai").innerHTML = ds.map((a) => `<button type="button" data-sdt="${esc(a.phone)}"${dung.has(a.org_code) ? " disabled" : ""}><b>${esc(a.org_name)}</b><small>${esc(a.display_name)} · ${esc(TINH[a.org_code])}</small>${dung.has(a.org_code) ? `<small style="color:#9a3b1f;font-weight:600">Đang có người khác thử. Hộ mở lại sau 30 phút họ ngừng dùng.</small>` : ""}</button>`).join("");
   buoc(0); hienLoi("loi-0", "");
   return true;
 }
