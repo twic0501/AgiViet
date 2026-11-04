@@ -36,7 +36,8 @@ const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) tro
 const DA_CHAO = new Set<string>();
 const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
-let luotMua = 0, luotCham = 0;
+let luotMua = 0;
+const CHAM = new Map<string, number>(); // lời chào → số vòng đã thấy (khách trả lời chậm)
 // Tính cách giao dịch của người mẫu — khớp dòng mô tả trên thẻ chọn vai (frontend/thiet-ke/dang-nhap.html, bảng TINH).
 // tra: số lần trả giá trước khi đồng ý · buoc: mỗi lần nhích giá về phía mình · cham: trả lời cách một vòng.
 const KIEU: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = {
@@ -207,7 +208,9 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       const phia = of.la_ben_mua ? 'buyer' : 'seller';
       const v = of.vong_cuoi;
       if (of.status === 'sent' && v && v.from_side !== phia) {
-        if (kieu.cham && (luotCham++ % 2)) continue; // người cẩn thận / mới dùng app trả lời chậm (cách một vòng)
+        // Người cẩn thận / mới dùng app trả lời chậm: bỏ qua một vòng rồi mới trả lời — đếm RIÊNG từng lời chào
+        // (trước dùng bộ đếm chung: có 2 lời chào cùng lúc thì một cái luôn rơi vào lượt bỏ qua → không bao giờ trả lời)
+        if (kieu.cham) { const n = CHAM.get(of.id) ?? 0; CHAM.set(of.id, n + 1); if (n % 2 === 0) continue; }
         const ct = await get(`/v1/offers/${of.id}`, t); const giaKia = Number(v.price_vnd);
         let muc = mucChiu(ct?.rounds, phia, buoc);
         // Vòng đầu người bán AI chưa đưa giá nào: mốc là giá mong muốn của lô (người thật trả tới mức đó thì chốt luôn, như người bán thật)
