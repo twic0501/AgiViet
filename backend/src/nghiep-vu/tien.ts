@@ -141,7 +141,8 @@ export async function huongDanCoc(t: GiaoDich, nd: NguoiDung, orderId: string) {
   const han = await t.mot<any>(`SELECT due_at FROM core.deadlines WHERE entity_id=$1 AND kind='deposit' AND status='open'`, [d.id]);
   const da = await t.gtri<string>(`SELECT coalesce(sum(amount_vnd),0)::text FROM core.bank_events WHERE payment_ref=$1 AND apply_result='applied'`, [d.payment_ref]);
   let vietqr: string | null = null;
-  try { vietqr = buildVietQr({ bin: BIN_NGAN_HANG_THU, accountNumber: d.virtual_account_no.replace(/[^0-9A-Z]/gi, ''), amountVnd: Number(tong), addInfo: d.payment_ref }); } catch { vietqr = null; }
+  const conThieu = Math.max(0, Number(tong) - Number(da)); // QR điền đúng số CÒN THIẾU, không phải tổng ban đầu (tránh chuyển thừa)
+  if (conThieu > 0) try { vietqr = buildVietQr({ bin: BIN_NGAN_HANG_THU, accountNumber: d.virtual_account_no.replace(/[^0-9A-Z]/gi, ''), amountVnd: conThieu, addInfo: d.payment_ref }); } catch { vietqr = null; }
   // Cọc/phí bổ sung theo phụ lục (mã nạp ngắn TP… từ 0051, mã cũ TOPUP-… vẫn đọc được): đọc lại được sau tải lại trang.
   const bs = await t.q<any>(`SELECT a.id, a.order_version_no, a.payment_ref, greatest(a.delta_deposit_vnd,0)::text dc, greatest(a.delta_fee_vnd,0)::text df, a.created_at,
       (SELECT coalesce(sum(e.amount_vnd),0)::text FROM core.bank_events e WHERE e.payment_ref=a.payment_ref AND e.apply_result='applied') da,

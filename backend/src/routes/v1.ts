@@ -562,6 +562,8 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/test/clock', async (req) => {
     thu();
     const b = z.object({ advance_minutes: z.number().int().nonnegative().optional(), set: z.string().optional() }).parse(req.body);
+    // Đồng hồ thử dùng chung: còn người khác đang thử thì không cho tua (tua làm hết hạn giao dịch của họ)
+    if (may(req) && (b.set || b.advance_minutes) && (await import('../demo/doi-tac-ao.ts')).dangDung().length > 1) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Đang có người khác cùng thử nên chưa tua giờ được (tua sẽ làm hết hạn giao dịch của họ). Bác chờ tới giờ thật hoặc thử lại sau.');
     if (b.set) ht.dongHo.datMoc(Date.parse(b.set));
     if (b.advance_minutes) ht.dongHo.tua(b.advance_minutes * PHUT);
     const r = await chayHenGio(ht);
@@ -579,7 +581,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j };
     };
     m.giuHo(nd.thanhVien.orgCode, may(req));
-    return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
+    return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId], ht.cfg.aiUrl) };
   });
   // Bản trình diễn: chọn vai xong rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu khách.
   app.post('/v1/test/tep-khach', async (req) => {
@@ -602,6 +604,9 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     thu(); await bo.xacThuc(req);
     const nhan = await ht.db.doc((t) => t.gtri<string>(`SELECT receiver_user_id FROM core.deliveries WHERE id=$1`, [P(req).id]));
     if (!nhan) throw loi('KHONG_TIM_THAY', 'Chưa có người nhận.');
+    // Người nhận là người thật đang thử → họ phải tự mở mã trên app mua, không lấy hộ
+    const tcNhan = await ht.db.doc((t) => t.gtri<string>(`SELECT o.code FROM core.memberships m JOIN core.organizations o ON o.id=m.org_id WHERE m.user_id=$1 AND m.status='active' LIMIT 1`, [nhan]));
+    if (tcNhan && (await import('../demo/doi-tac-ao.ts')).dangDung().includes(tcNhan)) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Bên nhận là người thật đang thử. Bác nhờ họ mở mã nhận hàng trên app mua rồi đọc 6 số cho bác.');
     const vai = await app.inject({ method: 'POST', url: '/v1/test/impersonate', payload: { user_id: nhan } });
     const tk = vai.json()?.token ?? vai.json()?.data?.token;
     const r = await app.inject({ method: 'POST', url: `/v1/deliveries/${P(req).id}/receipt-qr`, payload: { idempotency_key: `thu-qr-${P(req).id}-${Date.now()}` }, headers: { authorization: `Bearer ${tk}` } });

@@ -1142,8 +1142,8 @@ if (THAT) {
         });
         o.querySelector("#g-qr")?.addEventListener("click", async (e) => {
           const nut = e.currentTarget; nut.disabled = true;
-          try { const r = await api(`/v1/deliveries/${dot.id}/receipt-qr`, {}); const ma = r.qr_token ?? r.data?.qr_token; const hop = o.querySelector("#g-ma"); hop.hidden = false;
-            hop.innerHTML = `<p style="margin:8px 0 0;font-weight:600">Đưa màn này cho người bán quét</p><p class="sl-ghi" style="margin:4px 0 0">Hết hạn ${r.expires_at ? new Date(r.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "theo đợt"}</p><details style="margin-top:6px"><summary class="sl-ghi" style="cursor:pointer">Không quét được? Xem mã chữ</summary><code style="font-size:12px;word-break:break-all">${esc(ma)}</code></details>`; await veQr(hop, ma); bao3.textContent = ""; }
+          try { const r = await api(`/v1/deliveries/${dot.id}/receipt-qr`, {}); const ma = r.qr_token ?? r.data?.qr_token, sau = String(r.ma_6_so ?? r.data?.ma_6_so ?? ""); const hop = o.querySelector("#g-ma"); hop.hidden = false;
+            hop.innerHTML = `${sau ? `<p style="margin:8px 0 0">Đọc mã này cho người bán nhập:</p><p style="margin:2px 0 0;font-size:32px;font-weight:700;letter-spacing:6px;font-variant-numeric:tabular-nums">${esc(sau.slice(0, 3))} ${esc(sau.slice(3))}</p>` : ""}<p style="margin:8px 0 0;font-weight:600">Hoặc đưa màn này cho người bán quét</p><p class="sl-ghi" style="margin:4px 0 0">Hết hạn ${r.expires_at ? new Date(r.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "theo đợt"}</p><details style="margin-top:6px"><summary class="sl-ghi" style="cursor:pointer">Không quét được? Xem mã chữ</summary><code style="font-size:12px;word-break:break-all">${esc(ma)}</code></details>`; await veQr(hop, ma); bao3.textContent = ""; }
           catch (err) { bao3.textContent = err.message; } nut.disabled = false;
         });
       };

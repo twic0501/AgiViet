@@ -59,7 +59,7 @@ const DA_LOI = new Set<string>();
 /** Tổ chức có người thật mở app trong 30 phút gần nhất (mã → giờ thật, ms). AI không bao giờ đóng vai các tổ chức này,
  *  kể cả khi vòng do người khác gọi — tránh AI ký/làm thay hộ đang có người thử (góp ý 04/11). */
 export const DANG_DUNG = new Map<string, { t: number; may: string }>(); // may = mã máy người giữ hộ ('' = script/không rõ)
-export const HAN_DANG_DUNG_MS = 30 * 60e3;
+export const HAN_DANG_DUNG_MS = 10 * 60e3; // bỏ không 10 phút → hộ mở cho người sau
 export const LAM_MOI = { can: false }; // đã có người thật thử → khi mọi hộ hết người giữ, dữ liệu thử cần làm mới
 export const dangDung = (bayGio = Date.now()) => [...DANG_DUNG].filter(([, v]) => bayGio - v.t < HAN_DANG_DUNG_MS).map(([tc]) => tc);
 /** Người giữ hộ còn hạn (null nếu hộ trống). */
@@ -81,17 +81,39 @@ const khoa = () => `ao-${Date.now().toString(36)}-${(dem++).toString(36)}`;
 export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
   const t = tin.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
   if (/da che|•/.test(t)) return 'Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên.';
-  if (/gio|mai|sang|chieu|ngay|xe|toi vuon|lay hang/.test(t)) return phia === 'buyer' ? 'Dạ được, bên em cho xe tới đúng giờ hẹn trong hợp đồng, có gì em nhắn trước.' : 'Dạ được, sáng đó bên chị hái sẵn chờ xe tới cân.';
-  if (/gia|bot|tang|giam/.test(t)) return phia === 'buyer' ? 'Giá này bên em tính theo loại 1 rồi, chị xem trả giá trong lời chào giúp em nha.' : 'Giá chị để sát rồi em, em trả giá trong lời chào giúp chị nha.';
-  if (/con|du|bao nhieu|tan|kg|hang/.test(t)) return phia === 'buyer' ? 'Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết.' : 'Còn đủ em, hàng đẹp, loại 1 chiếm phần lớn.';
-  return phia === 'buyer' ? 'Dạ em nhận được rồi, có gì em báo lại nha.' : 'Dạ chị nhận được rồi nha em.';
+  if (/gio|mai|sang|chieu|ngay|xe|toi vuon|lay hang/.test(t)) return phia === 'buyer' ? 'Dạ được bác, bên em cho xe tới đúng giờ hẹn trong hợp đồng, có gì em nhắn trước.' : 'Dạ được, hôm đó bên tôi chuẩn bị hàng sẵn chờ xe tới cân.';
+  // Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", bên mua đổi giá = "Trả giá"
+  if (/gia|bot|tang|giam/.test(t)) return phia === 'buyer' ? 'Giá này bên em tính theo loại 1 rồi, bác muốn đổi thì bấm "Chào giá mới" trong lời chào giúp em nha.' : 'Giá bên tôi để sát rồi, anh/chị muốn đổi thì bấm "Trả giá" trong lời chào giúp nhé.';
+  if (/con|du|bao nhieu|tan|kg|hang/.test(t)) return phia === 'buyer' ? 'Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết bác ạ.' : 'Còn đủ hàng, hàng đẹp, loại 1 chiếm phần lớn.';
+  return phia === 'buyer' ? 'Dạ em nhận được rồi bác, có gì em báo lại nha.' : 'Dạ bên tôi nhận được rồi nhé.';
+}
+
+/** Câu soạn sẵn theo BƯỚC giao dịch (dùng khi chatbot lỗi): ưu tiên đúng bước hơn đúng từ khóa. */
+export function traLoiTheoBuoc(tin: string, phia: 'buyer' | 'seller', buoc: string): string {
+  if (buoc === 'da_dong_y') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em gửi hợp đồng qua app, bác xem kỹ rồi ký giúp em nha.' : 'Cảm ơn anh/chị đã đồng ý giá. Anh/chị gửi hợp đồng qua app để bên tôi xem và ký nhé.';
+  if (buoc === 'cho_ky') return phia === 'buyer' ? 'Hợp đồng đang chờ ký trong app, bác xem kỹ các điều khoản rồi ký giúp em nha.' : 'Hợp đồng đang chờ ký trong app, anh/chị xem rồi ký giúp nhé.';
+  return traLoi(tin, phia);
 }
 
 export interface ViecAo { to_chuc: string; viec: string; doi_tuong: string; ket_qua: 'xong' | 'loi'; chi_tiet?: string }
 
 /** Một vòng quét. nguoiThat: số điện thoại hoặc mã tổ chức ('TC-…') người thật đang dùng (tổ chức của họ không bị đóng vai).
  *  idThat: id tổ chức người thật — để bên mua ảo chủ động chào giá lô của họ. */
-export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = []): Promise<ViecAo[]> {
+const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval: 'chờ duyệt nội bộ', awaiting_signatures: 'chờ hai bên ký', awaiting_deposit: 'đã ký, chờ bên mua đặt cọc qua ngân hàng',
+  active: 'đã có hiệu lực, cọc ngân hàng đang giữ, chờ tới ngày giao', in_delivery: 'đang giao nhận', completed: 'đã hoàn tất', cancelled: 'đã hủy', disputed: 'đang có tranh chấp' };
+
+/** Chatbot đối tác (dịch vụ AI /doi-tac/tra-loi, gemma4 trên Ollama → NIM); null nếu không gọi được hoặc câu bị bỏ (bịa số). */
+async function hoiChatbot(aiUrl: string | null | undefined, body: Record<string, string>): Promise<string | null> {
+  if (!aiUrl) return null;
+  try {
+    const r = await fetch(`${aiUrl}/doi-tac/tra-loi`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) });
+    if (!r.ok) return null;
+    const j: any = await r.json(); const c = String(j?.tra_loi ?? '').trim();
+    return c ? c.slice(0, 500) : null;
+  } catch { return null; }
+}
+
+export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null): Promise<ViecAo[]> {
   const nhat_ky: ViecAo[] = [];
   const vai = async (phone: string) => (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
   const toChucThat = new Set<string>(dangDung());
@@ -100,6 +122,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   // Danh sách có phân trang trả {items, …} → lấy mảng items cho mọi vòng lặp bên dưới.
   const get = async (u: string, t: string) => { const r = await goi('GET', u, undefined, t); return r.status < 300 ? (Array.isArray(r.json?.items) ? r.json.items : r.json) : null; };
   const lam = async (tc: string, viec: string, dt: string, fn: () => Promise<{ status: number; json: any } | void>) => {
+    if (dangDung().includes(tc)) return; // xét lại ngay trước mỗi việc: người thật vừa vào giữ hộ giữa vòng thì AI dừng tay
     const k = `${tc}|${viec}|${dt}`; if (DA_LOI.has(k)) return; // việc đã lỗi thì không thử lại mỗi vòng (cần người/vận hành)
     const cu = nhat_ky.length;
     try { await lam0(); } finally { if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'loi') DA_LOI.add(k); }
@@ -189,7 +212,25 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     for (const s of (await get('/v1/messages/summary', t)) ?? []) {
       if (s.la_cua_toi || DA_TRA_LOI.has(s.id)) continue;   // mỗi tin của bên kia chỉ trả lời một lần
       DA_TRA_LOI.add(s.id);
-      const cau = traLoi(String(s.body ?? ''), tc.startsWith('TC-M') ? 'buyer' : 'seller');
+      const phiaTin: 'buyer' | 'seller' = tc.startsWith('TC-M') ? 'buyer' : 'seller', tin = String(s.body ?? '');
+      // Tình trạng thật của lời chào / hợp đồng để chatbot trả lời đúng bước (không bịa giá, ngày)
+      let tinhTrang = '', buocTin = '';
+      if (s.order_id) {
+        const d = await get(`/v1/orders/${s.order_id}`, t);
+        if (d) { tinhTrang = `Hợp đồng ${d.code ?? ''}: ${TEN_TT[d.status] ?? d.status}.`; if (d.status === 'awaiting_signatures') buocTin = 'cho_ky'; }
+      } else if (s.offer_id) {
+        const of = ((await get('/v1/offers', t)) ?? []).find((x: any) => x.id === s.offer_id); const v = of?.vong_cuoi;
+        if (of && v) {
+          const gia = `${Number(v.price_vnd).toLocaleString('vi-VN')} đ/kg`, kg = v.qty_g ? `, ${Math.round(Number(v.qty_g) / 1000).toLocaleString('vi-VN')} kg` : '';
+          const ai = v.from_side === phiaTin ? 'bạn' : 'người kia';
+          tinhTrang = of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
+            : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'tới lượt bạn trả lời (bạn sẽ trả lời bằng nút trong app)'}.`
+            : `Lời chào ${of.code ?? ''}: ${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã đóng'}.`;
+          if (of.status === 'accepted') buocTin = 'da_dong_y';
+        }
+      }
+      const cau = (tinhTrang && await hoiChatbot(aiUrl, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
+        tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin })) || traLoiTheoBuoc(tin, phiaTin, buocTin);
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
     }
     // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).

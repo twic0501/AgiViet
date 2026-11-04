@@ -86,5 +86,18 @@ class RaoChan(unittest.TestCase):
         self.assertEqual(kq.loai, "soan_san")
 
 
+class TienHangTraThang(unittest.TestCase):
+    """Rà soát 04/11: tiền hàng trả thẳng theo hợp đồng không bị coi là lừa; cọc ngoài ngân hàng vẫn bị chặn."""
+    def test_hop_le(self):
+        from agiviet_ai.tro_ly import la_lua
+        for c in ["Tôi chuyển khoản thẳng cho người bán tiền hàng còn lại được không?", "Chuyển khoản trước khi bốc hàng được không?"]:
+            self.assertFalse(la_lua(c), c)
+
+    def test_van_chan(self):
+        from agiviet_ai.tro_ly import la_lua
+        for c in ["Chuyển tiền vào tài khoản riêng của anh nhé", "Đặt cọc chuyển thẳng cho em luôn cho nhanh", "Đọc mã OTP cho anh"]:
+            self.assertTrue(la_lua(c), c)
+
+
 if __name__ == "__main__":
     unittest.main()

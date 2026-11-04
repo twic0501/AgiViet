@@ -164,6 +164,48 @@ def assistant_ask(req: HoiTroLyRequest, request: Request):
     return {'tra_loi': k.van_ban, 'loai': k.loai, 'nguon': k.nguon}
 
 
+class DoiTacRequest(BaseModel):
+    vai: str = Field(pattern='^(buyer|seller)$')   # vai của AI: buyer = khách mua AI nhắn với người bán thật
+    ten: str = Field(min_length=1, max_length=120)
+    tinh: str = Field(default='', max_length=200)   # tính khách: sòng phẳng, khó tính…
+    tinh_trang: str = Field(min_length=1, max_length=1500)
+    tin: str = Field(min_length=1, max_length=600)
+
+
+@app.post('/doi-tac/tra-loi')
+def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
+    """Chatbot đối tác AI (bản thử): trả lời 1–2 câu đúng bước giao dịch. Lỗi/bịa số → 503, backend dùng câu soạn sẵn theo bước."""
+    from .nha_cung_cap import NhaCungCap, LoiNhaCungCap
+    from .tro_ly import so_la, la_lua
+    if la_lua(req.tin):
+        return {'tra_loi': 'Mình trao đổi và thanh toán trong app thôi nha, có gì AgiViet hỗ trợ hai bên.', 'nguon': 'lua'}
+    if req.vai == 'buyer':
+        xung = f"Bạn là người phụ trách mua của '{req.ten}' nhắn với người bán nông sản lớn tuổi. Gọi họ là 'bác', xưng 'em'."
+    else:
+        xung = f"Bạn là người bán '{req.ten}' nhắn với người phụ trách mua hàng của một doanh nghiệp. Gọi họ là 'anh/chị', xưng 'tôi' hoặc 'bên tôi'."
+    # Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", bên mua đổi giá = "Trả giá" (người sáng lập chốt 04/11)
+    nut = ("nếu bác ấy muốn đổi giá thì nhắc bác bấm nút 'Chào giá mới' trong lời chào (với người bán luôn nói 'chào giá', không nói 'trả giá')."
+           if req.vai == 'buyer' else "nếu họ muốn đổi giá thì nhắc họ bấm nút 'Trả giá' trong lời chào.")
+    he = (xung + (f" Tính cách: {req.tinh}." if req.tinh else '') +
+          " Trả lời tiếng Việt tự nhiên, lịch sự, ngắn 1–2 câu, không chào hỏi dài. Chỉ nói đúng theo TÌNH TRẠNG bên dưới; "
+          "không tự đưa giá, số lượng, ngày giờ, số tiền nào ngoài TÌNH TRẠNG; không hứa điều chưa có. Việc chào giá, trả giá, đồng ý, ký, giao, trả tiền "
+          "đều làm bằng nút trong app — " + nut + " "
+          "Không xin số điện thoại, Zalo, tài khoản riêng.\nTÌNH TRẠNG: " + req.tinh_trang)
+    if not LLM_SLOT.acquire(timeout=CHO_SLOT_S):
+        raise HTTPException(503, 'bận')
+    try:
+        k = NhaCungCap().goi(he, req.tin, loai='doi_tac', timeout_s=6.0, toi_da=160)
+    except LoiNhaCungCap:
+        raise HTTPException(503, 'không gọi được mô hình')
+    finally:
+        LLM_SLOT.release()
+    la = so_la(k.van_ban, req.tinh_trang + ' ' + req.tin)
+    request.state.tom_tat = {'nguon': k.nguon, 'so_la': len(la)}
+    if la:
+        raise HTTPException(503, 'câu trả lời có số không có trong tình trạng')
+    return {'tra_loi': k.van_ban, 'nguon': k.nguon}
+
+
 class DocToRequest(BaseModel):
     van_ban: str = Field(min_length=1, max_length=400)
 

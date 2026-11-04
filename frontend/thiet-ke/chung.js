@@ -331,7 +331,7 @@ const SOAN_SAN = [
   [/quyet toan|hoan (coc|tien)|ket thuc don|xu ly coc|don xong/, "Cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được bác xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."], // trước 'coc': 'hoàn cọc' là câu quyết toán
   [/coc|dam bao|ngan hang giu/, "Bên mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở."],
   [/dang (ban|lo|hang|bai)|ban (xoai|hang|lua|tom|ca)|dang len/, "Đăng lô: bác đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, bên mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng."],
-  [/chao gia|tra gia|gia moi|dua gia|tu choi|khong ban|thuong luong/, "Chào giá: bác đồng ý, đưa giá mới hoặc không bán. Mỗi lượt 24 giờ; mỗi bên đưa giá tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng."],
+  [/chao gia|tra gia|gia moi|dua gia|tu choi|khong ban|thuong luong/, "Chào giá: bác đồng ý, chào giá mới hoặc không bán. Mỗi lượt 24 giờ; bên bán chào giá, bên mua trả giá, mỗi bên tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng."],
   [/\bky\b|hop dong/, "Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút."],
   [/nhu cau|ben mua can|ghep|tim khach/, "Ghép: bác thấy bên mua đang cần hàng của mình trong mục Chợ và có thể chào hàng."], // trước 'giao': bỏ dấu thì 'cần' = 'cân'
   [/giao|boc|can|nghiem thu|xe/, "Giao nhận: đủ thẻ Sẵn sàng giao mới bốc; quét mã, bốc hàng, lập biên bản; bác xác nhận số cân trong 24 giờ, quá hạn thì người vận hành đối chiếu, cọc vẫn giữ."],

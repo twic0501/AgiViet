@@ -15,6 +15,8 @@ const browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] }
 // choPhep: dòng lỗi console được biết trước (vd. trình duyệt tự ghi "Failed to load resource" khi backend trả 4xx cho mã sai)
 async function trang(ten, fn, choPhep = null) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true });
+  // Mọi bài là "một người thử": cùng mã máy, để khóa giữ hộ (E163) không chặn các context của chính bộ test
+  await ctx.addInitScript(() => { try { localStorage.setItem("agv-may", "e2e-thiet-ke-ban"); } catch {} });
   const p = await ctx.newPage();
   const loi = [];
   p.on("pageerror", (e) => loi.push("pageerror: " + e.message));
@@ -548,7 +550,7 @@ await trang("toi", async (p) => {
 });
 
 await trang("tin-nhan-tra-loi", async (p) => {
-  // Luồng chào giá B3 thật: bên mua chào → bác trả giá → bên mua trả lại → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
+  // Luồng chào giá B3 thật: bên mua chào → bác chào giá mới → bên mua trả giá → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
   const G = "http://127.0.0.1:18980";
   const dn = async (sdt) => (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
   const tBan = await dn("0918000421"), tMua = await dn("0938000610");
@@ -579,7 +581,7 @@ await trang("tin-nhan-tra-loi", async (p) => {
   await p.getByText("Đã gửi giá").waitFor({ timeout: 8000 });
   await mua.post(`/v1/offers/${id1}/counter`, { price_vnd: String(g1 + 1000) });
   await mo(id1);
-  assert.match(await p.locator(".tam-lc").innerText(), /còn 1 lần trả giá/, "đã trả giá 1 lần → còn 1 lượt");
+  assert.match(await p.locator(".tam-lc").innerText(), /còn 1 lần chào giá mới/, "bác đã chào giá mới 1 lần → còn 1 lượt (bên bán là chào giá, bên mua là trả giá)");
   assert.equal(await p.locator(".tam-lc .lc-vong p").count(), 3, "lịch sử 3 vòng");
   await p.locator('.tam-lc [data-r="dong-y"]').click();
   assert.match(await p.locator(".tam-lc").innerText(), /chưa phải hợp đồng/, "nhắc chưa phải hợp đồng trước khi chốt");

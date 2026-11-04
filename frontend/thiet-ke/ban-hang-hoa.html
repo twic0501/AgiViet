@@ -474,12 +474,12 @@ async function moCan() {
     if (v.from_side === "buyer") {
       const con = ct?.luot_tra_gia_con;
       return `<div class="loi-cua-bac toi-bac"><p><b>Bên mua trả giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
-        <p class="phu2">Tới lượt bác trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}${con != null ? ` · bác còn ${con} lần đưa giá mới` : ""}. Bác đồng ý, đưa giá mới hoặc không bán ở Tin nhắn.</p>
+        <p class="phu2">Tới lượt bác trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}${con != null ? ` · bác còn ${con} lần chào giá mới` : ""}. Bác đồng ý, chào giá mới hoặc không bán ở Tin nhắn.</p>
         <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Trả lời ở Tin nhắn</a></div>`;
     }
     if ((v.round_no || 1) > 1) {
       // Bác đã trả giá lại sau khi bên mua trả giá: chỉ chờ, không rút/sửa (quy trình B3; backend 0074 cũng chặn)
-      return `<div class="loi-cua-bac"><p><b>Bác đã đưa giá mới ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
+      return `<div class="loi-cua-bac"><p><b>Bác đã chào giá mới ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
         <p class="phu2">Chờ bên mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Hai bên đã thương lượng qua lại nên không hủy hay sửa được nữa.</p>
         <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Xem ở Tin nhắn</a></div>`;
     }

@@ -42,7 +42,7 @@ HE_THONG = {v: t.replace("{MUC}", MUC_APP[v]) for v, t in HE_THONG.items()}
 # Quy trình đã chốt (brief app bán 22/10/2026, mục 3 và 7.1) — nguồn duy nhất để trợ lý giải thích cách làm
 QUY_TRINH = """1. Đăng lô: người bán đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, bên mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng.
 2. Ghép: người bán thấy bên mua đang cần hàng của mình và có thể chào hàng.
-3. Chào giá: người bán đồng ý, đưa giá mới hoặc không bán; bên mua đồng ý, trả giá hoặc không mua. Mỗi lượt 24 giờ; mỗi bên đưa giá tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng.
+3. Chào giá: người bán đồng ý, chào giá mới hoặc không bán; bên mua đồng ý, trả giá hoặc không mua. Mỗi lượt 24 giờ; bên bán chào giá, bên mua trả giá, mỗi bên tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng.
 4. Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút.
 5. Cọc: bên mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở.
 6. Phần tiền còn lại hai bên tự trả cho nhau theo hợp đồng (tiền mặt hoặc chuyển khoản; trước khi bốc, khi nhận hàng hoặc sau số ngày đã thỏa thuận). App chỉ ghi nhận và đối soát, không giữ khoản này. Người bán xác nhận đúng số đã nhận; im lặng không bao giờ bị coi là đã nhận.
@@ -74,7 +74,7 @@ def bo_dau(s: str) -> str:
 _MA = r"(\botp\b|\bma xac (nhan|thuc)\b|mat khau|\bpin\b)"
 _DUA = r"\b(gui|doc|dua|hoi|xin|nhan tin|cung cap|bao)\b"
 LUA = [_DUA + r".*" + _MA, r"\bcho (toi|em|anh|chi|minh|chau|tui)\b.*" + _MA,_MA + r".*\b(cho|gui|doc|dua)\b.*\b(anh|chi|em|toi|chau|minh|nguoi|ho|nhan vien)\b",
-       r"chuyen (tien|khoan).*(rieng|ca nhan|ngoai|truoc|thang cho)", r"(tai khoan|stk) (rieng|ca nhan)",
+       r"chuyen (tien|khoan).*(rieng|ca nhan|ngoai)", r"coc.*(thang cho|truoc khi (ky|co hop dong))", r"(tai khoan|stk) (rieng|ca nhan)",  # tiền hàng trả thẳng theo hợp đồng là hợp lệ; cọc phải qua ngân hàng
        r"(dat )?coc.*(tai khoan|stk) (rieng|ca nhan|cua (anh|chi|em|toi))", r"ngoai (app|ung dung|he thong)",
        r"(bo qua|vuot|khong qua) (ngan hang|tai khoan dam bao)", r"bo qua (huong dan|quy tac)|ignore (previous|all)"]
 TRONG_PHAM_VI = ["lo", "hang", "gia", "ban", "mua", "hop dong", "coc", "giao", "nhan", "can", "kg", "tan", "ta", "ky",

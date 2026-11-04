@@ -22,6 +22,7 @@ import httpx
 TEP_KHOA = os.path.expanduser(os.environ.get("AGV_AI_KEYS", "~/.local/share/agiviet/ai-keys.env"))
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 NIM_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+OLLAMA_URL = "https://ollama.com/api/chat"
 
 CAU_SOAN_SAN = "Xin lỗi, trợ lý đang bận. Bạn thử lại sau ít phút hoặc gọi tổng đài AgiViet để được hỗ trợ."
 NGHI_SAU_LOI_S = 60.0   # bỏ qua nhà cung cấp đang hỏng trong khoảng này (tính từ lỗi cuối)
@@ -52,7 +53,7 @@ def doc_khoa(path: str = TEP_KHOA) -> dict[str, str]:
                 out[k.strip()] = v.strip().strip('"').strip("'")
     except OSError:
         pass
-    for k in ("GEMINI_API_KEY", "NVIDIA_API_KEY", "AGV_TTS_MODEL", "AGV_TTS_GIONG", "AGV_GEMINI_MODEL", "AGV_NIM_MODEL", "AGV_NIM_MODEL_DU_PHONG",
+    for k in ("GEMINI_API_KEY", "NVIDIA_API_KEY", "OLLAMA_API_KEY", "AGV_OLLAMA_MODEL", "AGV_TTS_MODEL", "AGV_TTS_GIONG", "AGV_GEMINI_MODEL", "AGV_NIM_MODEL", "AGV_NIM_MODEL_DU_PHONG",
               "AGV_NIM_MODEL_MAY", "AGV_NIM_MODEL_SOAN"):
         if os.environ.get(k):
             out[k] = os.environ[k]
@@ -176,6 +177,21 @@ class NhaCungCap:
         except (KeyError, IndexError, ValueError) as e:
             raise LoiNhaCungCap(f"NIM trả sai dạng: {type(e).__name__}") from e
 
+    def _ollama(self, model: str, he_thong: str, nguoi_dung: str, timeout_s: float, toi_da: int) -> str:
+        k = self.khoa.get("OLLAMA_API_KEY")
+        if not k:
+            raise LoiNhaCungCap("thiếu khóa Ollama")
+        r = self.client.post(OLLAMA_URL, headers={"authorization": "Bearer " + k}, timeout=timeout_s, json={
+            "model": model, "stream": False, "think": False, "options": {"temperature": 0.4, "num_predict": toi_da},
+            "messages": [{"role": "system", "content": he_thong}, {"role": "user", "content": nguoi_dung}],
+        })
+        if r.status_code != 200:
+            raise LoiNhaCungCap(f"Ollama HTTP {r.status_code}")  # 402 = hết hạn mức gói Free
+        try:
+            return (r.json()["message"]["content"] or "").strip()
+        except (KeyError, ValueError) as e:
+            raise LoiNhaCungCap(f"Ollama trả sai dạng: {type(e).__name__}") from e
+
     # ---- chuỗi dự phòng ----
     def chuoi(self, loai: str) -> list[tuple[str, str]]:
         k = self.khoa
@@ -184,6 +200,8 @@ class NhaCungCap:
             return [gemini, ("nim", k.get("AGV_NIM_MODEL") or "google/gemma-4-31b-it")]
         if loai == "may":
             return [gemini, ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
+        if loai == "doi_tac":  # chatbot đối tác AI nhắn tin: gemma4 trên Ollama Cloud (gói Free) → NIM gemma
+            return [("ollama", k.get("AGV_OLLAMA_MODEL") or "gemma4:31b"), ("nim", k.get("AGV_NIM_MODEL") or "google/gemma-4-31b-it")]
         if loai == "soan":
             return [("nim", k.get("AGV_NIM_MODEL_SOAN") or "deepseek-ai/deepseek-v4.1-flash"), gemini]
         raise ValueError(f"loại việc không hỗ trợ: {loai}")
@@ -211,7 +229,7 @@ class NhaCungCap:
             if self._dang_nghi(bac):
                 loi.append(f"{bac} đang nghỉ sau lỗi"); continue
             try:
-                f = self._gemini if ten == "gemini" else self._nim
+                f = {"gemini": self._gemini, "ollama": self._ollama}.get(ten, self._nim)
                 van_ban = f(model, he_thong, nguoi_dung, timeout_s, toi_da)
                 if not van_ban:
                     raise LoiNhaCungCap("trả rỗng")
