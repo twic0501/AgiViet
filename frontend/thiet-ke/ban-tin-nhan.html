@@ -312,7 +312,7 @@ async function moLoiChao(id) {
     nhac = `<p class="nhac">Lời chào này ${ct.status === "rejected" ? "đã bị từ chối" : ct.status === "withdrawn" ? "đã được hủy" : "đã hết hạn"}. Lô vẫn bán bình thường.</p>`;
     hanhDong = `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
   } else if (toiBac) {
-    nhac = `<p class="nhac">Tới lượt bác trả lời trước <b>${gio(v.expires_at)}</b>. Bác còn <b>${ct.luot_tra_gia_con}</b> lần đưa giá mới.</p>`;
+    nhac = `<p class="nhac">Tới lượt bác trả lời trước <b>${gio(v.expires_at)}</b>. Bác còn <b>${ct.luot_tra_gia_con}</b> lần đưa giá mới.</p><p class="nhac">Lưu ý: giá này cho hàng đúng loại. Nếu lúc cân có phần bị xuống loại, phần đó tính theo <b>giá xuống loại</b> bên mua ghi trong hợp đồng. Bác xem kỹ giá đó ở bước ký; thấy thấp thì nhắn bên mua hoặc không ký.</p>`;
     hanhDong = `<div data-r="khung">
         <div class="ba-nut"><button type="button" class="nut chinh-nut" data-r="dong-y">Đồng ý ${soVN(v.price_vnd)} đ/kg</button><button type="button" class="nut phu-nut" data-r="tra-gia" ${ct.luot_tra_gia_con > 0 ? "" : "disabled"}>Đưa giá mới</button></div>
         <button type="button" class="nut nut-do" data-r="khong-ban" style="width:100%;margin-top:8px">Không bán</button></div>`;

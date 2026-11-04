@@ -578,6 +578,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       const j = r.headers['content-type']?.toString().includes('json') ? r.json() : null;
       return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j };
     };
+    m.DANG_DUNG.set(nd.thanhVien.orgCode, Date.now());
     return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId]) };
   });
   // Bản trình diễn: chọn vai xong rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu khách.
@@ -585,6 +586,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     thu(); const nd = await bo.xacThuc(req);
     const m = await import('../demo/doi-tac-ao.ts');
     const b = z.object({ gan: z.record(z.string()).optional() }).parse(req.body ?? {});
+    m.DANG_DUNG.set(nd.thanhVien.orgCode, Date.now());
     return { doi_tac: m.rutTep(nd.thanhVien.orgCode, Math.random, b.gan) };
   });
   // Bản trình diễn — đạo diễn: đặt kịch bản cho lần nghiệm thu kế tiếp của bên mua ảo (hạ loại 10% / trả lại 80%).
@@ -616,6 +618,8 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     return { token: r.token, user: hoSo(r.nguoi_dung), canh_bao: 'Chỉ môi trường thử: đóng vai bên kia.' };
   });
   app.get('/v1/test/sms/:phone', async (req) => { thu(); return ht.phien.hopThuSms.get(P(req).phone) ?? []; });
+  // Hộ/tổ chức đang có người thử (30 phút gần nhất) → màn chọn vai ghi chú để người khác chọn hộ khác.
+  app.get('/v1/test/dang-dung', async () => { thu(); return (await import('../demo/doi-tac-ao.ts')).dangDung(); });
   app.get('/v1/test/accounts', async () => { thu(); return ht.db.doc((t) => t.q(`SELECT u.display_name, replace(convert_from(c.phone_enc,'UTF8'),'TEST-PLAINTEXT:','') phone, o.code org_code, o.display_name org_name, o.kind org_kind, o.can_sell, o.can_buy,
       coalesce((SELECT string_agg(r.role_code,',') FROM core.membership_roles r WHERE r.membership_id=m.id),'') roles, m.approval_limit_vnd::text approval_limit_vnd,
       (SELECT string_agg(role_code,',') FROM ops.staff_assignments s WHERE s.user_id=u.id) staff_roles

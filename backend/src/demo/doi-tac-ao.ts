@@ -56,6 +56,11 @@ const GIA_MUA: Record<string, number> = { 'XOAI_CAT_CHU|L1': 25000, 'XOAI_CAT_CH
   'LUA_TUOI|OM18-am25': 6600, 'SAU_RIENG|A': 75000, 'BUOI_DA_XANH|L1': 32000, 'THANH_LONG|L1': 18000, 'THANH_LONG|L2': 9000, 'CA_TRA|0.8-1.2': 30000 };
 let dem = 0;
 const DA_LOI = new Set<string>();
+/** Tổ chức có người thật mở app trong 30 phút gần nhất (mã → giờ thật, ms). AI không bao giờ đóng vai các tổ chức này,
+ *  kể cả khi vòng do người khác gọi — tránh AI ký/làm thay hộ đang có người thử (góp ý 04/11). */
+export const DANG_DUNG = new Map<string, number>();
+export const HAN_DANG_DUNG_MS = 30 * 60e3;
+export const dangDung = (bayGio = Date.now()) => [...DANG_DUNG].filter(([, t]) => bayGio - t < HAN_DANG_DUNG_MS).map(([tc]) => tc);
 const DA_TRA_LOI = new Set<string>();
 const khoa = () => `ao-${Date.now().toString(36)}-${(dem++).toString(36)}`;
 
@@ -76,7 +81,7 @@ export interface ViecAo { to_chuc: string; viec: string; doi_tuong: string; ket_
 export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = []): Promise<ViecAo[]> {
   const nhat_ky: ViecAo[] = [];
   const vai = async (phone: string) => (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
-  const toChucThat = new Set<string>();
+  const toChucThat = new Set<string>(dangDung());
   for (const p of nguoiThat) { if (p.startsWith('TC-')) { toChucThat.add(p); continue; } const v = await vai(p); if (v?.user?.org?.code) toChucThat.add(v.user.org.code); }
   const post = (u: string, b: any, t: string) => goi('POST', u, u.startsWith('/v1/otp/') || u.startsWith('/v1/sim/') ? b : { idempotency_key: khoa(), ...b }, t);
   // Danh sách có phân trang trả {items, …} → lấy mảng items cho mọi vòng lặp bên dưới.
