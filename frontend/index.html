@@ -320,7 +320,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
       </div>
       <div class="giu"><span>Ngân hàng đối tác đang giữ cọc 30%</span><b class="so" id="p-coc">3.510.000 đ</b></div>
       <div class="dk">
-        <label for="p-nhan"><span class="hang"><span>Bên mua nhận hàng</span><span class="so" id="p-pt">20%</span></span>
+        <label for="p-nhan"><span class="hang"><span>Bên mua giữ lại sau nghiệm thu</span><span class="so" id="p-pt">100 / 500 kg · 20%</span></span>
           <input id="p-nhan" type="range" min="0" max="100" step="10" value="20" aria-describedby="p-chu">
         </label>
         <div class="cong-tac"><span id="p-anh-ten">Phần trả lại có ảnh nghiệm thu</span><button id="p-anh" type="button" role="switch" aria-checked="true" aria-labelledby="p-anh-ten"></button></div>
@@ -520,7 +520,7 @@ const itDong = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const GIA_TRI = 11700000, COC = 3510000;
 function tinh() {
   const pt = Number($("p-nhan").value), coAnh = $("p-anh").getAttribute("aria-checked") === "true";
-  $("p-pt").textContent = pt + "%";
+  $("p-pt").textContent = `${500 * pt / 100} / 500 kg · ${pt}%`;
   if (!coAnh && pt < 100) { // thiếu ảnh: chưa đủ điều kiện chốt, không suy ra kết quả nào
     ["p-chi", "p-hoan", "p-thang"].forEach((id) => { $(id).textContent = "—"; });
     $("p-v1").style.width = "0%"; $("p-v2").style.width = "0%";
