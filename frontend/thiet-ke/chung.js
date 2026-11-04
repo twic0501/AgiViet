@@ -102,10 +102,13 @@ export function taoGiong(cau, toc) {
   const v = chonGiong(); if (v) u.voice = v;
   return u;
 }
+// Máy không có bộ đọc (vd Chrome trên Linux chưa cài speech-dispatcher) thì nói rõ thay vì im lặng
+const baoKhongGiong = () => baoNhanh("Máy này chưa có giọng đọc nên chưa phát tiếng được. Trên điện thoại bác sẽ nghe bình thường.");
 export function docTo(doan) {
   return new Promise((xong) => {
     try {
-      if (!("speechSynthesis" in window)) return xong();
+      if (!("speechSynthesis" in window)) { baoKhongGiong(); return xong(); }
+      if (!speechSynthesis.getVoices().length) setTimeout(() => { if (!speechSynthesis.getVoices().length) baoKhongGiong(); }, 400);
       speechSynthesis.cancel();
       const cau = String(doan || "").split(/(?<=[.!?…:;])\s+/).map((c) => c.trim()).filter(Boolean);
       if (!cau.length) return xong();
@@ -566,17 +569,21 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
   setTimeout(vong, 2500); setInterval(vong, 8000);
 })();
 // Tính năng chưa làm (gắn data-dang-phat-trien="Tên"): bấm vào báo đang phát triển thay vì im lặng hay đi trang trống.
-if (typeof document !== "undefined") document.addEventListener("click", (e) => {
-  const n = e.target.closest?.("[data-dang-phat-trien]"); if (!n) return;
-  e.preventDefault(); e.stopImmediatePropagation();
+// Thông báo nhanh dùng chung (đang phát triển, máy chưa có giọng đọc…)
+export function baoNhanh(chu) {
   let t = document.getElementById("agv-dang-phat-trien");
   if (!t) {
     t = Object.assign(document.createElement("div"), { id: "agv-dang-phat-trien" }); t.setAttribute("role", "status");
     t.style.cssText = "position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;width:max-content;max-width:min(92vw,420px);padding:12px 16px;border-radius:12px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.45 inherit;box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center";
     document.body.append(t);
   }
-  t.textContent = `${n.dataset.dangPhatTrien || "Tính năng này"} đang phát triển, sẽ có ở bản sau.`;
-  t.hidden = false; clearTimeout(t._an); t._an = setTimeout(() => (t.hidden = true), 2800);
+  t.textContent = chu;
+  t.hidden = false; clearTimeout(t._an); t._an = setTimeout(() => (t.hidden = true), 3600);
+}
+if (typeof document !== "undefined") document.addEventListener("click", (e) => {
+  const n = e.target.closest?.("[data-dang-phat-trien]"); if (!n) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  baoNhanh(`${n.dataset.dangPhatTrien || "Tính năng này"} đang phát triển, sẽ có ở bản sau.`);
 }, true);
 
 // Mở được khi mạng yếu/mất: service worker lưu vỏ app (ưu tiên mạng, mất mạng dùng bản đã lưu), KHÔNG lưu API/phiên/giao dịch.
