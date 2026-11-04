@@ -31,6 +31,7 @@ from .mo_hinh import QuetTinRequest
 GOC=Path(__file__).resolve().parents[1]
 app=FastAPI(title='AgiViet AI nội bộ',version=PHIEN_BAN)
 LLM_SLOT=threading.BoundedSemaphore(1)
+CHO_SLOT_S=4.0
 STT_SLOT=threading.BoundedSemaphore(1)
 AUDIT_LOCK=threading.Lock()
 MAX_BODY=2_000_000
@@ -149,9 +150,16 @@ class HoiTroLyRequest(BaseModel):
 @app.post('/assistant/ask')
 def assistant_ask(req: HoiTroLyRequest, request: Request):
     # Trợ lý hỏi đáp: rào chặn lừa/ngoài lề/số bịa nằm trong tro_ly; chỉ một lượt gọi mô hình tại một thời điểm
-    from .tro_ly import tra_loi
-    with LLM_SLOT:
-        k = tra_loi(req.cau, req.vai, req.du_lieu)
+    from .tro_ly import tra_loi, TraLoi, la_lua, trong_pham_vi, CAU_LUA, CAU_NGOAI_LE
+    from .nha_cung_cap import CAU_SOAN_SAN
+    # Lừa / ngoài lề trả ngay, không chờ chỗ; còn lại chờ chỗ gọi mô hình tối đa CHO_SLOT_S rồi trả câu soạn sẵn
+    # (4 s chờ + 2 bậc × 3,5 s < 15 s backend chờ)
+    if la_lua(req.cau): k = TraLoi(CAU_LUA[req.vai], 'lua')
+    elif not trong_pham_vi(req.cau): k = TraLoi(CAU_NGOAI_LE[req.vai], 'ngoai_le')
+    elif LLM_SLOT.acquire(timeout=CHO_SLOT_S):
+        try: k = tra_loi(req.cau, req.vai, req.du_lieu)
+        finally: LLM_SLOT.release()
+    else: k = TraLoi(CAU_SOAN_SAN, 'soan_san', 'ban')
     request.state.tom_tat = {'loai': k.loai, 'nguon': k.nguon}
     return {'tra_loi': k.van_ban, 'loai': k.loai, 'nguon': k.nguon}
 
