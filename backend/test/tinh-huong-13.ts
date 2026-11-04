@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Lỗi chặn từ bảng đối chiếu (NV11, NV22, NV24–NV26, B08, B18): tái hiện rồi kiểm sửa.
 import { SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -20,7 +21,7 @@ them('DC-NV11', 'Người bán (chủ vườn) có quyền bắt đầu cân t�
 them('DC-NV26', 'GET đợt giao trả cờ ký nghiệm thu seller_agreed_at/buyer_agreed_at trên ket_qua', async (may, th) => {
   const b = await dangNhapCacBen(may);
   await chaoVaDongY(b, null); await lapVaKy(b, null); await chuyenCoc(b); await traThangVaXacNhan(b, 32200000); await chuanBiGiao(b);
-  await may.he('/v1/test/clock', { set: '2026-11-04T06:30:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T06:30:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/start-check`, { qr_token: qr.data.qr_token });
   await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/acceptance`, { pin: '2468', weighed_g: 2000000, lines: [{ kind: 'accepted', qty_g: 2000000 }] });
@@ -72,7 +73,7 @@ them('DC-NV22', 'Người bán xem mọi đợt giao của đơn, đơn chỉ ra
   await b.nam.ok(`/v1/offers/${o.id}/accept`, {});
   const d = await thinh.ok('/v1/seasonal-orders', { offer_id: o.id, delivery_mode: 'at_farm', transport_by: 'buyer', payment_timing: 'after_days', pay_after_days: 7, designated_receiver_user_id: thinh.userId,
     vu: { loai: 'offtake', deposit_vnd: 2000000, harvest_from: '2026-12-01', harvest_to: '2027-01-31',
-      batches: [{ qty_g: 1000000, from: '2026-12-10T06:00:00+07:00', to: '2026-12-15T18:00:00+07:00' }, { qty_g: 1000000, from: '2027-01-10T06:00:00+07:00', to: '2027-01-15T18:00:00+07:00' }] } });
+      batches: [{ qty_g: 1000000, from: ng('2026-12-10T06:00:00+07:00'), to: ng('2026-12-15T18:00:00+07:00') }, { qty_g: 1000000, from: '2027-01-10T06:00:00+07:00', to: '2027-01-15T18:00:00+07:00' }] } });
   const c1 = await thinh.otpKy(d.data.document_id); await thinh.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c1, code: '123456' });
   const c2 = await b.nam.otpKy(d.data.document_id); await b.nam.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
   const hd = (await thinh.get(`/v1/orders/${d.id}/deposit-instruction`)).json;
@@ -87,7 +88,7 @@ them('DC-NV22', 'Người bán xem mọi đợt giao của đơn, đơn chỉ ra
 them('DC-B18', 'Người bán từ chối đơn: giữ lý do cụ thể khi đọc lại', async (may, th) => {
   const b = await dangNhapCacBen(may);
   await chaoVaDongY(b, null);
-  const d2 = await b.ha.ok('/v1/orders', { offer_id: b.offerId, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'partner_for_buyer', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'before_loading', designated_receiver_user_id: b.phuc.userId, silent_accept_hours: 2 });
+  const d2 = await b.ha.ok('/v1/orders', { offer_id: b.offerId, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'partner_for_buyer', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'before_loading', designated_receiver_user_id: b.phuc.userId, silent_accept_hours: 2 });
   const c3 = await b.ha.otpKy(d2.data.document_id); await b.ha.ok(`/v1/orders/${d2.id}/sign`, { challenge_id: c3, code: '123456' });
   const tc = await b.nam.ok(`/v1/orders/${d2.id}/decline`, { reason: 'Vườn bị sâu đục trái, không đủ hàng loại 1' });
   th.bang('Đơn đóng', tc.status, 'closed');

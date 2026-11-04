@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Đề nghị sửa, phụ lục (09: TH-040, TH-039 biến thể đổi ngày, tăng lượng có cọc bổ sung, im lặng = không đồng ý).
 import { May, TinhHuong, SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -46,7 +47,7 @@ them('TH-040', 'Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục
   await baoTra(b, b.lan, p.id, 24150000);
   await xacNhan(b.nam, p.id, 24150000, 'full', 'FT-PL-1');
   await chuanBiGiao(b);
-  await may.he('/v1/test/clock', { set: '2026-11-04T06:30:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T06:30:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/start-check`, { qr_token: qr.data.qr_token });
   await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/acceptance`, { pin: '2468', weighed_g: 1500000, lines: [{ kind: 'accepted', qty_g: 1500000 }] });
@@ -63,7 +64,7 @@ them('TH-040', 'Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục
 them('TH-040s', 'Đề nghị giảm lượng, bên mua im lặng 24 giờ = không đồng ý', async (may, th) => {
   const b = await toiHieuLuc(may);
   const dn = await b.nam.ok(`/v1/orders/${b.orderId}/amendments`, { kind: 'decrease_qty', payload: { qty_g: 1800000 }, notice_days_before_delivery: 1 });
-  const lan2 = await b.nam.post(`/v1/orders/${b.orderId}/amendments`, { kind: 'change_date', payload: { delivery_from: '2026-11-05T06:00:00+07:00', delivery_to: '2026-11-05T12:00:00+07:00' } });
+  const lan2 = await b.nam.post(`/v1/orders/${b.orderId}/amendments`, { kind: 'change_date', payload: { delivery_from: ng('2026-11-05T06:00:00+07:00'), delivery_to: ng('2026-11-05T12:00:00+07:00') } });
   th.bang('Một đề nghị mở mỗi lúc', lan2.json.errors?.[0]?.code, 'DANG_CO_DE_NGHI');
   await may.he('/v1/test/clock', { advance_minutes: 24 * 60 + 1 });
   const ds = (await b.nam.get(`/v1/orders/${b.orderId}/amendments`)).json;

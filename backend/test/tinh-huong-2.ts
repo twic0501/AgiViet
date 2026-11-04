@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Tình huống tiền, hủy, quyền, tài liệu, bảo mật (docs/nghiep-vu/09).
 import { May, TinhHuong, SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -14,7 +15,7 @@ async function toiHieuLuc(may: May, th: TinhHuong | null) {
   return b;
 }
 
-const DON_CO_BAN = (offerId: string) => ({ offer_id: offerId, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'before_loading' });
+const DON_CO_BAN = (offerId: string) => ({ offer_id: offerId, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'before_loading' });
 
 them('TH-003', 'Đăng lô: chặn cách ly, cảnh báo giá, ảnh chụp trong app, giá kín không lộ', async (may, th) => {
   const nam = await may.dangNhap(SDT.nam);
@@ -232,7 +233,7 @@ them('TH-024', 'Trả lại nhiều: người bán còn phải hoàn ngoài app'
   const b = await toiHieuLuc(may, th);
   await traThangVaXacNhan(b, 32200000);
   await chuanBiGiao(b);
-  await may.he('/v1/test/clock', { set: '2026-11-04T06:30:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T06:30:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/start-check`, { ma_6_so: qr.data.ma_6_so });
   const dong = (anh?: string) => [{ kind: 'accepted', qty_g: 1200000 }, { kind: 'downgraded', qty_g: 100000, reason_code: 'TRAY_VO' }, { kind: 'rejected', qty_g: 700000, reason_code: 'DAP', evidence_document_id: anh }];
@@ -412,7 +413,7 @@ them('TH-061', 'Người giúp bị chặn đúng chỗ ở API', async (may, th
   const huy = await teo.post(`/v1/orders/${b.orderId}/cancellation-requests`, {});
   th.bang('Người giúp không xin hủy', huy.json.errors?.[0]?.code, 'KHONG_CO_QUYEN');
   // Bản 23: không tạo mới ủy quyền người giúp.
-  const uq = await b.nam.post('/v1/org/delegations', { helper_user_id: teo.userId, actions: ['lot.draft', 'lot.update'], valid_to: '2026-12-31T00:00:00+07:00' });
+  const uq = await b.nam.post('/v1/org/delegations', { helper_user_id: teo.userId, actions: ['lot.draft', 'lot.update'], valid_to: ng('2026-12-31T00:00:00+07:00') });
   th.bang('Không tạo mới ủy quyền người giúp (bản 23)', uq.json.errors?.[0]?.details?.thong_bao, 'Đã bỏ vai người giúp (bản 23)');
 });
 

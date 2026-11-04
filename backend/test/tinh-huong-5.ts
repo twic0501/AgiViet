@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Tình huống giao nhận: giao tại kho, dung sai, vượt, thiếu, giao bù, phản đối dòng tại vườn (09 mục E).
 import { May, TinhHuong, SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -8,7 +9,7 @@ async function toiSanSang(may: May) {
   const b = await dangNhapCacBen(may);
   await chaoVaDongY(b, null); await lapVaKy(b, null); await chuyenCoc(b);
   await traThangVaXacNhan(b, 32200000); await chuanBiGiao(b);
-  await may.he('/v1/test/clock', { set: '2026-11-04T06:30:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T06:30:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/start-check`, { qr_token: qr.data.qr_token });
   return b;
@@ -28,7 +29,7 @@ them('TH-007', 'Giao tại kho bên mua, người bán thuê xe, trả khi nhậ
   const lot = await may.v<string>(`SELECT id FROM core.lots WHERE code='L-0420'`);
   const o = await ha.ok('/v1/offers', { direction: 'buyer_bid', lot_id: lot, qty_g: 1000000, price_vnd: 24000 });
   await sau.ok(`/v1/offers/${o.id}/accept`, {});
-  const d = await ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_buyer_warehouse', transport_by: 'partner_for_seller', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'on_receipt', designated_receiver_user_id: phuc.userId });
+  const d = await ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_buyer_warehouse', transport_by: 'partner_for_seller', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'on_receipt', designated_receiver_user_id: phuc.userId });
   th.bang('C 7.200.000', d.data.tinh.coc_vnd, '7200000');
   th.bang('F 72.000', d.data.tinh.phi_vnd, '72000');
   for (const [p, extra] of [[ha, {}], [sau, { commitment_ack: true, low_downgrade_price_ack: true }]] as const) {
@@ -42,7 +43,7 @@ them('TH-007', 'Giao tại kho bên mua, người bán thuê xe, trả khi nhậ
   const did = don.dot_giao[0].id;
   const xe = await sau.ok(`/v1/deliveries/${did}/trip`, { plate_no: '66C-678.90', freight_vnd: 1200000 });
   th.bang('Người bán đặt xe, đợt sẵn sàng', xe.data.delivery_status, 'ready');
-  await may.he('/v1/test/clock', { set: '2026-11-04T07:00:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T07:00:00+07:00') });
   const qr = await phuc.ok(`/v1/deliveries/${did}/receipt-qr`, {});
   const xh = await sau.ok(`/v1/deliveries/${did}/ship`, { loaded_g: 1000000, ma_6_so: qr.data.ma_6_so, seal_code: 'M-3001' });
   th.bang('Xuất hàng: đang vận chuyển', xh.status, 'in_transit');
@@ -119,7 +120,7 @@ them('TH-038', 'Giao thiếu 1.850 kg không báo trước: kết thúc phần t
 them('TH-039', 'Giao bù 150 kg ở đợt 2; không quyết toán ở đợt 1', async (may, th) => {
   const b = await toiSanSang(may);
   await guiKq(b, 1850, [['accepted', 1850]]);
-  const r = await b.nam.ok(`/v1/deliveries/${b.deliveryId}/acceptance/agree`, { pin: '2468', shortfall: { choice: 'backfill', backfill_from: '2026-11-05T06:00:00+07:00', backfill_to: '2026-11-05T12:00:00+07:00' } });
+  const r = await b.nam.ok(`/v1/deliveries/${b.deliveryId}/acceptance/agree`, { pin: '2468', shortfall: { choice: 'backfill', backfill_from: ng('2026-11-05T06:00:00+07:00'), backfill_to: ng('2026-11-05T12:00:00+07:00') } });
   const d2 = r.data.xu_ly_thieu?.delivery_id;
   th.bang('Đợt 2 lượng 150 kg', r.data.xu_ly_thieu?.planned_g, '150000');
   const x = await denVaChot(b, 1845);
@@ -127,7 +128,7 @@ them('TH-039', 'Giao bù 150 kg ở đợt 2; không quyết toán ở đợt 1'
   b.deliveryId = d2;
   const xe = await b.ha.ok(`/v1/deliveries/${d2}/trip`, { plate_no: '66C-123.45', freight_vnd: 500000 });
   th.bang('Đợt 2 sẵn sàng (không cần trả thêm)', xe.data.delivery_status, 'ready');
-  await may.he('/v1/test/clock', { set: '2026-11-05T07:00:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-05T07:00:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${d2}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${d2}/start-check`, { qr_token: qr.data.qr_token });
   await guiKq(b, 150, [['accepted', 150]]);

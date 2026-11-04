@@ -1,8 +1,9 @@
+import { ng } from './ngay.ts';
 // Phiên 17: xem trước hệ quả hủy — đơn chưa ký không còn 500; lý do lạ/sai phía bị từ chối; đơn đã đóng bị chặn.
 import { them } from './tinh-huong.ts';
 import { dangNhapCacBen, chaoVaDongY } from './luong.ts';
 
-const DON = (offerId: string) => ({ offer_id: offerId, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'before_loading' });
+const DON = (offerId: string) => ({ offer_id: offerId, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'before_loading' });
 
 them('TH-HUY-XEM-TRUOC', 'Xem trước hủy: đơn chưa ký không lỗi 500, kiểm lý do và trạng thái', async (may, th) => {
   const b = await dangNhapCacBen(may);

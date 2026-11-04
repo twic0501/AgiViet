@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Các bước dựng sẵn của luồng thuận HĐ-2001 (TH-006) để tái dùng ở nhiều tình huống.
 import { May, Phien, SDT, TinhHuong } from './khung.ts';
 
@@ -36,7 +37,7 @@ export async function lapVaKy(b: BoiCanh, th: TinhHuong | null, dk: DieuKhoan = 
   const phucId = b.phuc.userId;
   const d = await b.ha.ok('/v1/orders', {
     offer_id: b.offerId, downgrade_price_vnd: 15000, delivery_mode: dk.delivery_mode ?? 'at_farm', transport_by: dk.transport_by ?? 'partner_for_buyer',
-    delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: dk.payment_timing ?? 'before_loading',
+    delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: dk.payment_timing ?? 'before_loading',
     pay_after_days: dk.pay_after_days, designated_receiver_user_id: phucId, silent_accept_hours: dk.silent_accept_hours === undefined ? 2 : dk.silent_accept_hours,
   });
   b.orderId = d.id; b.docId = d.data.document_id; b.orderCode = d.data.code;
@@ -97,7 +98,7 @@ export async function chuanBiGiao(b: BoiCanh) {
 }
 
 export async function nghiemThuTaiVuon(b: BoiCanh, dong: { kind: string; qty_kg: number; reason_code?: string; anh?: boolean }[], canKg?: number) {
-  await b.may.he('/v1/test/clock', { set: '2026-11-04T06:30:00+07:00' });
+  await b.may.he('/v1/test/clock', { set: ng('2026-11-04T06:30:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/start-check`, { qr_token: qr.data.qr_token, plate_no: '66C-123.45' });
   const tong = canKg ?? dong.reduce((a, x) => a + x.qty_kg, 0);

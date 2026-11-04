@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // App bán 0056–0057: mặt hàng xác minh, nhật ký canh tác, bán gấp, đặt trước / bao tiêu theo vụ.
 import { SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -62,7 +63,7 @@ them('TH-NV-04', 'Đặt trước khi hái: lập, ký, cọc 30%; danh sách/ch
   await b.nam.ok(`/v1/offers/${o.id}/accept`, {});
   const d = await thinh.post('/v1/seasonal-orders', {
     offer_id: o.id, delivery_mode: 'at_farm', transport_by: 'buyer', payment_timing: 'before_loading', designated_receiver_user_id: thinh.userId,
-    vu: { loai: 'pre_harvest', qty_max_g: 1200000, harvest_from: '2026-12-01', harvest_to: '2026-12-20', batches: [{ qty_g: 1000000, from: '2026-12-10T06:00:00+07:00', to: '2026-12-15T18:00:00+07:00' }] },
+    vu: { loai: 'pre_harvest', qty_max_g: 1200000, harvest_from: '2026-12-01', harvest_to: '2026-12-20', batches: [{ qty_g: 1000000, from: ng('2026-12-10T06:00:00+07:00'), to: ng('2026-12-15T18:00:00+07:00') }] },
   });
   th.kiem('Lập hợp đồng đặt trước', d.status === 200, d.json);
   if (d.status !== 200) return;
@@ -107,7 +108,7 @@ them('TH-NV-05', 'Từ chối đề nghị chốt lượng', async (may, th) => 
   const o = await thinh.ok('/v1/offers', { direction: 'buyer_bid', lot_id: lot, qty_g: 1000000, price_vnd: 23000 });
   await b.nam.ok(`/v1/offers/${o.id}/accept`, {});
   const d = await thinh.ok('/v1/seasonal-orders', { offer_id: o.id, delivery_mode: 'at_farm', transport_by: 'buyer', payment_timing: 'before_loading', designated_receiver_user_id: thinh.userId,
-    vu: { loai: 'pre_harvest', qty_max_g: 1200000, harvest_from: '2026-12-01', harvest_to: '2026-12-20', batches: [{ qty_g: 1000000, from: '2026-12-10T06:00:00+07:00', to: '2026-12-15T18:00:00+07:00' }] } });
+    vu: { loai: 'pre_harvest', qty_max_g: 1200000, harvest_from: '2026-12-01', harvest_to: '2026-12-20', batches: [{ qty_g: 1000000, from: ng('2026-12-10T06:00:00+07:00'), to: ng('2026-12-15T18:00:00+07:00') }] } });
   const id = d.id; const docId = d.data.document_id;
   const c1 = await thinh.otpKy(docId); await thinh.ok(`/v1/orders/${id}/sign`, { challenge_id: c1, code: '123456' });
   const c2 = await b.nam.otpKy(docId); await b.nam.ok(`/v1/orders/${id}/sign`, { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true });
@@ -128,7 +129,7 @@ them('TH-NV-06', 'Bao tiêu theo vụ 2 đợt: lập, ký, cọc vụ; mất m�
   await b.nam.ok(`/v1/offers/${o.id}/accept`, {});
   const d = await thinh.post('/v1/seasonal-orders', { offer_id: o.id, delivery_mode: 'at_farm', transport_by: 'buyer', payment_timing: 'after_days', pay_after_days: 7, designated_receiver_user_id: thinh.userId,
     vu: { loai: 'offtake', deposit_vnd: 2000000, materials_advance_vnd: 1000000, harvest_from: '2026-12-01', harvest_to: '2027-01-31',
-      batches: [{ qty_g: 1000000, from: '2026-12-10T06:00:00+07:00', to: '2026-12-15T18:00:00+07:00', materials_offset_vnd: 1000000 }, { qty_g: 1000000, from: '2027-01-10T06:00:00+07:00', to: '2027-01-15T18:00:00+07:00' }] } });
+      batches: [{ qty_g: 1000000, from: ng('2026-12-10T06:00:00+07:00'), to: ng('2026-12-15T18:00:00+07:00'), materials_offset_vnd: 1000000 }, { qty_g: 1000000, from: '2027-01-10T06:00:00+07:00', to: '2027-01-15T18:00:00+07:00' }] } });
   th.kiem('Lập bao tiêu 2 đợt', d.status === 200, d.json);
   if (d.status !== 200) return;
   const id = d.json.id; const docId = d.json.data.document_id;

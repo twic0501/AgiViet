@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Truy vấn cho giao diện (docs/frontend/de-xuat-backend.md mức Cao).
 import { SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -22,7 +23,7 @@ them('GD-02', 'Cờ ký phản ánh hạn mức và duyệt nội bộ', async (
   const b = await dangNhapCacBen(may); const thinh = await may.dangNhap(SDT.thinh);
   const o = await b.ha.ok('/v1/offers', { direction: 'buyer_bid', lot_id: b.lotId, qty_g: 2000000, price_vnd: 26000 });
   await b.nam.ok(`/v1/offers/${o.id}/accept`, {});
-  const d = await b.ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'before_loading' });
+  const d = await b.ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'before_loading' });
   let x = (await b.ha.get(`/v1/orders/${d.id}`)).json;
   th.bang('Chưa được ký', x.ky.duoc_ky, false);
   th.bang('Cần duyệt nội bộ', x.ky.can_duyet_noi_bo, true);
@@ -55,7 +56,7 @@ them('GD-04', 'Danh sách tranh chấp của đơn sau khi tải lại', async (
   await chaoVaDongY(b, null); await lapVaKy(b, null); await chuyenCoc(b);
   const { traThangVaXacNhan, chuanBiGiao } = await import('./luong.ts');
   await traThangVaXacNhan(b, 32200000); await chuanBiGiao(b);
-  await may.he('/v1/test/clock', { set: '2026-11-04T06:30:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T06:30:00+07:00') });
   const qr = await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/receipt-qr`, {});
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/start-check`, { qr_token: qr.data.qr_token });
   await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/acceptance`, { pin: '2468', weighed_g: 2000000, lines: [{ kind: 'accepted', qty_g: 1880000 }, { kind: 'downgraded', qty_g: 120000, reason_code: 'TRAY_VO' }] });

@@ -1,3 +1,4 @@
+import { ng } from './ngay.ts';
 // Tình huống trả sau, duyệt nội bộ, giữ lệnh chi tài khoản mới (D-07).
 import { SDT } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -21,7 +22,7 @@ them('TH-009A', 'Trả sau 7 ngày (bưởi, vựa), trả đúng hạn; lệnh 
   await may.ht.db.tx({ actor: 'system' }, (t) => t.voiHeThong(() => t.q(`SELECT cmd.activate_bank_account($1)`, [moi])));
   const o = await tu.ok('/v1/offers', { direction: 'buyer_bid', lot_id: lot, qty_g: 3000000, price_vnd: 30000 });
   await bay.ok(`/v1/offers/${o.id}/accept`, {});
-  const d = await tu.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 20000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'after_days', pay_after_days: 7, designated_receiver_user_id: tu.userId, silent_accept_hours: 2 });
+  const d = await tu.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 20000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'after_days', pay_after_days: 7, designated_receiver_user_id: tu.userId, silent_accept_hours: 2 });
   th.bang('G 90.000.000', d.data.tinh.gia_tri_vnd, '90000000');
   th.bang('C 27.000.000', d.data.tinh.coc_vnd, '27000000');
   th.bang('F 900.000 (Miễn phí, đơn đầu 1%)', d.data.tinh.phi_vnd, '900000');
@@ -38,7 +39,7 @@ them('TH-009A', 'Trả sau 7 ngày (bưởi, vựa), trả đúng hạn; lệnh 
   const did = don.dot_giao[0].id;
   const xe = await tu.ok(`/v1/deliveries/${did}/trip`, { plate_no: '66C-678.90', freight_vnd: 1500000 });
   th.bang('Không cần trả trước bốc: sẵn sàng ngay', xe.data.delivery_status, 'ready');
-  await may.he('/v1/test/clock', { set: '2026-11-04T07:00:00+07:00' });
+  await may.he('/v1/test/clock', { set: ng('2026-11-04T07:00:00+07:00') });
   const qr = await tu.ok(`/v1/deliveries/${did}/receipt-qr`, {});
   await bay.ok(`/v1/deliveries/${did}/start-check`, { qr_token: qr.data.qr_token });
   const prof = (await tu.get('/v1/products/BUOI_DA_XANH/profile')).json;
@@ -79,7 +80,7 @@ them('TH-052a', 'Đơn vượt hạn mức người lập: phải duyệt nội 
   const thinh = await may.dangNhap(SDT.thinh);
   const o = await b.ha.ok('/v1/offers', { direction: 'buyer_bid', lot_id: b.lotId, qty_g: 2000000, price_vnd: 26000 });
   await b.nam.ok(`/v1/offers/${o.id}/accept`, {});
-  const d = await b.ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: '2026-11-04T06:00:00+07:00', delivery_to: '2026-11-04T12:00:00+07:00', payment_timing: 'before_loading' });
+  const d = await b.ha.ok('/v1/orders', { offer_id: o.id, downgrade_price_vnd: 15000, delivery_mode: 'at_farm', transport_by: 'buyer', delivery_from: ng('2026-11-04T06:00:00+07:00'), delivery_to: ng('2026-11-04T12:00:00+07:00'), payment_timing: 'before_loading' });
   th.bang('Giá trị 52.000.000 > hạn mức 50.000.000', d.data.tinh.gia_tri_vnd, '52000000');
   const c = await b.ha.otpKy(d.data.document_id);
   const k = await b.ha.post(`/v1/orders/${d.id}/sign`, { challenge_id: c, code: '123456' });
