@@ -91,6 +91,7 @@ export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
 /** Câu soạn sẵn theo BƯỚC giao dịch (dùng khi chatbot lỗi): ưu tiên đúng bước hơn đúng từ khóa. */
 export function traLoiTheoBuoc(tin: string, phia: 'buyer' | 'seller', buoc: string): string {
   if (buoc === 'da_dong_y') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em gửi hợp đồng qua app, bác xem kỹ rồi ký giúp em nha.' : 'Cảm ơn anh/chị đã đồng ý giá. Anh/chị gửi hợp đồng qua app để bên tôi xem và ký nhé.';
+  if (buoc === 'soan_hd') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em đang soạn hợp đồng, xong em gửi qua app để bác xem và ký nha.' : 'Cảm ơn anh/chị. Khi anh/chị gửi hợp đồng qua app, bên tôi sẽ xem và ký.';
   if (buoc === 'cho_ky') return phia === 'buyer' ? 'Hợp đồng đang chờ ký trong app, bác xem kỹ các điều khoản rồi ký giúp em nha.' : 'Hợp đồng đang chờ ký trong app, anh/chị xem rồi ký giúp nhé.';
   return traLoi(tin, phia);
 }
@@ -103,17 +104,17 @@ const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval
   active: 'đã có hiệu lực, cọc ngân hàng đang giữ, chờ tới ngày giao', in_delivery: 'đang giao nhận', completed: 'đã hoàn tất', cancelled: 'đã hủy', disputed: 'đang có tranh chấp' };
 
 /** Chatbot đối tác (dịch vụ AI /doi-tac/tra-loi, gemma4 trên Ollama → NIM); null nếu không gọi được hoặc câu bị bỏ (bịa số). */
-async function hoiChatbot(aiUrl: string | null | undefined, body: Record<string, string>): Promise<string | null> {
+async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null | undefined, body: Record<string, string>): Promise<string | null> {
   if (!aiUrl) return null;
   try {
-    const r = await fetch(`${aiUrl}/doi-tac/tra-loi`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) });
+    const r = await fetch(`${aiUrl}/doi-tac/tra-loi`, { method: 'POST', headers: { 'content-type': 'application/json', ...(aiKey ? { 'x-ai-key': aiKey } : {}) }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) });
     if (!r.ok) return null;
     const j: any = await r.json(); const c = String(j?.tra_loi ?? '').trim();
     return c ? c.slice(0, 500) : null;
   } catch { return null; }
 }
 
-export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null): Promise<ViecAo[]> {
+export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null, aiKey?: string | null): Promise<ViecAo[]> {
   const nhat_ky: ViecAo[] = [];
   const vai = async (phone: string) => (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
   const toChucThat = new Set<string>(dangDung());
@@ -217,7 +218,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       let tinhTrang = '', buocTin = '';
       if (s.order_id) {
         const d = await get(`/v1/orders/${s.order_id}`, t);
-        if (d) { tinhTrang = `Hợp đồng ${d.code ?? ''}: ${TEN_TT[d.status] ?? d.status}.`; if (d.status === 'awaiting_signatures') buocTin = 'cho_ky'; }
+        if (d) { tinhTrang = `Hợp đồng ${d.code ?? ''}: ${TEN_TT[d.status] ?? d.status}.`; buocTin = d.status === 'awaiting_signatures' ? 'cho_ky' : ['draft', 'pending_approval'].includes(d.status) ? 'soan_hd' : ''; }
       } else if (s.offer_id) {
         const of = ((await get('/v1/offers', t)) ?? []).find((x: any) => x.id === s.offer_id); const v = of?.vong_cuoi;
         if (of && v) {
@@ -229,7 +230,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           if (of.status === 'accepted') buocTin = 'da_dong_y';
         }
       }
-      const cau = (tinhTrang && await hoiChatbot(aiUrl, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
+      const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
         tinh: (phiaTin === 'buyer' ? KIEU_MUA : KIEU_BAN)[TEP.get(tc) ?? ''] ?? '', tinh_trang: tinhTrang, tin })) || traLoiTheoBuoc(tin, phiaTin, buocTin);
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
     }

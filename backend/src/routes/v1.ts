@@ -581,7 +581,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j };
     };
     m.giuHo(nd.thanhVien.orgCode, may(req));
-    return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId], ht.cfg.aiUrl) };
+    return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId], ht.cfg.aiUrl, ht.cfg.aiKey) };
   });
   // Bản trình diễn: chọn vai xong rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu khách.
   app.post('/v1/test/tep-khach', async (req) => {
