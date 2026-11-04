@@ -160,6 +160,25 @@ if (typeof window !== "undefined") { window.giongViet = { taoGiong, docTo }; try
 
 const KHOA_PHIEN = "agv-phien";
 export const luuPhien = (token) => { try { sessionStorage.setItem(KHOA_PHIEN, token); } catch {} };
+// Phiên hết hạn: API trả 401 cho đúng token đang lưu → xóa token, tải lại một lần (có ?thu= thì tạo phiên thử mới,
+// không thì về màn đăng nhập) thay vì kẹt "Thử lại" với token cũ. Cờ theo địa chỉ để không tải lại vòng vòng.
+if (typeof window !== "undefined" && !window.__agv401) {
+  window.__agv401 = true;
+  const CO = "agv-401-tai-lai", goc = window.fetch.bind(window);
+  setTimeout(() => { try { sessionStorage.removeItem(CO); } catch {} }, 8000);
+  window.fetch = async (u, o) => {
+    const r = await goc(u, o);
+    try {
+      const url = String(u?.url ?? u), h = o?.headers || {}, gui = String(h.authorization || h.Authorization || "");
+      const t = sessionStorage.getItem(KHOA_PHIEN);
+      if (r.status === 401 && /\/v1\//.test(url) && !/\/v1\/(otp|auth|test)\//.test(url) && t && gui.includes(t)) {
+        sessionStorage.removeItem(KHOA_PHIEN);
+        if (sessionStorage.getItem(CO) !== location.href) { sessionStorage.setItem(CO, location.href); location.reload(); }
+      }
+    } catch {}
+    return r;
+  };
+}
 export async function phien() {
   try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   const sdt = new URLSearchParams(location.search).get("thu");
