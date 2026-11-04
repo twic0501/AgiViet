@@ -133,7 +133,15 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   const vai = async (phone: string) => (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
   const toChucThat = new Set<string>(dangDung());
   for (const p of nguoiThat) { if (p.startsWith('TC-')) { toChucThat.add(p); continue; } const v = await vai(p); if (v?.user?.org?.code) toChucThat.add(v.user.org.code); }
-  const post = (u: string, b: any, t: string) => goi('POST', u, u.startsWith('/v1/otp/') || u.startsWith('/v1/sim/') ? b : { idempotency_key: khoa(), ...b }, t);
+  const post0 = (u: string, b: any, t: string) => goi('POST', u, u.startsWith('/v1/otp/') || u.startsWith('/v1/sim/') ? b : { idempotency_key: khoa(), ...b }, t);
+  // Như người thật đọc câu báo: lời chào / trả giá bị chặn vì lô ước tính vượt 80% thì giảm lượng về đúng phần còn lại rồi gửi lại một lần
+  const post = async (u: string, b: any, t: string) => {
+    const r = await post0(u, b, t);
+    const e = r?.json?.errors?.[0] ?? (Array.isArray(r?.json) ? null : r?.json?.error);
+    const con = Number(e?.details?.con_g ?? 0);
+    if (r && r.status === 409 && e?.code === 'VUOT_80_UOC_TINH' && con >= 1000 && b?.qty_g != null && /\/v1\/offers/.test(u)) return post0(u, { ...b, qty_g: Math.floor(con / 1000) * 1000 }, t);
+    return r;
+  };
   // Danh sách có phân trang trả {items, …} → lấy mảng items cho mọi vòng lặp bên dưới.
   const get = async (u: string, t: string) => { const r = await goi('GET', u, undefined, t); return r.status < 300 ? (Array.isArray(r.json?.items) ? r.json.items : r.json) : null; };
   const lam = async (tc: string, viec: string, dt: string, fn: () => Promise<{ status: number; json: any } | void>) => {

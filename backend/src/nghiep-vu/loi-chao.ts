@@ -18,6 +18,23 @@ async function giaThapNhatKin(t: GiaoDich, lotId: string): Promise<bigint> {
   return BigInt(await t.gtri<string>(`SELECT floor_price_vnd::text FROM core.lot_price_versions WHERE lot_id=$1 ORDER BY id DESC LIMIT 1`, [lotId]));
 }
 
+/** Lô ước tính: phần CÒN được hứa = lượng ước tính × trần (80%) − đã hứa (giữ/cam kết/đang giao/đã giao) — đúng công thức trigger
+ *  ledger.check_estimated_cap. Kiểm sớm lúc gửi / đổi lượng để người dùng không bị chặn muộn lúc đồng ý (rà soát 04/11). null = lô đã cân. */
+export async function conHuaUocTinh(t: GiaoDich, lotId: string): Promise<bigint | null> {
+  const r = await t.mot<any>(`SELECT l.qty_basis,
+      (SELECT -qty FROM ledger.qty_balances WHERE lot_id=l.id AND bucket='source')::text tong,
+      (SELECT coalesce(sum(qty),0) FROM ledger.qty_balances WHERE lot_id=l.id AND bucket IN ('held','committed','in_transit','delivered'))::text da_hua,
+      (SELECT estimated_commit_cap_bps FROM core.policy_versions WHERE effective_from<=now() ORDER BY effective_from DESC LIMIT 1) cap
+    FROM core.lots l WHERE l.id=$1`, [lotId]);
+  if (!r || r.qty_basis !== 'estimated') return null;
+  return BigInt(r.tong ?? '0') * BigInt(r.cap ?? 8000) / 10000n - BigInt(r.da_hua ?? '0');
+}
+function kiemUocTinh(qty: bigint, con: bigint | null) {
+  if (con == null || qty <= con) return;
+  const kg = (con > 0n ? con : 0n) / 1000n;
+  throw loi('VUOT_80_UOC_TINH', `Lô này là lượng ước tính: chỉ còn chào được tối đa ${kg.toLocaleString('vi-VN')} kg (80% lượng ước tính trừ phần đã hứa).`, { con_g: (con > 0n ? con : 0n).toString() });
+}
+
 async function khaDung(t: GiaoDich, lotId: string): Promise<bigint> {
   return BigInt(await t.gtri<string>(`SELECT coalesce(sum(qty),0)::text FROM ledger.qty_balances WHERE lot_id=$1 AND bucket='available'`, [lotId]));
 }
@@ -28,6 +45,7 @@ export async function guiLoiChao(t: GiaoDich, nd: NguoiDung, d: GuiLoiChao) {
   if (lot.safety_locked_at) throw loi('LO_KHOA_AN_TOAN');
   const qty = soGam(d.qty_g); const gia = soGam(d.price_vnd, 'price_vnd');
   if (qty <= 0n || gia <= 0n) throw loi('DU_LIEU_KHONG_HOP_LE', 'Lượng và giá phải lớn hơn 0.');
+  kiemUocTinh(qty, await conHuaUocTinh(t, lot.id));
   let buyerOrg: string; let sellerOrg: string; let side: 'buyer' | 'seller';
   let line: any = null;
   if (d.demand_line_id) {
@@ -103,7 +121,7 @@ export async function dongYLoiChao(t: GiaoDich, nd: NguoiDung, id: string, versi
 }
 
 export async function traGia(t: GiaoDich, nd: NguoiDung, id: string, giaMoi: unknown, qtyMoi?: unknown) {
- const {phia}=await layLoiChao(t,nd,id);canQuyen(nd,phia==='seller'?'offer.counter.seller':'offer.counter.buyer'); const r=await vongCuoi(t,id); const dem=Number(await t.gtri(`SELECT count(*) FROM core.offer_rounds WHERE offer_id=$1 AND from_side=$2 AND round_no>1`,[id,phia]));if(dem>=CHINH_SACH.luotTraGiaToiDaMoiBen)throw loi('HET_LUOT_TRA_GIA'); const gia=soGam(giaMoi,'price_vnd'); const qty=qtyMoi==null?BigInt(r.qty):soGam(qtyMoi);
+ const {phia}=await layLoiChao(t,nd,id);canQuyen(nd,phia==='seller'?'offer.counter.seller':'offer.counter.buyer'); const r=await vongCuoi(t,id); const dem=Number(await t.gtri(`SELECT count(*) FROM core.offer_rounds WHERE offer_id=$1 AND from_side=$2 AND round_no>1`,[id,phia]));if(dem>=CHINH_SACH.luotTraGiaToiDaMoiBen)throw loi('HET_LUOT_TRA_GIA'); const gia=soGam(giaMoi,'price_vnd'); const qty=qtyMoi==null?BigInt(r.qty):soGam(qtyMoi); kiemUocTinh(qty, await conHuaUocTinh(t, (await t.mot<any>(`SELECT lot_id FROM core.offers WHERE id=$1`,[id])).lot_id));
  await appCmd(t,nd,phia,'reply_offer',[id,'counter',gia,qty]);
  const row=await t.mot<any>(`SELECT status,version FROM core.offers WHERE id=$1`,[id]);return {id,status:row.status,revision:row.version};
 }
