@@ -171,10 +171,12 @@ class NhaCungCap:
                 if not van_ban:
                     raise LoiNhaCungCap("trả rỗng")
                 self._ghi(bac, False)
+                if loi: print("nha_cung_cap du phong:", bac, loi, flush=True)
                 return KetQua(van_ban, bac, (time.perf_counter() - t0) * 1000, loi)
             except (LoiNhaCungCap, httpx.HTTPError) as e:
                 self._ghi(bac, True)
                 loi.append(f"{bac}: {type(e).__name__}: {e}")
+        print("nha_cung_cap loi:", loai, loi, flush=True)  # chỉ tên bậc + mã lỗi, không có khóa
         if loai == "truc_tiep":
             return KetQua(CAU_SOAN_SAN, "soan_san", (time.perf_counter() - t0) * 1000, loi)
         raise LoiNhaCungCap("; ".join(loi))
