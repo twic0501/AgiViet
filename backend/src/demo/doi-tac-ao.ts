@@ -208,7 +208,10 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       const v = of.vong_cuoi;
       if (of.status === 'sent' && v && v.from_side !== phia) {
         if (kieu.cham && (luotCham++ % 2)) continue; // người cẩn thận / mới dùng app trả lời chậm (cách một vòng)
-        const ct = await get(`/v1/offers/${of.id}`, t); const muc = mucChiu(ct?.rounds, phia, buoc), giaKia = Number(v.price_vnd);
+        const ct = await get(`/v1/offers/${of.id}`, t); const giaKia = Number(v.price_vnd);
+        let muc = mucChiu(ct?.rounds, phia, buoc);
+        // Vòng đầu người bán AI chưa đưa giá nào: mốc là giá mong muốn của lô (người thật trả tới mức đó thì chốt luôn, như người bán thật)
+        if (muc == null && phia === 'seller') { const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t); const mm = Number(lo?.ask_price_vnd ?? 0); if (mm) muc = Math.round(mm * (1 - buoc) / 100) * 100; }
         const trongMuc = muc != null && (phia === 'buyer' ? giaKia <= muc : giaKia >= muc);
         const cu = nhat_ky.length; let bao = '';
         if (!trongMuc && Math.ceil(Number(v.round_no) / 2) <= soLanTra) {
