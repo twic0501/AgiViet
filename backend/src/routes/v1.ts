@@ -511,7 +511,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     let wav = nhoTts.get(cau);
     if (!wav) {
       try {
-        const r = await fetch(`${ht.cfg.aiUrl}/tts`, { method: 'POST', signal: AbortSignal.timeout(25000),
+        const r = await fetch(`${ht.cfg.aiUrl}/tts`, { method: 'POST', signal: AbortSignal.timeout(14000),
           headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify({ van_ban: cau }) });
         if (!r.ok) throw new Error(String(r.status));
         wav = Buffer.from(await r.arrayBuffer());

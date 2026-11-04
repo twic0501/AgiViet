@@ -84,7 +84,7 @@ class NhaCungCap:
         except (KeyError, IndexError, ValueError) as e:
             raise LoiNhaCungCap(f"Gemini trả sai dạng: {type(e).__name__}") from e
 
-    def doc_thanh_tieng(self, van_ban: str, timeout_s: float = 20.0) -> bytes:
+    def doc_thanh_tieng(self, van_ban: str, timeout_s: float = 6.0, ngan_sach_s: float = 12.0) -> bytes:
         """Đọc câu tiếng Việt thành WAV bằng Gemini TTS (giọng Sulafat ấm; tốc độ do app chỉnh). Lỗi → LoiNhaCungCap.
         Gói miễn phí chỉ ~10 lượt/ngày mỗi mô hình → thử lần lượt nhiều mô hình (mỗi cái hạn mức riêng)."""
         k = self.khoa.get("GEMINI_API_KEY")
@@ -95,13 +95,16 @@ class NhaCungCap:
         giong = self.khoa.get("AGV_TTS_GIONG") or "Sulafat"
         # chỉ gửi đúng câu (lời dặn giọng bị mô hình đọc thành tiếng); tên riêng viết theo âm Việt để đọc đúng
         chu = re.sub(r"(?i)agi ?vi[eệ]t", "AgiViệt", van_ban)
-        loi = []
+        loi = []; t0 = time.monotonic()
         for model in cac_mo_hinh:
             bac = f"tts:{model.strip()}"
+            con = ngan_sach_s - (time.monotonic() - t0)  # cả chuỗi phải xong trước hạn chờ của backend/app
+            if con < 1.5:
+                loi.append("hết thời gian chờ"); break
             if self._dang_nghi(bac):
                 loi.append(f"{bac} đang nghỉ"); continue
             try:
-                r = self.client.post(GEMINI_URL.format(m=model.strip()), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
+                r = self.client.post(GEMINI_URL.format(m=model.strip()), headers={"x-goog-api-key": k}, timeout=min(timeout_s, con), json={
                     "contents": [{"parts": [{"text": chu}]}],
                     "generationConfig": {"responseModalities": ["AUDIO"],
                                          "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": giong}}}},

@@ -104,11 +104,12 @@ export function taoGiong(cau, toc) {
 }
 // Máy không có bộ đọc (vd Chrome trên Linux chưa cài speech-dispatcher) thì nói rõ thay vì im lặng
 const baoKhongGiong = () => baoNhanh("Máy này chưa có giọng đọc nên chưa phát tiếng được. Trên điện thoại bác sẽ nghe bình thường.");
-// Giọng máy chủ (Gemini TTS, giọng ấm miền Nam) đều trên mọi máy; lỗi/chưa đăng nhập thì dùng giọng của máy.
-let amDangPhat = null;
+// Giọng máy chủ (Gemini TTS) / MP3 tạo sẵn đều trên mọi máy; lỗi/chưa đăng nhập thì dùng giọng của máy.
+// Mỗi lượt đọc có số thứ tự: speechSynthesis.cancel() (mọi nơi trong app đang dùng) làm hỏng lượt cũ → lượt cũ tự bỏ sau mỗi bước chờ.
+let amDangPhat = null, luotDoc = 0;
 const nhoAm = new Map();
 try { const goc = speechSynthesis.cancel.bind(speechSynthesis);
-  speechSynthesis.cancel = () => { const a = amDangPhat; amDangPhat = null; if (a) { a.pause(); a.onended?.(); } goc(); }; } catch {}
+  speechSynthesis.cancel = () => { luotDoc++; const a = amDangPhat; amDangPhat = null; if (a) { a.pause(); a.__huy?.(); } goc(); }; } catch {}
 async function tokenDoc() {
   try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   return new URLSearchParams(location.search).has("thu") ? phien().catch(() => null) : null;
@@ -116,33 +117,43 @@ async function tokenDoc() {
 // Câu cố định (hướng dẫn…) đã tạo sẵn thành MP3 ở /am-thanh/ (gói miễn phí chỉ ~10 lượt đọc/ngày mỗi mô hình)
 let dsAmSan = null;
 const amSan = () => (dsAmSan ??= fetch("/am-thanh/ds.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
-async function docMayChu(doan, toc) {
+// → "xong" | "loi" (thử giọng máy) | "huy" (đã bị dừng, không làm gì thêm)
+async function docMayChu(doan, toc, luot) {
   const san = (await amSan())[doan];
+  if (luot !== luotDoc) return "huy";
   let url = san ? "/am-thanh/" + san : nhoAm.get(doan);
   if (!url) {
-    const tk = await tokenDoc(); if (!tk || doan.length > 400) return false;
-    const r = await fetch("/v1/tts", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: JSON.stringify({ van_ban: doan }) }).catch(() => null);
-    if (!r?.ok) return false;
+    const tk = await tokenDoc(); if (luot !== luotDoc) return "huy";
+    if (!tk || doan.length > 400) return "loi";
+    const r = await fetch("/v1/tts", { method: "POST", signal: AbortSignal.timeout(15000), headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: JSON.stringify({ van_ban: doan }) }).catch(() => null);
+    if (luot !== luotDoc) return "huy";
+    if (!r?.ok) return "loi";
     url = URL.createObjectURL(await r.blob()); nhoAm.set(doan, url);
+    if (luot !== luotDoc) return "huy";
   }
   return new Promise((xong) => {
     const a = new Audio(url); a.playbackRate = Math.min(1.6, Math.max(0.6, (toc || tocDoDoc()) / 0.9)); amDangPhat = a;
-    a.onended = a.onerror = () => { a.onended = a.onerror = null; if (amDangPhat === a) amDangPhat = null; xong(true); };
-    a.play().catch(() => { if (amDangPhat === a) amDangPhat = null; xong(false); });
+    const ket = (kq) => { a.onended = a.onerror = a.__huy = null; if (amDangPhat === a) amDangPhat = null; xong(kq); };
+    a.onended = () => ket("xong"); a.onerror = () => ket("loi"); a.__huy = () => ket("huy");
+    a.play().catch(() => ket(luot === luotDoc ? "loi" : "huy"));
   });
 }
+// Đọc thành tiếng; trả true khi đọc xong (hoặc máy không đọc được), false khi bị dừng giữa chừng.
 export function docTo(doan, toc) {
   return new Promise(async (xong) => {
     try {
       try { speechSynthesis.cancel(); } catch {}
+      const luot = luotDoc;
       const chu = String(doan || "").replace(/\s+/g, " ").trim();
-      if (!chu) return xong();
-      if (await docMayChu(chu, toc).catch(() => false)) return xong();
-      if (!("speechSynthesis" in window)) { baoKhongGiong(); return xong(); }
-      if (!speechSynthesis.getVoices().length) setTimeout(() => { if (!speechSynthesis.getVoices().length) baoKhongGiong(); }, 400);
+      if (!chu) return xong(true);
+      const kq = await docMayChu(chu, toc, luot).catch(() => "loi");
+      if (kq === "huy" || luot !== luotDoc) return xong(false);
+      if (kq === "xong") return xong(true);
+      if (!("speechSynthesis" in window) || !speechSynthesis.getVoices().length) { baoKhongGiong(); return xong(true); }
       const cau = chu.split(/(?<=[.!?…:;])\s+/).map((c) => c.trim()).filter(Boolean);
-      cau.forEach((c, i) => { const u = taoGiong(c, toc); if (i === cau.length - 1) u.onend = u.onerror = () => xong(); speechSynthesis.speak(u); });
-    } catch { xong(); }
+      const hen = setTimeout(() => xong(luot === luotDoc), 4000 + chu.length * 120); // có máy không báo đọc xong
+      cau.forEach((c, i) => { const u = taoGiong(c, toc); if (i === cau.length - 1) u.onend = u.onerror = () => { clearTimeout(hen); xong(luot === luotDoc); }; speechSynthesis.speak(u); });
+    } catch { xong(true); }
   });
 }
 if (typeof window !== "undefined") { window.giongViet = { taoGiong, docTo }; try { speechSynthesis.onvoiceschanged = () => {}; speechSynthesis.getVoices(); } catch {} }

@@ -261,7 +261,7 @@
       <div class="db-cot">
         <label class="db-nhan" for="gia-muon" style="margin:0">Giá mong muốn</label>
         <div class="db-so"><input id="gia-muon" inputmode="numeric" placeholder="0" autocomplete="off"><span class="dv">đ/kg</span></div>
-        <div class="db-thuoc" id="thuoc" hidden><div class="thanh"><i class="moc tk" id="moc-tk"></i><i class="moc" id="moc-gia"></i></div>
+        <div class="db-thuoc" id="thuoc-gia" hidden><div class="thanh"><i class="moc tk" id="moc-tk"></i><i class="moc" id="moc-gia"></i></div>
           <p>Khoảng thường gặp <b id="thuoc-khoang"></b> (phần xanh). Vạch đậm là giá bác nhập.</p></div>
         <p class="db-the chin" id="canh-bao-gia" hidden></p>
       </div>
@@ -497,8 +497,8 @@ function kiemGia() {
   if (st.giaTK) {
     const thap = st.giaTK * 0.8, cao = st.giaTK * 1.2, vt = (v) => `${Math.max(0, Math.min(100, (v - thap) / (cao - thap) * 100))}%`;
     $("thuoc-khoang").textContent = `${vnd(Math.round(st.giaTK * 0.9))} – ${vnd(Math.round(st.giaTK * 1.1))} đ/kg`;
-    $("moc-tk").style.left = vt(st.giaTK); $("moc-gia").style.left = vt(muon || st.giaTK); $("moc-gia").hidden = !muon; $("thuoc").hidden = false;
-  } else $("thuoc").hidden = true;
+    $("moc-tk").style.left = vt(st.giaTK); $("moc-gia").style.left = vt(muon || st.giaTK); $("moc-gia").hidden = !muon; $("thuoc-gia").hidden = false;
+  } else $("thuoc-gia").hidden = true;
   const re = st.giaTK && muon > 0 && muon < st.giaTK * 0.8;
   $("canh-bao-gia").textContent = re ? `Thấp hơn 80% giá tham khảo (${vnd(st.giaTK)} đ/kg). Bác vẫn đăng được, nhưng có thể đang bán rẻ.` : "";
   $("canh-bao-gia").hidden = !re;
@@ -568,15 +568,15 @@ function traLoiNhanh(k, v) {
 const ht = { bat: false, lanLoi: 0, ghi: null };
 function datThe(the, chu) { $("mic").dataset.the = the; $("mic-chu").textContent = chu; $("mic").classList.toggle("dang", the === "nghe"); }
 function noiRa(cau) {
-  // Giọng chung của app (máy chủ, lỗi thì giọng máy); hẹn giờ phòng máy không báo đọc xong
+  // Giọng chung của app; true = đọc xong, false = bị dừng (không được bật micro). Hẹn giờ phòng máy không báo đọc xong.
   return new Promise((xong) => {
-    const hen = setTimeout(xong, 9000 + cau.length * 120);
-    const doc = window.giongViet?.docTo; if (!doc) { clearTimeout(hen); return xong(); }
-    doc(cau).then(() => { clearTimeout(hen); xong(); }, () => { clearTimeout(hen); xong(); });
+    const doc = window.giongViet?.docTo; if (!doc) return xong(true);
+    const hen = setTimeout(() => xong(true), 20000 + cau.length * 120);
+    doc(cau).then((ok) => { clearTimeout(hen); xong(ok); }, () => { clearTimeout(hen); xong(true); });
   });
 }
 const cauHienTai = () => CAU[noi.i]?.doc?.() || $("cau-hoi").textContent;
-async function hoiVaNghe(cau) { if (!ht.bat) return; datThe("noi", "App đang nói…"); await noiRa(cau); if (ht.bat) nghe(); }
+async function hoiVaNghe(cau) { if (!ht.bat) return; datThe("noi", "App đang nói…"); if (await noiRa(cau) && ht.bat) nghe(); }
 function nghe() {
   if (!ht.bat || ht.ghi) return;
   // Máy không có nhận giọng nói (vd Chromium trên Linux): dừng, không để kẹt "App đang nói…"
