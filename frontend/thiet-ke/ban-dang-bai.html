@@ -575,7 +575,7 @@ function noiRa(cau) {
   // Giọng chung của app; true = đọc xong, false = bị dừng (không được bật micro). Hẹn giờ phòng máy không báo đọc xong.
   return new Promise((xong) => {
     const doc = window.giongViet?.docTo; if (!doc) return xong(true);
-    const hen = setTimeout(() => xong(true), 20000 + cau.length * 120);
+    const hen = setTimeout(() => { try { speechSynthesis.cancel(); } catch {} xong(true); }, 20000 + cau.length * 120);  // hết giờ: dừng tiếng thật rồi mới bật micro
     doc(cau).then((ok) => { clearTimeout(hen); xong(ok); }, () => { clearTimeout(hen); xong(true); });
   });
 }
@@ -772,10 +772,20 @@ async function dangBan() {
   $("tiep").disabled = true; $("tiep").textContent = "Đang đăng…"; hienLoi("");
   try {
     const x = dongXm();
-    const tao = await lenh("/v1/lots", { idempotency_key: khoa.tao, product_code: st.sp, grade_code: st.loai, site_id: x?.site_id, qty_g: String(luongG()), qty_basis: st.coSo,
+    const than = { product_code: st.sp, grade_code: st.loai, site_id: x?.site_id, qty_g: String(luongG()), qty_basis: st.coSo,
       harvest_on: $("ngay-hai").value || undefined, available_from: st.khiCo === "sap" ? $("ngay-co").value : undefined, spray_clear_on: st.cachLy.get(x?.site_id) || undefined,
-      ask_price_vnd: String(so($("gia-muon").value)), floor_price_vnd: String(so($("gia-san").value)) });
-    const lo = tao.data || tao;
+      ask_price_vnd: String(so($("gia-muon").value)), floor_price_vnd: String(so($("gia-san").value)) };
+    // Lần trước đã tạo nháp mà bác sửa nội dung (sau lỗi ảnh): cùng khóa khác nội dung bị DB từ chối (IDEMPOTENCY_CONFLICT)
+    // → đóng nháp cũ (không chặn nếu lỗi), tạo nháp mới bằng khóa mới, gửi lại ảnh cho lô mới. Nội dung không đổi thì giữ khóa (thử lại an toàn).
+    const dau = JSON.stringify(than);
+    if (khoa.dau && khoa.dau !== dau) {
+      if (khoa.lo) lenh(`/v1/lots/${khoa.lo.id}/close`, { idempotency_key: crypto.randomUUID(), expected_revision: khoa.lo.revision }).catch(() => {});
+      khoa.tao = crypto.randomUUID(); khoa.dang = null; khoa.lo = null;
+      st.anh.forEach((a) => { a.xong = null; a.khoa = null; });
+    }
+    khoa.dau = dau;
+    const tao = await lenh("/v1/lots", { idempotency_key: khoa.tao, ...than });
+    const lo = tao.data || tao; khoa.lo = { id: lo.id, revision: tao.revision ?? lo.revision };
     let loiAnh = 0;
     for (const [i, a] of st.anh.entries()) {
       if (a.xong) continue;                       // đã gửi ở lần trước

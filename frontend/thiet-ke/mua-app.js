@@ -89,10 +89,13 @@ async function veDuThieu() {
   const ctDon = await Promise.all(daKy.map((d) => thu(api(`/v1/orders/${d.id}`))));
   ctDon.forEach((o) => { if (o?.san_pham?.code && !o.dong_mon && trongTuan(o.dieu_khoan?.delivery_from, o.dieu_khoan?.delivery_to)) cong(chac, o.san_pham.code, Number(o.dieu_khoan?.qty_g || 0)); });
   DL.khung.filter((k) => k.status === "running").forEach((k) => (k.mon || []).forEach((m) => m.ma && cong(chac, m.ma, Number(m.luong_g || 0) * Math.max(1, (k.ngay_giao || []).length))));
+  // Nhu cầu/đơn tải lỗi (thu() → null): không kết luận đủ/thiếu từ dữ liệu thiếu
+  const loiNc = ctNc.filter((x) => x === null).length, loiDon = ctDon.filter((x) => x === null).length, thieuDL = loiNc + loiDon > 0;
+  ctNc.forEach((ct, i) => { if (ct === null && !can.has(nc[i].product_code)) can.set(nc[i].product_code, 0); });
   const mon = [...new Set([...can.keys(), ...chac.keys()])];
   const ten = (ma) => DL.sp.find((s) => s.code === ma)?.name_vi || ma;
   $("#du-thieu").innerHTML = mon.length ? `<p class="nhan" style="margin-top:4px">Tuần này</p>${mon.map((ma) => { const c = can.get(ma) || 0, d = chac.get(ma) || 0, thieu = c - d;
-    return `<div class="hang" style="padding:6px 0"><div><b>${esc(ten(ma))}</b><p class="phu">${c ? `cần ${vnd(kg(c))} kg · ` : ""}đã chắc ${vnd(kg(d))} kg</p></div>${c ? `<span class="chip ${thieu > 0 ? "do" : "la"}">${thieu > 0 ? `thiếu ${vnd(kg(thieu))} kg` : "đủ"}</span>` : ""}</div>`; }).join("")}` : "";
+    return `<div class="hang" style="padding:6px 0"><div><b>${esc(ten(ma))}</b><p class="phu">${c ? `cần ${vnd(kg(c))} kg · ` : ""}đã chắc ${vnd(kg(d))} kg</p></div>${thieuDL ? `<span class="chip">chưa tính đủ</span>` : c ? `<span class="chip ${thieu > 0 ? "do" : "la"}">${thieu > 0 ? `thiếu ${vnd(kg(thieu))} kg` : "đủ"}</span>` : ""}</div>`; }).join("")}${thieuDL ? `<p class="phu">Chưa tải được ${[loiNc && `${loiNc} nhu cầu`, loiDon && `${loiDon} đơn`].filter(Boolean).join(", ")} — số có thể thiếu. <button class="nut" type="button" onclick="location.reload()">Tải lại</button></p>` : ""}` : "";
 }
 function veHomNay() {
   const tuan = DL.khung.filter((k) => k.status === "running" && (k.mon || []).length);

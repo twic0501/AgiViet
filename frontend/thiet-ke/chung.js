@@ -133,7 +133,9 @@ async function docMayChu(doan, toc, luot) {
   }
   return new Promise((xong) => {
     const a = new Audio(url); a.playbackRate = Math.min(1.6, Math.max(0.6, (toc || tocDoDoc()) / 0.9)); amDangPhat = a;
-    const ket = (kq) => { a.onended = a.onerror = a.__huy = null; if (amDangPhat === a) amDangPhat = null; xong(kq); };
+    // Hẹn giờ an toàn: có máy không phát ended/error → không để docTo() treo (câu dài nhất ~20 s)
+    const hen = setTimeout(() => { a.pause(); ket("xong"); }, 45000);
+    const ket = (kq) => { clearTimeout(hen); a.onended = a.onerror = a.__huy = null; if (amDangPhat === a) amDangPhat = null; xong(kq); };
     a.onended = () => ket("xong"); a.onerror = () => ket("loi"); a.__huy = () => ket("huy");
     a.play().catch(() => ket(luot === luotDoc ? "loi" : "huy"));
   });
@@ -370,7 +372,7 @@ function dungTroLy() {
   // Trả lời: hỏi bằng giọng thì đọc to luôn; câu nào cũng có nút "Nghe" để nghe lại
   const NUT_NGHE = '<button type="button" class="tl-nghe" aria-label="Nghe câu trả lời"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>Nghe</button>';
   const ganNghe = (d) => { d.insertAdjacentHTML("beforeend", NUT_NGHE); const b = d.querySelector(".tl-nghe"); b.onclick = () => docTo(d.dataset.chu || d.textContent.replace(/Nghe$/, "")); };
-  const traLoi = (d, chu, noi) => { d.dataset.chu = chu; ganNghe(d); if (noi) docTo(chu); };
+  const traLoi = (d, chu, noi) => { d.dataset.chu = chu; ganNghe(d); if (noi && troLy?.querySelector(".tl-tam.mo")) docTo(chu); };  // câu trả lời về muộn sau khi đóng hộp: ghi lại, không tự đọc
   // Gửi kèm đơn đang mở + màn/bước đang đứng để nhân viên khỏi phải hỏi lại "bác đang ở đơn nào".
   function nguCanhHoTro(noiDung) {
     const q = new URLSearchParams(location.search), id = q.get("id") || q.get("don");
