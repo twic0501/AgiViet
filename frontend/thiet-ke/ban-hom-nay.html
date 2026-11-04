@@ -169,6 +169,7 @@ async function mo() {
     $("cau-chinh").textContent = `Bác có ${toiBac.length} việc cần làm`;
     $("cau-phu").textContent = viecCho(toiBac[0]);
     $("nut-chinh").textContent = "Làm ngay"; $("nut-chinh").hidden = false;
+    $("nut-chinh").onclick = () => { const q = new URLSearchParams(location.search); q.set("id", toiBac[0].id); location.href = "./ban-don.html?" + q; };
   } else if (choNguoi.length) {
     $("cau-chinh").textContent = "Hôm nay bác chưa có việc gấp";
     $("cau-phu").textContent = `${choNguoi.length} hợp đồng đang chờ ${(LUOT[choNguoi[0].hien_thi.toi_luot.phia]?.[1] || "bên kia").toLowerCase()}.`;
@@ -177,6 +178,7 @@ async function mo() {
     $("cau-chinh").textContent = daXong ? `Đã xong ${daXong} hợp đồng, chưa có việc mới` : "Chưa có hợp đồng nào";
     $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô, chờ bên mua chào giá.` : "Đăng một lô hàng để bên mua thấy và chào giá.";
     $("nut-chinh").textContent = "Đăng hàng"; $("nut-chinh").hidden = false;
+    $("nut-chinh").onclick = () => (location.href = "./ban-dang-bai.html" + location.search);
   }
 
   // Lời chào giá bên mua đang chờ bác trả lời → nêu ngay trên khối thông báo

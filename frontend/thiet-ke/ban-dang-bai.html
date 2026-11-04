@@ -600,6 +600,12 @@ function nghe() {
   };
   try { r.start(); } catch { ht.ghi = null; tatHoiThoai("Chưa nghe được lúc này. Bác gõ câu trả lời bên dưới."); }
 }
+const traLoiThuoc = (cau) => {
+  const t = cau.toLowerCase().replace(/[.,!?…]/g, " ").replace(/\s+/g, " ").trim().replace(/^(dạ|dạ thưa|thưa|ừ|ờ|vâng) /, "").replace(/ (ạ|nha|nhé|đó|đâu|á)$/, "");
+  if (/^(không|chưa|hổng|hông)( có)?( xịt| phun)?( thuốc)?( thêm)?( gì)?( hết)?$/.test(t)) return "khong";
+  if (/^(có|rồi|có rồi)( xịt| phun)?( thuốc)?( thêm)?( rồi)?$/.test(t)) return "co";
+  return null;
+};
 const DONG_Y = /^(dạ |ừ |vâng )?(đúng|phải|đồng ý|ừ|ừa|ờ|ok|oke|được|vâng|rồi|chuẩn)/i, SAI = /^(dạ )?(sai|không|chưa đúng|nói lại|sửa)/i;
 // Câu đồng ý phải ngắn và không có phủ định/sửa ("dạ không, giá đó thấp quá", "đúng loại nhưng lượng sai" KHÔNG phải đồng ý)
 const dongY = (c) => { const t = c.trim().toLowerCase(); return t.split(/\s+/).length <= 4 && !/(không|chưa|sai|nhưng|mà|sửa|khác)/.test(t) && DONG_Y.test(t); };
@@ -650,9 +656,13 @@ async function hieuCau(cau) {
   const c = CAU[noi.i];
   if (c.k === "san" && dongY(cau)) { noi.hieu = { sanChot: true }; return veHieu(); }
   if (c.k === "thuoc") {
-    const t = cau.toLowerCase();
-    const v = /(không|chưa|hổng|hông)/.test(t) ? "khong" : /(có|rồi)/.test(t) ? "co" : null;
+    // An toàn thực phẩm: chỉ nhận câu ngắn, rõ một nghĩa; câu vừa có vừa không ("có xịt nhưng không nhớ ngày") → để AI/hỏi lại
+    const v = traLoiThuoc(cau);
     if (v) { noi.hieu = { thuoc: v }; return veHieu(); }
+    // Không rõ một nghĩa: KHÔNG đưa AI đoán, hỏi lại cho chắc
+    noi.hieu = null; $("hieu").hidden = true;
+    $("noi-loi").textContent = "Bác nói rõ giúp em: có xịt thêm thuốc hay không xịt thêm?"; $("noi-loi").hidden = false;
+    return;
   }
   // Câu ngắn chỉ nói loại ("loại một", "hàng dạt"): hiểu ngay trên máy, không cần AI
   if (c.k === "loai") { const g = khopLoai(cau); if (g) { noi.hieu = { loai: g }; return veHieu(); } }

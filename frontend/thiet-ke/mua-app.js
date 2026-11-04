@@ -25,12 +25,15 @@ const tatSplash = () => new Promise((xong) => { $("#splash").classList.add("tat"
 function dangXuat() { try { sessionStorage.removeItem(KHOA_PHIEN); } catch {} fetch("/v1/auth/logout", { method: "POST", headers: { authorization: "Bearer " + token } }).catch(() => {}); location.href = location.pathname + (THU ? `?thu=${THU}` : ""); }
 
 async function layPhien() {
-  try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
+  try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t && (!THU || sessionStorage.getItem("agv-phien-thu") === THU)) return t; } catch {}
   if (!THU) return null;
   const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({}));
   if (!cap.test_tools) return null; // số thử chỉ ở môi trường thử
   const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: THU }) });
-  return r.ok ? (await r.json()).token : null;
+  if (!r.ok) return null;
+  const tk = (await r.json()).token;
+  try { sessionStorage.setItem(KHOA_PHIEN, tk); sessionStorage.setItem("agv-phien-thu", THU); } catch {}  // màn sâu (mua.html) không còn ?thu= vẫn là dữ liệu thật
+  return tk;
 }
 
 
@@ -330,7 +333,11 @@ async function lamMoi() { await taiHet(); veHomNay(); veNguon(); veDon(); veTien
 // ---------- khởi động ----------
 (async () => {
   splash("Đang mở sổ mua…");
-  token = await layPhien();
+  // Lỗi mạng khi lấy phiên: tắt màn chờ, báo + thử lại (trước kẹt "Đang mở sổ mua…")
+  try { token = await layPhien(); } catch {
+    await tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><p>Chưa kết nối được máy chủ. Bạn kiểm tra mạng rồi thử lại.</p><button class="nut chinh" type="button" onclick="location.reload()">Thử lại</button></div></div>`);
+    return;
+  }
   if (!token) return location.replace("./dang-nhap.html?ben=mua");
   try {
     me = await api("/v1/me");

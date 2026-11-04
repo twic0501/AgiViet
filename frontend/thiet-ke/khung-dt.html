@@ -28,7 +28,7 @@
   // chỉ nhận đường dẫn trong cùng trang (chặn mở trang ngoài qua ?u=)
   // Chuẩn hóa rồi mới kiểm (chặn "/\\trang-ngoai", "//…"): chỉ cùng nguồn và chỉ màn app, không lồng chính khung
   const anToan = (x) => { try { const l = new URL(x, location.origin);
-    return l.origin === location.origin && /^\/thiet-ke\/(ban-[\w-]+|dang-nhap|mua-app)\.html$/.test(l.pathname) ? l.pathname + l.search + l.hash : null; } catch { return null; } };
+    return l.origin === location.origin && /^\/thiet-ke\/(ban-[\w-]+|dang-nhap|mua-app|mua)\.html$/.test(l.pathname) ? l.pathname + l.search + l.hash : null; } catch { return null; } };
   f.src = anToan(u) || "/thiet-ke/dang-nhap.html";
   // Đồng bộ địa chỉ + tiêu đề: cả khi chuyển trang (load) lẫn khi app đổi tab bằng history.replaceState/hash (không có load)
   let truoc = "";

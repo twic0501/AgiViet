@@ -159,7 +159,7 @@ export function docTo(doan, toc) {
 if (typeof window !== "undefined") { window.giongViet = { taoGiong, docTo }; try { speechSynthesis.onvoiceschanged = () => {}; speechSynthesis.getVoices(); } catch {} }
 
 const KHOA_PHIEN = "agv-phien";
-export const luuPhien = (token) => { try { sessionStorage.setItem(KHOA_PHIEN, token); } catch {} };
+export const luuPhien = (token) => { try { sessionStorage.setItem(KHOA_PHIEN, token); sessionStorage.removeItem("agv-phien-thu"); } catch {} };
 // Phiên hết hạn: API trả 401 cho đúng token đang lưu → xóa token, tải lại một lần (có ?thu= thì tạo phiên thử mới,
 // không thì về màn đăng nhập) thay vì kẹt "Thử lại" với token cũ. Cờ theo địa chỉ để không tải lại vòng vòng.
 if (typeof window !== "undefined" && !window.__agv401) {
@@ -180,8 +180,9 @@ if (typeof window !== "undefined" && !window.__agv401) {
   };
 }
 export async function phien() {
-  try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t) return t; } catch {}
   const sdt = new URLSearchParams(location.search).get("thu");
+  // Phiên đã lưu dùng lại, trừ khi ?thu= là số thử KHÁC số đã lưu (đổi người thử trong cùng tab)
+  try { const t = sessionStorage.getItem(KHOA_PHIEN); if (t && (!sdt || sessionStorage.getItem("agv-phien-thu") === sdt)) return t; } catch {}
   // Mất mạng: không được coi là chưa đăng nhập (đá về màn đăng nhập làm bác tưởng bị đăng xuất)
   if (typeof navigator !== "undefined" && navigator.onLine === false) throw new Error("Chưa có mạng. Bác kết nối lại rồi thử lại; trang đã mở trước đó vẫn xem được.");
   // Chưa đăng nhập: đưa về màn đăng nhập của đúng app thay vì để màn trống báo lỗi.
@@ -196,7 +197,10 @@ export async function phien() {
   const r = await fetch("/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) }).catch(() => null);
   if (!r) throw new Error(MAT_MANG);
   if (!r.ok) throw new Error("Không mở được tài khoản thử.");
-  return (await r.json()).token;
+  const tk = (await r.json()).token;
+  // Lưu phiên thử để màn sâu (link không còn ?thu=) vẫn dùng dữ liệu thật
+  try { sessionStorage.setItem(KHOA_PHIEN, tk); sessionStorage.setItem("agv-phien-thu", sdt); } catch {}
+  return tk;
 }
 // Giữ tham số thử (?thu=) trên mọi liên kết nội bộ khi chuyển màn
 export function giuThamSo(goc = document) {
