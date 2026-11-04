@@ -10,6 +10,13 @@ const goi = async (m, u, b) => { const r = await fetch(B + u, { method: m, heade
 const ds = async (u) => { const [, v] = await goi('GET', u); return v?.items ?? v ?? []; };
 const otp = async (purpose, extra) => (await goi('POST', '/v1/otp/challenges', { purpose, ...extra }))[1]?.challenge_id;
 const moc = []; let truoc = ''; let soHaLoai = 0;
+const tongMua = async () => { const kq = {}; const acc = await (await fetch(B + '/v1/test/accounts')).json();
+  for (const a of acc.filter((x) => (x.org_code || '').startsWith('TC-M') && (x.roles || '').includes('owner'))) {
+    const tk = (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: a.phone }) }))).token;
+    kq[a.org_name] = Number((await j(await fetch(B + '/v1/money/summary', { headers: { authorization: 'Bearer ' + tk } }))).tong?.ngan_hang_da_chuyen_den) || 0; }
+  return kq; };
+const tongTruoc = await tongMua();
+const donCu = new Set((await ds('/v1/orders')).map((d) => d.id)); // host dùng chung dữ liệu: chỉ xét đơn sinh ra trong lần chạy này
 const GAN = process.env.TEP_GAN ? Object.values(JSON.parse(process.env.TEP_GAN)) : ['tra-lai'];
 // TEP_GAN='{"TC-M01":"tra-lai"}' → kiểm qua tệp khách (kiểu gắn với bên mua AI); không có thì dùng kịch bản 'lần tới' như cũ.
 if (process.env.TEP_GAN) { const [, r] = await goi('POST', '/v1/test/tep-khach', { gan: JSON.parse(process.env.TEP_GAN) }); console.log('tệp khách:', JSON.stringify(r?.doi_tac)); }
@@ -63,7 +70,7 @@ console.log('mốc:', moc.map((m) => m.k).join('  →  '));
 const loi = []; let hoan = null;
 for (const d of await ds('/v1/orders')) { const [, tien] = await goi('GET', `/v1/orders/${d.id}/money`); const qt = (tien?.quyet_toan ?? []).at(-1);
   console.log(d.code, d.status, 'hoàn bên mua', qt?.refund_vnd, 'chi người bán', qt?.release_vnd, 'lệnh', JSON.stringify((tien?.lenh_ngan_hang ?? []).map((l) => [l.kind, l.amount_vnd, l.status])));
-  if (!(Number(qt?.refund_vnd) > 0)) continue;
+  if (donCu.has(d.id) || !(Number(qt?.refund_vnd) > 0)) continue;
   hoan = { code: d.code, vnd: Number(qt.refund_vnd) };
   if (d.status !== 'completed') loi.push(`${d.code} chưa hoàn tất (${d.status})`);
   if (Number(qt.release_vnd) + Number(qt.refund_vnd) !== Number(tien.coc?.deposit_vnd)) loi.push(`${d.code} chi ${qt.release_vnd} + hoàn ${qt.refund_vnd} ≠ cọc ${tien.coc?.deposit_vnd}`);
@@ -78,12 +85,8 @@ if (GAN.includes('tra-thieu')) {
   console.log('trả thiếu: còn phải nhận', cn, '· tổng chưa xác nhận', thieu);
   if (!(cn > 0) || cn !== thieu) loi.push(`còn phải nhận ${cn} ≠ tổng chưa xác nhận ${thieu}`);
 }
-const acc = await (await fetch(B + '/v1/test/accounts')).json();
-for (const a of acc.filter((x) => (x.org_code || '').startsWith('TC-M') && (x.roles || '').includes('owner'))) {
-  const tk = (await j(await fetch(B + '/v1/test/impersonate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phone: a.phone }) }))).token;
-  const m = await j(await fetch(B + '/v1/money/summary', { headers: { authorization: 'Bearer ' + tk } }));
-  if (Number(m.tong?.ngan_hang_da_chuyen_den) > 0) { console.log('BÊN MUA', a.org_name, 'ngân hàng đã chuyển đến', m.tong.ngan_hang_da_chuyen_den); if (hoan && Number(m.tong.ngan_hang_da_chuyen_den) === hoan.vnd) hoan.thay = true; }
-}
+for (const [ten, v] of Object.entries(await tongMua())) { const tang = v - (tongTruoc[ten] ?? 0);
+  if (tang > 0) { console.log('BÊN MUA', ten, 'ngân hàng chuyển đến thêm', tang); if (hoan && tang === hoan.vnd) hoan.thay = true; } }
 if (hoan && !hoan.thay) loi.push(`không bên mua nào thấy đúng ${hoan.vnd} ngân hàng đã chuyển đến`);
 if (loi.length) { console.error('THẤT BẠI:\n- ' + loi.join('\n- ')); process.exit(1); }
 console.log('ĐẠT:', GAN.join(', '), hoan ? `· hoàn ${hoan.vnd} đúng số, lệnh đã chuyển, bên mua thấy` : '');
