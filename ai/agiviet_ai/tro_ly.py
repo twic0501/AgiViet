@@ -42,7 +42,7 @@ HE_THONG = {v: t.replace("{MUC}", MUC_APP[v]) for v, t in HE_THONG.items()}
 # Quy trình đã chốt (brief app bán 22/10/2026, mục 3 và 7.1) — nguồn duy nhất để trợ lý giải thích cách làm
 QUY_TRINH = """1. Đăng lô: người bán đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, bên mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng.
 2. Ghép: người bán thấy bên mua đang cần hàng của mình và có thể chào hàng.
-3. Chào giá: đồng ý, trả giá hoặc không bán. Mỗi lượt 24 giờ; mỗi bên trả giá tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng.
+3. Chào giá: người bán đồng ý, đưa giá mới hoặc không bán; bên mua đồng ý, trả giá hoặc không mua. Mỗi lượt 24 giờ; mỗi bên đưa giá tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng.
 4. Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút.
 5. Cọc: bên mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở.
 6. Phần tiền còn lại hai bên tự trả cho nhau theo hợp đồng (tiền mặt hoặc chuyển khoản; trước khi bốc, khi nhận hàng hoặc sau số ngày đã thỏa thuận). App chỉ ghi nhận và đối soát, không giữ khoản này. Người bán xác nhận đúng số đã nhận; im lặng không bao giờ bị coi là đã nhận.

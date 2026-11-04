@@ -188,7 +188,7 @@ function ve(k) {
       <span class="anh" style="${c.anh ? `background-image:url(${c.anh})` : ""}"><span class="loai">${IC_CHAO}</span></span>
       <span class="giua"><span class="ai">${c.dongY ? `Đã đồng ý giá · ${esc(c.ben)}` : c.ai === "Bác" ? `Bác chào ${esc(c.ben)}` : `${esc(c.ben)} chào giá`}</span>
         <span class="phu-dong">Lô ${esc(c.lo)} · ${esc(conLai(c.het))}${c.vong > 1 ? ` · vòng ${c.vong}` : ""}</span>
-        <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt trả giá` : ""}</span>${c.tinCuoi ? `<span class="tn-cuoi">${esc(c.tinCuoi)}</span>` : ""}</span>
+        <span class="tin"><b>${Number(c.gia).toLocaleString("vi-VN")} đ/kg</b> · ${esc(kgTan(c.luong))}${c.toiBac && c.con != null ? ` · còn ${c.con} lượt đưa giá mới` : ""}</span>${c.tinCuoi ? `<span class="tn-cuoi">${esc(c.tinCuoi)}</span>` : ""}</span>
       <span class="phai"><span class="nhan-cho ${c.toiBac ? "bac" : "ho"}">${c.dongY ? "Đang giữ hàng" : c.toiBac ? "Chờ bác" : "Chờ bên mua"}</span><span class="nut-nhan" data-nhan>${IC_NHAN}Nhắn tin</span></span>
     </a>` : `
     <a class="cuoc ${c.toiBac ? "toi-bac" : ""}" href="#hd=${esc(c.id)}" data-hd="${esc(c.id)}">
@@ -263,8 +263,8 @@ async function lenhLC(duong, than) {
   const j = await r.json().catch(() => ({}));
   if (!r.ok) {
     const e = j.errors?.[0] || {}, db = e.details?.db || "";
-    if (db === "ck_offer_withdraw_replied") throw new Error("Bên mua đã trả lời nên không hủy được. Bác đồng ý, trả giá hoặc không bán.");
-    if (e.code === "HET_LUOT_TRA_GIA") throw new Error("Bác đã hết lượt trả giá cho lời chào này. Bác đồng ý hoặc không bán.");
+    if (db === "ck_offer_withdraw_replied") throw new Error("Bên mua đã trả lời nên không hủy được. Bác đồng ý, đưa giá mới hoặc không bán.");
+    if (e.code === "HET_LUOT_TRA_GIA") throw new Error("Bác đã hết lượt đưa giá mới cho lời chào này. Bác đồng ý hoặc không bán.");
     if (e.code === "REVISION_XUNG_DOT") throw new Error("Bên mua vừa thay đổi lời chào. Bác đóng tấm rồi mở lại để xem giá mới.");
     throw new Error([e.message, e.fix].filter(Boolean).join(" ") || `Lỗi ${r.status}`);
   }
@@ -312,9 +312,9 @@ async function moLoiChao(id) {
     nhac = `<p class="nhac">Lời chào này ${ct.status === "rejected" ? "đã bị từ chối" : ct.status === "withdrawn" ? "đã được hủy" : "đã hết hạn"}. Lô vẫn bán bình thường.</p>`;
     hanhDong = `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
   } else if (toiBac) {
-    nhac = `<p class="nhac">Tới lượt bác trả lời trước <b>${gio(v.expires_at)}</b>. Bác còn <b>${ct.luot_tra_gia_con}</b> lần trả giá.</p>`;
+    nhac = `<p class="nhac">Tới lượt bác trả lời trước <b>${gio(v.expires_at)}</b>. Bác còn <b>${ct.luot_tra_gia_con}</b> lần đưa giá mới.</p>`;
     hanhDong = `<div data-r="khung">
-        <div class="ba-nut"><button type="button" class="nut chinh-nut" data-r="dong-y">Đồng ý ${soVN(v.price_vnd)} đ/kg</button><button type="button" class="nut phu-nut" data-r="tra-gia" ${ct.luot_tra_gia_con > 0 ? "" : "disabled"}>Trả giá</button></div>
+        <div class="ba-nut"><button type="button" class="nut chinh-nut" data-r="dong-y">Đồng ý ${soVN(v.price_vnd)} đ/kg</button><button type="button" class="nut phu-nut" data-r="tra-gia" ${ct.luot_tra_gia_con > 0 ? "" : "disabled"}>Đưa giá mới</button></div>
         <button type="button" class="nut nut-do" data-r="khong-ban" style="width:100%;margin-top:8px">Không bán</button></div>`;
   } else {
     nhac = `<p class="nhac">Chờ ${esc(ben)} trả lời trước <b>${gio(v.expires_at)}</b>.${cuaBac && v.round_no === 1 ? " Bên mua chưa trả lời thì bác hủy được." : ""}</p>`;
@@ -347,9 +347,9 @@ async function moLoiChao(id) {
   });
   // Trả giá: nhập giá (mặc định giá mong muốn của lô), lượng giữ nguyên
   r("tra-gia")?.addEventListener("click", () => {
-    r("buoc").innerHTML = `<div class="hai-o"><label>Giá bác trả (đ/kg)<input name="gia" type="number" inputmode="numeric" min="1000" step="100" value="${esc(String(muon || v.price_vnd))}"></label>
+    r("buoc").innerHTML = `<div class="hai-o"><label>Giá mới bác đưa (đ/kg)<input name="gia" type="number" inputmode="numeric" min="1000" step="100" value="${esc(String(muon || v.price_vnd))}"></label>
         <label>Lượng (kg)<input name="kg" type="number" inputmode="decimal" min="1" step="any" value="${esc(String(Number(v.qty_g) / 1000))}"></label></div>
-      <p class="nhac">Bác còn ${ct.luot_tra_gia_con} lần trả giá; sau lần này còn ${ct.luot_tra_gia_con - 1}. Bên mua có 24 giờ để trả lời.</p>`;
+      <p class="nhac">Bác còn ${ct.luot_tra_gia_con} lần đưa giá mới; sau lần này còn ${ct.luot_tra_gia_con - 1}. Bên mua có 24 giờ để trả lời.</p>`;
     r("khung").innerHTML = `<div class="ba-nut"><button type="button" class="nut phu-nut" data-r="quay">Quay lại</button><button type="button" class="nut chinh-nut" data-r="gui-gia">Gửi giá</button></div>`;
     r("buoc").scrollIntoView({ block: "nearest", behavior: "smooth" });
     r("quay").onclick = () => moLoiChao(id);
