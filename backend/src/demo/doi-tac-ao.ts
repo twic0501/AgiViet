@@ -56,7 +56,10 @@ const KIEU: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = {
 const GIA_MUA: Record<string, number> = { 'XOAI_CAT_CHU|L1': 25000, 'XOAI_CAT_CHU|L2': 15000, 'CHANH_KHONG_HAT|L1': 14000, 'TOM_THE|48-52': 120000,
   'LUA_TUOI|OM18-am25': 6600, 'SAU_RIENG|A': 75000, 'BUOI_DA_XANH|L1': 32000, 'THANH_LONG|L1': 18000, 'THANH_LONG|L2': 9000, 'CA_TRA|0.8-1.2': 30000 };
 let dem = 0;
-const DA_LOI = new Set<string>();
+const DA_LOI = new Map<string, number>(); // việc lỗi → lúc lỗi (ms); thử lại sau 3 phút (trước: khóa vĩnh viễn → AI im lặng)
+const TOKEN_TC = new Map<string, string>(); // phiên đóng vai → mã tổ chức, để chặn mọi lệnh ghi khi người thật đang giữ hộ
+/** Đặt lại bộ nhớ AI cùng lúc đặt lại dữ liệu thử (rà soát 04/11 #10). */
+export function datLaiBoNho() { DA_LOI.clear(); DA_TRA_LOI.clear(); DA_CHAO.clear(); DA_BAO.clear(); CHAM.clear(); TOKEN_TC.clear(); }
 /** Tổ chức có người thật mở app trong 30 phút gần nhất (mã → giờ thật, ms). AI không bao giờ đóng vai các tổ chức này,
  *  kể cả khi vòng do người khác gọi — tránh AI ký/làm thay hộ đang có người thử (góp ý 04/11). */
 export const DANG_DUNG = new Map<string, { t: number; may: string }>(); // may = mã máy người giữ hộ ('' = script/không rõ)
@@ -130,10 +133,11 @@ async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null
 
 export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null, aiKey?: string | null): Promise<ViecAo[]> {
   const nhat_ky: ViecAo[] = [];
-  const vai = async (phone: string) => (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
+  const vai = async (phone: string) => { const v = (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any }; if (v?.token && v.user?.org?.code) TOKEN_TC.set(v.token, v.user.org.code); return v; };
   const toChucThat = new Set<string>(dangDung());
   for (const p of nguoiThat) { if (p.startsWith('TC-')) { toChucThat.add(p); continue; } const v = await vai(p); if (v?.user?.org?.code) toChucThat.add(v.user.org.code); }
-  const post0 = (u: string, b: any, t: string) => goi('POST', u, u.startsWith('/v1/otp/') || u.startsWith('/v1/sim/') ? b : { idempotency_key: khoa(), ...b }, t);
+  // Mọi lệnh ghi của AI kiểm lại NGAY TRƯỚC KHI GỬI: tổ chức đang có người thật giữ thì không làm (rà soát #4: lập đơn, nhắn tin đi ngoài lam())
+  const post0 = async (u: string, b: any, t: string) => dangDung().includes(TOKEN_TC.get(t) ?? '') ? { status: 423, json: { errors: [{ code: 'DANG_CO_NGUOI' }] } } : goi('POST', u, u.startsWith('/v1/otp/') || u.startsWith('/v1/sim/') ? b : { idempotency_key: khoa(), ...b }, t);
   // Như người thật đọc câu báo: lời chào / trả giá bị chặn vì lô ước tính vượt 80% thì giảm lượng về đúng phần còn lại rồi gửi lại một lần
   const post = async (u: string, b: any, t: string) => {
     const r = await post0(u, b, t);
@@ -146,9 +150,9 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   const get = async (u: string, t: string) => { const r = await goi('GET', u, undefined, t); return r.status < 300 ? (Array.isArray(r.json?.items) ? r.json.items : r.json) : null; };
   const lam = async (tc: string, viec: string, dt: string, fn: () => Promise<{ status: number; json: any } | void>) => {
     if (dangDung().includes(tc)) return; // xét lại ngay trước mỗi việc: người thật vừa vào giữ hộ giữa vòng thì AI dừng tay
-    const k = `${tc}|${viec}|${dt}`; if (DA_LOI.has(k)) return; // việc đã lỗi thì không thử lại mỗi vòng (cần người/vận hành)
+    const k = `${tc}|${viec}|${dt}`; if (Date.now() - (DA_LOI.get(k) ?? 0) < 3 * 60e3) return; // việc vừa lỗi: chờ 3 phút rồi thử lại (dữ liệu có thể đã đổi)
     const cu = nhat_ky.length;
-    try { await lam0(); } finally { if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'loi') DA_LOI.add(k); }
+    try { await lam0(); } finally { if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'loi') DA_LOI.set(k, Date.now()); else DA_LOI.delete(k); }
     async function lam0() {
     try {
       const r = await fn();
@@ -161,7 +165,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   const otp = async (t: string, purpose: string, extra: any) => (await post('/v1/otp/challenges', { purpose, ...extra }, t)).json?.challenge_id;
   const ky = async (t: string, o: any, phia: string) => {
     const doc = [...(o.tai_lieu ?? [])].reverse().find((d: any) => d.doc_type === 'contract');
-    return post(`/v1/orders/${o.id}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, expected_revision: o.revision, ...(phia === 'seller' ? { commitment_ack: true, low_downgrade_price_ack: true } : {}) }, t);
+    return post(`/v1/orders/${o.id}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, expected_revision: o.revision, ...(phia === 'seller' ? { commitment_ack: true, low_downgrade_price_ack: true, abnormal_price_ack: true } : {}) }, t);
   };
 
   // 0) Chủ động: lô đang bán của người bán thật chưa ai (ảo) chào → một bên mua ảo (xoay vòng) chào đúng giá tham khảo
@@ -231,9 +235,19 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           if (muc != null) gia = phia === 'buyer' ? Math.min(gia, muc) : Math.max(gia, muc);
           await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
           bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách; không nói đây là mức cuối hay tốt nhất (còn thương lượng được).`;
-        } else {
+        } else if (trongMuc || muc == null) {
           await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
           bao = `Bạn vừa đồng ý giá ${soVN(giaKia)} trong lời chào ${of.code}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký. Viết 1–2 câu báo cho người kia.`;
+        } else {
+          // Hết lượt mặc cả mà giá vẫn ngoài mức chịu: từ chối có giải thích (rà soát #3: trước đây đồng ý cả giá ngoài mức)
+          await lam(tc, 'không chốt', of.code, () => post(`/v1/offers/${of.id}/reject`, {}, t));
+          bao = `Bạn vừa KHÔNG chốt lời chào ${of.code}: giá ${soVN(giaKia)} ${phia === 'buyer' ? 'cao hơn' : 'thấp hơn'} mức bạn chịu (${soVN(muc)}) và hai bên đã hết lượt mặc cả. Viết 1–2 câu lịch sự, mời người kia gửi lời chào mới nếu đổi được giá.`;
+        }
+        // Đồng ý / trả giá mà hệ thống không cho: báo rõ, không im lặng (rà soát #2)
+        if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'loi') {
+          const ly = String(nhat_ky[nhat_ky.length - 1].chi_tiet ?? '');
+          const vi = /VUOT_80_UOC_TINH/.test(ly) ? 'lượng vượt phần lô ước tính còn được hứa' : /HET_LUOT/.test(ly) ? 'đã hết lượt mặc cả' : /REVISION|409/.test(ly) ? 'lời chào vừa thay đổi' : 'hệ thống chưa cho làm bước này';
+          await post0('/v1/messages', { offer_id: of.id, body: phia === 'buyer' ? `Em định chốt nhưng hệ thống chưa cho (${vi}). Em xem lại rồi báo bác ngay ạ.` : `Bên tôi định chốt nhưng hệ thống chưa cho (${vi}). Tôi xem lại rồi báo anh/chị.` }, t);
         }
         // Làm xong thì nhắn báo, như người thật (chatbot; lỗi thì câu ngắn soạn sẵn)
         if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'xong') {
@@ -266,7 +280,13 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       let tinhTrang = '', buocTin = '', dangMacCa = false;
       if (s.order_id) {
         const d = await get(`/v1/orders/${s.order_id}`, t);
-        if (d) { tinhTrang = `Hợp đồng ${d.code ?? ''}: ${TEN_TT[d.status] ?? d.status}.`; buocTin = d.status === 'awaiting_signatures' ? 'cho_ky' : ['draft', 'pending_approval'].includes(d.status) ? 'soan_hd' : ''; }
+        if (d) {
+          // Dùng đúng trạng thái hiển thị của backend + tới lượt ai (rà soát #7: bảng tên tự viết sai mã trạng thái)
+          const ht = d.hien_thi ?? {}, tl = ht.toi_luot;
+          const luot = !tl ? '' : tl.phia === phiaTin ? ` Tới lượt BẠN: ${tl.viec}.` : tl.phia === 'ops' ? ` AgiViet đang xử lý: ${tl.viec}.` : ` Tới lượt người kia: ${tl.viec}.`;
+          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}`;
+          buocTin = d.status === 'drafting' && phiaTin === 'buyer' ? 'soan_hd' : tl && tl.phia !== phiaTin && /ký/i.test(tl.viec) ? 'cho_ky' : '';
+        }
       } else if (s.offer_id) {
         const of = ((await get('/v1/offers', t)) ?? []).find((x: any) => x.id === s.offer_id); const v = of?.vong_cuoi;
         if (of && v) {
@@ -292,6 +312,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
           : traLoiTheoBuoc(tin, phiaTin, buocTin));
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
+      if (nhat_ky.at(-1)?.ket_qua !== 'xong') DA_TRA_LOI.delete(s.id); // gửi hỏng: vòng sau trả lời lại (rà soát #2)
     }
     // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).
     for (const v of (await get('/v1/seasonal-orders?type=pre_harvest', t)) ?? []) {

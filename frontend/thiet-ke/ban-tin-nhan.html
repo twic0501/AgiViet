@@ -320,7 +320,7 @@ async function moLoiChao(id) {
     nhac = `<p class="nhac">Chờ ${esc(ben)} trả lời trước <b>${gio(v.expires_at)}</b>.${cuaBac && v.round_no === 1 ? " Bên mua chưa trả lời thì bác hủy được." : ""}</p>`;
     hanhDong = cuaBac && v.round_no === 1 ? `<div class="ba-nut"><button type="button" class="nut phu-nut" data-dong>Đóng</button><button type="button" class="nut nut-do" data-r="huy">Hủy lời chào</button></div>` : `<button type="button" class="nut phu-nut" data-dong>Đóng</button>`;
   }
-  tam.innerHTML = `<button type="button" class="dong-tam" data-dong aria-label="Đóng">Đóng ✕</button><div><h2 id="lc-t">${ct.status === "accepted" ? "Đã đồng ý giá" : v.from_side === "buyer" ? `${esc(ben)} chào giá` : "Bác chào giá"}</h2><p class="phu-lc">${tenHang}</p></div>
+  tam.innerHTML = `<button type="button" class="dong-tam" data-dong aria-label="Đóng">Đóng ✕</button><div><h2 id="lc-t">${ct.status === "accepted" ? "Đã đồng ý giá" : v.from_side === "buyer" ? `${esc(ben)} trả giá` : "Bác chào giá"}</h2><p class="phu-lc">${tenHang}</p></div>
     <div class="so-lon"><span>${v.from_side === "buyer" ? "Bên mua trả" : "Bác chào"}</span><b>${soVN(v.price_vnd)} đ/kg</b><small>${esc(can(v.qty_g).join(" "))} · thành tiền ${soVN(thanhTien)} đ (trước phí, chi phí chở, phân loại)</small></div>
     ${sosanh ? `<div class="so-sanh">${sosanh}</div>` : ""}
     ${ct.rounds.length > 1 ? `<div class="lc-vong">${ct.rounds.map((r) => `<p class="${r.from_side === "seller" ? "bac" : ""}"><span>Vòng ${r.round_no} · ${r.from_side === "seller" ? "Bác" : esc(ben)}</span><b>${soVN(r.price_vnd)} đ/kg · ${esc(can(r.qty_g).join(" "))}</b></p>`).join("")}</div>` : ""}

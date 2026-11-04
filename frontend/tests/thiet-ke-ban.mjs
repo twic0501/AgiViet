@@ -571,7 +571,7 @@ await trang("tin-nhan-tra-loi", async (p) => {
   const [id1, g1] = await moChao();
   const mo = async (id) => { await p.goto(`${GOC}/thiet-ke/ban-tin-nhan.html?thu=0918000421#chao=${id}`); await p.reload(); await p.locator(".tam-lc .day button").first().waitFor({ timeout: 10000 }); };
   await mo(id1);
-  assert.match(await p.locator(".tam-lc").innerText(), /Tư Hùng chào giá[\s\S]*Tới lượt bác/);
+  assert.match(await p.locator(".tam-lc").innerText(), /Tư Hùng trả giá[\s\S]*Tới lượt bác/);
   assert.equal(await p.locator('.tam-lc [data-r="dong-y"]').count(), 1, "có nút Đồng ý");
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}11b-loi-chao.png` });

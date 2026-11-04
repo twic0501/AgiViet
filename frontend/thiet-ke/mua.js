@@ -999,7 +999,7 @@ if (THAT) {
     const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "";
     return `<section class="sl-the" data-of="${o.id}" style="display:grid;gap:8px">
       <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(o.code)} · lô ${esc(o.lot_code || "")}</b><span class="sl-nhan${toiLuot ? " sl-n-xong" : ""}">${toiLuot ? "Tới lượt bạn" : choHo ? "Chờ người bán" : o.don ? "Đã lập đơn" : esc(TT[o.status] || o.status)}</span></div>
-      <div>${v.from_side === "buyer" ? (v.round_no > 1 ? "Bạn trả giá" : "Bạn chào") : (v.round_no > 1 ? "Người bán trả giá" : "Người bán báo giá")} · vòng ${v.round_no || 1}: <b>${so(gia)} đ/kg × ${kg(kgv)}</b></div>
+      <div>${v.from_side === "buyer" ? (v.round_no > 1 ? "Bạn trả giá lại" : "Bạn trả giá") : (v.round_no > 1 ? "Người bán chào giá lại" : "Người bán chào giá")} · vòng ${v.round_no || 1}: <b>${so(gia)} đ/kg × ${kg(kgv)}</b></div>
       ${o.status === "sent" && han ? `<p class="sl-ghi">Hạn trả lời: ${han}</p>` : ""}
       ${toiLuot ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sl-nut sl-vang" data-lam="accept">Đồng ý giá này</button><button class="sl-nut sl-vien" data-lam="counter">Trả giá</button><button class="sl-nut sl-vien" data-lam="reject">Không mua</button></div>
         <div data-o-tra hidden style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><label style="display:grid;gap:4px;font-weight:600">Giá mới (đ/kg)<input inputmode="numeric" data-gia style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label><button class="sl-nut sl-vang" data-lam="gui-tra">Gửi giá</button></div>` : ""}

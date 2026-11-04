@@ -112,7 +112,7 @@ function veHomNay() {
     ...DL.khung.filter((k) => k.toi_luot === "buyer").map((k) => ({ gap: true, ten: `${k.code} · ${k.ben_ban}`, phu: k.ten_trang_thai, href: MO("chi-tiet-khung", `khung=${k.id}`) })),
     ...DL.khung.flatMap((k) => (k.gia_tuan || []).filter((g) => g.trang_thai === "proposed" && g.de_nghi_boi === "seller").map((g) => ({ ten: `Duyệt giá tuần ${ngay(g.tuan)}`, phu: `${k.code} · ${k.ben_ban} đề nghị`, href: MO("chi-tiet-khung", `khung=${k.id}`) }))),
     // Lời chào: người bán trả giá lại → tới lượt mình trả lời; đã đồng ý mà chưa có đơn → lập đơn.
-    ...DL.loiChao.filter((o) => o.status === "sent" && o.vong_cuoi?.from_side === "seller").map((o) => ({ gap: true, ten: `Người bán trả giá ${vnd(o.vong_cuoi.price_vnd)} đ/kg`, phu: `${o.code} · lô ${o.lot_code || ""} · trả lời trong 24 giờ`, href: MO("bao-gia", `loi-chao=${o.id}`) })),
+    ...DL.loiChao.filter((o) => o.status === "sent" && o.vong_cuoi?.from_side === "seller").map((o) => ({ gap: true, ten: `Người bán chào giá lại ${vnd(o.vong_cuoi.price_vnd)} đ/kg`, phu: `${o.code} · lô ${o.lot_code || ""} · trả lời trong 24 giờ`, href: MO("bao-gia", `loi-chao=${o.id}`) })),
     ...DL.loiChao.filter((o) => o.status === "accepted" && !DL.don.some((d) => d.offer_id === o.id)).map((o) => ({ gap: true, ten: "Lập đơn", phu: `${o.code} · lô ${o.lot_code || ""} · hai bên đã chốt giá`, href: MO("bao-gia", `loi-chao=${o.id}`) })),
     ...DL.khoan.filter(canTra).map((p) => ({ gap: true, ten: `Trả ${vnd(conTra(p))} đ`, phu: `${p.nguon}${p.due_at ? ` · hạn ${ngay(p.due_at)}` : ""}`, khoan: p.id })),
   ];
@@ -163,7 +163,7 @@ function veNguon() {
     <div class="tin">${l.qty_basis === "weighed" ? `<span class="chip la">Đã cân</span>` : `<span class="chip">Người bán ước tính</span>`}${anhApp ? `<span class="chip la">${anhApp} ảnh chụp trong app</span>` : `<span class="chip">Chưa có ảnh chụp trong app</span>`}${l.ban_gap ? `<span class="chip do">Bán gấp</span>` : ""}</div>
     <p class="phu" data-gia-cho="${esc(l.product_code)}|${esc(l.grade_code)}">Đang lấy giá chợ…</p>
     <label class="so-sanh-chon"><input type="checkbox" data-ss="${l.id}" ${SS.has(l.id) ? "checked" : ""}> So sánh</label>
-    <button class="nut vien rong" data-mo="chao-gia" data-lo="${l.id}">Chào giá</button></div>`; }).join("") : `<div class="trong"><p>Không có lô nào khớp. Gửi nhu cầu để người bán báo giá cho bạn.</p><button class="nut vien" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>`;
+    <button class="nut vien rong" data-mo="chao-gia" data-lo="${l.id}">Trả giá</button></div>`; }).join("") : `<div class="trong"><p>Không có lô nào khớp. Gửi nhu cầu để người bán báo giá cho bạn.</p><button class="nut vien" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>`;
   veNutSS();
   document.querySelectorAll("[data-gia-cho]").forEach(async (el) => { const [ma, loai] = el.dataset.giaCho.split("|"); const g = await layGiaCho(ma, loai);
     el.textContent = g?.status === "du_du_lieu" ? `Giá giao dịch trên AgiViet: ${vnd(g.price_vnd)} đ/kg (${g.order_count} đơn, đến ${ngay(g.as_of)})` : ""; el.hidden = g?.status !== "du_du_lieu"; });
@@ -245,6 +245,15 @@ async function moCuoc(q, ten) {
       <div class="luong-tin">${x.tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("") || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
+    // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
+    clearInterval(moCuoc.hen); let soTin = x.tin.length;
+    moCuoc.hen = setInterval(async () => {
+      const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return clearInterval(moCuoc.hen);
+      const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null); if (!y || y.tin.length === soTin) return;
+      soTin = y.tin.length;
+      khung.innerHTML = y.tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("");
+      khung.scrollTop = khung.scrollHeight;
+    }, 5000);
     $("#tn-gui").onsubmit = async (e) => { e.preventDefault(); const body = $("#tn-o").value.trim(); if (!body) return;
       e.submitter && (e.submitter.disabled = true);
       try { await api("/v1/messages", { ...q, body }); DL.tin = await api("/v1/messages/summary"); await moCuoc(q, ten); $("#tn-o")?.focus(); }
