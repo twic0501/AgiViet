@@ -219,7 +219,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           let gia = Math.round(giaKia * (phia === 'seller' ? 1 + buoc : 1 - buoc) / 100) * 100;
           if (muc != null) gia = phia === 'buyer' ? Math.min(gia, muc) : Math.max(gia, muc);
           await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
-          bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách.`;
+          bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách; không nói đây là mức cuối hay tốt nhất (còn thương lượng được).`;
         } else {
           await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
           bao = `Bạn vừa đồng ý giá ${soVN(giaKia)} trong lời chào ${of.code}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký. Viết 1–2 câu báo cho người kia.`;

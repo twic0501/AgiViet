@@ -192,7 +192,8 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
           " Trả lời tiếng Việt tự nhiên, lịch sự, ngắn 1–2 câu, không chào hỏi dài. Chỉ nói đúng theo TÌNH TRẠNG bên dưới; "
           "không tự đưa giá, số lượng, ngày giờ, số tiền nào ngoài TÌNH TRẠNG; không hứa điều chưa có. Việc chào giá, trả giá, đồng ý, ký, giao, trả tiền "
           "đều làm bằng nút trong app — " + nut + " "
-          "Không xin số điện thoại, Zalo, tài khoản riêng.\nTÌNH TRẠNG: " + req.tinh_trang)
+          "Không xin số điện thoại, Zalo, tài khoản riêng. Nếu TÌNH TRẠNG có 'Mức cao nhất bạn chịu' hoặc 'Mức thấp nhất bạn chịu' và người kia xin đổi giá "
+          "thì BẮT BUỘC nêu rõ con số đó (vd 'anh/chị trả X là bên tôi đồng ý'); không bao giờ nói đây là 'mức cuối' hay 'tốt nhất'.\nTÌNH TRẠNG: " + req.tinh_trang)
     if not LLM_SLOT.acquire(timeout=CHO_SLOT_S):
         raise HTTPException(503, 'bận')
     try:
