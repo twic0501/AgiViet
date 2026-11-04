@@ -345,6 +345,8 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
 /* Đầu trang: header liền với khối xanh (không viền vàng, không bo); chỉ khi đã cuộn mới thành thanh riêng */
 html:not(.da-cuon) header.dau.dau-xanh:not(:has(.nut-tron[aria-label*="Quay"], .nut-tron[aria-label*="Về"])) { box-shadow: none; border-radius: 0; }
+/* Trang chủ khi cuộn: góc vuông như các trang khác */
+header.dau.dau-xanh:not(:has(.nut-tron[aria-label*="Quay"], .nut-tron[aria-label*="Về"])) { border-radius: 0; }
 /* Cuộn kiểu app: không nảy lộ nền ở mép; header có bóng khi nội dung chạy dưới; nội dung khối xanh mờ + trôi chậm */
 html { overscroll-behavior-y: none; }
 header.dau.dau-xanh { transition: box-shadow 200ms ease, border-radius 200ms ease; }
