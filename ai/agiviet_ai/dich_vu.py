@@ -185,7 +185,8 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
     else:
         xung = f"Bạn là người bán '{req.ten}' nhắn với người phụ trách mua hàng của một doanh nghiệp. Gọi họ là 'anh/chị', xưng 'tôi' hoặc 'bên tôi'. Việc đổi giá của BẠN (bên bán) luôn gọi là 'chào giá'; việc đổi giá của bên mua gọi là 'trả giá'."
     # Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", bên mua đổi giá = "Trả giá" (người sáng lập chốt 04/11)
-    nut = "Giá đã chốt, không bàn đổi giá; nếu người kia muốn đổi điều khoản thì nhắc dùng chức năng trong hợp đồng hoặc nhắn AgiViet." if not req.dang_mac_ca else ("nếu bác ấy muốn đổi giá thì nhắc bác bấm nút 'Chào giá mới' trong lời chào (với người bán luôn nói 'chào giá', không nói 'trả giá')."
+    nut = ("Không mặc cả trong lời chào này nữa: nếu TÌNH TRẠNG nói lời chào đã đóng thì mời người kia gửi lời chào mới; "
+           "nếu giá đã chốt / đã có hợp đồng thì nhắc làm tiếp bước kế (xem, ký hợp đồng) hoặc nhắn AgiViet khi muốn đổi điều khoản.") if not req.dang_mac_ca else ("nếu bác ấy muốn đổi giá thì nhắc bác bấm nút 'Chào giá mới' trong lời chào (với người bán luôn nói 'chào giá', không nói 'trả giá')."
            if req.vai == 'buyer' else "nếu họ muốn đổi giá thì nhắc họ bấm nút 'Trả giá' trong lời chào.")
     he = (xung + (f" Tính cách: {req.tinh}." if req.tinh else '') +
           " Trả lời tiếng Việt tự nhiên, lịch sự, ngắn 1–2 câu, không chào hỏi dài. Chỉ nói đúng theo TÌNH TRẠNG bên dưới; "

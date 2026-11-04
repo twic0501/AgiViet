@@ -266,7 +266,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
             : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)}. Nếu bên mua trả thấp hơn thì từ chối khéo và có thể nói mức này; nếu họ trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
           tinhTrang = of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
             : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'tới lượt bạn trả lời (bạn sẽ trả lời trong lời chào ngay sau đây)'}.${mucCau}`
-            : `Lời chào ${of.code ?? ''}: ${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã đóng'}.`;
+            : of.status === 'auto_rejected' ? `Lời chào ${of.code ?? ''} đã đóng: hệ thống tự từ chối vì giá ${phiaTin === 'seller' ? 'người mua đưa' : 'người bán chào'} chưa tới mức bên bạn chấp nhận (KHÔNG nói con số mức đó). Mời người kia gửi lời chào mới với giá ${phiaTin === 'seller' ? 'cao' : 'thấp'} hơn; giá đã đưa ${gia} không thay đổi được nữa.`
+            : `Lời chào ${of.code ?? ''} đã đóng (${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã rút'}); muốn mua bán tiếp thì gửi lời chào mới.`;
           if (of.status === 'accepted') buocTin = 'da_dong_y'; else if (of.status === 'sent') dangMacCa = true;
         }
       }
