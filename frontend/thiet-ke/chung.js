@@ -1,3 +1,4 @@
+import "./khung-dt.js";
 import "./lich.js";
 import "./hieu-ung-ghep.js";
 // Phần dùng chung cho các màn mẫu app bán: định dạng, phiên, tải dữ liệu, ảnh sản phẩm, chặng hợp đồng.

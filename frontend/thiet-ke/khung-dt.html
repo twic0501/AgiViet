@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgiViet</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root { --nen: #e9e4d6; --vien: #1c2a22; }
+  html, body { margin: 0; height: 100%; background: var(--nen); }
+  body { display: grid; place-items: center; overflow: hidden; }
+  /* Khung 390×844 thu nhỏ theo chiều cao cửa sổ, giữ tỉ lệ */
+  .dt { --c: min(844px, calc(100dvh - 32px)); height: var(--c); width: calc(var(--c) * 390 / 844);
+    border-radius: calc(var(--c) * 0.055); padding: 10px; background: var(--vien);
+    box-shadow: 0 30px 60px -20px rgba(28, 42, 34, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.2); box-sizing: content-box; }
+  iframe { display: block; border: 0; width: 390px; height: 844px; border-radius: 34px; background: #f6f2e7;
+    transform-origin: 0 0; }
+  .vung { width: 100%; height: 100%; overflow: hidden; border-radius: calc(var(--c) * 0.045); }
+</style>
+</head>
+<body>
+<div class="dt"><div class="vung"><iframe id="app" title="Ứng dụng AgiViet" allow="geolocation; camera; microphone; clipboard-write"></iframe></div></div>
+<script>
+  const u = new URLSearchParams(location.search).get("u") || "/thiet-ke/dang-nhap.html";
+  const f = document.getElementById("app");
+  const coGian = () => { f.style.transform = `scale(${f.parentElement.clientHeight / 844})`; };
+  addEventListener("resize", coGian); coGian();
+  // chỉ nhận đường dẫn trong cùng trang (chặn mở trang ngoài qua ?u=)
+  f.src = u.startsWith("/") && !u.startsWith("//") ? u : "/thiet-ke/dang-nhap.html";
+  f.addEventListener("load", () => {
+    try { const l = f.contentWindow.location; document.title = f.contentDocument.title;
+      history.replaceState(null, "", "/thiet-ke/khung-dt.html?u=" + encodeURIComponent(l.pathname + l.search + l.hash)); } catch {}
+  });
+</script>
+</body>
+</html>
