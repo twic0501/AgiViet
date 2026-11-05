@@ -302,3 +302,5 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 - Phát hiện thêm API nhu cầu thiếu `min_source_qty_g` trả 500, gửi 0 trả 422; UI yêu cầu nhập dương. Hai điểm được ghi trong đề xuất backend, không sửa backend.
 - Còn dở: backend cần mở quyền đọc đúng ảnh lô công khai và chuẩn hóa ràng buộc nhu cầu; chưa hoàn tất đợt giao bù/tiền tại kho, biến thể phụ lục tăng/giảm tiền, camera/PWA/thiết bị thật. Đánh giá ghi cụ thể từng phần đã kiểm và chưa kiểm.
 - Bước kế nếu có lượt giao mới: backend xử lý hai điểm trên, rồi kiểm ảnh thật bên mua và các biến thể chưa phủ. **Lượt này đã dừng sau kiểm và bàn giao, không chờ vòng lặp.**
+
+- E171 (05/11): #11 rà soát ChatGPT: bên mua trả giá sửa được cả lượng (kg), gửi qty_g mới (backend traGia đã kiểm 80%). Ảnh trâu cho slide pitching: ~/Documents/AgiViet/slide-trau.
