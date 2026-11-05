@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Trâu V4g — tay chính diện kiểu Higgsfield</title>
+  <desc>Theo tay hình chính diện của docs/trau/tham-chieu/higgsfield-v4g-xoay-1.png: vai áo liền xuống ống tay loe, nếp trong, cổ tay phẳng; bàn tay giữ nguyên V4g. Màu/nét V4g. Uốn bằng xương trong dung-v3.py.</desc>
+  <g id="tay-trai" data-goc="181 327" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 135.9200 372.8400 C 147.0800 371.9100 157.3100 380.2800 160.1000 388.6500 C 161.0300 396.0900 157.3100 404.4600 153.5900 409.1100 C 149.8700 413.7600 144.2900 412.8300 142.4300 407.2500 L 142.4300 403.5300 C 138.7100 410.9700 133.1300 412.8300 129.4100 409.1100 C 126.6200 406.3200 127.5500 402.6000 129.4100 399.8100 C 123.8300 404.4600 119.1800 404.4600 117.3200 400.7400 C 115.4600 397.9500 117.3200 394.2300 119.1800 391.4400 C 113.6000 395.1600 110.8100 391.4400 113.6000 384.9300 Q 121.0400 371.9100 135.9200 372.8400 Z" fill="#84736b" stroke="#24190f" stroke-width="5.6" data-role="mong-tay"/>
+    <path d="M 120.4478 384.9914 Q 135.9416 390.4598 151.4354 385.9028 L 155.9924 391.3712 Q 152.3468 397.7510 146.8784 400.4852 Q 138.6758 396.8396 131.3846 401.3966 Q 125.9162 398.6624 122.2706 397.7510 Q 117.7136 393.1940 120.4478 384.9914 Z" fill="#6b5d5b" stroke="none" opacity=".34" data-role="bong-tay"/>
+    <path d="M180 304Q162 306 150 322Q136 344 122 368L117 377L157 396Q161 380 166 364Q172 346 182 336Z" fill="#c48f65" stroke="none" data-role="ao-tay"/>
+    <path d="M180 304Q162 306 150 322Q136 344 122 368L117 377L157 396Q161 380 166 364Q172 346 182 336" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-tay"/>
+    <path d="M168 348Q160 372 156 392" fill="none" stroke="#24190f" stroke-width="4.2" data-role="nep-tay"/>
+    <path d="M150 334Q143 350 138 362" fill="none" stroke="#aa7652" stroke-width="1.35" opacity=".5" data-role="nep-khuyu"/>
+  </g>
+  <g id="tay-phai" data-goc="331 327" stroke="#24190f" stroke-width="5.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 376.08 372.8400 C 364.92 371.9100 354.69 380.2800 351.90 388.6500 C 350.97 396.0900 354.69 404.4600 358.41 409.1100 C 362.13 413.7600 367.71 412.8300 369.57 407.2500 L 369.57 403.5300 C 373.29 410.9700 378.87 412.8300 382.59 409.1100 C 385.38 406.3200 384.45 402.6000 382.59 399.8100 C 388.17 404.4600 392.82 404.4600 394.68 400.7400 C 396.54 397.9500 394.68 394.2300 392.82 391.4400 C 398.40 395.1600 401.19 391.4400 398.40 384.9300 Q 390.96 371.9100 376.08 372.8400 Z" fill="#84736b" stroke="#24190f" stroke-width="5.6" data-role="mong-tay"/>
+    <path d="M 391.55 384.9914 Q 376.06 390.4598 360.56 385.9028 L 356.01 391.3712 Q 359.65 397.7510 365.12 400.4852 Q 373.32 396.8396 380.62 401.3966 Q 386.08 398.6624 389.73 397.7510 Q 394.29 393.1940 391.55 384.9914 Z" fill="#6b5d5b" stroke="none" opacity=".34" data-role="bong-tay"/>
+    <path d="M332.00 304Q350.00 306 362.00 322Q376.00 344 390.00 368L395.00 377L355.00 396Q351.00 380 346.00 364Q340.00 346 330.00 336Z" fill="#c48f65" stroke="none" data-role="ao-tay"/>
+    <path d="M332.00 304Q350.00 306 362.00 322Q376.00 344 390.00 368L395.00 377L355.00 396Q351.00 380 346.00 364Q340.00 346 330.00 336" fill="none" stroke="#24190f" stroke-width="5.6" data-role="vien-tay"/>
+    <path d="M344.00 348Q352.00 372 356.00 392" fill="none" stroke="#24190f" stroke-width="4.2" data-role="nep-tay"/>
+    <path d="M362.00 334Q369.00 350 374.00 362" fill="none" stroke="#aa7652" stroke-width="1.35" opacity=".5" data-role="nep-khuyu"/>
+  </g>
+</svg>
