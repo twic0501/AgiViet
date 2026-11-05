@@ -996,14 +996,18 @@ if (THAT) {
   const veThe = (o) => {
     const v = o.vong_cuoi || {}, gia = Number(v.price_vnd || 0), kgv = Number(v.qty_g || 0) / 1000;
     const toiLuot = o.status === "sent" && v.from_side === "seller", choHo = o.status === "sent" && v.from_side === "buyer";
+    // Rà soát #14: nút theo đúng luật backend — mỗi bên trả/chào lại tối đa 2 lần (vòng >1); rút chỉ khi bên kia chưa trả lời (vòng 1)
+    const R = Number(v.round_no || 1), muaVongLe = o.direction !== "seller_quote";
+    let daTra = 0; for (let r = 2; r <= R; r++) if ((r % 2 === 1) === muaVongLe) daTra++;
+    const conTra = Math.max(0, 2 - daTra), duocRut = choHo && R === 1;
     const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }) : "";
     return `<section class="sl-the" data-of="${o.id}" style="display:grid;gap:8px">
       <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>${esc(o.code)} · lô ${esc(o.lot_code || "")}</b><span class="sl-nhan${toiLuot ? " sl-n-xong" : ""}">${toiLuot ? "Tới lượt bạn" : choHo ? "Chờ người bán" : o.don ? "Đã lập đơn" : esc(TT[o.status] || o.status)}</span></div>
       <div>${v.from_side === "buyer" ? (v.round_no > 1 ? "Bạn trả giá lại" : "Bạn trả giá") : (v.round_no > 1 ? "Người bán chào giá lại" : "Người bán chào giá")} · vòng ${v.round_no || 1}: <b>${so(gia)} đ/kg × ${kg(kgv)}</b></div>
       ${o.status === "sent" && han ? `<p class="sl-ghi">Hạn trả lời: ${han}</p>` : ""}
-      ${toiLuot ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sl-nut sl-vang" data-lam="accept">Đồng ý giá này</button><button class="sl-nut sl-vien" data-lam="counter">Trả giá</button><button class="sl-nut sl-vien" data-lam="reject">Không mua</button></div>
+      ${toiLuot ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="sl-nut sl-vang" data-lam="accept">Đồng ý giá này</button>${conTra > 0 ? `<button class="sl-nut sl-vien" data-lam="counter">Trả giá (còn ${conTra} lần)</button>` : `<span class="sl-ghi">Bạn đã hết lượt trả giá: đồng ý hoặc không mua.</span>`}<button class="sl-nut sl-vien" data-lam="reject">Không mua</button></div>
         <div data-o-tra hidden style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><label style="display:grid;gap:4px;font-weight:600">Giá mới (đ/kg)<input inputmode="numeric" data-gia style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit"></label><button class="sl-nut sl-vang" data-lam="gui-tra">Gửi giá</button></div>` : ""}
-      ${choHo ? `<div><button class="sl-nut sl-vien" data-lam="withdraw">Rút lời chào</button></div>` : ""}
+      ${duocRut ? `<div><button class="sl-nut sl-vien" data-lam="withdraw">Rút lời chào</button></div>` : choHo ? `<p class="sl-ghi">Người bán đã trả lời nên không rút được nữa; chờ người bán.</p>` : ""}
       ${o.status === "accepted" && !o.don ? `<p class="sl-ghi">Đồng ý giá chưa phải hợp đồng. Lập đơn rồi hai bên ký mới thành hợp đồng.</p>
       <details data-lap><summary class="sl-nut sl-vang" style="list-style:none;display:inline-flex">Lập đơn từ giá này</summary>
         <div style="display:grid;gap:10px;margin-top:10px">

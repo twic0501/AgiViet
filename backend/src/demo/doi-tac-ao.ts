@@ -85,7 +85,8 @@ const khoa = () => `ao-${Date.now().toString(36)}-${(dem++).toString(36)}`;
 export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
   const t = tin.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
   if (/da che|•/.test(t)) return 'Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên.';
-  if (/gio|mai|sang|chieu|ngay|xe|toi vuon|lay hang/.test(t)) return phia === 'buyer' ? 'Dạ được bác, bên em cho xe tới đúng giờ hẹn trong hợp đồng, có gì em nhắn trước.' : 'Dạ được, hôm đó bên tôi chuẩn bị hàng sẵn chờ xe tới cân.';
+  // Không hứa giờ/xe khi chưa có hợp đồng (rà soát #8): chỉ nói giờ giao theo hợp đồng sẽ ký
+  if (/gio|mai|sang|chieu|ngay|xe|toi vuon|lay hang/.test(t)) return phia === 'buyer' ? 'Giờ giao và xe sẽ ghi rõ trong hợp đồng bác ạ, hai bên ký rồi em báo lịch cụ thể cho bác.' : 'Giờ giao và xe sẽ ghi rõ trong hợp đồng, ký xong bên tôi chuẩn bị hàng theo đúng lịch đó.';
   // Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", bên mua đổi giá = "Trả giá"
   if (/gia|bot|tang|giam/.test(t)) return phia === 'buyer' ? 'Giá này bên em tính theo loại 1 rồi, bác muốn đổi thì bấm "Chào giá mới" trong lời chào giúp em nha.' : 'Giá bên tôi để sát rồi, anh/chị muốn đổi thì bấm "Trả giá" trong lời chào giúp nhé.';
   if (/con|du|bao nhieu|tan|kg|hang/.test(t)) return phia === 'buyer' ? 'Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết bác ạ.' : 'Còn đủ hàng, hàng đẹp, loại 1 chiếm phần lớn.';
@@ -336,11 +337,18 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     // 4) Đơn: làm đúng việc mà backend báo là tới lượt bên mình.
     for (const d of (await get('/v1/orders', t)) ?? []) {
       let luot = d.hien_thi?.toi_luot; const phia = d.phia_cua_ban;
-      if (phia === 'seller' && ['active', 'completed'].includes(d.status)) { // khoản bên mua đã báo trả → người bán xác nhận trước mọi việc khác
+      // Khoản bên kia đã báo trả mà mình là BÊN NHẬN → xác nhận trước mọi việc khác. Cả hai chiều: tiền hàng, công nợ, tiền hoàn
+      // (rà soát #5: trước chỉ người bán, chỉ active/completed → bên mua AI không xác nhận được tiền hoàn, giao dịch dừng ở quyết toán)
+      if (['active', 'completed', 'outstanding', 'awaiting_settlement'].includes(d.status)) {
         let coXacNhan = false;
-        for (const p of (await get(`/v1/orders/${d.id}/payments`, t)) ?? []) if (p.status === 'payer_reported') {
+        for (const p of (await get(`/v1/orders/${d.id}/payments`, t)) ?? []) if (p.status === 'payer_reported' && (p.direction === 'seller_to_buyer' ? 'buyer' : 'seller') === phia) {
           coXacNhan = true;
-          await lam(tc, 'xác nhận đã nhận tiền', d.code, async () => post(`/v1/payments/${p.id}/confirm`, { challenge_id: await otp(t, 'money_received', { payment_id: p.id, amount_vnd: String(p.amount_due_vnd) }), code: OTP, amount_vnd: Number(p.amount_due_vnd), result: 'full', bank_txn_ref: 'FT' + Date.now().toString().slice(-10) }, t));
+          // Chỉ xác nhận phần bên kia ĐÃ BÁO mà chưa xác nhận; chưa đủ tổng thì 'partial' (rà soát #6: trước xác nhận cả tổng → TIEN_VUOT_SO_BAO, kẹt)
+          const bao = Number(p.reported_vnd ?? 0), daNhan = Number(p.confirmed_vnd ?? 0), can = Number(p.amount_due_vnd ?? 0);
+          const so = bao > daNhan ? bao - daNhan : can - daNhan; if (so <= 0) continue;
+          const kq = daNhan + so >= can ? 'full' : 'partial';
+          await lam(tc, `xác nhận đã nhận ${so.toLocaleString('vi-VN')} đ`, d.code, async () => post(`/v1/payments/${p.id}/confirm`, { challenge_id: await otp(t, 'money_received', { payment_id: p.id, amount_vnd: String(so) }), code: OTP, amount_vnd: so, result: kq, bank_txn_ref: 'FT' + Date.now().toString().slice(-10) }, t));
+          if (kq === 'partial' && nhat_ky.at(-1)?.ket_qua === 'xong') await post0('/v1/messages', { order_id: d.id, body: phia === 'buyer' ? `Em đã nhận ${so.toLocaleString('vi-VN')} đ, còn thiếu ${(can - daNhan - so).toLocaleString('vi-VN')} đ bác ạ, bác chuyển nốt giúp em nha.` : `Bên tôi đã nhận ${so.toLocaleString('vi-VN')} đ, còn thiếu ${(can - daNhan - so).toLocaleString('vi-VN')} đ. Anh/chị chuyển nốt phần còn lại giúp nhé.` }, t);
         }
         if (coXacNhan) continue; // vòng sau mới làm tiếp, trạng thái đã đổi
       }
@@ -370,6 +378,19 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const anh = (await post('/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, t)).json;
           return post(`/v1/payments/${p.id}/report`, { amount_vnd: TEP.get(tc) === 'tra-thieu' ? Math.round(Number(p.amount_due_vnd) * 0.7 / 1000) * 1000 : Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, t);
         }); break;
+        // Rà soát #5: hoàn tiền thừa / trả công nợ — mình là BÊN TRẢ: báo đã chuyển đúng phần còn thiếu, kèm ảnh chứng từ, rồi nhắn báo
+        case 'Hoàn tiền thừa cho bên mua': case 'Trả công nợ': {
+          const chieu = phia === 'seller' ? 'seller_to_buyer' : 'buyer_to_seller';
+          const p = ((await get(`/v1/orders/${d.id}/payments`, t)) ?? []).find((x: any) => x.direction === chieu && x.status !== 'payer_reported' && Number(x.amount_due_vnd) > Number(x.confirmed_vnd ?? 0));
+          if (!p) break;
+          const so = Number(p.amount_due_vnd) - Number(p.confirmed_vnd ?? 0);
+          await lam(tc, `${luot.viec.toLowerCase()} ${so.toLocaleString('vi-VN')} đ`, d.code, async () => {
+            const anh = (await post('/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, t)).json;
+            return post(`/v1/payments/${p.id}/report`, { amount_vnd: so, method: 'bank_transfer', evidence_document_id: anh.id }, t);
+          });
+          if (nhat_ky.at(-1)?.ket_qua === 'xong') await post0('/v1/messages', { order_id: d.id, body: phia === 'seller' ? `Bên tôi đã chuyển ${so.toLocaleString('vi-VN')} đ cho anh/chị, anh/chị kiểm tài khoản rồi bấm xác nhận giúp nhé.` : `Em đã chuyển ${so.toLocaleString('vi-VN')} đ cho bác rồi, bác kiểm tài khoản rồi xác nhận giúp em nha.` }, t);
+          break;
+        }
         case 'Chỉ định người nhận, đặt xe': {
           const did = o.dot_giao?.find((x: any) => x.status === 'preparing')?.id; if (!did) break;
           const sanSang: any[] = (await get(`/v1/deliveries/${did}/readiness`, t)) ?? [];

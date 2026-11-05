@@ -1,5 +1,6 @@
 """HTTP nội bộ; không truy cập DB, không có quyền đăng/ký/tiền."""
 from __future__ import annotations
+import re
 import asyncio
 import hashlib
 import importlib.util
@@ -203,6 +204,11 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
     finally:
         LLM_SLOT.release()
     la = so_la(k.van_ban, req.tinh_trang + ' ' + req.tin)
+    # Rà soát #9: số chỉ có trong tin người kia (không có trong TÌNH TRẠNG) mà câu trả lời lại 'đồng ý/chốt' → là hứa theo số của người kia: bỏ
+    if not la:
+        so_nguoi_kia = so_la(k.van_ban, req.tinh_trang)
+        if so_nguoi_kia and re.search(r"đồng ý|chốt|lấy luôn|ok|được luôn", k.van_ban, re.I):
+            la = so_nguoi_kia
     request.state.tom_tat = {'nguon': k.nguon, 'so_la': len(la)}
     if la:
         raise HTTPException(503, 'câu trả lời có số không có trong tình trạng')
