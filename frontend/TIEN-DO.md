@@ -306,3 +306,4 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 - E171 (05/11): #11 rà soát ChatGPT: bên mua trả giá sửa được cả lượng (kg), gửi qty_g mới (backend traGia đã kiểm 80%). Ảnh trâu cho slide pitching: ~/Documents/AgiViet/slide-trau.
 
 - E172 (05/11): Chat như thật: chatbot đáp thẳng ý người kia + có lịch sử 6 tin; giá đã chốt mà xin thêm thì từ chối khéo; chờ chatbot 25 s (dịch vụ AI ngủ cần ~12 s); dấu "…" bên kia đang nhắn + gửi xong chạy vòng AI ngay, hỏi tin mỗi 1,5 s khi chờ.
+- E173 (05/11): Mặc cả trong chat bớt máy móc: mức chịu chỉ nêu một lần, lượt sau nói khác kèm lý do; người kia thôi thì nhận lời, không nài; văn nói miền Nam.

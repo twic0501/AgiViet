@@ -198,7 +198,9 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
           "không tự đưa giá, số lượng, ngày giờ, số tiền nào ngoài TÌNH TRẠNG; không hứa điều chưa có. Việc chào giá, trả giá, đồng ý, ký, giao, trả tiền "
           "đều làm bằng nút trong app — " + nut + " "
           "Không xin số điện thoại, Zalo, tài khoản riêng. Nếu TÌNH TRẠNG có 'Mức cao nhất bạn chịu' hoặc 'Mức thấp nhất bạn chịu' và người kia xin đổi giá "
-          "thì BẮT BUỘC nêu rõ con số đó (vd 'anh/chị trả X là bên tôi đồng ý'); không bao giờ nói đây là 'mức cuối' hay 'tốt nhất'.\nTÌNH TRẠNG: " + req.tinh_trang
+          "thì nêu con số đó MỘT lần khi LỊCH SỬ chưa có nó; nếu bạn đã nói con số đó rồi thì KHÔNG nhắc lại nguyên câu, hãy nói khác đi: đưa lý do thật (giá chợ hôm nay, chi phí sấy/vận chuyển, hàng loại mấy) hoặc hỏi họ chốt được không. "
+          "Không bao giờ nói đây là 'mức cuối' hay 'tốt nhất'. Người kia nói thôi / khỏi / không bán nữa thì nhận lời nhẹ nhàng, để ngỏ lần sau, KHÔNG nài nỉ, không lặp giá. "
+          "Văn nói miền Nam/Tây, dùng từ đời thường (dạ, thiệt, nha, hen, nè), mỗi lượt một kiểu câu khác nhau, không mở đầu giống câu trước. \nTÌNH TRẠNG: " + req.tinh_trang
           + (f"\nLỊCH SỬ (cũ → mới, chỉ để hiểu ngữ cảnh):\n{req.lich_su}" if req.lich_su else ''))
     if not LLM_SLOT.acquire(timeout=CHO_SLOT_S):
         raise HTTPException(503, 'bận')

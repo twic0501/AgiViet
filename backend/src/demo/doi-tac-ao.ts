@@ -302,8 +302,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const kieuTin = { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) };
           const mucTin = ctTin ? mucChiu(ctTin.rounds, phiaTin, kieuTin.buoc ?? 0.03) : null;
           const mucCau = mucTin == null || v.from_side !== phiaTin ? '' : phiaTin === 'buyer'
-            ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)}. Nếu người bán đòi cao hơn thì từ chối khéo và có thể nói "bác chào ${soVN(mucTin)} là em đồng ý"; nếu họ đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
-            : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)}. Nếu bên mua trả thấp hơn thì từ chối khéo và có thể nói mức này; nếu họ trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
+            ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người bán đòi cao hơn thì từ chối khéo kèm lý do; đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
+            : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Bên mua trả thấp hơn thì từ chối khéo kèm lý do; trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
           tinhTrang = of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
             : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'TỚI LƯỢT BẠN trả lời: người kia không bấm được gì lúc này; hãy nói bạn đang xem và sẽ trả lời trong lời chào ngay, KHÔNG bảo họ bấm Chào giá/Trả giá'}.${mucCau}`
             : of.status === 'auto_rejected' ? `Lời chào ${of.code ?? ''} đã đóng: hệ thống tự từ chối vì giá ${phiaTin === 'seller' ? 'người mua đưa' : 'người bán chào'} chưa tới mức bên bạn chấp nhận (KHÔNG nói con số mức đó). Mời người kia gửi lời chào mới với giá ${phiaTin === 'seller' ? 'cao' : 'thấp'} hơn; giá đã đưa ${gia} không thay đổi được nữa.`
