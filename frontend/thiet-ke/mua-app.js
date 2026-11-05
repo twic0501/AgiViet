@@ -148,6 +148,24 @@ async function veSoSanh() {
     ${dong("Giá giao dịch cùng loại", (l, i) => (gia[i]?.status === "du_du_lieu" ? `<span class="so">${vnd(gia[i].price_vnd)} đ/kg</span>` : "Chưa đủ dữ liệu"))}
     </tbody></table>`;
 }
+// Lời chào đang mở của lô / cuộc chat: giá mới nhất + lối trả lời (mở màn lời chào đầy đủ)
+const lanLC = (o) => { const v = o.vong_cuoi, toi = o.status === "sent" && v.from_side === "seller", xong = o.status === "accepted" && !DL.don.some((d) => d.offer_id === o.id);
+  return { mo: toi || xong || (o.status === "sent"), lk: toi || xong,
+    chu: xong ? `Hai bên đã chốt ${vnd(v.price_vnd)} đ/kg` : toi ? `Người bán chào giá lại ${vnd(v.price_vnd)} đ/kg` : `Bạn đã trả ${vnd(v.price_vnd)} đ/kg, chờ người bán`,
+    nut: xong ? "Lập đơn" : "Xem và trả lời", href: MO("bao-gia", `loi-chao=${o.id}`) }; };
+function nutLo(l) {
+  const o = DL.loiChao.find((x) => x.lot_code === l.code && x.vong_cuoi && lanLC(x).mo), t = o && lanLC(o);
+  if (!t) return `<button class="nut vien rong" data-mo="chao-gia" data-lo="${l.id}">Trả giá</button>`;
+  return `<p class="phu"><b>${esc(t.chu)}</b></p><a class="nut ${t.lk ? "chinh" : "vien"} rong" href="${t.href}">${t.lk ? t.nut : "Xem lời chào"}</a>`;
+}
+async function theLC(q) {
+  if (!q.offer_id) return "";
+  const ds = await api("/v1/offers").catch(() => null); if (!ds) return "";
+  DL.loiChao = (ds.items ?? ds).filter((o) => o.la_ben_mua);
+  const o = DL.loiChao.find((x) => x.id === q.offer_id); if (!o?.vong_cuoi || !lanLC(o).mo) return "";
+  const t = lanLC(o);
+  return `<div class="the"><b>${esc(t.chu)}</b><p class="phu">${vnd(kg(o.vong_cuoi.qty_g))} kg · ${esc(o.code)}</p><a class="nut ${t.lk ? "chinh" : "vien"} rong" href="${t.href}">${t.lk ? t.nut : "Xem lời chào"}</a></div>`;
+}
 function veNguon() {
   const ds0 = (DL.lo || []).filter((l) => !l.is_substandard || l.ban_gap);
   const nhom = ["Tất cả", ...new Set(ds0.map((l) => NHOM(l.product_code)))];
@@ -163,7 +181,7 @@ function veNguon() {
     <div class="tin">${l.qty_basis === "weighed" ? `<span class="chip la">Đã cân</span>` : `<span class="chip">Người bán ước tính</span>`}${anhApp ? `<span class="chip la">${anhApp} ảnh chụp trong app</span>` : `<span class="chip">Chưa có ảnh chụp trong app</span>`}${l.ban_gap ? `<span class="chip do">Bán gấp</span>` : ""}</div>
     <p class="phu" data-gia-cho="${esc(l.product_code)}|${esc(l.grade_code)}">Đang lấy giá chợ…</p>
     <label class="so-sanh-chon"><input type="checkbox" data-ss="${l.id}" ${SS.has(l.id) ? "checked" : ""}> So sánh</label>
-    <button class="nut vien rong" data-mo="chao-gia" data-lo="${l.id}">Trả giá</button></div>`; }).join("") : `<div class="trong"><p>Không có lô nào khớp. Gửi nhu cầu để người bán báo giá cho bạn.</p><button class="nut vien" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>`;
+    ${nutLo(l)}</div>`; }).join("") : `<div class="trong"><p>Không có lô nào khớp. Gửi nhu cầu để người bán báo giá cho bạn.</p><button class="nut vien" data-mo="gui-nhu-cau">Gửi nhu cầu</button></div>`;
   veNutSS();
   document.querySelectorAll("[data-gia-cho]").forEach(async (el) => { const [ma, loai] = el.dataset.giaCho.split("|"); const g = await layGiaCho(ma, loai);
     el.textContent = g?.status === "du_du_lieu" ? `Giá giao dịch trên AgiViet: ${vnd(g.price_vnd)} đ/kg (${g.order_count} đơn, đến ${ngay(g.as_of)})` : ""; el.hidden = g?.status !== "du_du_lieu"; });
@@ -174,15 +192,18 @@ async function veChaoGia(loId) {
     <p class="phu">${esc(l.seller_name || "")} · còn ${vnd(kg(l.available_g ?? l.qty?.available))} kg · ${neo ? `giá giao dịch gần đây <b>${vnd(neo)} đ/kg</b>` : "chưa đủ dữ liệu giá chợ"}</p>
     <div class="luoi2"><label class="o-nhap">Giá (đ/kg)<input id="cg-gia" inputmode="numeric" value="${neo || ""}"></label><label class="o-nhap">Lượng (kg)<input id="cg-kg" inputmode="decimal" value="${Math.min(1000, kg(l.available_g ?? l.qty?.available))}"></label></div>
     <p class="phu" id="cg-tong" role="status"></p><p class="phu">Giao tại vườn, bạn lo xe. Người bán có 24 giờ trả lời: đồng ý, trả giá hoặc không bán. Đồng ý giá chưa phải hợp đồng.</p>
-    <p class="loi" id="cg-loi" role="alert"></p><button class="nut chinh rong" id="cg-gui">Gửi lời chào giá</button><button class="nut vien rong" data-dong>Để sau</button>`;
+    <p class="loi" id="cg-loi" role="alert"></p>${neo ? `<button class="nut chinh rong" id="cg-mua">Mua giá này (${vnd(neo)} đ/kg)</button><p class="phu">Gửi đúng giá gần đây. Người bán đồng ý là chốt giá.</p>` : ""}<button class="nut ${neo ? "vien" : "chinh"} rong" id="cg-gui">Gửi lời chào giá</button><button class="nut vien rong" data-dong>Để sau</button>`;
   const doc = () => ({ gia: Number($("#cg-gia").value.replace(/\D/g, "")), soKg: Number($("#cg-kg").value.replace(",", ".")) });
   const tinh = () => { const { gia, soKg } = doc(), ok = gia >= 1000 && soKg > 0 && soKg <= kg(l.available_g ?? l.qty?.available);
     $("#cg-tong").innerHTML = ok ? `Thành tiền <b class="so">${vnd(Math.round(gia * soKg))} đ</b>${neo ? ` · ${gia < neo ? `thấp hơn giá gần đây ${vnd(neo - gia)} đ/kg` : gia > neo ? `cao hơn giá gần đây ${vnd(gia - neo)} đ/kg` : "bằng giá gần đây"}` : ""}` : "Nhập giá (≥ 1.000 đ/kg) và lượng không quá lượng còn."; return ok; };
   $("#cg-tam").oninput = tinh; tinh();
-  $("#cg-gui").onclick = async () => { if (!tinh()) return; const { gia, soKg } = doc(); $("#cg-gui").disabled = true;
+  const gui = async (giaMua) => { if (!tinh()) return; const { gia: giaGo, soKg } = doc(), gia = giaMua ?? giaGo; $("#cg-gui").disabled = true; if ($("#cg-mua")) $("#cg-mua").disabled = true;
     try { const of = await api("/v1/offers", { direction: "buyer_bid", lot_id: l.id, qty_g: Math.round(soKg * 1000), price_vnd: gia });
       dong(); bao(of.status === "auto_rejected" || of.status === "rejected" ? "Chưa tới mức người bán chấp nhận. Lời chào đã đóng." : `Đã gửi lời chào ${of.code || ""}. Chờ người bán trả lời trong 24 giờ.`);
-    } catch (e) { $("#cg-loi").textContent = /trùng/i.test(e.message) ? "Bạn đang có lời chào chờ người bán trả lời ở lô này." : e.message; $("#cg-gui").disabled = false; } };
+      await lamMoi();
+    } catch (e) { $("#cg-loi").textContent = /trùng/i.test(e.message) ? "Bạn đang có lời chào chờ người bán trả lời ở lô này." : e.message; $("#cg-gui").disabled = false; if ($("#cg-mua")) $("#cg-mua").disabled = false; } };
+  $("#cg-gui").onclick = () => gui();
+  if ($("#cg-mua")) $("#cg-mua").onclick = () => gui(neo);
 }
 
 // ---------- Đơn ----------
@@ -245,7 +266,7 @@ async function moCuoc(q, ten) {
   try {
     const x = await api(`/v1/messages?${new URLSearchParams(q)}`);
     $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button>
-      <div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
+      <div id="tn-lc">${await theLC(q)}</div><div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
@@ -255,7 +276,7 @@ async function moCuoc(q, ten) {
       const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return;
       const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null);
       if (y) { const k = y.tin.length * 2 + (dangGo(y.tin) ? 1 : 0);
-        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; } }
+        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; const lc = await theLC(q); if ($("#tn-lc")) $("#tn-lc").innerHTML = lc; veNguon(); } }
       moCuoc.hen = setTimeout(hoi, y && dangGo(y.tin) ? 1500 : 5000);
     };
     moCuoc.hen = setTimeout(hoi, dangGo(x.tin) ? 1500 : 5000);

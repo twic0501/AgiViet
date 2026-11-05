@@ -242,12 +242,20 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         let muc = mucChiu(ct?.rounds, phia, buoc);
         // Vòng đầu người bán AI chưa đưa giá nào: mốc là giá mong muốn của lô (người thật trả tới mức đó thì chốt luôn, như người bán thật)
         if (muc == null && phia === 'seller') { const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t); const mm = Number(lo?.ask_price_vnd ?? 0); if (mm) muc = Math.round(mm * (1 - buoc) / 100) * 100; }
-        const trongMuc = muc != null && (phia === 'buyer' ? giaKia <= muc : giaKia >= muc);
-        const cu = nhat_ky.length; let bao = '';
+        // Bên mua trả từ giá giao dịch gần đây trở lên ở vòng đầu ("Mua giá này") thì người bán AI chốt luôn
+        let theoCho = false;
+        if (phia === 'seller' && Number(v.round_no) === 1) {
+          const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t);
+          const tk = lo ? await get(`/v1/reference-prices?product=${encodeURIComponent(lo.product_code)}&grade=${encodeURIComponent(lo.grade_code)}`, t) : null;
+          theoCho = tk?.status === 'du_du_lieu' && giaKia >= Number(tk.price_vnd);
+        }
+        const trongMuc = theoCho || (muc != null && (phia === 'buyer' ? giaKia <= muc : giaKia >= muc));
+        const cu = nhat_ky.length; let bao = '', giaMoi = 0;
         if (!trongMuc && Math.ceil(Number(v.round_no) / 2) <= soLanTra) {
           // Trả giá về phía mình nhưng không vượt mức chịu và không lùi so với giá mình đã đưa
           let gia = Math.round(giaKia * (phia === 'seller' ? 1 + buoc : 1 - buoc) / 100) * 100;
           if (muc != null) gia = phia === 'buyer' ? Math.min(gia, muc) : Math.max(gia, muc);
+          giaMoi = gia;
           await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
           bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách; không nói đây là mức cuối hay tốt nhất (còn thương lượng được).`;
         } else if (trongMuc || muc == null) {
@@ -268,7 +276,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'xong') {
           const cau = await hoiChatbot(aiUrl, aiKey, { vai: phia, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc, tinh: tinhCach(tc, phia, kieu), tinh_trang: bao, tin: '(bạn chủ động nhắn báo, không trả lời câu nào)', dang_mac_ca: false })
             || (bao.startsWith('Bạn vừa đồng ý') ? (phia === 'buyer' ? `Dạ em đồng ý ${soVN(giaKia)} nha bác, em gửi hợp đồng để bác xem và ký.` : `Bên tôi đồng ý ${soVN(giaKia)}, anh/chị gửi hợp đồng để bên tôi ký nhé.`)
-              : (phia === 'buyer' ? `Em trả lại được mức này thôi bác, bác xem trong lời chào giúp em nha.` : `Bên tôi chào lại mức này, anh/chị xem trong lời chào nhé.`));
+              : (phia === 'buyer' ? `Em trả lại ${soVN(giaMoi)} thôi bác, bác xem trong lời chào giúp em nha.` : `Bên tôi chào lại ${soVN(giaMoi)}, anh/chị xem trong lời chào nhé.`));
           await post('/v1/messages', { offer_id: of.id, body: cau }, t);
         }
       }

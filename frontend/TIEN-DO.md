@@ -312,3 +312,4 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 - E176 (05/11): Vòng AI nhanh khi vừa nhắn tin: POST /v1/test/doi-tac-ao/vong {"chi_tin":true} chỉ trả lời tin (bỏ quét lời chào/đơn/ngân hàng); chung.js gọi vòng nhanh riêng, không chờ vòng đầy đủ đang chạy. Backend giữ dịch vụ AI thức (gọi /health mỗi 10 phút) để chatbot không rơi về câu soạn sẵn.
 - E177 (05/11): Lưu phiên đóng vai của tổ chức AI 10 phút (PHIEN_AO, xóa khi đặt lại) để vòng không impersonate lại ~10 tổ chức mỗi lần. Backend 76/76.
 - E178 (05/11): Sửa đăng nhập thử 500 trên host: làm mới dữ liệu thử lỗi (thiếu AGV_TEST_PG_OWNER_URL/TEMPLATE) không còn chặn impersonate, thu-xong trả lam_moi đúng thật. Backend 76/76.
+- E179 (05/11): App mua: giá AI chào lại hiện ở thẻ lô và đầu khung chat, có nút trả lời/lập đơn; câu báo nêu giá; thêm nút "Mua giá này" (gửi đúng giá gần đây, người bán AI chốt vòng đầu nếu ≥ giá gần đây). Backend 76/76, kiểm trình duyệt tmp/kiem-gia-lai*.mjs.
