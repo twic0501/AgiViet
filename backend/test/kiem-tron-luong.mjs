@@ -44,7 +44,7 @@ if (process.env.CHI !== 'B') {
 }
 // ===== B: người thật bán =====
 {
-  const u = await vao('0945000880');
+  const u = await vao(process.env.BAN || '0945000880');
   const of = await cho(async () => (await u.get('/v1/offers')).find((x) => x.status === 'sent' && x.vong_cuoi?.from_side === 'buyer'), 'AI mua chào lô', u);
   const dy = await u.post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }); assert.ok(dy.s < 300, 'B: đồng ý giá ' + dy.loi); console.log('✔ B1 Người bán chốt', of.code);
   const gia = Number(of.vong_cuoi.price_vnd);

@@ -33,7 +33,7 @@ export function rutTep(orgThat: string, ngauNhien = Math.random, gan?: Record<st
   return doiTac.map((tc) => ({ to_chuc: tc, kieu: TEP.get(tc)!, mo_ta: (laBan ? KIEU_MUA : KIEU_BAN)[TEP.get(tc)!] }));
 }
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
-const DA_CHAO = new Set<string>();
+const DA_CHAO = new Map<string, number>(); // lot_id → lúc được chào lại: lời chào cũ đóng/hết hạn thì 5 phút sau có khách mới, chợ không chết
 const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
 let luotMua = 0;
@@ -210,10 +210,10 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     if (me?.token) {
       const ds = await get('/v1/lots', me.token); const lots = ds?.items ?? ds ?? [];
       for (const l of lots) {
-        if (l.status !== 'on_sale' || DA_CHAO.has(l.id)) continue;
+        if (l.status !== 'on_sale' || (DA_CHAO.get(l.id) ?? 0) > Date.now()) continue;
         if (!CHU_LO.has(l.id)) { const ct = await get(`/v1/lots/${l.id}`, me.token); if (ct?.seller_org_id) CHU_LO.set(l.id, ct.seller_org_id); }
         if (!idThat.includes(CHU_LO.get(l.id) ?? '')) continue;
-        DA_CHAO.add(l.id);
+        DA_CHAO.set(l.id, Date.now() + 5 * 60e3);
         const tk = await get(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`, me.token);
         const gia = tk?.status === 'du_du_lieu' ? Math.round(Number(tk.price_vnd) / 100) * 100 : (GIA_MUA[`${l.product_code}|${l.grade_code}`] ?? 0), con = Number(l.available_g ?? 0);
         if (!gia || !con) continue;
@@ -373,7 +373,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
         tinh: tinhCach(tc, phiaTin, { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }), tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa, lich_su: ls })) ||
         // Tin trong hợp đồng mà chatbot lỗi: nói đúng trạng thái hợp đồng, không dò từ khóa (dễ lạc đề, vd "bao giờ" → "xe tới")
-        (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
+        (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang.replace(/Tới lượt (BẠN|người kia): /, 'bước tiếp theo: ')} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang.replace(/Tới lượt (BẠN|người kia): /, 'Bước tiếp theo: ')} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
           : traLoiTheoBuoc(tin, phiaTin, buocTin));
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
       if (nhat_ky.at(-1)?.ket_qua !== 'xong') DA_TRA_LOI.delete(s.id); // gửi hỏng: vòng sau trả lời lại (rà soát #2)
