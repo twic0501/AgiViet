@@ -618,6 +618,10 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   const may = (req: any) => String(req.headers['x-agv-may'] ?? '').slice(0, 64);
   const dangGiu = (m: any, tc: string) => { const g = m.nguoiGiu(tc); const phut = g ? Math.max(1, Math.ceil((m.HAN_DANG_DUNG_MS - (Date.now() - g.t)) / 60e3)) : 0;
     return loi('TRANG_THAI_KHONG_CHO_PHEP', `Hộ này đang có người khác thử. Bác chọn hộ khác, hoặc chờ khoảng ${phut} phút sau khi họ ngừng dùng.`, { con_phut: phut }); };
+  // Làm mới là phụ: host thiếu cấu hình đặt lại thì giữ dữ liệu cũ, không được chặn đăng nhập thử
+  const lamMoiDuLieuThu = async (m: any, req: any) => {
+    try { await ht.datLai(); m.datLaiBoNho(); m.DANG_DUNG.clear(); m.LAM_MOI.can = false; return true; } catch (e) { req.log.warn(e, 'lam_moi_du_lieu_thu'); m.LAM_MOI.can = false; return false; }
+  };
   app.post('/v1/test/impersonate', async (req) => {
     thu();
     const b = z.object({ phone: z.string().optional(), user_id: uuid.optional(), org_code: z.string().optional() }).parse(req.body);
@@ -625,7 +629,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     if (!uid) throw loi('KHONG_TIM_THAY');
     const m = await import('../demo/doi-tac-ao.ts'), mm = may(req);
     // Mọi hộ hết người giữ (quá 30 phút không dùng) → làm mới dữ liệu thử cho người sau, trước khi mở phiên
-    if (mm && m.LAM_MOI.can && !m.dangDung().length) { await ht.datLai(); (await import('../demo/doi-tac-ao.ts')).datLaiBoNho(); m.DANG_DUNG.clear(); m.LAM_MOI.can = false; }
+    if (mm && m.LAM_MOI.can && !m.dangDung().length) await lamMoiDuLieuThu(m, req);
     const r = await ht.phien.taoPhien(uid, b.org_code, 'thiet-bi-dong-vai');
     const tc = (hoSo(r.nguoi_dung) as any)?.org?.code;
     if (tc && mm) { if (!m.giuHo(tc, mm)) throw dangGiu(m, tc); }
@@ -641,8 +645,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     m.DANG_DUNG.delete(nd.thanhVien.orgCode);
     const con = m.dangDung();
     if (con.length) return { lam_moi: false, con_nguoi_thu: con.length };
-    await ht.datLai(); (await import('../demo/doi-tac-ao.ts')).datLaiBoNho(); m.DANG_DUNG.clear(); m.LAM_MOI.can = false;
-    return { lam_moi: true };
+    return { lam_moi: await lamMoiDuLieuThu(m, req) };
   });
   // Hộ/tổ chức đang có người thử (30 phút gần nhất) → màn chọn vai ghi chú để người khác chọn hộ khác.
   app.get('/v1/test/dang-dung', async (req) => { thu(); const m = await import('../demo/doi-tac-ao.ts'); return m.dangDung().filter((tc) => !m.duocDung(tc, may(req))); });
