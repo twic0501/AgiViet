@@ -9,6 +9,8 @@ const timer = setInterval(() => {
   chayHenGio(ht).catch((e) => app.log.error(e, 'hen_gio'));
   chayOutbox(ht).catch((e) => app.log.error(e, 'outbox'));
 }, 30_000);
-const dung = async () => { clearInterval(timer); await app.close(); await ht.db.dong(); process.exit(0); };
+// Giữ dịch vụ AI thức (Render ngủ sau ~15 phút; lần thức mất ~12 s làm chatbot hết giờ, rơi về câu soạn sẵn)
+const giuAi = ht.cfg.aiUrl ? setInterval(() => { fetch(`${ht.cfg.aiUrl}/health`, { signal: AbortSignal.timeout(20_000) }).catch(() => {}); }, 10 * 60_000) : undefined;
+const dung = async () => { clearInterval(timer); if (giuAi) clearInterval(giuAi); await app.close(); await ht.db.dong(); process.exit(0); };
 process.on('SIGINT', dung);
 process.on('SIGTERM', dung);

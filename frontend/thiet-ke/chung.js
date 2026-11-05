@@ -634,13 +634,14 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     d.querySelector("button").onclick = () => location.reload();
     d.hidden = false; clearTimeout(d._an); d._an = setTimeout(() => (d.hidden = true), 12000);
   };
-  let dangChay = false;
-  const vong = async () => {
-    if (document.hidden || dangChay) return;
-    dangChay = true; setTimeout(() => (dangChay = false), 30000);
-    const r = await fetch("/v1/test/doi-tac-ao/vong", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: "{}" }).catch(() => null);
+  let dangChay = false, dangTin = false;
+  // nhanh = vừa nhắn tin: chỉ cho bên kia trả lời tin, chạy riêng không chờ vòng đầy đủ (trên host vòng đầy đủ mất tới 30 s)
+  const vong = async (nhanh = false) => {
+    if (nhanh ? dangTin : (document.hidden || dangChay)) return;
+    if (nhanh) dangTin = true; else { dangChay = true; setTimeout(() => (dangChay = false), 30000); }
+    const r = await fetch("/v1/test/doi-tac-ao/vong", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: JSON.stringify(nhanh ? { chi_tin: true } : {}) }).catch(() => null);
     const j = r?.ok ? await r.json().catch(() => null) : null;
-    dangChay = false;
+    if (nhanh) dangTin = false; else dangChay = false;
     let xong = (j?.data ?? j)?.viec?.filter((v) => v.ket_qua === "xong") ?? [];
     if (!xong.length) return;
     // Chỉ báo việc dính tới tổ chức đang đăng nhập (lời chào / lô / đơn của mình), không lộ giao dịch người khác.
@@ -650,8 +651,8 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     xong = xong.filter((v) => cua.has(String(v.doi_tuong).replace("HĐ-", "HD-")));
     if (xong.length) bao(xong);
   };
-  setTimeout(vong, 2500); setInterval(vong, 8000);
-  addEventListener("agv-vong-ngay", () => setTimeout(vong, 300));   // vừa nhắn tin: bên kia trả lời ngay, không chờ nhịp 8 giây
+  setTimeout(() => vong(), 2500); setInterval(() => vong(), 8000);
+  addEventListener("agv-vong-ngay", () => setTimeout(() => vong(true), 300));   // vừa nhắn tin: bên kia trả lời ngay, không chờ nhịp 8 giây
 })();
 // Tính năng chưa làm (gắn data-dang-phat-trien="Tên"): bấm vào báo đang phát triển thay vì im lặng hay đi trang trống.
 // Thông báo nhanh dùng chung (đang phát triển, máy chưa có giọng đọc…)

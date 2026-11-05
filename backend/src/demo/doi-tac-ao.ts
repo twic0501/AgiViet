@@ -137,7 +137,8 @@ async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null
   } catch { return null; }
 }
 
-export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null, aiKey?: string | null): Promise<ViecAo[]> {
+export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null, aiKey?: string | null, chiTin = false): Promise<ViecAo[]> {
+  // chiTin: người thật vừa nhắn → chỉ trả lời tin (nhanh), bỏ quét lời chào/đơn/ngân hàng (vòng 8 s thường vẫn làm đủ)
   const nhat_ky: ViecAo[] = [];
   const vai = async (phone: string) => { const v = (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any }; if (v?.token && v.user?.org?.code) TOKEN_TC.set(v.token, v.user.org.code); return v; };
   const toChucThat = new Set<string>(dangDung());
@@ -177,7 +178,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   // 0) Chủ động: lô đang bán của người bán thật chưa ai (ảo) chào → một bên mua ảo (xoay vòng) chào đúng giá tham khảo
   //    (chào giá kín: bên mua không thấy giá người bán), chưa đủ dữ liệu thì theo giá mua dự kiến GIA_MUA; không có cả hai thì không chào.
   const muaAo = Object.keys(DAI_DIEN).filter((tc) => tc.startsWith('TC-M') && !toChucThat.has(tc) && (!TEP.size || TEP.has(tc)));
-  if (idThat.length && muaAo.length) {
+  if (!chiTin && idThat.length && muaAo.length) {
     const tc = muaAo[luotMua++ % muaAo.length]; const me = await vai(DAI_DIEN[tc]);
     if (me?.token) {
       const ds = await get('/v1/lots', me.token); const lots = ds?.items ?? ds ?? [];
@@ -197,7 +198,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   }
 
   // 0b) Nhu cầu đang mở của người mua thật → người bán ảo có lô đúng món + loại gửi báo giá (giá tham khảo +2%; mỗi dòng một báo giá).
-  if (idThat.length) {
+  if (!chiTin && idThat.length) {
     for (const [tc, sdt] of Object.entries(DAI_DIEN)) {
       if (!tc.startsWith('TC-B') || toChucThat.has(tc) || (TEP.size && !TEP.has(tc))) continue;
       const me = await vai(sdt); if (!me?.token) continue;
@@ -222,6 +223,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     const t = me.token;
     // 1) Lời chào: tới lượt mình → trả giá theo tính cách (số lần, bước giá), hết lượt trả giá thì đồng ý.
     const kieu = { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }; const soLanTra = kieu.tra ?? 1, buoc = kieu.buoc ?? 0.03;
+    if (!chiTin) {
     for (const of of (await get('/v1/offers', t)) ?? []) {
       const phia = of.la_ben_mua ? 'buyer' : 'seller';
       const v = of.vong_cuoi;
@@ -277,6 +279,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         }
       }
     }
+    }
     // 1b) Tin nhắn: tin mới nhất của cuộc là của bên kia → trả lời một câu ngắn theo nội dung (luật đơn giản, không gửi liên lạc).
     for (const s of (await get('/v1/messages/summary', t)) ?? []) {
       if (s.la_cua_toi || DA_TRA_LOI.has(s.id)) continue;   // mỗi tin của bên kia chỉ trả lời một lần
@@ -324,6 +327,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));
       if (nhat_ky.at(-1)?.ket_qua !== 'xong') DA_TRA_LOI.delete(s.id); // gửi hỏng: vòng sau trả lời lại (rà soát #2)
     }
+    if (chiTin) continue;
     // 2) Đặt trước khi hái chưa chốt lượng/giá → đề nghị chốt bằng lượng đợt đã hẹn (bên kia đồng ý + hai bên ký phụ lục).
     for (const v of (await get('/v1/seasonal-orders?type=pre_harvest', t)) ?? []) {
       if (v.order_status !== 'active') continue;
@@ -457,6 +461,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       }
     }
   }
+  if (chiTin) return nhat_ky;
   // 5) Ngân hàng giữ hộ (giả lập): xử lý lệnh chi cọc / hoàn tiền thừa đang chờ rồi báo kết quả về hệ thống.
   const nh = await goi('POST', '/v1/sim/bank/process-instructions', {});
   const soLenh = Array.isArray(nh.json?.queued) ? nh.json.queued.length : Number(nh.json?.queued ?? 0);
