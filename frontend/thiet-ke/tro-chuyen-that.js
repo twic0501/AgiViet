@@ -30,7 +30,7 @@ export async function tai() {
   const xem = daXem();
   ds = [
     ...don.filter((d) => !/cancel|declin|withdrawn/.test(d.status)).map((d) => ({ ma: "d-" + d.id, loai: "don", id: d.id, ben: d.buyer_name || "Bên mua", ghi: `Hợp đồng ${d.code}` })),
-    ...dsChao.filter((c) => /sent|accepted/.test(c.status) && !coDon.has(c.id)).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", ghi: [c.vong_cuoi ? `${Number(c.vong_cuoi.qty_g) / 1000} kg · ${Number(c.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg` : null, TT_CHAO[c.status] ?? c.status, `lô ${c.lot_code}`].filter(Boolean).join(" · ") })),
+    ...dsChao.filter((c) => !coDon.has(c.id) && (/sent|accepted/.test(c.status) || tom.some((x) => x.offer_id === c.id))).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", ghi: [c.vong_cuoi ? `${Number(c.vong_cuoi.qty_g) / 1000} kg · ${Number(c.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg` : null, TT_CHAO[c.status] ?? c.status, `lô ${c.lot_code}`].filter(Boolean).join(" · ") })),
   ];
   for (const h of ds) {
     const t = tom.find((x) => (h.loai === "don" ? x.order_id === h.id : x.offer_id === h.id));

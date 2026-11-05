@@ -160,6 +160,8 @@ async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null
 export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null, aiKey?: string | null, chiTin = false): Promise<ViecAo[]> {
   // chiTin: người thật vừa nhắn → chỉ trả lời tin (nhanh), bỏ quét lời chào/đơn/ngân hàng (vòng 8 s thường vẫn làm đủ)
   const nhat_ky: ViecAo[] = [];
+  // AI chỉ lo giao dịch có người thật đang gọi vòng: quét cả giao dịch AI với AI làm một vòng trên host quá 5 phút
+  const coNguoiThat = (x: any) => !idThat.length || idThat.includes(x.buyer_org_id) || idThat.includes(x.seller_org_id);
   const vai = async (phone: string) => {
     const c = PHIEN_AO.get(phone); if (c && c.het > Date.now()) return c.v;
     const v = (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
@@ -249,7 +251,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     // 1) Lời chào: tới lượt mình → trả giá theo tính cách (số lần, bước giá), hết lượt trả giá thì đồng ý.
     const kieu = { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }; const soLanTra = kieu.tra ?? 1, buoc = kieu.buoc ?? 0.03;
     if (!chiTin) {
-    for (const of of (await get('/v1/offers', t)) ?? []) {
+    for (const of of ((await get('/v1/offers', t)) ?? []).filter(coNguoiThat)) {
       const phia = of.la_ben_mua ? 'buyer' : 'seller';
       const v = of.vong_cuoi;
       if (of.status === 'sent' && v && v.from_side !== phia) {
@@ -386,7 +388,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       await lam(tc, `đề nghị chốt lượng ${Number(q) / 1000} kg`, ct.code, () => post(`/v1/seasonal-orders/${v.id}/harvest-fix`, { qty_g: String(q) }, t));
     }
     // 3) Phụ lục: bên kia đề nghị → đồng ý; đã đồng ý → ký OTP.
-    for (const d of (await get('/v1/orders', t)) ?? []) {
+    for (const d of ((await get('/v1/orders', t)) ?? []).filter(coNguoiThat)) {
       if (!['active', 'awaiting_deposit'].includes(d.status)) continue;
       const ds = (await get(`/v1/orders/${d.id}/amendments`, t)) ?? [];
       const hieuLuc = ds.some((a: any) => a.status === 'accepted') ? Number((await get(`/v1/orders/${d.id}`, t))?.effective_version_no ?? 0) : 0;
@@ -397,7 +399,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       }
     }
     // 4) Đơn: làm đúng việc mà backend báo là tới lượt bên mình.
-    for (const d of (await get('/v1/orders', t)) ?? []) {
+    for (const d of ((await get('/v1/orders', t)) ?? []).filter(coNguoiThat)) {
       let luot = d.hien_thi?.toi_luot; const phia = d.phia_cua_ban;
       // Khoản bên kia đã báo trả mà mình là BÊN NHẬN → xác nhận trước mọi việc khác. Cả hai chiều: tiền hàng, công nợ, tiền hoàn
       // (rà soát #5: trước chỉ người bán, chỉ active/completed → bên mua AI không xác nhận được tiền hoàn, giao dịch dừng ở quyết toán)

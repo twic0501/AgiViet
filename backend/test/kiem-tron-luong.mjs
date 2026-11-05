@@ -18,7 +18,7 @@ const banSua = (dk, hc) => ({ ...(dk.ban ?? dk.mac_dinh), downgrade_price_vnd: h
 const tinCuoi = async (u, id) => ((await u.get(`/v1/messages?offer_id=${id}`)).tin ?? []).filter((m) => !m.la_cua_toi).at(-1)?.body ?? '';
 
 // ===== A: người thật mua =====
-{
+if (process.env.CHI !== 'B') {
   const u = await vao('0908000510');
   let of = null, gia = 0;
   for (const l of await u.get('/v1/lots')) {

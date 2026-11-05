@@ -218,6 +218,8 @@ function veTien() {
   // Đã báo chuyển / lệch số: không cộng vào "còn phải trả" (tránh trả hai lần) nhưng vẫn phải thấy trên ô tổng
   const cho = DL.khoan.filter((p) => ["payer_reported", "mismatch"].includes(p.status)), tongCho = cho.reduce((a, p) => a + conTra(p), 0);
   $("#tien-tong").innerHTML = DL.thieuKhoan ? `<p class="nhan">Bạn còn phải trả</p><div class="so-lon">Chưa tính đủ</div><p class="phu">Chưa tải được khoản trả của ${DL.thieuKhoan} đơn. <button class="nut" type="button" onclick="location.reload()">Tải lại</button></p>` : `<p class="nhan">Bạn còn phải trả</p><div class="so-lon so">${vnd(tong)} <small>đ</small></div><p class="phu">${no.length ? `${no.length} khoản · hạn sớm nhất ${ngay(no.map((p) => p.due_at).filter(Boolean).sort()[0])}` : "Không có khoản nào tới hạn."}</p>${cho.length ? `<p class="phu">Đang chờ người bán xác nhận hoặc AgiViet đối soát: <b class="so">${vnd(tongCho)} đ</b> (${cho.length} khoản) · không cần trả thêm</p>` : ""}`;
+  const sap = DL.don.filter((d) => ["active", "awaiting_deposit"].includes(d.status) && !DL.khoan.some((p) => p.nguon?.startsWith(maHD(d.code)))).reduce((a, d) => a + Math.max(0, Number(d.contract_value_vnd || 0) - Number(d.deposit_vnd || 0)), 0);
+  if (sap && !DL.thieuKhoan) $("#tien-tong").insertAdjacentHTML("beforeend", `<p class="phu">Sắp tới, chưa tới hạn: khoảng <b class="so">${vnd(sap)} đ</b> trả thẳng cho người bán sau khi nhận hàng, tính theo số cân thật.</p>`);
   // Tiền ngân hàng giữ hộ: cọc thừa ngân hàng tự hoàn về tài khoản đã chuyển, hệ thống đối soát; người bán không đụng vào.
   const nh = DL.tien?.tong || {}, giu = Number(nh.coc_dang_giu || 0), hoan = Number(nh.ngan_hang_da_chuyen_den || 0);
   $("#tien-tong").insertAdjacentHTML("beforeend", `<div class="hang" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--ke)"><div><span class="phu">Cọc ngân hàng giữ</span><br><b class="so">${DL.tien ? vnd(giu) + " đ" : "Chưa tải được"}</b></div><div style="text-align:right"><span class="phu">Ngân hàng đã hoàn</span><br><b class="so">${DL.tien ? vnd(hoan) + " đ" : "Chưa tải được"}</b></div></div><p class="phu" style="margin:8px 0 0">Tiền thừa trong cọc do ngân hàng tự hoàn về đúng tài khoản bạn đã chuyển, sau khi đơn quyết toán.</p>`);
@@ -244,7 +246,7 @@ async function veTraTien(id) {
 }
 
 // ---------- Tin nhắn theo đơn / lời chào (GET/POST /v1/messages) ----------
-const tenCuoc = (c) => { const d = DL.don.find((x) => x.id === c.order_id); return d ? `${d.seller_name || "Người bán"} · ${d.code}` : "Lời chào giá"; };
+const tenCuoc = (c) => { const d = DL.don.find((x) => x.id === c.order_id); if (d) return `${d.seller_name || "Người bán"} · ${d.code}`; const o = DL.loiChao.find((x) => x.id === c.offer_id); return o ? `${o.seller_name || "Người bán"} · ${o.product_name || o.lot_code || ""}` : "Lời chào giá"; };
 const dangGo = (tin) => { const c = tin.at(-1); return !!c?.la_cua_toi && Date.now() - new Date(c.created_at).getTime() < 90000; };
 const veLuong = (tin) => tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("")
   + (dangGo(tin) ? `<div class="bong dang-go" role="status" aria-label="Người bán đang nhắn"><i></i><i></i><i></i></div>` : "");
@@ -254,6 +256,7 @@ function veDsTin() {
   $("#ds-tin").innerHTML = DL.tin.length ? DL.tin.map((c) => `<button type="button" class="viec" data-cuoc="${esc(JSON.stringify(c.order_id ? { order_id: c.order_id } : { offer_id: c.offer_id }))}" data-ten="${esc(tenCuoc(c))}"><i class="${c.la_cua_toi ? "la" : ""}"></i><div><b>${esc(tenCuoc(c))}</b><p class="phu">${c.la_cua_toi ? "Bạn: " : ""}${esc(c.body)}</p></div><span class="chip">${c.so_tin}</span></button>`).join("")
     : `<p class="phu">Chưa có tin nhắn. Tin nhắn mở theo từng lời chào giá hoặc đơn.</p>`;
 }
+const daXemTin = () => { try { return JSON.parse(localStorage.getItem("agv-tin-da-xem") || "[]"); } catch { return []; } };
 async function moCuoc(q, ten) {
   $("#tn-t").textContent = ten;
   try {
@@ -262,6 +265,7 @@ async function moCuoc(q, ten) {
       <div id="tn-lc"></div><div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
+    const cuoiTin = x.tin.at(-1); if (cuoiTin) try { localStorage.setItem("agv-tin-da-xem", JSON.stringify([...daXemTin(), cuoiTin.id].slice(-200))); $("#dem-tin").hidden = true; } catch {}
     const theGD = gnTheGD($("#tn-lc"), { ben: "buyer", cuoc: q, goi: api, linkDon: (id) => MO("chi-tiet-don", `don=${id}`), nguoiNhan: async () => me?.user?.user_id ?? me?.user_id ?? (await api("/v1/me")).user?.user_id, sauLam: () => { dispatchEvent(new Event("agv-vong-ngay")); api("/v1/offers").then((o) => { DL.loiChao = (o.items ?? o).filter((x) => x.la_ben_mua); veNguon(); }).catch(() => {}); } });
     const tinToi = (ds) => ds.filter((m) => m.la_cua_toi).at(-1)?.body ?? ""; theGD.ve(tinToi(x.tin));
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
@@ -310,7 +314,7 @@ function veThem() {
   veKeHoach();
   veDsTin();
   // Chấm đỏ = số cuộc mà tin cuối là của bên kia (chưa trả lời); API chưa có cờ đã đọc.
-  const moi = DL.tin.filter((c) => !c.la_cua_toi).length; $("#dem-tin").textContent = moi; $("#dem-tin").hidden = !moi;
+  const moi = DL.tin.filter((c) => !c.la_cua_toi && !daXemTin().includes(c.id)).length; $("#dem-tin").textContent = moi; $("#dem-tin").hidden = !moi;
   $("#nc-sp").innerHTML = DL.sp.map((s) => `<option value="${esc(s.code)}">${esc(s.name_vi)}</option>`).join("");
   // Loại theo đúng mặt hàng (nhãn dễ hiểu, gửi mã gốc); đổi mặt hàng thì đổi danh sách loại trước khi form lấy giá chợ
   const veLoai = () => { const sp = DL.sp.find((x) => x.code === $("#nc-sp").value);

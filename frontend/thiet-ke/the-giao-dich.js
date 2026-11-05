@@ -4,7 +4,9 @@
 /** Đọc giá đ/kg từ câu nhắn: "14.700", "15 ngàn", "14ngàn 700", "14k7", "14,5 ngàn". Không có giá → null. */
 export function docGia(tin) {
   const t = String(tin || "").toLowerCase();
-  let m = t.match(/(\d+)\s*(?:ngàn|ngan|nghìn|nghin|k)\s*(\d{1,3})\b/);
+  let m = t.match(/(\d+)\s*(?:ngàn|ngan|nghìn|nghin|k)?\s*(?:rưỡi|rưởi|ruoi)/);
+  if (m) return Number(m[1]) * 1000 + 500;
+  m = t.match(/(\d+)\s*(?:ngàn|ngan|nghìn|nghin|k)\s*(\d{1,3})\b/);
   if (m) return Number(m[1]) * 1000 + Number(m[2].padEnd(3, "0"));
   m = t.match(/(\d+(?:[.,]\d+)?)\s*(?:ngàn|ngan|nghìn|nghin|k)\b/);
   if (m) return Math.round(Number(m[1].replace(",", ".")) * 1000);

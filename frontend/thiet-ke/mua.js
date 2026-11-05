@@ -1102,13 +1102,13 @@ if (THAT) {
         khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="coc" style="display:grid;gap:12px">
           <h2 style="margin:0;font-size:18px">Chuyển cọc</h2>
           <div style="font-size:28px;font-weight:700">${vnd(con)}</div>
-          <p class="sl-ghi" style="margin:0">Gồm cọc ${vnd(h.deposit_vnd)} (ngân hàng giữ tới khi giao xong) + phí AgiViet ${vnd(h.fee_vnd)}.${Number(h.received_vnd) ? ` Ngân hàng đã nhận ${vnd(h.received_vnd)}.` : ""}</p>
+          <p class="sl-ghi" style="margin:0;overflow-wrap:anywhere">Gồm cọc ${vnd(h.deposit_vnd)} (ngân hàng giữ tới khi giao xong) + phí AgiViet ${vnd(h.fee_vnd)}.${Number(h.received_vnd) ? ` Ngân hàng đã nhận ${vnd(h.received_vnd)}.` : ""}</p>
           ${h.vietqr ? `<div id="coc-qr" style="display:grid;gap:4px;text-align:center"><p class="sl-ghi" style="margin:0">Quét bằng app ngân hàng: số tiền và nội dung điền sẵn</p></div>` : ""}
           ${chep("coc-tk", h.virtual_account_no, `Số tài khoản · ${esc(h.ngan_hang)}`)}
           ${chep("coc-nd", h.payment_ref, "Nội dung chuyển khoản (ghi đúng)")}
           <p style="margin:0;font-weight:600">Hạn chót: ${han.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}. Quá hạn chưa đủ cọc thì đơn tự đóng.</p>
           ${bao(esc(h.cau), "sl-bao-nh")}
-          <button type="button" class="sl-nut sl-vien" id="coc-gia-lap" hidden>Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>
+          <button type="button" class="sl-nut sl-vien" id="coc-gia-lap" hidden style="max-width:100%;white-space:normal;height:auto">Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>
           <p class="sl-ghi" id="coc-bao" role="status"></p></section>`);
         const o = khung.querySelector("#coc");
         // Nút giả lập ngân hàng theo máy chủ (test_tools), không theo ?thu= — đăng nhập chọn vai ở bản thi không có tham số này.

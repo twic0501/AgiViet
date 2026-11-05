@@ -256,7 +256,7 @@ export async function tienCuaDon(t: GiaoDich, nd: NguoiDung, orderId: string) {
   const lenh = await t.q(`SELECT id,code,kind,amount_vnd::text amount_vnd,status,target_bank_code,target_account_masked,target_account_holder,callback_required FROM core.bank_instructions WHERE order_id=$1 ORDER BY created_at`, [orderId]);
   const so = await t.q(`SELECT account_type, balance_vnd::text balance_vnd FROM ledger.v_account_balances WHERE order_id=$1 AND balance_vnd<>0 ORDER BY account_type`, [orderId]);
   const qt = await t.q(`SELECT id,seq,is_final,is_effective,v_vnd::text,d_vnd::text,c_vnd::text,x_nb_vnd::text,x_bm_vnd::text,n_vnd::text,release_vnd::text,refund_vnd::text,t_bm_vnd::text,t_nb_vnd::text,prior_released_vnd::text,additional_hold_vnd::text,computed_at FROM core.settlements WHERE order_id=$1 ORDER BY seq`, [orderId]);
-  const phiTrangThai = dep ? (['completed'].includes(await t.gtri<string>(`SELECT status FROM core.orders WHERE id=$1`, [orderId])) ? 'Không hoàn' : 'Đã thu · hoàn hay không tùy kết quả đơn') : null;
+  const phiTrangThai = dep?.status === 'awaiting_transfer' ? 'Chưa thu · chuyển cùng tiền cọc' : dep ? (['completed'].includes(await t.gtri<string>(`SELECT status FROM core.orders WHERE id=$1`, [orderId])) ? 'Không hoàn' : 'Đã thu · hoàn hay không tùy kết quả đơn') : null;
   // Người bán thực nhận: tổng bút toán ra tài khoản ngoài của người bán (trả thẳng đã xác nhận + cọc ngân hàng đã chi).
   // Màn "Tiền đã về" chỉ chạy khi da_xac_minh: mọi lệnh ngân hàng của đơn đã đối soát (hoặc thất bại đã xử lý).
   const nhan = await t.gtri<string>(`SELECT coalesce(sum(e.amount_vnd),0)::text FROM ledger.entries e JOIN ledger.transactions x ON x.id=e.transaction_id JOIN ledger.accounts a ON a.id=e.account_id

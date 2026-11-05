@@ -4,7 +4,7 @@ import { buocDeal, giaGiua, xetDieuKhoan } from '../src/demo/doi-tac-ao.ts';
 // @ts-ignore — module JS của frontend, hàm thuần
 import { docGia } from '../../frontend/thiet-ke/the-giao-dich.js';
 
-for (const [c, g] of [['14.700', 14700], ['15 ngàn', 15000], ['14ngàn 700', 14700], ['14k7', 14700], ['14,5 ngàn', 14500], ['14700 nhé', 14700], ['bán 23.550đ', 23550], ['hello', null], ['500 kg', null], ['2 lần', null]] as const)
+for (const [c, g] of [['14.700', 14700], ['15 ngàn', 15000], ['14ngàn 700', 14700], ['14k7', 14700], ['14,5 ngàn', 14500], ['14700 nhé', 14700], ['17 rưỡi', 17500], ['17 ngàn rưỡi', 17500], ['bán 23.550đ', 23550], ['hello', null], ['500 kg', null], ['2 lần', null]] as const)
   assert.equal(docGia(c), g, c);
 
 assert.equal(buocDeal(0.03, 500_000, 1), 0.03);

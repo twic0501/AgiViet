@@ -404,11 +404,12 @@ function hanhDongDon(nd: NguoiDung, o: any, phia: string, ky?: { duoc_ky: boolea
 export async function danhSachDon(t: GiaoDich, nd: NguoiDung) {
   const ds = await t.q<any>(`SELECT o.id,o.code,o.status,o.version revision,o.buyer_org_id,o.seller_org_id,o.close_reason,o.offer_id,
       (SELECT contract_value_vnd::text FROM core.order_versions v WHERE v.order_id=o.id ORDER BY version_no DESC LIMIT 1) contract_value_vnd,
+      (SELECT deposit_vnd::text FROM core.order_versions v WHERE v.order_id=o.id ORDER BY version_no DESC LIMIT 1) deposit_vnd,
       b.display_name buyer_name, s.display_name seller_name, o.created_at
       FROM core.orders o JOIN core.organizations b ON b.id=o.buyer_org_id JOIN core.organizations s ON s.id=o.seller_org_id
       WHERE (o.buyer_org_id=$1 OR o.seller_org_id=$1) ORDER BY o.created_at DESC LIMIT 200`, [nd.thanhVien.orgId]);
   const out = [];
-  for (const o of ds) out.push({ id: o.id, code: o.code, status: o.status, revision: o.revision, offer_id: o.offer_id, buyer_name: o.buyer_name, seller_name: o.seller_name,
+  for (const o of ds) out.push({ id: o.id, code: o.code, status: o.status, revision: o.revision, offer_id: o.offer_id, buyer_org_id: o.buyer_org_id, seller_org_id: o.seller_org_id, deposit_vnd: o.deposit_vnd, buyer_name: o.buyer_name, seller_name: o.seller_name,
     contract_value_vnd: o.contract_value_vnd, phia_cua_ban: o.buyer_org_id === nd.thanhVien.orgId ? 'buyer' : 'seller', hien_thi: await trangThaiHienThi(t, o) });
   return out;
 }
@@ -427,8 +428,8 @@ async function theTuPhienBan(t: GiaoDich, o: any, id: string, sha: string | null
       { so: 1, tieu_de: 'Hàng', noi_dung: `${v.name_vi}, ${luong}, dung sai ±${v.qty_tolerance_bps / 100}%` },
       { so: 2, tieu_de: 'Giá', noi_dung: `${gia}; hạ cấp ${v.downgrade_price_vnd ? dong(B(v.downgrade_price_vnd)) + '/kg' : '—'}` },
       { so: 3, tieu_de: 'Tiền', noi_dung: `Giá trị ${dong(B(v.contract_value_vnd))}; cọc ${dong(B(v.deposit_vnd))}${v.deposit_rule === 'per_unit' ? ' (cọc vụ)' : ''}; phí ${dong(B(v.fee_vnd))}; ${TEN_TRA[v.payment_timing] ?? v.payment_timing}${v.pay_after_days ? ` ${v.pay_after_days} ngày` : ''}` },
-      { so: 4, tieu_de: 'Giao nhận', noi_dung: `${TEN_DIEM[v.acceptance_point] ?? v.acceptance_point} (điểm chuyển rủi ro); ${TEN_XE[v.transport_by] ?? v.transport_by}` },
-      { so: 5, tieu_de: 'Nghiệm thu', noi_dung: `Lỗi cho phép ${v.reject_allowance_bps / 100}%; im lặng ở nơi đến: ${v.silent_accept_hours ? v.silent_accept_hours + ' giờ' : 'không'}` },
+      { so: 4, tieu_de: 'Giao nhận', noi_dung: `${TEN_DIEM[v.acceptance_point] ?? v.acceptance_point}; ${TEN_XE[v.transport_by] ?? v.transport_by}` },
+      { so: 5, tieu_de: 'Nghiệm thu', noi_dung: `Lỗi cho phép ${v.reject_allowance_bps / 100}%; không phản hồi sau ${v.silent_accept_hours ? v.silent_accept_hours + ' giờ thì coi như đã nhận' : '(không áp dụng)'}` },
       { so: 6, tieu_de: 'Thiếu, vượt lượng', noi_dung: v.loai === 'offtake' || v.loai === 'pre_harvest' ? 'Mất mùa giảm lượng bằng phụ lục có chứng cứ; thiếu khác phạt theo % cọc phần thiếu' : 'Phạt theo % cọc phần thiếu: 0% / 10% / 50% / 100%' },
       { so: 7, tieu_de: 'Tranh chấp', noi_dung: 'Cân lại 24 giờ, kiểm định 48 giờ, bên sai chịu phí' },
       { so: 8, tieu_de: 'Hủy', noi_dung: 'Cọc về bên không xin hủy; phí theo bảng hoàn' },
@@ -446,11 +447,11 @@ export async function tomTatDieuKhoan(t: GiaoDich, nd: NguoiDung, id: string) {
   return {
     order_id: id, code: o.code, content_sha256: doc.sha, nguon_noi_dung: 'hop_dong_da_bam',
     the: [
-      { so: 1, tieu_de: 'Hàng', noi_dung: `${c.hang.ten} loại ${c.hang.loai}, ${kg(c.hang.luong_g)}, dung sai ±${c.hang.dung_sai_bps / 100}%` },
+      { so: 1, tieu_de: 'Hàng', noi_dung: `${c.hang.ten} loại ${c.hang.loai}, ${kg(c.hang.luong_g)}, cho lệch ±${c.hang.dung_sai_bps / 100}%` },
       { so: 2, tieu_de: 'Giá', noi_dung: `${dong(c.gia.gia_don)}/kg; hạ cấp ${c.gia.gia_ha_cap ? dong(c.gia.gia_ha_cap) + '/kg' : '—'}; giá tính cọc ${dong(c.gia.gia_tinh_coc)}/kg` },
       { so: 3, tieu_de: 'Tiền', noi_dung: `Giá trị ${dong(c.tien.gia_tri)}; cọc ${dong(c.tien.coc)}; phí ${dong(c.tien.phi)}; ${TEN_TRA[c.tien.cach_tra]}; trả thẳng dự kiến ${dong(c.tien.tra_thang_du_kien)}` },
       { so: 4, tieu_de: 'Giao nhận', noi_dung: `${TEN_DIEM[c.giao.diem_nghiem_thu]}; ${TEN_XE[c.giao.ai_lo_xe]}; ngày ${new Date(c.giao.tu).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}${c.ghi_chu_hai_ben ? `; ghi chú hai bên: ${c.ghi_chu_hai_ben}` : ''}` },
-      { so: 5, tieu_de: 'Nghiệm thu', noi_dung: `Lỗi cho phép ${c.nghiem_thu.loi_cho_phep_bps / 100}%; im lặng ở nơi đến: ${c.nghiem_thu.im_lang_gio ? c.nghiem_thu.im_lang_gio + ' giờ' : 'không'}` },
+      { so: 5, tieu_de: 'Nghiệm thu', noi_dung: `Lỗi cho phép ${c.nghiem_thu.loi_cho_phep_bps / 100}%; không phản hồi sau ${c.nghiem_thu.im_lang_gio ? c.nghiem_thu.im_lang_gio + ' giờ thì coi như đã nhận' : '(không áp dụng)'}` },
       { so: 6, tieu_de: 'Thiếu, vượt lượng', noi_dung: 'Phạt theo % cọc phần thiếu: 0% / 10% / 50% / 100%' },
       { so: 7, tieu_de: 'Tranh chấp', noi_dung: 'Cân lại 24 giờ, kiểm định 48 giờ, bên sai chịu phí' },
       { so: 8, tieu_de: 'Hủy', noi_dung: 'Cọc về bên không xin hủy; phí theo bảng hoàn' },
