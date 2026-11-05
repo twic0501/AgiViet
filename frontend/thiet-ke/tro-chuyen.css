@@ -17,6 +17,10 @@
   .tc-tin { max-width: 82%; padding: 9px 13px; border-radius: 18px; line-height: 1.45; animation: tc-vao 260ms cubic-bezier(.23,1,.32,1) both; }
   @keyframes tc-vao { from { transform: translateY(8px) scale(.97); opacity: 0; } }
   .tc-tin small { display: block; font-size: 12px; margin-top: 2px; opacity: .7; }
+  .tc-dang-go { display: flex; gap: 5px; align-items: center; padding: 14px 16px; }
+  .tc-dang-go i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .35; animation: tc-cham 1.2s infinite ease-in-out; }
+  .tc-dang-go i:nth-child(2) { animation-delay: .15s; } .tc-dang-go i:nth-child(3) { animation-delay: .3s; }
+  @keyframes tc-cham { 30% { opacity: .9; transform: translateY(-3px); } }
   .tc-ho { justify-self: start; background: var(--giay-noi); border: 1px solid var(--ke); border-bottom-left-radius: 6px; }
   .tc-toi { justify-self: end; background: var(--la); color: #f6f2e7; border-bottom-right-radius: 6px; }
   .tc-tin.tc-co-anh { padding: 4px; }
@@ -61,7 +65,7 @@
   .tc-tam-day .nut { min-height: 52px; }
   .tc-dong-tien { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--ke); }
   .tc-dong-tien span { color: var(--muc-phu); }
-  @media (prefers-reduced-motion: reduce) { .tc-tin, .tc-gia, .tc-tam { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .tc-tin, .tc-gia, .tc-tam, .tc-dang-go i { animation: none; } }
   .tc-buoc { justify-self: stretch; margin: 6px 0; background: #f8ecc9; border: 1px solid #e3c77a; border-radius: 18px; padding: 14px; display: grid; gap: 10px; animation: tc-vao 300ms cubic-bezier(.23,1,.32,1) both; }
   .tc-buoc b { font-size: 17px; }
   .tc-buoc .nut { width: 100%; min-height: 52px; text-decoration: none; }

@@ -172,6 +172,7 @@ class DoiTacRequest(BaseModel):
     tinh_trang: str = Field(min_length=1, max_length=1500)
     tin: str = Field(min_length=1, max_length=600)
     dang_mac_ca: bool = True   # False = giá đã chốt (đã đồng ý / có hợp đồng): không gợi ý đổi giá
+    lich_su: str = Field(default='', max_length=1500)   # vài tin gần nhất của cuộc trò chuyện (cũ → mới)
 
 
 @app.post('/doi-tac/tra-loi')
@@ -190,11 +191,15 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
            "nếu giá đã chốt / đã có hợp đồng thì nhắc làm tiếp bước kế (xem, ký hợp đồng) hoặc nhắn AgiViet khi muốn đổi điều khoản.") if not req.dang_mac_ca else ("nếu bác ấy muốn đổi giá thì nhắc bác bấm nút 'Chào giá mới' trong lời chào (với người bán luôn nói 'chào giá', không nói 'trả giá')."
            if req.vai == 'buyer' else "nếu họ muốn đổi giá thì nhắc họ bấm nút 'Trả giá' trong lời chào.")
     he = (xung + (f" Tính cách: {req.tinh}." if req.tinh else '') +
-          " Trả lời tiếng Việt tự nhiên, lịch sự, ngắn 1–2 câu, không chào hỏi dài. Chỉ nói đúng theo TÌNH TRẠNG bên dưới; "
+          " Nhắn như người thật đang chat trên điện thoại, tiếng Việt tự nhiên, ngắn 1–2 câu. TRƯỚC HẾT đáp thẳng vào đúng ý người kia vừa nhắn "
+          "(họ chào thì chào lại, hỏi gì đáp nấy, xin thêm giá thì trả lời chuyện giá), rồi mới nhắc bước kế nếu cần. Không đọc lại mã hợp đồng hay trạng thái như máy, "
+          "không lặp lại câu bạn đã nói trong LỊCH SỬ. Giá đã chốt mà người kia xin đổi: nói thật là giá hai bên đã chốt, từ chối khéo hoặc hẹn đợt sau; không tự đồng ý giá mới. "
+          "Chỉ nói đúng theo TÌNH TRẠNG bên dưới; "
           "không tự đưa giá, số lượng, ngày giờ, số tiền nào ngoài TÌNH TRẠNG; không hứa điều chưa có. Việc chào giá, trả giá, đồng ý, ký, giao, trả tiền "
           "đều làm bằng nút trong app — " + nut + " "
           "Không xin số điện thoại, Zalo, tài khoản riêng. Nếu TÌNH TRẠNG có 'Mức cao nhất bạn chịu' hoặc 'Mức thấp nhất bạn chịu' và người kia xin đổi giá "
-          "thì BẮT BUỘC nêu rõ con số đó (vd 'anh/chị trả X là bên tôi đồng ý'); không bao giờ nói đây là 'mức cuối' hay 'tốt nhất'.\nTÌNH TRẠNG: " + req.tinh_trang)
+          "thì BẮT BUỘC nêu rõ con số đó (vd 'anh/chị trả X là bên tôi đồng ý'); không bao giờ nói đây là 'mức cuối' hay 'tốt nhất'.\nTÌNH TRẠNG: " + req.tinh_trang
+          + (f"\nLỊCH SỬ (cũ → mới, chỉ để hiểu ngữ cảnh):\n{req.lich_su}" if req.lich_su else ''))
     if not LLM_SLOT.acquire(timeout=CHO_SLOT_S):
         raise HTTPException(503, 'bận')
     try:
@@ -203,7 +208,7 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
         raise HTTPException(503, 'không gọi được mô hình')
     finally:
         LLM_SLOT.release()
-    la = so_la(k.van_ban, req.tinh_trang + ' ' + req.tin)
+    la = so_la(k.van_ban, req.tinh_trang + ' ' + req.tin + ' ' + req.lich_su)
     # Rà soát #9: số chỉ có trong tin người kia (không có trong TÌNH TRẠNG) mà câu trả lời lại 'đồng ý/chốt' → là hứa theo số của người kia: bỏ
     if not la:
         so_nguoi_kia = so_la(k.van_ban, req.tinh_trang)

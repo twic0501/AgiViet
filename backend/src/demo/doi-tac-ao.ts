@@ -95,6 +95,11 @@ export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
 
 /** Câu soạn sẵn theo BƯỚC giao dịch (dùng khi chatbot lỗi): ưu tiên đúng bước hơn đúng từ khóa. */
 export function traLoiTheoBuoc(tin: string, phia: 'buyer' | 'seller', buoc: string): string {
+  // Giá đã chốt mà người kia xin đổi giá: đáp đúng ý đó trước, không cảm ơn "đã đồng ý giá" như máy
+  const t = tin.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  if (buoc && /gia|cao hon|them|bot|tang|giam/.test(t)) return phia === 'buyer'
+    ? 'Dạ giá này hai bên đã chốt rồi bác ơi, bên em cũng tính sát lắm rồi. Đợt sau hàng đẹp em xin công ty nâng thêm cho bác nha.'
+    : 'Giá này hai bên đã chốt rồi anh/chị ạ, bên tôi để sát lắm rồi. Đợt sau mình bàn lại giá theo thị trường nhé.';
   if (buoc === 'da_dong_y') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em gửi hợp đồng qua app, bác xem kỹ rồi ký giúp em nha.' : 'Cảm ơn anh/chị đã đồng ý giá. Anh/chị gửi hợp đồng qua app để bên tôi xem và ký nhé.';
   if (buoc === 'soan_hd') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em đang soạn hợp đồng, xong em gửi qua app để bác xem và ký nha.' : 'Cảm ơn anh/chị. Khi anh/chị gửi hợp đồng qua app, bên tôi sẽ xem và ký.';
   if (buoc === 'cho_ky') return phia === 'buyer' ? 'Hợp đồng đang chờ ký trong app, bác xem kỹ các điều khoản rồi ký giúp em nha.' : 'Hợp đồng đang chờ ký trong app, anh/chị xem rồi ký giúp nhé.';
@@ -125,7 +130,7 @@ const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval
 async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null | undefined, body: Record<string, string | boolean>): Promise<string | null> {
   if (!aiUrl) return null;
   try {
-    const r = await fetch(`${aiUrl}/doi-tac/tra-loi`, { method: 'POST', headers: { 'content-type': 'application/json', ...(aiKey ? { 'x-ai-key': aiKey } : {}) }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) });
+    const r = await fetch(`${aiUrl}/doi-tac/tra-loi`, { method: 'POST', headers: { 'content-type': 'application/json', ...(aiKey ? { 'x-ai-key': aiKey } : {}) }, body: JSON.stringify(body), signal: AbortSignal.timeout(25000) });   // dịch vụ AI ngủ trên Render cần ~12 s để thức
     if (!r.ok) return null;
     const j: any = await r.json(); const c = String(j?.tra_loi ?? '').trim();
     return c ? c.slice(0, 500) : null;
@@ -307,8 +312,10 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           if (of.status === 'accepted') buocTin = 'da_dong_y'; else if (of.status === 'sent' && v.from_side === phiaTin) dangMacCa = true;
         }
       }
+      const ls = ((await get(`/v1/messages?${s.order_id ? `order_id=${s.order_id}` : `offer_id=${s.offer_id}`}`, t))?.tin ?? []).slice(-7, -1)
+        .map((m: any) => `${m.la_cua_toi ? 'Bạn' : 'Người kia'}: ${String(m.body ?? '').slice(0, 200)}`).join('\n').slice(-1400);
       const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
-        tinh: tinhCach(tc, phiaTin, { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }), tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa })) ||
+        tinh: tinhCach(tc, phiaTin, { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }), tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa, lich_su: ls })) ||
         // Tin trong hợp đồng mà chatbot lỗi: nói đúng trạng thái hợp đồng, không dò từ khóa (dễ lạc đề, vd "bao giờ" → "xe tới")
         (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
           : traLoiTheoBuoc(tin, phiaTin, buocTin));

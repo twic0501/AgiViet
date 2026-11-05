@@ -70,22 +70,25 @@ export function veChat(h) {
   document.querySelector(".trang").appendChild(day);
   giuThamSo(day);
   const he = []; // dòng hệ thống chỉ hiện ở máy này (cảnh báo che, đã gửi báo cáo)
-  let hen = 0, soCu = -1;
+  let hen = 0, soCu = -1, dangGo = false;
   const tai = async (cuon) => {
     clearTimeout(hen);
     try {
       const r = await goi(`/v1/messages?${h.loai === "don" ? "order_id" : "offer_id"}=${h.id}`);
       const tin = r.tin.map((m) => ({ k: "tin", t: m.anh_id && m.body === "[Ảnh]" ? "" : m.body, anh: m.anh_id, cuaToi: m.la_cua_toi, luc: m.created_at, daChe: m.da_che }));
       const tat = [...tin, ...he];   // dòng hệ thống (che liên lạc, đã báo cáo) luôn ở sau tin vừa gửi — không sắp theo giờ máy
-      if (tat.length !== soCu) {
-        $("tin").innerHTML = tat.length ? tat.map(veTin).join("") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác nhắn ngày hái, hỏi lịch xe và cách trả tiền ở đây.</p></div>`;
+      const cuoiTin = r.tin.at(-1);
+      dangGo = !!cuoiTin?.la_cua_toi && Date.now() - new Date(cuoiTin.created_at).getTime() < 90000;
+      const khoa = tat.length * 2 + (dangGo ? 1 : 0);
+      if (khoa !== soCu) {
+        $("tin").innerHTML = tat.length ? tat.map(veTin).join("") + (dangGo ? `<div class="tc-tin tc-ho tc-dang-go" role="status" aria-label="${esc(h.ben)} đang nhắn"><i></i><i></i><i></i></div>` : "") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác nhắn ngày hái, hỏi lịch xe và cách trả tiền ở đây.</p></div>`;
         $("tin").querySelectorAll("[data-anh]").forEach(async (im) => { try { const b = await fetch(`/v1/documents/${im.dataset.anh}/file`, { headers: { authorization: "Bearer " + token } }); if (b.ok) im.src = URL.createObjectURL(await b.blob()); } catch {} });
         if (cuon || soCu >= 0) scrollTo({ top: document.body.scrollHeight, behavior: soCu >= 0 ? "smooth" : "auto" });
-        soCu = tat.length;
+        soCu = khoa;
       }
       const cuoiHo = r.tin.filter((m) => !m.la_cua_toi).at(-1); if (cuoiHo) ghiXem(h.ma, cuoiHo.created_at);
     } catch (e) { $("tin").innerHTML = `<p class="bao loi">${esc(e.message)}</p>`; }
-    hen = setTimeout(() => tai(false), 4000);
+    hen = setTimeout(() => tai(false), dangGo ? 1500 : 4000);
   };
   const go = $("go");
   go.addEventListener("input", () => { go.style.height = "auto"; go.style.height = Math.min(120, go.scrollHeight) + "px"; });
@@ -96,6 +99,7 @@ export function veChat(h) {
       const kq = await goi("/v1/messages", { ...cuoc, body: chu });
       go.value = ""; go.style.height = "auto";
       if (kq.data?.da_che) he.push({ k: "he", canh: true, trau: true, t: kq.data.canh_bao, luc: new Date().toISOString() });
+      dispatchEvent(new Event("agv-vong-ngay"));
       await tai(true);
     } catch (e) { he.push({ k: "he", canh: true, t: e.message, luc: new Date().toISOString() }); soCu = -2; await tai(true); }
     $("gui").disabled = false; go.focus();

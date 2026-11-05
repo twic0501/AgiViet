@@ -651,6 +651,7 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     if (xong.length) bao(xong);
   };
   setTimeout(vong, 2500); setInterval(vong, 8000);
+  addEventListener("agv-vong-ngay", () => setTimeout(vong, 300));   // vừa nhắn tin: bên kia trả lời ngay, không chờ nhịp 8 giây
 })();
 // Tính năng chưa làm (gắn data-dang-phat-trien="Tên"): bấm vào báo đang phát triển thay vì im lặng hay đi trang trống.
 // Thông báo nhanh dùng chung (đang phát triển, máy chưa có giọng đọc…)
