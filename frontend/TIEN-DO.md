@@ -307,3 +307,4 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 
 - E172 (05/11): Chat như thật: chatbot đáp thẳng ý người kia + có lịch sử 6 tin; giá đã chốt mà xin thêm thì từ chối khéo; chờ chatbot 25 s (dịch vụ AI ngủ cần ~12 s); dấu "…" bên kia đang nhắn + gửi xong chạy vòng AI ngay, hỏi tin mỗi 1,5 s khi chờ.
 - E173 (05/11): Mặc cả trong chat bớt máy móc: mức chịu chỉ nêu một lần, lượt sau nói khác kèm lý do; người kia thôi thì nhận lời, không nài; văn nói miền Nam.
+- E174 (05/11, tự làm): App mua cũng có dấu "…" bên kia đang nhắn + gửi xong chạy vòng AI ngay, hỏi tin 1,5 s khi chờ (mua-app.js). Kiểm trình duyệt (tmp/kiem-dang-go-mua.mjs, TC-M02): dấu hiện sau khi gửi, người bán AI trả lời sau 3,3 s, dấu tắt, không lỗi JS.

@@ -231,6 +231,9 @@ async function veTraTien(id) {
 
 // ---------- Tin nhắn theo đơn / lời chào (GET/POST /v1/messages) ----------
 const tenCuoc = (c) => { const d = DL.don.find((x) => x.id === c.order_id); return d ? `${d.seller_name || "Người bán"} · ${d.code}` : "Lời chào giá"; };
+const dangGo = (tin) => { const c = tin.at(-1); return !!c?.la_cua_toi && Date.now() - new Date(c.created_at).getTime() < 90000; };
+const veLuong = (tin) => tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("")
+  + (dangGo(tin) ? `<div class="bong dang-go" role="status" aria-label="Người bán đang nhắn"><i></i><i></i><i></i></div>` : "");
 const gioTin = (s) => new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
 function veDsTin() {
   $("#tn-t").textContent = "Tin nhắn";
@@ -242,21 +245,23 @@ async function moCuoc(q, ten) {
   try {
     const x = await api(`/v1/messages?${new URLSearchParams(q)}`);
     $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button>
-      <div class="luong-tin">${x.tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("") || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
+      <div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
-    clearInterval(moCuoc.hen); let soTin = x.tin.length;
-    moCuoc.hen = setInterval(async () => {
-      const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return clearInterval(moCuoc.hen);
-      const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null); if (!y || y.tin.length === soTin) return;
-      soTin = y.tin.length;
-      khung.innerHTML = y.tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("");
-      khung.scrollTop = khung.scrollHeight;
-    }, 5000);
+    // Đang chờ bên kia (dấu "…") thì hỏi 1,5 s/lần, không thì 5 s
+    clearTimeout(moCuoc.hen); let khoa = x.tin.length * 2 + (dangGo(x.tin) ? 1 : 0);
+    const hoi = async () => {
+      const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return;
+      const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null);
+      if (y) { const k = y.tin.length * 2 + (dangGo(y.tin) ? 1 : 0);
+        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; } }
+      moCuoc.hen = setTimeout(hoi, y && dangGo(y.tin) ? 1500 : 5000);
+    };
+    moCuoc.hen = setTimeout(hoi, dangGo(x.tin) ? 1500 : 5000);
     $("#tn-gui").onsubmit = async (e) => { e.preventDefault(); const body = $("#tn-o").value.trim(); if (!body) return;
       e.submitter && (e.submitter.disabled = true);
-      try { await api("/v1/messages", { ...q, body }); DL.tin = await api("/v1/messages/summary"); await moCuoc(q, ten); $("#tn-o")?.focus(); }
+      try { await api("/v1/messages", { ...q, body }); dispatchEvent(new Event("agv-vong-ngay")); DL.tin = await api("/v1/messages/summary"); await moCuoc(q, ten); $("#tn-o")?.focus(); }
       catch (err) { $("#tn-loi").textContent = err.message; e.submitter && (e.submitter.disabled = false); } };
   } catch (err) { $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button><p class="loi">${esc(err.message)}</p>`; }
 }

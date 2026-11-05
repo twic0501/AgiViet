@@ -58,6 +58,11 @@
   .bong { max-width: 82%; align-self: flex-start; background: var(--giay-noi, #fff); border: 1px solid var(--ke); border-radius: 14px 14px 14px 4px; padding: 8px 12px; }
   .bong.toi { align-self: flex-end; background: var(--la-nhat, #e3efe6); border-radius: 14px 14px 4px 14px; }
   .bong small { color: var(--muc-phu, #55604f); font-size: 12px; } .bong p { margin: 2px 0 0; overflow-wrap: anywhere; }
+  .bong.dang-go { display: flex; gap: 5px; padding: 12px 14px; }
+  .bong.dang-go i { width: 8px; height: 8px; border-radius: 50%; background: var(--muc-phu, #55604f); opacity: .35; animation: dg-cham 1.2s infinite ease-in-out; }
+  .bong.dang-go i:nth-child(2) { animation-delay: .15s; } .bong.dang-go i:nth-child(3) { animation-delay: .3s; }
+  @keyframes dg-cham { 30% { opacity: .9; transform: translateY(-3px); } }
+  @media (prefers-reduced-motion: reduce) { .bong.dang-go i { animation: none; } }
   .o-tin { flex: 1; min-width: 0; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--ke-dam); padding: 0 12px; font: inherit; background: var(--giay-lot, #fff); }
   .thanh { height: 10px; border-radius: 999px; background: var(--giay-sau); overflow: hidden; display: flex; }
   .thanh span { display: block; height: 100%; }
