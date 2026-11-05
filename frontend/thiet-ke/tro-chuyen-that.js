@@ -70,7 +70,7 @@ export function veChat(h) {
     <div class="tc-go"><label class="tc-chup" aria-label="Chụp hoặc chọn ảnh hàng">${SVG(I.anh, 22)}<input type="file" id="chup" accept="image/*" capture="environment" hidden></label><textarea id="go" rows="1" placeholder="Nhắn cho ${esc(h.ben)}" aria-label="Nội dung tin nhắn" maxlength="1000"></textarea><button type="button" class="tc-gui" id="gui" aria-label="Gửi">${SVG(I.gui, 22)}</button></div>`;
   document.querySelector(".trang").appendChild(day);
   giuThamSo(day);
-  const theGD = gnTheGD($("tgd"), { ben: "seller", cuoc, goi: async (d, b) => { const j = await goi(d, b); return j?.data ?? j; }, linkDon: (id) => `./ban-don.html${location.search}${location.search ? "&" : "?"}id=${encodeURIComponent(id)}`, sauLam: () => dispatchEvent(new Event("agv-vong-ngay")) });
+  const theGD = gnTheGD($("tgd"), { ben: "seller", cuoc, goi: async (d, b) => { const j = await goi(d, b); return j?.data ?? j; }, linkDon: (id) => `./ban-don.html${location.search}${location.search ? "&" : "?"}id=${encodeURIComponent(id)}`, sauLam: () => dispatchEvent(new Event("agv-vong-ngay")), dauTrang: (chu) => { const p = document.querySelector("#dau .chao"); if (p) p.textContent = chu; } });
   const he = []; // dòng hệ thống chỉ hiện ở máy này (cảnh báo che, đã gửi báo cáo)
   let hen = 0, soCu = -1, dangGo = false;
   const tai = async (cuon) => {

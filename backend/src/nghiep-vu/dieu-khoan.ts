@@ -29,8 +29,10 @@ export async function trangThaiDieuKhoan(t: GiaoDich, offerId: string) {
 
 export async function xemDieuKhoan(t: GiaoDich, nd: NguoiDung, id: string) {
   const { o, phia, gia } = await cuocChot(t, nd, id);
-  const tu = new Date(t.thoiDiemMs + 24 * 3600e3);
-  const mac_dinh: DieuKhoan = { delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: 'on_receipt', downgrade_price_vnd: Math.round(gia * 0.65 / 100) * 100, transport_by: 'buyer' };
+  // Mặc định: 7 giờ sáng ngày kế tiếp (giờ VN), đủ thời gian hái và điều xe; xuống loại 70% (dưới mức này người bán phải xác nhận riêng)
+  const ngayVN = new Date(t.thoiDiemMs + 7 * 3600e3).toISOString().slice(0, 10);
+  const tu = new Date(Date.parse(`${ngayVN}T07:00:00+07:00`) + 864e5);
+  const mac_dinh: DieuKhoan = { delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: 'on_receipt', downgrade_price_vnd: Math.ceil(gia * 0.7 / 100) * 100, transport_by: 'buyer' };
   return { ...(await trangThaiDieuKhoan(t, id)), offer_status: o.status, ben_toi: phia, gia_vnd: gia, mac_dinh };
 }
 
@@ -75,6 +77,5 @@ export async function apDieuKhoan<T extends object>(t: GiaoDich, offerId: string
   const tt = await trangThaiDieuKhoan(t, offerId);
   if (tt.trang_thai === 'chua_de_xuat') return d;
   if (tt.trang_thai !== 'da_thong_nhat') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Hai bên chưa thống nhất điều khoản.');
-  const { ghi_chu: _bo, ...k } = tt.ban;
-  return { ...d, ...k };
+  return { ...d, ...tt.ban };
 }

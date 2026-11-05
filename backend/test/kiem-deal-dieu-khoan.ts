@@ -14,8 +14,8 @@ assert.equal(giaGiua(16000, 15000, 15000, 'seller', 0.03), 15500, 'gặp ở gi�
 assert.equal(giaGiua(14000, 15000, 14400, 'buyer', 0.03), 14400, 'không vượt trần');
 
 const now = Date.parse('2026-11-06T00:00:00Z'), ban = (hc: number, ngay = 2) => ({ downgrade_price_vnd: hc, delivery_from: new Date(now + ngay * 864e5).toISOString(), delivery_to: new Date(now + ngay * 864e5 + 8 * 36e5).toISOString() });
-assert.equal(xetDieuKhoan(ban(6500), 10000, 'seller', now).dong_y, true);
-const s = xetDieuKhoan(ban(4000), 10000, 'seller', now); assert.equal(s.dong_y, false); assert.equal(s.sua.downgrade_price_vnd, 5500);
-const m = xetDieuKhoan(ban(9000), 10000, 'buyer', now); assert.equal(m.dong_y, false); assert.equal(m.sua.downgrade_price_vnd, 8000);
+assert.equal(xetDieuKhoan(ban(7000), 10000, 'seller', now).dong_y, true);
+const s = xetDieuKhoan(ban(4000), 10000, 'seller', now); assert.equal(s.dong_y, false); assert.equal(s.sua.downgrade_price_vnd, 7000);
+const m = xetDieuKhoan(ban(9000), 10000, 'buyer', now); assert.equal(m.dong_y, false); assert.equal(m.sua.downgrade_price_vnd, 8500);
 assert.equal(xetDieuKhoan(ban(6500, 20), 10000, 'buyer', now).dong_y, false, 'ngày giao quá xa');
 console.log('✔ luật deal + điều khoản + đọc giá đạt');

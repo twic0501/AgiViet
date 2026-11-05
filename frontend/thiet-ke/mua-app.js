@@ -262,7 +262,7 @@ async function moCuoc(q, ten) {
       <div id="tn-lc"></div><div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
-    const theGD = gnTheGD($("#tn-lc"), { ben: "buyer", cuoc: q, goi: api, linkDon: (id) => MO("chi-tiet-don", `don=${id}`), nguoiNhan: async () => me?.user?.user_id ?? me?.user_id ?? (await api("/v1/me")).user?.user_id, sauLam: () => { dispatchEvent(new Event("agv-vong-ngay")); lamMoi(); } });
+    const theGD = gnTheGD($("#tn-lc"), { ben: "buyer", cuoc: q, goi: api, linkDon: (id) => MO("chi-tiet-don", `don=${id}`), nguoiNhan: async () => me?.user?.user_id ?? me?.user_id ?? (await api("/v1/me")).user?.user_id, sauLam: () => { dispatchEvent(new Event("agv-vong-ngay")); api("/v1/offers").then((o) => { DL.loiChao = (o.items ?? o).filter((x) => x.la_ben_mua); veNguon(); }).catch(() => {}); } });
     const tinToi = (ds) => ds.filter((m) => m.la_cua_toi).at(-1)?.body ?? ""; theGD.ve(tinToi(x.tin));
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
     // Đang chờ bên kia (dấu "…") thì hỏi 1,5 s/lần, không thì 5 s

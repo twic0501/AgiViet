@@ -32,14 +32,14 @@ const tinCuoi = async (u, id) => ((await u.get(`/v1/messages?offer_id=${id}`)).t
   const tin1 = await tinCuoi(u, of.id); assert.ok(!/ 0 đ\/kg/.test(tin1), 'A: không có giá 0 trong tin');
   let dk = await u.get(`/v1/offers/${of.id}/terms`); assert.equal(dk.trang_thai, 'chua_de_xuat');
   const thap = Math.round(gia * 0.4 / 100) * 100;
-  const dx = await u.post(`/v1/offers/${of.id}/terms`, banSua(dk, thap)); assert.ok(dx.s < 300, 'A: gửi đề xuất ' + dx.loi);
+  const dx = await u.post(`/v1/offers/${of.id}/terms`, { ...banSua(dk, thap), ghi_chu: 'Cắt sáng sớm' }); assert.ok(dx.s < 300, 'A: gửi đề xuất ' + dx.loi);
   const chan = await u.post('/v1/orders', { offer_id: of.id, delivery_mode: 'at_farm', designated_receiver_user_id: u.user.user_id }); assert.ok(chan.s >= 400, 'A: chưa thống nhất thì không tạo được hợp đồng'); console.log('✔ A2 Chưa thống nhất: bị chặn tạo hợp đồng');
   dk = await cho(async () => { const d = await u.get(`/v1/offers/${of.id}/terms`); return d.de_xuat_boi === 'seller' ? d : null; }, 'AI bán đề xuất sửa', u);
-  const san = Math.round(gia * 0.55 / 100) * 100; assert.equal(Number(dk.ban.downgrade_price_vnd), san, 'A: AI nâng giá xuống loại lên sàn'); console.log('✔ A3 AI bán sửa giá xuống loại', thap, '→', san);
+  const san = Math.ceil(gia * 0.7 / 100) * 100; assert.equal(Number(dk.ban.downgrade_price_vnd), san, 'A: AI nâng giá xuống loại lên sàn'); console.log('✔ A3 AI bán sửa giá xuống loại', thap, '→', san);
   const dy = await u.post(`/v1/offers/${of.id}/terms/accept`, { phien_ban: dk.phien_ban }); assert.ok(dy.s < 300, 'A: đồng ý ' + dy.loi);
   const hd = await u.post('/v1/orders', { offer_id: of.id, delivery_mode: 'at_farm', delivery_from: '2099-01-01', downgrade_price_vnd: 1, designated_receiver_user_id: u.user.user_id, silent_accept_hours: 2 });
   assert.ok(hd.s < 300, 'A: tạo hợp đồng ' + JSON.stringify(hd.j).slice(0, 200));
-  const t = JSON.stringify(await u.get(`/v1/orders/${hd.j.id}`)) + JSON.stringify(await u.get(`/v1/orders/${hd.j.id}/terms`)); assert.ok(t.replace(/\./g, '').includes(String(san)), 'A: hợp đồng dùng đúng giá xuống loại đã thống nhất'); assert.ok(!t.includes('2099'), 'A: bỏ qua số client gửi');
+  const t = JSON.stringify(await u.get(`/v1/orders/${hd.j.id}`)) + JSON.stringify(await u.get(`/v1/orders/${hd.j.id}/terms`)); assert.ok(t.replace(/\./g, '').includes(String(san)), 'A: hợp đồng dùng đúng giá xuống loại đã thống nhất'); assert.ok(!t.includes('2099'), 'A: bỏ qua số client gửi'); assert.ok(t.includes('Cắt sáng sớm'), 'A: ghi chú vào hợp đồng');
   console.log('✔ A4 Hợp đồng', hd.j.code, 'đúng bản đã thống nhất');
 }
 // ===== B: người thật bán =====
@@ -50,7 +50,7 @@ const tinCuoi = async (u, id) => ((await u.get(`/v1/messages?offer_id=${id}`)).t
   const gia = Number(of.vong_cuoi.price_vnd);
   let dk = await cho(async () => { const d = await u.get(`/v1/offers/${of.id}/terms`); return d.trang_thai === 'cho_tra_loi' ? d : null; }, 'AI mua đề xuất điều khoản', u);
   assert.equal(dk.de_xuat_boi, 'buyer'); assert.equal((await u.get('/v1/orders')).filter((d) => d.offer_id === of.id).length, 0, 'B: chưa đồng ý thì chưa có hợp đồng'); console.log('✔ B2 AI mua gửi điều khoản, chưa tự tạo hợp đồng');
-  const hc = Math.round(gia * 0.7 / 100) * 100;
+  const hc = Math.round(gia * 0.8 / 100) * 100;
   assert.ok((await u.post(`/v1/offers/${of.id}/terms`, { ...dk.ban, downgrade_price_vnd: hc })).s < 300, 'B: đề xuất sửa');
   await cho(async () => (await u.get(`/v1/offers/${of.id}`)).hold?.order_id, 'AI mua đồng ý rồi tạo hợp đồng', u);
   const ct = await u.get(`/v1/offers/${of.id}`); const t = JSON.stringify(await u.get(`/v1/orders/${ct.hold.order_id}/terms`));

@@ -193,7 +193,11 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
     he = (xung + (f" Tính cách: {req.tinh}." if req.tinh else '') +
           " Nhắn như người thật đang chat trên điện thoại, tiếng Việt tự nhiên, ngắn 1–2 câu. TRƯỚC HẾT đáp thẳng vào đúng ý người kia vừa nhắn "
           "(họ chào thì chào lại, hỏi gì đáp nấy, xin thêm giá thì trả lời chuyện giá), rồi mới nhắc bước kế nếu cần. Không đọc lại mã hợp đồng hay trạng thái như máy, "
-          "không lặp lại câu bạn đã nói trong LỊCH SỬ. Giá đã chốt mà người kia xin đổi: nói thật là giá hai bên đã chốt, từ chối khéo hoặc hẹn đợt sau; không tự đồng ý giá mới. "
+          "không lặp lại câu bạn đã nói trong LỊCH SỬ. Giá đã chốt mà người kia xin đổi: nói thật là giá hai bên đã chốt, từ chối rõ ràng, lịch sự; không tự đồng ý giá mới. "
+          "KHÔNG hứa bù, thưởng, tính lại, nâng giá đợt sau; không hứa giữ hàng, đổi ngày hay bất cứ gì khác ngoài TÌNH TRẠNG. "
+          "Người kia hỏi giấy chứng nhận, VietGAP, mã vùng trồng, xe, số tấn, giờ cụ thể mà TÌNH TRẠNG không có: nói thật là chưa có thông tin đó, sẽ kiểm rồi báo, tuyệt đối không tự khẳng định. "
+          "Lý do giá phải đúng mặt hàng trong TÌNH TRẠNG (hàng tươi không nói chi phí sấy), và không nói chi phí xe nếu không phải phần của bạn. "
+          "Trong app nút đổi giá tên là 'Đổi giá'. Chỉ nhắc bước kế khi đúng là bước đó; không lặp 'ký hợp đồng' ở mọi câu. "
           "Chỉ nói đúng theo TÌNH TRẠNG bên dưới; "
           "không tự đưa giá, số lượng, ngày giờ, số tiền nào ngoài TÌNH TRẠNG; không hứa điều chưa có. Việc chào giá, trả giá, đồng ý, ký, giao, trả tiền "
           "đều làm bằng nút trong app — " + nut + " "
@@ -211,6 +215,9 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
     finally:
         LLM_SLOT.release()
     la = so_la(k.van_ban, req.tinh_trang + ' ' + req.tin + ' ' + req.lich_su)
+    # Lời hứa miệng ngoài hợp đồng (tin nhắn lưu làm bằng chứng): bỏ, backend dùng câu soạn sẵn
+    if re.search(r"đợt sau.{0,30}(bù|tính lại|nâng|thêm)|em bù|bên tôi bù|sẽ giữ hàng", k.van_ban, re.I):
+        raise HTTPException(503, 'câu trả lời có lời hứa ngoài hợp đồng')
     # Rà soát #9: số chỉ có trong tin người kia (không có trong TÌNH TRẠNG) mà câu trả lời lại 'đồng ý/chốt' → là hứa theo số của người kia: bỏ
     if not la:
         so_nguoi_kia = so_la(k.van_ban, req.tinh_trang)

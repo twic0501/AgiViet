@@ -16,12 +16,12 @@ export function docGia(tin) {
 const vnd = (n) => Number(n || 0).toLocaleString("vi-VN");
 const kg = (g) => vnd(Number(g || 0) / 1000);
 const e = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const ngay = (s) => new Date(s).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
+const ngay = (s) => new Date(s).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric", year: "numeric", timeZone: "Asia/Ho_Chi_Minh" });
 const TRA = { on_receipt: "Trả khi nhận hàng", inspect_then_before_loading: "Kiểm tại vườn, trả rồi mới bốc" };
 const XE = { buyer: "Bên mua lo xe", seller: "Người bán lo xe" };
 const CSS = `.tgd{display:grid;gap:8px;margin:8px 0;padding:12px;border:1.5px solid #1f4d3a;border-radius:14px;background:#fffdf7;color:#1f2a22}
 .tgd b.g{font-size:18px}.tgd p{margin:0;font-size:14px;line-height:1.4}.tgd .ghi{color:#55604f}.tgd .hang{display:flex;gap:8px;flex-wrap:wrap}
-.tgd button,.tgd a.n{min-height:44px;padding:0 14px;border-radius:12px;border:1.5px solid #1f4d3a;background:#fff;color:#1f4d3a;font:600 15px inherit;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+.tgd button,.tgd a.n{min-height:44px;padding:0 14px;border-radius:12px;border:1.5px solid #1f4d3a;background:#fff;color:#1f4d3a;font-family:inherit;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
 .tgd .c{background:#1f4d3a;color:#fff}.tgd label{display:grid;gap:4px;font-size:14px;font-weight:600}.tgd input,.tgd select{min-height:44px;width:100%;box-sizing:border-box;padding:0 10px;border:1.5px solid #b9bfae;border-radius:10px;font:inherit;background:#fff}
 .tgd dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:14px}.tgd dd{margin:0;font-weight:600}.tgd .loi{color:#a12c22}`;
 
@@ -35,7 +35,7 @@ const formDK = (b) => `<div data-fdk style="display:grid;gap:8px"><label>Ngày g
 /** ctx: { goi(path, body) → dữ liệu, cuoc: {offer_id}|{order_id}, linkDon(id), nguoiNhan(), sauLam() }. Trả về { ve(tinCuoiCuaToi) }. */
 export function gnTheGD(o, ctx) {
   if (!document.getElementById("tgd-css")) document.head.append(Object.assign(document.createElement("style"), { id: "tgd-css", textContent: CSS }));
-  let cu = "", sua = false, tinCuoi = "", loiCu = "", lc = null, dk = null;
+  let cu = "", sua = false, tinCuoi = "", loiCu = "", lc = null, dk = null, vongTin = null;
   const the = (x) => `<section class="tgd" aria-live="polite">${x}${loiCu ? `<p class="loi" role="alert">${e(loiCu)}</p>` : ""}</section>`;
   const theDon = async (id) => { const d = await ctx.goi(`/v1/orders/${id}`); const tl = d.hien_thi?.toi_luot, toi = tl && tl.phia === ctx.ben;
     return the(`<b>Hợp đồng ${e(d.code)} · ${e(d.hien_thi?.ten || d.status)}</b><p>${tl ? `${toi ? "Tới lượt bạn" : tl.phia === "ops" ? "AgiViet" : "Bên kia"}: ${e(tl.viec)}` : ""}</p><a class="n ${toi ? "c" : ""}" href="${ctx.linkDon(id)}">${toi ? "Làm bước này" : "Mở hợp đồng"}</a>`); };
@@ -47,12 +47,13 @@ export function gnTheGD(o, ctx) {
     const gia = `<b class="g">${vnd(v.price_vnd)} đ/kg</b> × ${kg(v.qty_g)} kg`;
     if (lc.status === "sent") {
       if (!lc.toi_luot_toi) return the(`<p>Giá bạn đưa: ${gia}</p><p class="ghi">Chờ bên kia trả lời.</p>`);
-      const g = docGia(tinCuoi), dangDoi = g && g !== Number(v.price_vnd);
+      // Giá trong tin chỉ gợi ý cho đúng vòng lúc nhắn; bên kia đã trả tiếp thì bỏ để khỏi bấm nhầm mất lượt
+      if (vongTin === null) vongTin = v.round_no; const g = vongTin === v.round_no ? docGia(tinCuoi) : null, dangDoi = g && g !== Number(v.price_vnd);
       return the(`<p>Bên kia đưa: ${gia}</p>${dangDoi ? `<button class="c" data-l="gia-chat" data-g="${g}">Gửi giá ${vnd(g)} đ/kg vào lời chào</button>` : ""}
         <div class="hang"><button class="${dangDoi ? "" : "c"}" data-l="dong-y">Đồng ý giá này</button><button data-l="mo-tra">Đổi giá${lc.luot_tra_gia_con != null ? ` (còn ${lc.luot_tra_gia_con} lần)` : ""}</button><button data-l="tu-choi">Không chốt</button></div>
         <div data-otra hidden style="display:grid;gap:8px"><label>Giá mới (đ/kg)<input inputmode="numeric" data-gia></label><label>Lượng (kg)<input inputmode="numeric" data-kg value="${Number(v.qty_g) / 1000}"></label><button class="c" data-l="gui-gia">Gửi giá mới</button></div>`);
     }
-    if (lc.status !== "accepted") return the(`<p>Lời chào đã đóng. Giá cuối ${gia}.</p>`);
+    if (lc.status !== "accepted") return the(`<p><b>Không thành giao dịch.</b> Giá sau cùng ${vnd(v.price_vnd)} đ/kg chưa được hai bên đồng ý.</p><p class="ghi">Muốn mua bán tiếp thì gửi lời chào mới ở lô này.</p>`);
     dk = await ctx.goi(`/v1/offers/${ctx.cuoc.offer_id}/terms`);
     const dau = `<b>Hai bên đã chốt ${gia}</b>`, ban = dk.ban || dk.mac_dinh;
     if (sua) return the(`${dau}<p>Đề xuất điều khoản hợp đồng:</p>${formDK(ban)}`);
@@ -61,11 +62,12 @@ export function gnTheGD(o, ctx) {
     return the(`${dau}<p>${dk.trang_thai === "bi_tu_choi" ? "Điều khoản vừa bị từ chối. Sửa lại rồi gửi:" : "Bước tiếp: thống nhất điều khoản hợp đồng."}</p>${veDK(ban)}<div class="hang"><button class="c" data-l="gui-mac-dinh">Gửi điều khoản này</button><button data-l="mo-sua">Sửa trước khi gửi</button></div>`);
   };
   const ve = async (tin, ep) => {
-    if (tin !== undefined) tinCuoi = tin;
+    if (tin !== undefined && tin !== tinCuoi) { tinCuoi = tin; vongTin = null; }
     if (!ep && o.contains(document.activeElement) && /INPUT|SELECT/.test(document.activeElement.tagName)) return;
     if (!ep && !o.querySelector("[data-otra]")?.hidden && o.querySelector("[data-otra]")) return;
     const h = await html().catch((x) => the(`<p class="loi">${e(x.message)}</p>`));
     if (h !== cu) { cu = h; o.innerHTML = h; }
+    if (lc && ctx.dauTrang) { const v = lc.rounds?.at(-1), tt = lc.status === "sent" ? (lc.toi_luot_toi ? "tới lượt bạn" : "chờ bên kia") : lc.status === "accepted" ? "đã chốt giá" : "không thành"; if (v) ctx.dauTrang(`${kg(v.qty_g)} kg · ${vnd(v.price_vnd)} đ/kg · ${tt}`); }
   };
   const lam = async (f) => { loiCu = ""; try { await f(); sua = false; ctx.sauLam?.(); } catch (x) { loiCu = x.message; } await ve(undefined, true); };
   const O = () => `/v1/offers/${ctx.cuoc.offer_id}`;

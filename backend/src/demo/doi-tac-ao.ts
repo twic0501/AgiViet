@@ -100,8 +100,8 @@ export function traLoiTheoBuoc(tin: string, phia: 'buyer' | 'seller', buoc: stri
   // Giá đã chốt mà người kia xin đổi giá: đáp đúng ý đó trước, không cảm ơn "đã đồng ý giá" như máy
   const t = tin.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
   if (buoc && /gia|cao hon|them|bot|tang|giam/.test(t)) return phia === 'buyer'
-    ? 'Dạ giá này hai bên đã chốt rồi bác ơi, bên em cũng tính sát lắm rồi. Đợt sau hàng đẹp em xin công ty nâng thêm cho bác nha.'
-    : 'Giá này hai bên đã chốt rồi anh/chị ạ, bên tôi để sát lắm rồi. Đợt sau mình bàn lại giá theo thị trường nhé.';
+    ? 'Dạ giá này hai bên đã chốt rồi bác ơi, em không đổi được nữa ạ.'
+    : 'Giá này hai bên đã chốt rồi anh/chị ạ, bên tôi không đổi được nữa.';
   if (buoc === 'da_dong_y') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em gửi hợp đồng qua app, bác xem kỹ rồi ký giúp em nha.' : 'Cảm ơn anh/chị đã đồng ý giá. Anh/chị gửi hợp đồng qua app để bên tôi xem và ký nhé.';
   if (buoc === 'soan_hd') return phia === 'buyer' ? 'Dạ em cảm ơn bác đã đồng ý giá. Bên em đang soạn hợp đồng, xong em gửi qua app để bác xem và ký nha.' : 'Cảm ơn anh/chị. Khi anh/chị gửi hợp đồng qua app, bên tôi sẽ xem và ký.';
   if (buoc === 'cho_ky') return phia === 'buyer' ? 'Hợp đồng đang chờ ký trong app, bác xem kỹ các điều khoản rồi ký giúp em nha.' : 'Hợp đồng đang chờ ký trong app, anh/chị xem rồi ký giúp nhé.';
@@ -130,7 +130,7 @@ export function giaGiua(minh: number | null, kia: number, muc: number | null, ph
 export function xetDieuKhoan(ban: any, gia: number, phia: 'buyer' | 'seller', nowMs: number): { dong_y: boolean; sua?: any; ly_do?: string } {
   const hc = Number(ban.downgrade_price_vnd), tu = new Date(ban.delivery_from).getTime(), ngay = (tu - nowMs) / 864e5;
   const lyDo: string[] = []; const sua = { ...ban };
-  const san = Math.round(gia * 0.55 / 100) * 100, tran = Math.round(gia * 0.8 / 100) * 100;
+  const san = Math.ceil(gia * 0.7 / 100) * 100, tran = Math.round(gia * 0.85 / 100) * 100;
   if (phia === 'seller' && hc < san) { sua.downgrade_price_vnd = san; lyDo.push(`giá xuống loại thấp quá, tôi xin ${soVN(san)}`); }
   if (phia === 'buyer' && hc > tran) { sua.downgrade_price_vnd = tran; lyDo.push(`giá xuống loại cao quá, em xin ${soVN(tran)}`); }
   if (ngay > 14) { const m = nowMs + 7 * 864e5; sua.delivery_from = new Date(m).toISOString(); sua.delivery_to = new Date(m + 8 * 36e5).toISOString(); lyDo.push('ngày giao xa quá, hàng để lâu không được, xin giao trong 7 ngày'); }
@@ -312,8 +312,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         }
         // Người bán AI chờ bên mua; bên mua AI mở đề xuất đầu tiên, nếu bị từ chối thì đề xuất lại mức mặc định
         if (phia === 'buyer' && (dk?.trang_thai === 'chua_de_xuat' || dk?.trang_thai === 'bi_tu_choi')) {
-          const tu = new Date(now.getTime() + 15 * 60e3); // trình diễn: giao sau 15 phút để người thật làm tiếp ngay
-          const ban = { ...dk.mac_dinh, delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString() };
+          const ban = dk.mac_dinh; // ngày kế tiếp 7 giờ sáng; bản thử có nút tua giờ khi cần đi nhanh
           await lam(tc, 'đề xuất điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms`, ban, t));
           await nhan(`Dạ em gửi điều khoản: giá xuống loại ${soVN(ban.downgrade_price_vnd)}, trả khi nhận hàng, bên em lo xe. Bác xem trong thẻ hợp đồng, chưa ưng chỗ nào bấm Đề xuất sửa nha.`);
         }
@@ -359,10 +358,10 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const mucCau = mucTin == null || v.from_side !== phiaTin ? '' : phiaTin === 'buyer'
             ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người bán đòi cao hơn thì từ chối khéo kèm lý do; đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
             : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Bên mua trả thấp hơn thì từ chối khéo kèm lý do; trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
-          tinhTrang = of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
+          tinhTrang = (of.product_name ? `Mặt hàng: ${of.product_name}. ` : '') + (of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
             : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'TỚI LƯỢT BẠN trả lời: người kia không bấm được gì lúc này; hãy nói bạn đang xem và sẽ trả lời trong lời chào ngay, KHÔNG bảo họ bấm Chào giá/Trả giá'}.${mucCau}`
             : of.status === 'auto_rejected' ? `Lời chào ${of.code ?? ''} đã đóng: hệ thống tự từ chối vì giá ${phiaTin === 'seller' ? 'người mua đưa' : 'người bán chào'} chưa tới mức bên bạn chấp nhận (KHÔNG nói con số mức đó). Mời người kia gửi lời chào mới với giá ${phiaTin === 'seller' ? 'cao' : 'thấp'} hơn; giá đã đưa ${gia} không thay đổi được nữa.`
-            : `Lời chào ${of.code ?? ''} đã đóng (${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã rút'}); muốn mua bán tiếp thì gửi lời chào mới.`;
+            : `Lời chào ${of.code ?? ''} đã đóng (${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã rút'}); muốn mua bán tiếp thì gửi lời chào mới.`);
           // Chỉ nhắc người kia bấm Chào giá/Trả giá khi đang CHỜ HỌ; tới lượt mình thì nói sẽ trả lời trong lời chào
           if (of.status === 'accepted') buocTin = 'da_dong_y'; else if (of.status === 'sent' && v.from_side === phiaTin) dangMacCa = true;
         }

@@ -93,7 +93,7 @@ function moLich(o, nut, lb) {
   const ngoai = (d) => (min && d < min) || (max && d > max);
   const che = document.createElement("div");
   che.className = "lich-che";
-  che.innerHTML = `<div class="lich-tam" role="dialog" aria-modal="true" aria-labelledby="lich-t"><h2 id="lich-t">${esc(lb?.textContent.trim() || "Chọn ngày")}</h2>
+  che.innerHTML = `<div class="lich-tam" role="dialog" aria-modal="true" aria-labelledby="lich-t"><h2 id="lich-t">${esc(lb?.textContent?.trim() || "Chọn ngày")}</h2>
     <div class="lich-nhanh" role="group" aria-label="Chọn nhanh"></div><div class="lich-thang"></div><div class="lich-luoi"></div><p class="lich-ghi" aria-live="polite"></p>
     <div class="lich-day"><button type="button" class="nut lich-huy">Đóng</button><button type="button" class="nut lich-ok">Chọn ngày này</button></div></div>`;
   document.body.appendChild(che);
