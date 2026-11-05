@@ -118,6 +118,24 @@ export function mucChiu(rounds: any[], phia: 'buyer' | 'seller', buoc: number): 
   const minh = [...(rounds ?? [])].reverse().find((r: any) => r.from_side === phia); if (!minh) return null;
   return Math.round(Number(minh.price_vnd) * (phia === 'buyer' ? 1 + buoc : 1 - buoc) / 100) * 100;
 }
+/** Bước nhượng thực tế: đơn lớn và mặc cả nhiều vòng thì nhượng thêm, như người thật. */
+export function buocDeal(buoc: number, qtyG: number, vong: number): number { return buoc + (qtyG >= 1_000_000 ? 0.01 : 0) + (vong >= 3 ? 0.01 : 0); }
+/** Giá trả tiếp: gặp nhau ở giữa giá mình và giá kia, không vượt mức chịu. */
+export function giaGiua(minh: number | null, kia: number, muc: number | null, phia: 'buyer' | 'seller', buoc: number): number {
+  const goc = minh != null ? (minh + kia) / 2 : kia * (phia === 'seller' ? 1 + buoc : 1 - buoc);
+  const g = Math.round(goc / 100) * 100;
+  return muc == null ? g : phia === 'buyer' ? Math.min(g, muc) : Math.max(g, muc);
+}
+/** AI xét điều khoản theo vai: trong khung thì đồng ý, ngoài khung thì trả về bản sửa kèm lý do. */
+export function xetDieuKhoan(ban: any, gia: number, phia: 'buyer' | 'seller', nowMs: number): { dong_y: boolean; sua?: any; ly_do?: string } {
+  const hc = Number(ban.downgrade_price_vnd), tu = new Date(ban.delivery_from).getTime(), ngay = (tu - nowMs) / 864e5;
+  const lyDo: string[] = []; const sua = { ...ban };
+  const san = Math.round(gia * 0.55 / 100) * 100, tran = Math.round(gia * 0.8 / 100) * 100;
+  if (phia === 'seller' && hc < san) { sua.downgrade_price_vnd = san; lyDo.push(`giá xuống loại thấp quá, tôi xin ${soVN(san)}`); }
+  if (phia === 'buyer' && hc > tran) { sua.downgrade_price_vnd = tran; lyDo.push(`giá xuống loại cao quá, em xin ${soVN(tran)}`); }
+  if (ngay > 14) { const m = nowMs + 7 * 864e5; sua.delivery_from = new Date(m).toISOString(); sua.delivery_to = new Date(m + 8 * 36e5).toISOString(); lyDo.push('ngày giao xa quá, hàng để lâu không được, xin giao trong 7 ngày'); }
+  return lyDo.length ? { dong_y: false, sua, ly_do: lyDo.join('; ') } : { dong_y: true };
+}
 const soVN = (n: number) => `${Math.round(n).toLocaleString('vi-VN')} đ/kg`;
 /** Tính cách để chatbot nói đúng vai (tệp khách đã rút trước, không thì theo bảng tính cách người mẫu). */
 function tinhCach(tc: string, phia: 'buyer' | 'seller', k: { tra?: number; cham?: boolean }): string {
@@ -239,9 +257,10 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         // (trước dùng bộ đếm chung: có 2 lời chào cùng lúc thì một cái luôn rơi vào lượt bỏ qua → không bao giờ trả lời)
         if (kieu.cham) { const n = CHAM.get(of.id) ?? 0; CHAM.set(of.id, n + 1); if (n % 2 === 0) continue; }
         const ct = await get(`/v1/offers/${of.id}`, t); const giaKia = Number(v.price_vnd);
-        let muc = mucChiu(ct?.rounds, phia, buoc);
+        const buocThat = buocDeal(buoc, Number(v.qty_g), Number(v.round_no));
+        let muc = mucChiu(ct?.rounds, phia, buocThat);
         // Vòng đầu người bán AI chưa đưa giá nào: mốc là giá mong muốn của lô (người thật trả tới mức đó thì chốt luôn, như người bán thật)
-        if (muc == null && phia === 'seller') { const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t); const mm = Number(lo?.ask_price_vnd ?? 0); if (mm) muc = Math.round(mm * (1 - buoc) / 100) * 100; }
+        if (muc == null && phia === 'seller') { const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t); const mm = Number(lo?.ask_price_vnd ?? 0); if (mm) muc = Math.round(mm * (1 - buocThat) / 100) * 100; }
         // Bên mua trả từ giá giao dịch gần đây trở lên ở vòng đầu ("Mua giá này") thì người bán AI chốt luôn
         let theoCho = false;
         if (phia === 'seller' && Number(v.round_no) === 1) {
@@ -253,8 +272,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         const cu = nhat_ky.length; let bao = '', giaMoi = 0;
         if (!trongMuc && Math.ceil(Number(v.round_no) / 2) <= soLanTra) {
           // Trả giá về phía mình nhưng không vượt mức chịu và không lùi so với giá mình đã đưa
-          let gia = Math.round(giaKia * (phia === 'seller' ? 1 + buoc : 1 - buoc) / 100) * 100;
-          if (muc != null) gia = phia === 'buyer' ? Math.min(gia, muc) : Math.max(gia, muc);
+          const giaMinh = [...(ct?.rounds ?? [])].reverse().find((r: any) => r.from_side === phia)?.price_vnd;
+          const gia = giaGiua(giaMinh == null ? null : Number(giaMinh), giaKia, muc, phia, buocThat);
           giaMoi = gia;
           await lam(tc, `trả giá ${gia.toLocaleString("vi-VN")} đ/kg`, of.code, () => post(`/v1/offers/${of.id}/counter`, { price_vnd: gia, qty_g: Number(v.qty_g) }, t));
           bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách; không nói đây là mức cuối hay tốt nhất (còn thương lượng được).`;
@@ -276,20 +295,36 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         if (nhat_ky.length > cu && nhat_ky[nhat_ky.length - 1].ket_qua === 'xong') {
           const cau = await hoiChatbot(aiUrl, aiKey, { vai: phia, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc, tinh: tinhCach(tc, phia, kieu), tinh_trang: bao, tin: '(bạn chủ động nhắn báo, không trả lời câu nào)', dang_mac_ca: false })
             || (bao.startsWith('Bạn vừa đồng ý') ? (phia === 'buyer' ? `Dạ em đồng ý ${soVN(giaKia)} nha bác, em gửi hợp đồng để bác xem và ký.` : `Bên tôi đồng ý ${soVN(giaKia)}, anh/chị gửi hợp đồng để bên tôi ký nhé.`)
+              : !giaMoi ? (phia === 'buyer' ? `Giá ${soVN(giaKia)} bên em chưa theo được bác ạ, khi nào đổi giá bác gửi lời chào mới giúp em nha.` : `Giá ${soVN(giaKia)} bên tôi chưa bán được, anh/chị gửi lời chào mới nếu đổi được giá nhé.`)
               : (phia === 'buyer' ? `Em trả lại ${soVN(giaMoi)} thôi bác, bác xem trong lời chào giúp em nha.` : `Bên tôi chào lại ${soVN(giaMoi)}, anh/chị xem trong lời chào nhé.`));
           await post('/v1/messages', { offer_id: of.id, body: cau }, t);
         }
       }
       // Bên mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
-      if (of.status === 'accepted' && phia === 'buyer' && !of.order_id) {
-        const now = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
-        const tu = new Date(now.getTime() + 15 * 60e3); // trình diễn: giao sau 15 phút để người thật làm tiếp ngay
-        const r = await post('/v1/orders', { offer_id: of.id, downgrade_price_vnd: Math.round(Number(v?.price_vnd ?? 0) * 0.65 / 100) * 100, delivery_mode: 'at_farm', transport_by: 'buyer',
-          delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString(), payment_timing: 'on_receipt', designated_receiver_user_id: me.user.user_id, silent_accept_hours: 2 }, t);
+      if (of.status === 'accepted' && !of.order_id) {
+        const dk = await get(`/v1/offers/${of.id}/terms`, t), now = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
+        const nhan = (body: string) => post('/v1/messages', { offer_id: of.id, body }, t);
+        const giaChot = Number(v?.price_vnd ?? 0), xung = phia === 'buyer' ? 'bác' : 'anh/chị';
+        if (dk?.trang_thai === 'cho_tra_loi' && dk.de_xuat_boi !== phia) {
+          const x = xetDieuKhoan(dk.ban, giaChot, phia, now.getTime());
+          if (x.dong_y) { await lam(tc, 'đồng ý điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms/accept`, { phien_ban: dk.phien_ban }, t)); await nhan(phia === 'buyer' ? 'Dạ điều khoản vậy được bác, em tạo hợp đồng để hai bên ký nha.' : 'Điều khoản vậy được, anh/chị tạo hợp đồng để hai bên ký nhé.'); }
+          else { await lam(tc, 'đề xuất sửa điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms`, x.sua, t)); await nhan(`Dạ ${x.ly_do}, ${xung} xem bản sửa giúp nha.`); }
+        }
+        // Người bán AI chờ bên mua; bên mua AI mở đề xuất đầu tiên, nếu bị từ chối thì đề xuất lại mức mặc định
+        if (phia === 'buyer' && (dk?.trang_thai === 'chua_de_xuat' || dk?.trang_thai === 'bi_tu_choi')) {
+          const tu = new Date(now.getTime() + 15 * 60e3); // trình diễn: giao sau 15 phút để người thật làm tiếp ngay
+          const ban = { ...dk.mac_dinh, delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 3600e3).toISOString() };
+          await lam(tc, 'đề xuất điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms`, ban, t));
+          await nhan(`Dạ em gửi điều khoản: giá xuống loại ${soVN(ban.downgrade_price_vnd)}, trả khi nhận hàng, bên em lo xe. Bác xem trong thẻ hợp đồng, chưa ưng chỗ nào bấm Đề xuất sửa nha.`);
+        }
+      }
+      if (of.status === 'accepted' && phia === 'buyer' && !of.order_id && (await get(`/v1/offers/${of.id}/terms`, t))?.trang_thai === 'da_thong_nhat') {
+        const dkc = (await get(`/v1/offers/${of.id}/terms`, t)).ban; const tu = new Date(dkc.delivery_from);
+        const r = await post('/v1/orders', { offer_id: of.id, delivery_mode: 'at_farm', designated_receiver_user_id: me.user.user_id, silent_accept_hours: 2 }, t);
         if (r.status < 300) {
           nhat_ky.push({ to_chuc: tc, viec: 'lập đơn', doi_tuong: of.code, ket_qua: 'xong' });
           // Như người thật: báo ngay hợp đồng vừa lập, nói rõ giá xuống loại (góp ý người thử: trước chỉ thấy lúc ký)
-          const hc = Math.round(Number(v?.price_vnd ?? 0) * 0.65 / 100) * 100, gio = tu.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+          const hc = Number(dkc.downgrade_price_vnd), gio = tu.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
           if (r.json?.id) await post('/v1/messages', { order_id: r.json.id, body: `Bên em đã lập hợp đồng ${r.json.code ?? ''} giá ${soVN(Number(v?.price_vnd ?? 0))}. Phần nào bị xuống loại lúc cân thì tính ${soVN(hc)}; xe bên em tới vườn từ ${gio}. Bác xem kỹ rồi ký giúp em nha, chưa ưng chỗ nào bác nhắn em.` }, t);
         }
       }
@@ -320,7 +355,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const ai = v.from_side === phiaTin ? 'bạn' : 'người kia';
           const ctTin = of.status === 'sent' ? await get(`/v1/offers/${of.id}`, t) : null;
           const kieuTin = { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) };
-          const mucTin = ctTin ? mucChiu(ctTin.rounds, phiaTin, kieuTin.buoc ?? 0.03) : null;
+          const mucTin = ctTin ? mucChiu(ctTin.rounds, phiaTin, buocDeal(kieuTin.buoc ?? 0.03, Number(v.qty_g), Number(v.round_no))) : null;
           const mucCau = mucTin == null || v.from_side !== phiaTin ? '' : phiaTin === 'buyer'
             ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người bán đòi cao hơn thì từ chối khéo kèm lý do; đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
             : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Bên mua trả thấp hơn thì từ chối khéo kèm lý do; trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;

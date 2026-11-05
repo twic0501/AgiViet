@@ -74,6 +74,7 @@ export async function lapDonVu(t: GiaoDich, nd: NguoiDung, d: LapDon & { vu: Tho
 
 export async function lapDon(t: GiaoDich, nd: NguoiDung, d: LapDon, vu?: ThongTinVu) {
   canQuyen(nd, 'order.create');
+  d = await (await import('./dieu-khoan.ts')).apDieuKhoan(t, d.offer_id, d);
   const o = await t.mot<any>(`SELECT * FROM core.offers WHERE id=$1 FOR UPDATE`, [d.offer_id]);
   if (!o || o.buyer_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
   if (o.status !== 'accepted') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Lời chào chưa được đồng ý.');

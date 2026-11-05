@@ -250,6 +250,12 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/offers/:id/counter', async (req) => bo.lenh(req, 'tra_gia', (t, nd) => phiaLoiChao(t, nd, P(req).id), (t, nd, b) => LoiChao.traGia(t, nd, P(req).id, b.price_vnd, b.qty_g)));
   app.post('/v1/offers/:id/reject', async (req) => bo.lenh(req, 'tu_choi', (t, nd) => phiaLoiChao(t, nd, P(req).id), (t, nd) => LoiChao.tuChoiLoiChao(t, nd, P(req).id)));
   app.post('/v1/offers/:id/withdraw', async (req) => bo.lenh(req, 'rut', (t, nd) => phiaLoiChao(t, nd, P(req).id), (t, nd) => LoiChao.rutLoiChao(t, nd, P(req).id)));
+  // Điều khoản sau khi chốt giá: hai bên đề xuất / đồng ý trước khi sinh hợp đồng
+  const DK = () => import('../nghiep-vu/dieu-khoan.ts');
+  app.get('/v1/offers/:id/terms', async (req) => { const nd = await bo.xacThuc(req); const m = await DK(); return bo.doc((t) => m.xemDieuKhoan(t, nd, P(req).id)); });
+  app.post('/v1/offers/:id/terms', async (req) => bo.lenh(req, 'de_xuat_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).deXuatDieuKhoan(t, nd, P(req).id, b)));
+  app.post('/v1/offers/:id/terms/accept', async (req) => bo.lenh(req, 'dong_y_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).dongYDieuKhoan(t, nd, P(req).id, b.phien_ban)));
+  app.post('/v1/offers/:id/terms/reject', async (req) => bo.lenh(req, 'tu_choi_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).tuChoiDieuKhoan(t, nd, P(req).id, b.phien_ban, b.ly_do)));
   app.get('/v1/offers', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => LoiChao.danhSachLoiChao(t, nd)); });
   app.get('/v1/offers/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => LoiChao.xemLoiChao(t, nd, P(req).id)); });
 

@@ -1,5 +1,6 @@
 // App MUA thật: đăng nhập OTP → màn chào (lần đầu) → 5 tab dữ liệu từ API. Luồng sâu (ký, cọc, giao nhận, khung) mở màn thật sẵn có trong mua.html.
 import { esc, ANH_SP, luuPhien, tenLoai } from "./chung.js";
+import { gnTheGD } from "./the-giao-dich.js";
 
 const $ = (s) => document.querySelector(s);
 const vnd = (n) => Number(n || 0).toLocaleString("vi-VN");
@@ -158,14 +159,6 @@ function nutLo(l) {
   if (!t) return `<button class="nut vien rong" data-mo="chao-gia" data-lo="${l.id}">Trả giá</button>`;
   return `<p class="phu"><b>${esc(t.chu)}</b></p><a class="nut ${t.lk ? "chinh" : "vien"} rong" href="${t.href}">${t.lk ? t.nut : "Xem lời chào"}</a>`;
 }
-async function theLC(q) {
-  if (!q.offer_id) return "";
-  const ds = await api("/v1/offers").catch(() => null); if (!ds) return "";
-  DL.loiChao = (ds.items ?? ds).filter((o) => o.la_ben_mua);
-  const o = DL.loiChao.find((x) => x.id === q.offer_id); if (!o?.vong_cuoi || !lanLC(o).mo) return "";
-  const t = lanLC(o);
-  return `<div class="the"><b>${esc(t.chu)}</b><p class="phu">${vnd(kg(o.vong_cuoi.qty_g))} kg · ${esc(o.code)}</p><a class="nut ${t.lk ? "chinh" : "vien"} rong" href="${t.href}">${t.lk ? t.nut : "Xem lời chào"}</a></div>`;
-}
 function veNguon() {
   const ds0 = (DL.lo || []).filter((l) => !l.is_substandard || l.ban_gap);
   const nhom = ["Tất cả", ...new Set(ds0.map((l) => NHOM(l.product_code)))];
@@ -266,17 +259,20 @@ async function moCuoc(q, ten) {
   try {
     const x = await api(`/v1/messages?${new URLSearchParams(q)}`);
     $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button>
-      <div id="tn-lc">${await theLC(q)}</div><div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
+      <div id="tn-lc"></div><div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
+    const theGD = gnTheGD($("#tn-lc"), { ben: "buyer", cuoc: q, goi: api, linkDon: (id) => MO("chi-tiet-don", `don=${id}`), nguoiNhan: async () => me?.user?.user_id ?? me?.user_id ?? (await api("/v1/me")).user?.user_id, sauLam: () => { dispatchEvent(new Event("agv-vong-ngay")); lamMoi(); } });
+    const tinToi = (ds) => ds.filter((m) => m.la_cua_toi).at(-1)?.body ?? ""; theGD.ve(tinToi(x.tin));
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
     // Đang chờ bên kia (dấu "…") thì hỏi 1,5 s/lần, không thì 5 s
     clearTimeout(moCuoc.hen); let khoa = x.tin.length * 2 + (dangGo(x.tin) ? 1 : 0);
     const hoi = async () => {
       const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return;
       const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null);
+      if (y) theGD.ve(tinToi(y.tin));
       if (y) { const k = y.tin.length * 2 + (dangGo(y.tin) ? 1 : 0);
-        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; const lc = await theLC(q); if ($("#tn-lc")) $("#tn-lc").innerHTML = lc; veNguon(); } }
+        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; DL.loiChao = ((await api("/v1/offers").catch(() => null)) ?? DL.loiChao).filter((o) => o.la_ben_mua !== false); veNguon(); } }
       moCuoc.hen = setTimeout(hoi, y && dangGo(y.tin) ? 1500 : 5000);
     };
     moCuoc.hen = setTimeout(hoi, dangGo(x.tin) ? 1500 : 5000);

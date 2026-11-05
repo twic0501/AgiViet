@@ -313,3 +313,5 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 - E177 (05/11): Lưu phiên đóng vai của tổ chức AI 10 phút (PHIEN_AO, xóa khi đặt lại) để vòng không impersonate lại ~10 tổ chức mỗi lần. Backend 76/76.
 - E178 (05/11): Sửa đăng nhập thử 500 trên host: làm mới dữ liệu thử lỗi (thiếu AGV_TEST_PG_OWNER_URL/TEMPLATE) không còn chặn impersonate, thu-xong trả lam_moi đúng thật. Backend 76/76.
 - E179 (05/11): App mua: giá AI chào lại hiện ở thẻ lô và đầu khung chat, có nút trả lời/lập đơn; câu báo nêu giá; thêm nút "Mua giá này" (gửi đúng giá gần đây, người bán AI chốt vòng đầu nếu ≥ giá gần đây). Backend 76/76, kiểm trình duyệt tmp/kiem-gia-lai*.mjs.
+- E180 (05/11): Sửa câu dự phòng "chào lại 0 đ/kg" khi AI không chốt; mua.html?man=bao-gia&loi-chao=… nhảy tới đúng lời chào và mở form lập đơn.
+- E181 (06/11): Thẻ giao dịch trong chat (the-giao-dich.js, cả 2 app): giá → điều khoản (đề xuất/sửa/đồng ý, lưu sự kiện dieu_khoan.*, API /v1/offers/:id/terms) → tạo hợp đồng → tới lượt ai. AI: gặp giữa, nới theo lượng/vòng, tự xét điều khoản. Số giá trong tin thành nút xác nhận. Test: backend/test/kiem-deal-dieu-khoan.ts, kiem-tron-luong.mjs (2 chiều đạt).

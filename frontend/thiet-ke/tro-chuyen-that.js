@@ -1,6 +1,7 @@
 // Trò chuyện THẬT hai bên (màn 38) — cùng bố cục với bản mô phỏng tro-chuyen.js, dữ liệu từ backend:
 // mỗi lời chào giá / hợp đồng với một bên mua là một hội thoại; tin qua /v1/messages, backend che liên lạc trước khi lưu.
 import { esc, giuThamSo, phien } from "./chung.js";
+import { gnTheGD } from "./the-giao-dich.js";
 const $ = (id) => document.getElementById(id);
 const SVG = (p, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>`;
 const I = { anh: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", lui: "M15 5l-7 7 7 7", khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", canh: "M12 3l10 18H2zM12 10v5M12 18v.5", gui: "M4 12l16-8-6 16-2-7z", lich: "M4 5h16v16H4zM4 10h16M8 3v4M16 3v4", co: "M5 21V4h11l-2 4 2 4H5", giay: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM9 13h6M9 17h4", tich: "M5 12l5 5 9-10" };
@@ -63,12 +64,13 @@ export function veChat(h) {
   const den = h.loai === "don" ? `./ban-don.html${location.search}${location.search ? "&" : "?"}id=${encodeURIComponent(h.id)}` : `./ban-tin-nhan.html${location.search}#chao=${h.id}`;
   $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại">${SVG(I.lui, 22)}</button><div style="flex:1;min-width:0"><p class="chao">${esc(h.ghi)}</p><h1>${esc(h.ben)}</h1></div>`;
   $("dong").onclick = () => { location.href = "./ban-tin-nhan.html" + location.search + "#tro"; };
-  $("noi").innerHTML = `<div class="tc-chat" id="chat"><div class="tc-he">${SVG(I.khien, 16)}<span>Tin nhắn lưu trong app làm bằng chứng. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc.</span></div><div id="tin"></div></div>`;
+  $("noi").innerHTML = `<div class="tc-chat" id="chat"><div class="tc-he">${SVG(I.khien, 16)}<span>Tin nhắn lưu trong app làm bằng chứng. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc.</span></div><div id="tgd"></div><div id="tin"></div></div>`;
   const day = document.createElement("div"); day.className = "tc-day";
   day.innerHTML = `<div class="tc-nhanh"><a href="${esc(den)}" class="tc-nut-lk">${SVG(I.giay, 18)}${h.loai === "don" ? "Mở hợp đồng" : "Xem lời chào"}</a><button type="button" id="hen">${SVG(I.lich, 18)}Hẹn xem vườn</button><button type="button" id="bao">${SVG(I.co, 18)}Báo cáo</button></div>
     <div class="tc-go"><label class="tc-chup" aria-label="Chụp hoặc chọn ảnh hàng">${SVG(I.anh, 22)}<input type="file" id="chup" accept="image/*" capture="environment" hidden></label><textarea id="go" rows="1" placeholder="Nhắn cho ${esc(h.ben)}" aria-label="Nội dung tin nhắn" maxlength="1000"></textarea><button type="button" class="tc-gui" id="gui" aria-label="Gửi">${SVG(I.gui, 22)}</button></div>`;
   document.querySelector(".trang").appendChild(day);
   giuThamSo(day);
+  const theGD = gnTheGD($("tgd"), { ben: "seller", cuoc, goi: async (d, b) => { const j = await goi(d, b); return j?.data ?? j; }, linkDon: (id) => `./ban-don.html${location.search}${location.search ? "&" : "?"}id=${encodeURIComponent(id)}`, sauLam: () => dispatchEvent(new Event("agv-vong-ngay")) });
   const he = []; // dòng hệ thống chỉ hiện ở máy này (cảnh báo che, đã gửi báo cáo)
   let hen = 0, soCu = -1, dangGo = false;
   const tai = async (cuon) => {
@@ -78,6 +80,7 @@ export function veChat(h) {
       const tin = r.tin.map((m) => ({ k: "tin", t: m.anh_id && m.body === "[Ảnh]" ? "" : m.body, anh: m.anh_id, cuaToi: m.la_cua_toi, luc: m.created_at, daChe: m.da_che }));
       const tat = [...tin, ...he];   // dòng hệ thống (che liên lạc, đã báo cáo) luôn ở sau tin vừa gửi — không sắp theo giờ máy
       const cuoiTin = r.tin.at(-1);
+      theGD.ve(r.tin.filter((m) => m.la_cua_toi).at(-1)?.body ?? "");
       dangGo = !!cuoiTin?.la_cua_toi && Date.now() - new Date(cuoiTin.created_at).getTime() < 90000;
       const khoa = tat.length * 2 + (dangGo ? 1 : 0);
       if (khoa !== soCu) {

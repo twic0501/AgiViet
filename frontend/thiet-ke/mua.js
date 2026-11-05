@@ -1031,6 +1031,9 @@ if (THAT) {
         const uu = (o) => (o.status === "sent" && o.vong_cuoi?.from_side === "seller" ? 0 : o.status === "sent" ? 1 : o.status === "accepted" ? 2 : 3);
         DS.sort((a, b) => uu(a) - uu(b));
         g.querySelector("#lc-ds").innerHTML = DS.length ? DS.map(veThe).join("") : `<p class="sl-ghi">Chưa có lời chào nào. Vào Nguồn hàng để chào giá một lô.</p>`;
+        // Đến từ chat / việc cần làm: nhảy tới đúng lời chào, mở sẵn form lập đơn
+        const dich = g.querySelector(`[data-of="${new URLSearchParams(location.search).get("loi-chao")}"]`);
+        if (dich) { dich.querySelector("[data-lap]")?.setAttribute("open", ""); dich.scrollIntoView({ block: "center" }); }
       };
       g.querySelector("#lc-ds").onchange = (e) => { const t = e.target.closest("[data-tra]"); if (t) t.closest("[data-of]").querySelector("[data-o-ngay]").hidden = t.value !== "after_days"; };
       g.querySelector("#lc-ds").onclick = async (e) => {
