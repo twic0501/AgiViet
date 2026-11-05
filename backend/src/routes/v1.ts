@@ -635,7 +635,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     if (!uid) throw loi('KHONG_TIM_THAY');
     const m = await import('../demo/doi-tac-ao.ts'), mm = may(req);
     // Mọi hộ hết người giữ (quá 30 phút không dùng) → làm mới dữ liệu thử cho người sau, trước khi mở phiên
-    if (mm && m.LAM_MOI.can && !m.dangDung().length) await lamMoiDuLieuThu(m, req);
+    if (mm && m.LAM_MOI.can && !m.dangDung().length && !ht.db.datLaiCham) await lamMoiDuLieuThu(m, req);
     const r = await ht.phien.taoPhien(uid, b.org_code, 'thiet-bi-dong-vai');
     const tc = (hoSo(r.nguoi_dung) as any)?.org?.code;
     if (tc && mm) { if (!m.giuHo(tc, mm)) throw dangGiu(m, tc); }
@@ -651,6 +651,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     m.DANG_DUNG.delete(nd.thanhVien.orgCode);
     const con = m.dangDung();
     if (con.length) return { lam_moi: false, con_nguoi_thu: con.length };
+    if (ht.db.datLaiCham) return { lam_moi: true }; // bộ hẹn giờ làm nền trong 1–2 phút
     return { lam_moi: await lamMoiDuLieuThu(m, req) };
   });
   // Hộ/tổ chức đang có người thử (30 phút gần nhất) → màn chọn vai ghi chú để người khác chọn hộ khác.

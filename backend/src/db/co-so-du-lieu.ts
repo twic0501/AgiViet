@@ -170,6 +170,19 @@ export class CoSoDuLieu {
   }
 
   /** Thử trên Postgres thật: DROP/CREATE DB đích từ template đã migrate+seed+cấp quyền (owner, chỉ kiểm thử). */
+  /** Postgres thật: chép từ mẫu mất cả phút nên phải chạy nền, không chạy lúc đăng nhập. */
+  get datLaiCham(): boolean { return !!this.pool; }
+
+  /** Tạo bản sạch tên <db>_moi trong lúc app vẫn chạy; Neon có tiến trình nền giữ DB mẫu nên phải thử lại nhiều lần. */
+  private async taoBanSach(c: pg.Client, ten: string): Promise<void> {
+    await c.query(`DROP DATABASE IF EXISTS ${ten}_moi WITH (FORCE)`);
+    for (let lan = 0; ; lan++) {
+      await c.query(`SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname=$1 AND pid<>pg_backend_pid()`, [this.templateDb]);
+      try { await c.query(`CREATE DATABASE ${ten}_moi TEMPLATE ${this.templateDb}`); return; }
+      catch (e: any) { if (e.code !== '55006' || lan >= 30) throw e; await new Promise((r) => setTimeout(r, 1500)); }
+    }
+  }
+
   private async dungLaiTuMau(): Promise<void> {
     const ten = new URL(this.databaseUrl!).pathname.slice(1);
     if (!/^[a-z_][a-z0-9_]*$/.test(ten) || !/^[a-z_][a-z0-9_]*$/.test(this.templateDb!)) throw new Error('Tên DB thử lạ');
@@ -248,14 +261,27 @@ export class CoSoDuLieu {
   }
 
   /** Đặt lại về dữ liệu nền sạch (chỉ môi trường thử). */
-  async datLai(): Promise<void> {
+  async datLai(conDuoc?: () => boolean): Promise<boolean | void> {
     if (!this.laThu) throw new Error('Chỉ môi trường thử');
     if (this.pool) {
       if (!this.templateDb) throw new Error('Đặt lại trên Postgres thật cần AGV_TEST_PG_OWNER_URL + AGV_TEST_PG_TEMPLATE (chỉ thử)');
-      await this.pool.end(); if (this.ownerPoolDb) { await this.ownerPoolDb.end(); this.ownerPoolDb = null; }
-      await this.dungLaiTuMau();
-      this.pool = new pg.Pool({ connectionString: this.databaseUrl!, max: this.poolMax, idleTimeoutMillis: 30_000, application_name: 'agiviet-backend' });
-      return;
+      const ten = new URL(this.databaseUrl!).pathname.slice(1);
+      if (!/^[a-z_][a-z0-9_]*$/.test(ten) || !/^[a-z_][a-z0-9_]*$/.test(this.templateDb)) throw new Error('Tên DB thử lạ');
+      const u = new URL(this.ownerUrl!); u.pathname = '/postgres';
+      const c = new pg.Client({ connectionString: u.toString() }); await c.connect();
+      try {
+        await this.taoBanSach(c, ten); // lỗi ở đây: DB đang chạy chưa bị đụng tới
+        if (conDuoc && !conDuoc()) { await c.query(`DROP DATABASE ${ten}_moi WITH (FORCE)`); return false; } // có người vào trong lúc chép
+        await this.pool.end(); if (this.ownerPoolDb) { await this.ownerPoolDb.end(); this.ownerPoolDb = null; }
+        await c.query(`DROP DATABASE ${ten} WITH (FORCE)`);
+        await c.query(`ALTER DATABASE ${ten}_moi RENAME TO ${ten}`);
+        await c.query(`REVOKE CONNECT, TEMPORARY ON DATABASE ${ten} FROM PUBLIC`);
+        await c.query(`GRANT CONNECT ON DATABASE ${ten} TO agv_backend_gateway`).catch(() => {}); // stack cục bộ có thể tên vai khác
+      } finally {
+        await c.end();
+        if ((this.pool as any).ended) this.pool = new pg.Pool({ connectionString: this.databaseUrl!, max: this.poolMax, idleTimeoutMillis: 30_000, application_name: 'agiviet-backend' });
+      }
+      return true;
     }
     await this.khoa.chay(async () => {
       const cu = this.pg;

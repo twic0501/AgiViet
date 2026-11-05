@@ -41,9 +41,9 @@ export class HeThong {
   async khoiTao() { await this.db.khoiTao(); }
 
   /** Đặt lại dữ liệu nền sạch (chỉ môi trường thử). */
-  async datLai() {
+  async datLai(conDuoc?: () => boolean) {
     if (!this.cfg.tinhNangThu) throw new Error('Chỉ môi trường thử');
-    await this.db.datLai();
+    if ((await this.db.datLai(conDuoc)) === false) return false;
     this.phien.datLai();
     this.nganHang.datLai();
     this.qrNhanHang.clear();

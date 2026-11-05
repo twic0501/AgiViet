@@ -29,7 +29,9 @@ let moi = 0;
 for (const f of docThuMuc("migrations").filter((f) => /^\d{4}_/.test(f))) {
   const sql = readFileSync(path.join(goc, "db/migrations", f), "utf8"), sum = createHash("sha256").update(sql).digest("hex");
   if (daChay.has(f)) { if (daChay.get(f) !== sum) throw new Error(`Checksum migration ${f} đã đổi; viết migration mới`); continue; }
-  await tx(`SELECT pg_advisory_xact_lock(768503210);\n${sql}\nINSERT INTO public.schema_migrations(name,sha256) VALUES(${c.escapeLiteral(f)},${c.escapeLiteral(sum)});`);
+  // Nạp DB thứ hai cùng cụm (mẫu đặt lại): vai là của cụm, đã có sẵn thì bỏ lệnh tạo vai
+  const sqlChay = process.env.VAI_DA_CO ? sql.replace(/^\s*CREATE ROLE[^;]*;/gim, "") : sql;
+  await tx(`SELECT pg_advisory_xact_lock(768503210);\n${sqlChay}\nINSERT INTO public.schema_migrations(name,sha256) VALUES(${c.escapeLiteral(f)},${c.escapeLiteral(sum)});`);
   moi++;
 }
 console.log(`migrations: chạy mới ${moi}, đã có ${daChay.size}`);
