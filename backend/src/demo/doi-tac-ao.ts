@@ -59,7 +59,9 @@ let dem = 0;
 const DA_LOI = new Map<string, number>(); // việc lỗi → lúc lỗi (ms); thử lại sau 3 phút (trước: khóa vĩnh viễn → AI im lặng)
 const TOKEN_TC = new Map<string, string>(); // phiên đóng vai → mã tổ chức, để chặn mọi lệnh ghi khi người thật đang giữ hộ
 /** Đặt lại bộ nhớ AI cùng lúc đặt lại dữ liệu thử (rà soát 04/11 #10). */
-export function datLaiBoNho() { DA_LOI.clear(); DA_TRA_LOI.clear(); DA_CHAO.clear(); DA_BAO.clear(); CHAM.clear(); TOKEN_TC.clear(); }
+export function datLaiBoNho() { DA_LOI.clear(); DA_TRA_LOI.clear(); DA_CHAO.clear(); DA_BAO.clear(); CHAM.clear(); TOKEN_TC.clear(); PHIEN_AO.clear(); }
+/** Phiên đóng vai của tổ chức AI, dùng lại 10 phút: mỗi lần impersonate là một lượt DB ở xa (host chậm ~1 s/tổ chức). */
+const PHIEN_AO = new Map<string, { v: any; het: number }>();
 /** Tổ chức có người thật mở app trong 30 phút gần nhất (mã → giờ thật, ms). AI không bao giờ đóng vai các tổ chức này,
  *  kể cả khi vòng do người khác gọi — tránh AI ký/làm thay hộ đang có người thử (góp ý 04/11). */
 export const DANG_DUNG = new Map<string, { t: number; may: string }>(); // may = mã máy người giữ hộ ('' = script/không rõ)
@@ -140,7 +142,12 @@ async function hoiChatbot(aiUrl: string | null | undefined, aiKey: string | null
 export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = [], aiUrl?: string | null, aiKey?: string | null, chiTin = false): Promise<ViecAo[]> {
   // chiTin: người thật vừa nhắn → chỉ trả lời tin (nhanh), bỏ quét lời chào/đơn/ngân hàng (vòng 8 s thường vẫn làm đủ)
   const nhat_ky: ViecAo[] = [];
-  const vai = async (phone: string) => { const v = (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any }; if (v?.token && v.user?.org?.code) TOKEN_TC.set(v.token, v.user.org.code); return v; };
+  const vai = async (phone: string) => {
+    const c = PHIEN_AO.get(phone); if (c && c.het > Date.now()) return c.v;
+    const v = (await goi('POST', '/v1/test/impersonate', { phone })).json as { token: string; user: any };
+    if (v?.token && v.user?.org?.code) { TOKEN_TC.set(v.token, v.user.org.code); PHIEN_AO.set(phone, { v, het: Date.now() + 10 * 60e3 }); }
+    return v;
+  };
   const toChucThat = new Set<string>(dangDung());
   for (const p of nguoiThat) { if (p.startsWith('TC-')) { toChucThat.add(p); continue; } const v = await vai(p); if (v?.user?.org?.code) toChucThat.add(v.user.org.code); }
   // Mọi lệnh ghi của AI kiểm lại NGAY TRƯỚC KHI GỬI: tổ chức đang có người thật giữ thì không làm (rà soát #4: lập đơn, nhắn tin đi ngoài lam())
