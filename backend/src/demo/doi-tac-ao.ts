@@ -280,6 +280,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     // 1b) Tin nhắn: tin mới nhất của cuộc là của bên kia → trả lời một câu ngắn theo nội dung (luật đơn giản, không gửi liên lạc).
     for (const s of (await get('/v1/messages/summary', t)) ?? []) {
       if (s.la_cua_toi || DA_TRA_LOI.has(s.id)) continue;   // mỗi tin của bên kia chỉ trả lời một lần
+      // Chỉ trả lời người thật đang thử: AI không nhắn qua lại với AI khác (vòng lặp ~40 lần gọi mô hình mỗi vòng, host chậm 30 s)
+      if (!idThat.includes(s.sender_org_id)) continue;
       DA_TRA_LOI.add(s.id);
       const phiaTin: 'buyer' | 'seller' = tc.startsWith('TC-M') ? 'buyer' : 'seller', tin = String(s.body ?? '');
       // Tình trạng thật của lời chào / hợp đồng để chatbot trả lời đúng bước (không bịa giá, ngày)

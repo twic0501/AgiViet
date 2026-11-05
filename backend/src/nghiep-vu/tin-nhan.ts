@@ -77,7 +77,7 @@ export async function tomTatTinNhan(t: GiaoDich, nd: NguoiDung) {
   // Một cuộc = hợp đồng nếu lời chào đã thành đơn (tin nhắn lúc còn lời chào gộp vào hợp đồng), không thì = lời chào.
   return t.q<any>(`WITH m AS (SELECT x.*, coalesce(x.order_id, (SELECT o.id FROM core.orders o WHERE o.offer_id = x.offer_id ORDER BY o.created_at DESC LIMIT 1)) don
         FROM core.chat_messages_of($1) x)
-      SELECT DISTINCT ON (coalesce(m.don, m.offer_id)) CASE WHEN m.don IS NULL THEN m.offer_id END offer_id, m.don order_id, m.id, m.body, m.sender_org_id = $1 la_cua_toi, m.created_at,
+      SELECT DISTINCT ON (coalesce(m.don, m.offer_id)) CASE WHEN m.don IS NULL THEN m.offer_id END offer_id, m.don order_id, m.id, m.body, m.sender_org_id, m.sender_org_id = $1 la_cua_toi, m.created_at,
       (SELECT count(*) FROM m n WHERE coalesce(n.don, n.offer_id) = coalesce(m.don, m.offer_id))::int so_tin
       FROM m ORDER BY coalesce(m.don, m.offer_id), m.created_at DESC`, [nd.thanhVien.orgId]);
 }
