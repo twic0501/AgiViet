@@ -317,6 +317,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/payments/:id/not-received', async (req) => bo.lenh(req, 'bao_chua_nhan', (t, nd) => phiaKhoan(t, nd, P(req).id), (t, nd, b) => Tien.baoChuaNhan(t, nd, P(req).id, b)));
 
   // ---------------- Giao nhận ----------------
+  app.get('/v1/vehicles', async (req) => { await bo.xacThuc(req); return bo.doc((t) => t.q(`SELECT plate_no,kind,capacity_qty FROM core.vehicles ORDER BY capacity_qty,plate_no`)); });
   app.get('/v1/deliveries/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => GiaoNhan.xemDot(t, nd, P(req).id)); });
   app.get('/v1/deliveries/:id/readiness', async (req) => { const nd = await bo.xacThuc(req); return bo.doc(async (t) => { await phiaDot(t, nd, P(req).id); return GiaoNhan.theSanSang(t, P(req).id); }); });
   app.post('/v1/deliveries/:id/receiver', async (req) => bo.lenh(req, 'chi_dinh_nguoi_nhan', 'buyer', (t, nd, b) => GiaoNhan.chiDinhNguoiNhan(ht, t, nd, P(req).id, z.object({ user_id: uuid }).parse(b).user_id)));

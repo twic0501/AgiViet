@@ -1127,13 +1127,14 @@ if (THAT) {
         const [rd, me] = await Promise.all([api(`/v1/deliveries/${dot.id}/readiness`), api("/v1/me")]);
         const tu = new Date(dot.window_from), den = new Date(dot.window_to);
         const xeOk = rd.find((x) => x.ma === "xe")?.ok, nhanOk = rd.find((x) => x.ma === "nguoi_nhan")?.ok;
+        const xeGoiY = xeOk ? "" : ((await api("/v1/vehicles").catch(() => [])) || []).map((x) => `<option value="${esc(x.plate_no)}">${kg(Number(x.capacity_qty) / 1000)}</option>`).join("");
         khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="giao" style="display:grid;gap:12px">
           <h2 style="margin:0;font-size:18px">Giao nhận · đợt ${dot.batch_no} (${kg(Number(dot.planned_qty_g) / 1000)})</h2>
           <p style="margin:0;font-weight:600">Nhận tại vườn ${tu.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })} – ${den.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}</p>
           <ul style="list-style:none;margin:0;padding:0;display:grid;gap:6px">${rd.map((x) => `<li style="display:flex;gap:8px;align-items:start;font-size:16px"><span aria-hidden="true" style="font-weight:700;color:${x.ok ? "var(--xanh,#2f6b3a)" : "var(--do,#a8392c)"}">${x.ok ? "✓" : "✗"}</span><span><b>${esc(x.ten)}</b>${x.ok ? "" : ` — ${esc(x.ly_do || "chưa xong")}`}</span></li>`).join("")}</ul>
           <p style="margin:0">Người nhận: <b>${dot.receiver_user_id === me.user_id ? `Bạn (${esc(me.name)})` : dot.receiver_user_id ? "Thành viên khác của tổ chức" : "Chưa chỉ định"}</b></p>
           ${!dot.receiver_user_id ? `<button type="button" class="sl-nut sl-vien" id="g-nhan">Tôi sẽ nhận hàng</button>` : ""}
-          ${!xeOk ? `<div style="display:grid;gap:10px"><label style="display:grid;gap:4px;font-weight:600">Biển số xe<input id="g-bien" placeholder="vd 66C-123.45" autocapitalize="characters" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          ${!xeOk ? `<div style="display:grid;gap:10px"><label style="display:grid;gap:4px;font-weight:600">Biển số xe<datalist id="g-bien-ds">${xeGoiY}</datalist><input id="g-bien" list="g-bien-ds" placeholder="Chọn xe trong danh sách" autocapitalize="characters" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
             <label style="display:grid;gap:4px;font-weight:600">Cước xe (đ, bạn trả nhà xe)<input id="g-cuoc" inputmode="numeric" placeholder="vd 1500000" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
             <button type="button" class="sl-nut sl-vang" id="g-xe">Đặt xe</button></div>` : ""}
           ${nhanOk ? `<button type="button" class="sl-nut ${xeOk ? "sl-vang" : "sl-vien"}" id="g-qr">Hiện mã nhận hàng</button><div id="g-ma" hidden style="text-align:center;padding:16px;border:2px dashed var(--ke-dam,#ccc);border-radius:12px"></div>` : ""}
@@ -1648,11 +1649,12 @@ if (THAT) {
 }
 if (THAT) {
   // Màn nào đã nối dữ liệu thật thì ghi ở đây; các màn còn lại hiện dải cảnh báo "mô phỏng" để không lẫn số mẫu với số thật.
+  delete TAB[0].dem; delete MENU[0].muc[0].dem; // số việc thật nằm ở Hôm nay của app mới, viecCan chỉ là số mẫu
   const MAN_THAT = new Set(["nguon-hang", "chi-tiet-lo", "bao-gia", "don-hang", "chi-tiet-don", "khung", "lap-khung", "chi-tiet-khung"]);
   const dai = `<div role="note" style="background:#fdecc8;border:1.5px solid #c98a12;color:#5a3d00;border-radius:10px;padding:10px 14px;font-weight:600">Màn này còn là <b>bản mô phỏng</b>: số liệu là số mẫu, thao tác chưa lưu thật. Dữ liệu thật hiện có ở Nguồn hàng, Lời chào giá và Đơn.</div>`;
   const daiLoi = () => `<div role="alert" style="background:#fbe3df;border:1.5px solid #a8392c;color:#6b1d13;border-radius:10px;padding:10px 14px;font-weight:600">Không tải được dữ liệu thật: ${esc(window.__agvLoiNap)}. Kiểm tra mạng rồi tải lại trang. Chưa có hàng nào hiện ra để tránh nhầm với hàng mẫu.</div>`;
   // Màn chưa nối dữ liệu thật → chuyển sang tab tương ứng của app mua mới (mua-app), không hiện số mẫu trong đường thi.
-  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "hom-nay", "nhu-cau": "nguon-hang", "ke-hoach": "them", "moi-quen": "them" };
+  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "nhan", "nhu-cau": "nguon-hang", "ke-hoach": "them", "moi-quen": "them" };
   for (const [k, m] of Object.entries(man)) {
     const ve0 = m.ve; if (typeof ve0 !== "function") continue;
     // Chỉ chuyển khi đúng màn được mở bằng ?man= (lần vẽ màn mặc định trước đó không được đá màn thật như chi-tiet-don ra ngoài).

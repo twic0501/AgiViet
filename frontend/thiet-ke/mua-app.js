@@ -247,7 +247,8 @@ async function veTraTien(id) {
 
 // ---------- Tin nhắn theo đơn / lời chào (GET/POST /v1/messages) ----------
 const tenCuoc = (c) => { const d = DL.don.find((x) => x.id === c.order_id); if (d) return `${d.seller_name || "Người bán"} · ${d.code}`; const o = DL.loiChao.find((x) => x.id === c.offer_id); return o ? `${o.seller_name || "Người bán"} · ${o.product_name || o.lot_code || ""}` : "Lời chào giá"; };
-const dangGo = (tin) => { const c = tin.at(-1); return !!c?.la_cua_toi && Date.now() - new Date(c.created_at).getTime() < 90000; };
+// giờ tin theo đồng hồ thử có thể ở tương lai: khi đó không coi là đang nhắn, tránh dấu … treo mãi
+const dangGo = (tin) => { const c = tin.at(-1), tuoi = Date.now() - new Date(c?.created_at).getTime(); return !!c?.la_cua_toi && tuoi >= 0 && tuoi < 90000; };
 const veLuong = (tin) => tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi" : ""}"><small>${esc(m.la_cua_toi ? "Bạn" : m.nguoi_gui)} · ${gioTin(m.created_at)}</small><p>${esc(m.body)}</p></div>`).join("")
   + (dangGo(tin) ? `<div class="bong dang-go" role="status" aria-label="Người bán đang nhắn"><i></i><i></i><i></i></div>` : "");
 const gioTin = (s) => new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
@@ -274,10 +275,10 @@ async function moCuoc(q, ten) {
     const hoi = async () => {
       const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return;
       const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null);
+      moCuoc.hen = setTimeout(hoi, y && dangGo(y.tin) ? 1500 : 5000); // hẹn trước khi vẽ: lỗi vẽ không được làm chết vòng tải
       if (y) theGD.ve(tinToi(y.tin));
       if (y) { const k = y.tin.length * 2 + (dangGo(y.tin) ? 1 : 0);
-        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; DL.loiChao = ((await api("/v1/offers").catch(() => null)) ?? DL.loiChao).filter((o) => o.la_ben_mua !== false); veNguon(); } }
-      moCuoc.hen = setTimeout(hoi, y && dangGo(y.tin) ? 1500 : 5000);
+        if (k !== khoa) { khoa = k; khung.innerHTML = veLuong(y.tin); khung.scrollTop = khung.scrollHeight; const o = await api("/v1/offers").catch(() => null); if (o) { DL.loiChao = (o.items ?? o).filter((x) => x.la_ben_mua); veNguon(); } } }
     };
     moCuoc.hen = setTimeout(hoi, dangGo(x.tin) ? 1500 : 5000);
     $("#tn-gui").onsubmit = async (e) => { e.preventDefault(); const body = $("#tn-o").value.trim(); if (!body) return;
@@ -386,7 +387,7 @@ async function lamMoi() { await taiHet(); veHomNay(); veNguon(); veDon(); veTien
     splash("Đang tải nguồn hàng, đơn và tiền…");
     await lamMoi();
   } catch (e) { tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><p class="loi">Chưa tải được dữ liệu: ${esc(e.message)}</p><button class="nut chinh" onclick="location.reload()">Tải lại</button></div></div>`); return; }
-  const vao = () => { $("#app").hidden = false; $("#tab").hidden = false; const h = location.hash.slice(1); if (TEN[h]) di(h); };
+  const vao = () => { $("#app").hidden = false; $("#tab").hidden = false; const h = location.hash.slice(1); if (TEN[h]) di(h); else if (h === "nhan") document.querySelector('[data-mo="nhan"]')?.click(); };
   await tatSplash();
   let daChao = false; try { daChao = !!localStorage.getItem(KHOA_CHAO); } catch {}
   daChao ? vao() : moChao(vao);

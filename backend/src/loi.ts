@@ -7,6 +7,7 @@ export const MA_LOI: Record<string, MoTaLoi> = {
   CHUA_DANG_NHAP: { http: 401, cau: 'Bạn chưa đăng nhập hoặc phiên đã hết hạn.', khacPhuc: 'Đăng nhập lại bằng số điện thoại.' },
   KHONG_CO_QUYEN: { http: 403, cau: 'Vai của bạn không được làm việc này.', khacPhuc: 'Nhờ người có quyền trong tổ chức làm, hoặc xin cấp vai.' },
   KHONG_TIM_THAY: { http: 404, cau: 'Không tìm thấy hoặc bạn không được xem.', khacPhuc: 'Kiểm lại mã, hoặc tải lại danh sách.' },
+  XE_CHUA_CO: { http: 422, cau: 'Biển số này chưa có trong danh sách xe đối tác.', khacPhuc: 'Chọn một xe trong danh sách gợi ý.' },
   DU_LIEU_KHONG_HOP_LE: { http: 422, cau: 'Thông tin gửi lên chưa đúng.', khacPhuc: 'Sửa các trường được chỉ ra rồi gửi lại.' },
   PHIEN_BAN_DA_DOI: { http: 409, cau: 'Nội dung đã đổi so với bản bạn đang xem.', khacPhuc: 'Tải lại để xem bản mới nhất rồi làm lại.' },
   REVISION_XUNG_DOT: { http: 409, cau: 'Có người vừa cập nhật trước bạn.', khacPhuc: 'Tải lại rồi làm lại.' },

@@ -346,7 +346,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       DA_TRA_LOI.add(s.id);
       const phiaTin: 'buyer' | 'seller' = tc.startsWith('TC-M') ? 'buyer' : 'seller', tin = String(s.body ?? '');
       // Tình trạng thật của lời chào / hợp đồng để chatbot trả lời đúng bước (không bịa giá, ngày)
-      let tinhTrang = '', buocTin = '', dangMacCa = false;
+      let tinhTrang = '', buocTin = '', dangMacCa = false, gioGiao = '';
       if (s.order_id) {
         const d = await get(`/v1/orders/${s.order_id}`, t);
         if (d) {
@@ -354,7 +354,9 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const ht = d.hien_thi ?? {}, tl = ht.toi_luot;
           const luot = !tl ? '' : tl.phia === phiaTin ? ` Tới lượt BẠN: ${tl.viec}.` : tl.phia === 'ops' ? ` AgiViet đang xử lý: ${tl.viec}.` : ` Tới lượt người kia: ${tl.viec}.`;
           const gn = ((await get(`/v1/orders/${s.order_id}/terms`, t))?.the ?? []).find((x: any) => x.tieu_de === 'Giao nhận')?.noi_dung;
-          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}${gn ? ` Giao nhận: ${gn}.` : ''}`;
+          const cw = (d.dot_giao ?? []).map((x: any) => x.window_from).find(Boolean);
+          gioGiao = cw ? new Date(cw).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
+          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}${gn ? ` Giao nhận: ${gn}.` : ''}${gioGiao ? ` Giờ giao: từ ${gioGiao}.` : ''}`;
           buocTin = d.status === 'drafting' && phiaTin === 'buyer' ? 'soan_hd' : tl && tl.phia !== phiaTin && /ký/i.test(tl.viec) ? 'cho_ky' : '';
         }
       } else if (s.offer_id) {
@@ -381,6 +383,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       const cau = (tinhTrang && await hoiChatbot(aiUrl, aiKey, { vai: phiaTin, ten: me.user?.org?.display_name ?? me.user?.org?.name ?? tc,
         tinh: tinhCach(tc, phiaTin, { ...(KIEU[tc] ?? {}), ...(KIEU_TEP[TEP.get(tc) ?? ''] ?? {}) }), tinh_trang: tinhTrang, tin, dang_mac_ca: dangMacCa, lich_su: ls })) ||
         // Tin trong hợp đồng mà chatbot lỗi: nói đúng trạng thái hợp đồng, không dò từ khóa (dễ lạc đề, vd "bao giờ" → "xe tới")
+        (gioGiao && /\bxe\b|may gio|gio nao|bao gio|ngay giao|luc nao/.test(tin.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd'))
+          ? (phiaTin === 'buyer' ? `Dạ theo hợp đồng giao từ ${gioGiao} bác nha.` : `Theo hợp đồng giao từ ${gioGiao}, anh/chị để ý giúp nhé.`) : null) ||
         (s.order_id && tinhTrang && !buocTin ? (phiaTin === 'buyer' ? `Dạ bác, ${tinhTrang.replace(/Tới lượt (BẠN|người kia): /, 'bước tiếp theo: ')} Bác xem chi tiết trong mục Hợp đồng giúp em nha.` : `${tinhTrang.replace(/Tới lượt (BẠN|người kia): /, 'Bước tiếp theo: ')} Anh/chị xem chi tiết trong mục Hợp đồng giúp nhé.`)
           : traLoiTheoBuoc(tin, phiaTin, buocTin));
       await lam(tc, 'trả lời tin nhắn', s.order_id ?? s.offer_id, () => post('/v1/messages', { ...(s.order_id ? { order_id: s.order_id } : { offer_id: s.offer_id }), body: cau }, t));

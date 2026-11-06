@@ -81,7 +81,7 @@ export function veChat(h) {
       const tat = [...tin, ...he];   // dòng hệ thống (che liên lạc, đã báo cáo) luôn ở sau tin vừa gửi — không sắp theo giờ máy
       const cuoiTin = r.tin.at(-1);
       theGD.ve(r.tin.filter((m) => m.la_cua_toi).at(-1)?.body ?? "");
-      dangGo = !!cuoiTin?.la_cua_toi && Date.now() - new Date(cuoiTin.created_at).getTime() < 90000;
+      const tuoi = Date.now() - new Date(cuoiTin?.created_at).getTime(); dangGo = !!cuoiTin?.la_cua_toi && tuoi >= 0 && tuoi < 90000;
       const khoa = tat.length * 2 + (dangGo ? 1 : 0);
       if (khoa !== soCu) {
         $("tin").innerHTML = tat.length ? tat.map(veTin).join("") + (dangGo ? `<div class="tc-tin tc-ho tc-dang-go" role="status" aria-label="${esc(h.ben)} đang nhắn"><i></i><i></i><i></i></div>` : "") : `<div style="display:grid;justify-items:center;gap:6px;padding:12px"><img src="/assets/trau/tu-the/04-nghe.webp" width="110" height="110" alt=""><p class="tc-ghi" style="text-align:center;margin:0">Chưa có tin nhắn. Bác nhắn ngày hái, hỏi lịch xe và cách trả tiền ở đây.</p></div>`;
