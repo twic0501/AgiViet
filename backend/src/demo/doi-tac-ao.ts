@@ -483,7 +483,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const dv = await get(`/v1/deliveries/${dd.id}`, t);
           const bayGio = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
           if (dv?.window_from && new Date(dv.window_from) > bayGio) return; // chưa tới giờ giao → vòng sau
-          const ma = (await get(`/v1/test/deliveries/${dd.id}/receipt-code`, t))?.ma_6_so; if (!ma) return;
+          const ma = (await get(`/v1/test/deliveries/${dd.id}/receipt-code?ai=1`, t))?.ma_6_so; if (!ma) return;
           const taiCho = ['tai_vuon', 'tai_ao', 'tai_ruong', 'tai_diem_gom'].includes(dv?.acceptance_point); // như DIEM_TAI_CHO ở giao-nhan.ts
           if (TEP.get(tc) === 'giao-thieu' && !THIEU.has(dd.id)) {
             const kh = Number(dv?.planned_qty_g ?? 0), co = Math.round(kh * 0.85 / 1000) * 1000; THIEU.set(dd.id, co);

@@ -607,12 +607,15 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   // Bản trình diễn: bên mua là AI nên người bán thật không thấy QR người nhận → môi trường thử đóng vai người nhận
   // MỞ QR nhận hàng (đúng API receipt-qr của họ) rồi đưa mã 6 số đang hiện trên máy người nhận (như mã OTP thử).
   app.get('/v1/test/deliveries/:id/receipt-code', async (req) => {
-    thu(); await bo.xacThuc(req);
+    thu(); const nd = await bo.xacThuc(req);
+    const m0 = await import('../demo/doi-tac-ao.ts');
+    // Người bán do AI đóng: coi như người nhận đã đọc mã tại vườn; người bán thật vẫn phải hỏi người nhận
+    const laAi = (req.query as any).ai === '1' && !m0.dangDung().includes(nd.thanhVien.orgCode);
     const nhan = await ht.db.doc((t) => t.gtri<string>(`SELECT receiver_user_id FROM core.deliveries WHERE id=$1`, [P(req).id]));
     if (!nhan) throw loi('KHONG_TIM_THAY', 'Chưa có người nhận.');
     // Người nhận là người thật đang thử → họ phải tự mở mã trên app mua, không lấy hộ
     const tcNhan = await ht.db.doc((t) => t.gtri<string>(`SELECT o.code FROM core.memberships m JOIN core.organizations o ON o.id=m.org_id WHERE m.user_id=$1 AND m.status='active' LIMIT 1`, [nhan]));
-    if (tcNhan && (await import('../demo/doi-tac-ao.ts')).dangDung().includes(tcNhan)) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Bên nhận là người thật đang thử. Bác nhờ họ mở mã nhận hàng trên app mua rồi đọc 6 số cho bác.');
+    if (!laAi && tcNhan && m0.dangDung().includes(tcNhan)) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Bên nhận là người thật đang thử. Bác nhờ họ mở mã nhận hàng trên app mua rồi đọc 6 số cho bác.');
     const vai = await app.inject({ method: 'POST', url: '/v1/test/impersonate', payload: { user_id: nhan } });
     const tk = vai.json()?.token ?? vai.json()?.data?.token;
     const r = await app.inject({ method: 'POST', url: `/v1/deliveries/${P(req).id}/receipt-qr`, payload: { idempotency_key: `thu-qr-${P(req).id}-${Date.now()}` }, headers: { authorization: `Bearer ${tk}` } });

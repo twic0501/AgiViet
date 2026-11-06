@@ -774,7 +774,7 @@ function moCan(d) {
     ${d.nguong_khong_dat?.vuot ? `<div class="hd-bao do" role="alert" style="display:grid;gap:8px"><b>Bên mua chê ${(d.nguong_khong_dat.bps / 100).toFixed(1).replace(".", ",")}% hàng (xuống loại + trả lại), quá 20%.</b>
       <span>App không tự chốt. Bác xem ảnh từng dòng. Thấy chưa đúng thì bấm <b>"Có dòng không đúng"</b> để mời bên kiểm định (bên sai chịu phí).</span>
       <label style="display:flex;gap:10px;align-items:flex-start;font-weight:700"><input type="checkbox" data-r="chap-nhan" style="width:24px;height:24px;flex:none;margin-top:2px"> Tôi đã xem và chấp nhận kết quả cân này</label></div>` : ""}
-    <div data-r="khoi-pin" hidden><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="pin">Nhập mã PIN app (4 số) để ký biên bản</label><input class="hd-otp" id="pin" data-r="pin" inputmode="numeric" maxlength="4" autocomplete="off" type="password"></div>
+    <div data-r="khoi-pin" hidden><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="pin">Nhập mã PIN app (bản thử: 2468) (4 số) để ký biên bản</label><input class="hd-otp" id="pin" data-r="pin" inputmode="numeric" maxlength="4" autocomplete="off" type="password"></div>
     <div data-r="khoi-thieu" hidden><p class="hd-bao vang">Thiếu ngoài dung sai: bác chọn cách xử lý phần thiếu.</p>
       <div class="hd-chon">
         <label><input type="radio" name="thieu" value="backfill" checked><span><b>Giao bù sau</b><small>Hẹn đợt bù phần còn thiếu.</small></span></label>
