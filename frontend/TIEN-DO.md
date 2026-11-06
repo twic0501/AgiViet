@@ -326,3 +326,4 @@ Lộ trình: A trâu → B chuyển động Rive → C AI + API → D offline �
 - HĐ-3001 đi hết tới Hoàn tất, có hạ cấp: 73.800.000 + 32.400.000 = 106.200.000 đ.
 - Đã sửa: chat bên mua tự tải (vòng tải so tiêu đề HD/HĐ nên dừng), AI trả lời giờ giao, gợi ý xe và báo biển lạ, nút Tin nhắn, huy hiệu mẫu.
 - Còn: tua đồng hồ lùi làm tin mang giờ tương lai, AI không trả lời cuộc đó; giá trị đơn sau quyết toán; Hôm nay tách 2 dòng khi chờ trả.
+- Ca ngoại lệ đạt: HĐ-3006 thiếu lượng, HĐ-3007 trả lại, HĐ-3008 tiền thừa (hoàn 882.000 đ); khiếu nại, xe bận, biển DEMO đạt. Còn: giá trị HĐ-3008 ở danh sách Đơn, đồng hồ thử về lại sau deploy, lỗi JS khi 409 ghi cân kho, nút chốt còn bấm được sau khiếu nại, xác nhận luật phạt thiếu lượng.
