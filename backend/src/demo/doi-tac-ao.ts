@@ -518,7 +518,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         }
         case 'Xác nhận kết quả nghiệm thu': await lam(tc, 'đồng ý số cân', d.code, async () => {
           const dd = o.dot_giao?.find((x: any) => x.status === 'awaiting_seller'); if (!dd) return;
-          return post(`/v1/deliveries/${dd.id}/acceptance/agree`, { pin: PIN, ...(THIEU.has(dd.id) ? { shortfall: { choice: 'end' } } : {}) }, t); // giao thiếu: kết thúc phần thiếu (luật Q04)
+          return post(`/v1/deliveries/${dd.id}/acceptance/agree`, { pin: PIN, shortfall: { choice: 'end' }, chap_nhan_vuot_nguong: true }, t); // AI luôn nhận kết quả: thiếu thì kết thúc phần thiếu (Q04), không đạt quá 20% thì chấp nhận riêng
         }); break;
         default: break; // việc cần người thật/vận hành: để nguyên
       }

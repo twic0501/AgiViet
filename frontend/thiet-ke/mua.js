@@ -1145,7 +1145,7 @@ if (THAT) {
         o.querySelector("#g-nhan")?.addEventListener("click", (e) => lam(e.currentTarget, () => api(`/v1/deliveries/${dot.id}/receiver`, { user_id: me.user_id })));
         o.querySelector("#g-xe")?.addEventListener("click", (e) => {
           const bien = o.querySelector("#g-bien").value.trim().toUpperCase(), cuoc = Number(o.querySelector("#g-cuoc").value.replace(/\D/g, ""));
-          if (!/^[0-9]{2}[A-Z]{1,2}[-\s]?[0-9.]{4,6}$/.test(bien.replace(/^DEMO-/, ""))) { bao3.textContent = "Biển số chưa đúng dạng, vd 66C-123.45."; return; }
+          if (!bien) { bao3.textContent = "Chọn một xe trong danh sách."; return; }
           lam(e.currentTarget, () => api(`/v1/deliveries/${dot.id}/trip`, { plate_no: bien, ...(cuoc ? { freight_vnd: cuoc } : {}) }));
         });
         o.querySelector("#g-qr")?.addEventListener("click", async (e) => {
@@ -1312,9 +1312,10 @@ if (THAT) {
             <label style="display:grid;gap:4px;font-weight:600">Lượng cân tại kho (kg)<input id="den-can" inputmode="decimal" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
             <button type="button" class="sl-nut sl-vang" id="den-gui">Ghi lượng cân tại kho</button>`
           : `<p style="margin:0">Đã ghi lượng cân tại kho. Kiểm hàng xong:</p><button type="button" class="sl-nut sl-vang" id="den-chot">Hàng đúng, chốt nhận</button>
-            <p class="sl-ghi" style="margin:0">Hàng khác mẫu đã niêm phong? Đừng chốt; bấm Hỗ trợ để khiếu nại kèm ảnh.</p>`}
+            <p class="sl-ghi" style="margin:0">Hàng khác mẫu đã niêm phong? Đừng chốt, gửi khiếu nại để AgiViet xử lý.</p><button type="button" class="sl-nut sl-vien" id="den-kn">Khiếu nại hàng khác mẫu</button>`}
           <p class="sl-ghi" id="den-bao" role="status"></p></section>`);
         const o = khung.querySelector("#den"), bao6 = o.querySelector("#den-bao");
+        o.querySelector("#den-kn")?.addEventListener("click", async (e) => { const n = e.currentTarget; n.disabled = true; try { await api("/v1/support", { message: `Khiếu nại ${d.code}: hàng khác mẫu đã niêm phong`, order_id: d.id }); bao6.textContent = "AgiViet đã nhận khiếu nại, nhân viên sẽ gọi lại. Bạn chưa cần chốt nhận hàng."; } catch (x) { bao6.textContent = x.message; n.disabled = false; } });
         o.querySelector("#den-gui")?.addEventListener("click", async (e) => {
           const can = Number((o.querySelector("#den-can").value || "").replace(",", ".")); if (!(can > 0)) return (bao6.textContent = "Nhập lượng cân tại kho.");
           e.currentTarget.disabled = true;

@@ -59,7 +59,7 @@ export async function chiDinhNguoiNhan(ht:HeThong,t:GiaoDich,nd:NguoiDung,delive
 export async function datXe(ht:HeThong,t:GiaoDich,nd:NguoiDung,deliveryId:string,x:{plate_no:string;freight_vnd?:unknown}){
  const {d,o,v}=await layDot(t,deliveryId);const side=phiaCua(nd,o);canQuyen(nd,side==='buyer'?'delivery.plan':'delivery.ship');
  const xe=await t.mot<any>(`SELECT v.*,(SELECT user_id FROM core.memberships WHERE org_id=v.org_id AND status='active' LIMIT 1) tai_xe FROM core.vehicles v WHERE plate_no=$1`,[x.plate_no]);if(!xe)throw loi('XE_CHUA_CO');
- const id=await appCmd<string>(t,nd,side,'book_trip',[deliveryId,xe.id,xe.tai_xe,d.delivery_window,String(x.freight_vnd??0)]);
+ const id=await appCmd<string>(t,nd,side,'book_trip',[deliveryId,xe.id,xe.tai_xe,d.delivery_window,String(x.freight_vnd??0)]).catch((e:any)=>{if(/trips_vehicle_id_sched/.test(`${e?.message} ${e?.constraint} ${JSON.stringify(e?.chiTiet??null)}`))throw loi('XE_BAN');throw e;});
  // Cổng nhà xe thử nhận ngay; dispatcher riêng có phân công thật, không giả actor carrier.
  if(!ht.cfg.tinhNangThu)throw loi('CHUA_HO_TRO','Chưa nối cổng nhà xe xác nhận chuyến.');
  const staff=await t.mot<any>(`SELECT s.user_id,m.org_id FROM ops.staff_assignments s JOIN core.memberships m ON m.user_id=s.user_id JOIN core.organizations o ON o.id=m.org_id AND o.is_platform WHERE s.role_code='dispatcher' AND s.active AND m.status='active' LIMIT 1`);
