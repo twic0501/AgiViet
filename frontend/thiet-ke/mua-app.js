@@ -271,9 +271,9 @@ async function moCuoc(q, ten) {
     const tinToi = (ds) => ds.filter((m) => m.la_cua_toi).at(-1)?.body ?? ""; theGD.ve(tinToi(x.tin));
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
     // Đang chờ bên kia (dấu "…") thì hỏi 1,5 s/lần, không thì 5 s
-    clearTimeout(moCuoc.hen); let khoa = x.tin.length * 2 + (dangGo(x.tin) ? 1 : 0);
+    clearTimeout(moCuoc.hen); const luot = moCuoc.luot = (moCuoc.luot || 0) + 1; let khoa = x.tin.length * 2 + (dangGo(x.tin) ? 1 : 0);
     const hoi = async () => {
-      const khung = $(".luong-tin"); if (!khung || $("#tn-t").textContent !== ten) return;
+      const khung = $(".luong-tin"); if (!khung || luot !== moCuoc.luot) return;
       const y = await api(`/v1/messages?${new URLSearchParams(q)}`).catch(() => null);
       moCuoc.hen = setTimeout(hoi, y && dangGo(y.tin) ? 1500 : 5000); // hẹn trước khi vẽ: lỗi vẽ không được làm chết vòng tải
       if (y) theGD.ve(tinToi(y.tin));
