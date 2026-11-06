@@ -28,7 +28,7 @@ const CSS = `.tgd{display:grid;gap:8px;margin:8px 0;padding:12px;border:1.5px so
 .tgd dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:14px}.tgd dd{margin:0;font-weight:600}.tgd .loi{color:#a12c22}`;
 
 const veDK = (b) => `<dl><dt>Ngày giao</dt><dd>${ngay(b.delivery_from)}</dd><dt>Giá xuống loại</dt><dd>${vnd(b.downgrade_price_vnd)} đ/kg</dd><dt>Trả tiền</dt><dd>${e(TRA[b.payment_timing] || b.payment_timing)}</dd><dt>Xe</dt><dd>${e(XE[b.transport_by] || b.transport_by)}</dd></dl>${b.ghi_chu ? `<p class="ghi">Ghi chú: ${e(b.ghi_chu)}</p>` : ""}`;
-const formDK = (b) => `<div data-fdk style="display:grid;gap:8px"><label>Ngày giao<input type="date" data-f="ngay" value="${new Date(b.delivery_from).toISOString().slice(0, 10)}"></label>
+const formDK = (b) => `<div data-fdk style="display:grid;gap:8px"><label>Ngày giao<input type="date" data-f="ngay" min="${new Date(Date.now() + 864e5 + 7 * 36e5).toISOString().slice(0, 10)}" value="${new Date(b.delivery_from).toISOString().slice(0, 10)}"></label>
 <label>Giá xuống loại (đ/kg)<input inputmode="numeric" data-f="hc" value="${Number(b.downgrade_price_vnd)}"></label>
 <label>Trả tiền<select data-f="tra">${Object.entries(TRA).map(([k, v]) => `<option value="${k}"${k === b.payment_timing ? " selected" : ""}>${v}</option>`).join("")}</select></label>
 <label>Xe<select data-f="xe">${Object.entries(XE).map(([k, v]) => `<option value="${k}"${k === b.transport_by ? " selected" : ""}>${v}</option>`).join("")}</select></label>
@@ -39,8 +39,13 @@ export function gnTheGD(o, ctx) {
   if (!document.getElementById("tgd-css")) document.head.append(Object.assign(document.createElement("style"), { id: "tgd-css", textContent: CSS }));
   let cu = "", sua = false, tinCuoi = "", loiCu = "", lc = null, dk = null, vongTin = null;
   const the = (x) => `<section class="tgd" aria-live="polite">${x}${loiCu ? `<p class="loi" role="alert">${e(loiCu)}</p>` : ""}</section>`;
+  const nutTua = async (d) => { // chỉ bản thử: chờ tới giờ giao thì tua được, có người khác đang thử thì báo rõ
+    const cw = (d.dot_giao || []).map((x) => x.window_from).filter(Boolean)[0]; if (!cw) return "";
+    const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})); if (!cap.test_tools) return "";
+    const now = await fetch("/v1/test/clock").then((r) => r.json()).catch(() => ({})); if (!now.now || new Date(now.now) >= new Date(cw)) return "";
+    return `<p class="ghi">Chưa tới giờ giao (${ngay(cw)}).</p><button data-l="tua" data-t="${cw}">Bản thử: tới giờ giao</button>`; };
   const theDon = async (id) => { const d = await ctx.goi(`/v1/orders/${id}`); const tl = d.hien_thi?.toi_luot, toi = tl && tl.phia === ctx.ben;
-    return the(`<b>Hợp đồng ${e(d.code)} · ${e(d.hien_thi?.ten || d.status)}</b><p>${tl ? `${toi ? "Tới lượt bạn" : tl.phia === "ops" ? "AgiViet" : "Bên kia"}: ${e(tl.viec)}` : ""}</p><a class="n ${toi ? "c" : ""}" href="${ctx.linkDon(id)}">${toi ? "Làm bước này" : "Mở hợp đồng"}</a>`); };
+    return the(`<b>Hợp đồng ${e(d.code)} · ${e(d.hien_thi?.ten || d.status)}</b><p>${tl ? `${toi ? "Tới lượt bạn" : tl.phia === "ops" ? "AgiViet" : "Bên kia"}: ${e(tl.viec)}` : ""}</p><a class="n ${toi ? "c" : ""}" href="${ctx.linkDon(id)}">${toi ? "Làm bước này" : "Mở hợp đồng"}</a>${await nutTua(d)}`); };
   const html = async () => {
     if (ctx.cuoc.order_id) return theDon(ctx.cuoc.order_id);
     lc = await ctx.goi(`/v1/offers/${ctx.cuoc.offer_id}`);
@@ -50,7 +55,7 @@ export function gnTheGD(o, ctx) {
     if (lc.status === "sent") {
       if (!lc.toi_luot_toi) return the(`<p>Giá bạn đưa: ${gia}</p><p class="ghi">Chờ bên kia trả lời.</p>`);
       // Giá trong tin chỉ gợi ý cho đúng vòng lúc nhắn; bên kia đã trả tiếp thì bỏ để khỏi bấm nhầm mất lượt
-      if (vongTin === null) vongTin = v.round_no; const g = vongTin === v.round_no ? docGia(tinCuoi) : null, dangDoi = g && g !== Number(v.price_vnd);
+      if (vongTin === null) vongTin = v.round_no; const g0 = vongTin === v.round_no ? docGia(tinCuoi) : null, g = g0 && g0 >= Number(v.price_vnd) * 0.6 && g0 <= Number(v.price_vnd) * 1.6 ? g0 : null, dangDoi = g && g !== Number(v.price_vnd);
       return the(`<p>Bên kia đưa: ${gia}</p>${dangDoi ? `<button class="c" data-l="gia-chat" data-g="${g}">Gửi giá ${vnd(g)} đ/kg vào lời chào</button>` : ""}
         <div class="hang"><button class="${dangDoi ? "" : "c"}" data-l="dong-y">Đồng ý giá này</button><button data-l="mo-tra">Đổi giá${lc.luot_tra_gia_con != null ? ` (còn ${lc.luot_tra_gia_con} lần)` : ""}</button><button data-l="tu-choi">Không chốt</button></div>
         <div data-otra hidden style="display:grid;gap:8px"><label>Giá mới (đ/kg)<input inputmode="numeric" data-gia></label><label>Lượng (kg)<input inputmode="numeric" data-kg value="${Number(v.qty_g) / 1000}"></label><button class="c" data-l="gui-gia">Gửi giá mới</button></div>`);
@@ -71,16 +76,18 @@ export function gnTheGD(o, ctx) {
     if (h !== cu) { cu = h; o.innerHTML = h; }
     if (lc && ctx.dauTrang) { const v = lc.rounds?.at(-1), tt = lc.status === "sent" ? (lc.toi_luot_toi ? "tới lượt bạn" : "chờ bên kia") : lc.status === "accepted" ? "đã chốt giá" : "không thành"; if (v) ctx.dauTrang(`${kg(v.qty_g)} kg · ${vnd(v.price_vnd)} đ/kg · ${tt}`); }
   };
-  const lam = async (f) => { loiCu = ""; try { await f(); sua = false; ctx.sauLam?.(); } catch (x) { loiCu = x.message; } await ve(undefined, true); };
+  const lam = async (f) => { loiCu = ""; try { await f(); sua = false; ctx.sauLam?.(); await ve(undefined, true); } catch (x) { loiCu = x.message; const c = o.querySelector(".loi") ?? o.querySelector(".tgd")?.appendChild(Object.assign(document.createElement("p"), { className: "loi" })); if (c) c.textContent = x.message; o.querySelectorAll("button").forEach((n) => (n.disabled = false)); } };
   const O = () => `/v1/offers/${ctx.cuoc.offer_id}`;
   o.addEventListener("click", (ev) => {
     const b = ev.target.closest("[data-l]"); if (!b) return; const l = b.dataset.l;
     if (l === "mo-tra") { o.querySelector("[data-otra]").hidden = false; return; }
     if (l === "mo-sua") { sua = true; return ve(undefined, true); }
+    if (l === "tu-choi" && !b.dataset.chac) { b.dataset.chac = "1"; b.textContent = "Bấm lần nữa để không chốt"; return; }
     b.disabled = true;
     const v = lc?.rounds?.at(-1), gom = () => { const q = (k) => o.querySelector(`[data-f="${k}"]`).value, tu = new Date(`${q("ngay")}T07:00:00+07:00`);
       return { delivery_from: tu.toISOString(), delivery_to: new Date(tu.getTime() + 8 * 36e5).toISOString(), payment_timing: q("tra"), downgrade_price_vnd: Number(q("hc").replace(/\D/g, "")), transport_by: q("xe"), ghi_chu: q("ghi") }; };
-    const tac = { "dong-y": () => ctx.goi(`${O()}/accept`, { expected_revision: lc.revision }), "tu-choi": () => ctx.goi(`${O()}/reject`, {}),
+    const tac = { tua: async () => { const r = await fetch("/v1/test/clock", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ set: b.dataset.t }) }); if (!r.ok) throw new Error((await r.json().catch(() => ({}))).errors?.[0]?.message || "Chưa tua giờ được."); },
+      "dong-y": () => ctx.goi(`${O()}/accept`, { expected_revision: lc.revision }), "tu-choi": () => ctx.goi(`${O()}/reject`, {}),
       "gia-chat": () => ctx.goi(`${O()}/counter`, { price_vnd: Number(b.dataset.g), qty_g: Number(v.qty_g) }),
       "gui-gia": () => { const g = Number(o.querySelector("[data-gia]").value.replace(/\D/g, "")), k = Number(o.querySelector("[data-kg]").value); if (!(g >= 1000 && k > 0)) throw new Error("Nhập giá và lượng hợp lệ."); return ctx.goi(`${O()}/counter`, { price_vnd: g, qty_g: Math.round(k * 1000) }); },
       "gui-mac-dinh": () => ctx.goi(`${O()}/terms`, dk.ban || dk.mac_dinh), "gui-dk": () => ctx.goi(`${O()}/terms`, gom()),

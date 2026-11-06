@@ -253,7 +253,7 @@ const veLuong = (tin) => tin.map((m) => `<div class="bong${m.la_cua_toi ? " toi"
 const gioTin = (s) => new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
 function veDsTin() {
   $("#tn-t").textContent = "Tin nhắn";
-  $("#ds-tin").innerHTML = DL.tin.length ? DL.tin.map((c) => `<button type="button" class="viec" data-cuoc="${esc(JSON.stringify(c.order_id ? { order_id: c.order_id } : { offer_id: c.offer_id }))}" data-ten="${esc(tenCuoc(c))}"><i class="${c.la_cua_toi ? "la" : ""}"></i><div><b>${esc(tenCuoc(c))}</b><p class="phu">${c.la_cua_toi ? "Bạn: " : ""}${esc(c.body)}</p></div><span class="chip">${c.so_tin}</span></button>`).join("")
+  $("#ds-tin").innerHTML = DL.tin.length ? DL.tin.map((c) => `<button type="button" class="viec" data-cuoc="${esc(JSON.stringify(c.order_id ? { order_id: c.order_id } : { offer_id: c.offer_id }))}" data-ten="${esc(tenCuoc(c))}"><i class="${c.la_cua_toi ? "la" : ""}"></i><div><b>${esc(tenCuoc(c))}</b><p class="phu">${c.la_cua_toi ? "Bạn: " : ""}${esc(c.body)}</p></div>${!c.la_cua_toi && !daXemTin().includes(c.id) ? `<span class="chip toi">Mới</span>` : ""}</button>`).join("")
     : `<p class="phu">Chưa có tin nhắn. Tin nhắn mở theo từng lời chào giá hoặc đơn.</p>`;
 }
 const daXemTin = () => { try { return JSON.parse(localStorage.getItem("agv-tin-da-xem") || "[]"); } catch { return []; } };
@@ -265,7 +265,7 @@ async function moCuoc(q, ten) {
       <div id="tn-lc"></div><div class="luong-tin">${veLuong(x.tin) || `<p class="phu">Chưa có tin nào. Gửi tin đầu tiên cho người bán.</p>`}</div>
       <form id="tn-gui" class="hang" style="gap:8px"><input id="tn-o" class="o-tin" maxlength="1000" autocomplete="off" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"><button class="nut chinh nho">Gửi</button></form><p class="loi" id="tn-loi" role="alert"></p>`;
     const l = $(".luong-tin"); l.scrollTop = l.scrollHeight;
-    const cuoiTin = x.tin.at(-1); if (cuoiTin) try { localStorage.setItem("agv-tin-da-xem", JSON.stringify([...daXemTin(), cuoiTin.id].slice(-200))); $("#dem-tin").hidden = true; } catch {}
+    const cuoiTin = x.tin.at(-1); if (cuoiTin) try { const tom = DL.tin.find((c) => (q.order_id ? c.order_id === q.order_id : c.offer_id === q.offer_id)); localStorage.setItem("agv-tin-da-xem", JSON.stringify([...daXemTin(), cuoiTin.id, tom?.id].filter(Boolean).slice(-200))); } catch {}
     const theGD = gnTheGD($("#tn-lc"), { ben: "buyer", cuoc: q, goi: api, linkDon: (id) => MO("chi-tiet-don", `don=${id}`), nguoiNhan: async () => me?.user?.user_id ?? me?.user_id ?? (await api("/v1/me")).user?.user_id, sauLam: () => { dispatchEvent(new Event("agv-vong-ngay")); api("/v1/offers").then((o) => { DL.loiChao = (o.items ?? o).filter((x) => x.la_ben_mua); veNguon(); }).catch(() => {}); } });
     const tinToi = (ds) => ds.filter((m) => m.la_cua_toi).at(-1)?.body ?? ""; theGD.ve(tinToi(x.tin));
     // Câu trả lời của bên kia (AI) đến sau vài chục giây: khung đang mở tự tải 5 giây/lần, giữ chữ đang gõ (rà soát 04/11 #12)
@@ -287,7 +287,7 @@ async function moCuoc(q, ten) {
   } catch (err) { $("#ds-tin").innerHTML = `<button type="button" class="nut vien nho" data-tin-lui>‹ Tất cả tin nhắn</button><p class="loi">${esc(err.message)}</p>`; }
 }
 $("#ds-tin").addEventListener("click", (e) => {
-  if (e.target.closest("[data-tin-lui]")) return veDsTin();
+  if (e.target.closest("[data-tin-lui]")) { const m = DL.tin.filter((c) => !c.la_cua_toi && !daXemTin().includes(c.id)).length; $("#dem-tin").textContent = m; $("#dem-tin").hidden = !m; return veDsTin(); }
   const c = e.target.closest("[data-cuoc]"); if (c) moCuoc(JSON.parse(c.dataset.cuoc), c.dataset.ten);
 });
 

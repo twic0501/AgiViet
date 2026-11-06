@@ -33,6 +33,7 @@ export function rutTep(orgThat: string, ngauNhien = Math.random, gan?: Record<st
   return doiTac.map((tc) => ({ to_chuc: tc, kieu: TEP.get(tc)!, mo_ta: (laBan ? KIEU_MUA : KIEU_BAN)[TEP.get(tc)!] }));
 }
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
+const LAN_CHAO = new Map<string, number>(); // org người bán thật → lúc được nhận lời chào mới, tránh đổ dồn
 const DA_CHAO = new Map<string, number>(); // lot_id → lúc được chào lại: lời chào cũ đóng/hết hạn thì 5 phút sau có khách mới, chợ không chết
 const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
@@ -59,7 +60,7 @@ let dem = 0;
 const DA_LOI = new Map<string, number>(); // việc lỗi → lúc lỗi (ms); thử lại sau 3 phút (trước: khóa vĩnh viễn → AI im lặng)
 const TOKEN_TC = new Map<string, string>(); // phiên đóng vai → mã tổ chức, để chặn mọi lệnh ghi khi người thật đang giữ hộ
 /** Đặt lại bộ nhớ AI cùng lúc đặt lại dữ liệu thử (rà soát 04/11 #10). */
-export function datLaiBoNho() { DA_LOI.clear(); DA_TRA_LOI.clear(); DA_CHAO.clear(); DA_BAO.clear(); CHAM.clear(); TOKEN_TC.clear(); PHIEN_AO.clear(); }
+export function datLaiBoNho() { DA_LOI.clear(); DA_TRA_LOI.clear(); DA_CHAO.clear(); LAN_CHAO.clear(); DA_BAO.clear(); CHAM.clear(); TOKEN_TC.clear(); PHIEN_AO.clear(); }
 /** Phiên đóng vai của tổ chức AI, dùng lại 10 phút: mỗi lần impersonate là một lượt DB ở xa (host chậm ~1 s/tổ chức). */
 const PHIEN_AO = new Map<string, { v: any; het: number }>();
 /** Tổ chức có người thật mở app trong 30 phút gần nhất (mã → giờ thật, ms). AI không bao giờ đóng vai các tổ chức này,
@@ -99,6 +100,7 @@ export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
 export function traLoiTheoBuoc(tin: string, phia: 'buyer' | 'seller', buoc: string): string {
   // Giá đã chốt mà người kia xin đổi giá: đáp đúng ý đó trước, không cảm ơn "đã đồng ý giá" như máy
   const t = tin.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  if (buoc && /\bxe\b|may gio|gio nao|ngay giao/.test(t)) return phia === 'buyer' ? 'Dạ ngày giao ghi ở thẻ điều khoản phía trên bác nha, giờ xe cụ thể em báo lại khi chốt lịch xe.' : 'Ngày giao ghi ở thẻ điều khoản phía trên, giờ xe cụ thể tôi báo lại khi chốt lịch.';
   if (buoc && /gia|cao hon|them|bot|tang|giam/.test(t)) return phia === 'buyer'
     ? 'Dạ giá này hai bên đã chốt rồi bác ơi, em không đổi được nữa ạ.'
     : 'Giá này hai bên đã chốt rồi anh/chị ạ, bên tôi không đổi được nữa.';
@@ -206,7 +208,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
   //    (chào giá kín: bên mua không thấy giá người bán), chưa đủ dữ liệu thì theo giá mua dự kiến GIA_MUA; không có cả hai thì không chào.
   const muaAo = Object.keys(DAI_DIEN).filter((tc) => tc.startsWith('TC-M') && !toChucThat.has(tc) && (!TEP.size || TEP.has(tc)));
   if (!chiTin && idThat.length && muaAo.length) {
-    const tc = muaAo[luotMua++ % muaAo.length]; const me = await vai(DAI_DIEN[tc]);
+    const tc = muaAo[luotMua++ % muaAo.length]; const me = (LAN_CHAO.get(idThat[0]) ?? 0) > Date.now() ? null : await vai(DAI_DIEN[tc]);
     if (me?.token) {
       const ds = await get('/v1/lots', me.token); const lots = ds?.items ?? ds ?? [];
       for (const l of lots) {
@@ -218,6 +220,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         const gia = tk?.status === 'du_du_lieu' ? Math.round(Number(tk.price_vnd) / 100) * 100 : (GIA_MUA[`${l.product_code}|${l.grade_code}`] ?? 0), con = Number(l.available_g ?? 0);
         if (!gia || !con) continue;
         const qty = Math.min(con, 500000);
+        LAN_CHAO.set(idThat[0], Date.now() + 3 * 60e3);
         await lam(tc, `chào giá ${gia.toLocaleString("vi-VN")} đ/kg`, l.code, () => post('/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: qty, price_vnd: gia }, me.token));
         break; // mỗi vòng một lời chào cho tự nhiên
       }
@@ -313,7 +316,11 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           else { await lam(tc, 'đề xuất sửa điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms`, x.sua, t)); await nhan(`Dạ ${x.ly_do}, ${xung} xem bản sửa giúp nha.`); }
         }
         // Người bán AI chờ bên mua; bên mua AI mở đề xuất đầu tiên, nếu bị từ chối thì đề xuất lại mức mặc định
-        if (phia === 'buyer' && (dk?.trang_thai === 'chua_de_xuat' || dk?.trang_thai === 'bi_tu_choi')) {
+        if (dk?.trang_thai === 'bi_tu_choi' && !DA_TRA_LOI.has(`tc-${of.id}-${dk.phien_ban}`)) {
+          DA_TRA_LOI.add(`tc-${of.id}-${dk.phien_ban}`);
+          await nhan(`Dạ ${xung} chưa ưng chỗ nào, ${xung} bấm Sửa trước khi gửi rồi ghi lại giúp nha, bên ${phia === 'buyer' ? 'em' : 'tôi'} xem lại ngay.`);
+        }
+        if (phia === 'buyer' && dk?.trang_thai === 'chua_de_xuat') {
           const ban = dk.mac_dinh; // ngày kế tiếp 7 giờ sáng; bản thử có nút tua giờ khi cần đi nhanh
           await lam(tc, 'đề xuất điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms`, ban, t));
           await nhan(`Dạ em gửi điều khoản: giá xuống loại ${soVN(ban.downgrade_price_vnd)}, trả khi nhận hàng, bên em lo xe. Bác xem trong thẻ hợp đồng, chưa ưng chỗ nào bấm Đề xuất sửa nha.`);
@@ -346,7 +353,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           // Dùng đúng trạng thái hiển thị của backend + tới lượt ai (rà soát #7: bảng tên tự viết sai mã trạng thái)
           const ht = d.hien_thi ?? {}, tl = ht.toi_luot;
           const luot = !tl ? '' : tl.phia === phiaTin ? ` Tới lượt BẠN: ${tl.viec}.` : tl.phia === 'ops' ? ` AgiViet đang xử lý: ${tl.viec}.` : ` Tới lượt người kia: ${tl.viec}.`;
-          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}`;
+          const gn = ((await get(`/v1/orders/${s.order_id}/terms`, t))?.the ?? []).find((x: any) => x.tieu_de === 'Giao nhận')?.noi_dung;
+          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}${gn ? ` Giao nhận: ${gn}.` : ''}`;
           buocTin = d.status === 'drafting' && phiaTin === 'buyer' ? 'soan_hd' : tl && tl.phia !== phiaTin && /ký/i.test(tl.viec) ? 'cho_ky' : '';
         }
       } else if (s.offer_id) {

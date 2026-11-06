@@ -351,6 +351,7 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
       de_nghi_mo: Number(await t.gtri(`SELECT count(*) FROM core.amendments WHERE order_id=$1 AND status='open'`, [id])) > 0,
       dang_xin_huy: Number(await t.gtri(`SELECT count(*) FROM core.cancellation_requests WHERE order_id=$1 AND status='awaiting_reply'`, [id])) > 0 },
     dieu_khoan: v ? {
+      ghi_chu_hai_ben: (await t.gtri<string>(`SELECT d.canonical_content->>'ghi_chu_hai_ben' FROM core.order_versions ov JOIN core.documents d ON d.id=ov.document_id WHERE ov.order_id=$1 ORDER BY ov.version_no DESC LIMIT 1`, [id])) ?? null,
       version_no: v.version_no, qty_g: v.qty_min.toString(), unit_price_vnd: s(B(v.unit_price_vnd)), downgrade_price_vnd: v.downgrade_price_vnd == null ? null : s(B(v.downgrade_price_vnd)),
       ref_price_vnd: v.ref_price_vnd == null ? null : String(v.ref_price_vnd), deposit_price_vnd: String(v.deposit_price_vnd), contract_value_vnd: String(v.contract_value_vnd),
       deposit_vnd: String(v.deposit_vnd), fee_vnd: String(v.fee_vnd), payment_timing: v.payment_timing, pay_after_days: v.pay_after_days,
