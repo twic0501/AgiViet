@@ -98,6 +98,9 @@ async function veDuThieu() {
   $("#du-thieu").innerHTML = mon.length ? `<p class="nhan" style="margin-top:4px">Tuần này</p>${mon.map((ma) => { const c = can.get(ma) || 0, d = chac.get(ma) || 0, thieu = c - d;
     return `<div class="hang" style="padding:6px 0"><div><b>${esc(ten(ma))}</b><p class="phu">${c ? `cần ${vnd(kg(c))} kg · ` : ""}đã chắc ${vnd(kg(d))} kg</p></div>${thieuDL ? `<span class="chip">chưa tính đủ</span>` : c ? `<span class="chip ${thieu > 0 ? "do" : "la"}">${thieu > 0 ? `thiếu ${vnd(kg(thieu))} kg` : "đủ"}</span>` : ""}</div>`; }).join("")}${thieuDL ? `<p class="phu">Chưa tải được ${[loiNc && `${loiNc} nhu cầu`, loiDon && `${loiDon} đơn`].filter(Boolean).join(", ")} — số có thể thiếu. <button class="nut" type="button" onclick="location.reload()">Tải lại</button></p>` : ""}` : "";
 }
+// Đã có khoản phải trả theo số cân thì giá trị thật = cọc + khoản đó, có thể khác giá trị ký
+const giaTriDon = (d) => { const k = DL.khoan.filter((p) => p.don_id === d.id && p.kind !== "deposit"), that = k.length ? k.reduce((a, p) => a + Number(p.amount_due_vnd || 0), Number(d.deposit_vnd || 0)) : 0, ky = Number(d.contract_value_vnd);
+  return that && that !== ky ? `Giá trị ${vnd(that)} đ · lúc ký ${vnd(ky)} đ` : `Giá trị ${vnd(ky)} đ`; };
 function veHomNay() {
   const tuan = DL.khung.filter((k) => k.status === "running" && (k.mon || []).length);
   const dangGiao = DL.don.filter((d) => /active|signed|deposit/.test(d.status || ""));
@@ -109,7 +112,8 @@ function veHomNay() {
     <button class="nut chinh rong" data-di="nguon-hang">Tìm nguồn hàng</button>`;
   $("#the-tuan .hang").insertAdjacentHTML("afterend", `<div id="du-thieu"></div>`); veDuThieu();
   const viec = [
-    ...DL.don.filter((d) => d.hien_thi?.toi_luot?.phia === "buyer").map((d) => ({ gap: /cọc|trả|ký/i.test(d.hien_thi.toi_luot.viec), ten: `${maHD(d.code)} · ${d.seller_name || ""}`, phu: d.hien_thi.toi_luot.viec, href: MO("chi-tiet-don", `don=${d.id}`) })),
+    // việc "trả tiền" đã có dòng khoản phải trả ở cuối danh sách, không tách làm hai
+    ...DL.don.filter((d) => d.hien_thi?.toi_luot?.phia === "buyer" && !(/trả/i.test(d.hien_thi.toi_luot.viec) && DL.khoan.some((p) => p.don_id === d.id && canTra(p)))).map((d) => ({ gap: /cọc|trả|ký/i.test(d.hien_thi.toi_luot.viec), ten: `${maHD(d.code)} · ${d.seller_name || ""}`, phu: d.hien_thi.toi_luot.viec, href: MO("chi-tiet-don", `don=${d.id}`) })),
     ...DL.khung.filter((k) => k.toi_luot === "buyer").map((k) => ({ gap: true, ten: `${k.code} · ${k.ben_ban}`, phu: k.ten_trang_thai, href: MO("chi-tiet-khung", `khung=${k.id}`) })),
     ...DL.khung.flatMap((k) => (k.gia_tuan || []).filter((g) => g.trang_thai === "proposed" && g.de_nghi_boi === "seller").map((g) => ({ ten: `Duyệt giá tuần ${ngay(g.tuan)}`, phu: `${k.code} · ${k.ben_ban} đề nghị`, href: MO("chi-tiet-khung", `khung=${k.id}`) }))),
     // Lời chào: người bán trả giá lại → tới lượt mình trả lời; đã đồng ý mà chưa có đơn → lập đơn.
@@ -208,7 +212,7 @@ function veDon() {
   $("#ds-don").innerHTML = DL.don.length ? DL.don.map((d) => { const tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
     return `<a class="the" href="${MO("chi-tiet-don", `don=${d.id}`)}" style="text-decoration:none;color:inherit">
     <div class="hang"><b>${esc(maHD(d.code))} · ${esc(d.seller_name || "")}</b><span class="chip ${toi ? "toi" : ""}">${toi ? "Tới lượt bạn" : esc(d.hien_thi?.ten || d.status)}</span></div>
-    <p class="phu">Giá trị ${vnd(d.contract_value_vnd)} đ${tl ? ` · ${toi ? "Bạn" : tl.phia === "seller" ? "Người bán" : "AgiViet"}: ${esc(tl.viec)}` : ""}</p></a>`; }).join("")
+    <p class="phu">${giaTriDon(d)}${tl ? ` · ${toi ? "Bạn" : tl.phia === "seller" ? "Người bán" : "AgiViet"}: ${esc(tl.viec)}` : ""}</p></a>`; }).join("")
     : `<div class="the trong"><p>Chưa có đơn. Đơn được lập từ một lời chào giá người bán đã đồng ý.</p><a class="nut vien" href="${MO("bao-gia", "")}">Xem lời chào giá</a></div>`;
 }
 
