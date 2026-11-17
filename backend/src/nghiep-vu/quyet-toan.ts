@@ -29,13 +29,15 @@ export async function lapQuyetToan(ht:HeThong,t:GiaoDich,o:any,laCuoi:boolean){
  const key=`settlement:${o.id}:${laCuoi?'final':'interim'}:${prev?.id??'first'}`;
  const id=await systemCmd<string>(t,'create_settlement',[o.id,laCuoi,key]);
  const st=await t.mot<any>(`SELECT * FROM core.settlements WHERE id=$1`,[id]);
+ // Lõi Rust tính lại độc lập trước khi gửi lệnh chi; lệch thì cả giao dịch hủy, không lệnh nào đi
+ const {doiChieuQuyetToan}=await import('./doi-chieu-loi.ts');const doiChieu=await doiChieuQuyetToan(st);
  const lenh=await t.q<any>(`SELECT code FROM core.bank_instructions WHERE basis_kind='settlement' AND basis_id=$1`,[id]);
  for(const b of lenh)await guiLenhChoNganHangTheoMa(t,b.code);
  // Các số hiển thị/PDF lấy từ snapshot DB, không tự phân cọc hay tính lại.
  const {danhSachBanTrinhBay}=await import('../pdf/ban-trinh-bay.ts');const prevPdf=danhSachBanTrinhBay(o.id).find(d=>d.version_no===st.seq-1);
  const doc=await taoTaiLieuPdf(t,{docType:'settlement_statement',code:`${o.code}-BQT-${st.seq}`,seriesKey:`${o.code}-BQT`,versionNo:st.seq,prevContentSha256:prevPdf?.content_sha256??null,orderId:o.id,ownerOrgId:null,entity:'settlement',entityId:id,status:'draft',noiDung:{loai:'BQT',settlement_id:id,V:String(st.v_vnd),D:String(st.d_vnd),C:String(st.c_vnd),N:String(st.n_vnd),chi:String(st.release_vnd),hoan:String(st.refund_vnd)},trinhBay:{loai:'BQT',tieuDe:'BẢNG QUYẾT TOÁN',muc:[{tieuDe:'Snapshot quyết toán từ CSDL',dong:[['V',dong(st.v_vnd)],['D',dong(st.d_vnd)],['C',dong(st.c_vnd)],['N',dong(st.n_vnd)],['Chi',dong(st.release_vnd)],['Hoàn',dong(st.refund_vnd)]]}]}});
  const {luuBanTrinhBay}=await import('../pdf/ban-trinh-bay.ts');const docId=luuBanTrinhBay(o.id,doc);
- return {settlement_id:id,seq:st.seq,is_final:laCuoi,V:String(st.v_vnd),D:String(st.d_vnd),C:String(st.c_vnd),N:String(st.n_vnd),release_vnd:String(st.release_vnd),refund_vnd:String(st.refund_vnd),t_bm_vnd:String(st.t_bm_vnd),t_nb_vnd:String(st.t_nb_vnd),lenh:lenh.map(b=>b.code),document_id:docId};
+ return {settlement_id:id,seq:st.seq,is_final:laCuoi,V:String(st.v_vnd),D:String(st.d_vnd),C:String(st.c_vnd),N:String(st.n_vnd),release_vnd:String(st.release_vnd),refund_vnd:String(st.refund_vnd),t_bm_vnd:String(st.t_bm_vnd),t_nb_vnd:String(st.t_nb_vnd),lenh:lenh.map(b=>b.code),document_id:docId,doi_chieu_loi:doiChieu};
 }
 
 /** Kiểm đơn chờ quyết toán / còn công nợ có thể hoàn tất chưa. */

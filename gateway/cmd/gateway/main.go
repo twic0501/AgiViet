@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -91,6 +92,40 @@ func (c *cong) docCccd(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]any{"ho_ten": the.HoTen, "ngay_sinh": the.NgaySinh, "nu": the.Nu, "so_cuoi": the.So[len(the.So)-3:]})
 }
 
+// POST /v2/tinh/quyet-toan {"v","d","c","x_nb","x_bm"} (chuỗi số đồng) → lõi Rust tính lại quyết toán.
+// Chỉ là phép tính trên số gửi lên, không đọc dữ liệu nào, nên không cần đăng nhập. Backend dùng để đối chiếu chéo.
+func (c *cong) tinhQuyetToan(w http.ResponseWriter, r *http.Request) {
+	var than map[string]string
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024)).Decode(&than); err != nil {
+		loi(w, http.StatusBadRequest, "DU_LIEU_KHONG_HOP_LE", "Thân yêu cầu phải là JSON.")
+		return
+	}
+	so := map[string]int64{}
+	for _, k := range []string{"v", "d", "c", "x_nb", "x_bm"} {
+		n, err := strconv.ParseInt(than[k], 10, 64)
+		if err != nil {
+			loi(w, http.StatusBadRequest, "DU_LIEU_KHONG_HOP_LE", "Thiếu hoặc sai số: "+k)
+			return
+		}
+		so[k] = n
+	}
+	ctx, huy := context.WithTimeout(r.Context(), 3*time.Second)
+	defer huy()
+	q, err := c.loi.QuyetToan(ctx, &pb.QuyetToanRequest{GiaTriHang: so["v"], DaTraThang: so["d"], Coc: so["c"], NguoiBanChiuThem: so["x_nb"], BenMuaChiuThem: so["x_bm"]})
+	if err != nil {
+		if s, ok := status.FromError(err); ok && (s.Code() == codes.InvalidArgument || s.Code() == codes.OutOfRange) {
+			loi(w, http.StatusUnprocessableEntity, "DU_LIEU_KHONG_HOP_LE", s.Message())
+			return
+		}
+		log.Printf("lõi lỗi: %v", err)
+		loi(w, http.StatusBadGateway, "LOI_HE_THONG", "Lõi tính toán chưa trả lời.")
+		return
+	}
+	s := func(n int64) string { return strconv.FormatInt(n, 10) }
+	w.Header().Set("content-type", "application/json; charset=utf-8")
+	json.NewEncoder(w).Encode(map[string]string{"n": s(q.N), "coc_ve_nguoi_ban": s(q.CocVeNguoiBan), "coc_hoan_ben_mua": s(q.CocHoanBenMua), "ben_mua_tra_them": s(q.BenMuaTraThem), "nguoi_ban_hoan": s(q.NguoiBanHoan)})
+}
+
 func main() {
 	backend, err := url.Parse(os.Getenv("BACKEND_URL"))
 	if err != nil || backend.Host == "" {
@@ -107,6 +142,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) { w.Write([]byte("ok")) })
 	mux.HandleFunc("POST /v2/cccd/doc", c.docCccd)
+	mux.HandleFunc("POST /v2/tinh/quyet-toan", c.tinhQuyetToan)
 	// SetURL đổi cả Host: Render và mọi máy chủ đặt sau tên miền chọn dịch vụ theo Host, giữ Host của cổng sẽ bị trả 404
 	mux.Handle("/", &httputil.ReverseProxy{Rewrite: func(r *httputil.ProxyRequest) { r.SetURL(backend); r.SetXForwarded() }})
 
