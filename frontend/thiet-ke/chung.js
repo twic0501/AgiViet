@@ -24,6 +24,12 @@ export function datCoChu(v) {
   document.documentElement.style.zoom = v === "1" ? "" : v;
 }
 datCoChu();
+// Vercel Web Analytics cho các trang chạy thẳng (không qua bundler): cùng script mà inject() của @vercel/analytics gắn.
+// Chỉ trên tên miền thật (máy thử không có /_vercel/insights).
+if (typeof document !== "undefined" && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !document.querySelector('script[src="/_vercel/insights/script.js"]')) {
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  document.head.appendChild(Object.assign(document.createElement("script"), { src: "/_vercel/insights/script.js", defer: true }));
+}
 // Quay lại bằng nút ‹ (history.back) có thể lấy trang từ bộ nhớ đệm (bfcache): bố cục méo và số tiền/trạng thái cũ. Tải lại như F5.
 if (typeof addEventListener === "function") addEventListener("pageshow", (e) => { if (e.persisted) location.reload(); });
 export const CHANG = ["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"];

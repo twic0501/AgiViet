@@ -1,4 +1,5 @@
 // App MUA (Vite + TypeScript). Điều hướng bằng #: #hom-nay, #nguon, #don, #don/<id>, #tien, #tin, #tin/<order|offer>/<id>.
+import { inject } from "@vercel/analytics";
 import { layPhien } from "./api";
 import { batDoiTacAo } from "./doi-tac-ao";
 import { DL, napHet } from "./du-lieu";
@@ -60,4 +61,6 @@ if (window.top === window && matchMedia("(min-width: 700px) and (pointer: fine)"
   throw new Error("chuyển sang khung điện thoại");
 }
 $("#lui").onclick = () => (history.length > 1 ? history.back() : (location.hash = (location.hash.split("/")[0] || "#hom-nay")));
+// Vercel Web Analytics (đếm lượt xem trang, không cookie); bản chạy trên máy tự bỏ qua
+inject();
 batDau().catch((e) => { $("#man").innerHTML = trong(esc((e as Error).message)); });
