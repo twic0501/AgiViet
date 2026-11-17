@@ -40,10 +40,19 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
   const cuoc: Cuoc = loai === "order" ? { order_id: id } : { offer_id: id };
   o.innerHTML = `<div class="chat">
       <div class="chat-dau"><a class="nut-tron" href="#tin" aria-label="Quay lại tin nhắn">‹</a><b>${esc(tenCuoc(cuoc))}</b>${loai === "order" ? `<a class="nut vien nho" href="#don/${id}">Xem đơn</a>` : ""}</div>
+      <div id="tn-gd" class="tn-gd"></div>
       <div class="luong" id="luong" aria-live="polite"><div class="khung-tai"></div></div>
       <form class="o-go" id="o-go"><textarea id="tn-o" rows="1" maxlength="1000" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"></textarea><button class="nut chinh" id="tn-gui">Gửi</button></form>
       <p class="phu chat-ghi">Số điện thoại, Zalo, tài khoản riêng được che tự động. Giao dịch qua AgiViet để cọc được ngân hàng giữ.</p>
     </div>`;
+  // Thẻ giao dịch dùng chung với app người bán (giá → điều khoản → hợp đồng): đồng ý / sửa điều khoản ngay trong chat.
+  // shortcut: nạp module JS của app cũ ở thời điểm chạy; viết lại bằng TS khi chuyển nốt màn hợp đồng.
+  let theGD: { ve: (tinCuoi: string) => void } | null = null;
+  import(/* @vite-ignore */ "/thiet-ke/the-giao-dich.js" as string).then((m: any) => {
+    theGD = m.gnTheGD(o.querySelector("#tn-gd"), { ben: "buyer", cuoc, goi: api, linkDon: (x: string) => `#don/${x}`,
+      nguoiNhan: async () => DL.me?.user?.user_id, sauLam: () => { window.dispatchEvent(new Event("agv-lam-moi")); window.dispatchEvent(new Event("agv-vong-ngay")); } });
+    theGD!.ve(tin.filter((m2) => m2.la_cua_toi).at(-1)?.body ?? "");
+  }).catch(() => {});
   const luong = o.querySelector<HTMLElement>("#luong")!, oGo = o.querySelector<HTMLTextAreaElement>("#tn-o")!, form = o.querySelector<HTMLFormElement>("#o-go")!;
   let tin: Tin[] = [], dangCho: (Tin & { cho?: boolean; loi?: boolean })[] = [], dau = "";
   const sat = () => luong.scrollHeight - luong.scrollTop - luong.clientHeight < 80;
@@ -57,7 +66,7 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
   const tai = async (cuon = false) => {
     try { const x = await api<{ tin: Tin[] }>(`/v1/messages?${new URLSearchParams(cuoc as Record<string, string>)}`); const cuoi = sat();
       tin = x.tin; ghiXem(tin.at(-1)?.id); DL.tin.filter((c) => (c as any)[Object.keys(cuoc)[0]] === id).forEach((c) => ghiXem(c.id));
-      ve(cuon || cuoi);
+      ve(cuon || cuoi); theGD?.ve(tin.filter((m) => m.la_cua_toi).at(-1)?.body ?? "");
     } catch (e) { if (!tin.length) luong.innerHTML = trong((e as Error).message); }
     if (document.body.contains(luong)) hen = window.setTimeout(() => tai(), document.hidden ? 15000 : 3000);
   };

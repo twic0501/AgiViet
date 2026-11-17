@@ -1,7 +1,7 @@
 // Bản thử: AI đóng vai người bán (POST /v1/test/doi-tac-ao/vong, chỉ khi máy chủ bật test_tools). Port từ chung.js của app cũ.
 // Mỗi 8 giây khi tab đang xem; vừa nhắn tin / trả giá thì gọi ngay (chi_tin) để người bán trả lời không phải chờ.
 // Việc AI làm xong mà dính tới mình → khung "Ting! Có tin mới" + tiếng ting + nạp lại dữ liệu.
-import { api, manCu, mayNay } from "./api";
+import { api, mayNay } from "./api";
 import { esc } from "./ui";
 
 interface ViecAi { viec: string; ket_qua: string; to_chuc: string; doi_tuong: string }
@@ -46,9 +46,9 @@ function duongToi(v: ViecAi, of: any[], don: any[]): string {
   const c = ma(v.doi_tuong);
   const d = don.find((x) => ma(x.code) === c); if (d) return `#don/${d.id}`;
   const o = of.find((x) => x.code === c || x.lot_code === c);
-  if (o && v.viec === "trả lời tin nhắn") return `#tin/offer/${o.id}`;
+  // Lời chào (đồng ý giá, chào lại, báo giá nhu cầu, tin nhắn) → chat của lời chào: thẻ giá/điều khoản nằm ở đó
   const oc = o ?? of.find((x) => x.direction === "seller_quote" && x.status === "sent");
-  return oc ? manCu("bao-gia", `loi-chao=${oc.id}`) : "#hom-nay";
+  return oc ? `#tin/offer/${oc.id}` : "#hom-nay";
 }
 
 export async function batDoiTacAo(): Promise<void> {

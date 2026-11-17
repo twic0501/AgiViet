@@ -44,8 +44,14 @@ export function gnTheGD(o, ctx) {
     const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})); if (!cap.test_tools) return "";
     const now = await fetch("/v1/test/clock").then((r) => r.json()).catch(() => ({})); if (!now.now || new Date(now.now) >= new Date(cw)) return "";
     return `<p class="ghi">Chưa tới giờ giao (${ngay(cw)}).</p><button data-l="tua" data-t="${cw}">Bản thử: tới giờ giao</button>`; };
+  // Đã có hợp đồng: vẫn hiện điều khoản chính ngay trong chat (trước đây chỉ có trạng thái → người bán không biết đọc điều khoản ở đâu)
+  const dkDon = (k) => !k || !k.unit_price_vnd ? "" : `<dl><dt>Lượng</dt><dd>${kg(k.qty_g)} kg</dd><dt>Giá</dt><dd>${vnd(k.unit_price_vnd)} đ/kg</dd>
+    ${k.downgrade_price_vnd ? `<dt>Giá xuống loại</dt><dd>${vnd(k.downgrade_price_vnd)} đ/kg</dd>` : ""}<dt>Giá trị</dt><dd>${vnd(k.contract_value_vnd)} đ</dd>
+    <dt>Cọc (ngân hàng giữ)</dt><dd>${vnd(k.deposit_vnd)} đ</dd><dt>Trả tiền</dt><dd>${e(TRA[k.payment_timing] || (k.payment_timing === "after_days" ? `Sau khi nhận ${k.pay_after_days} ngày` : k.payment_timing || ""))}</dd>
+    ${k.delivery_from ? `<dt>Ngày nhận</dt><dd>${ngay(k.delivery_from)}</dd>` : ""}<dt>Xe</dt><dd>${e(XE[k.transport_by] || (k.delivery_mode === "at_farm" ? "Người mua lo xe" : "Theo hợp đồng"))}</dd></dl>`;
   const theDon = async (id) => { const d = await ctx.goi(`/v1/orders/${id}`); const tl = d.hien_thi?.toi_luot, toi = tl && tl.phia === ctx.ben;
-    return the(`<b>Hợp đồng ${e(d.code)} · ${e(d.hien_thi?.ten || d.status)}</b><p>${tl ? `${toi ? "Tới lượt bạn" : tl.phia === "ops" ? "AgiViet" : "Bên kia"}: ${e(tl.viec)}` : ""}</p><a class="n ${toi ? "c" : ""}" href="${ctx.linkDon(id)}">${toi ? "Làm bước này" : "Mở hợp đồng"}</a>${await nutTua(d)}`); };
+    return the(`<b>Hợp đồng ${e(d.code)} · ${e(d.hien_thi?.ten || d.status)}</b><p>${tl ? `${toi ? "Tới lượt bạn" : tl.phia === "ops" ? "AgiViet" : "Bên kia"}: ${e(tl.viec)}` : ""}</p>
+      ${dkDon(d.dieu_khoan)}<div class="hang"><a class="n ${toi ? "c" : ""}" href="${ctx.linkDon(id)}">${toi ? `${e(tl.viec)}` : "Đọc toàn bộ hợp đồng"}</a>${toi ? `<a class="n" href="${ctx.linkDon(id)}#dieu-khoan">Đọc toàn bộ hợp đồng</a>` : ""}</div>${await nutTua(d)}`); };
   const html = async () => {
     if (ctx.cuoc.order_id) return theDon(ctx.cuoc.order_id);
     lc = await ctx.goi(`/v1/offers/${ctx.cuoc.offer_id}`);

@@ -230,13 +230,12 @@ function ve() {
       <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
     </section>
 
-    ${veTien()}
-    ${veGiao()}
-    ${veDieuKhoan()}
+    ${/ký/i.test(don?.hien_thi?.toi_luot?.viec || "") ? `${veDieuKhoan()}${veTien()}${veGiao()}` : `${veTien()}${veGiao()}${veDieuKhoan()}`}
     <details class="hd-the"><summary>Lịch sử hợp đồng</summary><ol class="hd-ls">${(don.lich_su || []).slice().reverse().map((x) => `<li>${esc(chuLichSu(x))}<time>${esc(gioNgay(x.at))}</time></li>`).join("") || "<li>Chưa có</li>"}</ol></details>
     ${don.hanh_dong?.includes("request_cancel") && !(don.xinHuy || []).some((x) => ["awaiting_reply", "processing_money"].includes(x.status)) ? `<button class="vd-huy" type="button" id="xin-huy">Xin hủy hợp đồng</button>` : ""}
     <p class="hd-tro">Có vướng mắc? <a href="./ban-tin-nhan.html${esc(location.search)}">Nhắn người mua</a> hoặc bấm Hỗ trợ ở đầu trang chủ.</p>`;
   $("viec-chinh")?.addEventListener("click", viec.mo);
+  if (location.hash === "#dieu-khoan") $("dieu-khoan")?.scrollIntoView({ block: "start" });
   $("tu-choi")?.addEventListener("click", moTuChoi);
   $("xin-huy")?.addEventListener("click", moXinHuy);
   $("nghe-qt")?.addEventListener("click", () => { try { window.giongViet?.docTo(docQT); } catch {} });
@@ -357,7 +356,9 @@ function veGiao() {
 
 function veDieuKhoan() {
   const the = dieuKhoan?.the || [];
-  return `<details class="hd-the"><summary>Điều khoản chính</summary>
+  // Tự mở khi đang chờ ký (người bán phải đọc trước khi ký) hoặc khi tới từ nút "Đọc toàn bộ hợp đồng" trong chat
+  const mo = location.hash === "#dieu-khoan" || /ký/i.test(don?.hien_thi?.toi_luot?.viec || "");
+  return `<details class="hd-the" id="dieu-khoan"${mo ? " open" : ""}><summary>Điều khoản chính</summary>
     ${the.map((x) => `<div class="hd-dong"><span style="color:var(--muc);font-weight:600">${esc(x.tieu_de)}</span><small style="font-size:16px;color:var(--muc-phu)">${esc(x.noi_dung)}</small></div>`).join("") || `<p class="hd-ghi">Chưa tải được điều khoản.</p>`}
     ${dieuKhoan?.canh_bao ? `<p class="hd-ghi" style="padding:8px 0 14px">${esc(dieuKhoan.canh_bao)}</p>` : ""}</details>`;
 }
