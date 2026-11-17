@@ -101,3 +101,10 @@ dialog#hop::backdrop { background: rgba(20, 30, 24, .45); }
 fieldset.giay { border: 1px solid var(--k); border-radius: 12px; padding: 6px 12px 8px; margin: 0; display: grid; }
 fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .the.gom { box-shadow: 0 0 0 2px var(--xanh); }
+/* Tấm ký / đặt cọc ở chi tiết đơn */
+.ky { display: grid; gap: 12px; padding-top: 8px; } .ky p { margin: 0; }
+.ky .qr { display: grid; justify-items: center; gap: 4px; text-align: center; } .ky .qr canvas { border-radius: 12px; }
+.hang-chep { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.chon { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: 15px; } .chon input { width: 22px; height: 22px; flex: none; }
+.dk-dong { display: grid; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--k); } .dk-dong:last-child { border-bottom: 0; }
+.dk-dong span { font-size: 13px; color: var(--mn); } .dk-dong p { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
