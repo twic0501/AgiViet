@@ -24,6 +24,8 @@ export function datCoChu(v) {
   document.documentElement.style.zoom = v === "1" ? "" : v;
 }
 datCoChu();
+// Quay lại bằng nút ‹ (history.back) có thể lấy trang từ bộ nhớ đệm (bfcache): bố cục méo và số tiền/trạng thái cũ. Tải lại như F5.
+if (typeof addEventListener === "function") addEventListener("pageshow", (e) => { if (e.persisted) location.reload(); });
 export const CHANG = ["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"];
 
 // Tiền gọn cho thẻ ("41,4 triệu đ"); tienDu cho số đầy đủ (đặt ở title/aria để bác xem chính xác)
