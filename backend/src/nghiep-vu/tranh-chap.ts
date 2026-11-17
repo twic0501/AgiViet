@@ -1,6 +1,6 @@
 import { appCmd, systemCmd, loginCmd } from '../db/command.ts';
 // Tranh chấp (03 mục 8, 04 mục 6). Làm: khiếu nại khác mẫu ở nơi đến trong 2 giờ (TH-029) → phiên bản nghiệm thu mới
-// (dòng tranh chấp tính theo mức bên mua thừa nhận), đặt kiểm định (phí bên mua ứng), quyết toán tạm có G_them (N-08);
+// (dòng tranh chấp tính theo mức người mua thừa nhận), đặt kiểm định (phí người mua ứng), quyết toán tạm có G_them (N-08);
 // kết quả kiểm định chỉ nhận qua webhook có chữ ký HMAC của đối tác (N-11) → chốt dòng, phí kiểm định cho bên sai, quyết toán cuối.
 // Không kết luận: chờ thỏa thuận 14 ngày rồi chuyển cơ chế khác (tiền tranh chấp tiếp tục giữ).
 // Chưa làm: phản đối dòng tại vườn (phan_doi_dong), cân lại, thỏa thuận chia, kiểm định lần 2.
@@ -52,7 +52,7 @@ async function phienBanMoi(t: GiaoDich, d: any, o: any, v: any, nguoiGhi: string
   return {av:{id:'',version_no:so},doc,ids:[] as {id:string;dich:string}[]};
 }
 
-/** Bên mua khiếu nại khác mẫu ở nơi đến (trong 2 giờ kiểm đến): mở tranh chấp + đặt kiểm định + quyết toán tạm. */
+/** Người mua khiếu nại khác mẫu ở nơi đến (trong 2 giờ kiểm đến): mở tranh chấp + đặt kiểm định + quyết toán tạm. */
 export async function khieuNaiKhacMau(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliveryId: string, x: { line_no: number; qty_g: unknown; reason: string; reason_code?: string; seal_code?: string; inspection_fee_vnd?: unknown; evidence_document_id?: string }) {
   const d = await t.mot<any>(`SELECT * FROM core.deliveries WHERE id=$1 FOR UPDATE`, [deliveryId]);
   if (!d) throw loi('KHONG_TIM_THAY');

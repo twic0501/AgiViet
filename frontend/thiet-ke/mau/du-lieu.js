@@ -4,20 +4,20 @@ export const TIEN = { COC: 13800000, PHI: 138000, TRA_THANG: 32200000, GIA_TRI: 
 // 15 bước HĐ-0018 nhìn từ phía người bán. ai: bac | mua | nh (ngân hàng)
 export const BUOC = [
   { ai: "bac", lam: "Đồng ý giá 23.000 đ/kg", nut: "Đồng ý giá", chang: 0 },
-  { ai: "mua", lam: "Bên mua soạn và ký thỏa thuận", mp: "Mô phỏng: bên mua ký", chang: 1 },
+  { ai: "mua", lam: "Người mua soạn và ký thỏa thuận", mp: "Mô phỏng: người mua ký", chang: 1 },
   { ai: "bac", lam: "Bác xem lại và ký", nut: "Xem và ký", di: "ky", chang: 1 },
-  { ai: "mua", lam: "Bên mua chuyển cọc 13.938.000 đ", mp: "Mô phỏng: bên mua chuyển cọc", han: "12 giờ sau khi bác ký (hàng tươi)", chang: 2 },
+  { ai: "mua", lam: "Người mua chuyển cọc 13.938.000 đ", mp: "Mô phỏng: người mua chuyển cọc", han: "12 giờ sau khi bác ký (hàng tươi)", chang: 2 },
   { ai: "nh", lam: "Ngân hàng xác nhận đã giữ cọc", mp: "Mô phỏng: ngân hàng xác nhận", chang: 2 },
-  { ai: "mua", lam: "Bên mua chuyển thẳng 32.200.000 đ cho bác", mp: "Mô phỏng: bên mua chuyển tiền", han: "trước 5:30 ngày 28/10", chang: 3 },
+  { ai: "mua", lam: "Người mua chuyển thẳng 32.200.000 đ cho bác", mp: "Mô phỏng: người mua chuyển tiền", han: "trước 5:30 ngày 28/10", chang: 3 },
   { ai: "bac", lam: "Bác kiểm tài khoản, xác nhận đúng số", nut: "Kiểm tiền", di: "kiem-tien", chang: 3 },
   { ai: "bac", lam: "Xe tới vườn: nhập mã nhận hàng, bốc, niêm phong mẫu", nut: "Bàn giao hàng", di: "ban-giao", chang: 3 },
-  { ai: "mua", lam: "Bên mua xem video lúc bốc, bấm Đạt khi bốc", mp: "Mô phỏng: bên mua Đạt khi bốc", chang: 3 },
-  { ai: "mua", lam: "Kho bên mua ký nhận hàng", mp: "Mô phỏng: kho ký nhận", chang: 3 },
-  { ai: "mua", lam: "Bên mua gửi kết quả cân", mp: "Mô phỏng: bên mua gửi kết quả cân", han: "2 giờ từ lúc ký nhận", chang: 3 },
+  { ai: "mua", lam: "Người mua xem video lúc bốc, bấm Đạt khi bốc", mp: "Mô phỏng: người mua Đạt khi bốc", chang: 3 },
+  { ai: "mua", lam: "Kho người mua ký nhận hàng", mp: "Mô phỏng: kho ký nhận", chang: 3 },
+  { ai: "mua", lam: "Người mua gửi kết quả cân", mp: "Mô phỏng: người mua gửi kết quả cân", han: "2 giờ từ lúc ký nhận", chang: 3 },
   { ai: "bac", lam: "Bác đồng ý kết quả cân", nut: "Xem kết quả cân", di: "ket-qua", han: "24 giờ", chang: 4 },
   { ai: "nh", lam: "Ngân hàng chuyển cọc cho bác", mp: "Mô phỏng: ngân hàng chuyển 12.150.000 đ", chang: 4 },
   { ai: "bac", lam: "Bác xác nhận tiền đã về", nut: "Tiền đã về", di: "tien-ve", chang: 4 },
-  { ai: "bac", lam: "Hoàn tất · đánh giá bên mua", nut: "Đánh giá bên mua", di: "danh-gia", chang: 4 },
+  { ai: "bac", lam: "Hoàn tất · đánh giá người mua", nut: "Đánh giá người mua", di: "danh-gia", chang: 4 },
 ];
 export const CHANG = ["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"];
 
@@ -32,7 +32,7 @@ export const DAU = {
     { ma: "L-0414", ten: "Xoài cát Chu", loai: "Loại 1", con: 2000, khai: 2000, gia: 24000, san: 22000, trang: "sap-co", hai: "12/11", chao: 0, anh: "xoai" },
   ],
   canMua: [
-    { ma: "PN-0042", ben: "Nhà máy sấy Đồng Xanh", hang: "Xoài cát Chu loại 1", luong: 2000, khi: "27–29/10", noi: "Kho Sa Đéc · bên mua lo xe", uy: 4.7, xm: true },
+    { ma: "PN-0042", ben: "Nhà máy sấy Đồng Xanh", hang: "Xoài cát Chu loại 1", luong: 2000, khi: "27–29/10", noi: "Kho Sa Đéc · người mua lo xe", uy: 4.7, xm: true },
     { ma: "PN-0051", ben: "Nhà hàng Bếp Sen", hang: "Xoài cát Chu loại 1–2", luong: 50, khi: "mỗi tuần", noi: "Giao qua HTX Mỹ Xương", uy: 4.5, xm: true },
     { ma: "PN-0047", ben: "Vựa Ba Cường", hang: "Xoài loại 2", luong: 1000, khi: "30/10", noi: "Tại vườn", uy: 4.1, xm: false },
   ],
@@ -43,16 +43,16 @@ export const DAU = {
       { k: "tin", ai: "ho", t: "Chào chị Năm, em bên Đồng Xanh. Xoài lô L-0412 còn đủ 2 tấn loại 1 không chị?", luc: "26/10 08:02" },
       { k: "tin", ai: "toi", t: "Dạ còn 3,5 tấn em. Trái 350–550 g, hái 27/10.", luc: "26/10 08:10" },
       { k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: "26/10 08:11" },
-      { k: "gia", ai: "ho", gia: 22500, luong: 2000, ghi: "Giao tại vườn, bên mua lo xe", luc: "26/10 08:20", trang: "da-tra" },
+      { k: "gia", ai: "ho", gia: 22500, luong: 2000, ghi: "Giao tại vườn, người mua lo xe", luc: "26/10 08:20", trang: "da-tra" },
       { k: "gia", ai: "toi", gia: 23500, luong: 2000, ghi: "Bác trả lại", luc: "26/10 08:31", trang: "da-tra" },
-      { k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Lượt trả giá cuối của bên mua", luc: "26/10 09:05", trang: "cho-bac" },
+      { k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Lượt trả giá cuối của người mua", luc: "26/10 09:05", trang: "cho-bac" },
       { k: "tin", ai: "ho", t: "Chị đồng ý 23 ngàn thì em soạn thỏa thuận luôn nha.", luc: "26/10 09:06" },
     ] },
     { ma: "T2", ben: "Vựa Ba Cường", nguoi: "Anh Cường", lo: "L-0413", xm: false, chuaDoc: 1, moLienLac: false, tin: [
       { k: "tin", ai: "ho", t: "Chị ơi loại 2 bao nhiêu một ký?", luc: "Hôm qua 16:40" },
       { k: "tin", ai: "toi", t: "15 ngàn em, có 800 ký.", luc: "Hôm qua 16:52" },
       { k: "tin", ai: "ho", t: "Chị gọi em số ••• ••• ••• cho lẹ", luc: "Hôm qua 17:01", che: true },
-      { k: "he", canh: true, t: "Tin vừa rồi có số điện thoại nên đã bị che. Trao đổi liên lạc trước khi có cọc là vi phạm (lần 1/3 của bên mua).", luc: "Hôm qua 17:01" },
+      { k: "he", canh: true, t: "Tin vừa rồi có số điện thoại nên đã bị che. Trao đổi liên lạc trước khi có cọc là vi phạm (lần 1/3 của người mua).", luc: "Hôm qua 17:01" },
     ] },
     { ma: "T3", ben: "Nhà hàng Bếp Sen", nguoi: "Anh Khoa", lo: "L-0412", xm: true, chuaDoc: 0, moLienLac: true, tin: [
       { k: "he", t: "Hợp đồng khung HĐ-0011 có hiệu lực, ngân hàng đã giữ cọc. Liên lạc đã mở.", luc: "20/10" },
@@ -82,7 +82,7 @@ export const DAU = {
     { ngay: "05/10", noi: "Phân kali 2 bao", so: 780000, vao: false },
   ],
   lichSuTien: [
-    { thang: "Tháng 10/2026", dong: [["28/10", "HĐ-0009 · ngân hàng chuyển cọc về", 7200000, "ve"], ["24/10", "HĐ-0009 · bên mua chuyển thẳng", 20400000, "ve"], ["18/10", "HĐ-0011 · tuần 3", 1160000, "ve"]] },
+    { thang: "Tháng 10/2026", dong: [["28/10", "HĐ-0009 · ngân hàng chuyển cọc về", 7200000, "ve"], ["24/10", "HĐ-0009 · người mua chuyển thẳng", 20400000, "ve"], ["18/10", "HĐ-0011 · tuần 3", 1160000, "ve"]] },
     { thang: "Tháng 9/2026", dong: [["30/09", "HĐ-0006 · tiền xoài", 18900000, "ve"]] },
   ],
 };

@@ -43,7 +43,7 @@ export async function phatQrNhanHang(ht:HeThong,t:GiaoDich,deliveryId:string){
  // QR chỉ phát bởi assign_receiver dưới login buyer đang thực hiện; không giả người nhận.
  const u=await t.gtri<string>(`SELECT current_setting('app.user_id',true)`), org=await t.gtri<string>(`SELECT current_setting('app.org_id',true)`);
  const {d,o}=await layDot(t,deliveryId);if(!d.receiver_user_id)return null;
- if(org!==o.buyer_org_id||!u)throw loi('CHUA_HO_TRO','Cần bên mua phát lại QR qua command assign_receiver.');
+ if(org!==o.buyer_org_id||!u)throw loi('CHUA_HO_TRO','Cần người mua phát lại QR qua command assign_receiver.');
  const login=await damBaoDangNhap(t,u,org,'buyer');const raw=await loginCmd<string>(t,login,'assign_receiver',[deliveryId,d.receiver_user_id]);
  const het=await t.gtri<Date>(`SELECT expires_at FROM core.qr_tokens WHERE token_hash=digest($1,'sha256')`,[raw]);
  ht.qrNhanHang.set(deliveryId,{raw,het:new Date(het).getTime()});return new Date(het);
@@ -102,7 +102,7 @@ export async function theSanSang(t: GiaoDich, deliveryId: string): Promise<DongT
     { ma: 'hang', ten: 'Hàng', ok: B(d.planned_qty) <= camKet && !khoa, ly_do: khoa ? 'Lô đang khóa an toàn' : B(d.planned_qty) > camKet ? `Lượng cam kết còn ${kg(camKet)}` : undefined },
     { ma: 'tien', ten: 'Tiền', ok: o.status === 'active' && coc >= B(v.deposit_vnd) && thieuTien.length === 0,
       ly_do: o.status !== 'active' ? 'Ngân hàng chưa xác nhận cọc' : thieuTien.length ? `Khoản ${thieuTien[0].code} còn thiếu ${dong(thieuTien[0].con)}` : undefined },
-    { ma: 'nguoi_nhan', ten: 'Người nhận', ok: nhanOk && qrOk, ly_do: !nhanOk ? 'Bên mua chưa chỉ định người nhận' : !qrOk ? 'Chưa phát QR nhận hàng' : undefined },
+    { ma: 'nguoi_nhan', ten: 'Người nhận', ok: nhanOk && qrOk, ly_do: !nhanOk ? 'Người mua chưa chỉ định người nhận' : !qrOk ? 'Chưa phát QR nhận hàng' : undefined },
     { ma: 'xe', ten: 'Xe', ok: xeOk, ly_do: xeOk ? undefined : daCoXe > 0n ? `Đã có xe cho ${kg(daCoXe)}/${kg(B(d.planned_qty))}, cần đặt thêm xe` : 'Chưa có chuyến xe nhận chở' },
     { ma: 'ho_so', ten: 'Hồ sơ', ok: hoSoThieu.length === 0, ly_do: hoSoThieu.length ? `Thiếu: ${hoSoThieu.join(', ')}` : undefined },
     { ma: 'de_nghi', ten: 'Không có đề nghị/hủy đang chờ', ok: deNghi === 0 && huy === 0, ly_do: deNghi ? 'Đang có đề nghị sửa' : huy ? 'Đang có yêu cầu hủy' : undefined },
@@ -185,7 +185,7 @@ export async function guiKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliver
   const guiLai = d.status !== 'checking';
   const can = soGam(x.weighed_g, 'weighed_g');
   const rut = x.withdrawn_g == null ? 0n : soGam(x.withdrawn_g, 'withdrawn_g');
-  // 0050: rút phần tranh chấp chỉ khi người bán đã lập + ký biên bản rút (prepare_dispute_withdrawal) đúng lượng; bên mua ký rồi DB lập bản nghiệm thu mới.
+  // 0050: rút phần tranh chấp chỉ khi người bán đã lập + ký biên bản rút (prepare_dispute_withdrawal) đúng lượng; người mua ký rồi DB lập bản nghiệm thu mới.
   let rutTc: any = null;
   if (rut > 0n) {
     rutTc = await t.mot<any>(`SELECT tc.id, tc.disputed_qty::text q, l.acceptance_id, a.weighed_qty::text w,
@@ -328,12 +328,12 @@ export async function dongYKetQua(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliv
   if (vn.vuot && !x.chap_nhan_vuot_nguong) throw loi('TRANG_THAI_KHONG_CHO_PHEP',
     `Hàng xuống loại và trả lại là ${(vn.bps / 100).toFixed(1)}% (quá 20%). Bác chọn: đánh dấu "tôi chấp nhận kết quả này" rồi đồng ý, hoặc phản đối dòng chưa đúng để AgiViet gửi kiểm định.`, { ti_le_bps: vn.bps, nguong_bps: CHINH_SACH.nguongHaCapTraLaiBps });
   // 0052: bản chia lại sau phản đối giữ các phần mới ở 'disputed' tới khi người bán đồng ý; agree_acceptance đóng chúng.
-  if (!(await t.mot(`SELECT 1 FROM core.acceptance_revisions WHERE acceptance_id=$1`, [av.id])) && await t.mot(`SELECT 1 FROM core.acceptance_lines WHERE acceptance_id=$1 AND status='disputed'`, [av.id])) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Còn dòng đang tranh chấp: chờ bên mua cân lại/chia lại.');
+  if (!(await t.mot(`SELECT 1 FROM core.acceptance_revisions WHERE acceptance_id=$1`, [av.id])) && await t.mot(`SELECT 1 FROM core.acceptance_lines WHERE acceptance_id=$1 AND status='disputed'`, [av.id])) throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Còn dòng đang tranh chấp: chờ người mua cân lại/chia lại.');
   // Thiếu lượng (03 mục 6.5): ngoài dung sai thì người bán phải chọn cách xử lý.
   const keHoach = B(d.planned_qty); const canQ = B(av.weighed_qty); const rutQ = B(av.cc?.nguoi_ban_rut_g ?? 0);
   const thieuQ = keHoach - canQ - rutQ;
   const dungSai = (keHoach * BigInt(v.qty_tolerance_bps)) / 10000n;
-  // 0089: buổi gọi hàng khung — phần thiếu kết thúc theo từng lô, không phạt, không phải chọn (bên mua gọi buổi khác nếu cần bù).
+  // 0089: buổi gọi hàng khung — phần thiếu kết thúc theo từng lô, không phạt, không phải chọn (người mua gọi buổi khác nếu cần bù).
   if (thieuQ > dungSai && !x.shortfall && !o.framework_id) throw loi('DU_LIEU_KHONG_HOP_LE', `Thiếu ${kg(thieuQ)} ngoài dung sai: chọn giao bù, kết thúc phần thiếu hoặc bất khả kháng.`, { thieu_g: thieuQ.toString() });
   await kyBienBan(ht,t,nd,av.document_id,'seller',x.pin,x.device_id);
   await appCmd(t,nd,'seller','agree_acceptance',[av.id]);await dongBoTaiLieu(t,av.document_id,'fully_signed');
@@ -389,19 +389,19 @@ export async function phanDoiDong(ht:HeThong,t:GiaoDich,nd:NguoiDung,deliveryId:
  const l=await t.mot<any>(`SELECT l.* FROM core.acceptance_lines l JOIN core.acceptance_versions a ON a.id=l.acceptance_id WHERE a.delivery_id=$1 AND l.line_no=$2 ORDER BY a.version_no DESC LIMIT 1`,[deliveryId,x.line_no]);if(!l)throw loi('KHONG_TIM_THAY');
  const id=await appCmd<string>(t,nd,'seller','open_dispute',[l.id,l.qty,x.reason,'quality']);
  if(x.option==='rut_phan'){
-  // 0050: người bán lập biên bản rút đúng phần tranh chấp và ký bằng PIN; bên mua ký khi gửi lại kết quả.
+  // 0050: người bán lập biên bản rút đúng phần tranh chấp và ký bằng PIN; người mua ký khi gửi lại kết quả.
   const noiDung={action:'withdraw_disputed_goods',dispute_id:id,acceptance_id:l.acceptance_id,qty:Number(l.qty)};
   const ma=`${o.code}-RUT-D${d.batch_no}-${l.line_no}`;
   const rec=await taoTaiLieuPdf(t,{docType:'return_record',code:ma,seriesKey:ma,versionNo:1,orderId:o.id,ownerOrgId:o.seller_org_id,entity:'dispute',entityId:id,noiDung,status:'awaiting_signature',createdBy:nd.userId,
    trinhBay:{loai:'BBRUT',tieuDe:'BIÊN BẢN RÚT PHẦN TRANH CHẤP',muc:[{tieuDe:'Thông tin',dong:[['Đơn',o.code],['Đợt',d.code],['Dòng',String(l.line_no)],['Lượng rút',kg(l.qty)],['Lý do',x.reason]]}]}});
   const recId=await appCmd<string>(t,nd,'seller','prepare_dispute_withdrawal',[id,rec.payload]);
   await kyBienBan(ht,t,nd,recId,'seller',x.pin,x.device_id);
-  return {id,status:'open',delivery_status:d.status,record_document_id:recId,huong_dan:'Đã ký biên bản rút phần tranh chấp; bên mua gửi lại kết quả với withdrawn_g để ký và lập bản mới.'};
+  return {id,status:'open',delivery_status:d.status,record_document_id:recId,huong_dan:'Đã ký biên bản rút phần tranh chấp; người mua gửi lại kết quả với withdrawn_g để ký và lập bản mới.'};
  }
  return {id,status:'open',delivery_status:d.status,huong_dan:'Xử lý bằng command tranh chấp; không tự sửa dòng đã mở.'};
 }
 
-// ---------------- Giao tại kho bên mua (người bán lo xe) ----------------
+// ---------------- Giao tại kho người mua (người bán lo xe) ----------------
 
 /** Người bán xuất hàng (03 6.4): nhập mã QR nhận hàng của người nhận (DB đòi lượt quét của người nhận trước khi rời "sẵn sàng"),
  *  ghi cân lúc bốc; lượng cam kết → đang giao; rủi ro vẫn ở người bán. */
@@ -441,7 +441,7 @@ async function layTokenNhanHang(ht: HeThong, t: GiaoDich, d: any, x: { qr_token?
   throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần qr_token hoặc ma_6_so.');
 }
 
-/** Bên mua ký nhận tại kho (đối chiếu biển số thẻ chuyến): đang giao → đang nghiệm thu; hạn gửi kết quả 12/24 giờ. */
+/** Người mua ký nhận tại kho (đối chiếu biển số thẻ chuyến): đang giao → đang nghiệm thu; hạn gửi kết quả 12/24 giờ. */
 export async function kyNhanTaiKho(ht: HeThong, t: GiaoDich, nd: NguoiDung, deliveryId: string, x: { plate_no?: string }) {
   const { d, o, v } = await layDot(t, deliveryId);
   if (phiaCua(nd, o) !== 'buyer') throw loi('KHONG_CO_QUYEN');

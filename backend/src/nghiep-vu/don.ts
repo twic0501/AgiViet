@@ -33,9 +33,9 @@ export interface LapDon {
 }
 
 const DIEM: Record<string, string> = { at_farm: 'tai_vuon', at_buyer_warehouse: 'tai_kho_ben_mua', at_collection_point: 'tai_diem_gom' };
-const TEN_DIEM: Record<string, string> = { tai_vuon: 'Tại vườn', tai_ao: 'Tại ao', tai_ruong: 'Tại ruộng', tai_diem_gom: 'Tại điểm gom', tai_kho_ben_mua: 'Tại kho bên mua' };
+const TEN_DIEM: Record<string, string> = { tai_vuon: 'Tại vườn', tai_ao: 'Tại ao', tai_ruong: 'Tại ruộng', tai_diem_gom: 'Tại điểm gom', tai_kho_ben_mua: 'Tại kho người mua' };
 const TEN_TRA: Record<string, string> = { before_loading: 'Trả thẳng trước khi bốc', inspect_then_before_loading: 'Kiểm rồi mới trả, trước khi bốc', on_receipt: 'Trả khi nhận', after_days: 'Trả sau N ngày' };
-const TEN_XE: Record<string, string> = { buyer: 'Bên mua lo xe', seller: 'Người bán lo xe', partner_for_buyer: 'Xe đối tác do bên mua thuê', partner_for_seller: 'Xe đối tác do người bán thuê' };
+const TEN_XE: Record<string, string> = { buyer: 'Người mua lo xe', seller: 'Người bán lo xe', partner_for_buyer: 'Xe đối tác do người mua thuê', partner_for_seller: 'Xe đối tác do người bán thuê' };
 
 async function laDonDau(t: GiaoDich, buyer: string, seller: string): Promise<boolean> {
   // "Đơn đầu" = cặp chưa có đơn hoàn tất TRÊN APP (04 mục 4). core.historical_trades là mẫu giá nhập khẩu, không tính
@@ -115,7 +115,7 @@ export async function lapDon(t: GiaoDich, nd: NguoiDung, d: LapDon, vu?: ThongTi
   if (d.payment_timing === 'after_days' && !(Number(d.pay_after_days) > 0)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần số ngày trả sau.');
   if (d.designated_receiver_user_id) {
     const rcv = await t.mot(`SELECT 1 FROM core.memberships m JOIN core.membership_roles r ON r.membership_id=m.id WHERE m.user_id=$1 AND m.org_id=$2 AND m.status='active' AND r.role_code IN ('owner','warehouse','site_receiver')`, [d.designated_receiver_user_id, buyer.id]);
-    if (!rcv) throw loi('NGUOI_NHAN_KHONG_CHI_DINH', 'Người nhận phải là chủ, kho hoặc người nhận tại điểm của bên mua.');
+    if (!rcv) throw loi('NGUOI_NHAN_KHONG_CHI_DINH', 'Người nhận phải là chủ, kho hoặc người nhận tại điểm của người mua.');
   }
   const tu = new Date(d.delivery_from); const den = new Date(d.delivery_to);
   if (!(tu < den)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Khung giờ giao không hợp lệ.');
@@ -172,14 +172,14 @@ function muc8The(dk: any, x: any) {
   const v = (b: bigint | null) => (b === null ? '—' : dong(b));
   return [
     { tieuDe: 'Các bên', dong: [
-      ['Bên bán', `${x.seller.display_name} (${x.seller.code})`], ['Tài khoản nhận tiền', `${x.bank.bank_code} ${x.bank.account_masked}, chủ tài khoản ${x.bank.holder_name} (chụp lúc ký)`],
-      ['Bên mua', `${x.buyer.display_name} · MST ${x.buyer.tax_code ?? '—'}`]] as [string, string][] },
+      ['Người bán', `${x.seller.display_name} (${x.seller.code})`], ['Tài khoản nhận tiền', `${x.bank.bank_code} ${x.bank.account_masked}, chủ tài khoản ${x.bank.holder_name} (chụp lúc ký)`],
+      ['Người mua', `${x.buyer.display_name} · MST ${x.buyer.tax_code ?? '—'}`]] as [string, string][] },
     { tieuDe: 'Điều 1 · Hàng', dong: [['Mặt hàng', `${x.lot.product_name} · loại ${x.lot.grade_code}`], ['Lượng', `${kg(x.Q)} (dung sai ±${x.lot.qty_tolerance_bps / 100}%)`], ['Mã lô', `${x.lot.code} (${x.lot.qty_basis === 'estimated' ? 'ước tính' : 'đã cân'})`]] as [string, string][] },
     { tieuDe: 'Điều 2 · Giá', dong: [['Giá đơn', `${dong(x.P)}/kg`], ['Giá hạ cấp', x.Phc === null ? '—' : `${dong(x.Phc)}/kg`],
       ['Giá tham khảo lúc ký', x.ptk ? `${dong(x.ptk.gia)}/kg (${x.ptk.soDon} đơn, vùng ${x.ptk.scope})` : 'Chưa đủ dữ liệu'], ['Giá tính cọc', `${dong(x.Pcoc)}/kg`]] as [string, string][] },
-    { tieuDe: 'Điều 3 · Tiền', dong: [['Giá trị hợp đồng', v(x.tien.G)], ['Cọc', `${CHINH_SACH.cocBps / 100}% · ${v(x.tien.C)}`], ['Phí bên mua', v(x.tien.F)],
+    { tieuDe: 'Điều 3 · Tiền', dong: [['Giá trị hợp đồng', v(x.tien.G)], ['Cọc', `${CHINH_SACH.cocBps / 100}% · ${v(x.tien.C)}`], ['Phí người mua', v(x.tien.F)],
       ['Cách trả phần còn lại', TEN_TRA[x.d.payment_timing] + (x.d.pay_after_days ? ` (${x.d.pay_after_days} ngày)` : '')], ['Trả thẳng dự kiến', v(x.tien.traThang)]] as [string, string][],
-      doan: ['Bên mua chỉ trả vào tài khoản ghi tại hợp đồng này.'] },
+      doan: ['Người mua chỉ trả vào tài khoản ghi tại hợp đồng này.'] },
     { tieuDe: 'Điều 4 · Giao nhận', dong: [['Điểm nghiệm thu = điểm chuyển rủi ro', TEN_DIEM[x.diem]], ['Ai lo xe', TEN_XE[x.d.transport_by]],
       ['Thời gian giao', `${new Date(x.d.delivery_from).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })} – ${new Date(x.d.delivery_to).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`]] as [string, string][] },
     { tieuDe: 'Điều 5 · Nghiệm thu', dong: [['Lỗi cho phép (trả lại không cần ảnh)', `${x.lot.reject_allowance_bps / 100}%`], ['Hao hụt đường cho phép', `${CHINH_SACH.hauHutDuongChoPhepBps / 100}%`],
@@ -228,7 +228,7 @@ export async function kyDon(t: GiaoDich, nd: NguoiDung, id: string, d: KyDon, ve
     if (o.flag_abnormal_price && !d.abnormal_price_ack) throw loi('CAN_XAC_NHAN_GIA_BAT_THUONG');
     // Ngưỡng 70% (người sáng lập 02/11/2026): giá hạ cấp dưới 70% giá đơn → người bán xác nhận riêng (DB 0082 chặn lại lần nữa).
     if (ver.downgrade_price_vnd != null && BigInt(ver.downgrade_price_vnd) * 10000n < BigInt(ver.unit_price_vnd) * BigInt(CHINH_SACH.nguongGiaHaCapBps) && !d.low_downgrade_price_ack)
-      throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Giá nếu hàng xuống loại là ${Number(ver.downgrade_price_vnd).toLocaleString('vi-VN')} đ/kg, thấp hơn 70% giá đơn. Bác đánh dấu "Tôi đã đọc và chấp nhận giá xuống loại này" rồi ký, hoặc nhắn bên mua sửa giá.`, { gia_ha_cap_thap: true });
+      throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Giá nếu hàng xuống loại là ${Number(ver.downgrade_price_vnd).toLocaleString('vi-VN')} đ/kg, thấp hơn 70% giá đơn. Bác đánh dấu "Tôi đã đọc và chấp nhận giá xuống loại này" rồi ký, hoặc nhắn người mua sửa giá.`, { gia_ha_cap_thap: true });
   }
   const login = await damBaoDangNhap(t, nd.userId, nd.thanhVien.orgId, phia);
   const thietBi = d.device_id ?? nd.thietBi ?? 'thiet-bi-chua-dang-ky';
@@ -251,7 +251,7 @@ export async function rutDon(t: GiaoDich, nd: NguoiDung, id: string, lyDo?: stri
   const { o, phia } = await layDon(t, nd, id);
   if (phia !== 'buyer') throw loi('KHONG_CO_QUYEN');
   canQuyen(nd, 'order.withdraw');
-  return dongDonTruocCoc(t, o, 'cancel_before_deposit', 'rut_don', lyDo ?? 'Bên mua rút đơn');
+  return dongDonTruocCoc(t, o, 'cancel_before_deposit', 'rut_don', lyDo ?? 'Người mua rút đơn');
 }
 
 /** Đóng đơn trước cọc: đơn → closed, giữ lượng hủy (lượng về lô), tài liệu hủy, hạn hủy. */
@@ -272,7 +272,7 @@ const TEN_TRANG_THAI: Record<string, string> = {
 };
 const TEN_LY_DO_DONG: Record<string, string> = {
   seller_declined: 'Người bán từ chối', sign_expired: 'Quá hạn ký', deposit_expired: 'Quá hạn cọc', cancel_before_deposit: 'Hủy trước cọc',
-  cancel_after_deposit: 'Hủy sau cọc', force_majeure: 'Hủy do bất khả kháng', seller_no_delivery: 'Người bán không giao', buyer_no_pickup: 'Bên mua không nhận',
+  cancel_after_deposit: 'Hủy sau cọc', force_majeure: 'Hủy do bất khả kháng', seller_no_delivery: 'Người bán không giao', buyer_no_pickup: 'Người mua không nhận',
 };
 
 /** Trạng thái hiển thị và chặng (03 mục 14). */
@@ -283,15 +283,15 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
   if (tranhChap) return { ten: 'Đã chốt phần không tranh chấp · đang xử lý phần còn lại', chang: 'Giao nhận', toi_luot: { phia: 'ops', viec: 'Xử lý tranh chấp' } };
   if (o.status === 'outstanding') {
     const no = await t.mot<any>(`SELECT direction, (amount_due_vnd - coalesce((SELECT sum(amount_vnd) FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=p.id),0))::text con FROM core.direct_payments p WHERE order_id=$1 AND kind IN ('settlement_buyer_balance','seller_refund') AND status NOT IN ('fully_received','cancelled') LIMIT 1`, [o.id]);
-    if (no) return { ten: `Đã giao xong · còn công nợ (${no.direction === 'seller_to_buyer' ? 'người bán còn phải hoàn' : 'bên mua còn phải trả'} ${dong(no.con)})`, chang: 'Thanh toán', toi_luot: { phia: no.direction === 'seller_to_buyer' ? 'seller' : 'buyer', viec: 'Trả công nợ' } };
+    if (no) return { ten: `Đã giao xong · còn công nợ (${no.direction === 'seller_to_buyer' ? 'người bán còn phải hoàn' : 'người mua còn phải trả'} ${dong(no.con)})`, chang: 'Thanh toán', toi_luot: { phia: no.direction === 'seller_to_buyer' ? 'seller' : 'buyer', viec: 'Trả công nợ' } };
     return { ten: 'Đã giao xong · còn công nợ', chang: 'Thanh toán', toi_luot: null };
   }
   if (o.status === 'awaiting_settlement') {
-    // Người bán còn phải hoàn tiền thừa cho bên mua: việc của người bán, không chỉ là "ngân hàng xử lý lệnh".
+    // Người bán còn phải hoàn tiền thừa cho người mua: việc của người bán, không chỉ là "ngân hàng xử lý lệnh".
     const hoan = await t.mot<any>(`SELECT (amount_due_vnd - coalesce((SELECT sum(amount_vnd) FROM core.direct_payment_confirmations c WHERE c.direct_payment_id=p.id),0))::text con, status FROM core.direct_payments p WHERE order_id=$1 AND direction='seller_to_buyer' AND status NOT IN ('fully_received','cancelled') LIMIT 1`, [o.id]);
     if (hoan) return hoan.status === 'payer_reported'
       ? { ten: `Người bán báo đã hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Xác nhận đã nhận tiền hoàn' } }
-      : { ten: `Người bán còn phải hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Hoàn tiền thừa cho bên mua' } };
+      : { ten: `Người bán còn phải hoàn ${dong(hoan.con)}`, chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Hoàn tiền thừa cho người mua' } };
     // Buổi gọi hàng khung không có cọc riêng hay lệnh ngân hàng: tiền gộp vào khoản tuần của khung.
     if (o.contract_type === 'framework_calloff') return { ten: 'Đã chốt số · tính vào khoản trả cuối tuần', chang: 'Thanh toán', toi_luot: null };
     const lenh = Number(await t.gtri(`SELECT count(*) FROM core.bank_instructions WHERE order_id=$1 AND status IN ('sent','processing')`, [o.id]));
@@ -301,11 +301,11 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
     const dots = await t.q<any>(`SELECT status FROM core.deliveries WHERE order_id=$1 ORDER BY batch_no`, [o.id]);
     const st = new Set(dots.map((x) => x.status));
     const chuaTraTruocBoc = Number(await t.gtri(`SELECT count(*) FROM core.direct_payments p WHERE order_id=$1 AND blocks_loading AND status NOT IN ('fully_received','cancelled')`, [o.id])) > 0;
-    // Trả khi nhận tại chỗ: người bán đã đồng ý số cân (dòng đã chốt) → hàng chờ bên mua trả tiền hàng rồi mới đi.
+    // Trả khi nhận tại chỗ: người bán đã đồng ý số cân (dòng đã chốt) → hàng chờ người mua trả tiền hàng rồi mới đi.
     const choTraKhiNhan = st.has('awaiting_seller') && Number(await t.gtri(`SELECT count(*) FROM core.direct_payments p JOIN core.deliveries d ON d.id=p.delivery_id WHERE p.order_id=$1 AND p.kind='goods_on_receipt' AND d.status='awaiting_seller' AND p.status NOT IN ('fully_received','cancelled')`, [o.id])) > 0;
     if (choTraKhiNhan) {
       const baoRoi = Number(await t.gtri(`SELECT count(*) FROM core.direct_payments p WHERE p.order_id=$1 AND p.kind='goods_on_receipt' AND p.status='payer_reported'`, [o.id])) > 0;
-      return baoRoi ? { ten: 'Bên mua báo đã trả tiền hàng', chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Xác nhận đã nhận tiền hàng' } }
+      return baoRoi ? { ten: 'Người mua báo đã trả tiền hàng', chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Xác nhận đã nhận tiền hàng' } }
         : { ten: 'Đã chốt số cân · chờ trả tiền hàng', chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Trả tiền hàng khi nhận' } };
     }
     if (st.has('awaiting_seller')) return { ten: 'Chờ xác nhận số cân', chang: 'Giao nhận', toi_luot: { phia: 'seller', viec: 'Xác nhận kết quả nghiệm thu' } };
@@ -313,9 +313,9 @@ export async function trangThaiHienThi(t: GiaoDich, o: any): Promise<{ ten: stri
     if (st.has('in_transit') || st.has('arrived')) return { ten: 'Đang giao', chang: 'Giao nhận', toi_luot: { phia: 'buyer', viec: 'Ký nhận tại nơi đến' } };
     if (st.has('ready')) return { ten: 'Sẵn sàng giao', chang: 'Giao nhận', toi_luot: { phia: 'seller', viec: 'Giao hàng, quét QR nhận hàng' } };
     if (chuaTraTruocBoc) {
-      // Tách 3 trạng thái: chưa báo trả → bên mua; đã báo trả → người bán xác nhận; người bán báo chưa thấy → đối soát
+      // Tách 3 trạng thái: chưa báo trả → người mua; đã báo trả → người bán xác nhận; người bán báo chưa thấy → đối soát
       const kt = await t.mot<any>(`SELECT status FROM core.direct_payments WHERE order_id=$1 AND blocks_loading AND status NOT IN ('fully_received','cancelled') ORDER BY created_at LIMIT 1`, [o.id]);
-      if (kt?.status === 'payer_reported') return { ten: 'Bên mua báo đã trả trước bốc', chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Xác nhận đã nhận tiền trước bốc' } };
+      if (kt?.status === 'payer_reported') return { ten: 'Người mua báo đã trả trước bốc', chang: 'Thanh toán', toi_luot: { phia: 'seller', viec: 'Xác nhận đã nhận tiền trước bốc' } };
       if (kt?.status === 'mismatch') return { ten: 'Đang đối soát tiền trước bốc', chang: 'Thanh toán', toi_luot: { phia: 'ops', viec: 'Đối soát khoản trước bốc' } };
       return { ten: 'Đã cọc, chờ giao', chang: 'Thanh toán', toi_luot: { phia: 'buyer', viec: 'Trả khoản trước bốc' } };
     }
@@ -380,7 +380,7 @@ async function trangThaiKy(t: GiaoDich, nd: NguoiDung, o: any, phia: string, v: 
   const quyen = duocPhep(nd, 'order.sign.buyer');
   const duoc = o.status === 'drafting' && quyen && (!can || daDuyet);
   return { duoc_ky: duoc, can_duyet_noi_bo: can, da_duyet: daDuyet, han_muc_vnd: tv?.lim ?? null, gia_tri_vnd: v ? String(v.contract_value_vnd) : null,
-    ly_do: duoc ? null : !quyen ? 'Vai không có quyền ký' : o.status !== 'drafting' ? 'Đơn không ở bước bên mua ký' : 'Giá trị vượt hạn mức: cần quản lý (khác người lập) duyệt trước' };
+    ly_do: duoc ? null : !quyen ? 'Vai không có quyền ký' : o.status !== 'drafting' ? 'Đơn không ở bước người mua ký' : 'Giá trị vượt hạn mức: cần quản lý (khác người lập) duyệt trước' };
 }
 
 function hanhDongDon(nd: NguoiDung, o: any, phia: string, ky?: { duoc_ky: boolean; can_duyet_noi_bo: boolean; da_duyet: boolean | null }): string[] {

@@ -3,14 +3,14 @@
     {
       "ma": "CMUA-01",
       "ten": "Nhà máy sấy Đồng Xanh mua xoài, kiểm tại vườn xong trả rồi mới bốc; 10% xuống loại",
-      "tinh_cach": "Bên mua chuyên nghiệp, trả giá một lần, giấy tờ đầy đủ",
+      "tinh_cach": "Người mua chuyên nghiệp, trả giá một lần, giấy tờ đầy đủ",
       "vai": { "mua": "0909000213", "ban": "0918000421" },
       "buoc": [
         { "ai": "0909000213", "lam": "chao", "lo": "L-0412", "kg": 1000, "gia": 23500, "mong_doi": "Lời chào gửi được, người bán không thấy giá các bên khác; giá kín của người bán không lộ", "can_cu": "A3.10" },
         { "lam": "cho", "giay": 8, "mong_doi": "Người bán ảo trả giá lại" },
         { "ai": "0909000213", "lam": "dong_y", "mong_doi": "Đồng ý giá → giữ lượng 24h, chưa phải hợp đồng", "can_cu": "B3/B4" },
         { "ai": "0909000213", "lam": "lap_don", "tra_tien": "inspect_then_before_loading", "mong_doi": "Lập đơn kiểm rồi trả trước bốc; chưa có khoản tiền nào trước khi kiểm", "can_cu": "chính sách 02/11" },
-        { "ai": "0909000213", "lam": "ky", "mong_doi": "Bên mua ký → chờ người bán ký", "can_cu": "C2" },
+        { "ai": "0909000213", "lam": "ky", "mong_doi": "Người mua ký → chờ người bán ký", "can_cu": "C2" },
         { "lam": "cho", "giay": 9, "mong_doi": "Người bán ảo ký" },
         { "ai": "0909000213", "lam": "coc", "mong_doi": "Ngân hàng nhận đủ cọc → đơn có hiệu lực, đợt giao chuẩn bị", "can_cu": "C6" },
         { "ai": "0909000213", "lam": "xem", "mong_doi": "Không có khoản trả trước khi kiểm (khoản tiền hàng chỉ sinh sau nghiệm thu)" },
@@ -38,7 +38,7 @@
         { "ai": "0938000610", "lam": "lap_don", "tra_tien": "after_days", "mong_doi": "BỊ CHẶN: trả sau chưa mở", "can_cu": "chính sách 02/11" },
         { "ai": "0938000610", "lam": "lap_don", "tra_tien": "before_loading", "mong_doi": "BỊ CHẶN: trả trước khi chưa kiểm không còn", "can_cu": "chính sách 02/11" },
         { "ai": "0938000610", "lam": "lap_don", "tra_tien": "on_receipt", "mong_doi": "Lập đơn trả khi nhận được" },
-        { "ai": "0938000610", "lam": "xem", "mong_doi": "Đơn đang soạn, tới lượt bên mua ký" }
+        { "ai": "0938000610", "lam": "xem", "mong_doi": "Đơn đang soạn, tới lượt người mua ký" }
       ]
     },
     {
@@ -103,7 +103,7 @@
     {
       "ma": "CMUA-06",
       "ten": "Nhà máy cọc thiếu rồi quá hạn cọc",
-      "tinh_cach": "Bên mua chuyển thiếu tiền",
+      "tinh_cach": "Người mua chuyển thiếu tiền",
       "vai": { "mua": "0909000213", "ban": "0907000300" },
       "buoc": [
         { "ai": "0909000213", "lam": "chao", "lo": "L-0492", "kg": 500, "gia": 24500, "mong_doi": "Gửi lời chào" },

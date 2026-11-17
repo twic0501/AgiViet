@@ -99,11 +99,11 @@ async function mo() {
       ${nguonLoi ? '<p class="bao loi" style="margin-top:8px">Chưa tải được giấy tờ của lô. Bác tải lại trang để xem.</p>' : giay.length ? giay.map((x) => `<div class="giay"><span class="bt">${IC_GIAY}</span>
         <span><p class="ten">${esc(x.label_vi)}</p><p class="phu">${x.market ? `Thị trường ${esc(THI_TRUONG[x.market] || x.market)} · ` : ""}Hiệu lực ${ngay(x.tu)} – ${ngay(x.den)}</p></span>
         <span class="tt ${x.trang_thai === "da_xac_minh" ? "" : x.trang_thai === "het_hieu_luc" ? "het" : "chua"}">${x.trang_thai === "da_xac_minh" ? "Đã xác minh" : x.trang_thai === "het_hieu_luc" ? "Hết hiệu lực" : "Bác tự khai"}</span></div>`).join("")
-        : '<p class="ghi">Lô chưa có giấy tờ. Bên mua xuất khẩu, nhà máy thường cần VietGAP hoặc mã số vùng trồng.</p>'}</section>
+        : '<p class="ghi">Lô chưa có giấy tờ. Người mua xuất khẩu, nhà máy thường cần VietGAP hoặc mã số vùng trồng.</p>'}</section>
 
     <section class="muc" style="margin-top:20px"><h3><span>Lời chào trên lô</span><span style="font-weight:400">${chaoLoi ? "—" : chaoLo.length}</span></h3>
       ${chaoLoi ? '<p class="bao loi" style="margin-top:8px">Chưa tải được lời chào.</p>' : chaoLo.length ? chaoLo.map((c) => { const v = c.vong_cuoi || {}; return `<a class="chao" href="./ban-tin-nhan.html">
-        <span><b>${c.direction === "seller_quote" ? `Bác chào ${esc(c.buyer_name || "bên mua")}` : `${esc(c.buyer_name || "Bên mua")} chào`}</b><p class="phu">${esc(can(v.qty_g).join(" "))} · ${v.from_side === "buyer" ? "chờ bác trả lời" : "chờ bên mua"}</p></span>
+        <span><b>${c.direction === "seller_quote" ? `Bác chào ${esc(c.buyer_name || "người mua")}` : `${esc(c.buyer_name || "Người mua")} chào`}</b><p class="phu">${esc(can(v.qty_g).join(" "))} · ${v.from_side === "buyer" ? "chờ bác trả lời" : "chờ người mua"}</p></span>
         <span class="gia">${dong(v.price_vnd)}</span></a>`; }).join("") : '<p class="ghi">Chưa có lời chào nào.</p>'}</section>
     <p class="ghi">Sửa giá, bật bán nhanh hoặc ngừng bán: bấm "Quản lý lô" ở màn Chợ.</p>`;
   giuThamSo();

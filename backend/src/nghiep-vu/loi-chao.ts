@@ -1,6 +1,6 @@
 import { appCmd, systemCmd, loginCmd } from '../db/command.ts';
 // Lời chào / báo giá (03 mục 3) và giữ lượng (mục 4). Giá kín không bao giờ lộ: chào dưới giá thấp nhất
-// của lô thì tự từ chối, bên mua chỉ thấy câu "Chưa tới mức người bán chấp nhận" (không số).
+// của lô thì tự từ chối, người mua chỉ thấy câu "Chưa tới mức người bán chấp nhận" (không số).
 import type { GiaoDich } from '../db/co-so-du-lieu.ts';
 import type { NguoiDung } from '../auth/phien.ts';
 import { canQuyen } from '../auth/quyen.ts';
@@ -74,7 +74,7 @@ export async function guiLoiChao(t: GiaoDich, nd: NguoiDung, d: GuiLoiChao) {
     // Q12: tổng lượng các lời chào đang mở của phiếu ≤ 2 × lượng cần.
     const dangMo = BigInt(await t.gtri<string>(`SELECT coalesce(sum(r.qty),0)::text FROM core.offers o JOIN LATERAL (SELECT qty FROM core.offer_rounds WHERE offer_id=o.id ORDER BY round_no DESC LIMIT 1) r ON true WHERE o.demand_line_id=$1 AND o.status='sent'`, [line.id]));
     if (side === 'buyer' && dangMo + qty > BigInt(line.qty) * BigInt(CHINH_SACH.chaoVuotLuongToiDaLan)) throw loi('CHAO_VUOT_LUONG');
-    // K12: cùng loại trong cùng phiếu phải cùng giá (chiều bên mua).
+    // K12: cùng loại trong cùng phiếu phải cùng giá (chiều người mua).
     if (side === 'buyer') {
       const khacGia = await t.mot(`SELECT 1 FROM core.offers o JOIN LATERAL (SELECT price_vnd FROM core.offer_rounds WHERE offer_id=o.id AND from_side='buyer' ORDER BY round_no DESC LIMIT 1) r ON true WHERE o.demand_line_id=$1 AND o.status='sent' AND r.price_vnd<>$2`, [line.id, gia]);
       if (khacGia) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cùng loại trong cùng phiếu phải cùng giá (dùng "nâng giá nhóm").');
@@ -107,7 +107,7 @@ async function chanTuTraLoiMinh(t: GiaoDich, o: any, phia: string, viec: string)
   if (o.status === 'auto_rejected') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Lời chào đã tự đóng vì giá chưa tới mức người bán chấp nhận. Chào lại giá khác nếu muốn.');
   if (o.status !== 'sent') throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Lời chào đã đóng (${({ accepted: 'đã đồng ý giá', rejected: 'bên kia không đồng ý', withdrawn: 'đã rút', expired: 'quá hạn trả lời', converted: 'đã lập đơn' } as Record<string, string>)[o.status] ?? o.status}).`);
   const r = await vongCuoi(t, o.id);
-  if (r && r.from_side === phia) throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Đang chờ ${phia === 'buyer' ? 'người bán' : 'bên mua'} trả lời giá bạn đưa; chưa ${viec} được.`);
+  if (r && r.from_side === phia) throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Đang chờ ${phia === 'buyer' ? 'người bán' : 'người mua'} trả lời giá bạn đưa; chưa ${viec} được.`);
 }
 
 export async function dongYLoiChao(t: GiaoDich, nd: NguoiDung, id: string, version?: number) {

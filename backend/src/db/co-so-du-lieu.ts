@@ -360,7 +360,7 @@ export class CoSoDuLieu {
     `);
   }
 
-  /** Chỉ môi trường thử: dữ liệu mẫu mang ngày xác nhận lô cố định, quá 14 ngày thì bên mua không còn thấy lô nào.
+  /** Chỉ môi trường thử: dữ liệu mẫu mang ngày xác nhận lô cố định, quá 14 ngày thì người mua không còn thấy lô nào.
    *  Sau khởi động và sau mỗi lần đặt lại, dời ngày xác nhận của lô mẫu đã cũ hơn 7 ngày về giờ hiện tại (theo đồng hồ thử). */
   async lamTuoiLoMau(): Promise<number> {
     if (!this.laThu || (this.pool && !this.ownerUrl)) return 0;

@@ -105,7 +105,7 @@ async function tai() {
         <small>${esc(hoSo.muc_ten)}${hoSo.to_chuc.tinh ? " · " + esc(hoSo.to_chuc.tinh) : ""}${hoSo.vuon.length ? " · " + esc(hoSo.vuon.map((v) => v.name).join(", ")) : ""}</small></div>
       ${hoSo.giay_to.length ? hoSo.giay_to.map((g) => `<div class="to-dong"><span style="overflow-wrap:anywhere"><b style="text-align:left">${esc(g.ten)}</b></span><span class="to-nhan ${(TT_GT[g.trang_thai] || ["", "xam"])[1]}">${esc((TT_GT[g.trang_thai] || [g.trang_thai])[0])}</span>
         <small>${g.so ? "Số " + esc(g.so) : "Chưa ghi số"}${g.thi_truong ? " · thị trường " + esc(g.thi_truong) : ""}${g.het_han ? " · hạn tới " + esc(new Date(g.het_han).toLocaleDateString("vi-VN")) : ""}</small></div>`).join("")
-        : `<p class="hd-ghi" style="padding-bottom:8px">Bác chưa có giấy tờ nào trên app. Có VietGAP, mã vùng trồng thì nộp để bên mua tin hàng và trả giá tốt hơn.</p>`}
+        : `<p class="hd-ghi" style="padding-bottom:8px">Bác chưa có giấy tờ nào trên app. Có VietGAP, mã vùng trồng thì nộp để người mua tin hàng và trả giá tốt hơn.</p>`}
       <div class="to-hai-nut"><button class="nut chinh-nut to-nut" type="button" id="nop-gt">Nộp / cập nhật giấy tờ</button><button class="nut phu-nut to-nut" type="button" id="sua-hs">Đề nghị sửa thông tin</button></div>`
       : `<p class="to-bao do" style="margin:4px 0 12px">Chưa tải được hồ sơ.</p>`}</section>
 
@@ -136,7 +136,7 @@ async function tai() {
       <button class="nut chinh-nut to-nut" type="button" id="gui-ht">Gửi yêu cầu hỗ trợ</button>
       <a class="nut phu-nut to-nut" href="./ban-hom-nay.html${esc(location.search ? location.search + "&" : "?")}huong-dan=1" style="display:flex;align-items:center;justify-content:center;text-decoration:none;margin-top:8px">Xem lại hướng dẫn dùng app</a></section>
 
-    <details class="to-the"><summary style="list-style:none;cursor:pointer;padding:14px 0;font-weight:700;min-height:44px">Quyền riêng tư: bên mua thấy gì?</summary>
+    <details class="to-the"><summary style="list-style:none;cursor:pointer;padding:14px 0;font-weight:700;min-height:44px">Quyền riêng tư: người mua thấy gì?</summary>
       <ul class="to-ds"><li><b>Trước khi đặt cọc:</b> tên hộ, xã/huyện, mặt hàng, ảnh hàng, lượng, giá mong muốn, nhật ký phần bác chọn cho xem.</li>
         <li><b>Không bao giờ thấy:</b> giá thấp nhất của bác, số tài khoản đầy đủ, số căn cước.</li>
         <li><b>Sau khi ngân hàng giữ cọc:</b> số điện thoại người liên hệ và địa chỉ giao hàng để hai bên hẹn giao.</li>
@@ -202,7 +202,7 @@ function moNopGiayTo() {
   traVe = document.activeElement; const khoa = crypto.randomUUID();
   document.body.insertAdjacentHTML("beforeend", `<div class="to-che man-che" id="che"><div class="to-tam" role="dialog" aria-modal="true" aria-labelledby="t-gt">
     <div class="than"><h2 id="t-gt">Nộp giấy tờ</h2>
-      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Chụp rõ cả tờ giấy. Nhân viên AgiViet đối chiếu rồi mới hiện "Đã xác minh" cho bên mua.</p>
+      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Chụp rõ cả tờ giấy. Nhân viên AgiViet đối chiếu rồi mới hiện "Đã xác minh" cho người mua.</p>
       <label class="to-nhan-o" for="gt-loai">Loại giấy tờ</label>
       <select class="to-o" id="gt-loai">${hoSo.loai_giay_to.map((k) => `<option value="${esc(k.code)}">${esc(k.ten)}</option>`).join("")}</select>
       <label class="to-nhan-o" for="gt-so">Số giấy tờ (nếu có)</label><input class="to-o" id="gt-so" maxlength="80" autocomplete="off">
@@ -277,7 +277,7 @@ const ICON = {
   "riêng tư": '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
 };
 const iconCho = (t) => { const k = Object.keys(ICON).find((x) => t.toLowerCase().includes(x)); return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ICON["cài đặt"]}</svg>`; };
-const PHU = { "giấy tờ": "Nộp giấy tờ, đề nghị sửa thông tin", "tài khoản": "Nơi bên mua chuyển tiền cho bác", "người giúp": "Con cháu làm thay một số việc", "cài đặt": "Cỡ chữ, tốc độ đọc", "hỗ trợ": "Hỏi nhân viên AgiViet, xem lại hướng dẫn", "riêng tư": "Bên mua thấy gì về bác" };
+const PHU = { "giấy tờ": "Nộp giấy tờ, đề nghị sửa thông tin", "tài khoản": "Nơi người mua chuyển tiền cho bác", "người giúp": "Con cháu làm thay một số việc", "cài đặt": "Cỡ chữ, tốc độ đọc", "hỗ trợ": "Hỏi nhân viên AgiViet, xem lại hướng dẫn", "riêng tư": "Người mua thấy gì về bác" };
 let MUC = [];
 function ganMenu() {
   const noi = $("noi"), hs = noi.querySelector(".to-ho-so");

@@ -124,7 +124,7 @@
   .da-chao + .da-chao { margin-top: 10px; }
   .da-chao .rut { justify-self: end; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--ke-dam); background: var(--giay-noi); color: var(--dau-do); font: 600 14px/1 var(--chu); cursor: pointer; }
   .tieu-nho { font-size: 13px; font-weight: 600; color: var(--muc-phu); margin: 18px 0 8px; }
-  /* Bên mua đang cần */
+  /* Người mua đang cần */
   .the-nc { display: block; padding: 14px; border-radius: 16px; background: var(--giay-noi); border: 1px solid var(--ke); }
   .the-nc + .the-nc { margin-top: 12px; }
   .the-nc .tren { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
@@ -184,7 +184,7 @@
   <main class="noi" id="noi" aria-busy="true" style="gap:14px;padding-top:0">
     <div class="dai-ngan"><div class="ngan" role="tablist" aria-label="Chợ">
       <button type="button" role="tab" id="ngan-hang" aria-selected="true" aria-controls="p-hang">Hàng của tôi</button>
-      <button type="button" role="tab" id="ngan-can" aria-selected="false" aria-controls="p-can">Bên mua cần<small id="so-can"></small></button>
+      <button type="button" role="tab" id="ngan-can" aria-selected="false" aria-controls="p-can">Người mua cần<small id="so-can"></small></button>
       <button type="button" role="tab" id="ngan-vu" aria-selected="false" aria-controls="p-vu">Mùa vụ<small id="so-vu"></small></button></div>
     </div>
 
@@ -200,12 +200,12 @@
     </section>
 
     <section id="p-vu" role="tabpanel" aria-labelledby="ngan-vu" hidden>
-      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Hợp đồng ký trước mùa: <b style="color:var(--muc)">đặt trước khi hái</b> (bên mua đặt trước, chốt lượng gần ngày hái).</p>
+      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Hợp đồng ký trước mùa: <b style="color:var(--muc)">đặt trước khi hái</b> (người mua đặt trước, chốt lượng gần ngày hái).</p>
       <div id="ds-vu"><div class="khung-tai"></div></div>
     </section>
 
     <section id="p-can" role="tabpanel" aria-labelledby="ngan-can" hidden>
-      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Bên mua đăng nhu cầu, bác chọn lô của mình để chào hàng. Giá thấp nhất của bác luôn được giữ kín.</p>
+      <p class="phu" style="color:var(--muc-nhat);font-size:14px;margin-bottom:10px">Người mua đăng nhu cầu, bác chọn lô của mình để chào hàng. Giá thấp nhất của bác luôn được giữ kín.</p>
       <div class="cung-cau" id="cung-cau" hidden></div>
       <p class="bao loi" id="chao-loi" hidden>Chưa tải được lời chào của bác nên tạm khóa nút Chào hàng (tránh chào trùng). <button type="button" class="nut phu-nut" onclick="location.reload()" style="margin-top:8px">Thử lại</button></p>
       <div id="ds-can"><div class="khung-tai"></div></div>
@@ -222,7 +222,7 @@ veTab("cho");
 veDau($("dau"), { chao: "Chợ của bác", ten: "Hàng đang bán", chuDau: "" });
 
 const TT = {
-  on_sale: ["Đang bán", ""], upcoming: ["Sắp có hàng", ""], hidden: ["Bên mua không thấy", "gap"], draft: ["Nháp", "cho"], reserved: ["Đang giữ cho đơn", "vang"],
+  on_sale: ["Đang bán", ""], upcoming: ["Sắp có hàng", ""], hidden: ["Người mua không thấy", "gap"], draft: ["Nháp", "cho"], reserved: ["Đang giữ cho đơn", "vang"],
   sold_out: ["Đã bán hết", "cho"], closed: ["Đã đóng", "cho"], paused: ["Tạm ngưng", "cho"],
 };
 const NHOM_MUA = { processor: "Nhà máy chế biến", export: "Xuất khẩu", horeca: "Nhà hàng, bếp ăn", wholesale: "Đầu mối", wholesaler: "Vựa, đầu mối", trader: "Thương lái", retail: "Bán lẻ", household: "Hộ chế biến" };
@@ -237,7 +237,7 @@ const lenh = async (d, b) => {
   if (!r.ok) {
     const e = j.errors?.[0] || {};
     if (/ck_lot_price_rate/.test(JSON.stringify(e))) throw new Error("Giá lô chỉ sửa được 1 lần mỗi 24 giờ. Bác đợi qua 24 giờ rồi sửa lại.");
-    if (e.details?.db === "uq_offer_open_per_lot_buyer") throw new Error("Lô này đã có lời chào đang mở với bên mua này. Bác xem và trả lời ở Tin nhắn.");
+    if (e.details?.db === "uq_offer_open_per_lot_buyer") throw new Error("Lô này đã có lời chào đang mở với người mua này. Bác xem và trả lời ở Tin nhắn.");
     throw new Error(e.message || j.thong_diep || j.message || `Lỗi ${r.status}`);
   }
   return j;
@@ -262,10 +262,10 @@ const dongChao = (c, coMaLo = true) => {
   const toiBac = v.from_side === "buyer";
   const han = v.expires_at ? new Date(v.expires_at).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" }) : "";
   return `<a href="./ban-tin-nhan.html${location.search}#chao=${esc(c.id)}">
-    <span class="ai">${bacChao ? `Bác chào ${esc(c.buyer_name || "bên mua")}` : `${esc(c.buyer_name || "Bên mua")} chào`}</span>
+    <span class="ai">${bacChao ? `Bác chào ${esc(c.buyer_name || "người mua")}` : `${esc(c.buyer_name || "Người mua")} chào`}</span>
     <span class="gia">${Number(v.price_vnd || 0).toLocaleString("vi-VN")} đ/kg</span>
     <span class="phu2">${esc(can(v.qty_g).join(" "))}${coMaLo ? ` · lô ${esc(c.lot_code)}` : ""}${han ? ` · hạn ${han}` : ""}</span>
-    <span class="luot ${toiBac ? "bac" : ""}">${toiBac ? "Chờ bác" : "Chờ bên mua"}</span></a>`;
+    <span class="luot ${toiBac ? "bac" : ""}">${toiBac ? "Chờ bác" : "Chờ người mua"}</span></a>`;
 };
 
 // Quản lý lô: sửa giá (1 lần/24 giờ), bán nhanh 3 ngày, ngừng bán
@@ -283,17 +283,17 @@ async function moQuanLy(l) {
   const soChaoMo = dsChaoMo.filter((c) => c.lot_code === l.code).length;
   tam.innerHTML = `<h2 id="ql-t">${esc(ten)} · ${esc(l.code)}</h2>
     <form class="muc-tam" id="f-gia"><h3>Sửa giá</h3>
-      <p>Sửa được 1 lần mỗi 24 giờ. Giá thấp nhất giữ kín, bên mua không thấy; lời chào thấp hơn bị tự từ chối.${g?.price_vnd ? ` Giá tham khảo hiện ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg.` : ""}</p>
+      <p>Sửa được 1 lần mỗi 24 giờ. Giá thấp nhất giữ kín, người mua không thấy; lời chào thấp hơn bị tự từ chối.${g?.price_vnd ? ` Giá tham khảo hiện ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg.` : ""}</p>
       <div class="hai-o"><label>Giá muốn bán, đ/kg<input name="ask" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.ask_price_vnd || "")}"></label>
         <label>Giá thấp nhất, đ/kg<input name="floor" type="number" inputmode="numeric" min="1000" step="100" required value="${esc(ct?.floor_price_vnd || "")}"></label></div>
       <p class="bao-ket" id="bao-gia" role="status"></p>
       <button type="submit" class="nut chinh-nut">Lưu giá mới</button></form>
     <div class="muc-tam"><h3>Bán nhanh trong 3 ngày</h3>
-      <p>${dangGap ? `Đang bán nhanh tới ${new Date(l.ban_gap_den).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })}.` : "Bên mua chỉ thấy \"giao được trong 48 giờ\", không thấy chữ gấp. Bên nhận hàng kém loại sẽ được báo."}</p>
+      <p>${dangGap ? `Đang bán nhanh tới ${new Date(l.ban_gap_den).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" })}.` : "Người mua chỉ thấy \"giao được trong 48 giờ\", không thấy chữ gấp. Bên nhận hàng kém loại sẽ được báo."}</p>
       <p class="bao-ket" id="bao-gap" role="status"></p>
       <button type="button" class="nut phu-nut" id="nut-gap">${dangGap ? "Tắt bán nhanh" : "Bật bán nhanh 3 ngày"}</button></div>
     <div class="muc-tam"><h3>Ngừng bán lô này</h3>
-      <p>Bên mua sẽ không thấy lô nữa. Hợp đồng đã ký vẫn giữ nguyên. ${soChaoMo ? `<b>Lô đang có ${soChaoMo} lời chào mở: sau khi ngừng bán sẽ không đồng ý được nữa</b>, bác nên trả lời hoặc hủy các lời chào đó trước.` : ""} Lô đang giữ hàng cho bên mua thì chưa ngừng bán được.</p>
+      <p>Người mua sẽ không thấy lô nữa. Hợp đồng đã ký vẫn giữ nguyên. ${soChaoMo ? `<b>Lô đang có ${soChaoMo} lời chào mở: sau khi ngừng bán sẽ không đồng ý được nữa</b>, bác nên trả lời hoặc hủy các lời chào đó trước.` : ""} Lô đang giữ hàng cho người mua thì chưa ngừng bán được.</p>
       <p class="bao-ket" id="bao-dong" role="status"></p>
       <button type="button" class="nut nut-do" id="nut-dong">Ngừng bán</button></div>
     <div class="day-tam"><button type="button" class="nut phu-nut" id="ql-dong" style="width:100%">Đóng</button></div>`;
@@ -355,7 +355,7 @@ async function moHang() {
   // Nhắc: lô sắp tự ẩn / đã ẩn → một nút xác nhận còn hàng cho tất cả
   const canNhac = lo.filter((l) => l.status === "hidden" || (l.status === "on_sale" && (l.an_tu_dong || !l.last_confirmed_at || (Date.now() - new Date(l.last_confirmed_at)) / 864e5 > NGAY_NHAC)));
   if (canNhac.length) {
-    $("nhac").innerHTML = `<p><b>${canNhac.length} lô</b> lâu chưa xác nhận còn hàng. Quá 14 ngày bên mua sẽ không thấy nữa.</p><button type="button" id="xn-tat-ca">Vẫn còn hàng</button>`;
+    $("nhac").innerHTML = `<p><b>${canNhac.length} lô</b> lâu chưa xác nhận còn hàng. Quá 14 ngày người mua sẽ không thấy nữa.</p><button type="button" id="xn-tat-ca">Vẫn còn hàng</button>`;
     $("nhac").hidden = false;
     $("xn-tat-ca").onclick = async (e) => {
       e.target.disabled = true; e.target.textContent = "Đang gửi…";
@@ -371,7 +371,7 @@ async function moHang() {
   const anDi = lo.filter((l) => l.status === "on_sale" && l.an_tu_dong);
   const nhom = [
     ["on_sale", "Đang bán", lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong)],
-    ["an", "Bên mua không thấy", [...anDi, ...lo.filter((l) => l.status === "hidden")]],
+    ["an", "Người mua không thấy", [...anDi, ...lo.filter((l) => l.status === "hidden")]],
     ...Object.entries(TT).filter(([k]) => k !== "on_sale" && k !== "hidden").map(([k, [ten]]) => [k, ten, lo.filter((l) => l.status === k)]),
   ].filter(([, , d]) => d.length);
   if (!nhom.length) nhom.push(["on_sale", "Đang bán", []]);
@@ -388,7 +388,7 @@ async function moHang() {
         .map(([k, ten, g, mau]) => [k, ten, Number(g || 0), mau]);
       const tong = phan.reduce((s, [, , g]) => s + g, 0) || 1;
       const conGap = l.ban_gap_den && new Date(l.ban_gap_den) > new Date() && l.status === "on_sale";
-      const [tt, lop] = l.an_tu_dong ? ["Bên mua không thấy", "gap"] : conGap ? ["Đang bán nhanh", "vang"] : TT[l.status] || [l.status, "cho"];
+      const [tt, lop] = l.an_tu_dong ? ["Người mua không thấy", "gap"] : conGap ? ["Đang bán nhanh", "vang"] : TT[l.status] || [l.status, "cho"];
       const anh = ANH_SP(l.product_code);
       const chaoLo = (dsChao || []).filter((c) => c.lot_code === l.code);
       const hoi = chaoLo.length;
@@ -403,7 +403,7 @@ async function moHang() {
         ${chaoLo.length ? `<div class="chao-lo">${chaoLo.map((c) => dongChao(c, false)).join("")}</div>` : ""}
         <div class="duoi"><span class="hoi">${chaoLoiTai ? "Chưa tải được lời chào" : hoi ? `<b>${hoi}</b> lời chào đang mở` : "Chưa có lời chào"}</span>
           <span class="nut-hang">${lauChuaXn ? `<button type="button" class="xac-nhan" data-xn="${l.id}">Vẫn còn hàng</button>` : ""}${l.status === "on_sale" ? `<button type="button" class="nut-ql" data-ql="${l.id}">Quản lý lô</button>` : ""}</span></div>
-        ${l.goi_y_ban_gap ? `<p class="goi-y">Lô này lâu chưa có người hỏi. Bác có thể bật bán nhanh (bên mua chỉ thấy "giao được trong 48 giờ"), hoặc nhắn AgiViet hỏi ứng tiền, kho lạnh.</p>` : ""}
+        ${l.goi_y_ban_gap ? `<p class="goi-y">Lô này lâu chưa có người hỏi. Bác có thể bật bán nhanh (người mua chỉ thấy "giao được trong 48 giờ"), hoặc nhắn AgiViet hỏi ứng tiền, kho lạnh.</p>` : ""}
       </article>`;
     }).join("") : `<div class="trong">${window.anhTrong?.("chua-co-lo-hang") || ""}<p><b>Chưa có lô nào ở đây</b></p><p style="margin-top:4px">Bấm nút Đăng bài ở giữa thanh dưới để đăng hàng.</p></div>`;
     $("ds").setAttribute("aria-label", `${d.length} lô`);
@@ -416,11 +416,11 @@ async function moHang() {
   ve();
 }
 
-const CU = { rejected: "Lần trước bên mua đã từ chối", expired: "Lần trước hết hạn, bên mua chưa trả lời", withdrawn: "Lần trước bác đã hủy lời chào", auto_rejected: "Lần trước chưa tới mức bác chấp nhận" };
+const CU = { rejected: "Lần trước người mua đã từ chối", expired: "Lần trước hết hạn, người mua chưa trả lời", withdrawn: "Lần trước bác đã hủy lời chào", auto_rejected: "Lần trước chưa tới mức bác chấp nhận" };
 const gioVN = (s) => new Date(s).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" });
 async function moCan() {
   const nc = await get("/v1/demands").catch(() => null);
-  if (!nc) { $("ds-can").innerHTML = `<p class="bao loi">Chưa tải được nhu cầu bên mua.</p>`; return; }
+  if (!nc) { $("ds-can").innerHTML = `<p class="bao loi">Chưa tải được nhu cầu người mua.</p>`; return; }
   const dangBan = lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);
   dangBanToanCuc = dangBan;
   const vuong = (l, ben) => dsChaoMo.some((c) => c.lot_code === l.code && c.buyer_org_id === ben);
@@ -440,7 +440,7 @@ async function moCan() {
   const canKg = mo.filter((n) => spBac.includes(n.product_code)).flatMap((n) => n.lines).reduce((t, x) => t + Number(x.qty_g), 0);
   const banKg = dangBan.reduce((t, l) => t + Number(l.available_g || 0), 0);
   if (spBac.length) {
-    $("cung-cau").innerHTML = `<div><b>${esc(can(canKg).join(" "))}</b><span>bên mua đang cần (${mo.filter((n) => spBac.includes(n.product_code)).length} phiếu)</span></div>
+    $("cung-cau").innerHTML = `<div><b>${esc(can(canKg).join(" "))}</b><span>người mua đang cần (${mo.filter((n) => spBac.includes(n.product_code)).length} phiếu)</span></div>
       <div><b>${esc(can(banKg).join(" "))}</b><span>bác đang bán</span></div>`;
     $("cung-cau").hidden = false;
   }
@@ -467,24 +467,24 @@ async function moCan() {
     }
     if (c.status === "accepted") {
       const giu = ct?.hold?.expires_at ? ` tới ${gioVN(ct.hold.expires_at)}` : " 24 giờ";
-      return `<div class="loi-cua-bac dong-y"><p><b>Bên mua đã đồng ý giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
-        <p class="phu2">Hàng được giữ cho bên mua${giu}. Đây chưa phải hợp đồng: chờ bên mua gửi thỏa thuận để hai bên ký.</p>
+      return `<div class="loi-cua-bac dong-y"><p><b>Người mua đã đồng ý giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
+        <p class="phu2">Hàng được giữ cho người mua${giu}. Đây chưa phải hợp đồng: chờ người mua gửi thỏa thuận để hai bên ký.</p>
         <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Xem ở Tin nhắn</a></div>`;
     }
     if (v.from_side === "buyer") {
       const con = ct?.luot_tra_gia_con;
-      return `<div class="loi-cua-bac toi-bac"><p><b>Bên mua trả giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
+      return `<div class="loi-cua-bac toi-bac"><p><b>Người mua trả giá ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
         <p class="phu2">Tới lượt bác trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}${con != null ? ` · bác còn ${con} lần chào giá mới` : ""}. Bác đồng ý, chào giá mới hoặc không bán ở Tin nhắn.</p>
         <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Trả lời ở Tin nhắn</a></div>`;
     }
     if ((v.round_no || 1) > 1) {
-      // Bác đã trả giá lại sau khi bên mua trả giá: chỉ chờ, không rút/sửa (quy trình B3; backend 0074 cũng chặn)
+      // Bác đã trả giá lại sau khi người mua trả giá: chỉ chờ, không rút/sửa (quy trình B3; backend 0074 cũng chặn)
       return `<div class="loi-cua-bac"><p><b>Bác đã chào giá mới ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
-        <p class="phu2">Chờ bên mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Hai bên đã thương lượng qua lại nên không hủy hay sửa được nữa.</p>
+        <p class="phu2">Chờ người mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Hai bên đã thương lượng qua lại nên không hủy hay sửa được nữa.</p>
         <a class="nut-sua" href="./ban-tin-nhan.html#chao=${esc(c.id)}">Xem ở Tin nhắn</a></div>`;
     }
     return `<div class="loi-cua-bac"><p><b>Bác đã chào ${gia} đ/kg</b> · ${esc(can(v.qty_g).join(" "))} · lô ${esc(c.lot_code)}</p>
-      <p class="phu2">Chờ bên mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Bên mua chưa trả lời thì bác sửa hoặc hủy được.</p>
+      <p class="phu2">Chờ người mua trả lời${v.expires_at ? ` trước ${gioVN(v.expires_at)}` : ""}. Người mua chưa trả lời thì bác sửa hoặc hủy được.</p>
       <div class="hai-nut"><button type="button" class="nut-sua" data-sua="${c.id}" data-nc="${n.id}" data-dong="${x.id}">Sửa lời chào</button><button type="button" class="nut-huy" data-huy="${c.id}">Hủy chào</button></div></div>`;
   };
   const veNc = (n) => {
@@ -500,17 +500,17 @@ async function moCan() {
         const giu = moi?.status === "accepted" ? chiTiet.get(moi.id)?.hold : null;
         const conGiu = giu && (giu.status === "committed" || (giu.status === "active" && new Date(giu.expires_at) > new Date()));
         const cua = moi && (moi.status === "sent" || (moi.status === "accepted" && (conGiu || !chiTiet.get(moi.id)))) ? moi : null;
-        const cuDong = moi && !cua ? (moi.status === "accepted" ? "Lần trước bên mua đồng ý nhưng hết thời gian giữ hàng" : CU[moi.status]) : "";
-        const nhan = !cua && !k.length && loKhop(n.product_code, x.grade_code).length ? ["Lô này đang có lời chào với bên mua", "da"] : !cua && !k.length ? ["Bác chưa có hàng này", "chua"] : null;
+        const cuDong = moi && !cua ? (moi.status === "accepted" ? "Lần trước người mua đồng ý nhưng hết thời gian giữ hàng" : CU[moi.status]) : "";
+        const nhan = !cua && !k.length && loKhop(n.product_code, x.grade_code).length ? ["Lô này đang có lời chào với người mua", "da"] : !cua && !k.length ? ["Bác chưa có hàng này", "chua"] : null;
         return `${cuDong ? `<p class="lan-truoc">${esc(cuDong)} (${Number(moi.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg). Bác chào lại được.</p>` : ""}<div class="nc-dong"><span>${esc(tenLoai(x.grade_code))}</span><span class="sl">${can(x.qty_g).join(" ")}</span>
           ${cua ? "" : nhan ? `<span class="tt-dong ${nhan[1]}">${nhan[0]}</span>` : `<button type="button" ${chaoLoiTai ? "disabled" : ""} data-nc="${n.id}" data-dong="${x.id}" aria-label="Chào hàng cho ${esc(n.buyer_name)}">Chào hàng</button>`}</div>
           ${cua ? veLoiCua(cua, chiTiet.get(cua.id), n, x) : ""}`; }).join("")}
     </article>`;
   };
   const lienQuan = mo.filter((n) => diem(n) < 2), khac = mo.filter((n) => diem(n) === 2);
-  $("ds-can").innerHTML = (lienQuan.length ? lienQuan.map(veNc).join("") : `<div class="trong">Chưa có bên mua nào cần mặt hàng bác đang bán.</div>`)
+  $("ds-can").innerHTML = (lienQuan.length ? lienQuan.map(veNc).join("") : `<div class="trong">Chưa có người mua nào cần mặt hàng bác đang bán.</div>`)
     + (khac.length ? `<details class="nc-khac"><summary>Nhu cầu mặt hàng khác <small>${khac.length}</small></summary>${khac.map(veNc).join("")}</details>` : "");
-  // Sửa lời chào: mở tấm điền sẵn, gửi thì thay lời chào cũ (vẫn giữ mối với bên mua)
+  // Sửa lời chào: mở tấm điền sẵn, gửi thì thay lời chào cũ (vẫn giữ mối với người mua)
   $("ds-can").querySelectorAll("[data-sua]").forEach((b) => (b.onclick = () => {
     const n = mo.find((x) => x.id === b.dataset.nc), dong = n.lines.find((x) => x.id === b.dataset.dong), cu = tatCaChao.find((c) => c.id === b.dataset.sua);
     const dsLo = dangBan.filter((l) => l.product_code === n.product_code && l.grade_code === dong.grade_code && (l.code === cu.lot_code || !vuong(l, n.buyer_org_id)));
@@ -530,7 +530,7 @@ async function moCan() {
 }
 
 // Tấm chào hàng: chọn lô khớp, lượng, giá → lời chào của người bán vào nhu cầu
-const GIAO = { self_pickup: "Bên mua tự đến lấy tại vườn", delivered: "Bác giao tới nơi bên mua", seller_delivers: "Bác chở tới nơi bên mua", platform_logistics: "AgiViet điều phối xe", warehouse: "Giao tại kho" };
+const GIAO = { self_pickup: "Người mua tự đến lấy tại vườn", delivered: "Bác giao tới nơi người mua", seller_delivers: "Bác chở tới nơi người mua", platform_logistics: "AgiViet điều phối xe", warehouse: "Giao tại kho" };
 async function moTam(n, dong, dsLo, cu = null) {
   const che = document.createElement("div"); che.className = "man-che";
   const truocDo = document.activeElement;
@@ -544,9 +544,9 @@ async function moTam(n, dong, dsLo, cu = null) {
   const toiDaKg = (l) => Math.floor(Math.min(tran.get(l.id) ?? Number(l.available_g), Number(dong.qty_g)) / 1000);
   che.innerHTML = `<form class="tam tam-chao" role="dialog" aria-modal="true" aria-labelledby="tam-t" novalidate tabindex="-1">
     <div class="dau-tam"><h2 id="tam-t">${cu ? "Sửa lời chào" : "Chào hàng"}</h2><p>cho <b>${esc(n.buyer_name)}</b></p></div>
-    ${cu ? `<p class="ghi-sua">Lời chào cũ (${soVN(cu.vong_cuoi.price_vnd)} đ/kg · ${esc(can(cu.vong_cuoi.qty_g).join(" "))}) sẽ được thay bằng lời chào mới. Bên mua vẫn thấy bác, hạn trả lời tính lại 24 giờ.</p>` : ""}
+    ${cu ? `<p class="ghi-sua">Lời chào cũ (${soVN(cu.vong_cuoi.price_vnd)} đ/kg · ${esc(can(cu.vong_cuoi.qty_g).join(" "))}) sẽ được thay bằng lời chào mới. Người mua vẫn thấy bác, hạn trả lời tính lại 24 giờ.</p>` : ""}
     <dl class="ngu-canh">
-      <dt>Bên mua cần</dt><dd>${esc(tenSp.get(n.product_code) || n.product_code)} · ${esc(tenLoai(dong.grade_code))} · ${esc(can(dong.qty_g).join(" "))}</dd>
+      <dt>Người mua cần</dt><dd>${esc(tenSp.get(n.product_code) || n.product_code)} · ${esc(tenLoai(dong.grade_code))} · ${esc(can(dong.qty_g).join(" "))}</dd>
       <dt>Thời gian</dt><dd>${ngayVN(n.needed_from)} – ${ngayVN(n.needed_to)}</dd>
       <dt>Giao nhận</dt><dd data-r="giao">…</dd>
       ${toiThieuG > 1000 ? `<dt>${gom ? "Đơn gom" : "Tối thiểu"}</dt><dd>Mỗi vườn tối thiểu ${esc(can(toiThieuG).join(" "))}</dd>` : ""}
@@ -574,7 +574,7 @@ async function moTam(n, dong, dsLo, cu = null) {
   const kiem = () => {
     const g0 = gamNhap(), g = Number(f.gia.value), l = loChon(), maxKg = toiDaKg(l);
     if (!g0 || g0 <= 0) return ["Bác nhập lượng muốn chào.", ""];
-    if (g0 > maxKg * 1000) return [`Tối đa ${soVN(maxKg)} kg (${tran.has(l.id) && l.qty_basis === "estimated" ? "lô ước tính chỉ cam kết tối đa 80%, " : ""}lô còn ${can(l.available_g).join(" ")}, bên mua cần ${can(dong.qty_g).join(" ")}).`, ""];
+    if (g0 > maxKg * 1000) return [`Tối đa ${soVN(maxKg)} kg (${tran.has(l.id) && l.qty_basis === "estimated" ? "lô ước tính chỉ cam kết tối đa 80%, " : ""}lô còn ${can(l.available_g).join(" ")}, người mua cần ${can(dong.qty_g).join(" ")}).`, ""];
     if (g0 < toiThieuG) return [`Mỗi vườn chào tối thiểu ${can(toiThieuG).join(" ")}.`, ""];
     if (!g || g < 1000) return ["Bác nhập giá chào (đồng/kg).", ""];
     const cb = [];
@@ -636,7 +636,7 @@ async function moTam(n, dong, dsLo, cu = null) {
     const moKhoa = () => { dangGui = false; f.querySelectorAll("input, select, button").forEach((x) => (x.disabled = false)); };
     try {
       if (cu) {
-        // Mỗi lô chỉ một lời chào mở với cùng bên mua → rút cũ rồi gửi mới (chỉ khi bên mua chưa trả lời; backend chặn nếu đã trả lời)
+        // Mỗi lô chỉ một lời chào mở với cùng người mua → rút cũ rồi gửi mới (chỉ khi người mua chưa trả lời; backend chặn nếu đã trả lời)
         await lenh(`/v1/offers/${cu.id}/withdraw`, {});
         try { await lenh("/v1/offers", moi); }
         catch (err) {
@@ -650,7 +650,7 @@ async function moTam(n, dong, dsLo, cu = null) {
       if (!conMo()) return;
       f.innerHTML = `<div class="dau-tam"><h2>${cu ? "Đã sửa lời chào" : "Đã gửi chào hàng"}</h2><p>${esc(n.buyer_name)} có 24 giờ để trả lời.</p></div>
         <div class="o-thanh-tien"><span>Bác chào</span><b>${soVN(Math.round(Number(moi.qty_g) * Number(moi.price_vnd) / 1000))} đ</b><small>${esc(can(moi.qty_g).join(" "))} × ${soVN(moi.price_vnd)} đ/kg</small></div>
-        <p class="bao-ket">Lời chào hiện ngay dưới nhu cầu này. Bên mua chưa trả lời thì bác sửa hoặc hủy được.</p>
+        <p class="bao-ket">Lời chào hiện ngay dưới nhu cầu này. Người mua chưa trả lời thì bác sửa hoặc hủy được.</p>
         <div class="hang-nut day-tam"><button type="button" class="nut phu-nut" id="tam-xong">Đóng</button><a class="nut chinh-nut" href="./ban-tin-nhan.html${location.search}">Mở Tin nhắn</a></div>`;
       dangGui = false;
       f.querySelector("#tam-xong").onclick = () => location.reload();
@@ -658,7 +658,7 @@ async function moTam(n, dong, dsLo, cu = null) {
   };
 }
 
-const TT_DON = { drafting: "Đang soạn hợp đồng", awaiting_signatures: "Chờ ký", awaiting_deposit: "Chờ bên mua cọc", active: "Đang thực hiện", completed: "Đã xong", cancelled: "Đã hủy" };
+const TT_DON = { drafting: "Đang soạn hợp đồng", awaiting_signatures: "Chờ ký", awaiting_deposit: "Chờ người mua cọc", active: "Đang thực hiện", completed: "Đã xong", cancelled: "Đã hủy" };
 async function moVu() {
   const ds = await get("/v1/seasonal-orders").catch(() => null);
   if (!ds) { $("ds-vu").innerHTML = `<p class="bao loi">Chưa tải được hợp đồng mùa vụ.</p>`; return; }
@@ -674,12 +674,12 @@ async function moVu() {
       <p class="phu">${esc(v.product_name)} · ${esc(v.code)}</p>
       <dl><dt>Lượng</dt><dd>${esc(luong)}</dd>
         <dt>Giá</dt><dd>${Number(v.unit_price_vnd).toLocaleString("vi-VN")} đ/kg${v.price_mode === "formula" ? " (theo công thức)" : ""}</dd>
-        <dt>Cọc bên mua</dt><dd>${Number(v.deposit_vnd).toLocaleString("vi-VN")} đ</dd>
+        <dt>Cọc người mua</dt><dd>${Number(v.deposit_vnd).toLocaleString("vi-VN")} đ</dd>
         <dt>Mùa hái</dt><dd>${ngayVN(v.harvest_from)} – ${ngayVN(v.harvest_to)}</dd>
         <dt>Vườn</dt><dd>${esc(v.site_name || "—")}</dd>
         ${v.so_dot > 1 ? `<dt>Số đợt giao</dt><dd>${v.so_dot}</dd>` : ""}</dl>
       <p class="tt-vu">${esc(TT_DON[v.order_status] || v.order_status)} ›</p></a>`;
-  }).join("") : `<div class="trong">Bác chưa có hợp đồng đặt trước nào. Khi bên mua muốn đặt hàng trước mùa, hợp đồng sẽ hiện ở đây.</div>`;
+  }).join("") : `<div class="trong">Bác chưa có hợp đồng đặt trước nào. Khi người mua muốn đặt hàng trước mùa, hợp đồng sẽ hiện ở đây.</div>`;
 }
 
 async function mo() {

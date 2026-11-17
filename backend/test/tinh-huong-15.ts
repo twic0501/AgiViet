@@ -15,7 +15,7 @@ them('TH-B23-DK', 'Tìm nguồn định kỳ qua API: thỏa thuận → chốt 
   const d = await ha.ok(`/v1/sourcing-agreements/${ag.id}/days`, { delivery_date: ngay, qty_g: 5000000 });
   const de = await vy.ok(`/v1/ops/sourcing-days/${d.data.day_id}/allocations`, { seller_org_id: seller, qty_g: 2000000, unit_price_vnd_per_kg: 20000 });
   const sớm = await nam.post(`/v1/sourcing-allocations/${de.data.allocation_id}/commit`, {});
-  th.kiem('Chưa được bên mua duyệt thì người bán chưa cam kết được', sớm.status >= 400, sớm.json);
+  th.kiem('Chưa được người mua duyệt thì người bán chưa cam kết được', sớm.status >= 400, sớm.json);
   await ha.ok(`/v1/sourcing-allocations/${de.data.allocation_id}/approve`, {});
   const base = await may.v<string>(`SELECT core.pair_exposure($1,$2)::text`, [buyer, seller]);
   await nam.ok('/v1/credit-terms', { buyer_org_id: buyer, pay_after_days: 3, credit_limit_vnd: String(BigInt(base) + 80000000n) });
@@ -27,7 +27,7 @@ them('TH-B23-DK', 'Tìm nguồn định kỳ qua API: thỏa thuận → chốt 
   await nam.ok(`/v1/allocation-changes/${ch.data.change_id}/answer`, { agree: true });
   th.bang('Người bán đồng ý: còn 1 tấn', (await ha.get(`/v1/sourcing-agreements/${ag.id}/coverage`)).json.nguon?.[0]?.qty_g, '1000000');
   const ngoai = await nam.get(`/v1/sourcing-agreements/${ag.id}/coverage`);
-  th.kiem('Người bán không xem được toàn bộ kế hoạch thu mua của bên mua', ngoai.status >= 400, ngoai.json);
+  th.kiem('Người bán không xem được toàn bộ kế hoạch thu mua của người mua', ngoai.status >= 400, ngoai.json);
 });
 
 them('TH-B23-HV', 'Hộp việc qua API: hồ sơ mở hiện cho nhân viên, giao người phụ trách; khách xem hồ sơ của đơn mình', async (may, th) => {

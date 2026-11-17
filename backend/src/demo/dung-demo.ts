@@ -74,7 +74,7 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     const qr = await ok('POST', `/v1/deliveries/${did}/receipt-qr`, {}, receiver);
     await ok('POST', `/v1/deliveries/${did}/start-check`, { qr_token: qr.data.qr_token }, seller);
   };
-  /** Trả thẳng trước bốc: bên mua báo trả kèm ảnh chứng từ, người bán xác nhận bằng OTP (đúng như app). */
+  /** Trả thẳng trước bốc: người mua báo trả kèm ảnh chứng từ, người bán xác nhận bằng OTP (đúng như app). */
   const traTruocBoc = async (buyer: string, seller: string, orderId: string) => {
     const p = (await ok('GET', `/v1/orders/${orderId}/payments`, undefined, buyer)).find((x: any) => x.kind === 'goods_before_loading');
     const anh = await ok('POST', '/v1/files', { mime: 'image/png', data_base64: ANH, entity: 'payment', entity_id: p.id, captured_in_app: true }, buyer);
@@ -116,7 +116,7 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     await kyHaiBen(quan.token, me.token, d, true);
     return { trang_thai: 'awaiting_seller', giu_nguyen: false, ids: { order_id: d.orderId } };
   });
-  // 0003: bên mua báo đã trả tiền trước bốc, chờ người bán xác nhận
+  // 0003: người mua báo đã trả tiền trước bốc, chờ người bán xác nhận
   await lam('0003', async (me) => {
     for (const o of (await donCua(me.token)).filter((x) => x.status === 'active')) {
       const p = (await ok('GET', `/v1/orders/${o.id}/payments`, undefined, me.token)).find((x: any) => x.status === 'payer_reported');
@@ -182,7 +182,7 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     }
     return { trang_thai: 'demand:open_with_quotes', giu_nguyen: false, ids };
   });
-  // 0007: hai bên đã ký, bên mua cần chuyển cọc
+  // 0007: hai bên đã ký, người mua cần chuyển cọc
   await lam('0007', async (me) => {
     const c = (await donCua(me.token)).find((x) => x.status === 'awaiting_deposit');
     if (c) return { trang_thai: 'awaiting_deposit', giu_nguyen: true, ids: { order_id: c.id } };

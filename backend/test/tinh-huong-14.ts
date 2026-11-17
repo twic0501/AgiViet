@@ -34,7 +34,7 @@ them('DEMO-10-SO', 'Dựng 10 tình huống, đăng nhập 0001–0010 bằng OT
   th.bang('0001 lời chào chờ trả lời', of1?.status, 'sent');
   const t2 = await tk('0002'); th.bang('0002 đơn chờ người bán ký', (await goi('GET', `/v1/orders/${theo['0002'].ids.order_id}`, undefined, t2)).json?.status, 'awaiting_seller');
   const t3 = await tk('0003'); const p3 = (await goi('GET', `/v1/orders/${theo['0003'].ids.order_id}/payments`, undefined, t3)).json.find((x: any) => x.id === theo['0003'].ids.payment_id);
-  th.bang('0003 khoản trước bốc bên mua đã báo trả', p3?.status, 'payer_reported');
+  th.bang('0003 khoản trước bốc người mua đã báo trả', p3?.status, 'payer_reported');
   const t4 = await tk('0004'); const d4 = (await goi('GET', `/v1/deliveries/${theo['0004'].ids.delivery_id}`, undefined, t4)).json;
   th.kiem('0004 chờ người bán ký kết quả cân (có hạ cấp/trả lại, cân thiếu)', d4?.status === 'awaiting_seller' && d4?.hanh_dong?.includes('agree_acceptance') && d4.ket_qua.at(-1).lines.some((l: any) => l.kind === 'downgraded'), d4?.hanh_dong);
   const t5 = await tk('0005'); const l5 = (await goi('GET', '/v1/lots?mine=true', undefined, t5)).json.find((x: any) => x.goi_y_ban_gap);

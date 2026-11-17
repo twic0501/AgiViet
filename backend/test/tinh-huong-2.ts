@@ -42,7 +42,7 @@ them('TH-003', 'Đăng lô: chặn cách ly, cảnh báo giá, ảnh chụp tron
   const xem = (await ha.get(`/v1/lots/${r2.id}`)).json;
   const tim = (await ha.get(`/v1/lots?product=XOAI_CAT_CHU&grade=L1`)).json;
   const chuoi = JSON.stringify(xem) + JSON.stringify(tim);
-  th.kiem('Bên mua không thấy 19000 ở API lô/tìm nguồn', !chuoi.includes('19000') && xem.floor_price_vnd === undefined, xem);
+  th.kiem('Người mua không thấy 19000 ở API lô/tìm nguồn', !chuoi.includes('19000') && xem.floor_price_vnd === undefined, xem);
   const cuaToi = (await nam.get(`/v1/lots/${r2.id}`)).json;
   th.bang('Chủ lô thấy giá kín', cuaToi.floor_price_vnd, '19000');
   th.bang('Sổ lượng khả dụng 1.000 kg', cuaToi.qty.available, '1000000');
@@ -86,12 +86,12 @@ them('TH-011', 'Lời chào dưới giá kín tự từ chối, không lộ số
   th.bang('Tự từ chối', o.status, 'auto_rejected');
   th.bang('Câu không số', o.data.thong_bao, 'Chưa tới mức người bán chấp nhận.');
   const x = (await b.ha.get(`/v1/offers/${o.id}`)).json;
-  th.kiem('Không lộ 21500 cho bên mua', !JSON.stringify(x).includes('21500') && !JSON.stringify(o).includes('21500'), x);
+  th.kiem('Không lộ 21500 cho người mua', !JSON.stringify(x).includes('21500') && !JSON.stringify(o).includes('21500'), x);
   const ev = await may.v<number>(`SELECT count(*)::int FROM evt.domain_events WHERE aggregate_id=$1 AND event_type='loi_chao.gui'`, [o.id]);
   th.bang('Không phát sự kiện gửi tới người bán', ev, 0);
 });
 
-them('TH-012', 'Ngưỡng 80% (cảnh báo) và 60% (chặn) khi bên mua chào', async (may, th) => {
+them('TH-012', 'Ngưỡng 80% (cảnh báo) và 60% (chặn) khi người mua chào', async (may, th) => {
   const b = await dangNhapCacBen(may);
   const o1 = await b.ha.ok('/v1/offers', { direction: 'buyer_bid', lot_id: b.lotId, qty_g: 100000, price_vnd: 19500 });
   th.kiem('Dưới 80%: có cảnh báo', (o1.data.canh_bao ?? []).length > 0 || o1.status === 'auto_rejected', o1.data);
@@ -117,7 +117,7 @@ them('TH-015', 'Giá bất thường: cần tick xác nhận, cọc theo giá t�
   const lot = await may.v<string>(`SELECT id FROM core.lots WHERE code='L-0420'`);
   const o = await tu.ok('/v1/offers', { direction: 'buyer_bid', lot_id: lot, qty_g: 1000000, price_vnd: 15500 });
   th.kiem('Lời chào 15.500 (dưới giá kín) tự từ chối', o.status === 'auto_rejected', o);
-  // Người bán tự báo giá thấp cho phiếu của bên mua (chiều báo giá, không qua giá kín).
+  // Người bán tự báo giá thấp cho phiếu của người mua (chiều báo giá, không qua giá kín).
   const bg = await tu.ok('/v1/offers', { direction: 'buyer_bid', lot_id: lot, qty_g: 1000000, price_vnd: 24000 });
   await sau.ok(`/v1/offers/${bg.id}/counter`, { price_vnd: 14000 });
   const offerId: string = bg.id;
@@ -318,7 +318,7 @@ them('TH-043', 'Quá hạn cọc hàng tươi 12 giờ', async (may, th) => {
   th.bang('Không thu phí, không bút toán', phi, 0);
 });
 
-them('TH-044', 'Bên mua xin hủy sau cọc: cọc về người bán, phí không hoàn', async (may, th) => {
+them('TH-044', 'Người mua xin hủy sau cọc: cọc về người bán, phí không hoàn', async (may, th) => {
   const b = await toiHieuLuc(may, th);
   const pv = (await b.ha.get(`/v1/orders/${b.orderId}/cancellation-preview`)).json;
   th.bang('Màn hệ quả: cọc về người bán', pv.coc?.ve, 'seller');
@@ -348,7 +348,7 @@ them('TH-044b', 'Xin hủy: bên kia im lặng 24 giờ = không đồng ý', as
   th.bang('Đơn tiếp tục', o.status, 'active');
 });
 
-them('TH-045', 'Người bán xin hủy sau cọc: cọc và phí hoàn bên mua; người giúp bị chặn', async (may, th) => {
+them('TH-045', 'Người bán xin hủy sau cọc: cọc và phí hoàn người mua; người giúp bị chặn', async (may, th) => {
   const b = await toiHieuLuc(may, th);
   const teo = await may.dangNhap(SDT.teo);
   const t1 = await teo.post(`/v1/orders/${b.orderId}/cancellation-requests`, {});
@@ -451,7 +451,7 @@ them('BM-01', 'Bảo mật: dữ liệu theo tổ chức, quyền theo hành đ�
   th.kiem('Người bán không thấy giá tối đa', Array.isArray(nd2.lines) && nd2.lines.every((l: any) => l.max_price_vnd === undefined), nd2);
   const wh = await may.app.inject({ method: 'POST', url: '/v1/webhooks/bank', payload: { event_id: 'x', bank_txn_ref: 'y' } });
   th.bang('Webhook không chữ ký: 401', wh.statusCode, 401);
-  th.bang('Kế toán bên mua xem hướng dẫn cọc', (await b.lan.get(`/v1/orders/${b.orderId}/deposit-instruction`)).status, 200);
+  th.bang('Kế toán người mua xem hướng dẫn cọc', (await b.lan.get(`/v1/orders/${b.orderId}/deposit-instruction`)).status, 200);
   th.bang('Người bán không xem hướng dẫn cọc', (await b.nam.get(`/v1/orders/${b.orderId}/deposit-instruction`)).status, 404);
   const login = await may.q(`SELECT rolname, rolsuper, rolbypassrls FROM pg_roles WHERE rolname LIKE 'agv_u_%'`);
   th.kiem('Login riêng (D-01) không superuser, không bypass RLS', login.length > 0 && login.every((r: any) => !r.rolsuper && !r.rolbypassrls), login);

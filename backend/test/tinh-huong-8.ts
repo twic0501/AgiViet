@@ -39,11 +39,11 @@ them('GD-03', 'Yêu cầu hủy hiện hành, hướng dẫn trả thẳng theo 
   await chaoVaDongY(b, null); await lapVaKy(b, null); await chuyenCoc(b);
   const p = await khoanDau(b);
   const hd = await b.lan.get(`/v1/payments/${p.id}/instruction`);
-  th.bang('Kế toán bên mua xem hướng dẫn', hd.status, 200);
+  th.bang('Kế toán người mua xem hướng dẫn', hd.status, 200);
   th.kiem('Có số tài khoản đầy đủ và VietQR', /2186$/.test(hd.json.tai_khoan?.so_tai_khoan ?? '') && typeof hd.json.vietqr === 'string', hd.json);
   th.bang('Nội dung theo mã khoản do DB cấp (0047: BEFORE)', hd.json.noi_dung, `AGV ${b.orderCode!.replace(/-/g, '')} BEFORE`);
   th.bang('Người bán không xem hướng dẫn của bên trả', (await b.nam.get(`/v1/payments/${p.id}/instruction`)).status, 404);
-  th.bang('Kho bên mua không có quyền tiền', (await b.phuc.get(`/v1/payments/${p.id}/instruction`)).status, 403);
+  th.bang('Kho người mua không có quyền tiền', (await b.phuc.get(`/v1/payments/${p.id}/instruction`)).status, 403);
   const x = await b.ha.ok(`/v1/orders/${b.orderId}/cancellation-requests`, { reason_text: 'giá giảm' });
   const benKia = (await b.nam.get(`/v1/orders/${b.orderId}/cancellation-requests`)).json;
   th.kiem('Người bán thấy yêu cầu và nút đồng ý/từ chối', benKia[0]?.id === x.id && benKia[0].hanh_dong.join() === 'accept,reject' && benKia[0].requested_by_side === 'buyer', benKia);
@@ -62,7 +62,7 @@ them('GD-04', 'Danh sách tranh chấp của đơn sau khi tải lại', async (
   await b.phuc.ok(`/v1/deliveries/${b.deliveryId}/acceptance`, { pin: '2468', weighed_g: 2000000, lines: [{ kind: 'accepted', qty_g: 1880000 }, { kind: 'downgraded', qty_g: 120000, reason_code: 'TRAY_VO' }] });
   await b.nam.ok(`/v1/deliveries/${b.deliveryId}/acceptance/dispute`, { line_no: 2, reason: 'Không trầy', option: 'chia_lai' });
   const ds = (await b.phuc.get(`/v1/orders/${b.orderId}/disputes`)).json;
-  th.kiem('Bên mua thấy hồ sơ và hành động gửi lại kết quả (0052 chia lại)', ds.length === 1 && ds[0].status === 'open' && ds[0].hanh_dong.includes('resubmit_acceptance') && ds[0].opened_by_side === 'seller', ds);
+  th.kiem('Người mua thấy hồ sơ và hành động gửi lại kết quả (0052 chia lại)', ds.length === 1 && ds[0].status === 'open' && ds[0].hanh_dong.includes('resubmit_acceptance') && ds[0].opened_by_side === 'seller', ds);
   const ngoai = await may.dangNhap(SDT.quan);
   th.bang('Tổ chức ngoài không xem', (await ngoai.get(`/v1/orders/${b.orderId}/disputes`)).status, 404);
 });

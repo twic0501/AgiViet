@@ -120,7 +120,7 @@ export async function home(c) {
   <section class="sl-nhom" data-guide="viec"><div class="sl-tieu"><h2>Cần làm</h2>${viec.length > 3 ? `<a class="sl-lien" href="#/offers">Tất cả ${viec.length} ${toi}</a>` : ""}</div>
   ${viec.length ? `<div class="sl-ds-gon">${viec.slice(0, 3).join("")}</div>` : `<div class="sl-the sl-trong"><img src="${TRAU}06-vui.webp" alt=""><div><b>Không có việc gấp</b><p class="sl-nho">Lời chào giá và hạn giao sẽ hiện ở đây.</p></div></div>`}</section>
   ${theVuon(c, thoiTiet, lots)}
-  ${canMua.length ? `<a class="sl-the sl-goi-y" href="#/lots/ben-mua"><img src="${anh([...sanPham][0])}" alt=""><div><b>${canMua.length} bên mua đang cần ${e(tenHang(c, [...sanPham][0]).toLowerCase())}</b><span class="sl-nho">Xem họ cần loại nào, bao nhiêu</span></div>${toi}</a>` : ""}`;
+  ${canMua.length ? `<a class="sl-the sl-goi-y" href="#/lots/ben-mua"><img src="${anh([...sanPham][0])}" alt=""><div><b>${canMua.length} người mua đang cần ${e(tenHang(c, [...sanPham][0]).toLowerCase())}</b><span class="sl-nho">Xem họ cần loại nào, bao nhiêu</span></div>${toi}</a>` : ""}`;
 }
 
 /* ---------- Thẻ Vườn trên Hôm nay ---------- */
@@ -177,17 +177,17 @@ export async function offerList(c) {
   const minhGui = ds.filter((x) => x.o.status === "sent" && x.o.vong_cuoi.from_side === "seller");
   const dongY = ds.filter((x) => x.o.status === "accepted");
   const khac = ds.filter((x) => !["sent", "accepted"].includes(x.o.status));
-  const nhan = { expired: "Hết hạn", rejected: "Không bán", withdrawn: "Bên mua rút", auto_rejected: "Thấp hơn giá chịu bán", cancelled: "Đã hủy" };
+  const nhan = { expired: "Hết hạn", rejected: "Không bán", withdrawn: "Người mua rút", auto_rejected: "Thấp hơn giá chịu bán", cancelled: "Đã hủy" };
   return `${dauMuc("Bán hàng")}${tabBan("offers", cho.length)}
-  ${!ds.length ? `<div class="sl-the sl-trong"><img src="${TRAU}04-nghe.webp" alt=""><div><b>Chưa có lời chào</b><p class="sl-nho">Đăng hàng để bên mua chào giá.</p></div></div>` : ""}
+  ${!ds.length ? `<div class="sl-the sl-trong"><img src="${TRAU}04-nghe.webp" alt=""><div><b>Chưa có lời chào</b><p class="sl-nho">Đăng hàng để người mua chào giá.</p></div></div>` : ""}
   ${nhom("Cần chị trả lời", cho.map((x) => dongGon({ ...x, vang: true, chip: ["Trả lời", "vang"] })), 5)}
-  ${nhom("Chờ bên mua trả lời", minhGui.map((x) => dongGon({ ...x, chip: ["Đã trả giá"] })), 3)}
-  ${nhom("Đã đồng ý giá", dongY.map((x) => dongGon({ ...x, phu: `${money(x.o.vong_cuoi.price_vnd)}/kg · chờ bên mua lập hợp đồng`, chip: ["Đã đồng ý"] })), 3)}
+  ${nhom("Chờ người mua trả lời", minhGui.map((x) => dongGon({ ...x, chip: ["Đã trả giá"] })), 3)}
+  ${nhom("Đã đồng ý giá", dongY.map((x) => dongGon({ ...x, phu: `${money(x.o.vong_cuoi.price_vnd)}/kg · chờ người mua lập hợp đồng`, chip: ["Đã đồng ý"] })), 3)}
   ${nhom("Đã xong, hết hạn", khac.map((x) => dongGon({ ...x, phu: `${money(x.o.vong_cuoi.price_vnd)}/kg`, chip: [nhan[x.o.status] || "Đã đóng", "xam"] })), 5, false)}`;
 }
 
 /* ---------- Danh sách hàng ---------- */
-const tabBan = (dang, soChao) => `<nav class="sl-tab" aria-label="Bán hàng">${[["lots", "Hàng của tôi"], ["offers", "Lời chào" + (soChao ? ` <span class="sl-so-nho">${soChao}</span>` : "")], ["lots/ben-mua", "Bên mua cần"]].map(([h, t]) => `<a href="#/${h}" ${h === dang ? 'aria-current="page"' : ""}>${t}</a>`).join("")}</nav>`;
+const tabBan = (dang, soChao) => `<nav class="sl-tab" aria-label="Bán hàng">${[["lots", "Hàng của tôi"], ["offers", "Lời chào" + (soChao ? ` <span class="sl-so-nho">${soChao}</span>` : "")], ["lots/ben-mua", "Người mua cần"]].map(([h, t]) => `<a href="#/${h}" ${h === dang ? 'aria-current="page"' : ""}>${t}</a>`).join("")}</nav>`;
 async function soChaoCho(c) {
   const ds = await c.api.get("/v1/offers").catch(() => []);
   return ds.filter((o) => o.status === "sent" && o.vong_cuoi.from_side !== "seller").length;
@@ -199,13 +199,13 @@ export async function benMuaCan(c) {
   const dong = (d) => {
     const l0 = d.lines?.[0] || {};
     const kg = (d.lines || []).reduce((t, x) => t + Number(x.qty_g || 0), 0);
-    return dongGon({ href: "#/demands/" + d.id, img: anh(ma(d)), ten: `${tenHang(c, ma(d))}${l0.grade_code ? " · loại " + l0.grade_code : ""}`, phu: `${d.buyer_name || "Bên mua đã xác minh"}${d.needed_from ? " · cần " + date(d.needed_from).slice(0, 5) : ""}`, so: kg ? quantity(String(kg)) : "" });
+    return dongGon({ href: "#/demands/" + d.id, img: anh(ma(d)), ten: `${tenHang(c, ma(d))}${l0.grade_code ? " · loại " + l0.grade_code : ""}`, phu: `${d.buyer_name || "Người mua đã xác minh"}${d.needed_from ? " · cần " + date(d.needed_from).slice(0, 5) : ""}`, so: kg ? quantity(String(kg)) : "" });
   };
   const hop = demands.filter((d) => cua.has(ma(d))), khac = demands.filter((d) => !cua.has(ma(d)));
   return `${dauMuc("Bán hàng")}${tabBan("lots/ben-mua", so)}
   ${nhom("Cùng mặt hàng chị bán", hop.map(dong), 5)}
   ${nhom("Mặt hàng khác", khac.map(dong), 3, false)}
-  ${!demands.length ? `<div class="sl-the">Chưa có bên mua nào đang cần.</div>` : ""}`;
+  ${!demands.length ? `<div class="sl-the">Chưa có người mua nào đang cần.</div>` : ""}`;
 }
 export async function lotList(c) {
   const [lots, so] = await Promise.all([c.api.get("/v1/lots?mine=true"), soChaoCho(c)]);
@@ -230,9 +230,9 @@ export async function orderList(c) {
   const xong = orders.filter((o) => o.status === "completed");
   const dong = orders.filter((o) => o.status === "closed");
   return `${dauMuc("Đơn hàng", "home")}
-  ${!orders.length ? `<div class="sl-the sl-trong"><img src="${TRAU}04-nghe.webp" alt=""><div><b>Chưa có đơn hàng</b><p class="sl-nho">Đồng ý một lời chào giá, bên mua lập hợp đồng là có đơn.</p></div></div>` : ""}
+  ${!orders.length ? `<div class="sl-the sl-trong"><img src="${TRAU}04-nghe.webp" alt=""><div><b>Chưa có đơn hàng</b><p class="sl-nho">Đồng ý một lời chào giá, người mua lập hợp đồng là có đơn.</p></div></div>` : ""}
   ${nhom("Tới lượt chị", toiMinh.map((o) => dongGon({ ...d(o), vang: true, chip: [o.hien_thi.chang, "vang"] })), 5)}
-  ${nhom("Đang chờ bên mua", choBen.map((o) => dongGon({ ...d(o), phu: `${o.buyer_name} chưa ${loiThuong((o.hien_thi?.toi_luot?.viec || o.hien_thi?.ten || "").toLowerCase())} · ${o.code}`, ten: o.buyer_name, chip: [o.hien_thi?.chang ? "Chờ " + o.hien_thi.chang.toLowerCase() : "Đang chờ", "xam"] })), 5)}
+  ${nhom("Đang chờ người mua", choBen.map((o) => dongGon({ ...d(o), phu: `${o.buyer_name} chưa ${loiThuong((o.hien_thi?.toi_luot?.viec || o.hien_thi?.ten || "").toLowerCase())} · ${o.code}`, ten: o.buyer_name, chip: [o.hien_thi?.chang ? "Chờ " + o.hien_thi.chang.toLowerCase() : "Đang chờ", "xam"] })), 5)}
   ${nhom("Đã xong", xong.map((o) => dongGon({ ...d(o), phu: o.code + " · tiền đã về đủ", chip: ["Xong"] })), 3, false)}
   ${nhom("Đã đóng", dong.map((o) => dongGon({ ...d(o), phu: o.code + " · " + (o.hien_thi?.ten || "đã đóng"), chip: ["Đóng", "xam"] })), 3, false)}`;
 }
@@ -246,7 +246,7 @@ const loiThuong = (x = "") => x
   .replace(/[Kk]ý và gửi/, "ký hợp đồng");
 const CHANG = ["Ký", "Cọc", "Giao nhận", "Thanh toán", "Xong"];
 const SUB_CHANG = { Ký: "terms", Cọc: "deposit", "Giao nhận": "delivery", "Thanh toán": "payments" };
-const TEN_MUC = { terms: "Hợp đồng", deposit: "Cọc", payments: "Tiền bên mua trả", delivery: "Giao nhận", money: "Tính tiền cuối", documents: "Giấy tờ", cancel: "Xin hủy", disputes: "Sự cố, tranh chấp", amendments: "Đề nghị sửa" };
+const TEN_MUC = { terms: "Hợp đồng", deposit: "Cọc", payments: "Tiền người mua trả", delivery: "Giao nhận", money: "Tính tiền cuối", documents: "Giấy tờ", cancel: "Xin hủy", disputes: "Sự cố, tranh chấp", amendments: "Đề nghị sửa" };
 const dayChang = (at) => {
   const i = CHANG.indexOf(at);
   return `<div class="sl-buoc" aria-label="Các bước của đơn"><div>${CHANG.map((_, k) => `<i class="${k < i || at === "Xong" ? "xong" : k === i ? "dang" : ""}"></i>`).join("")}</div><div class="sl-buoc-chu">${CHANG.map((x, k) => (k === i ? `<b aria-current="step">${x}</b>` : `<span>${x}</span>`)).join("")}</div></div>`;
@@ -254,7 +254,7 @@ const dayChang = (at) => {
 export async function order(c, id, sub) {
   const o = await c.api.get(`/v1/orders/${id}`);
   c.currentOrder = o;
-  const ben = o.buyer?.display_name || "Bên mua";
+  const ben = o.buyer?.display_name || "Người mua";
   if (sub) {
     const rieng = { payments: manTien, terms: manHopDong, deposit: manCoc, delivery: manGiaoNhan }[sub];
     const than = rieng ? await rieng(c, o) : await orderPart(c, o, sub);
@@ -278,16 +278,16 @@ export async function order(c, id, sub) {
     ? `<section class="sl-the sl-bay-gio"><div><b>Đơn đã đóng</b><p class="sl-nho">${e(o.hien_thi.ten)}</p></div></section>`
     : toiMinh
     ? `<section class="sl-the sl-bay-gio toi" data-guide="viec"><span class="sl-chip vang">Tới lượt ${e(ten)}${han ? " · " + e(gioHan(han)) : ""}</span><b>${e(hoaDau(loiThuong(o.hien_thi.toi_luot.viec)))}</b><a class="sl-nut" href="#/order/${e(id)}/${sub0 || "terms"}">Làm ngay</a></section>`
-    : `<section class="sl-the sl-bay-gio"><span class="sl-chip xam">Đang chờ bên mua</span><b>${e(ben)} chưa ${e(loiThuong((o.hien_thi.toi_luot?.viec || o.hien_thi.ten).toLowerCase()))}</b><p class="sl-nho">Chị chưa cần làm gì. Có thay đổi app sẽ báo.</p></section>`;
-  const giao = { at_farm: "Tại vườn", at_buyer: "Tại kho bên mua" }[d.delivery_mode] || "Theo hợp đồng";
+    : `<section class="sl-the sl-bay-gio"><span class="sl-chip xam">Đang chờ người mua</span><b>${e(ben)} chưa ${e(loiThuong((o.hien_thi.toi_luot?.viec || o.hien_thi.ten).toLowerCase()))}</b><p class="sl-nho">Chị chưa cần làm gì. Có thay đổi app sẽ báo.</p></section>`;
+  const giao = { at_farm: "Tại vườn", at_buyer: "Tại kho người mua" }[d.delivery_mode] || "Theo hợp đồng";
   const tra = d.payment_timing === "before_loading" ? "Trước khi bốc hàng" : d.pay_after_days ? `Sau ${d.pay_after_days} ngày` : "Khi nhận hàng";
   return `${dauMuc(`${sp?.name_vi || "Đơn hàng"} · ${quantity(d.qty_g)}`, "orders")}<p class="sl-nho sl-ma">${e(ben)} · ${e(o.code)}</p>
   ${dayChang(o.hien_thi.chang)}
   ${bayGio}
-  <section class="sl-the"><span class="sl-nho">Giá trị hợp đồng</span><div class="sl-so-lon">${e(money(d.contract_value_vnd).replace(" đ", ""))} <small>đ</small></div><div class="sl-tien-phu"><span>${["awaiting_deposit", "drafting"].includes(o.status) ? `Cọc bên mua cần chuyển: <b>${e(money(d.deposit_vnd))}</b>` : o.status === "active" ? `Ngân hàng đã nhận cọc <b>${e(money(d.deposit_vnd))}</b>` : `Cọc <b>${e(money(d.deposit_vnd))}</b>`}</span></div></section>
+  <section class="sl-the"><span class="sl-nho">Giá trị hợp đồng</span><div class="sl-so-lon">${e(money(d.contract_value_vnd).replace(" đ", ""))} <small>đ</small></div><div class="sl-tien-phu"><span>${["awaiting_deposit", "drafting"].includes(o.status) ? `Cọc người mua cần chuyển: <b>${e(money(d.deposit_vnd))}</b>` : o.status === "active" ? `Ngân hàng đã nhận cọc <b>${e(money(d.deposit_vnd))}</b>` : `Cọc <b>${e(money(d.deposit_vnd))}</b>`}</span></div></section>
   <section class="sl-the sl-dong-ds">
     <div class="sl-dong"><span>Hàng</span><b>${e(sp?.name_vi || "")} ${e(quantity(d.qty_g))} × ${e(money(d.unit_price_vnd))}</b></div>
-    <div class="sl-dong"><span>Giao</span><b>${e(giao)}${dot ? " · " + e(date(dot.window_from).slice(0, 5)) : ""}${d.transport_by === "buyer" ? " · bên mua lo xe" : ""}</b></div>
+    <div class="sl-dong"><span>Giao</span><b>${e(giao)}${dot ? " · " + e(date(dot.window_from).slice(0, 5)) : ""}${d.transport_by === "buyer" ? " · người mua lo xe" : ""}</b></div>
     <div class="sl-dong"><span>Trả tiền</span><b>${e(tra)}</b></div>
     <div class="sl-dong"><span>Nhận vào</span><b>${e(d.seller_account?.masked || "")} · ${e(d.seller_account?.holder || "")}</b></div>
   </section>
@@ -299,7 +299,7 @@ export async function order(c, id, sub) {
 const TEN_KHOAN = { goods_before_loading: "Tiền trước khi bốc hàng", goods_on_receipt: "Tiền khi nhận hàng", goods_after_days: "Tiền trả sau" };
 async function manTien(c, o) {
   const list = await c.api.get(`/v1/orders/${o.id}/payments`);
-  const ben = o.buyer?.display_name || "Bên mua";
+  const ben = o.buyer?.display_name || "Người mua";
   const tk = o.dieu_khoan?.seller_account || {};
   const nhan = list.filter((p) => p.direction === "buyer_to_seller");
   const conMo = nhan.filter((p) => !["fully_received", "cancelled", "not_due"].includes(p.status));
@@ -337,12 +337,12 @@ async function manTien(c, o) {
       nut = `<div class="sl-day" data-guide="nut"><button type="button" class="sl-nut" data-action="du-${p.id}">Đã thấy đủ ${e(money(so))}</button><div class="sl-hai"><button type="button" class="sl-nut phu" data-action="mot-phan-${p.id}">Mới nhận một phần</button><button type="button" class="sl-nut phu" data-action="chua-${p.id}" data-ok="Đã báo">Chưa thấy</button></div></div>`;
     else nut = `<p class="sl-nho">Chủ hộ hoặc người được giao mới xác nhận được tiền.</p>`;
     return `<p class="sl-cau-dau">${e(cau)}</p>
-    <section class="sl-the" data-guide="so-tien"><span class="sl-nho">${daBao ? e(ben) + " báo đã chuyển" : e(TEN_KHOAN[p.kind] || "Khoản cần nhận")}</span><div class="sl-so-lon"><span data-dem="${so}" data-hau="">${e(money(so).replace(" đ", ""))}</span> <small>đ</small></div><p class="sl-chu-so">${e(moneyWords(so))}</p><div class="sl-chips">${p.due_at ? `<span class="sl-chip vang">${e(gioHan(p.due_at))}</span>` : ""}${daBao ? "" : `<span class="sl-chip">Bên mua chưa báo chuyển</span>`}</div></section>
+    <section class="sl-the" data-guide="so-tien"><span class="sl-nho">${daBao ? e(ben) + " báo đã chuyển" : e(TEN_KHOAN[p.kind] || "Khoản cần nhận")}</span><div class="sl-so-lon"><span data-dem="${so}" data-hau="">${e(money(so).replace(" đ", ""))}</span> <small>đ</small></div><p class="sl-chu-so">${e(moneyWords(so))}</p><div class="sl-chips">${p.due_at ? `<span class="sl-chip vang">${e(gioHan(p.due_at))}</span>` : ""}${daBao ? "" : `<span class="sl-chip">Người mua chưa báo chuyển</span>`}</div></section>
     ${dangOtp ? "" : `<div class="sl-canh do">${canh}<span>Chỉ bấm khi chính mình thấy tiền trong tài khoản. Ảnh chụp biên lai chưa phải tiền về.</span></div>`}
     ${nut}`;
   };
   const xong = nhan.filter((p) => p.status === "fully_received");
-  return `${conMo.map(the).join('<hr class="sl-ke">') || `<div class="sl-the sl-trong"><img src="${TRAU}${xong.length ? "11-mung" : "04-nghe"}.webp" alt=""><div><b>${xong.length ? "Đã nhận đủ tiền bên mua trả thẳng" : "Chưa có khoản nào cần xác nhận"}</b><p class="sl-nho">${xong.length ? "Ngân hàng sẽ chuyển tiền cọc khi đơn xong." : "Khi bên mua chuyển tiền, app sẽ báo."}</p></div></div>`}
+  return `${conMo.map(the).join('<hr class="sl-ke">') || `<div class="sl-the sl-trong"><img src="${TRAU}${xong.length ? "11-mung" : "04-nghe"}.webp" alt=""><div><b>${xong.length ? "Đã nhận đủ tiền người mua trả thẳng" : "Chưa có khoản nào cần xác nhận"}</b><p class="sl-nho">${xong.length ? "Ngân hàng sẽ chuyển tiền cọc khi đơn xong." : "Khi người mua chuyển tiền, app sẽ báo."}</p></div></div>`}
   ${xong.length ? nhom("Đã nhận", xong.map((p) => dongGon({ href: "#/order/" + o.id + "/payments", ten: TEN_KHOAN[p.kind] || "Khoản tiền", phu: "Đã xác nhận", so: tienGon(p.confirmed_vnd), chip: ["Đã nhận"] })), 3, false) : ""}`;
 }
 
@@ -364,7 +364,7 @@ async function manHopDong(c, o) {
   c.on.thoiKy = () => { delete c.state.otp; };
   const daKy = doc?.status === "fully_signed";
   const trangThai = daKy ? `<div class="sl-the sl-trong"><img src="${TRAU}11-mung.webp" alt=""><div><b>Hai bên đã ký</b><p class="sl-nho">Hợp đồng có hiệu lực khi ngân hàng nhận đủ cọc.</p></div></div>`
-    : !kyDuoc ? `<div class="sl-the"><b>${e(o.ky?.ly_do || "Chưa tới lượt ký")}</b><p class="sl-nho">Bên mua ký trước, sau đó tới lượt mình.</p></div>` : "";
+    : !kyDuoc ? `<div class="sl-the"><b>${e(o.ky?.ly_do || "Chưa tới lượt ký")}</b><p class="sl-nho">Người mua ký trước, sau đó tới lượt mình.</p></div>` : "";
   const ky = !kyDuoc || daKy ? "" : c.state.otp?.kind === "sign"
     ? `<form data-form="ky" class="sl-otp-form"><div class="sl-canh do">${canh}<span>${e(fraud)}</span></div>${otpBox("Mã ký hợp đồng")}<div class="sl-day"><button class="sl-nut" data-ok="Đã ký">Ký hợp đồng</button><button type="button" class="sl-nut phu" data-action="thoiKy">Thôi</button></div></form>`
     : `<form data-form="chuanBiKy" class="sl-form"><label class="sl-dong-y"><input type="checkbox" name="commitment" required><span>Tôi đã đọc hợp đồng, đồng ý lượng hàng, giá và tài khoản nhận tiền.</span></label>${o.co?.gia_bat_thuong ? `<label class="sl-dong-y"><input type="checkbox" name="abnormal" required><span>Giá này khác thường so với thị trường; tôi vẫn đồng ý.</span></label>` : ""}<div class="sl-day" data-guide="nut"><button class="sl-nut">Nhận mã ký</button></div></form>`;
@@ -387,17 +387,17 @@ async function manGiaoNhan(c, o) {
   if (!o.dot_giao?.length) return `<p class="sl-cau-dau">Chưa có đợt giao.</p><p class="sl-nho">Đợt giao có sau khi ngân hàng nhận đủ cọc.</p>`;
   const did = o.dot_hien_hanh_id || o.dot_giao.at(-1).id;
   const d = await c.api.get("/v1/deliveries/" + did);
-  const ben = o.buyer?.display_name || "Bên mua";
+  const ben = o.buyer?.display_name || "Người mua";
   const kq = d.ket_qua?.at(-1);
   c.forms.batDau = (f) => c.command(`/v1/deliveries/${did}/start-check`, { ma_6_so: f.get("code"), plate_no: f.get("plate") || undefined });
   c.forms.dongY = (f) => c.command(`/v1/deliveries/${did}/acceptance/agree`, { pin: f.get("pin"), expected_sha256: kq.content_sha256 });
   c.on.khongDung = () => { c.state.khongDung = true; };
   if (c.state.khongDung) return `<p class="sl-cau-dau">Chọn dòng chị thấy chưa đúng.</p>${await orderPart(c, o, "delivery")}`;
   const gio = (iso) => { const t = new Date(iso); const g = new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", minute: "2-digit", hour12: false }).format(t).replace(":", " giờ "); const n = new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit" }).format(t); return `${g}, ${n}`; };
-  const khung = `<section class="sl-the sl-dong-ds"><div class="sl-dong"><span>Lượng giao</span><b>${e(quantity(d.planned_qty_g))}</b></div><div class="sl-dong"><span>Nơi giao</span><b>${d.acceptance_point === "tai_vuon" ? "Tại vườn" : "Tại kho bên mua"}</b></div><div class="sl-dong"><span>Thời gian</span><b>${e(gio(d.window_from))} – ${e(gio(d.window_to))}</b></div></section>`;
+  const khung = `<section class="sl-the sl-dong-ds"><div class="sl-dong"><span>Lượng giao</span><b>${e(quantity(d.planned_qty_g))}</b></div><div class="sl-dong"><span>Nơi giao</span><b>${d.acceptance_point === "tai_vuon" ? "Tại vườn" : "Tại kho người mua"}</b></div><div class="sl-dong"><span>Thời gian</span><b>${e(gio(d.window_from))} – ${e(gio(d.window_to))}</b></div></section>`;
   if (d.status === "preparing" || d.status === "ready") {
     const thieu = (d.the_san_sang || []).filter((x) => !x.ok), du = (d.the_san_sang || []).filter((x) => x.ok);
-    return `<p class="sl-cau-dau">${thieu.length ? "Chưa giao được. Đang chờ bên mua chuẩn bị." : "Đủ điều kiện. Khi xe tới, nhập mã của người nhận để bắt đầu cân."}</p>
+    return `<p class="sl-cau-dau">${thieu.length ? "Chưa giao được. Đang chờ người mua chuẩn bị." : "Đủ điều kiện. Khi xe tới, nhập mã của người nhận để bắt đầu cân."}</p>
     ${khung}
     ${thieu.length ? `<section class="sl-nhom"><div class="sl-tieu"><h2>Còn chờ</h2></div><div class="sl-ds-gon">${thieu.map((x) => `<div class="sl-dg"><span class="sl-dk-o cho"></span><div class="sl-dg-chu"><b>${e(x.ten)}</b><span>${e(lyDoDe(x, ben))}</span></div></div>`).join("")}</div></section>` : ""}
     ${du.length ? `<details class="sl-nhom sl-nhom-dong"><summary><span>Đã đủ ${du.length}</span><span class="sl-nho">Xem</span></summary><div class="sl-ds-gon">${du.map((x) => `<div class="sl-dg"><span class="sl-dk-o du">✓</span><div class="sl-dg-chu"><b>${e(x.ten)}</b></div></div>`).join("")}</div></details>` : ""}
@@ -410,7 +410,7 @@ async function manGiaoNhan(c, o) {
     ${khung}
     <form data-form="dongY" class="sl-form sl-otp-form">${field("Mã PIN ký biên bản", "pin", "password", "", 'inputmode="numeric" pattern="[0-9]{4,6}" maxlength="6" required class="sl-o-otp"')}<div class="sl-day"><button class="sl-nut" data-ok="Đã ký biên bản">Đồng ý kết quả cân</button><button type="button" class="sl-nut phu" data-action="khongDung">Không đúng</button></div></form>`;
   }
-  const TT = { checking: "Đang cân và kiểm hàng.", in_transit: "Hàng đang trên đường tới bên mua.", arrival_check: "Bên mua đang kiểm hàng ở nơi đến.", arrived: "Hàng đã tới nơi.", completed: "Đợt giao đã xong.", disputed: "Có phần đang tranh chấp, nhân viên AgiViet đang xử lý." };
+  const TT = { checking: "Đang cân và kiểm hàng.", in_transit: "Hàng đang trên đường tới người mua.", arrival_check: "Người mua đang kiểm hàng ở nơi đến.", arrived: "Hàng đã tới nơi.", completed: "Đợt giao đã xong.", disputed: "Có phần đang tranh chấp, nhân viên AgiViet đang xử lý." };
   return `<p class="sl-cau-dau">${e(TT[d.status] || "Đang giao nhận.")}</p>${khung}<details class="sl-nhom sl-nhom-dong"><summary><span>Chi tiết đợt giao</span></summary><div class="sl-con">${await orderPart(c, o, "delivery")}</div></details>`;
 }
 
@@ -420,11 +420,11 @@ async function manCoc(c, o) {
   const d = o.dieu_khoan || {};
   const st = m.coc?.status;
   const giu = ["held", "confirmed", "received"].includes(st);
-  const cau = giu ? `Ngân hàng đang giữ ${money(d.deposit_vnd)} tiền cọc cho mình.` : st === "awaiting_transfer" ? `Đang chờ ${o.buyer?.display_name || "bên mua"} chuyển cọc vào ngân hàng.` : "Cọc chưa bắt đầu: hai bên cần ký hợp đồng trước.";
+  const cau = giu ? `Ngân hàng đang giữ ${money(d.deposit_vnd)} tiền cọc cho mình.` : st === "awaiting_transfer" ? `Đang chờ ${o.buyer?.display_name || "người mua"} chuyển cọc vào ngân hàng.` : "Cọc chưa bắt đầu: hai bên cần ký hợp đồng trước.";
   return `<p class="sl-cau-dau">${e(cau)}</p>
   <section class="sl-the"><span class="sl-nho">Tiền cọc (30%)</span><div class="sl-so-lon">${e(money(d.deposit_vnd).replace(" đ", ""))} <small>đ</small></div><div class="sl-chips"><span class="sl-chip ${giu ? "" : "vang"}">${giu ? "Ngân hàng đang giữ" : "Chưa có cọc"}</span>${o.han?.[0] && !giu ? `<span class="sl-chip vang">${e(gioHan(o.han[0].due_at))}</span>` : ""}</div></section>
-  <section class="sl-the sl-dong-ds"><div class="sl-dong"><span>Khi giao xong</span><b>Ngân hàng chuyển cọc cho mình</b></div><div class="sl-dong"><span>Bên mua hủy</span><b>Cọc về mình</b></div><div class="sl-dong"><span>Mình hủy</span><b>Cọc về bên mua</b></div></section>
-  ${rule("Cọc nằm trong tài khoản đảm bảo của ngân hàng, không phải tài khoản của AgiViet hay của bên mua. Chưa có cọc thì chưa giao hàng.")}`;
+  <section class="sl-the sl-dong-ds"><div class="sl-dong"><span>Khi giao xong</span><b>Ngân hàng chuyển cọc cho mình</b></div><div class="sl-dong"><span>Người mua hủy</span><b>Cọc về mình</b></div><div class="sl-dong"><span>Mình hủy</span><b>Cọc về người mua</b></div></section>
+  ${rule("Cọc nằm trong tài khoản đảm bảo của ngân hàng, không phải tài khoản của AgiViet hay của người mua. Chưa có cọc thì chưa giao hàng.")}`;
 }
 
 /* ---------- Chi tiết lô ---------- */
@@ -442,7 +442,7 @@ export async function lotDetail(c, id) {
     c.flash("Đã lưu ảnh hàng.");
   };
   const q = l.qty || {};
-  const NGAN = { held: "Bên mua đang giữ chỗ", committed: "Đã ký bán", in_transit: "Đang giao", delivered: "Đã giao", returned_pending: "Bị trả lại chờ xử lý", moved_to_child: "Đã tách sang lô khác", loss: "Hao hụt" };
+  const NGAN = { held: "Người mua đang giữ chỗ", committed: "Đã ký bán", in_transit: "Đang giao", delivered: "Đã giao", returned_pending: "Bị trả lại chờ xử lý", moved_to_child: "Đã tách sang lô khác", loss: "Hao hụt" };
   const ngan = Object.entries(NGAN).filter(([k]) => Number(q[k] || 0) > 0);
   const tt = { on_sale: ["Đang bán", ""], upcoming: ["Sắp có hàng", "vang"], draft: ["Chưa đăng", "xam"], closed: ["Đã đóng", "xam"], sold_out: ["Hết hàng", "xam"], hidden: ["Tạm ẩn", "xam"] }[l.status] || [l.status, "xam"];
   const mo = ["on_sale", "upcoming", "draft"].includes(l.status);
@@ -455,19 +455,19 @@ export async function lotDetail(c, id) {
     ${l.harvest_on ? `<div class="sl-dong"><span>Ngày hái</span><b>${e(date(l.harvest_on))}</b></div>` : ""}
     ${ngan.map(([k, t]) => `<div class="sl-dong"><span>${t}</span><b>${e(quantity(q[k]))}</b></div>`).join("")}
   </section>
-  ${mo && c.seller ? `<div class="sl-day">${l.status === "draft" && c.can("lot.publish") ? `<button type="button" class="sl-nut" data-action="publish" data-ok="Đã đăng">Đăng cho bên mua thấy</button>` : c.can("lot.update") ? `<button type="button" class="sl-nut" data-action="available" data-ok="Đã xác nhận">Xác nhận vẫn còn hàng</button>` : ""}<div class="sl-hai">${l.status !== "draft" ? `<button type="button" class="sl-nut phu" data-action="banGap">Bán gấp</button>` : ""}${c.can("lot.close") ? `<button type="button" class="sl-nut phu" data-action="closeLot" data-ok="Đã đóng">Đóng lô</button>` : ""}</div></div>` : ""}
+  ${mo && c.seller ? `<div class="sl-day">${l.status === "draft" && c.can("lot.publish") ? `<button type="button" class="sl-nut" data-action="publish" data-ok="Đã đăng">Đăng cho người mua thấy</button>` : c.can("lot.update") ? `<button type="button" class="sl-nut" data-action="available" data-ok="Đã xác nhận">Xác nhận vẫn còn hàng</button>` : ""}<div class="sl-hai">${l.status !== "draft" ? `<button type="button" class="sl-nut phu" data-action="banGap">Bán gấp</button>` : ""}${c.can("lot.close") ? `<button type="button" class="sl-nut phu" data-action="closeLot" data-ok="Đã đóng">Đóng lô</button>` : ""}</div></div>` : ""}
   <section class="sl-nhom"><div class="sl-tieu"><h2>Ảnh hàng</h2><span class="sl-nho">${(l.photos || []).length}</span></div>
-  ${(l.photos || []).length ? `<div class="sl-anh-lo">${l.photos.map((ph) => `<img hidden data-document-image="${e(ph.id)}" data-lot-photo="true" alt="Ảnh lô hàng">`).join("")}</div>` : `<p class="sl-nho">Chưa có ảnh. Bên mua tin hơn khi thấy ảnh chụp tại vườn.</p>`}
+  ${(l.photos || []).length ? `<div class="sl-anh-lo">${l.photos.map((ph) => `<img hidden data-document-image="${e(ph.id)}" data-lot-photo="true" alt="Ảnh lô hàng">`).join("")}</div>` : `<p class="sl-nho">Chưa có ảnh. Người mua tin hơn khi thấy ảnh chụp tại vườn.</p>`}
   ${c.can("lot.create") ? `<form data-form="lotPhoto" class="sl-form"><label class="sl-chup">${svg('<path d="M4 8h3l2-3h6l2 3h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/>')}<span>Chụp ảnh hàng</span><input type="file" name="photo" accept="image/*" capture="environment" required></label><button class="sl-nut phu">Lưu ảnh</button></form>` : ""}</section>
   ${source ? `<details class="sl-nhom sl-nhom-dong"><summary><span>Hồ sơ đã xác minh</span><span class="sl-nho">${giayTo.filter((g) => g.trang_thai === "da_xac_minh").length}/${giayTo.length}</span></summary><div class="sl-ds-gon">${giayTo.map((g) => dongGon({ href: "#/lots/" + id, ten: g.label_vi, phu: g.den ? "Đến " + date(g.den) : "", chip: [{ da_xac_minh: "Đã xác minh", tu_khai: "Tự khai", het_hieu_luc: "Hết hạn" }[g.trang_thai] || "Đang kiểm", g.trang_thai === "da_xac_minh" ? "" : "vang"] })).join("")}<div class="sl-dg"><div class="sl-dg-chu"><b>Vùng</b><span>${e(source.vi_tri?.ten || TINH[source.nguoi_ban?.tinh] || "")}</span></div></div></div></details>` : ""}`;
 }
 
 /* ---------- Thông báo ---------- */
 const CAU_TB = {
-  "offer.sent": "Có lời chào giá mới", "offer.countered": "Bên mua trả giá", "offer.accepted": "Đã đồng ý giá", "offer.rejected": "Đã từ chối lời chào",
-  "offer.expired": "Lời chào hết hạn", "offer.withdrawn": "Bên mua rút lời chào",
-  "order.created": "Bên mua lập hợp đồng", "order.signed": "Có bên vừa ký hợp đồng", "order.activated": "Hợp đồng có hiệu lực", "order.completed": "Đơn đã xong",
-  "order.closed": "Đơn đã đóng", "deposit.confirmed": "Ngân hàng đã nhận cọc", "payment.reported": "Bên mua báo đã chuyển tiền", "payment.confirmed": "Đã xác nhận nhận tiền",
+  "offer.sent": "Có lời chào giá mới", "offer.countered": "Người mua trả giá", "offer.accepted": "Đã đồng ý giá", "offer.rejected": "Đã từ chối lời chào",
+  "offer.expired": "Lời chào hết hạn", "offer.withdrawn": "Người mua rút lời chào",
+  "order.created": "Người mua lập hợp đồng", "order.signed": "Có bên vừa ký hợp đồng", "order.activated": "Hợp đồng có hiệu lực", "order.completed": "Đơn đã xong",
+  "order.closed": "Đơn đã đóng", "deposit.confirmed": "Ngân hàng đã nhận cọc", "payment.reported": "Người mua báo đã chuyển tiền", "payment.confirmed": "Đã xác nhận nhận tiền",
   "instruction.succeeded": "Ngân hàng đã chuyển tiền", "delivery.ready": "Đợt giao sẵn sàng", "dispute.opened": "Có sự cố cần xử lý",
 };
 export async function thongBao(c) {
@@ -493,16 +493,16 @@ const LOI_TAT = [
   ["dat-truoc", "Đặt trước khi hái", "M8 3v4M16 3v4M4 8h16v12H4zM9 14l2 2 4-4"],
   ["bao-tieu", "Bao tiêu theo vụ", "M4 12l4 4 12-12M4 20h16"],
   ["ban-gap", "Bán gấp", "M13 3L4 14h7l-1 7 9-11h-7z"],
-  ["demands", "Bên mua cần", "M4 20C2 8 9 3 21 3c0 12-5 19-17 17Zm0 0L16 8"],
+  ["demands", "Người mua cần", "M4 20C2 8 9 3 21 3c0 12-5 19-17 17Zm0 0L16 8"],
   ["lich-su", "Lịch sử", "M12 7v5l3 2M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"],
   ["support", "Gọi hỗ trợ", "M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2"],
 ];
 // Tính năng đã có trong đặc tả nhưng chưa có API: hiện rõ "đang làm" và giải thích dùng để làm gì.
 const SAP_CO = {
-  "nhat-ky-cu": ["Nhật ký vườn", "12-ghi-so", "Ghi lại bón phân, phun thuốc, ra hoa, thu hoạch theo từng ngày. Ngày hết cách ly thuốc tự lấy từ nhật ký để không đăng bán sớm. Nhân viên AgiViet có thể xác nhận nhật ký khi đến vườn; bên mua xuất khẩu sẽ hỏi phần này.", ["Ghi một việc trong 3 lần chạm, có ảnh", "Nhắc ngày hết cách ly thuốc", "Người giúp (con cháu) ghi thay được"]],
-  "dat-truoc": ["Đặt trước khi hái", "dien-thoai", "Bên mua đặt hàng khi trái còn trên cây: chốt lượng ước, giá hoặc cách tính giá, cọc theo đợt. Gần ngày hái thì cập nhật sản lượng; mất mùa có phụ lục giảm lượng, không bị phạt vô lý.", ["Có người nhận hàng trước khi hái", "Cọc qua ngân hàng giữ hộ theo đợt", "Cập nhật sản lượng gần ngày hái"]],
+  "nhat-ky-cu": ["Nhật ký vườn", "12-ghi-so", "Ghi lại bón phân, phun thuốc, ra hoa, thu hoạch theo từng ngày. Ngày hết cách ly thuốc tự lấy từ nhật ký để không đăng bán sớm. Nhân viên AgiViet có thể xác nhận nhật ký khi đến vườn; người mua xuất khẩu sẽ hỏi phần này.", ["Ghi một việc trong 3 lần chạm, có ảnh", "Nhắc ngày hết cách ly thuốc", "Người giúp (con cháu) ghi thay được"]],
+  "dat-truoc": ["Đặt trước khi hái", "dien-thoai", "Người mua đặt hàng khi trái còn trên cây: chốt lượng ước, giá hoặc cách tính giá, cọc theo đợt. Gần ngày hái thì cập nhật sản lượng; mất mùa có phụ lục giảm lượng, không bị phạt vô lý.", ["Có người nhận hàng trước khi hái", "Cọc qua ngân hàng giữ hộ theo đợt", "Cập nhật sản lượng gần ngày hái"]],
   "bao-tieu": ["Bao tiêu theo vụ", "nghe", "Ký với một nhà máy hoặc doanh nghiệp nhận cả vụ theo lịch. Hợp đồng ghi rõ lượng, loại, giá sàn hoặc công thức giá, ai lo xe, khi nào trả tiền.", ["Đầu ra chắc cho cả vụ", "Giá sàn rõ ràng", "Nhân viên AgiViet theo dõi lịch thu hoạch"]],
-  "ban-gap": ["Bán gấp", "lo", "Hàng tươi sắp hỏng hoặc bị trả lại? Bật bán gấp để lô lên đầu danh sách và báo ngay cho các nhà máy sấy, nước ép, vựa gần mình. App gợi ý giá theo giá tham khảo hàng loại 2, không ép mình hạ giá.", ["Báo ngay cho bên mua hàng chế biến", "Gợi ý sau 24 giờ không ai hỏi", "Có lời chào bao tiêu hàng dạt của đối tác"]],
+  "ban-gap": ["Bán gấp", "lo", "Hàng tươi sắp hỏng hoặc bị trả lại? Bật bán gấp để lô lên đầu danh sách và báo ngay cho các nhà máy sấy, nước ép, vựa gần mình. App gợi ý giá theo giá tham khảo hàng loại 2, không ép mình hạ giá.", ["Báo ngay cho người mua hàng chế biến", "Gợi ý sau 24 giờ không ai hỏi", "Có lời chào bao tiêu hàng dạt của đối tác"]],
 };
 export async function tienIch(c, view) {
   const [k] = view;
@@ -577,15 +577,15 @@ export function caiDat(c) {
 }
 const RIENG_TU = [["Tên, xã/huyện", "Có", "Có"], ["Ảnh, mô tả lô, giấy kiểm nghiệm", "Có", "Có"], ["Hồ sơ nguồn gốc vườn", "Phần chị chọn", "Phần chị chọn"], ["Địa chỉ đến cấp ấp", "Có", "Có"], ["Số nhà, địa chỉ vườn", "Không", "Có"], ["Số điện thoại", "Không", "Có"], ["Tài khoản ngân hàng", "Không", "Không"]];
 export function riengTu() {
-  return `${dauMuc("Quyền riêng tư", "toi")}<p class="sl-cau-dau">Bên mua thấy gì về chị</p>
+  return `${dauMuc("Quyền riêng tư", "toi")}<p class="sl-cau-dau">Người mua thấy gì về chị</p>
   <section class="sl-the sl-bang3"><div class="sl-b3 dau"><b>Thông tin</b><b>Trước cọc</b><b>Sau cọc</b></div>${RIENG_TU.map(([a, b, c2]) => `<div class="sl-b3"><span>${a}</span><span>${b}</span><span>${c2}</span></div>`).join("")}</section>
   <p class="sl-nho">Tin nhắn có số điện thoại, Zalo, đường dẫn bị che trước khi cọc. Nhân viên AgiViet chỉ xem nguyên văn khi có báo cáo vi phạm.</p>`;
 }
 const HOI_DAP = [
-  ["Bên mua có thấy số điện thoại của tôi không?", "Không. Số chỉ mở sau khi bên mua đặt cọc qua ngân hàng. Trước đó hai bên trao đổi trong app."],
+  ["Người mua có thấy số điện thoại của tôi không?", "Không. Số chỉ mở sau khi người mua đặt cọc qua ngân hàng. Trước đó hai bên trao đổi trong app."],
   ["Tiền cọc nằm ở đâu?", "Ở tài khoản đảm bảo do ngân hàng giữ hộ, chưa vào tài khoản của chị. Ngân hàng chuyển theo kết quả nhận hàng và thỏa thuận của đơn."],
-  ["Bên mua cân thiếu thì sao?", "Ở màn Giao nhận, bấm \"Không đúng\" và chụp số trên cân của chị. Phần đúng vẫn giữ, phần sai được xem lại."],
-  ["Tôi có phải trả phí không?", "Không. Phí do bên mua trả khi đặt cọc."],
+  ["Người mua cân thiếu thì sao?", "Ở màn Giao nhận, bấm \"Không đúng\" và chụp số trên cân của chị. Phần đúng vẫn giữ, phần sai được xem lại."],
+  ["Tôi có phải trả phí không?", "Không. Phí do người mua trả khi đặt cọc."],
   ["Tin bán của tôi biến mất?", "Tin tự ẩn sau 14 ngày không xác nhận còn hàng. Mở lô, bấm xác nhận còn hàng để hiện lại."],
 ];
 export async function hoTro(c, phanChung) {
@@ -671,14 +671,14 @@ export async function offer(c, id) {
   c.forms.counter = (f) => c.command(`/v1/offers/${id}/counter`, { price_vnd: f.get("price") });
   const sp = lot ? tenHang(c, lot.product_code) : "Lô " + o.lot_code;
   const coTheTraLoi = o.toi_luot_toi && c.can("offer.accept.seller");
-  const ketQua = { accepted: "Chị đã đồng ý giá. Bên mua sẽ lập hợp đồng để chị ký.", rejected: "Chị đã không bán theo lời chào này.", expired: "Lời chào đã hết hạn.", withdrawn: "Bên mua đã rút lời chào." }[o.status];
+  const ketQua = { accepted: "Chị đã đồng ý giá. Người mua sẽ lập hợp đồng để chị ký.", rejected: "Chị đã không bán theo lời chào này.", expired: "Lời chào đã hết hạn.", withdrawn: "Người mua đã rút lời chào." }[o.status];
   return `${dauMuc("Lời chào giá", "home")}
   ${dayBuoc("Chào giá")}
-  <div class="sl-ben"><img src="${anh(lot?.product_code)}" alt=""><div><b>${e(sp)}${lot?.grade_code ? " · loại " + e(lot.grade_code) : ""}</b><span class="sl-nho">Bên mua đã được AgiViet xác minh · lô ${e(o.lot_code)}</span></div></div>
+  <div class="sl-ben"><img src="${anh(lot?.product_code)}" alt=""><div><b>${e(sp)}${lot?.grade_code ? " · loại " + e(lot.grade_code) : ""}</b><span class="sl-nho">Người mua đã được AgiViet xác minh · lô ${e(o.lot_code)}</span></div></div>
   <section class="sl-the" data-guide="so-tien"><p class="sl-nho">${e(hoaDau(xung(c.user.name)))} nhận về</p><div class="sl-so-lon"><span data-dem="${tong}" data-hau="">${e(money(tong).replace(" đ", ""))}</span> <small>đ</small></div><p class="sl-nho">${e(quantity(r.qty_g))} × ${e(money(r.price_vnd))}/kg · người bán không mất phí</p><div class="sl-chips">${o.status === "sent" ? `<span class="sl-chip vang">${e(conLai(r.expires_at))}</span>` : ""}${o.luot_tra_gia_con != null && o.status === "sent" ? `<span class="sl-chip">Còn ${o.luot_tra_gia_con} lượt trả giá</span>` : ""}</div></section>
   <section class="sl-the sl-dong-ds"><div class="sl-dong"><span>Lượng chào</span><b>${e(quantity(r.qty_g))}</b></div><div class="sl-dong"><span>Ngày có hàng</span><b>${e(date(lot?.available_from))}</b></div><div class="sl-dong"><span>Cọc</span><b>30% qua ngân hàng giữ hộ</b></div></section>
-  ${rule("Đây chưa phải hợp đồng. Đồng ý giá thì bên mua lập hợp đồng; chị đọc lại và ký bằng mã OTP. Hợp đồng chỉ có hiệu lực khi bên mua chuyển cọc vào ngân hàng giữ hộ. Giá chị đặt kín không lộ cho bên mua.")}
-  ${o.rounds.length > 1 ? `<details class="sl-the"><summary>Các lượt trao đổi (${o.rounds.length})</summary>${o.rounds.map((x) => `<div class="sl-dong"><span>${x.from_side === "buyer" ? "Bên mua" : "Chị"} · lượt ${x.round_no}</span><b>${e(money(x.price_vnd))}/kg</b></div>`).join("")}</details>` : ""}
+  ${rule("Đây chưa phải hợp đồng. Đồng ý giá thì người mua lập hợp đồng; chị đọc lại và ký bằng mã OTP. Hợp đồng chỉ có hiệu lực khi người mua chuyển cọc vào ngân hàng giữ hộ. Giá chị đặt kín không lộ cho người mua.")}
+  ${o.rounds.length > 1 ? `<details class="sl-the"><summary>Các lượt trao đổi (${o.rounds.length})</summary>${o.rounds.map((x) => `<div class="sl-dong"><span>${x.from_side === "buyer" ? "Người mua" : "Chị"} · lượt ${x.round_no}</span><b>${e(money(x.price_vnd))}/kg</b></div>`).join("")}</details>` : ""}
   ${ketQua ? notice(ketQua) : ""}
   ${coTheTraLoi ? `<div class="sl-day" data-guide="nut">${c.state.traGia ? `<form data-form="counter" class="sl-tra-gia">${field("Giá chị muốn (đ/kg)", "price", "number", "", 'min="1" step="1" required inputmode="numeric"')}<button class="sl-nut">Gửi giá này</button></form>` : ""}<button type="button" class="sl-nut" data-action="accept">Đồng ý giá này</button><div class="sl-hai">${o.luot_tra_gia_con > 0 && c.can("offer.counter.seller") ? `<button type="button" class="sl-nut phu" data-action="moTraGia">${c.state.traGia ? "Thôi trả giá" : "Trả giá"}</button>` : ""}<button type="button" class="sl-nut phu" data-action="reject">Không bán</button></div></div>` : ""}`;
 }
@@ -705,7 +705,7 @@ export async function postLot(c) {
       harvest_on: f.get("harvest") || undefined,
       spray_clear_on: f.get("clear") || undefined,
     });
-    c.flash(r.data?.canh_bao?.join?.(" ") || "Đã lưu. Chụp ảnh hàng rồi bấm Đăng để bên mua thấy.");
+    c.flash(r.data?.canh_bao?.join?.(" ") || "Đã lưu. Chụp ảnh hàng rồi bấm Đăng để người mua thấy.");
     c.go("lots/" + r.id);
   };
   if (!sp)
@@ -717,9 +717,9 @@ export async function postLot(c) {
   ${hang.length > 1 ? `<div class="sl-chon-hang" role="group" aria-label="Chọn mặt hàng">${hang.map((h) => `<button type="button" class="sl-chip ${h === chon ? "" : "xam"}" data-action="hang_${e(h)}" aria-pressed="${h === chon}">${e(tenHang(c, h))}</button>`).join("")}</div>` : ""}
   <form data-form="post" class="sl-form">
     <fieldset class="sl-the"><legend>Hàng loại nào?</legend><div class="sl-o-chon">${(sp.grades || []).map((g, i) => `<label><input type="radio" name="grade" value="${e(g.grade_code)}" ${i === 0 ? "checked" : ""} required><span>Loại ${e(g.label)}${g.is_substandard ? (g.grade_code === "DAT" ? " · hàng dạt" : " · hàng loại dưới") : ""}</span></label>`).join("")}</div></fieldset>
-    <fieldset class="sl-the"><legend>Bao nhiêu hàng?</legend><div class="sl-o-chon"><label><input type="radio" name="basis" value="weighed" required><span>Đã cân</span></label><label><input type="radio" name="basis" value="estimated" checked><span>Mới ước</span></label></div>${field("Khoảng bao nhiêu kg", "qty", "number", "", 'min="1" step="1" inputmode="numeric" required')}<p class="sl-nho">Hàng mới ước thì bên mua chỉ đặt tối đa 80% số này.</p></fieldset>
+    <fieldset class="sl-the"><legend>Bao nhiêu hàng?</legend><div class="sl-o-chon"><label><input type="radio" name="basis" value="weighed" required><span>Đã cân</span></label><label><input type="radio" name="basis" value="estimated" checked><span>Mới ước</span></label></div>${field("Khoảng bao nhiêu kg", "qty", "number", "", 'min="1" step="1" inputmode="numeric" required')}<p class="sl-nho">Hàng mới ước thì người mua chỉ đặt tối đa 80% số này.</p></fieldset>
     <fieldset class="sl-the"><legend>Khi nào có hàng?</legend>${field("Ngày có thể giao", "available", "date", homNay, "required")}${field("Ngày hái (nếu biết)", "harvest", "date")}${field("Ngày hết cách ly thuốc", "clear", "date")}</fieldset>
-    <fieldset class="sl-the"><legend>Giá bao nhiêu?</legend>${field("Giá mong muốn (đồng mỗi kg)", "ask", "number", "", 'min="1" step="1" inputmode="numeric" required')}${field("Giá thấp nhất chịu bán (bên mua không thấy)", "floor", "number", "", 'min="1" step="1" inputmode="numeric" required')}</fieldset>
+    <fieldset class="sl-the"><legend>Giá bao nhiêu?</legend>${field("Giá mong muốn (đồng mỗi kg)", "ask", "number", "", 'min="1" step="1" inputmode="numeric" required')}${field("Giá thấp nhất chịu bán (người mua không thấy)", "floor", "number", "", 'min="1" step="1" inputmode="numeric" required')}</fieldset>
     ${rule("Giá thấp nhất chỉ mình thấy: lời chào thấp hơn giá này sẽ tự bị từ chối. Chưa hết cách ly thuốc thì chưa đăng được.")}
     <div class="sl-day"><button class="sl-nut">Lưu và chụp ảnh hàng</button></div>
   </form>`;
@@ -734,10 +734,10 @@ export async function ledger(c) {
   const dangGiu = (tien.theo_don || []).filter((d) => BigInt(d.coc_dang_giu_vnd || 0) > 0n);
   const so = (label, value, giai, mau = "") => `<section class="sl-the sl-tien-o ${mau}"><p class="sl-nho">${label}</p><div class="sl-so-lon">${e(money(value).replace(" đ", ""))} <small>đ</small></div><p class="sl-chu-so">${e(moneyWords(String(value)))}</p><p class="sl-giai">${giai}</p></section>`;
   return `${dauMuc("Tiền", "home")}
-  ${so("Đã về tay", daVe, "Tiền bên mua trả thẳng mà mình đã xác nhận, cộng tiền ngân hàng đã chuyển vào tài khoản của mình.")}
-  <div class="sl-hai-so">${so("Ngân hàng đang giữ hộ", t.coc_dang_giu || 0, "Cọc bên mua gửi ngân hàng. Ngân hàng chuyển theo kết quả nhận hàng và thỏa thuận của đơn.", "phu")}${so("Còn chờ nhận", t.con_phai_nhan || 0, "Bên mua còn phải trả theo hợp đồng.", "phu")}</div>
+  ${so("Đã về tay", daVe, "Tiền người mua trả thẳng mà mình đã xác nhận, cộng tiền ngân hàng đã chuyển vào tài khoản của mình.")}
+  <div class="sl-hai-so">${so("Ngân hàng đang giữ hộ", t.coc_dang_giu || 0, "Cọc người mua gửi ngân hàng. Ngân hàng chuyển theo kết quả nhận hàng và thỏa thuận của đơn.", "phu")}${so("Còn chờ nhận", t.con_phai_nhan || 0, "Người mua còn phải trả theo hợp đồng.", "phu")}</div>
   ${dangGiu.length ? `<div class="sl-tieu"><h2>Tiền ngân hàng đang giữ theo đơn</h2></div>${dangGiu.slice(0, 5).map((d) => `<a class="sl-the sl-don" href="#/order/${e(d.id)}/money"><div><b>${e(ten[d.id]?.buyer_name || d.code)}</b><span class="sl-nho">${e(d.code)} · ${e(ten[d.id]?.hien_thi?.ten || "")}</span></div><b>${e(money(d.coc_dang_giu_vnd))}</b></a>`).join("")}` : ""}
-  ${rule("Chỉ số đã được ngân hàng báo về, hoặc chính mình xác nhận bằng mã OTP, mới được cộng vào \"Đã về tay\". Bên mua chỉ báo \"đã chuyển\" thì chưa tính.")}
+  ${rule("Chỉ số đã được ngân hàng báo về, hoặc chính mình xác nhận bằng mã OTP, mới được cộng vào \"Đã về tay\". Người mua chỉ báo \"đã chuyển\" thì chưa tính.")}
   <a class="sl-lien" href="#/ledger/chi-tiet">Xem bảng chi tiết tiền ${toi}</a>`;
 }
 
@@ -748,13 +748,13 @@ const NHAC = [
   [(v) => v[0] === "order" && v[2] === "terms", "lo", "Đọc kỹ số tiền, lượng, ngày giao rồi mới nhập mã OTP."],
   [(v) => v[0] === "order" && v[2] === "payments", "lo", "Chỉ bấm đã nhận khi chính mình thấy tiền trong tài khoản."],
   [(v) => v[0] === "order" && v[2] === "deposit", "nghe", "Cọc nằm ở ngân hàng giữ hộ. Chưa có cọc thì chưa giao hàng."],
-  [(v) => v[0] === "order" && v[2] === "delivery", "chi", "Đưa mã QR cho bên mua quét khi bốc hàng. Không đọc mã qua điện thoại."],
+  [(v) => v[0] === "order" && v[2] === "delivery", "chi", "Đưa mã QR cho người mua quét khi bốc hàng. Không đọc mã qua điện thoại."],
   [(v) => v[0] === "order", "nghe", "Dải bước cho biết đơn đang ở đâu và tới lượt ai."],
-  [(v) => v[0] === "post", "ghi-so", "Ghi đúng loại và ngày có hàng, bên mua sẽ chào đúng giá."],
-  [(v) => v[0] === "lots", "ghi-so", "Lô còn hàng mới hiện cho bên mua. Hết hàng thì báo để khỏi bị hỏi."],
+  [(v) => v[0] === "post", "ghi-so", "Ghi đúng loại và ngày có hàng, người mua sẽ chào đúng giá."],
+  [(v) => v[0] === "lots", "ghi-so", "Lô còn hàng mới hiện cho người mua. Hết hàng thì báo để khỏi bị hỏi."],
   [(v) => v[0] === "ledger", "nghe", "Tiền đã về là tiền ngân hàng hoặc chính mình đã xác nhận."],
   [(v) => v[0] === "nhat-ky", "ghi-so", "Ghi việc trong ngày, nhất là ngày phun thuốc, để biết khi nào được bán."],
-  [(v) => v[0] === "thoi-tiet", "nghe", "Mưa lớn trước ngày hái thì hẹn bên mua hái sớm hoặc che hàng."],
+  [(v) => v[0] === "thoi-tiet", "nghe", "Mưa lớn trước ngày hái thì hẹn người mua hái sớm hoặc che hàng."],
   [(v) => ["dat-truoc", "bao-tieu"].includes(v[0]), "nghe", "Có người nhận trước khi hái thì yên tâm chăm vườn."],
   [(v) => v[0] === "ban-gap", "lo", "Hàng tươi không ai hỏi 24 giờ thì nên bật bán gấp."],
   [(v) => v[0] === "home", "chao", "Thẻ viền vàng là việc có hạn. Làm từ trên xuống."],
@@ -784,7 +784,7 @@ const TOUR = {
   ],
   offer: [
     ["so-tien", "chi", "Đây là tiền mình nhận về nếu đồng ý giá. Hạn trả lời ghi ở chữ vàng."],
-    [".sl-dong-ds", "nghe", "Lượng, ngày có hàng và cọc. Cọc do bên mua gửi ngân hàng giữ hộ."],
+    [".sl-dong-ds", "nghe", "Lượng, ngày có hàng và cọc. Cọc do người mua gửi ngân hàng giữ hộ."],
     ["nut", "chi", "Đồng ý thì bấm nút xanh. Muốn giá khác bấm Trả giá; không bán bấm Không bán."],
   ],
   order: [

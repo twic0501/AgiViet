@@ -29,7 +29,7 @@ export const MA_LOI: Record<string, MoTaLoi> = {
   OTP_SAI: { http: 422, cau: 'Mã xác nhận không đúng.', khacPhuc: 'Nhập lại mã trong tin nhắn (còn lượt).' },
   OTP_HET_HAN: { http: 422, cau: 'Mã xác nhận đã hết hạn hoặc đã dùng.', khacPhuc: 'Bấm gửi lại mã.' },
   CHUA_CO_COC: { http: 409, cau: 'Ngân hàng chưa xác nhận cọc.', khacPhuc: 'Chờ ngân hàng xác nhận.' },
-  CHUA_DU_TIEN_TRUOC_BOC: { http: 409, cau: 'Khoản trả trước bốc chưa được người bán xác nhận đủ.', khacPhuc: 'Bên mua chuyển đủ, người bán xác nhận.' },
+  CHUA_DU_TIEN_TRUOC_BOC: { http: 409, cau: 'Khoản trả trước bốc chưa được người bán xác nhận đủ.', khacPhuc: 'Người mua chuyển đủ, người bán xác nhận.' },
   THE_SAN_SANG_CHUA_DU: { http: 409, cau: 'Thẻ Sẵn sàng giao chưa đủ.', khacPhuc: 'Xem dòng đỏ trên thẻ.' },
   QR_KHONG_DUNG_DOT: { http: 422, cau: 'Mã QR không đúng đợt giao này.', khacPhuc: 'Quét đúng QR của đợt.' },
   QR_HET_HAN: { http: 422, cau: 'Mã QR đã hết hạn hoặc đã dùng.', khacPhuc: 'Mở lại QR mới trên máy người nhận.' },

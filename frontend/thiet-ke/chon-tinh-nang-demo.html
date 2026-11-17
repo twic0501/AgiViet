@@ -53,21 +53,21 @@ const DS = [
       ["b-dang-bai", "Đăng bài lô hàng", "Mặt hàng → lượng → giá mong muốn + giá thấp nhất → ảnh chụp trong app.", "that", true, `ban-dang-bai.html${T}${B}`],
       ["b-hang-hoa", "Chợ / hàng của tôi", "Lô đang bán, sắp có, bán gấp; xác nhận còn hàng; lời chào trên từng lô.", "that", true, `ban-hang-hoa.html${T}${B}`],
       ["b-lo", "Chi tiết + quản lý lô", "Sửa giá, sửa lượng, đóng lô, bán gấp.", "that", true, `ban-hang-hoa.html${T}${B}`],
-      ["b-nhu-cau", "Nhu cầu bên mua", "Bên mua cần gì, gửi báo giá cho nhu cầu.", "that", false, `ban-nhu-cau.html${T}${B}`],
+      ["b-nhu-cau", "Nhu cầu người mua", "Người mua cần gì, gửi báo giá cho nhu cầu.", "that", false, `ban-nhu-cau.html${T}${B}`],
       ["b-tin-nhan", "Tin nhắn + lời chào giá", "Đồng ý / trả giá / không bán; chat có che số điện thoại, tài khoản.", "that", true, `ban-tin-nhan.html${T}${B}`],
     ]],
     ["Hợp đồng và giao nhận", [
       ["b-hop-dong", "Sổ hợp đồng", "Hợp đồng cần bác làm, đang chạy, đã xong; thanh 5 chặng.", "that", true, `ban-hop-dong.html${T}${B}`],
       ["b-ky", "Ký hợp đồng bằng OTP", "Xem điều khoản, cam kết, xác nhận giá xuống loại dưới 70%.", "that", true, `ban-hop-dong.html${T}${B}`],
-      ["b-giao-nhan", "Giao nhận + nghiệm thu", "Quét QR bên mua, bắt đầu cân, đồng ý / phản đối từng dòng, ngưỡng 20%.", "that", true, `ban-hop-dong.html${T}${B}`],
+      ["b-giao-nhan", "Giao nhận + nghiệm thu", "Quét QR người mua, bắt đầu cân, đồng ý / phản đối từng dòng, ngưỡng 20%.", "that", true, `ban-hop-dong.html${T}${B}`],
       ["b-khung", "Hợp đồng khung theo tuần", "Ký khung, duyệt giá tuần, xác nhận tiền gộp cuối tuần.", "that", false, `ban-hop-dong.html${T}0907000300`],
       ["b-tranh-chap", "Tranh chấp, kiểm định", "Phản đối dòng nghiệm thu → AgiViet gửi kiểm định.", "that", false, `ban-hop-dong.html${T}${B}`],
     ]],
     ["Tiền", [
-      ["b-tien", "Tiền của bác", "Đã nhận, ngân hàng giữ cọc, bên mua còn phải trả, chờ ngân hàng xác nhận.", "that", true, `ban-tien.html${T}${B}`],
-      ["b-xac-nhan-tien", "Xác nhận đã nhận tiền (OTP)", "Bên mua báo chuyển → bác xem app ngân hàng → xác nhận đủ hoặc một phần.", "that", true, `ban-tien.html${T}${B}`],
+      ["b-tien", "Tiền của bác", "Đã nhận, ngân hàng giữ cọc, người mua còn phải trả, chờ ngân hàng xác nhận.", "that", true, `ban-tien.html${T}${B}`],
+      ["b-xac-nhan-tien", "Xác nhận đã nhận tiền (OTP)", "Người mua báo chuyển → bác xem app ngân hàng → xác nhận đủ hoặc một phần.", "that", true, `ban-tien.html${T}${B}`],
       ["b-tk-nhan", "Tài khoản nhận tiền", "Khai/đổi tài khoản, có thời gian chờ khi đổi (chống lừa).", "that", false, `ban-toi.html${T}${B}`],
-      ["b-hoan", "Hoàn tiền thừa cho bên mua", "Khi hàng trả lại / xuống loại.", "that", false, `ban-tien.html${T}${B}`],
+      ["b-hoan", "Hoàn tiền thừa cho người mua", "Khi hàng trả lại / xuống loại.", "that", false, `ban-tien.html${T}${B}`],
     ]],
     ["Công cụ cho nông dân", [
       ["b-vuon", "Vườn + nhật ký canh tác", "Ghi việc phun, bón, thu hoạch; ngày cách ly.", "that", true, `ban-vuon.html${T}${B}`],
@@ -85,7 +85,7 @@ const DS = [
   ["App MUA (nhà hàng, đại lý, chế biến, XNK)", [
     ["Vào app", [
       ["m-man-cho", "Màn chờ tải", "Logo + vòng xoay trong lúc tải.", "that", true, `mua-app.html${T}${M}`],
-      ["m-dang-nhap", "Đăng nhập / đăng ký bên mua", "OTP; đăng ký có mã số thuế, loại bên mua; chờ AgiViet xác minh.", "that", true, "mua-app.html"],
+      ["m-dang-nhap", "Đăng nhập / đăng ký người mua", "OTP; đăng ký có mã số thuế, loại người mua; chờ AgiViet xác minh.", "that", true, "mua-app.html"],
       ["m-chao", "Màn chào 4 bước", "Hướng dẫn lần đầu; xem lại ở Thêm.", "that", true, `mua-app.html${T}${M}`],
     ]],
     ["Mua hàng", [

@@ -25,7 +25,7 @@ async function moDau(may: May, th: TinhHuong) {
   th.bang('Tranh chấp chờ kiểm định', k.status, 'awaiting_inspection');
   const qt = k.data.quyet_toan_tam;
   th.bang('V_kt 42.050.000', qt?.V, '42050000');
-  // Bản 23 · E1: trả đủ phần đã công nhận; phí bên mua ứng là khoản đòi thêm chưa bảo đảm, không giữ từ tiền người bán.
+  // Bản 23 · E1: trả đủ phần đã công nhận; phí người mua ứng là khoản đòi thêm chưa bảo đảm, không giữ từ tiền người bán.
   th.bang('E1 chi tạm đủ phần công nhận 9.850.000', qt?.release_vnd, '9850000');
   const o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;
   th.bang('Hiển thị: đã chốt phần không tranh chấp', o.hien_thi.ten, 'Đã chốt phần không tranh chấp · đang xử lý phần còn lại');
@@ -43,7 +43,7 @@ them('TH-029A', 'Khiếu nại khác mẫu, kiểm định kết luận người
   const qt = r.body.quyet_toan;
   th.bang('N 41.770.000', qt?.N, '41770000');
   th.bang('Không chi thêm', qt?.release_vnd, '0');
-  th.bang('Hoàn bên mua phần cọc còn lại 3.950.000', qt?.refund_vnd, '3950000');
+  th.bang('Hoàn người mua phần cọc còn lại 3.950.000', qt?.refund_vnd, '3950000');
   th.bang('E1: người bán hoàn phí 280.000 (đã nhận đủ trước)', qt?.t_nb_vnd, '280000');
   await lenhNganHangVaDoiSoat(b);
   const o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;

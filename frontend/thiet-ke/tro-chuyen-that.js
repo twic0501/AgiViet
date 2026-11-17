@@ -1,5 +1,5 @@
 // Trò chuyện THẬT hai bên (màn 38) — cùng bố cục với bản mô phỏng tro-chuyen.js, dữ liệu từ backend:
-// mỗi lời chào giá / hợp đồng với một bên mua là một hội thoại; tin qua /v1/messages, backend che liên lạc trước khi lưu.
+// mỗi lời chào giá / hợp đồng với một người mua là một hội thoại; tin qua /v1/messages, backend che liên lạc trước khi lưu.
 import { esc, giuThamSo, phien } from "./chung.js";
 import { gnTheGD } from "./the-giao-dich.js";
 const $ = (id) => document.getElementById(id);
@@ -29,8 +29,8 @@ export async function tai() {
   const coDon = new Set(don.map((d) => d.offer_id).filter(Boolean));
   const xem = daXem();
   ds = [
-    ...don.filter((d) => !/cancel|declin|withdrawn/.test(d.status)).map((d) => ({ ma: "d-" + d.id, loai: "don", id: d.id, ben: d.buyer_name || "Bên mua", ghi: `Hợp đồng ${d.code}` })),
-    ...dsChao.filter((c) => !coDon.has(c.id) && (/sent|accepted/.test(c.status) || tom.some((x) => x.offer_id === c.id))).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Bên mua", ghi: [c.vong_cuoi ? `${Number(c.vong_cuoi.qty_g) / 1000} kg · ${Number(c.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg` : null, TT_CHAO[c.status] ?? c.status, `lô ${c.lot_code}`].filter(Boolean).join(" · ") })),
+    ...don.filter((d) => !/cancel|declin|withdrawn/.test(d.status)).map((d) => ({ ma: "d-" + d.id, loai: "don", id: d.id, ben: d.buyer_name || "Người mua", ghi: `Hợp đồng ${d.code}` })),
+    ...dsChao.filter((c) => !coDon.has(c.id) && (/sent|accepted/.test(c.status) || tom.some((x) => x.offer_id === c.id))).map((c) => ({ ma: "o-" + c.id, loai: "chao", id: c.id, ben: c.buyer_name || "Người mua", ghi: [c.vong_cuoi ? `${Number(c.vong_cuoi.qty_g) / 1000} kg · ${Number(c.vong_cuoi.price_vnd).toLocaleString("vi-VN")} đ/kg` : null, TT_CHAO[c.status] ?? c.status, `lô ${c.lot_code}`].filter(Boolean).join(" · ") })),
   ];
   for (const h of ds) {
     const t = tom.find((x) => (h.loai === "don" ? x.order_id === h.id : x.offer_id === h.id));
@@ -46,11 +46,11 @@ export const timHoiThoai = (ma) => ds.find((x) => x.ma === ma);
 // ── Danh sách hội thoại ──
 export function veDanhSach(khoi) {
   khoi.innerHTML = `
-    <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc của bên mua.</span></div>
+    <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc của người mua.</span></div>
     ${ds.length ? `<div class="tc-ds">${ds.map((h) => `<a class="tc-dong ${h.chuaDoc ? "tc-moi" : ""}" href="./ban-tin-nhan.html${esc(location.search)}#tro=${h.ma}" data-tro="${h.ma}"><span class="tc-anh">${esc(vietTat(h.ben))}</span>
         <span style="min-width:0"><b>${esc(h.ben)}</b><small>${esc(h.cuoi?.chu || `${h.ghi} · chưa có tin nhắn`)}</small></span>
         <span class="tc-ben"><span>${h.cuoi ? esc(gioNgan(h.cuoi.luc)) : ""}</span>${h.chuaDoc ? `<span class="tc-dem">${h.chuaDoc}</span>` : ""}</span></a>`).join("")}</div>`
-      : `<p class="tc-ghi" style="padding:16px 4px">Chưa có ai để nhắn. Khi bên mua chào giá lô hàng của bác, cuộc trò chuyện sẽ hiện ở đây.</p>`}`;
+      : `<p class="tc-ghi" style="padding:16px 4px">Chưa có ai để nhắn. Khi người mua chào giá lô hàng của bác, cuộc trò chuyện sẽ hiện ở đây.</p>`}`;
   giuThamSo(khoi);
 }
 

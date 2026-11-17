@@ -39,7 +39,7 @@ them('TH-006', 'HĐ luồng thuận: giao tại vườn, nghiệm thu tại vư�
   const xn = await traThangVaXacNhan(b, 32200000);
   th.bang('Người bán nhận đủ trả thẳng', xn.status, 'fully_received');
   const kh = (await b.nam.get(`/v1/orders/${b.orderId}/payments`)).json.find((x: any) => x.id === b.paymentId);
-  th.kiem('Danh sách khoản (G1): có mã ảnh chứng từ bên mua báo', Array.isArray(kh?.evidence_document_ids) && kh.evidence_document_ids.length === 1, kh?.evidence_document_ids);
+  th.kiem('Danh sách khoản (G1): có mã ảnh chứng từ người mua báo', Array.isArray(kh?.evidence_document_ids) && kh.evidence_document_ids.length === 1, kh?.evidence_document_ids);
   const gk = (b as any).guiLaiKy, gx = (b as any).guiLaiXn;
   th.kiem('Gửi lại lệnh ký cùng mã: trả kết quả đã lưu, không đòi OTP mới', gk.status === 200 && gk.json.replayed === true && gk.json.status === 'awaiting_deposit', { http: gk.status, body: gk.json });
   th.kiem('Gửi lại xác nhận tiền cùng mã: trả kết quả đã lưu', gx.status === 200 && gx.json.replayed === true && gx.json.status === 'fully_received', { http: gx.status, body: gx.json });
@@ -64,7 +64,7 @@ them('TH-006', 'HĐ luồng thuận: giao tại vườn, nghiệm thu tại vư�
   th.bang('Quyết toán V', qt?.V, '44350000');
   th.bang('Quyết toán N', qt?.N, '44350000');
   th.bang('Chi cọc người bán', qt?.release_vnd, '12150000');
-  th.bang('Hoàn cọc bên mua', qt?.refund_vnd, '1650000');
+  th.bang('Hoàn cọc người mua', qt?.refund_vnd, '1650000');
   o = (await b.ha.get(`/v1/orders/${b.orderId}`)).json;
   th.bang('Đơn chờ quyết toán', o.status, 'awaiting_settlement');
   await lenhNganHangVaDoiSoat(b);

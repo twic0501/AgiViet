@@ -78,7 +78,7 @@ class RaoChan(unittest.TestCase):
         self.assertEqual(kq.loai, "mo_hinh")   # số 14 có trong quy trình đã chốt → không bị coi là số lạ
 
     def test_cuc_bo_so_ngoai_quy_trinh_bi_chan(self):
-        kq = tra_loi("Bên mua cọc bao nhiêu?", "ban", ncc=GiaNcc("Bên mua cọc 50% giá trị đơn."))
+        kq = tra_loi("Người mua cọc bao nhiêu?", "ban", ncc=GiaNcc("Người mua cọc 50% giá trị đơn."))
         self.assertEqual(kq.loai, "so_la")
 
     def test_hong_het_tra_soan_san(self):

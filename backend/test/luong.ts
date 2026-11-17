@@ -32,7 +32,7 @@ export async function chaoVaDongY(b: BoiCanh, th: TinhHuong | null, gia = 23000,
 
 export interface DieuKhoan { payment_timing?: string; delivery_mode?: string; transport_by?: string; pay_after_days?: number; silent_accept_hours?: number | null }
 
-/** Lập đơn + ký hai bên (bên mua OTP, người bán OTP + cam kết). */
+/** Lập đơn + ký hai bên (người mua OTP, người bán OTP + cam kết). */
 export async function lapVaKy(b: BoiCanh, th: TinhHuong | null, dk: DieuKhoan = {}) {
   const phucId = b.phuc.userId;
   const d = await b.ha.ok('/v1/orders', {
@@ -44,7 +44,7 @@ export async function lapVaKy(b: BoiCanh, th: TinhHuong | null, dk: DieuKhoan = 
   th?.bang('Đơn soạn thảo', d.status, 'drafting');
   const c1 = await b.ha.otpKy(b.docId!);
   const s1 = await b.ha.ok(`/v1/orders/${b.orderId}/sign`, { challenge_id: c1, code: '123456' });
-  th?.bang('Bên mua ký và gửi', s1.status, 'awaiting_seller');
+  th?.bang('Người mua ký và gửi', s1.status, 'awaiting_seller');
   const c2 = await b.nam.otpKy(b.docId!);
   const kyBody = { challenge_id: c2, code: '123456', commitment_ack: true, low_downgrade_price_ack: true }, kyKey = 'k-ky-' + b.orderId;
   const s2 = await b.nam.ok(`/v1/orders/${b.orderId}/sign`, kyBody, { key: kyKey });
@@ -54,7 +54,7 @@ export async function lapVaKy(b: BoiCanh, th: TinhHuong | null, dk: DieuKhoan = 
   return d;
 }
 
-/** Bên mua chuyển cọc qua ngân hàng mô phỏng, webhook có chữ ký được giao. */
+/** Người mua chuyển cọc qua ngân hàng mô phỏng, webhook có chữ ký được giao. */
 export async function chuyenCoc(b: BoiCanh, soTien?: number) {
   const hd = (await b.lan.get(`/v1/orders/${b.orderId}/deposit-instruction`)).json;
   b.depositId = hd.deposit_id; b.paymentRef = hd.payment_ref;

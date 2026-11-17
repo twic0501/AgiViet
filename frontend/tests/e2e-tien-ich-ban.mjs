@@ -78,7 +78,7 @@ await buoc("Cài đặt cỡ chữ Lớn có tác dụng và giữ sau khi tải
   assert.equal(await p.locator("button[data-action=datCo][data-v=lon]").getAttribute("aria-pressed"), "true");
   await p.locator("button[data-action=datCo][data-v=vua]").click(); await p.waitForTimeout(300);
 });
-await buoc("Quyền riêng tư nói rõ bên mua thấy gì trước và sau cọc", async () => {
+await buoc("Quyền riêng tư nói rõ người mua thấy gì trước và sau cọc", async () => {
   await mo("rieng-tu");
   assert.ok((await p.locator(".sl-b3").count()) >= 8);
 });

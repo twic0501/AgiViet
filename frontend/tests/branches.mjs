@@ -164,7 +164,7 @@ try {
   await step(
     "Đăng công khai lô với expected_revision vừa đọc",
     async () => {
-      await click(s, "Đăng cho bên mua thấy");
+      await click(s, "Đăng cho người mua thấy");
       await shot(s, "lo-da-dang");
       assert.equal(
         (await api(s, "/v1/lots/" + lot)).status,
@@ -409,7 +409,7 @@ try {
     await shot(b, "kho-giao-nhan");
   });
   await step(
-    "Không lỗi JavaScript, console hoặc HTTP; ảnh lô bên mua tải thật",
+    "Không lỗi JavaScript, console hoặc HTTP; ảnh lô người mua tải thật",
     async () => {
       assert.deepEqual(pageErrors, []);
       assert.deepEqual(deniedImages, []);

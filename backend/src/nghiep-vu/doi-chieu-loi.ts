@@ -22,7 +22,7 @@ export async function doiChieuQuyetToan(st: any, goi: GoiLoi = goiLoiQuaCong): P
   if (!r) return { ket_qua: 'chua_doi_chieu' };
   const so: [string, string, string][] = [['N', String(st.n_vnd), r.n], ['cọc về người bán', String(st.c_nb_formula_vnd), r.coc_ve_nguoi_ban]];
   // Có lần chi tạm trước đó thì hoàn và nghĩa vụ đã điều chỉnh theo phần đã chi, không so được bằng công thức gốc
-  if (BigInt(st.prior_released_vnd ?? 0) === 0n) so.push(['hoàn bên mua', String(st.refund_vnd), r.coc_hoan_ben_mua], ['bên mua trả thêm', String(st.t_bm_vnd), r.ben_mua_tra_them], ['người bán hoàn', String(st.t_nb_vnd), r.nguoi_ban_hoan]);
+  if (BigInt(st.prior_released_vnd ?? 0) === 0n) so.push(['hoàn người mua', String(st.refund_vnd), r.coc_hoan_ben_mua], ['người mua trả thêm', String(st.t_bm_vnd), r.ben_mua_tra_them], ['người bán hoàn', String(st.t_nb_vnd), r.nguoi_ban_hoan]);
   const lech = so.filter(([, a, b]) => a !== b);
   if (lech.length) throw loi('TRANG_THAI_KHONG_CHO_PHEP', `Quyết toán lệch giữa CSDL và lõi Rust (${lech.map(([k, a, b]) => `${k}: ${a} ≠ ${b}`).join('; ')}). Đã dừng, chưa gửi lệnh chi tiền.`);
   return { ket_qua: 'khop', da_so: so.map(([k]) => k) };

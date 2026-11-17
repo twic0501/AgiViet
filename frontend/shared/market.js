@@ -154,7 +154,7 @@ export async function lots(c, id) {
       ? empty(
           "Chưa có lô hàng",
           c.seller
-            ? "Đăng lô đầu tiên để bên mua gửi lời chào."
+            ? "Đăng lô đầu tiên để người mua gửi lời chào."
             : "Hãy lập nhu cầu mua để tìm nguồn phù hợp.",
         )
       : "")
@@ -191,7 +191,7 @@ export async function postLot(c) {
       ],
       "",
       "required",
-    )}${field("Khối lượng (kg)", "qty", "number", "", 'min="0.001" step="0.001" required')}${field("Ngày có hàng", "available", "date", "", "required")}${field("Ngày thu hoạch", "harvest", "date")}${field("Hết cách ly thuốc ngày", "clear", "date")}${field("Giá mong muốn (đ/kg)", "ask", "number", "", 'min="1" step="1" required')}${field("Giá thấp nhất kín (đ/kg)", "floor", "number", "", 'min="1" step="1" required')}</div><p data-reference class="caption">Chọn mặt hàng để xem giá tham khảo.</p>${rule("Giá thấp nhất không hiển thị cho bên mua. Không đăng khi chưa hết thời gian cách ly thuốc. Hàng ước tính chỉ được cam kết tối đa 80%.")}<div class="actions"><button>Lưu lô và thêm ảnh</button></div></form>`
+    )}${field("Khối lượng (kg)", "qty", "number", "", 'min="0.001" step="0.001" required')}${field("Ngày có hàng", "available", "date", "", "required")}${field("Ngày thu hoạch", "harvest", "date")}${field("Hết cách ly thuốc ngày", "clear", "date")}${field("Giá mong muốn (đ/kg)", "ask", "number", "", 'min="1" step="1" required')}${field("Giá thấp nhất kín (đ/kg)", "floor", "number", "", 'min="1" step="1" required')}</div><p data-reference class="caption">Chọn mặt hàng để xem giá tham khảo.</p>${rule("Giá thấp nhất không hiển thị cho người mua. Không đăng khi chưa hết thời gian cách ly thuốc. Hàng ước tính chỉ được cam kết tối đa 80%.")}<div class="actions"><button>Lưu lô và thêm ảnh</button></div></form>`
   );
 }
 export async function demands(c, id, matches = false) {
@@ -243,7 +243,7 @@ export async function demands(c, id, matches = false) {
   const list = await c.api.get("/v1/demands" + (!c.seller ? "?mine=true" : ""));
   return (
     heading(
-      c.seller ? "Bên mua đang cần" : "Nhu cầu mua",
+      c.seller ? "Người mua đang cần" : "Nhu cầu mua",
       c.seller
         ? "Chọn nhu cầu phù hợp với lô đang có."
         : "Ghi rõ loại, lượng và thời gian để ghép đúng nguồn.",
@@ -316,7 +316,7 @@ export async function bid(c, lotId, lineId = "", quote = false) {
   const l = quote ? null : await c.api.get("/v1/lots/" + lotId);
   return (
     heading(
-      quote ? "Báo giá cho bên mua" : "Gửi lời chào mua",
+      quote ? "Báo giá cho người mua" : "Gửi lời chào mua",
       quote
         ? "Chọn lô có đúng loại hàng của nhu cầu."
         : `${l.code} · ${l.product_name} · ${l.seller_name}`,
@@ -355,7 +355,7 @@ export async function offers(c, id) {
         `${o.code} · lô ${o.lot_code}`,
         link("Trở lại", "offers", true),
       ) +
-      `<section class="card">${badge(label(o.status))}${amount(r.price_vnd, "Đơn giá / kg")}${line("Lượng chào", quantity(r.qty_g))}${line("Hạn trả lời", date(r.expires_at, { time: true }))}${line("Lượt trả giá còn", o.luot_tra_gia_con)}${notice("Đây chưa phải hợp đồng. Giá đồng ý được giữ trong thời hạn của lời chào.")}<div class="actions">${o.toi_luot_toi && c.can("offer.accept." + c.side) ? button("Đồng ý giá này", "accept") : ""}${o.toi_luot_toi && c.can("offer.accept." + c.side) ? button(c.seller ? "Không bán" : "Không mua", "reject", true) : ""}${!o.toi_luot_toi && o.status === "sent" && c.can("offer.send." + c.side) ? button("Rút lời chào", "withdrawOffer", true) : ""}${o.status === "accepted" && !c.seller && c.can("order.create") && !o.hold?.order_id ? link("Lập hợp đồng", `create-order/${id}`) : ""}${o.hold?.order_id ? link("Mở hợp đồng", `order/${o.hold.order_id}`) : ""}</div>${o.toi_luot_toi && o.luot_tra_gia_con > 0 && c.can("offer.counter." + c.side) ? `<details class="rule"><summary>Trả giá</summary><form data-form="counter">${field("Đơn giá đề nghị (đ/kg)", "price", "number", "", 'min="1" required')}<button>Gửi giá đề nghị</button></form></details>` : ""}</section><section class="card"><h2>Các lượt trao đổi</h2>${o.rounds.map((r) => line((r.from_side === "buyer" ? "Bên mua" : "Người bán") + " · lượt " + r.round_no, money(r.price_vnd) + "/kg · " + quantity(r.qty_g))).join("")}</section>`
+      `<section class="card">${badge(label(o.status))}${amount(r.price_vnd, "Đơn giá / kg")}${line("Lượng chào", quantity(r.qty_g))}${line("Hạn trả lời", date(r.expires_at, { time: true }))}${line("Lượt trả giá còn", o.luot_tra_gia_con)}${notice("Đây chưa phải hợp đồng. Giá đồng ý được giữ trong thời hạn của lời chào.")}<div class="actions">${o.toi_luot_toi && c.can("offer.accept." + c.side) ? button("Đồng ý giá này", "accept") : ""}${o.toi_luot_toi && c.can("offer.accept." + c.side) ? button(c.seller ? "Không bán" : "Không mua", "reject", true) : ""}${!o.toi_luot_toi && o.status === "sent" && c.can("offer.send." + c.side) ? button("Rút lời chào", "withdrawOffer", true) : ""}${o.status === "accepted" && !c.seller && c.can("order.create") && !o.hold?.order_id ? link("Lập hợp đồng", `create-order/${id}`) : ""}${o.hold?.order_id ? link("Mở hợp đồng", `order/${o.hold.order_id}`) : ""}</div>${o.toi_luot_toi && o.luot_tra_gia_con > 0 && c.can("offer.counter." + c.side) ? `<details class="rule"><summary>Trả giá</summary><form data-form="counter">${field("Đơn giá đề nghị (đ/kg)", "price", "number", "", 'min="1" required')}<button>Gửi giá đề nghị</button></form></details>` : ""}</section><section class="card"><h2>Các lượt trao đổi</h2>${o.rounds.map((r) => line((r.from_side === "buyer" ? "Người mua" : "Người bán") + " · lượt " + r.round_no, money(r.price_vnd) + "/kg · " + quantity(r.qty_g))).join("")}</section>`
     );
   }
   const list = await c.api.get("/v1/offers");
@@ -378,7 +378,7 @@ export async function offers(c, id) {
       ? empty(
           "Chưa có lời chào",
           c.seller
-            ? "Khi bên mua chào giá, bạn sẽ thấy ở đây."
+            ? "Khi người mua chào giá, bạn sẽ thấy ở đây."
             : "Mở nguồn hàng để chào mua một lô.",
           link("Xem nguồn hàng", "lots", true),
         )

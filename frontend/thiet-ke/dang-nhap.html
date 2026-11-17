@@ -105,7 +105,7 @@
       <div id="dk-mua" hidden>
         <label class="nhan-o" for="mst">Mã số thuế</label>
         <input class="o-chu" id="mst" inputmode="numeric" placeholder="10 hoặc 13 số">
-        <label class="nhan-o" for="phan-khuc">Loại bên mua</label>
+        <label class="nhan-o" for="phan-khuc">Loại người mua</label>
         <select class="o-chu" id="phan-khuc"><option value="horeca">Nhà hàng, bếp ăn</option><option value="wholesaler">Đại lý, chợ đầu mối</option><option value="processor">Nhà máy chế biến</option><option value="export">Xuất nhập khẩu</option></select>
       </div>
       <span class="nhan-o">Số điện thoại</span>
@@ -141,8 +141,8 @@ const $ = (id) => document.getElementById(id);
 const cau = quaCau($("cau"), { anh: ["xoai-cat-chu", "tom", "lua-gao", "ca-phe", "thanh-long", "sau-rieng", "buoi", "vai", "chuoi", "dua-hau", "rau-cai", "cu", "ho-tieu", "hat-dieu", "ca-tra", "cua"].map((n) => `/assets/products/${n}.jpg`) });
 
 let cheDo = "dang-nhap", thuThach = null, demNguoc = null, nutMo = null, dangGui = false, dangXacNhan = 0;
-// Một màn đăng nhập cho cả hai app: ?ben=mua là app bên mua.
-const MUA = new URLSearchParams(location.search).get("ben") === "mua" || location.hostname.startsWith("mua."); // mua.agiviet.id.vn luôn là cửa bên mua
+// Một màn đăng nhập cho cả hai app: ?ben=mua là app người mua.
+const MUA = new URLSearchParams(location.search).get("ben") === "mua" || location.hostname.startsWith("mua."); // mua.agiviet.id.vn luôn là cửa người mua
 const APP = MUA ? "/mua-ts/" : "./ban-hom-nay.html"; // app mua bản Vite + TypeScript; bản cũ vẫn ở ./mua-app.html
 if (MUA) {
   document.title = "Đăng nhập · AgiViet mua";

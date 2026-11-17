@@ -13,7 +13,7 @@ const can = (b: any, keys: string[]) => {
 const so = (v: any, ten: string) => { const s = String(v); if (!/^\d+$/.test(s)) throw loi('DU_LIEU_KHONG_HOP_LE', `${ten} phải là số nguyên không âm`); return s; };
 const nhanVien = (nd: NguoiDung) => { if (!nd.vaiVanHanh?.length) throw loi('KHONG_CO_QUYEN'); };
 
-// Codex chốt: toàn bộ kế hoạch và giá chỉ cho bên mua (chủ, thu mua, kế toán) và vận hành đúng vai;
+// Codex chốt: toàn bộ kế hoạch và giá chỉ cho người mua (chủ, thu mua, kế toán) và vận hành đúng vai;
 // vai vận hành bất kỳ (vd kiểm định) không được xem mọi khách hàng.
 const VAI_MUA_XEM_KE_HOACH = ['owner', 'purchaser', 'accountant'];
 const VAI_VAN_HANH_XEM_KE_HOACH = ['dispatcher', 'supervisor', 'finance', 'risk'];

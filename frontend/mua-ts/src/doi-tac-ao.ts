@@ -9,7 +9,7 @@ const ma = (c: unknown) => String(c ?? "").replace("HĐ-", "HD-");
 const KHOA_LAN_DAU = "agv-lan-dau-thu";
 
 const cau = (v: ViecAi): string => {
-  const ai = v.to_chuc.startsWith("TC-M") ? "Bên mua" : "Người bán", c = v.doi_tuong;
+  const ai = v.to_chuc.startsWith("TC-M") ? "Người mua" : "Người bán", c = v.doi_tuong;
   const m = /^(chào|trả) giá (.+)$/.exec(v.viec); if (m) return `${ai} trả giá ${m[2]} cho lô ${c}`;
   const b = /^báo giá (.+) cho nhu cầu$/.exec(v.viec); if (b) return `${ai} báo giá ${b[1]} cho nhu cầu ${c}`;
   if (v.viec === "trả lời tin nhắn") return `${ai} vừa nhắn tin cho bạn`;

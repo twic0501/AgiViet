@@ -40,7 +40,7 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const ma = new URLSearchParams(location.search).get("ma") || "";
 const LOAI = { contract: "Hợp đồng", settlement_statement: "Bảng quyết toán", acceptance_record: "Biên bản nghiệm thu", amendment: "Phụ lục" };
-const BEN = { buyer: "Bên mua", seller: "Người bán", platform: "AgiViet", ops: "AgiViet" };
+const BEN = { buyer: "Người mua", seller: "Người bán", platform: "AgiViet", ops: "AgiViet" };
 (async () => {
   if (!ma) { $("xm-tt").innerHTML = `<p class="xm-kq sai">Thiếu mã tài liệu trong đường dẫn.</p>`; return; }
   const r = await fetch(`/v1/verify/${encodeURIComponent(ma)}`).catch(() => null);

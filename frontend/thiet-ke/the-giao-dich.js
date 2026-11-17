@@ -20,7 +20,7 @@ const kg = (g) => vnd(Number(g || 0) / 1000);
 const e = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const ngay = (s) => new Date(s).toLocaleDateString("vi-VN", { day: "numeric", month: "numeric", year: "numeric", timeZone: "Asia/Ho_Chi_Minh" });
 const TRA = { on_receipt: "Trả khi nhận hàng", inspect_then_before_loading: "Kiểm tại vườn, trả rồi mới bốc" };
-const XE = { buyer: "Bên mua lo xe", seller: "Người bán lo xe" };
+const XE = { buyer: "Người mua lo xe", seller: "Người bán lo xe" };
 const CSS = `.tgd{display:grid;gap:8px;margin:8px 0;padding:12px;border:1.5px solid #1f4d3a;border-radius:14px;background:#fffdf7;color:#1f2a22}
 .tgd b.g{font-size:18px}.tgd p{margin:0;font-size:14px;line-height:1.4}.tgd .ghi{color:#55604f}.tgd .hang{display:flex;gap:8px;flex-wrap:wrap}
 .tgd button,.tgd a.n{min-height:44px;padding:0 14px;border-radius:12px;border:1.5px solid #1f4d3a;background:#fff;color:#1f4d3a;font-family:inherit;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
@@ -64,7 +64,7 @@ export function gnTheGD(o, ctx) {
     dk = await ctx.goi(`/v1/offers/${ctx.cuoc.offer_id}/terms`);
     const dau = `<b>Hai bên đã chốt ${gia}</b>`, ban = dk.ban || dk.mac_dinh;
     if (sua) return the(`${dau}<p>Đề xuất điều khoản hợp đồng:</p>${formDK(ban)}`);
-    if (dk.trang_thai === "da_thong_nhat") return the(`${dau}<p>Hai bên đã thống nhất điều khoản:</p>${veDK(ban)}${ctx.ben === "buyer" ? `<button class="c" data-l="tao-hd">Tạo hợp đồng để ký</button>` : `<p class="ghi">Chờ bên mua tạo hợp đồng để ký.</p>`}`);
+    if (dk.trang_thai === "da_thong_nhat") return the(`${dau}<p>Hai bên đã thống nhất điều khoản:</p>${veDK(ban)}${ctx.ben === "buyer" ? `<button class="c" data-l="tao-hd">Tạo hợp đồng để ký</button>` : `<p class="ghi">Chờ người mua tạo hợp đồng để ký.</p>`}`);
     if (dk.trang_thai === "cho_tra_loi") return the(`${dau}<p>${dk.de_xuat_boi === ctx.ben ? "Bạn đã đề xuất, chờ bên kia trả lời" : "Bên kia đề xuất điều khoản"} (bản ${dk.phien_ban}):</p>${veDK(ban)}${dk.de_xuat_boi === ctx.ben ? "" : `<div class="hang"><button class="c" data-l="dk-dy">Đồng ý điều khoản</button><button data-l="mo-sua">Đề xuất sửa</button><button data-l="dk-tc">Không đồng ý</button></div>`}`);
     return the(`${dau}<p>${dk.trang_thai === "bi_tu_choi" ? "Điều khoản vừa bị từ chối. Sửa lại rồi gửi:" : "Bước tiếp: thống nhất điều khoản hợp đồng."}</p>${veDK(ban)}<div class="hang"><button class="c" data-l="gui-mac-dinh">Gửi điều khoản này</button><button data-l="mo-sua">Sửa trước khi gửi</button></div>`);
   };

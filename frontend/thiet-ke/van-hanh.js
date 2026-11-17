@@ -14,8 +14,8 @@ const bang = (dau, hang) => `<div class="sl-bang-boc"><table class="sl-bang"><th
 const XM = [
   { ma: "XM-311", ten: "Nguyễn Thị Năm", loai: "Người bán · nông hộ", noi: "Mỹ Xương, Cao Lãnh", gui: "2 giờ trước", han: 22, giay: "Căn cước + ảnh vườn + tài khoản" },
   { ma: "XM-312", ten: "HTX Tân Thuận", loai: "Người bán · HTX", noi: "Chợ Gạo, Tiền Giang", gui: "5 giờ trước", han: 19, giay: "Giấy đăng ký HTX + biên bản họp" },
-  { ma: "XM-308", ten: "Nhà máy sấy Đồng Xanh", loai: "Bên mua · chế biến", noi: "Sa Đéc, Đồng Tháp", gui: "Hôm qua", han: 4, giay: "Giấy phép kinh doanh + tài khoản công ty" },
-  { ma: "XM-305", ten: "Vựa Ba Cường", loai: "Bên mua · vựa", noi: "Cái Bè, Tiền Giang", gui: "2 ngày", han: -2, giay: "Giấy phép hộ kinh doanh" },
+  { ma: "XM-308", ten: "Nhà máy sấy Đồng Xanh", loai: "Người mua · chế biến", noi: "Sa Đéc, Đồng Tháp", gui: "Hôm qua", han: 4, giay: "Giấy phép kinh doanh + tài khoản công ty" },
+  { ma: "XM-305", ten: "Vựa Ba Cường", loai: "Người mua · vựa", noi: "Cái Bè, Tiền Giang", gui: "2 ngày", han: -2, giay: "Giấy phép hộ kinh doanh" },
 ];
 const TC = [
   { ma: "TC-021", don: "HĐ-0019", hang: "Xoài cát Chu · 2.000 kg", ban: "Chị Năm", mua: "Nhà máy Đồng Xanh", dong: "Hạ cấp 120 kg", tien: 960000, han: "còn 38 giờ", buoc: "Kiểm định 48 giờ" },
@@ -44,8 +44,8 @@ const man = {
       </div>
     </div>` },
 
-  "duyet-xac-minh": { tieuDe: "Hàng chờ xác minh", phu: "Người bán và bên mua · hạn 24 giờ từ lúc gửi", ve: (s, { url }) => `
-    ${loc(["Tất cả", "Người bán", "Bên mua", "Quá hạn"])}
+  "duyet-xac-minh": { tieuDe: "Hàng chờ xác minh", phu: "Người bán và người mua · hạn 24 giờ từ lúc gửi", ve: (s, { url }) => `
+    ${loc(["Tất cả", "Người bán", "Người mua", "Quá hạn"])}
     ${the("Chờ duyệt", bang(["Mã", "Tên", "Loại", "Nơi", "Giấy tờ", "Gửi", "Hạn", ""], XM.map((x) => `<tr><td><a href="${url("chi-tiet-xac-minh", "&ma=" + x.ma)}">${x.ma}</a></td><td><b>${esc(x.ten)}</b></td><td>${esc(x.loai)}</td><td>${esc(x.noi)}</td><td class="sl-ghi">${esc(x.giay)}</td><td>${esc(x.gui)}</td><td>${s.duyet[x.ma] ? nhan(s.duyet[x.ma], s.duyet[x.ma] === "Đã duyệt" ? "sl-n-xong" : "") : x.han < 0 ? nhan(`quá ${-x.han} giờ`, "sl-n-ban") : nhan(`còn ${x.han} giờ`)}</td><td><a class="sl-nut sl-vien" href="${url("chi-tiet-xac-minh", "&ma=" + x.ma)}">Mở</a></td></tr>`)))}`, sau: ganLoc },
   "chi-tiet-xac-minh": { tieuDe: () => { const x = XM.find((y) => y.ma === new URLSearchParams(location.search).get("ma")) || XM[0]; return `Duyệt hồ sơ · ${x.ten}`; }, thuoc: "duyet-xac-minh", lui: "duyet-xac-minh", phu: () => { const x = XM.find((y) => y.ma === new URLSearchParams(location.search).get("ma")) || XM[0]; return `${x.ma} · ${x.loai} · ${x.noi}`; }, ve: (s, { q }) => { const x = XM.find((y) => y.ma === q.get("ma")) || XM[0]; const kq = s.duyet[x.ma]; return `
     ${kq ? bao(`${esc(kq)}. Người dùng đã được báo qua app.`, kq === "Đã duyệt" ? "" : "sl-bao-tien") : ""}
@@ -75,18 +75,18 @@ const man = {
     ${s.tc.quyet ? bao(`Đã chốt: ${esc(s.tc.quyet)}. Ngân hàng nhận lệnh xử lý cọc sau khi hai bên được báo.`) : bao("Chỉ dòng hạ cấp 120 kg đang tranh chấp. Các dòng khác đã chốt, phần không tranh chấp đã quyết toán.", "sl-bao-tien")}
     <div class="sl-luoi sl-chinh-phu">
       <div style="display:grid;gap:16px">
-        ${the("AI tóm tắt hồ sơ", `<p>Bên mua hạ cấp 120 kg vì trái dưới 350 g. Người bán phản đối, nói đã lựa đúng quy cách và có video lúc bốc. Bên mua đã cân lại, kết quả giữ nguyên. Mẫu đối chứng M-2291 còn niêm phong tại kho.</p><p class="sl-ghi" style="margin-top:8px">Tóm tắt do AI viết từ chứng từ, người xử lý phải đọc chứng từ gốc trước khi quyết.</p>`)}
+        ${the("AI tóm tắt hồ sơ", `<p>Người mua hạ cấp 120 kg vì trái dưới 350 g. Người bán phản đối, nói đã lựa đúng quy cách và có video lúc bốc. Người mua đã cân lại, kết quả giữ nguyên. Mẫu đối chứng M-2291 còn niêm phong tại kho.</p><p class="sl-ghi" style="margin-top:8px">Tóm tắt do AI viết từ chứng từ, người xử lý phải đọc chứng từ gốc trước khi quyết.</p>`)}
         <div class="sl-luoi sl-l2">
-          ${the("Bên bán · chị Năm", dong("Video bốc tại vườn", "3 phút · 28/10 5:42") + dong("Ảnh trái lúc lựa", "6 ảnh") + dong("Ý kiến", "Đúng loại 1"))}
-          ${the("Bên mua · Đồng Xanh", dong("Ảnh cân mẫu 20 trái", "4 ảnh") + dong("Phiếu cân lại", "PC-102877") + dong("Ý kiến", "120 kg dưới 350 g"))}
+          ${the("Người bán · chị Năm", dong("Video bốc tại vườn", "3 phút · 28/10 5:42") + dong("Ảnh trái lúc lựa", "6 ảnh") + dong("Ý kiến", "Đúng loại 1"))}
+          ${the("Người mua · Đồng Xanh", dong("Ảnh cân mẫu 20 trái", "4 ảnh") + dong("Phiếu cân lại", "PC-102877") + dong("Ý kiến", "120 kg dưới 350 g"))}
         </div>
-        ${the("Lịch sử đơn", `<ol class="sl-buoc">${[["Nghiệm thu", "Đạt 1.850 · hạ cấp 120 · trả lại 30"], ["Người bán phản đối dòng hạ cấp", "28/10 14:20"], ["Bên mua cân lại", "28/10 16:05 · giữ nguyên"], ["Mở kiểm định 48 giờ", "Bên sai chịu phí kiểm định 850.000 đ"]].map(([a, b]) => `<li class="sl-b-xong"><span class="sl-b-vong">${icon("tich")}</span><div><b>${a}</b><span class="sl-ghi">${b}</span></div></li>`).join("")}</ol>`)}
+        ${the("Lịch sử đơn", `<ol class="sl-buoc">${[["Nghiệm thu", "Đạt 1.850 · hạ cấp 120 · trả lại 30"], ["Người bán phản đối dòng hạ cấp", "28/10 14:20"], ["Người mua cân lại", "28/10 16:05 · giữ nguyên"], ["Mở kiểm định 48 giờ", "Bên sai chịu phí kiểm định 850.000 đ"]].map(([a, b]) => `<li class="sl-b-xong"><span class="sl-b-vong">${icon("tich")}</span><div><b>${a}</b><span class="sl-ghi">${b}</span></div></li>`).join("")}</ol>`)}
       </div>
       <section class="sl-the" style="display:grid;gap:12px;position:sticky;top:80px">
         <h2 style="font-size:var(--c3)">Quyết định</h2>
         ${dong("Kết quả kiểm định", nhan("Đã có · 29/10", "sl-n-nh"))}
         <p class="sl-ghi">Trung tâm kiểm định Cần Thơ: 104/120 kg dưới 350 g.</p>
-        <label class="sl-o"><span>Chốt</span><select id="quyet"><option>Giữ hạ cấp 104 kg, 16 kg tính loại 1 · bên mua chịu phí kiểm định theo tỷ lệ</option><option>Giữ nguyên hạ cấp 120 kg · người bán chịu phí kiểm định</option><option>Bỏ hạ cấp · bên mua chịu phí kiểm định</option></select></label>
+        <label class="sl-o"><span>Chốt</span><select id="quyet"><option>Giữ hạ cấp 104 kg, 16 kg tính loại 1 · người mua chịu phí kiểm định theo tỷ lệ</option><option>Giữ nguyên hạ cấp 120 kg · người bán chịu phí kiểm định</option><option>Bỏ hạ cấp · người mua chịu phí kiểm định</option></select></label>
         <button class="sl-nut sl-vang" type="button" id="chot">Chốt và gửi hai bên</button>
         <p class="sl-ghi">Hai bên có 24 giờ để khiếu nại lên quản trị trước khi ngân hàng xử lý cọc.</p>
       </section>
@@ -100,13 +100,13 @@ const man = {
     </div>
     ${the("Lệnh ngân hàng", bang(["Đơn", "Loại lệnh", "Số tiền#", "Gửi lúc", "Sao kê", ""], [
       `<tr><td>HĐ-0016</td><td>Chi cọc cho người bán</td><td class="sl-so">${d(12150000)}</td><td>08:02</td><td>${nhan("Khớp", "sl-n-xong")}</td><td></td></tr>`,
-      `<tr><td>HĐ-0016</td><td>Hoàn bên mua</td><td class="sl-so">${d(1650000)}</td><td>08:02</td><td>${nhan("Khớp", "sl-n-xong")}</td><td></td></tr>`,
+      `<tr><td>HĐ-0016</td><td>Hoàn người mua</td><td class="sl-so">${d(1650000)}</td><td>08:02</td><td>${nhan("Khớp", "sl-n-xong")}</td><td></td></tr>`,
       `<tr><td>HĐ-0021</td><td>Nhận cọc</td><td class="sl-so">${d(12780000)}</td><td>07:40</td><td>${nhan("Chưa thấy trên sao kê", "sl-n-ban")}</td><td><button class="sl-nut sl-vien" type="button">Kiểm tay</button></td></tr>`,
       `<tr><td>HĐ-0013</td><td>Chi cọc cho người bán</td><td class="sl-so">${d(7200000)}</td><td>Hôm qua</td><td>${nhan("Ngân hàng báo lỗi tài khoản", "sl-n-ban")}</td><td><button class="sl-nut sl-vien" type="button">Gửi lại</button></td></tr>`]))}
     ${bao("Nhân viên không chuyển tiền tay. Mọi lệnh đi qua ngân hàng đối tác, có hai người duyệt khi trên 50 triệu.", "sl-bao-nh")}` },
 
   "nguoi-dung": { tieuDe: "Người dùng", phu: "Tra cứu tài khoản, lịch sử, khóa", phai: () => `<label class="sl-tim">${icon("tim")}<input placeholder="Tên, số điện thoại, mã số thuế" aria-label="Tìm người dùng"></label>`, ve: (s) => the("Kết quả", bang(["Tài khoản", "Vai", "Xác minh", "Đơn", "Cảnh báo", "Trạng thái", ""], [
-    ["U-1042", "Nguyễn Thị Năm", "Người bán", "Đã xác minh", 31, "0"], ["U-2011", "Nhà máy sấy Đồng Xanh", "Bên mua", "Đã xác minh", 15, "0"], ["U-1188", "Anh Tư Hòa", "Người bán", "Đã xác minh", 12, "2 lần lách liên lạc"], ["U-1203", "Anh Tư Lợi", "Người bán", "Chờ", 0, "Ảnh lấy trên mạng"],
+    ["U-1042", "Nguyễn Thị Năm", "Người bán", "Đã xác minh", 31, "0"], ["U-2011", "Nhà máy sấy Đồng Xanh", "Người mua", "Đã xác minh", 15, "0"], ["U-1188", "Anh Tư Hòa", "Người bán", "Đã xác minh", 12, "2 lần lách liên lạc"], ["U-1203", "Anh Tư Lợi", "Người bán", "Chờ", 0, "Ảnh lấy trên mạng"],
   ].map(([m, t, v, x, n, c]) => `<tr><td><b>${t}</b><div class="sl-ghi">${m}</div></td><td>${v}</td><td>${nhan(x, x === "Đã xác minh" ? "sl-n-xong" : "")}</td><td class="sl-so">${n}</td><td>${c === "0" ? `<span class="sl-ghi">Không</span>` : nhan(c, "sl-n-tien")}</td><td>${s.khoa[m] ? nhan("Đã khóa", "sl-n-ban") : nhan("Đang hoạt động", "sl-n-xong")}</td><td><button class="sl-nut ${s.khoa[m] ? "sl-vien" : "sl-huy"}" type="button" data-khoa="${m}">${s.khoa[m] ? "Mở khóa" : "Khóa"}</button></td></tr>`)) + `<p class="sl-ghi" style="margin-top:8px">Khóa tài khoản không hủy đơn đang chạy; đơn chuyển người vận hành theo dõi.</p>`), sau: (g) => g.querySelectorAll("[data-khoa]").forEach((b) => b.addEventListener("click", () => doi((s) => { s.khoa[b.dataset.khoa] = !s.khoa[b.dataset.khoa]; }))) },
 
   "yeu-cau-ho-tro": { tieuDe: "Yêu cầu hỗ trợ", phu: "Hàng chờ · giao người xử lý · trả lời", ve: () => `
@@ -140,10 +140,10 @@ const man = {
     </div>`, sau: (g) => g.querySelector("#luu-phi")?.addEventListener("click", () => doi((s) => { s.phi.gt = Number(g.querySelector("#gt").value.replace(",", ".")) || s.phi.gt; s.phi.mq = Number(g.querySelector("#mq").value.replace(",", ".")) || s.phi.mq; s.phi.tran = Number(g.querySelector("#tran").value.replace(/\D/g, "")) || s.phi.tran; })) },
 };
 
-// ── Chạy tình huống vận hành: các tình huống v23 KHÔNG có đủ hai bên bán + mua (ngân hàng, nhân viên, quản trị, một bên).
+// ── Chạy tình huống vận hành: các tình huống v23 KHÔNG có đủ hai người bán + mua (ngân hàng, nhân viên, quản trị, một bên).
 // Đọc thẳng /mo-phong-quy-trinh/quy-trinh.json; người vận hành xác nhận từng bước theo đúng vai, đúng thứ tự v23.
 const K_TH = "agv-vh-tinh-huong";
-const VAI_TEN = { ban: "Người bán", mua: "Bên mua", nv: "Nhân viên AgiViet", qt: "Quản trị AgiViet", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống" };
+const VAI_TEN = { ban: "Người bán", mua: "Người mua", nv: "Nhân viên AgiViet", qt: "Quản trị AgiViet", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống" };
 const SO_TEN = { coc_giu: "Cọc ngân hàng giữ", phai_tra: "Còn phải trả", da_tra: "Đã trả", hoan: "Hoàn", no: "Nợ" };
 const docTH = () => { try { return JSON.parse(localStorage.getItem(K_TH)) || {}; } catch { return {}; } };
 const ghiTH = (x) => { try { localStorage.setItem(K_TH, JSON.stringify(x)); } catch {} };

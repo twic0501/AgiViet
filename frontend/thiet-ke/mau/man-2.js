@@ -23,7 +23,7 @@ const veTin = (m) => {
   if (m.k === "anh") return `<div class="m-tin m-anh-tin ${m.ai === "toi" ? "m-toi" : "m-ho"}"><div class="m-anh-chat" style="background-image:url(${esc(m.anh)})"></div><small style="padding:2px 8px">${esc(m.luc)}</small></div>`;
   if (m.k === "gia") {
     const toi = m.ai === "toi", cho = m.trang === "cho-bac" && !toi;
-    return `<div class="m-the-gia ${toi ? "m-cua-toi" : ""}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${toi ? "Bác trả giá" : "Bên mua trả giá"}</b>${m.trang === "dong-y" ? nhan("Hai bên đã đồng ý", "m-n-xong") : m.trang === "khong" ? nhan("Bác không bán", "") : cho ? nhan("Chờ bác trả lời", "m-n-bac") : nhan(toi ? "Chờ bên mua" : "Đã trả lại", "")}</div>
+    return `<div class="m-the-gia ${toi ? "m-cua-toi" : ""}"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${toi ? "Bác trả giá" : "Người mua trả giá"}</b>${m.trang === "dong-y" ? nhan("Hai bên đã đồng ý", "m-n-xong") : m.trang === "khong" ? nhan("Bác không bán", "") : cho ? nhan("Chờ bác trả lời", "m-n-bac") : nhan(toi ? "Chờ người mua" : "Đã trả lại", "")}</div>
       <div class="m-gia"><span class="m-ghi">${kg(m.luong)} · ${esc(m.ghi || "")}</span><b>${so(m.gia)} đ/kg</b></div>
       <div class="m-ghi">Thành tiền ${d(m.gia * m.luong)} (trước phí, chi phí chở)</div>
       ${cho ? `<div class="m-hang-nut m-deu"><button class="m-nut m-phu m-nho" type="button" data-gia="tra">Trả giá</button><button class="m-nut m-vang m-nho" type="button" data-gia="dong-y">Đồng ý ${so(m.gia)}</button></div><button class="m-nut m-chu m-nho" type="button" data-gia="khong" style="color:var(--do)">Không bán</button>` : ""}</div>`;
@@ -33,26 +33,26 @@ const veTin = (m) => {
 
 export const MAN_2 = {
   // ── Hàng ──
-  hang: { tieu: "Chợ", phu: "Hàng của bác · bên mua cần", tab: "hang", ve: (s) => ({ than: `
-    <div class="m-loc"><button type="button" aria-pressed="true">Hàng của tôi</button><button type="button" aria-pressed="false" data-di="nhu-cau">Bên mua cần ${s.canMua.length}</button></div>
+  hang: { tieu: "Chợ", phu: "Hàng của bác · người mua cần", tab: "hang", ve: (s) => ({ than: `
+    <div class="m-loc"><button type="button" aria-pressed="true">Hàng của tôi</button><button type="button" aria-pressed="false" data-di="nhu-cau">Người mua cần ${s.canMua.length}</button></div>
     ${s.lo.map(hangLo).join("")}
     ${nut("Đăng thêm hàng", { ma: "dang", lop: "m-phu m-rong", icon: "them" })}
     ${the("Lô gộp nhiều hộ", `<p class="m-ghi">HTX Mỹ Xương gom xoài của 6 hộ thành lô 5 tấn cho bên xuất khẩu.</p>`, lk("Xem", "lo-gop"))}` }) },
   "chi-tiet-lo": { tieu: (s, t) => `${lo(s, t.lo).ma} · ${lo(s, t.lo).ten}`, phu: (s, t) => lo(s, t.lo).loai, ve_tu: "hang", ve: (s, t) => { const l = lo(s, t.lo); return { than: `
     <div style="aspect-ratio:16/10;border-radius:18px;background:url(/assets/products/xoai-cat-chu.jpg) center/cover"></div>
     <div class="m-hai-o"><div class="m-the m-so-lon"><small>Còn bán</small><b style="font-size:24px">${kg(l.con)}</b></div><div class="m-the m-so-lon m-tien"><small>Giá mong muốn</small><b style="font-size:24px">${so(l.gia)}</b><span class="m-ghi">đ/kg</span></div></div>
-    ${the("Lô hàng", dong("Đã khai", kg(l.khai)) + dong("Ngày hái", l.hai) + dong("Giá thấp nhất (bên mua không thấy)", `${so(l.san)} đ/kg`) + dong("Trạng thái", l.trang === "sap-co" ? nhan("Sắp có hàng", "m-n-tien") : nhan("Đang bán", "m-n-xong")))}
+    ${the("Lô hàng", dong("Đã khai", kg(l.khai)) + dong("Ngày hái", l.hai) + dong("Giá thấp nhất (người mua không thấy)", `${so(l.san)} đ/kg`) + dong("Trạng thái", l.trang === "sap-co" ? nhan("Sắp có hàng", "m-n-tien") : nhan("Đang bán", "m-n-xong")))}
     ${l.chao ? viec(`${l.chao} lời chào đang chờ`, "Đồng Xanh trả 23.000 đ/kg cho 2.000 kg.", `<div>${nut("Mở tin nhắn", { ma: "chat", tham: { ma: "T1" }, lop: "m-vang m-rong" })}</div>`) : ""}
     <div class="m-hai-o">${nut("Còn lại bao nhiêu?", { ma: "cap-nhat-luong", tham: { lo: l.ma }, lop: "m-phu" })}${nut("Chứng từ", { ma: "chung-tu", lop: "m-phu" })}</div>` }; } },
   "cap-nhat-luong": { tieu: "Còn lại bao nhiêu?", phu: (s, t) => lo(s, t.lo).ma, ve_tu: "hang", ve: (s, t) => { const l = lo(s, t.lo); return { than: `
     <h2 class="m-tieu">Lô ${l.ma} còn bao nhiêu ký?</h2>
     <label class="m-o"><span>Còn lại (kg)</span><input inputmode="numeric" value="${l.con}" style="font-size:28px;font-weight:700" id="con"></label>
     <div class="m-loc">${[-500, -100, 100, 500].map((k) => `<button type="button" data-cong="${k}">${k > 0 ? "+" : "−"}${Math.abs(k)} kg</button>`).join("")}</div>
-    ${chon("can", [["Ước chừng", "Bên mua đặt tối đa 80% lượng này"], ["Đã cân", "Bên mua đặt được hết"]])}`,
+    ${chon("can", [["Ước chừng", "Người mua đặt tối đa 80% lượng này"], ["Đã cân", "Người mua đặt được hết"]])}`,
     day: nut("Lưu", { id: "luu", lop: "m-vang m-rong" }) }; },
     sau: (el, s, t, api) => { const i = el.querySelector("#con"); el.querySelectorAll("[data-cong]").forEach((b) => b.addEventListener("click", () => { i.value = Math.max(0, Number(i.value) + Number(b.dataset.cong)); i.animate([{ transform: "scale(1.04)" }, { transform: "none" }], { duration: 200 }); })); el.querySelector("#luu").addEventListener("click", async (e) => { if (!(Number(i.value) >= 0) || i.value === "") { window.HieuUng?.loiTruong(i, "Bác nhập số ký còn lại"); return; } await api.xong(e.currentTarget, "Đã lưu"); api.doi((x) => { lo(x, t.lo).con = Number(i.value); }); api.toast(`Đã cập nhật ${t.lo || "L-0412"}: còn ${so(i.value)} kg`); api.lui(); }); } },
   "sap-co-hang": { tieu: "Sắp có hàng", phu: "L-0414 · hái từ 12/11", ve_tu: "hang", ve: (s) => ({ than: `
-    ${viec("Bên mua đặt trước được", "Lô hiện cho bên mua dạng \"sắp có hàng\". Cọc chỉ chuyển khi hai bên ký.", "", "m-cho")}
+    ${viec("Người mua đặt trước được", "Lô hiện cho người mua dạng \"sắp có hàng\". Cọc chỉ chuyển khi hai bên ký.", "", "m-cho")}
     ${the("Lô L-0414", dong("Dự kiến", "2.000 kg loại 1") + dong("Hái từ", "12/11 (sau cách ly 09/11)") + dong("Giá mong muốn", "24.000 đ/kg"))}
     ${the("Nhắc trước ngày hái", dong("07/11", "Chụp ảnh vườn") + dong("11/11", "Xác nhận lượng thật"))}`,
     day: nut("Xác nhận còn đúng kế hoạch", { lop: "m-vang m-rong" }) }) },
@@ -62,7 +62,7 @@ export const MAN_2 = {
   "lo-gop": { tieu: "Lô gộp nhiều hộ", phu: "HTX Mỹ Xương · L-G021", ve_tu: "hang", ve: () => ({ than: `
     <div class="m-so-lon"><small>Phần của bác trong lô gộp</small><b>1.200 kg</b><span class="m-ghi">trên tổng 5.000 kg · 6 hộ</span></div>
     ${the("Các hộ", [["Chị Năm (bác)", 1200], ["Anh Tư", 900], ["Chú Bảy", 1000], ["Cô Ba", 700], ["Anh Sáu", 600], ["Chị Út", 600]].map(([a, b]) => dong(a, kg(b))).join(""))}
-    <p class="m-ghi">HTX ký với bên mua. Tiền về HTX rồi chia theo phần cân thật của từng hộ.</p>` }) },
+    <p class="m-ghi">HTX ký với người mua. Tiền về HTX rồi chia theo phần cân thật của từng hộ.</p>` }) },
 
   // ── Đăng hàng ──
   dang: { tieu: "Đăng hàng", phu: "Chọn cách bác thấy dễ", ve: () => ({ than: `
@@ -77,7 +77,7 @@ export const MAN_2 = {
     ${buocDang(1, "Ảnh hàng")}
     <div class="m-khung-chup">${ic("anh", 48)}<span style="position:absolute;bottom:16px;font-size:14px">Để trái xoài trong khung</span></div>
     <div class="m-luoi-anh"><span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span><span style="background-image:url(/assets/products/xoai-cat-chu.jpg);filter:saturate(1.3)"></span><span style="background:var(--giay-lot)"></span></div>
-    <p class="m-ghi">Ảnh chụp ngay trong app được nhãn "Chụp trong app", bên mua tin hơn ảnh có sẵn.</p>`,
+    <p class="m-ghi">Ảnh chụp ngay trong app được nhãn "Chụp trong app", người mua tin hơn ảnh có sẵn.</p>`,
     day: `<div class="m-hang-nut">${nut("Ảnh có sẵn", { lop: "m-phu" })}${nut("Tiếp tục", { ma: "kiem-tra", lop: "m-vang" })}</div>` }) },
   nghe: { tieu: "Đang nghe", phu: "Đăng hàng bằng giọng nói", ve: () => ({ than: `
     ${buocDang(2, "Lượng, ngày")}
@@ -89,33 +89,33 @@ export const MAN_2 = {
   "kiem-tra": { tieu: "Kiểm tra", phu: "Bước 3/4", ve: () => ({ than: `
     ${buocDang(3, "Giá")}
     <div class="m-hai-o">${o("Lượng (kg)", "3500")}${o("Ngày hái", "27/10")}</div>
-    ${chon("ld", [["Ước chừng", "Bên mua đặt tối đa 80%"], ["Đã cân", ""]])}
-    <div class="m-hai-o">${o("Giá mong muốn", "23.000", "đ/kg")}${o("Giá thấp nhất", "21.500", "Bên mua không thấy")}</div>
+    ${chon("ld", [["Ước chừng", "Người mua đặt tối đa 80%"], ["Đã cân", ""]])}
+    <div class="m-hai-o">${o("Giá mong muốn", "23.000", "đ/kg")}${o("Giá thấp nhất", "21.500", "Người mua không thấy")}</div>
     ${viec("Giá tham khảo tuần này", "Xoài cát Chu loại 1: 21.500–24.000 đ/kg tại vườn (từ các lô trên AgiViet).", "", "m-cho")}
     ${viec("Từ lần phun 12/10 tới giờ, bác có xịt thêm không?", "", `<div class="m-hang-nut m-deu">${nut("Có", { ma: "cach-ly", lop: "m-phu" })}${nut("Không xịt thêm", { lop: "m-phu" })}</div>`)}`,
     day: nut("Xem lại", { ma: "xem-lai", lop: "m-vang m-rong" }) }) },
   "xem-lai": { tieu: "Xem lại", phu: "Bước 4/4", ve: () => ({ than: `
     ${buocDang(4, "Đăng")}
     <div style="aspect-ratio:16/9;border-radius:18px;background:url(/assets/products/xoai-cat-chu.jpg) center/cover"></div>
-    ${the("Bên mua sẽ thấy", dong("Hàng", "Xoài cát Chu · Loại 1") + dong("Lượng", "3.500 kg (ước chừng)") + dong("Hái", "27/10") + dong("Giá", "23.000 đ/kg") + dong("Vườn", "Mỹ Xương, Cao Lãnh"), lk("Sửa", "kiem-tra"))}
-    <p class="m-ghi">Bên mua không thấy giá thấp nhất và số điện thoại của bác.</p>`,
+    ${the("Người mua sẽ thấy", dong("Hàng", "Xoài cát Chu · Loại 1") + dong("Lượng", "3.500 kg (ước chừng)") + dong("Hái", "27/10") + dong("Giá", "23.000 đ/kg") + dong("Vườn", "Mỹ Xương, Cao Lãnh"), lk("Sửa", "kiem-tra"))}
+    <p class="m-ghi">Người mua không thấy giá thấp nhất và số điện thoại của bác.</p>`,
     day: nut("Đăng lên chợ", { ma: "xong", lop: "m-vang m-rong" }) }) },
   xong: { tieu: "Đã đăng", khongDau: false, phu: "L-0415", ve: () => ({ than: `
-    <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:32px 0"><span class="m-nay" style="width:88px;height:88px;border-radius:50%;background:var(--la);color:#f4f1e8;display:grid;place-items:center">${ic("tich", 44)}</span><h2 class="m-tieu">Lô L-0415 đã lên chợ</h2><p class="m-ghi">12 bên mua đang tìm xoài cát Chu sẽ thấy lô này. Có lời chào, app báo ngay.</p></div>`,
+    <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:32px 0"><span class="m-nay" style="width:88px;height:88px;border-radius:50%;background:var(--la);color:#f4f1e8;display:grid;place-items:center">${ic("tich", 44)}</span><h2 class="m-tieu">Lô L-0415 đã lên chợ</h2><p class="m-ghi">12 người mua đang tìm xoài cát Chu sẽ thấy lô này. Có lời chào, app báo ngay.</p></div>`,
     day: `${nut("Về trang chủ", { ma: "hom-nay", lop: "m-vang m-rong" })}${nut("Xem lô", { ma: "chi-tiet-lo", tham: { lo: "L-0412" }, lop: "m-chu m-rong" })}` }) },
 
   // ── Khách: danh sách hội thoại (tab Tin nhắn) ──
   khach: { tieu: "Tin nhắn", phu: "Hộ Nguyễn Thị Năm", tab: "khach", ve: (s) => ({ than: `
-    <div class="m-loc"><button type="button" aria-pressed="true">Tất cả</button><button type="button" aria-pressed="false">Chờ bác ${s.hoiThoai.filter((h) => h.chuaDoc).length}</button><button type="button" aria-pressed="false" data-di="nhu-cau">Bên mua cần</button></div>
-    ${s.hoiThoai.map((h) => { const cuoi = h.tin.filter((m) => m.k !== "he").at(-1); const chu = cuoi.k === "gia" ? `${cuoi.ai === "toi" ? "Bác" : "Bên mua"} trả ${so(cuoi.gia)} đ/kg` : cuoi.k === "anh" ? "Ảnh" : cuoi.t; return `<div class="m-hang" data-di="chat" data-tham='{"ma":"${h.ma}"}' style="grid-template-columns:52px minmax(0,1fr) auto"><span class="m-anh" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--la-nhat);color:var(--la);font-weight:700;font-size:18px">${esc(h.ben.split(" ").at(-1)[0])}</span><span style="min-width:0"><b style="display:flex;gap:6px;align-items:center">${esc(h.ben)}${h.xm ? `<span style="color:var(--la)" title="Đã xác minh">${ic("khien", 16)}</span>` : ""}</b><small style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${h.chuaDoc ? "color:var(--muc);font-weight:600" : ""}">${esc(chu)}</small></span><span style="display:grid;justify-items:end;gap:4px"><small class="m-ghi">${esc(cuoi.luc.split(" ").at(-1))}</small>${h.chuaDoc ? `<span class="m-dem" style="position:static;min-width:22px;height:22px;border-radius:11px;background:var(--do);color:#fff;font-size:12px;display:grid;place-items:center">${h.chuaDoc}</span>` : ""}</span></div>`; }).join("")}
+    <div class="m-loc"><button type="button" aria-pressed="true">Tất cả</button><button type="button" aria-pressed="false">Chờ bác ${s.hoiThoai.filter((h) => h.chuaDoc).length}</button><button type="button" aria-pressed="false" data-di="nhu-cau">Người mua cần</button></div>
+    ${s.hoiThoai.map((h) => { const cuoi = h.tin.filter((m) => m.k !== "he").at(-1); const chu = cuoi.k === "gia" ? `${cuoi.ai === "toi" ? "Bác" : "Người mua"} trả ${so(cuoi.gia)} đ/kg` : cuoi.k === "anh" ? "Ảnh" : cuoi.t; return `<div class="m-hang" data-di="chat" data-tham='{"ma":"${h.ma}"}' style="grid-template-columns:52px minmax(0,1fr) auto"><span class="m-anh" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--la-nhat);color:var(--la);font-weight:700;font-size:18px">${esc(h.ben.split(" ").at(-1)[0])}</span><span style="min-width:0"><b style="display:flex;gap:6px;align-items:center">${esc(h.ben)}${h.xm ? `<span style="color:var(--la)" title="Đã xác minh">${ic("khien", 16)}</span>` : ""}</b><small style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${h.chuaDoc ? "color:var(--muc);font-weight:600" : ""}">${esc(chu)}</small></span><span style="display:grid;justify-items:end;gap:4px"><small class="m-ghi">${esc(cuoi.luc.split(" ").at(-1))}</small>${h.chuaDoc ? `<span class="m-dem" style="position:static;min-width:22px;height:22px;border-radius:11px;background:var(--do);color:#fff;font-size:12px;display:grid;place-items:center">${h.chuaDoc}</span>` : ""}</span></div>`; }).join("")}
     <p class="m-ghi">Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại hai bên che tới khi ngân hàng giữ cọc.</p>` }) },
-  "nhu-cau": { tieu: "Cần mua", phu: "Bên mua đang tìm hàng như của bác", ve_tu: "hang", ve: (s) => ({ than: s.canMua.map((n) => `<section class="m-the" style="gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n.ben)}</b>${n.xm ? nhan("Đã xác minh", "m-n-xong") : nhan("Chưa xác minh", "")}</div><p>${esc(n.hang)} · <b>${kg(n.luong)}</b></p><p class="m-ghi">${esc(n.khi)} · ${esc(n.noi)} · ${n.uy}★</p><div class="m-hang-nut m-deu">${nut("Hồ sơ", { ma: "ho-so-ben-mua", lop: "m-phu m-nho" })}${nut("Chào hàng", { ma: "bao-gia", lop: "m-vang m-nho" })}</div></section>`).join("") }) },
+  "nhu-cau": { tieu: "Cần mua", phu: "Người mua đang tìm hàng như của bác", ve_tu: "hang", ve: (s) => ({ than: s.canMua.map((n) => `<section class="m-the" style="gap:8px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(n.ben)}</b>${n.xm ? nhan("Đã xác minh", "m-n-xong") : nhan("Chưa xác minh", "")}</div><p>${esc(n.hang)} · <b>${kg(n.luong)}</b></p><p class="m-ghi">${esc(n.khi)} · ${esc(n.noi)} · ${n.uy}★</p><div class="m-hang-nut m-deu">${nut("Hồ sơ", { ma: "ho-so-ben-mua", lop: "m-phu m-nho" })}${nut("Chào hàng", { ma: "bao-gia", lop: "m-vang m-nho" })}</div></section>`).join("") }) },
   "ket-noi": { tieu: "Khách muốn nói chuyện", phu: "Lời mời mới", ve: () => ({ than: `
     <div style="display:grid;justify-items:center;text-align:center;gap:10px;padding:16px 0"><span style="width:80px;height:80px;border-radius:50%;display:grid;place-items:center;background:var(--la-nhat);color:var(--la);font-size:30px;font-weight:700" class="m-nay">X</span><h2 class="m-tieu">Nhà máy sấy Đồng Xanh</h2><p class="m-ghi">muốn hỏi về lô L-0412 · 4,7★ · 15 đơn đã xong</p></div>
     ${the("Họ hỏi", `<p>"Chị còn đủ 2 tấn loại 1 giao 28/10 không?"</p>`)}
     <p class="m-ghi">Nhận lời thì mở trò chuyện. Số điện thoại vẫn che tới khi có cọc.</p>`,
     day: `<div class="m-hang-nut">${nut("Từ chối", { lop: "m-phu" }).replace('type="button"', 'type="button" data-lui')}${nut("Nhận lời, nhắn tin", { ma: "chat", tham: { ma: "T1" }, lop: "m-vang" })}</div>` }) },
-  "ho-so-ben-mua": { tieu: "Nhà máy sấy Đồng Xanh", phu: "Hồ sơ bên mua", ve: () => ({ than: `
+  "ho-so-ben-mua": { tieu: "Nhà máy sấy Đồng Xanh", phu: "Hồ sơ người mua", ve: () => ({ than: `
     <div class="m-hai-o"><div class="m-the m-so-lon"><small>Trả đúng hạn</small><b>98%</b></div><div class="m-the m-so-lon"><small>Người bán chấm</small><b>4,7★</b></div></div>
     ${the("Đã xác minh", dong("Giấy phép kinh doanh", nhan("Đã xác minh", "m-n-xong")) + dong("Tài khoản công ty", nhan("Đúng tên", "m-n-xong")) + dong("Kho nhận hàng", "KCN Sa Đéc"))}
     ${the("Người bán nói gì", [["Anh Sáu · Bến Tre", "Nghiệm thu nhanh, trả tiền đúng giờ.", 5], ["Chị Mười · Cao Lãnh", "Có lệch tiền một lần, đã đối soát xong.", 4]].map(([a, b, c]) => `<div class="m-dong" style="display:block"><b>${a} · ${"★".repeat(c)}</b><p class="m-ghi">${b}</p></div>`).join(""))}` }) },
@@ -141,7 +141,7 @@ export const MAN_2 = {
         go.value = ""; go.style.height = "auto";
         them({ k: "tin", ai: "toi", t: q.che, luc: gio(), che: !q.sach });
         if (q.sach) {
-          const go2 = document.createElement("div"); go2.className = "m-tin m-ho"; go2.setAttribute("aria-label", "Bên mua đang gõ"); go2.innerHTML = '<span class="hu-cham"><i></i><i></i><i></i></span>';
+          const go2 = document.createElement("div"); go2.className = "m-tin m-ho"; go2.setAttribute("aria-label", "Người mua đang gõ"); go2.innerHTML = '<span class="hu-cham"><i></i><i></i><i></i></span>';
           setTimeout(() => { el.querySelector("#chat").appendChild(go2); cuon.scrollTo({ top: cuon.scrollHeight, behavior: "smooth" }); }, 500);
           setTimeout(() => { go2.remove(); them({ k: "tin", ai: "ho", t: h.ma === "T1" ? "Dạ em ghi nhận, cảm ơn chị." : "Dạ.", luc: gio() }); }, 2200);
         }
@@ -149,31 +149,31 @@ export const MAN_2 = {
       });
       el.querySelector("#gui-anh").addEventListener("click", () => them({ k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: gio() }));
       el.querySelector("#chup").addEventListener("click", () => api.tam(`<div class="m-tam-than"><h2>Gửi ảnh</h2>${nut("Chụp ảnh mới", { lop: "m-phu m-rong", icon: "anh" })}${nut("Chọn ảnh có sẵn", { lop: "m-phu m-rong" })}<p class="m-ghi">Ảnh có số điện thoại, Zalo, mã QR liên lạc sẽ không gửi đi và bị tính vi phạm.</p></div>`, (n, dong) => n.querySelectorAll(".m-nut").forEach((b) => b.addEventListener("click", () => { dong(); them({ k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: gio() }); }))));
-      const moTraGia = (giaCu = 23000) => api.tam(`<div class="m-tam-than"><h2>Bác trả giá</h2><p class="m-ghi">Lô ${h.lo} · bên mua còn trả lời được 24 giờ.</p><div class="m-hai-o">${o("Giá (đ/kg)", String(giaCu + 500), "", 'inputmode="numeric" id="g"')}${o("Lượng (kg)", "2000", "", 'inputmode="numeric" id="l"')}</div><p class="m-ghi">Bác còn ${s.luotTra ?? 1} lần trả giá.</p></div><div class="m-day"><div class="m-hang-nut"><button class="m-nut m-phu" type="button" data-dong>Đóng</button><button class="m-nut m-vang" type="button" id="gui-gia">Gửi giá</button></div></div>`, (n, dong) => n.querySelector("#gui-gia").addEventListener("click", () => { const g = Number(n.querySelector("#g").value.replace(/\D/g, "")), l = Number(n.querySelector("#l").value.replace(/\D/g, "")); dong(); api.doi((x) => { x.hoiThoai.find((y) => y.ma === h.ma).tin.forEach((m) => { if (m.trang === "cho-bac") m.trang = "da-tra"; }); x.luotTra = Math.max(0, (x.luotTra ?? 1) - 1); }); them({ k: "gia", ai: "toi", gia: g, luong: l, ghi: "Bác trả lại", luc: gio(), trang: "cho-mua" }); el.querySelectorAll("[data-gia]").forEach((b) => b.closest(".m-the-gia")?.querySelectorAll(".m-hang-nut,.m-chu").forEach((x) => x.remove())); }));
+      const moTraGia = (giaCu = 23000) => api.tam(`<div class="m-tam-than"><h2>Bác trả giá</h2><p class="m-ghi">Lô ${h.lo} · người mua còn trả lời được 24 giờ.</p><div class="m-hai-o">${o("Giá (đ/kg)", String(giaCu + 500), "", 'inputmode="numeric" id="g"')}${o("Lượng (kg)", "2000", "", 'inputmode="numeric" id="l"')}</div><p class="m-ghi">Bác còn ${s.luotTra ?? 1} lần trả giá.</p></div><div class="m-day"><div class="m-hang-nut"><button class="m-nut m-phu" type="button" data-dong>Đóng</button><button class="m-nut m-vang" type="button" id="gui-gia">Gửi giá</button></div></div>`, (n, dong) => n.querySelector("#gui-gia").addEventListener("click", () => { const g = Number(n.querySelector("#g").value.replace(/\D/g, "")), l = Number(n.querySelector("#l").value.replace(/\D/g, "")); dong(); api.doi((x) => { x.hoiThoai.find((y) => y.ma === h.ma).tin.forEach((m) => { if (m.trang === "cho-bac") m.trang = "da-tra"; }); x.luotTra = Math.max(0, (x.luotTra ?? 1) - 1); }); them({ k: "gia", ai: "toi", gia: g, luong: l, ghi: "Bác trả lại", luc: gio(), trang: "cho-mua" }); el.querySelectorAll("[data-gia]").forEach((b) => b.closest(".m-the-gia")?.querySelectorAll(".m-hang-nut,.m-chu").forEach((x) => x.remove())); }));
       el.querySelector("#tra-gia").addEventListener("click", () => moTraGia());
       el.querySelector("#chat").addEventListener("click", (e) => {
         const b = e.target.closest("[data-gia]"); if (!b) return;
         const m = h.tin.find((x) => x.trang === "cho-bac");
         if (b.dataset.gia === "tra") return moTraGia(m?.gia);
         if (b.dataset.gia === "khong") { api.doi((x) => { x.hoiThoai.find((y) => y.ma === h.ma).tin.find((y) => y.trang === "cho-bac").trang = "khong"; }); api.veLai(); return; }
-        api.tam(`<div class="m-tam-than"><h2>Đồng ý bán?</h2>${dong("Lượng", kg(m.luong))}${dong("Giá", `${so(m.gia)} đ/kg`)}${dong("Thành tiền", d(m.gia * m.luong), "m-tong")}<p class="m-ghi">Hàng được giữ 24 giờ cho bên mua. <b>Chưa phải hợp đồng</b>: hai bên xem lại thỏa thuận rồi mới ký.</p></div><div class="m-day"><div class="m-hang-nut"><button class="m-nut m-phu" type="button" data-dong>Quay lại</button><button class="m-nut m-vang" type="button" id="chot">Xác nhận đồng ý</button></div></div>`, (n, dong) => n.querySelector("#chot").addEventListener("click", () => {
-          dong(); api.doi((x) => { x.hoiThoai.find((y) => y.ma === h.ma).tin.find((y) => y.trang === "cho-bac").trang = "dong-y"; if (x.hd.buoc === 0) x.hd.buoc = 1; x.hoiThoai.find((y) => y.ma === h.ma).tin.push({ k: "he", t: "Hai bên đã đồng ý 23.000 đ/kg cho 2.000 kg. Bên mua đang soạn thỏa thuận HĐ-0018.", luc: gio() }); });
+        api.tam(`<div class="m-tam-than"><h2>Đồng ý bán?</h2>${dong("Lượng", kg(m.luong))}${dong("Giá", `${so(m.gia)} đ/kg`)}${dong("Thành tiền", d(m.gia * m.luong), "m-tong")}<p class="m-ghi">Hàng được giữ 24 giờ cho người mua. <b>Chưa phải hợp đồng</b>: hai bên xem lại thỏa thuận rồi mới ký.</p></div><div class="m-day"><div class="m-hang-nut"><button class="m-nut m-phu" type="button" data-dong>Quay lại</button><button class="m-nut m-vang" type="button" id="chot">Xác nhận đồng ý</button></div></div>`, (n, dong) => n.querySelector("#chot").addEventListener("click", () => {
+          dong(); api.doi((x) => { x.hoiThoai.find((y) => y.ma === h.ma).tin.find((y) => y.trang === "cho-bac").trang = "dong-y"; if (x.hd.buoc === 0) x.hd.buoc = 1; x.hoiThoai.find((y) => y.ma === h.ma).tin.push({ k: "he", t: "Hai bên đã đồng ý 23.000 đ/kg cho 2.000 kg. Người mua đang soạn thỏa thuận HĐ-0018.", luc: gio() }); });
           api.toast("Đã đồng ý giá · hàng được giữ 24 giờ"); api.veLai();
         }));
       });
     } },
   "bao-gia": { tieu: "Báo giá", phu: "Chào hàng cho Nhà máy sấy Đồng Xanh", ve: () => ({ than: `
-    ${the("Bên mua cần", dong("Hàng", "Xoài cát Chu loại 1") + dong("Lượng", "2.000 kg") + dong("Nhận", "27–29/10 · bên mua lo xe"))}
+    ${the("Người mua cần", dong("Hàng", "Xoài cát Chu loại 1") + dong("Lượng", "2.000 kg") + dong("Nhận", "27–29/10 · người mua lo xe"))}
     <div class="m-hai-o">${o("Giá bác chào (đ/kg)", "23.500")}${o("Lượng (kg)", "2000")}</div>
     ${chon("lo", [["Từ lô L-0412", "Còn 3.500 kg · ước chừng"]])}
-    <p class="m-ghi">Giá bác chào chỉ bên mua này thấy. Bên mua có 24 giờ trả lời, tối đa 2 lượt trả giá mỗi bên.</p>`,
+    <p class="m-ghi">Giá bác chào chỉ người mua này thấy. Người mua có 24 giờ trả lời, tối đa 2 lượt trả giá mỗi bên.</p>`,
     day: nut("Gửi chào hàng", { ma: "chat", tham: { ma: "T1" }, lop: "m-vang m-rong" }) }) },
   "hen-xem": { tieu: "Hẹn xem vườn", phu: "Nhà máy sấy Đồng Xanh", ve: () => ({ than: `
-    ${the("Bên mua đề nghị", dong("Ngày giờ", "Chủ nhật 26/10 · 8:00") + dong("Người tới", "Chị Thu Hà + 1 người") + dong("Chỗ gặp", "Đầu ấp 3, Mỹ Xương"))}
+    ${the("Người mua đề nghị", dong("Ngày giờ", "Chủ nhật 26/10 · 8:00") + dong("Người tới", "Chị Thu Hà + 1 người") + dong("Chỗ gặp", "Đầu ấp 3, Mỹ Xương"))}
     <p class="m-ghi">Địa chỉ chi tiết chỉ gửi khi bác nhận lời. Gặp nhau rồi vẫn nên chốt giá qua app để có hợp đồng.</p>`,
     day: `<div class="m-hang-nut">${nut("Đổi giờ", { lop: "m-phu" })}${nut("Nhận lời hẹn", { lop: "m-vang", ma: "chat", tham: { ma: "T1" } })}</div>` }) },
   "bao-cao": { tieu: "Báo cáo", phu: "Gửi cho AgiViet", ve: () => ({ than: `
-    <h2 class="m-tieu">Bên mua này làm gì sai?</h2>
+    <h2 class="m-tieu">Người mua này làm gì sai?</h2>
     ${chon("bc", [["Đòi số điện thoại, Zalo trước khi có cọc", ""], ["Ép giá, dọa bỏ", ""], ["Nói lời khiếm nhã", ""], ["Nghi lừa đảo", ""], ["Khác", ""]])}
     <label class="m-o"><span>Kể thêm (không bắt buộc)</span><textarea></textarea></label>`,
     day: nut("Gửi báo cáo", { lop: "m-huy m-rong" }) }) },

@@ -148,7 +148,7 @@ const iconTroi = (p) => p >= 70
   ? `<svg viewBox="0 0 36 36" fill="none"><circle cx="13" cy="13" r="6" fill="#e8b53a"/><path d="M12 24a6 6 0 0 1 1-12 8 8 0 0 1 15 2 5 5 0 0 1 0 10z" fill="#dfe4e8"/></svg>`
   : `<svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="7" fill="#e8b53a"/><path d="M18 4v4M18 28v4M4 18h4M28 18h4M8 8l3 3M25 25l3 3M8 28l3-3M25 11l3-3" stroke="#e8b53a" stroke-width="2.4" stroke-linecap="round"/></svg>`;
 
-// Chữ tắt tên bên mua: lấy chữ đầu của 2 từ viết hoa đầu tiên ("Nhà máy chế biến Mekong" → "NM")
+// Chữ tắt tên người mua: lấy chữ đầu của 2 từ viết hoa đầu tiên ("Nhà máy chế biến Mekong" → "NM")
 const chuTat = (ten) => (ten.match(/\p{Lu}/gu) || ["?"]).slice(0, 2).join("");
 
 async function mo() {
@@ -156,7 +156,7 @@ async function mo() {
   const d = await layDuLieu(token);
   const { me, tienTom, troi, tenSp } = d;
   const don = d.don.filter(dangLam);                       // chỉ hợp đồng còn đang chạy
-  const lo = d.lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);   // lô bên mua đang thấy
+  const lo = d.lo.filter((l) => l.status === "on_sale" && !l.an_tu_dong);   // lô người mua đang thấy
   // Số thông báo chưa đọc lấy từ backend (lỗi tải thì không hiện chấm)
   const chuaDoc = await soThongBaoMoi(token);
   const dauBan = { chao: `Chào ${me.name.split(" ").at(-1)}`, ten: me.org.name, chuDau: me.name.split(" ").at(-1).charAt(0).toUpperCase(), soThongBao: chuaDoc };
@@ -176,12 +176,12 @@ async function mo() {
   } else {
     const daXong = d.don.filter((x) => x.status === "completed").length;
     $("cau-chinh").textContent = daXong ? `Đã xong ${daXong} hợp đồng, chưa có việc mới` : "Chưa có hợp đồng nào";
-    $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô, chờ bên mua chào giá.` : "Đăng một lô hàng để bên mua thấy và chào giá.";
+    $("cau-phu").textContent = lo.length ? `Bác đang bán ${lo.length} lô, chờ người mua chào giá.` : "Đăng một lô hàng để người mua thấy và chào giá.";
     $("nut-chinh").textContent = "Đăng hàng"; $("nut-chinh").hidden = false;
     $("nut-chinh").onclick = () => (location.href = "./ban-dang-bai.html" + location.search);
   }
 
-  // Lời chào giá bên mua đang chờ bác trả lời → nêu ngay trên khối thông báo
+  // Lời chào giá người mua đang chờ bác trả lời → nêu ngay trên khối thông báo
   const chao = await fetch("/v1/offers", { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : [])).catch(() => []);
   const choBac = (Array.isArray(chao) ? chao : []).filter((c) => /sent|countered/.test(c.status) && c.vong_cuoi?.from_side === "buyer");
   if (choBac.length && !toiBac.length) {
@@ -213,7 +213,7 @@ async function mo() {
       <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
       <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
       <div class="cho-ai"><span class="dau-luot ${lop}">${esc(ai)}</span><span>${esc(viecCho(d))}</span></div></a>`;
-  }).join("") : `<p class="bao" style="margin-top:12px">Sau khi bác đồng ý giá và bên mua gửi điều kiện giao, trả tiền, hợp đồng hiện ở đây để bác xem và ký.</p>`;
+  }).join("") : `<p class="bao" style="margin-top:12px">Sau khi bác đồng ý giá và người mua gửi điều kiện giao, trả tiền, hợp đồng hiện ở đây để bác xem và ký.</p>`;
 
   // Ô thời tiết hôm nay
   if (troi && !troi.__loi && troi.ngay?.length) {

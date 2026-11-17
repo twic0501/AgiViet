@@ -78,7 +78,7 @@
         <p class="goi-y" style="color:var(--muc-phu)">Bác gặp khó ở đâu cứ nhắn, nhân viên AgiViet trả lời trong giờ làm việc.</p>
         <div class="goi-nhanh" id="goi-nhanh">
           <button type="button">Tôi chưa nhận được tiền cọc</button>
-          <button type="button">Bên mua chưa ký hợp đồng</button>
+          <button type="button">Người mua chưa ký hợp đồng</button>
           <button type="button">Tôi muốn sửa lô hàng đã đăng</button>
           <button type="button">Hẹn nhân viên tới xác minh vườn</button>
         </div>
@@ -123,10 +123,10 @@ const IC = {
 const NHOM = { lo: "hang", chao: "hang", hd: "hd", tien: "tien", nh: "tien", xe: "hd", dsoat: "hd", tk: "khac", khac: "khac" };
 // [biểu tượng, tiêu đề, câu phụ, cần bác làm?, đường dẫn] — mã đơn {d}, mã lô {l}
 const SU_KIEN = {
-  "lo.da_dang": ["lo", "{l} đã lên chợ", "Bên mua tìm thấy lô này", 0, "lo"],
+  "lo.da_dang": ["lo", "{l} đã lên chợ", "Người mua tìm thấy lô này", 0, "lo"],
   "lot.on_sale": ["lo", "{l} đang bán trên chợ", "", 0, "lo"],
-  "lot.upcoming": ["lo", "{l} lên chợ dạng sắp có hàng", "Bên mua đặt trước được", 0, "lo"],
-  "lot.price": ["lo", "{l} đã đổi giá", "Giá mới đã hiện cho bên mua", 0, "lo"],
+  "lot.upcoming": ["lo", "{l} lên chợ dạng sắp có hàng", "Người mua đặt trước được", 0, "lo"],
+  "lot.price": ["lo", "{l} đã đổi giá", "Giá mới đã hiện cho người mua", 0, "lo"],
   "lot.closed": ["lo", "{l} đã ngừng bán", "", 0, "lo"],
   "lot.sold_out": ["lo", "{l} đã bán hết", "", 0, "lo"],
   "offer.sent": ["chao", "Có lời chào giá mới", "Bấm để xem và trả lời", 1, "chao"],
@@ -136,24 +136,24 @@ const SU_KIEN = {
   "offer.withdrawn": ["chao", "Một lời chào đã được rút", "", 0, "chao"],
   "offer.expired": ["chao", "Một lời chào đã hết hạn", "", 0, "chao"],
   "offer.auto_rejected": ["chao", "App tự từ chối lời chào thấp hơn giá sàn của bác", "", 0, "chao"],
-  "hold.active": ["lo", "Hàng đang được giữ cho bên mua", "Giữ 24 giờ để hai bên lập hợp đồng", 0, "lo"],
+  "hold.active": ["lo", "Hàng đang được giữ cho người mua", "Giữ 24 giờ để hai bên lập hợp đồng", 0, "lo"],
   "hold.committed": ["lo", "Phần hàng giữ đã vào hợp đồng", "", 0, "hd"],
   "hold.released": ["lo", "Hết giữ hàng, lượng đã trả về lô", "", 0, "lo"],
-  "order.drafting": ["hd", "Bên mua đang soạn hợp đồng {d}", "Soạn xong bác sẽ được mời ký", 0, "hd"],
+  "order.drafting": ["hd", "Người mua đang soạn hợp đồng {d}", "Soạn xong bác sẽ được mời ký", 0, "hd"],
   "order.awaiting_seller": ["hd", "Hợp đồng {d} chờ bác ký", "Xem kỹ giá, lượng, ngày giao rồi ký", 1, "hd"],
-  "order.awaiting_deposit": ["hd", "Bác đã ký {d}", "Chờ bên mua chuyển cọc vào ngân hàng", 0, "hd"],
+  "order.awaiting_deposit": ["hd", "Bác đã ký {d}", "Chờ người mua chuyển cọc vào ngân hàng", 0, "hd"],
   "don.hieu_luc": ["hd", "Hợp đồng {d} có hiệu lực", "Ngân hàng đã giữ cọc, chuẩn bị giao hàng", 0, "hd"],
   "order.active": ["hd", "Hợp đồng {d} có hiệu lực", "Ngân hàng đã giữ cọc, chuẩn bị giao hàng", 0, "hd"],
   "order.completed": ["hd", "Hợp đồng {d} đã hoàn tất", "", 0, "hd"],
   "order.cancelled": ["hd", "Hợp đồng {d} đã hủy", "Bấm xem tiền cọc đi đâu", 0, "hd"],
-  "deposit.awaiting_transfer": ["tien", "Chờ bên mua chuyển cọc {d}", "Chưa giao hàng khi chưa có cọc", 0, "hd"],
+  "deposit.awaiting_transfer": ["tien", "Chờ người mua chuyển cọc {d}", "Chưa giao hàng khi chưa có cọc", 0, "hd"],
   "deposit.held": ["tien", "Ngân hàng đã giữ cọc {d}", "Tiền cọc an toàn tới khi xong đơn", 0, "hd"],
   "deposit.processing": ["tien", "Ngân hàng đang xử lý cọc {d}", "Tiền sẽ chuyển theo kết quả cân", 0, "hd"],
   "deposit.released": ["tien", "Ngân hàng đã chuyển cọc {d}", "Kiểm tài khoản của bác", 0, "tien"],
-  "direct_payment.due": ["tien", "Tới hạn bên mua trả tiền {d}", "Bên mua chuyển thẳng vào tài khoản bác", 0, "hd"],
-  "direct_payment.payer_reported": ["tien", "Bên mua báo đã chuyển tiền {d}", "Bác kiểm tài khoản rồi xác nhận đúng số", 1, "hd"],
+  "direct_payment.due": ["tien", "Tới hạn người mua trả tiền {d}", "Người mua chuyển thẳng vào tài khoản bác", 0, "hd"],
+  "direct_payment.payer_reported": ["tien", "Người mua báo đã chuyển tiền {d}", "Bác kiểm tài khoản rồi xác nhận đúng số", 1, "hd"],
   "direct_payment.fully_received": ["tien", "Bác đã nhận đủ tiền {d}", "", 0, "tien"],
-  "direct_payment.partially_received": ["tien", "Bác mới nhận một phần tiền {d}", "Phần còn thiếu vẫn chờ bên mua", 0, "hd"],
+  "direct_payment.partially_received": ["tien", "Bác mới nhận một phần tiền {d}", "Phần còn thiếu vẫn chờ người mua", 0, "hd"],
   "khoan.nb_xac_nhan": ["tien", "Bác đã xác nhận số tiền {d}", "", 0, "tien"],
   "bank_instruction.sent": ["nh", "Ngân hàng đã gửi lệnh chuyển tiền", "Tiền về tài khoản trong ngày làm việc", 0, "tien"],
   "lenh.da_gui": ["nh", "Ngân hàng đã gửi lệnh chuyển tiền", "Tiền về tài khoản trong ngày làm việc", 0, "tien"],
@@ -162,8 +162,8 @@ const SU_KIEN = {
   "delivery.ready": ["xe", "Đợt giao {d} sẵn sàng", "Chờ xe tới lấy hàng", 0, "hd"],
   "delivery.in_transit": ["xe", "Hàng {d} đang trên đường", "", 0, "hd"],
   "delivery.arrived": ["xe", "Xe đã tới nơi nhận {d}", "", 0, "hd"],
-  "delivery.arrival_check": ["xe", "Bên mua đang kiểm hàng {d}", "", 0, "hd"],
-  "delivery.checking": ["xe", "Bên mua đang cân, kiểm hàng {d}", "", 0, "hd"],
+  "delivery.arrival_check": ["xe", "Người mua đang kiểm hàng {d}", "", 0, "hd"],
+  "delivery.checking": ["xe", "Người mua đang cân, kiểm hàng {d}", "", 0, "hd"],
   "delivery.awaiting_seller": ["xe", "Có kết quả cân {d}", "Bác xem rồi đồng ý hoặc phản đối từng dòng", 1, "hd"],
   "delivery.disputed": ["dsoat", "Có dòng đang đối soát {d}", "Phần còn lại vẫn chốt bình thường", 0, "hd"],
   "delivery.accepted": ["xe", "Đã chốt kết quả cân {d}", "", 0, "hd"],

@@ -1,5 +1,5 @@
-// App MUA — lớp dữ liệu THẬT (GĐ3, bước 1). Bật khi URL có ?thu=<số bên mua> (môi trường thử) hoặc đã có phiên đăng nhập bên mua.
-// Không có thì app mua giữ bản mô phỏng (trang thử quy trình dùng). Bên mua KHÔNG thấy giá của lô khi tìm nguồn (quyết định A3.10).
+// App MUA — lớp dữ liệu THẬT (GĐ3, bước 1). Bật khi URL có ?thu=<số người mua> (môi trường thử) hoặc đã có phiên đăng nhập người mua.
+// Không có thì app mua giữ bản mô phỏng (trang thử quy trình dùng). Người mua KHÔNG thấy giá của lô khi tìm nguồn (quyết định A3.10).
 import { phien } from "./chung.js";
 
 // Dữ liệu thật khi có số thử (?thu=, chỉ môi trường thử) hoặc đã đăng nhập OTP (phiên trong sessionStorage).
@@ -35,7 +35,7 @@ export async function napThat() {
   return { me, lo };
 }
 
-/** Chào giá thật một lô (bên mua). Trả lời chào; giá dưới mức người bán chấp nhận thì backend tự đóng, không lộ giá kín. */
+/** Chào giá thật một lô (người mua). Trả lời chào; giá dưới mức người bán chấp nhận thì backend tự đóng, không lộ giá kín. */
 export async function chaoGia(loId, kg, gia) {
   const of = await api("/v1/offers", { direction: "buyer_bid", lot_id: loId, qty_g: Math.round(kg * 1000), price_vnd: Math.round(gia) });
   return of;

@@ -6,9 +6,9 @@ import { THAT, napThat, chaoGia, api } from "./mua-that.js";
 import { phien } from "./chung.js";
 import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
 // Bản mô phỏng (số mẫu) chỉ dành cho trang thử quy trình / hai bên. Mở thẳng hoặc trong khung điện thoại mà chưa đăng nhập
-// thì về màn đăng nhập bên mua — tránh người dùng thấy số mẫu tưởng là đơn thật rồi bấm không được.
+// thì về màn đăng nhập người mua — tránh người dùng thấy số mẫu tưởng là đơn thật rồi bấm không được.
 if (!THAT) { let trongTrangThu = false; try { trongTrangThu = window.top !== window && !/khung-dt\.html$/.test(window.parent.location.pathname); } catch {}
-  if (!trongTrangThu) { location.replace("./dang-nhap.html?ben=mua"); throw new Error("chưa đăng nhập bên mua"); } }
+  if (!trongTrangThu) { location.replace("./dang-nhap.html?ben=mua"); throw new Error("chưa đăng nhập người mua"); } }
 
 // ── Dữ liệu ──
 const BOI_HOAN = 1200000, TRA_VP = 32200000 + 1200000;
@@ -73,12 +73,12 @@ const NHU_CAU = [
 const DON_KHAC = [
   { ma: "HĐ-0024", hang: "Sầu riêng Ri6 · 800 kg", nguoi: "Anh Huỳnh Bảy", buoc: "Người bán đề nghị đổi ngày giao 28/10 → 29/10", luot: "ban", han: "còn 5 giờ", tien: 49600000 },
   { ma: "HĐ-0021", hang: "Thanh long ruột đỏ · 3.000 kg", nguoi: "HTX Tân Thuận", buoc: "Ngân hàng đang xác nhận cọc", luot: "nh", han: "trong ngày", tien: 42600000 },
-  { ma: "HĐ-0012", hang: "Xoài cát Chu · 1.500 kg", nguoi: "Chị Mười", buoc: "Lệch tiền, đang đối soát (bạn báo 32.200.000 · bên bán thấy 20.000.000)", luot: "vh", han: "còn 1 ngày", tien: 34500000 },
+  { ma: "HĐ-0012", hang: "Xoài cát Chu · 1.500 kg", nguoi: "Chị Mười", buoc: "Lệch tiền, đang đối soát (bạn báo 32.200.000 · người bán thấy 20.000.000)", luot: "vh", han: "còn 1 ngày", tien: 34500000 },
   { ma: "HĐ-0015", hang: "Bưởi da xanh · 1.200 kg", nguoi: "Anh Sáu", buoc: "Hoàn tất", luot: "xong", han: "", tien: 33600000 },
 ];
 
 // ── Trạng thái đơn HĐ-0018 (8 kịch bản, prompt app mua V2 mục 8) ──
-const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, bên bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: bên mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng: chỉ giao được 1.200 kg"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"], ["hai-can", "17 · Lấy tại vườn: hai cân lệch"], ["du-luong", "18 · Dư lượng không đạt"], ["hai-kq", "19 · Hai phòng kiểm cho kết quả khác nhau"], ["nh-cam-ket", "20 · Trả sau qua ngân hàng (cam kết thanh toán)"], ["nh-tu-choi", "21 · Trả sau qua ngân hàng: bên mua từ chối hàng đạt"], ["ung", "22 · Người bán ứng tiền từ ngân hàng"], ["bien-the", "23 · Tại vườn: sai người, đòi hạ giá, xe thiếu tải"], ["nhieu-de-nghi", "24 · Trước hợp đồng: nhiều đề nghị, so tiền ròng"], ["bo-cuoc", "25 · Trước hợp đồng: được chọn nhưng không ký"], ["xem-hang", "26 · Trước hợp đồng: đến xem vườn rồi chưa mua"], ["dang-ky", "27 · Người bán đăng ký: xác minh và phân hạng"], ["dau-ra", "28 · Không tìm được đầu ra"], ["dat-truoc", "29 · Đặt trước khi hái"], ...Object.entries(BANG).map(([k, v], i) => [k, `${30 + i} · ${v.meta.tom}`])];
+const KICH_BAN = [["thuan", "1 · Luồng thuận"], ["doi-ngay", "2 · Người bán đề nghị đổi ngày giao trước khi ký"], ["thieu", "3 · Trả thiếu rồi bổ sung"], ["lech", "4 · Lệch tiền (bạn báo 32,2 tr, người bán thấy 20 tr)"], ["tra-lai", "5 · Trả lại nhiều (700 kg)"], ["phan-doi", "6 · Người bán phản đối một dòng"], ["can-lech", "7 · Cân tại kho 1.960 kg (trong ±5%)"], ["huy", "8 · Xin hủy sau cọc"], ["khong-giao", "9 · Người bán không giao"], ["im-lang", "10 · Người bán im lặng khi nghiệm thu"], ["tra-sau", "11 · Trả sau nghiệm thu (luồng chính v23)"], ["chua-tra", "12 · Trả sau: người mua chưa trả"], ["tien-mat", "13 · Tiền mặt khi nhận"], ["bkk", "14 · Bất khả kháng: chỉ giao được 1.200 kg"], ["khac-mau", "15 · Hàng tới khác mẫu lúc bốc"], ["hang-tra", "16 · Xử lý hàng bị trả lại"], ["hai-can", "17 · Lấy tại vườn: hai cân lệch"], ["du-luong", "18 · Dư lượng không đạt"], ["hai-kq", "19 · Hai phòng kiểm cho kết quả khác nhau"], ["nh-cam-ket", "20 · Trả sau qua ngân hàng (cam kết thanh toán)"], ["nh-tu-choi", "21 · Trả sau qua ngân hàng: người mua từ chối hàng đạt"], ["ung", "22 · Người bán ứng tiền từ ngân hàng"], ["bien-the", "23 · Tại vườn: sai người, đòi hạ giá, xe thiếu tải"], ["nhieu-de-nghi", "24 · Trước hợp đồng: nhiều đề nghị, so tiền ròng"], ["bo-cuoc", "25 · Trước hợp đồng: được chọn nhưng không ký"], ["xem-hang", "26 · Trước hợp đồng: đến xem vườn rồi chưa mua"], ["dang-ky", "27 · Người bán đăng ký: xác minh và phân hạng"], ["dau-ra", "28 · Không tìm được đầu ra"], ["dat-truoc", "29 · Đặt trước khi hái"], ...Object.entries(BANG).map(([k, v], i) => [k, `${30 + i} · ${v.meta.tom}`])];
 const hdTien = (h) => {
   const bt = bangTrang(h); if (bt) return { banChi: bt.tien[0], nh: bt.tien[1], nb: bt.tien[2] };
   const b = h.buoc, t = tinhTien(h);
@@ -265,12 +265,12 @@ function veViec(h, url) {
     if (h.phu === "bt2") return theViec("", "Đúng người · người kiểm của bạn xem hàng trước khi bốc", "Đạt thỏa thuận thì cho bốc. Giá đã ký không đổi tại chỗ.", `<button class="sl-nut sl-vien" data-lam="bt-ha-gia">Người kiểm đòi hạ giá tại chỗ</button>` + nutVang("Hàng đúng thỏa thuận", "bt-dung"));
     if (h.phu === "bt3") return theViec("sl-chan-lai", "Không đổi giá tại chỗ", "Muốn đổi giá phải gửi đề nghị sửa hợp đồng; chị Năm có quyền từ chối và đơn giữ nguyên bản đã ký.", "");
     if (h.phu === "bt4") return theViec("", "Bốc lên xe", "Xe của bạn chở được bao nhiêu?", `<button class="sl-nut sl-vien" data-lam="bt-thieu-tai">Xe thiếu tải: chỉ chở 1.600 kg</button>` + nutVang("Xe chở đủ 2.000 kg", "bt-du"));
-    if (h.phu === "bt5") return theViec("sl-cho", "Chờ chị Năm đồng ý giữ 400 kg tới chuyến sau", "Phần thiếu do xe bên mua vẫn là nghĩa vụ của bạn: lấy chuyến sau trong 24 giờ, hoặc tính theo điều khoản thiếu lượng do bên mua.", "");
+    if (h.phu === "bt5") return theViec("sl-cho", "Chờ chị Năm đồng ý giữ 400 kg tới chuyến sau", "Phần thiếu do xe người mua vẫn là nghĩa vụ của bạn: lấy chuyến sau trong 24 giờ, hoặc tính theo điều khoản thiếu lượng do người mua.", "");
   }
   // ── Lấy tại vườn: hai cân (v23 lay-tai-vuon) ──
   if (h.kb === "hai-can" && h.buoc === 7 && !h.canXong) {
     if (!h.phu) return theViec("sl-cho", "Xe tới vườn · chờ chị Năm cân bằng cân của người bán", "Người đến lấy hàng đã khai tên và biển số; chị Năm quét mã đối chiếu rồi cân.", "");
-    if (h.phu === "can1") return theViec("", "Chị Năm cân: 2.000 kg · tới lượt cân của bạn", "Cân bằng cân bên mua mang theo, có hai bên chứng kiến, chụp màn hình cân.", nutVang("Cân của tôi: 1.940 kg", "can-mua"));
+    if (h.phu === "can1") return theViec("", "Chị Năm cân: 2.000 kg · tới lượt cân của bạn", "Cân bằng cân người mua mang theo, có hai bên chứng kiến, chụp màn hình cân.", nutVang("Cân của tôi: 1.940 kg", "can-mua"));
     if (h.phu === "can-lech2") return theViec("sl-chan-lai", "Hai cân lệch: 2.000 kg và 1.940 kg", "App ghi cả hai kết quả, <b>không tự chọn, không lấy trung bình</b>. Hai bên kiểm bì, cân lại từng sọt. Chưa bốc tới khi chốt số.", "");
     if (h.phu === "can-chot") return theViec("", "Cân lại có hai bên: 1.980 kg", "Đã trừ bì, cân lại từng sọt. Xác nhận thì nghiệm thu theo 1.980 kg và cho bốc.", nutVang("Xác nhận 1.980 kg", "can-xn"));
   }
@@ -584,7 +584,7 @@ const man = {
       ${the("Đã xác minh", dong("Danh tính", `<span class="sl-nhan sl-n-xong">Căn cước · 14/09</span>`) + dong("Tài khoản nhận tiền", `Agribank •••• 2186 · đúng tên`) + dong("Vườn", `<span class="sl-nhan sl-n-xong">Nhân viên tới vườn 20/10</span>`) + dong("Số điện thoại", `<span class="sl-ghi">Hiện sau khi ngân hàng xác nhận cọc</span>`))}
       ${the("Nhật ký tóm tắt", ["Tháng 10: tỉa cành, bón kali, phun 1 lần (12/10)", "Tháng 9: bao trái 3.200 trái", "Tháng 8: ra hoa đợt 2"].map((x) => `<p style="padding:8px 0;border-bottom:1px solid var(--ke)">${esc(x)}</p>`).join(""))}
     </div>
-    ${the("Nhận xét của bên mua", [["Nhà máy Đồng Xanh", "Hàng đều, cân đúng, bốc đúng giờ.", 5], ["Vựa Ba Cường", "Có 2% dập, chị chủ động báo trước.", 4]].map(([a, b, c]) => dong(`<b style="color:var(--muc)">${a}</b><div class="sl-ghi">${b}</div>`, sao(c))).join(""))}` },
+    ${the("Nhận xét của người mua", [["Nhà máy Đồng Xanh", "Hàng đều, cân đúng, bốc đúng giờ.", 5], ["Vựa Ba Cường", "Có 2% dập, chị chủ động báo trước.", 4]].map(([a, b, c]) => dong(`<b style="color:var(--muc)">${a}</b><div class="sl-ghi">${b}</div>`, sao(c))).join(""))}` },
 
   // Nhu cầu
   "nhu-cau": { tieuDe: "Nhu cầu mua", phu: "Phiếu bạn đăng cho người bán thấy", phai: (s) => `<a class="sl-nut sl-vang" href="?man=tao-nhu-cau">${icon("them")}Tạo phiếu nhu cầu</a>`, ve: (s, { url }) => the("Phiếu của bạn", `<div class="sl-bang-boc"><table class="sl-bang"><thead><tr><th>Phiếu</th><th>Mặt hàng</th><th class="sl-so">Lượng</th><th>Ngày nhận</th><th class="sl-so">Giá trần</th><th class="sl-so">Báo giá</th><th>Trạng thái</th></tr></thead><tbody>
@@ -640,7 +640,7 @@ const man = {
     const tin = (m) => {
       if (m.k === "he") return `<div class="sl-bao ${m.canh ? "sl-bao-do" : "sl-bao-nh"}" style="justify-self:center;max-width:92%">${icon(m.canh ? "canh" : "khien")}<div>${esc(m.t)}</div></div>`;
       if (m.k === "buoc") return `<div class="sl-bao sl-bao-tien" style="justify-self:stretch">${icon("don")}<div>Hai bên đã đồng ý giá. <a href="${url("chi-tiet-don")}" style="font-weight:700">Soạn và ký thỏa thuận HĐ-0018</a></div></div>`;
-      const cuaToi = m.ai === "ho";   // dữ liệu lưu theo góc người bán: "ho" = bên mua = mình
+      const cuaToi = m.ai === "ho";   // dữ liệu lưu theo góc người bán: "ho" = người mua = mình
       const nen = cuaToi ? "background:var(--la);color:var(--tren-la);justify-self:end;border-radius:14px 14px 4px 14px" : "background:var(--giay-lot);justify-self:start;border-radius:14px 14px 14px 4px";
       if (m.k === "anh") return `<div style="${nen};padding:4px;max-width:75%"><div style="width:220px;aspect-ratio:4/3;border-radius:10px;background:url(${esc(m.anh)}) center/cover"></div><small style="padding:2px 6px;opacity:.7">${esc(m.luc)}</small></div>`;
       if (m.k === "gia") return `<div class="sl-the" style="justify-self:stretch;box-shadow:0 0 0 1.5px ${cuaToi ? "var(--la)" : "#e3c77a"};gap:4px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${cuaToi ? "Bạn trả giá" : "Chị Năm trả giá"}</b>${m.trang === "dong-y" ? `<span class="sl-nhan sl-n-xong">Hai bên đã đồng ý</span>` : m.trang === "khong" ? `<span class="sl-nhan">Người bán không bán</span>` : m.trang === "cho-bac" ? `<span class="sl-nhan">Chờ chị Năm trả lời</span>` : `<span class="sl-nhan">Đã trả lại</span>`}</div><b class="sl-so" style="font-size:var(--c5)">${so(m.gia)} đ/kg</b><span class="sl-ghi">${so(m.luong)} kg · thành tiền ${d(m.gia * m.luong)} · ${esc(m.ghi || "")}</span></div>`;
@@ -664,14 +664,14 @@ const man = {
         const chu = go.value.trim(); if (!chu) return;
         const q = moLienLacT1() ? { sach: true, che: chu } : quetLienLac(chu);
         them({ k: "tin", ai: "ho", t: q.che, luc: gioNay(), che: !q.sach });
-        if (!q.sach) them({ k: "he", canh: true, t: `Tin của bên mua có ${q.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm.`, luc: gioNay() });
+        if (!q.sach) them({ k: "he", canh: true, t: `Tin của người mua có ${q.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm.`, luc: gioNay() });
       });
       go.addEventListener("keydown", (e) => { if (e.key === "Enter") g.querySelector("#tn-gui").click(); });
       g.querySelector("#tn-anh").addEventListener("click", () => them({ k: "anh", ai: "ho", anh: "/assets/products/xoai-cat-chu.jpg", luc: gioNay() }));
       g.querySelector("#tn-tra").addEventListener("click", () => {
         if (h.tin.some((m) => m.trang === "dong-y")) { window.HieuUngThem?.rung(g.querySelector("#tn-tra")); return; }
         h.tin.forEach((m) => { if (m.trang === "cho-bac") m.trang = "da-tra"; });
-        them({ k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Bên mua trả giá", luc: gioNay(), trang: "cho-bac" });
+        them({ k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Người mua trả giá", luc: gioNay(), trang: "cho-bac" });
       });
       const c = g.querySelector("#tn-chat"); c.lastElementChild?.scrollIntoView({ block: "nearest" });
     } },
@@ -935,7 +935,7 @@ if (THAT) {
   try {
     const d = await napThat();
     LO.length = 0; LO.push(...d.lo);
-    const ten = d.me.name || "Bên mua";
+    const ten = d.me.name || "Người mua";
     NGUOI = { viet: ten.split(/\s+/).slice(-2).map((x) => x[0]).join("").toUpperCase(), ten, vai: "Dữ liệu thật" }; TEN_TC = d.me.org?.name || TEN_TC;
   } catch (e) {
     // Không giữ lô mẫu khi đang ở bản thật: thà trống + báo lỗi còn hơn để người mua chào giá vào hàng không có thật.
@@ -1076,7 +1076,7 @@ if (THAT) {
     } };
 }
 if (THAT) {
-  // GĐ3 bước 4: Đơn bên mua thật (danh sách + chi tiết + ký OTP).
+  // GĐ3 bước 4: Đơn người mua thật (danh sách + chi tiết + ký OTP).
   const maHD = (c) => String(c || "").replace(/^HD-/, "HĐ-");
   const vnd = (x) => `${so(Number(x || 0))} đ`;
   const TRA = { on_receipt: "Khi nhận hàng", inspect_then_before_loading: "Kiểm tại vườn xong, trả rồi mới bốc", before_loading: "Trước khi bốc hàng", after_days: "Trả sau" };
@@ -1177,7 +1177,7 @@ if (THAT) {
           catch (err) { o.querySelector("#coc-bao").textContent = err.message; gl.disabled = false; }
         };
       };
-      // Giao nhận (bên mua lo xe): bảng sẵn sàng giao của backend + người nhận + đặt xe + mã QR nhận hàng.
+      // Giao nhận (người mua lo xe): bảng sẵn sàng giao của backend + người nhận + đặt xe + mã QR nhận hàng.
       const veGiao = async (d, dot) => {
         const [rd, me] = await Promise.all([api(`/v1/deliveries/${dot.id}/readiness`), api("/v1/me")]);
         const tu = new Date(dot.window_from), den = new Date(dot.window_to);
@@ -1210,7 +1210,7 @@ if (THAT) {
           catch (err) { bao3.textContent = err.message; } nut.disabled = false;
         });
       };
-      // Nghiệm thu (bên mua nhập kết quả cân): ba phần đạt / xuống loại / trả lại phải cộng đúng lượng cân;
+      // Nghiệm thu (người mua nhập kết quả cân): ba phần đạt / xuống loại / trả lại phải cộng đúng lượng cân;
       // phần xuống loại, trả lại cần lý do theo danh mục mặt hàng + ảnh chụp tại chỗ (chứng cứ cho người bán).
       const veNghiemThu = async (d, dot) => {
         if ((d.dong_mon || []).length) return veNghiemThuMon(d, dot);
@@ -1359,7 +1359,7 @@ if (THAT) {
           };
         }
       };
-      // Nhận tại kho (hàng nhận tại vườn, bên mua chở về): cân lại, báo hao hụt đường, rồi chốt nhận.
+      // Nhận tại kho (hàng nhận tại vườn, người mua chở về): cân lại, báo hao hụt đường, rồi chốt nhận.
       const veDenNoi = async (d, dot) => {
         khung.insertAdjacentHTML("beforeend", `<section class="sl-the" id="den" style="display:grid;gap:12px">
           <h2 style="margin:0;font-size:18px">Nhận tại kho · đợt ${dot.batch_no}</h2>
@@ -1407,7 +1407,7 @@ if (THAT) {
             : `<p class="sl-ghi" style="margin:6px 0 0">Chưa quyết toán: quyết toán lập sau khi chốt nhận hàng.</p>`}
         </section>`);
       };
-      // Tài khoản nhận tiền của tổ chức bên mua (để người bán hoàn): khai qua OTP số chủ tổ chức, ngân hàng tra tên, chờ 24 giờ rồi kích hoạt.
+      // Tài khoản nhận tiền của tổ chức người mua (để người bán hoàn): khai qua OTP số chủ tổ chức, ngân hàng tra tên, chờ 24 giờ rồi kích hoạt.
       const TT_TK = { pending_verification: "Đang tra tên với ngân hàng", cooling_down: "Đang chờ 24 giờ an toàn", active: "Đang dùng", rejected: "Ngân hàng báo sai tên", revoked: "Đã thu hồi" };
       const veTaiKhoanNhan = async (o) => {
         const ds = await api("/v1/payout-accounts").catch(() => []);
@@ -1639,7 +1639,7 @@ if (THAT) {
             + dong("Cọc khung (ngân hàng giữ)", vnd(k.coc_khung_vnd)) + (hm.duoc_vnd && (chay || dung) ? dong("Đang dùng / còn dùng được", `${vnd(hm.dang_dung_vnd)} / <b>${vnd(hm.con_vnd)}</b>`) : ""))}
           <div id="kh-ky"></div><div id="kh-coc"></div><div id="kh-gia"></div><div id="kh-goi"></div><div id="kh-buoi"></div><div id="kh-tien"></div>`;
         const $ = (s) => goc.querySelector(s);
-        // Ký khung (bên mua ký trước).
+        // Ký khung (người mua ký trước).
         if (k.toi_luot === "buyer" && k.status === "drafting") {
           $("#kh-ky").outerHTML = `<section class="sl-the" style="display:grid;gap:10px;max-width:480px"><h2 style="margin:0;font-size:18px">Ký hợp đồng khung</h2>
             <p class="sl-ghi" style="margin:0">Bạn ký trước, rồi người bán ký. Ký xong không sửa điều khoản.</p>

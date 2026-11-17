@@ -88,7 +88,7 @@
         {
           "lam": "cho",
           "giay": 8,
-          "mong_doi": "Người bán ảo trả giá 19.600 đ/kg; chưa coi đây là giá bên mua đã đồng ý.",
+          "mong_doi": "Người bán ảo trả giá 19.600 đ/kg; chưa coi đây là giá người mua đã đồng ý.",
           "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
         },
         {
@@ -175,7 +175,7 @@
         {
           "lam": "ky",
           "ai": "0903000410",
-          "mong_doi": "Bên mua ký và gửi hợp đồng; chờ đúng người bán ký, chưa được tự chuyển sang đã cọc.",
+          "mong_doi": "Người mua ký và gửi hợp đồng; chờ đúng người bán ký, chưa được tự chuyển sang đã cọc.",
           "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng; backend/src/nghiep-vu/don.ts: ký phía buyer."
         },
         {
@@ -325,13 +325,13 @@
         {
           "lam": "xem",
           "ai": "0938000610",
-          "mong_doi": "Đọc rõ trả trước bốc, giá hạ cấp 4.800 đ/kg và điểm nhận tại vườn. Trong ca này bên mua chấp nhận bản nháp đó để tiếp tục thử.",
+          "mong_doi": "Đọc rõ trả trước bốc, giá hạ cấp 4.800 đ/kg và điểm nhận tại vườn. Trong ca này người mua chấp nhận bản nháp đó để tiếp tục thử.",
           "can_cu": "quy-trinh.json v23: chinh, kiểm khớp nghĩa vụ và ký hợp đồng; backend/scripts/chay-kich-ban-ai.mjs: case lap_don."
         },
         {
           "lam": "ky",
           "ai": "0938000610",
-          "mong_doi": "Bên mua ký bản đã đọc; không được coi đề nghị 500 đồng trong tin nhắn là điều khoản được ký.",
+          "mong_doi": "Người mua ký bản đã đọc; không được coi đề nghị 500 đồng trong tin nhắn là điều khoản được ký.",
           "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng; Tin nhắn trong đơn."
         },
         {
@@ -349,7 +349,7 @@
         {
           "lam": "tra_truoc_boc",
           "ai": "0938000610",
-          "mong_doi": "Bên mua báo đã trả khoản trước bốc kèm chứng từ; chưa được coi là người bán đã nhận chỉ từ lời báo này.",
+          "mong_doi": "Người mua báo đã trả khoản trước bốc kèm chứng từ; chưa được coi là người bán đã nhận chỉ từ lời báo này.",
           "can_cu": "quy-trinh.json v23: Nguồn xác minh tiền; lay-tai-vuon, xác nhận đủ tiền trước bàn giao; backend/scripts/chay-kich-ban-ai.mjs: case tra_truoc_boc."
         },
         {
@@ -373,7 +373,7 @@
         {
           "lam": "cho",
           "giay": 8,
-          "mong_doi": "Dừng tại chờ người bán bắt đầu cân: đối tác ảo hiện chưa tự bat_dau_can. Bên mua không làm thay và không gửi nghiệm thu khi chưa mở cân.",
+          "mong_doi": "Dừng tại chờ người bán bắt đầu cân: đối tác ảo hiện chưa tự bat_dau_can. Người mua không làm thay và không gửi nghiệm thu khi chưa mở cân.",
           "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 4 không có start-check; backend/scripts/chay-kich-ban-ai.mjs: bat_dau_can là thao tác phía người bán."
         },
         {
@@ -424,7 +424,7 @@
         {
           "lam": "cho",
           "giay": 8,
-          "mong_doi": "HTX ảo trả giá 24.000 đ/kg cho 800 kg; không tự chấp nhận thay bên mua.",
+          "mong_doi": "HTX ảo trả giá 24.000 đ/kg cho 800 kg; không tự chấp nhận thay người mua.",
           "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1."
         },
         {
@@ -444,13 +444,13 @@
           "lam": "lap_don",
           "ai": "0909000213",
           "tra_tien": "on_receipt",
-          "mong_doi": "Lập hợp đồng riêng với chị Năm cho 1.200 kg; không gộp HTX thành cùng bên bán hoặc cùng tài khoản nhận.",
+          "mong_doi": "Lập hợp đồng riêng với chị Năm cho 1.200 kg; không gộp HTX thành cùng người bán hoặc cùng tài khoản nhận.",
           "can_cu": "quy-trinh.json v23: nhieu-trang-trai; quy tắc Tiền theo từng người bán."
         },
         {
           "lam": "ky",
           "ai": "0909000213",
-          "mong_doi": "Bên mua ký và gửi hợp đồng nguồn chị Năm.",
+          "mong_doi": "Người mua ký và gửi hợp đồng nguồn chị Năm.",
           "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng; backend/src/nghiep-vu/don.ts: ký phía buyer."
         },
         {
@@ -488,7 +488,7 @@
         {
           "lam": "ky",
           "ai": "0909000213",
-          "mong_doi": "Bên mua ký và gửi hợp đồng HTX.",
+          "mong_doi": "Người mua ký và gửi hợp đồng HTX.",
           "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng."
         },
         {
@@ -582,7 +582,7 @@
         {
           "lam": "ky",
           "ai": "0909000213",
-          "mong_doi": "Bên mua ký và gửi hợp đồng cho phần 1.200 kg.",
+          "mong_doi": "Người mua ký và gửi hợp đồng cho phần 1.200 kg.",
           "can_cu": "quy-trinh.json v23: quyen.hanh_dong mục Ký hợp đồng."
         },
         {
@@ -630,14 +630,14 @@
         {
           "lam": "cho",
           "giay": 8,
-          "mong_doi": "Người bán ảo trả giá 94.800 đ/kg; tới lượt bên mua quyết định trong hạn trả lời.",
+          "mong_doi": "Người bán ảo trả giá 94.800 đ/kg; tới lượt người mua quyết định trong hạn trả lời.",
           "can_cu": "backend/src/demo/doi-tac-ao.ts: motVong mục 1; quy-trinh.json v23: chinh, hạn chào giá 24 giờ mỗi lượt."
         },
         {
           "lam": "tua_gio",
           "ai": "0903000410",
           "gio": 25,
-          "mong_doi": "Bên mua im lặng quá hạn trả lời 24 giờ; lời chào hết hiệu lực. Không coi im lặng là đồng ý hoặc tự lập hợp đồng.",
+          "mong_doi": "Người mua im lặng quá hạn trả lời 24 giờ; lời chào hết hiệu lực. Không coi im lặng là đồng ý hoặc tự lập hợp đồng.",
           "can_cu": "quy-trinh.json v23: chinh, Chào giá với hạn 24 giờ mỗi lượt; du-lieu-cho.json: chinh_sach.han_gio.tra_loi_loi_chao; backend/scripts/chay-kich-ban-ai.mjs: case tua_gio."
         },
         {

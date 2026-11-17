@@ -29,10 +29,10 @@ export interface DangKy {
   org: { side: 'sell' | 'buy' | 'both'; kind: 'household' | 'cooperative' | 'coop_group' | 'enterprise' | 'trader'; display_name: string; tax_code?: string; province_code?: string; segment_code?: string; plan_code?: string };
 }
 
-/** Đăng ký tài khoản + tổ chức (chờ xác minh). Bên mua cần MST; gói mặc định Miễn phí. */
+/** Đăng ký tài khoản + tổ chức (chờ xác minh). Người mua cần MST; gói mặc định Miễn phí. */
 export async function dangKy(ht:HeThong,d:DangKy){
  if(!/^0\d{9}$/.test(d.phone)||!d.name||!d.org?.display_name)throw loi('DU_LIEU_KHONG_HOP_LE');
- if(d.org.side!=='sell'&&!d.org.tax_code)throw loi('DU_LIEU_KHONG_HOP_LE','Bên mua cần mã số thuế.');
+ if(d.org.side!=='sell'&&!d.org.tax_code)throw loi('DU_LIEU_KHONG_HOP_LE','Người mua cần mã số thuế.');
  ht.phien.kiemOtpDangNhap(d.challenge_id,d.code,d.phone);
  // 0049: auth worker ghi receipt sau OTP thật (record_registration), điều phối hệ thống lập user/tổ chức (register_organization),
  // việc V01 xác minh qua create_task. Không ghi bảng trực tiếp.

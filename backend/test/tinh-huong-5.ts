@@ -24,7 +24,7 @@ async function denVaChot(b: BoiCanh, kgDen: number) {
   return b.phuc.ok(`/v1/deliveries/${b.deliveryId}/arrival/confirm`, {});
 }
 
-them('TH-007', 'Giao tại kho bên mua, người bán thuê xe, trả khi nhận', async (may, th) => {
+them('TH-007', 'Giao tại kho người mua, người bán thuê xe, trả khi nhận', async (may, th) => {
   const ha = await may.dangNhap(SDT.ha); const sau = await may.dangNhap(SDT.sau); const lan = await may.dangNhap(SDT.lan); const phuc = await may.dangNhap(SDT.phuc);
   const lot = await may.v<string>(`SELECT id FROM core.lots WHERE code='L-0420'`);
   const o = await ha.ok('/v1/offers', { direction: 'buyer_bid', lot_id: lot, qty_g: 1000000, price_vnd: 24000 });
@@ -84,7 +84,7 @@ them('TH-037a', 'Giao trong dung sai 1.960 kg', async (may, th) => {
   th.bang('Khả dụng 2.040 kg', sl.available, '2040000');
 });
 
-them('TH-037b', 'Giao vượt 2.100 kg, bên mua nhận phần vượt', async (may, th) => {
+them('TH-037b', 'Giao vượt 2.100 kg, người mua nhận phần vượt', async (may, th) => {
   const b = await toiSanSang(may);
   const tu = await guiKq(b, 2100, [['accepted', 2100]]);
   th.bang('Không chọn nhận vượt: chặn', tu.json.errors?.[0]?.code, 'DU_LIEU_KHONG_HOP_LE');
@@ -157,7 +157,7 @@ them('TH-027', 'Phản đối dòng tại vườn, người bán rút phần tra
   th.bang('C_bm 3.450.000', x.data.quyet_toan?.refund_vnd, '3450000');
 });
 
-them('TH-R2-CANLAI', 'Phản đối dòng chia_lai, bên mua cân lại có chứng cứ mới, người bán đồng ý, tranh chấp đóng', async (may, th) => {
+them('TH-R2-CANLAI', 'Phản đối dòng chia_lai, người mua cân lại có chứng cứ mới, người bán đồng ý, tranh chấp đóng', async (may, th) => {
   const b = await toiSanSang(may);
   await guiKq(b, 2000, [['accepted', 1850], ['downgraded', 120, 'TRAY_VO'], ['rejected', 30, 'DAP']]);
   const pd = await b.nam.ok(`/v1/deliveries/${b.deliveryId}/acceptance/dispute`, { line_no: 2, reason: 'Đề nghị cân lại', option: 'chia_lai' });

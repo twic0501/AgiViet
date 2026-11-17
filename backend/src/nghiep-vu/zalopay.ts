@@ -6,7 +6,7 @@
 import { createHmac } from 'node:crypto';
 import type { HeThong } from '../he-thong.ts';
 import { loi } from '../loi.ts';
-/** h: kết quả huongDanCoc đã đọc xong (kiểm quyền bên mua nằm trong đó). Gọi mạng và ghi tiền ngoài giao dịch đọc. */
+/** h: kết quả huongDanCoc đã đọc xong (kiểm quyền người mua nằm trong đó). Gọi mạng và ghi tiền ngoài giao dịch đọc. */
 type HuongDan = { payment_ref: string; total_vnd: string; received_vnd: string };
 
 const MAY = 'https://sb-openapi.zalopay.vn/v2';

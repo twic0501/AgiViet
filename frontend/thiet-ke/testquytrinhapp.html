@@ -75,7 +75,7 @@ const cho = (ms) => new Promise((r) => setTimeout(r, ms));
 const qt = await fetch("/mo-phong-quy-trinh/quy-trinh.json").then((r) => r.json());
 const TH = Object.fromEntries(qt.tinh_huong.map((t) => [t.id, t]));
 const VAI = Object.fromEntries(qt.vai.map((v) => [v.id, v]));
-const TEN_AI = { ban: "Chị Năm (bên bán)", mua: "Chị Thu Hà (bên mua)", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống AgiViet", nv: "Nhân viên AgiViet" };
+const TEN_AI = { ban: "Chị Năm (người bán)", mua: "Chị Thu Hà (người mua)", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống AgiViet", nv: "Nhân viên AgiViet" };
 const ds = KICH_BAN.filter((k) => TH[k.id]);
 $("chon").innerHTML = ds.map((k) => `<option value="${k.id}">${esc(TH[k.id].ten)}</option>`).join("");
 let kb = ds[0], i = 0, dangBam = false, tuChay = false;

@@ -152,7 +152,7 @@ export async function chiTietDonVu(t: GiaoDich, nd: NguoiDung, id: string) {
 
 export async function capNhatSanLuong(t: GiaoDich, nd: NguoiDung, id: string, b: any) {
   const { phia } = await layDonVu(t, nd, id);
-  if (phia !== 'seller') throw loi('KHONG_CO_QUYEN', 'Chỉ bên bán cập nhật sản lượng ước.');
+  if (phia !== 'seller') throw loi('KHONG_CO_QUYEN', 'Chỉ người bán cập nhật sản lượng ước.');
   if (!b?.note || !b?.harvest_from || !b?.harvest_to || !b?.request_key) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần qty_min_g, qty_max_g, harvest_from, harvest_to, note, request_key.');
   const data: any = { qty_min: soGam(b.qty_min_g, 'qty_min_g').toString(), qty_max: soGam(b.qty_max_g, 'qty_max_g').toString(), harvest_during: `[${b.harvest_from},${b.harvest_to}]`, note: String(b.note) };
   if (Array.isArray(b.photo_document_ids) && b.photo_document_ids.length) data.photo_document_ids = b.photo_document_ids;

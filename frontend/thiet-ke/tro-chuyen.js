@@ -23,7 +23,7 @@ export function veDanhSach(khoi) {
     <div class="tc-khoa-bao">${SVG(I.khien)}<span>Nhắn qua AgiViet để có bằng chứng khi tranh chấp. Số điện thoại hai bên che tới khi ngân hàng giữ cọc.</span></div>
     <div class="tc-ds">${ds.map((h) => {
       const cuoi = h.tin.filter((m) => m.k !== "he" && m.k !== "buoc").at(-1);
-      const chu = cuoi.k === "gia" ? `${cuoi.ai === "toi" ? "Bác" : "Bên mua"} trả ${so(cuoi.gia)} đ/kg` : cuoi.k === "anh" ? "Ảnh" : cuoi.t;
+      const chu = cuoi.k === "gia" ? `${cuoi.ai === "toi" ? "Bác" : "Người mua"} trả ${so(cuoi.gia)} đ/kg` : cuoi.k === "anh" ? "Ảnh" : cuoi.t;
       return `<a class="tc-dong ${h.chuaDoc ? "tc-moi" : ""}" href="./ban-tin-nhan.html${esc(location.search)}#tro=${h.ma}" data-tro="${h.ma}"><span class="tc-anh">${esc(h.ben.split(" ").at(-1)[0])}${h.xm ? `<span class="tc-xm" title="Đã xác minh">${SVG(I.tich, 12)}</span>` : ""}</span>
         <span style="min-width:0"><b>${esc(h.ben)}</b><small>${esc(chu)}</small></span>
         <span class="tc-ben"><span>${esc(cuoi.luc)}</span>${h.chuaDoc ? `<span class="tc-dem">${h.chuaDoc}</span>` : ""}</span></a>`;
@@ -49,12 +49,12 @@ const veTin = (m) => {
   if (m.k === "anh") return `<div class="tc-tin tc-co-anh ${m.ai === "toi" ? "tc-toi" : "tc-ho"}"><div class="tc-hinh" style="background-image:url(${esc(m.anh)})" role="img" aria-label="Ảnh hàng"></div><small>${esc(m.luc)}</small></div>`;
   if (m.k === "gia") {
     const toi = m.ai === "toi", cho = m.trang === "cho-bac" && !toi;
-    const nhan = m.trang === "dong-y" ? `<span class="tc-nhan tc-n-xong">Hai bên đã đồng ý</span>` : m.trang === "khong" ? `<span class="tc-nhan">Bác không bán</span>` : cho ? `<span class="tc-nhan tc-n-bac">Chờ bác trả lời</span>` : `<span class="tc-nhan">${toi ? "Chờ bên mua" : "Đã trả lại"}</span>`;
-    return `<div class="tc-gia ${toi ? "tc-cua-toi" : ""}"><div class="tc-gia-dau"><b>${toi ? "Bác trả giá" : "Bên mua trả giá"}</b>${nhan}</div>
+    const nhan = m.trang === "dong-y" ? `<span class="tc-nhan tc-n-xong">Hai bên đã đồng ý</span>` : m.trang === "khong" ? `<span class="tc-nhan">Bác không bán</span>` : cho ? `<span class="tc-nhan tc-n-bac">Chờ bác trả lời</span>` : `<span class="tc-nhan">${toi ? "Chờ người mua" : "Đã trả lại"}</span>`;
+    return `<div class="tc-gia ${toi ? "tc-cua-toi" : ""}"><div class="tc-gia-dau"><b>${toi ? "Bác trả giá" : "Người mua trả giá"}</b>${nhan}</div>
       <span class="tc-gia-so">${so(m.gia)} đ/kg</span><span class="tc-ghi">${so(m.luong)} kg · thành tiền ${so(m.gia * m.luong)} đ · ${esc(m.ghi || "")}</span>
       ${cho ? `<div class="tc-hai"><button type="button" class="nut phu-nut" data-gia="tra">Trả giá</button><button type="button" class="nut tc-vang" data-gia="dong-y">Đồng ý ${so(m.gia)}</button></div><button type="button" class="tc-khong" data-gia="khong">Không bán</button>` : ""}</div>`;
   }
-  if (m.k === "buoc") return `<div class="tc-buoc"><b>Bước tiếp: ký thỏa thuận</b><span class="tc-ghi">Bên mua soạn thỏa thuận theo giá đã chốt. Bác xem lại giá, lượng, ngày giao, tiền cọc rồi ký bằng mã gửi về điện thoại.</span><a class="nut tc-vang" href="./mau/ban.html#man=chi-tiet-don">Xem và ký thỏa thuận HĐ-0018</a><a class="tc-ghi" href="./ban-hop-dong.html${esc(location.search)}" data-don-ky style="color:var(--la);font-weight:600;min-height:44px;display:flex;align-items:center">Xem màn hợp đồng đã chốt (dữ liệu hệ thống thử)</a></div>`;
+  if (m.k === "buoc") return `<div class="tc-buoc"><b>Bước tiếp: ký thỏa thuận</b><span class="tc-ghi">Người mua soạn thỏa thuận theo giá đã chốt. Bác xem lại giá, lượng, ngày giao, tiền cọc rồi ký bằng mã gửi về điện thoại.</span><a class="nut tc-vang" href="./mau/ban.html#man=chi-tiet-don">Xem và ký thỏa thuận HĐ-0018</a><a class="tc-ghi" href="./ban-hop-dong.html${esc(location.search)}" data-don-ky style="color:var(--la);font-weight:600;min-height:44px;display:flex;align-items:center">Xem màn hợp đồng đã chốt (dữ liệu hệ thống thử)</a></div>`;
   return `<div class="tc-tin ${m.ai === "toi" ? "tc-toi" : "tc-ho"}">${m.che ? esc(m.t).replace(/•••[ •]*/g, (x) => `<span class="tc-che">${x}</span>`) : esc(m.t)}<small>${esc(m.luc)}</small></div>`;
 };
 export function veChat(h) {
@@ -84,7 +84,7 @@ export function veChat(h) {
     if (!kq.sach) { viPham++; luu(); them({ k: "he", canh: true, t: `Tin có ${kq.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm (lần ${viPham}/3). ${viPham >= 3 ? "Bác đã bị tạm khóa nhắn 24 giờ." : "Lần 3 sẽ tạm khóa nhắn 24 giờ."}`, luc: gio() }); return; }
     // Bên kia đang gõ rồi trả lời (mô phỏng) — riêng hội thoại với Đồng Xanh thì người thật trả lời từ app mua
     if (h.ma === "T1") return;
-    const g = document.createElement("div"); g.className = "tc-tin tc-ho"; g.innerHTML = '<span class="hu-cham" aria-label="Bên mua đang gõ"><i></i><i></i><i></i></span>';
+    const g = document.createElement("div"); g.className = "tc-tin tc-ho"; g.innerHTML = '<span class="hu-cham" aria-label="Người mua đang gõ"><i></i><i></i><i></i></span>';
     setTimeout(() => { $("chat").appendChild(g); scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }, 500);
     setTimeout(() => { g.remove(); them({ k: "tin", ai: "ho", t: "Dạ em ghi nhận, cảm ơn chị.", luc: gio() }); }, 2200);
   });
@@ -99,9 +99,9 @@ export function veChat(h) {
   const guiAnh = () => them({ k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: gio() });
   $("gui-anh").addEventListener("click", guiAnh);
   $("chup").addEventListener("click", () => tam(`<h2>Gửi ảnh</h2><p class="tc-ghi">Ảnh có số điện thoại, Zalo hoặc mã QR liên lạc sẽ không gửi đi và bị tính vi phạm.</p><div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" id="chon-anh">Chụp ảnh hàng</button></div>`, (n, dong) => n.querySelector("#chon-anh").addEventListener("click", () => { dong(); guiAnh(); })));
-  $("hen").addEventListener("click", () => tam(`<h2>Hẹn xem vườn</h2><label>Ngày<input type="date" id="ngay-hen"></label><label>Giờ<input value="8:00"></label><p class="tc-ghi">Địa chỉ chi tiết chỉ gửi khi hai bên đồng ý lịch hẹn.</p><div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" id="gui-hen">Gửi lời hẹn</button></div>`, (n, dong) => n.querySelector("#gui-hen").addEventListener("click", () => { dong(); them({ k: "he", t: "Bác đã gửi lời hẹn xem vườn lúc 8:00. Chờ bên mua xác nhận.", luc: gio() }); })));
-  $("bao").addEventListener("click", () => tam(`<h2>Báo cáo bên mua này</h2>${["Đòi số điện thoại, Zalo trước khi có cọc", "Ép giá, dọa bỏ", "Nói lời khiếm nhã", "Nghi lừa đảo"].map((t, i) => `<label style="flex-direction:row;display:flex;gap:10px;align-items:center;min-height:48px;font-weight:500;color:var(--muc)"><input type="radio" name="bc" ${i ? "" : "checked"} style="width:22px;min-height:22px">${t}</label>`).join("")}<div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" id="gui-bc">Gửi báo cáo</button></div>`, (n, dong) => n.querySelector("#gui-bc").addEventListener("click", () => { dong(); them({ k: "he", t: "AgiViet đã nhận báo cáo của bác, nhân viên sẽ xem trong 24 giờ.", luc: gio() }); })));
-  const moTraGia = (giaCu = 23000) => tam(`<h2>Bác trả giá</h2><p class="tc-ghi">Lô ${esc(h.lo)} · bên mua có 24 giờ để trả lời.</p><div class="tc-hai"><label>Giá (đ/kg)<input id="g" inputmode="numeric" value="${giaCu + 500}"></label><label>Lượng (kg)<input id="l" inputmode="numeric" value="2000"></label></div>
+  $("hen").addEventListener("click", () => tam(`<h2>Hẹn xem vườn</h2><label>Ngày<input type="date" id="ngay-hen"></label><label>Giờ<input value="8:00"></label><p class="tc-ghi">Địa chỉ chi tiết chỉ gửi khi hai bên đồng ý lịch hẹn.</p><div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" id="gui-hen">Gửi lời hẹn</button></div>`, (n, dong) => n.querySelector("#gui-hen").addEventListener("click", () => { dong(); them({ k: "he", t: "Bác đã gửi lời hẹn xem vườn lúc 8:00. Chờ người mua xác nhận.", luc: gio() }); })));
+  $("bao").addEventListener("click", () => tam(`<h2>Báo cáo người mua này</h2>${["Đòi số điện thoại, Zalo trước khi có cọc", "Ép giá, dọa bỏ", "Nói lời khiếm nhã", "Nghi lừa đảo"].map((t, i) => `<label style="flex-direction:row;display:flex;gap:10px;align-items:center;min-height:48px;font-weight:500;color:var(--muc)"><input type="radio" name="bc" ${i ? "" : "checked"} style="width:22px;min-height:22px">${t}</label>`).join("")}<div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut chinh-nut" type="button" id="gui-bc">Gửi báo cáo</button></div>`, (n, dong) => n.querySelector("#gui-bc").addEventListener("click", () => { dong(); them({ k: "he", t: "AgiViet đã nhận báo cáo của bác, nhân viên sẽ xem trong 24 giờ.", luc: gio() }); })));
+  const moTraGia = (giaCu = 23000) => tam(`<h2>Bác trả giá</h2><p class="tc-ghi">Lô ${esc(h.lo)} · người mua có 24 giờ để trả lời.</p><div class="tc-hai"><label>Giá (đ/kg)<input id="g" inputmode="numeric" value="${giaCu + 500}"></label><label>Lượng (kg)<input id="l" inputmode="numeric" value="2000"></label></div>
     <div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Đóng</button><button class="nut tc-vang" type="button" id="gui-gia">Gửi giá</button></div>`,
     (n, dong) => n.querySelector("#gui-gia").addEventListener("click", () => {
       const g = Number(n.querySelector("#g").value.replace(/\D/g, "")), l = Number(n.querySelector("#l").value.replace(/\D/g, ""));
@@ -119,7 +119,7 @@ export function veChat(h) {
     if (b.dataset.gia === "tra") return moTraGia(m.gia);
     if (b.dataset.gia === "khong") { m.trang = "khong"; luu(); location.reload(); return; }
     tam(`<h2>Đồng ý bán?</h2><div class="tc-dong-tien"><span>Lượng</span><b>${so(m.luong)} kg</b></div><div class="tc-dong-tien"><span>Giá</span><b>${so(m.gia)} đ/kg</b></div><div class="tc-dong-tien"><span>Thành tiền</span><b>${so(m.gia * m.luong)} đ</b></div>
-      <p class="tc-ghi">Hàng được giữ 24 giờ cho bên mua. <b>Chưa phải hợp đồng</b>: hai bên xem lại thỏa thuận rồi mới ký.</p>
+      <p class="tc-ghi">Hàng được giữ 24 giờ cho người mua. <b>Chưa phải hợp đồng</b>: hai bên xem lại thỏa thuận rồi mới ký.</p>
       <div class="tc-tam-day"><button class="nut phu-nut" type="button" data-dong>Quay lại</button><button class="nut tc-vang" type="button" id="chot">Xác nhận đồng ý</button></div>`,
       (n, dong) => n.querySelector("#chot").addEventListener("click", async (ev) => {
         await window.HieuUngThem?.nutXong(ev.currentTarget, "Đã đồng ý");

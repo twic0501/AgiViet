@@ -56,7 +56,7 @@
     {
      "ai": "0918000421",
      "lam": "chon_don",
-     "mong_doi": "Chọn đúng hợp đồng từ báo giá đang xét; điều khoản phải thể hiện lượng, giá, giá hạ cấp, giao tại vườn, bên mua lo xe và trả khi nhận.",
+     "mong_doi": "Chọn đúng hợp đồng từ báo giá đang xét; điều khoản phải thể hiện lượng, giá, giá hạ cấp, giao tại vườn, người mua lo xe và trả khi nhận.",
      "can_cu": "Trình chạy: chon_don tìm theo offer_id; backend/src/nghiep-vu/don.ts."
     },
     {
@@ -160,7 +160,7 @@
      "lam": "tra_gia",
      "gia": 23800,
      "kg": 800,
-     "mong_doi": "Gửi trả giá 23.800 đ/kg đúng lượt của HTX; chưa tự đồng ý thay bên mua.",
+     "mong_doi": "Gửi trả giá 23.800 đ/kg đúng lượt của HTX; chưa tự đồng ý thay người mua.",
      "can_cu": "Trình chạy: tra_gia gửi price_vnd và qty_g; CHINH_SACH.luotTraGiaToiDaMoiBen=2."
     },
     {
@@ -240,7 +240,7 @@
      "ai": "0945000880",
      "lam": "nhan",
      "noi_dung": "Nhà em có nhật ký ao, chưa có phiếu kiểm kháng sinh. Khách nhận tại Cần Thơ, nhờ app chỉ rõ còn thiếu gì trước khi giao.",
-     "mong_doi": "Giữ nội dung trao đổi; lời tự khai không thay chứng thư kiểm định. Giao dịch vẫn là giao trong nước dù tên bên mua có ngành xuất khẩu.",
+     "mong_doi": "Giữ nội dung trao đổi; lời tự khai không thay chứng thư kiểm định. Giao dịch vẫn là giao trong nước dù tên người mua có ngành xuất khẩu.",
      "can_cu": "NC-3004 yêu cầu kiem_dinh:khang_sinh; địa chỉ nhận TC-M05 là KCN Trà Nóc, Cần Thơ; chính sách chỉ nội địa."
     },
     {
@@ -338,7 +338,7 @@
      "ai": "0919000950",
      "lam": "lap_don",
      "tra_tien": "inspect_then_before_loading",
-     "mong_doi": "Từ chối thao tác lập đơn của phía bán; không tự cấp quyền bên mua hoặc tạo đơn thứ hai. Cách trả hợp lệ không làm thay đổi quyền lập đơn.",
+     "mong_doi": "Từ chối thao tác lập đơn của phía bán; không tự cấp quyền người mua hoặc tạo đơn thứ hai. Cách trả hợp lệ không làm thay đổi quyền lập đơn.",
      "can_cu": "backend/src/nghiep-vu/don.ts: lapDon yêu cầu order.create và tổ chức người gọi phải là buyer_org_id; tra_tien là tham số thật của trình chạy."
     },
     {
@@ -436,14 +436,14 @@
      "ai": "0977000610",
      "lam": "nhan",
      "noi_dung": "Gọi anh số 0977 000 610 để chốt ngoài cho nhanh.",
-     "mong_doi": "Che hoặc chặn số điện thoại trước cọc trong tin bên mua nhận được; không chỉ che ở giao diện người gửi.",
+     "mong_doi": "Che hoặc chặn số điện thoại trước cọc trong tin người mua nhận được; không chỉ che ở giao diện người gửi.",
      "can_cu": "CHINH_SACH.moLienLac.cheToiKhiCoc=true; chính sách chặn liên lạc trước cọc."
     },
     {
      "ai": "0977000610",
      "lam": "nhan",
      "noi_dung": "z.a.l.o anh: không chín bảy bảy không không không sáu một không.",
-     "mong_doi": "Nhận diện cả Zalo viết tách và số viết bằng chữ, không để bên mua khôi phục nguyên chuỗi liên lạc trước cọc.",
+     "mong_doi": "Nhận diện cả Zalo viết tách và số viết bằng chữ, không để người mua khôi phục nguyên chuỗi liên lạc trước cọc.",
      "can_cu": "Chính sách chặn số/Zalo trước cọc; mẫu nguoi-ban-0211.json BAN-03 có phép thử chữ và z.a.l.o."
     },
     {
@@ -550,7 +550,7 @@
      "ai": "0918000421",
      "lam": "cho",
      "giay": 12,
-     "mong_doi": "Bot trả 20.900 đ/kg, dưới mức kín; app tự đóng lời chào, không giữ lượng hoặc lập hợp đồng. Thông báo cho bên mua không tiết lộ con số 21.500.",
+     "mong_doi": "Bot trả 20.900 đ/kg, dưới mức kín; app tự đóng lời chào, không giữ lượng hoặc lập hợp đồng. Thông báo cho người mua không tiết lộ con số 21.500.",
      "can_cu": "Bot giảm 3%, làm tròn 100 đồng; chính sách chào dưới mức người bán chấp nhận tự đóng; trạng thái auto_rejected."
     },
     {
@@ -579,7 +579,7 @@
     {
      "ai": "0918000421",
      "lam": "dong_y",
-     "mong_doi": "Chốt giá hàng đạt 23.300 và giữ lượng; chưa mặc nhiên đồng ý mọi giá hạ cấp mà bên mua sẽ đưa vào hợp đồng.",
+     "mong_doi": "Chốt giá hàng đạt 23.300 và giữ lượng; chưa mặc nhiên đồng ý mọi giá hạ cấp mà người mua sẽ đưa vào hợp đồng.",
      "can_cu": "Đồng ý lời chào chưa phải hợp đồng; giá hạ cấp là điều khoản lập đơn."
     },
     {

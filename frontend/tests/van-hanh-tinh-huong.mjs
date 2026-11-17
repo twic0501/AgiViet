@@ -1,5 +1,5 @@
 // Kiểm màn "Chạy tình huống vận hành" (thiet-ke/van-hanh.html?man=tinh-huong-vh): mọi tình huống v23 KHÔNG có đủ
-// hai bên bán + mua phải đi hết từng bước đúng thứ tự, đúng vai; không lỗi JS; 390 px không tràn ngang.
+// hai người bán + mua phải đi hết từng bước đúng thứ tự, đúng vai; không lỗi JS; 390 px không tràn ngang.
 // Chạy: node tests/van-hanh-tinh-huong.mjs  (cần frontend 18990)
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
@@ -8,7 +8,7 @@ const { chromium } = createRequire(process.env.HOME + "/rnd idea/package.json")(
 const GOC = (process.env.FRONTEND_URL || "http://127.0.0.1:18990") + "/thiet-ke/van-hanh.html?man=tinh-huong-vh";
 const qt = JSON.parse(readFileSync(new URL("../mo-phong-quy-trinh/quy-trinh.json", import.meta.url), "utf8"));
 const DS = qt.tinh_huong.filter((t) => { const v = new Set(t.buoc.map((b) => b.vai)); return !(v.has("ban") && v.has("mua")); });
-const VAI = { ban: "Người bán", mua: "Bên mua", nv: "Nhân viên AgiViet", qt: "Quản trị AgiViet", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống" };
+const VAI = { ban: "Người bán", mua: "Người mua", nv: "Nhân viên AgiViet", qt: "Quản trị AgiViet", nh: "Ngân hàng", dt: "Đối tác dịch vụ", app: "Hệ thống" };
 const b = await chromium.launch();
 const ket = [], loi = [];
 for (const w of [1280, 390]) {

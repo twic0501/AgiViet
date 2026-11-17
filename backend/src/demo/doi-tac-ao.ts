@@ -13,7 +13,7 @@ export const DAI_DIEN: Record<string, string> = {
   'TC-B06': '0918000601', 'TC-B07': '0918000602', 'TC-B08': '0918000603', 'TC-B09': '0918000604', 'TC-B10': '0918000605',
   'TC-M06': '0908000601', 'TC-M07': '0908000602', 'TC-M08': '0908000603', 'TC-M09': '0908000604', 'TC-M10': '0908000605',
 };
-/** Đạo diễn buổi trình diễn: kịch bản cho lần nghiệm thu kế tiếp do bên mua ảo làm (dùng một lần rồi về bình thường). */
+/** Đạo diễn buổi trình diễn: kịch bản cho lần nghiệm thu kế tiếp do người mua ảo làm (dùng một lần rồi về bình thường). */
 export const KICH_BAN: { lanToi: null | 'ha-cap' | 'tra-lai-nhieu' } = { lanToi: null };
 // Tệp khách: chọn vai xong, rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu (theo tình huống ở docs/mo-phong-quy-trinh).
 export const KIEU_MUA: Record<string, string> = { 'song-phang': 'Sòng phẳng, nhận đủ trả đủ', 'kho-tinh': 'Khó tính: hạ loại 10% có ảnh', /* can-khong-dung, khac-mau */
@@ -21,7 +21,7 @@ export const KIEU_MUA: Record<string, string> = { 'song-phang': 'Sòng phẳng, 
 export const KIEU_BAN: Record<string, string> = { 'giao-deu': 'Giao đều, đúng hẹn', 'giu-gia': 'Giữ giá, trả giá 2 lần', /* nhieu-de-nghi */
   'cham': 'Trả lời chậm', /* theo-sat-don */ 'giao-thieu': 'Xuất thiếu 15%' /* dinh-ky-thieu-luong */ };
 export const TEP = new Map<string, string>(); // mã tổ chức AI → kiểu
-const THIEU = new Map<string, number>(); // đợt giao do người bán AI 'giao-thieu' → số gam thực giao (bên mua AI cân đúng số này)
+const THIEU = new Map<string, number>(); // đợt giao do người bán AI 'giao-thieu' → số gam thực giao (người mua AI cân đúng số này)
 const KIEU_TEP: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = { 'tra-gia-gat': { tra: 2, buoc: 0.06 }, 'giu-gia': { tra: 2, buoc: 0.05 }, cham: { cham: true }, 'song-phang': { tra: 0 } };
 export function rutTep(orgThat: string, ngauNhien = Math.random, gan?: Record<string, string>) {
   const tron = <T,>(a: T[]) => a.map((x) => [ngauNhien(), x] as const).sort((x, y) => x[0] - y[0]).map((x) => x[1]);
@@ -35,7 +35,7 @@ export function rutTep(orgThat: string, ngauNhien = Math.random, gan?: Record<st
 const NV_TAI_CHINH = '0901000004'; // nhân viên đối soát (vai finance) trong chợ mẫu
 const LAN_CHAO = new Map<string, number>(); // org người bán thật → lúc được nhận lời chào mới, tránh đổ dồn
 const DA_CHAO = new Map<string, number>(); // lot_id → lúc được chào lại: lời chào cũ đóng/hết hạn thì 5 phút sau có khách mới, chợ không chết
-const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được bên mua ảo chào (mỗi lô một lần)
+const DA_BAO = new Set<string>();          // dòng nhu cầu của người thật đã được người bán ảo báo giá (mỗi dòng một lần)          // lô của người thật đã được người mua ảo chào (mỗi lô một lần)
 const CHU_LO = new Map<string, string>();  // lot_id → seller_org_id (không đổi, đỡ gọi lại)
 let luotMua = 0;
 const CHAM = new Map<string, number>(); // lời chào → số vòng đã thấy (khách trả lời chậm)
@@ -52,7 +52,7 @@ const KIEU: Record<string, { tra?: number; buoc?: number; cham?: boolean }> = {
   'TC-M07': { tra: 0 },               // chốt nhanh khi hàng đẹp
   'TC-M09': { tra: 0 },               // ít trả giá
 };
-// Giá mua dự kiến của bên mua ảo (ngân sách riêng của họ, theo giá thị trường trong docs/nghiep-vu/du-lieu-cho.json),
+// Giá mua dự kiến của người mua ảo (ngân sách riêng của họ, theo giá thị trường trong docs/nghiep-vu/du-lieu-cho.json),
 // chỉ dùng khi chợ chưa đủ giao dịch để có giá tham khảo. Không hiển thị cho người dùng như giá tham khảo.
 const GIA_MUA: Record<string, number> = { 'XOAI_CAT_CHU|L1': 25000, 'XOAI_CAT_CHU|L2': 15000, 'CHANH_KHONG_HAT|L1': 14000, 'TOM_THE|48-52': 120000,
   'LUA_TUOI|OM18-am25': 6600, 'SAU_RIENG|A': 75000, 'BUOI_DA_XANH|L1': 32000, 'THANH_LONG|L1': 18000, 'THANH_LONG|L2': 9000, 'CA_TRA|0.8-1.2': 30000 };
@@ -90,7 +90,7 @@ export function traLoi(tin: string, phia: 'buyer' | 'seller'): string {
   if (/da che|•/.test(t)) return 'Mình trao đổi trong app nha, có gì AgiViet hỗ trợ hai bên.';
   // Không hứa giờ/xe khi chưa có hợp đồng (rà soát #8): chỉ nói giờ giao theo hợp đồng sẽ ký
   if (/gio|mai|sang|chieu|ngay|xe|toi vuon|lay hang/.test(t)) return phia === 'buyer' ? 'Giờ giao và xe sẽ ghi rõ trong hợp đồng bác ạ, hai bên ký rồi em báo lịch cụ thể cho bác.' : 'Giờ giao và xe sẽ ghi rõ trong hợp đồng, ký xong bên tôi chuẩn bị hàng theo đúng lịch đó.';
-  // Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", bên mua đổi giá = "Trả giá"
+  // Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", người mua đổi giá = "Trả giá"
   if (/gia|bot|tang|giam/.test(t)) return phia === 'buyer' ? 'Giá này bên em tính theo loại 1 rồi, bác muốn đổi thì bấm "Chào giá mới" trong lời chào giúp em nha.' : 'Giá bên tôi để sát rồi, anh/chị muốn đổi thì bấm "Trả giá" trong lời chào giúp nhé.';
   if (/con|du|bao nhieu|tan|kg|hang/.test(t)) return phia === 'buyer' ? 'Bên em cần đúng lượng trong lời chào, đủ loại 1 là em lấy hết bác ạ.' : 'Còn đủ hàng, hàng đẹp, loại 1 chiếm phần lớn.';
   return phia === 'buyer' ? 'Dạ em nhận được rồi bác, có gì em báo lại nha.' : 'Dạ bên tôi nhận được rồi nhé.';
@@ -113,8 +113,8 @@ export function traLoiTheoBuoc(tin: string, phia: 'buyer' | 'seller', buoc: stri
 export interface ViecAo { to_chuc: string; viec: string; doi_tuong: string; ket_qua: 'xong' | 'loi'; chi_tiet?: string }
 
 /** Một vòng quét. nguoiThat: số điện thoại hoặc mã tổ chức ('TC-…') người thật đang dùng (tổ chức của họ không bị đóng vai).
- *  idThat: id tổ chức người thật — để bên mua ảo chủ động chào giá lô của họ. */
-/** Mức chịu được của AI theo tính: bên mua trả tối đa giá mình đưa gần nhất × (1+bước); bên bán bán tối thiểu × (1−bước).
+ *  idThat: id tổ chức người thật — để người mua ảo chủ động chào giá lô của họ. */
+/** Mức chịu được của AI theo tính: người mua trả tối đa giá mình đưa gần nhất × (1+bước); người bán bán tối thiểu × (1−bước).
  *  Lời chatbot nói ("bác chào X là em lấy") và luật đồng ý dùng CHUNG mức này để lời nói khớp việc làm. */
 export function mucChiu(rounds: any[], phia: 'buyer' | 'seller', buoc: number): number | null {
   const minh = [...(rounds ?? [])].reverse().find((r: any) => r.from_side === phia); if (!minh) return null;
@@ -145,7 +145,7 @@ function tinhCach(tc: string, phia: 'buyer' | 'seller', k: { tra?: number; cham?
   return [k.tra === 0 ? 'dễ chốt, ít mặc cả' : (k.tra ?? 1) >= 2 ? 'giữ giá, mặc cả kỹ' : 'mặc cả vừa phải', k.cham ? 'cẩn thận, nói chậm rãi' : ''].filter(Boolean).join(', ');
 }
 
-const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval: 'chờ duyệt nội bộ', awaiting_signatures: 'chờ hai bên ký', awaiting_deposit: 'đã ký, chờ bên mua đặt cọc qua ngân hàng',
+const TEN_TT: Record<string, string> = { draft: 'đang soạn', pending_approval: 'chờ duyệt nội bộ', awaiting_signatures: 'chờ hai bên ký', awaiting_deposit: 'đã ký, chờ người mua đặt cọc qua ngân hàng',
   active: 'đã có hiệu lực, cọc ngân hàng đang giữ, chờ tới ngày giao', in_delivery: 'đang giao nhận', completed: 'đã hoàn tất', cancelled: 'đã hủy', disputed: 'đang có tranh chấp' };
 
 /** Chatbot đối tác (dịch vụ AI /doi-tac/tra-loi, gemma4 trên Ollama → NIM); null nếu không gọi được hoặc câu bị bỏ (bịa số). */
@@ -204,8 +204,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     return post(`/v1/orders/${o.id}/sign`, { challenge_id: await otp(t, 'contract_sign', { document_id: doc?.id }), code: OTP, expected_revision: o.revision, ...(phia === 'seller' ? { commitment_ack: true, low_downgrade_price_ack: true, abnormal_price_ack: true } : {}) }, t);
   };
 
-  // 0) Chủ động: lô đang bán của người bán thật chưa ai (ảo) chào → một bên mua ảo (xoay vòng) chào đúng giá tham khảo
-  //    (chào giá kín: bên mua không thấy giá người bán), chưa đủ dữ liệu thì theo giá mua dự kiến GIA_MUA; không có cả hai thì không chào.
+  // 0) Chủ động: lô đang bán của người bán thật chưa ai (ảo) chào → một người mua ảo (xoay vòng) chào đúng giá tham khảo
+  //    (chào giá kín: người mua không thấy giá người bán), chưa đủ dữ liệu thì theo giá mua dự kiến GIA_MUA; không có cả hai thì không chào.
   const muaAo = Object.keys(DAI_DIEN).filter((tc) => tc.startsWith('TC-M') && !toChucThat.has(tc) && (!TEP.size || TEP.has(tc)));
   if (!chiTin && idThat.length && muaAo.length) {
     const tc = muaAo[luotMua++ % muaAo.length]; const me = (LAN_CHAO.get(idThat[0]) ?? 0) > Date.now() ? null : await vai(DAI_DIEN[tc]);
@@ -266,7 +266,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
         let muc = mucChiu(ct?.rounds, phia, buocThat);
         // Vòng đầu người bán AI chưa đưa giá nào: mốc là giá mong muốn của lô (người thật trả tới mức đó thì chốt luôn, như người bán thật)
         if (muc == null && phia === 'seller') { const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t); const mm = Number(lo?.ask_price_vnd ?? 0); if (mm) muc = Math.round(mm * (1 - buocThat) / 100) * 100; }
-        // Bên mua trả từ giá giao dịch gần đây trở lên ở vòng đầu ("Mua giá này") thì người bán AI chốt luôn
+        // Người mua trả từ giá giao dịch gần đây trở lên ở vòng đầu ("Mua giá này") thì người bán AI chốt luôn
         let theoCho = false;
         if (phia === 'seller' && Number(v.round_no) === 1) {
           const lo = await get(`/v1/lots/${ct?.lot_id ?? of.lot_id}`, t);
@@ -284,7 +284,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           bao = `Bạn vừa ${phia === 'buyer' ? 'trả giá' : 'chào giá'} lại ${soVN(gia)} trong lời chào ${of.code} (người kia đang đòi ${soVN(giaKia)}). Viết 1–2 câu báo cho người kia, nêu lý do ngắn theo tính cách; không nói đây là mức cuối hay tốt nhất (còn thương lượng được).`;
         } else if (trongMuc || muc == null) {
           await lam(tc, 'đồng ý giá', of.code, () => post(`/v1/offers/${of.id}/accept`, { expected_revision: of.revision }, t));
-          bao = `Bạn vừa đồng ý giá ${soVN(giaKia)} trong lời chào ${of.code}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký. Viết 1–2 câu báo cho người kia.`;
+          bao = `Bạn vừa đồng ý giá ${soVN(giaKia)} trong lời chào ${of.code}. Bước kế: người mua gửi hợp đồng để người bán xem và ký. Viết 1–2 câu báo cho người kia.`;
         } else {
           // Hết lượt mặc cả mà giá vẫn ngoài mức chịu: từ chối có giải thích (rà soát #3: trước đây đồng ý cả giá ngoài mức)
           await lam(tc, 'không chốt', of.code, () => post(`/v1/offers/${of.id}/reject`, {}, t));
@@ -305,7 +305,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           await post('/v1/messages', { offer_id: of.id, body: cau }, t);
         }
       }
-      // Bên mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
+      // Người mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
       if (of.status === 'accepted' && !of.order_id) {
         const dk = await get(`/v1/offers/${of.id}/terms`, t), now = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
         const nhan = (body: string) => post('/v1/messages', { offer_id: of.id, body }, t);
@@ -315,7 +315,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           if (x.dong_y) { await lam(tc, 'đồng ý điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms/accept`, { phien_ban: dk.phien_ban }, t)); await nhan(phia === 'buyer' ? 'Dạ điều khoản vậy được bác, em tạo hợp đồng để hai bên ký nha.' : 'Điều khoản vậy được, anh/chị tạo hợp đồng để hai bên ký nhé.'); }
           else { await lam(tc, 'đề xuất sửa điều khoản', of.code, () => post(`/v1/offers/${of.id}/terms`, x.sua, t)); await nhan(`Dạ ${x.ly_do}, ${xung} xem bản sửa giúp nha.`); }
         }
-        // Người bán AI chờ bên mua; bên mua AI mở đề xuất đầu tiên, nếu bị từ chối thì đề xuất lại mức mặc định
+        // Người bán AI chờ người mua; người mua AI mở đề xuất đầu tiên, nếu bị từ chối thì đề xuất lại mức mặc định
         if (dk?.trang_thai === 'bi_tu_choi' && !DA_TRA_LOI.has(`tc-${of.id}-${dk.phien_ban}`)) {
           DA_TRA_LOI.add(`tc-${of.id}-${dk.phien_ban}`);
           await nhan(`Dạ ${xung} chưa ưng chỗ nào, ${xung} bấm Sửa trước khi gửi rồi ghi lại giúp nha, bên ${phia === 'buyer' ? 'em' : 'tôi'} xem lại ngay.`);
@@ -369,8 +369,8 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const mucTin = ctTin ? mucChiu(ctTin.rounds, phiaTin, buocDeal(kieuTin.buoc ?? 0.03, Number(v.qty_g), Number(v.round_no))) : null;
           const mucCau = mucTin == null || v.from_side !== phiaTin ? '' : phiaTin === 'buyer'
             ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người bán đòi cao hơn thì từ chối khéo kèm lý do; đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
-            : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Bên mua trả thấp hơn thì từ chối khéo kèm lý do; trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
-          tinhTrang = (of.product_name ? `Mặt hàng: ${of.product_name}. ` : '') + (of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: bên mua gửi hợp đồng để người bán xem và ký.`
+            : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người mua trả thấp hơn thì từ chối khéo kèm lý do; trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
+          tinhTrang = (of.product_name ? `Mặt hàng: ${of.product_name}. ` : '') + (of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: người mua gửi hợp đồng để người bán xem và ký.`
             : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'TỚI LƯỢT BẠN trả lời: người kia không bấm được gì lúc này; hãy nói bạn đang xem và sẽ trả lời trong lời chào ngay, KHÔNG bảo họ bấm Chào giá/Trả giá'}.${mucCau}`
             : of.status === 'auto_rejected' ? `Lời chào ${of.code ?? ''} đã đóng: hệ thống tự từ chối vì giá ${phiaTin === 'seller' ? 'người mua đưa' : 'người bán chào'} chưa tới mức bên bạn chấp nhận (KHÔNG nói con số mức đó). Mời người kia gửi lời chào mới với giá ${phiaTin === 'seller' ? 'cao' : 'thấp'} hơn; giá đã đưa ${gia} không thay đổi được nữa.`
             : `Lời chào ${of.code ?? ''} đã đóng (${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã rút'}); muốn mua bán tiếp thì gửi lời chào mới.`);
@@ -414,7 +414,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
     for (const d of ((await get('/v1/orders', t)) ?? []).filter(coNguoiThat)) {
       let luot = d.hien_thi?.toi_luot; const phia = d.phia_cua_ban;
       // Khoản bên kia đã báo trả mà mình là BÊN NHẬN → xác nhận trước mọi việc khác. Cả hai chiều: tiền hàng, công nợ, tiền hoàn
-      // (rà soát #5: trước chỉ người bán, chỉ active/completed → bên mua AI không xác nhận được tiền hoàn, giao dịch dừng ở quyết toán)
+      // (rà soát #5: trước chỉ người bán, chỉ active/completed → người mua AI không xác nhận được tiền hoàn, giao dịch dừng ở quyết toán)
       if (['active', 'completed', 'outstanding', 'awaiting_settlement'].includes(d.status)) {
         let coXacNhan = false;
         for (const p of (await get(`/v1/orders/${d.id}/payments`, t)) ?? []) if (p.status === 'payer_reported' && (p.direction === 'seller_to_buyer' ? 'buyer' : 'seller') === phia) {
@@ -455,7 +455,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           return post(`/v1/payments/${p.id}/report`, { amount_vnd: TEP.get(tc) === 'tra-thieu' ? Math.round(Number(p.amount_due_vnd) * 0.7 / 1000) * 1000 : Number(p.amount_due_vnd), method: 'bank_transfer', evidence_document_id: anh.id }, t);
         }); break;
         // Rà soát #5: hoàn tiền thừa / trả công nợ — mình là BÊN TRẢ: báo đã chuyển đúng phần còn thiếu, kèm ảnh chứng từ, rồi nhắn báo
-        case 'Hoàn tiền thừa cho bên mua': case 'Trả công nợ': {
+        case 'Hoàn tiền thừa cho người mua': case 'Trả công nợ': {
           const chieu = phia === 'seller' ? 'seller_to_buyer' : 'buyer_to_seller';
           const p = ((await get(`/v1/orders/${d.id}/payments`, t)) ?? []).find((x: any) => x.direction === chieu && x.status !== 'payer_reported' && Number(x.amount_due_vnd) > Number(x.confirmed_vnd ?? 0));
           if (!p) break;

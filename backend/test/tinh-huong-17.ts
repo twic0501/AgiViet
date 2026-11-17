@@ -14,7 +14,7 @@ them('TH-HUY-XEM-TRUOC', 'Xem trước hủy: đơn chưa ký không lỗi 500, 
   th.bang('Đơn chưa ký: 200 (trước đây 500)', r.status, 200);
   th.bang('Chưa cọc: cọc 0', r.json?.data?.coc?.so_tien_vnd ?? r.json?.coc?.so_tien_vnd, '0');
   th.bang('Lý do lạ: 422', (await b.ha.get(`/v1/orders/${d.id}/cancellation-preview?reason_kind=abc`)).status, 422);
-  th.bang('Bên mua dùng lý do của người bán: 422', (await b.ha.get(`/v1/orders/${d.id}/cancellation-preview?reason_kind=seller_request`)).status, 422);
+  th.bang('Người mua dùng lý do của người bán: 422', (await b.ha.get(`/v1/orders/${d.id}/cancellation-preview?reason_kind=seller_request`)).status, 422);
   const c = await b.ha.otpKy(d.data.document_id);
   await b.ha.ok(`/v1/orders/${d.id}/sign`, { challenge_id: c, code: '123456' });
   await b.ha.ok(`/v1/orders/${d.id}/withdraw`, {});

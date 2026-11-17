@@ -183,10 +183,10 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
     if la_lua(req.tin):
         return {'tra_loi': 'Mình trao đổi và thanh toán trong app thôi nha, có gì AgiViet hỗ trợ hai bên.', 'nguon': 'lua'}
     if req.vai == 'buyer':
-        xung = f"Bạn là người phụ trách mua của '{req.ten}' nhắn với người bán nông sản lớn tuổi. Gọi họ là 'bác', xưng 'em'. Việc đổi giá của BẠN (bên mua) luôn gọi là 'trả giá' (không bao giờ nói bạn 'chào giá'); việc đổi giá của người bán gọi là 'chào giá'."
+        xung = f"Bạn là người phụ trách mua của '{req.ten}' nhắn với người bán nông sản lớn tuổi. Gọi họ là 'bác', xưng 'em'. Việc đổi giá của BẠN (người mua) luôn gọi là 'trả giá' (không bao giờ nói bạn 'chào giá'); việc đổi giá của người bán gọi là 'chào giá'."
     else:
-        xung = f"Bạn là người bán '{req.ten}' nhắn với người phụ trách mua hàng của một doanh nghiệp. Gọi họ là 'anh/chị', xưng 'tôi' hoặc 'bên tôi'. Việc đổi giá của BẠN (bên bán) luôn gọi là 'chào giá'; việc đổi giá của bên mua gọi là 'trả giá'."
-    # Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", bên mua đổi giá = "Trả giá" (người sáng lập chốt 04/11)
+        xung = f"Bạn là người bán '{req.ten}' nhắn với người phụ trách mua hàng của một doanh nghiệp. Gọi họ là 'anh/chị', xưng 'tôi' hoặc 'bên tôi'. Việc đổi giá của BẠN (người bán) luôn gọi là 'chào giá'; việc đổi giá của người mua gọi là 'trả giá'."
+    # Đúng chữ theo vai: người bán đổi giá = "Chào giá mới", người mua đổi giá = "Trả giá" (người sáng lập chốt 04/11)
     nut = ("Không mặc cả trong lời chào này nữa: nếu TÌNH TRẠNG nói lời chào đã đóng thì mời người kia gửi lời chào mới; "
            "nếu giá đã chốt / đã có hợp đồng thì nhắc làm tiếp bước kế (xem, ký hợp đồng) hoặc nhắn AgiViet khi muốn đổi điều khoản.") if not req.dang_mac_ca else ("nếu bác ấy muốn đổi giá thì nhắc bác bấm nút 'Chào giá mới' trong lời chào (với người bán luôn nói 'chào giá', không nói 'trả giá')."
            if req.vai == 'buyer' else "nếu họ muốn đổi giá thì nhắc họ bấm nút 'Trả giá' trong lời chào.")

@@ -10,7 +10,7 @@ let gui: any = null; const ghi: GoiLoi = async (b) => { gui = b; return dung(b);
 
 assert.equal((await doiChieuQuyetToan(st, ghi)).ket_qua, 'khop');
 assert.deepEqual(gui, { v: '1764000', d: '0', c: '2646000', x_nb: '0', x_bm: '0' });
-await assert.rejects(doiChieuQuyetToan(st, async (b) => ({ ...(await dung(b))!, coc_hoan_ben_mua: '882001' })), /hoàn bên mua: 882000 ≠ 882001/, 'lệch một đồng cũng chặn');
+await assert.rejects(doiChieuQuyetToan(st, async (b) => ({ ...(await dung(b))!, coc_hoan_ben_mua: '882001' })), /hoàn người mua: 882000 ≠ 882001/, 'lệch một đồng cũng chặn');
 assert.equal((await doiChieuQuyetToan(st, async () => null)).ket_qua, 'chua_doi_chieu', 'không gọi được lõi thì không chặn');
 assert.equal((await doiChieuQuyetToan({ ...st, is_final: false }, ghi)).ket_qua, 'bo_qua', 'lần tạm không đối chiếu');
 await doiChieuQuyetToan({ ...st, x_nb_vnd: '1000', materials_offset_vnd: '500', n_vnd: '1762500', c_nb_formula_vnd: '1762500', refund_vnd: '883500' }, async (b) => { gui = b; return { n: '1762500', coc_ve_nguoi_ban: '1762500', coc_hoan_ben_mua: '883500', ben_mua_tra_them: '0', nguoi_ban_hoan: '0' }; });

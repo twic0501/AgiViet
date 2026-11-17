@@ -512,7 +512,7 @@ def cau_hoi(kq: KetQua, mh: dm.MatHang | None, xh: str) -> str:
         return f"Dạ ngày nào {xh} giao được ạ?"
     if k == "noi_giao":
         noi = "tại ao" if mh and mh.nhom == "thuy_san" else ("tại ruộng" if mh and mh.ma == "LUA_TUOI" else "tại vườn")
-        return f"Dạ bên mua tới lấy {noi}, hay {xh} chở tới kho ạ?"
+        return f"Dạ người mua tới lấy {noi}, hay {xh} chở tới kho ạ?"
     if k == "gia_mong_muon":
         return f"Dạ {xh} muốn bán bao nhiêu tiền một ký ạ?"
     return ""
@@ -545,7 +545,7 @@ def doc_lai(kq: KetQua, mh: dm.MatHang | None, xh: str) -> str:
     if f.get("gia_mong_muon"):
         phan.append(f"Giá mong muốn {so_thanh_chu(f['gia_mong_muon'])} đồng một ký.")
     if f.get("gia_thap_nhat"):
-        phan.append(f"Giá thấp nhất {so_thanh_chu(f['gia_thap_nhat'])} đồng, giữ kín, bên mua không thấy.")
+        phan.append(f"Giá thấp nhất {so_thanh_chu(f['gia_thap_nhat'])} đồng, giữ kín, người mua không thấy.")
     phan.append(f"Đúng thì {xh} nói \"đúng rồi\". Sai chỗ nào {xh} nói chỗ đó, ví dụ \"sửa giá\". "
                 "Em chỉ lưu nháp, chưa đăng.")
     return " ".join(phan)

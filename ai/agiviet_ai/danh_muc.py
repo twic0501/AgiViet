@@ -18,7 +18,7 @@ class Loai:
     # khoảng trọng lượng một trái (gam) hoặc cỡ (con/kg) dùng để suy loại từ mô tả
     min_g: float | None = None
     max_g: float | None = None
-    kem_loai: bool = False  # loại dưới (L2/L3/dạt/C): chỉ gợi ý cho bên mua nhận hàng kém loại
+    kem_loai: bool = False  # loại dưới (L2/L3/dạt/C): chỉ gợi ý cho người mua nhận hàng kém loại
 
 
 @dataclass

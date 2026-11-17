@@ -105,7 +105,7 @@ const chon = (ten, ds, mac) => `<div class="bd-chon" role="radiogroup">${ds.map(
 
 const MAN = {
   "chao-mung": () => `<main class="bd-chao-mung"><img src="/assets/logo.svg" alt=""><h1>Chào bác tới AgiViet</h1><p style="color:var(--muc-phu)">Bán hàng có hợp đồng, có người giữ tiền cọc. Bác nói hay bấm đều được.</p>
-    <ul><li><span>${ic("khien")}</span><div><b>Tiền cọc ngân hàng giữ</b><div style="font-size:14px;color:var(--muc-nhat)">Bên mua chuyển cọc trước, bác mới giao</div></div></li>
+    <ul><li><span>${ic("khien")}</span><div><b>Tiền cọc ngân hàng giữ</b><div style="font-size:14px;color:var(--muc-nhat)">Người mua chuyển cọc trước, bác mới giao</div></div></li>
     <li><span>${ic("mic")}</span><div><b>Nói là đăng được hàng</b><div style="font-size:14px;color:var(--muc-nhat)">App hỏi từng câu, bác trả lời</div></div></li>
     <li><span>${ic("nguoi")}</span><div><b>Có người giúp khi vướng</b><div style="font-size:14px;color:var(--muc-nhat)">Gọi tổng đài hoặc nhờ con cháu</div></div></li></ul></main>
     ${day("Bắt đầu", di("vai-tro"), `<a class="nut bd-lui" href="./dang-nhap.html" style="text-decoration:none">Tôi đã có tài khoản</a>`)}`,
@@ -116,21 +116,21 @@ const MAN = {
     <div class="bd-hang">${[["Xoài", 1], ["Sầu riêng", 0], ["Bưởi", 0], ["Thanh long", 0], ["Lúa gạo", 0], ["Cà phê", 0], ["Tôm", 0], ["Cá tra", 0], ["Rau củ", 0], ["Khác", 0]].map(([t, c]) => `<label><input type="checkbox" ${c ? "checked" : ""}><span>${t}</span></label>`).join("")}</div>
     <label class="bd-truong"><span>Giống, loại chính</span><input value="Xoài cát Chu"><small>Ví dụ: xoài cát Chu, sầu riêng Ri6, tôm thẻ.</small></label></main>
     ${day("Tiếp tục", di("ho-so"))}`,
-  "ho-so": () => `${dau("Hồ sơ")}<main class="noi"><p class="bd-hoi">Bên mua sẽ gọi bác bằng tên gì?</p>
+  "ho-so": () => `${dau("Hồ sơ")}<main class="noi"><p class="bd-hoi">Người mua sẽ gọi bác bằng tên gì?</p>
     <label class="bd-truong"><span>Họ tên</span><input value="Nguyễn Thị Năm" autocomplete="name"></label>
-    <label class="bd-truong"><span>Tên hay gọi</span><input value="Chị Năm"><small>Hiện cho bên mua thấy. Số điện thoại thì che tới khi có cọc.</small></label>
+    <label class="bd-truong"><span>Tên hay gọi</span><input value="Chị Năm"><small>Hiện cho người mua thấy. Số điện thoại thì che tới khi có cọc.</small></label>
     <label class="bd-truong"><span>Xã, huyện, tỉnh</span><input value="Mỹ Xương, Cao Lãnh, Đồng Tháp"></label>
     <label class="bd-truong"><span>Tài khoản nhận tiền</span><select><option>Agribank</option><option>Vietcombank</option><option>VietinBank</option><option>BIDV</option></select></label>
     <label class="bd-truong"><span>Số tài khoản</span><input value="5104 2058 2186" inputmode="numeric"><small>Phải đúng tên bác. Đổi tài khoản sau này phải chờ 24 giờ cho an toàn.</small></label></main>
     ${day("Tiếp tục", di("khai-bao-vuon"))}`,
-  "khai-bao-vuon": () => `${dau("Khai báo vườn")}<main class="noi"><p class="bd-hoi">Vườn của bác ở đâu?</p><p class="bd-giai">Đứng trong vườn rồi bấm "Lấy vị trí". Bên mua chỉ thấy tới cấp ấp.</p>
+  "khai-bao-vuon": () => `${dau("Khai báo vườn")}<main class="noi"><p class="bd-hoi">Vườn của bác ở đâu?</p><p class="bd-giai">Đứng trong vườn rồi bấm "Lấy vị trí". Người mua chỉ thấy tới cấp ấp.</p>
     <div class="bd-ban-do" role="img" aria-label="Bản đồ vườn"><i></i></div>
     <a class="nut phu-nut" href="#" data-dang-phat-trien="Lấy vị trí vườn" style="text-decoration:none">Lấy vị trí đang đứng</a>
     <div class="bd-the"><label class="bd-truong"><span>Tên vườn</span><input value="Vườn xoài ấp 3"></label>
     <label class="bd-truong"><span>Diện tích</span><input value="1,2 ha"></label>
     <label class="bd-truong"><span>Mã vùng trồng (nếu có)</span><input placeholder="VD: VN-DT-0412"><small>Không có cũng được. Bên xuất khẩu hay hỏi mã này.</small></label></div></main>
     ${day("Tiếp tục", di("xac-minh"))}`,
-  "xac-minh": () => `${dau("Xác minh")}<main class="noi"><p class="bd-hoi">Còn 2 việc để bác bán được</p><p class="bd-giai">Xác minh để bên mua tin, và để tiền về đúng tài khoản bác.</p>
+  "xac-minh": () => `${dau("Xác minh")}<main class="noi"><p class="bd-hoi">Còn 2 việc để bác bán được</p><p class="bd-giai">Xác minh để người mua tin, và để tiền về đúng tài khoản bác.</p>
     <div class="bd-the">
       <div class="bd-dong"><span class="bd-hinh bd-xong">${ic("tich")}</span><div><b>Số điện thoại</b><small>0918 234 421</small></div><span class="bd-nhan bd-xong">Xong</span></div>
       <div class="bd-dong"><span class="bd-hinh bd-dang">${ic("may")}</span><div><b>Chụp căn cước</b><small>Mặt trước và mặt sau, đủ sáng</small></div><a class="nut phu-nut" href="#" data-dang-phat-trien="Chụp căn cước" style="min-height:44px;padding:0 14px;text-decoration:none">Chụp</a></div>

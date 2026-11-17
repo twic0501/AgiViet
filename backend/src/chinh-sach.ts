@@ -25,7 +25,7 @@ export const CHINH_SACH = Object.freeze({
   giaTinhCocSanBps: 7000, // P_coc = max(P, ceil(0,7 × P_tk))
   giaThamKhaoToiThieuDon: 3, // Q18: ≥ 3 đơn
   giaThamKhaoToiThieuCap: 2, // Q18: ≥ 2 cặp
-  chanChaoDuoiBps: 6000, // dưới 60% tham khảo: chặn gửi (chiều bên mua)
+  chanChaoDuoiBps: 6000, // dưới 60% tham khảo: chặn gửi (chiều người mua)
   canhBaoGiaThapBps: 8000, // dưới 80%: cảnh báo vàng
   giaBatThuongBps: 6000, // dưới 60%: cờ giá bất thường cho đơn
   uocTinhCamKetToiDaBps: 8000, // BT-L2

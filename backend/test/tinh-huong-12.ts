@@ -9,7 +9,7 @@ them('TH-NV-01', 'Mặt hàng đã xác minh của tổ chức; lô mặt hàng 
   const ds = (await nam.get('/v1/seller/verified-products')).json;
   const xoai = ds.find((x: any) => x.product_code === 'XOAI_CAT_CHU');
   th.kiem('Có xoài cát Chu đang hiệu lực, kèm vườn, hạng, nguồn kiểm, hạn', !!xoai && xoai.trang_thai === 'hieu_luc' && !!xoai.site_name && !!xoai.grade_code && !!xoai.inspection_source && !!xoai.valid_to, xoai);
-  th.bang('Bên mua: 403', (await ha.get('/v1/seller/verified-products')).status, 403);
+  th.bang('Người mua: 403', (await ha.get('/v1/seller/verified-products')).status, 403);
   const r = await nam.post('/v1/lots', { product_code: 'TOM_THE', grade_code: (await may.v<string>(`SELECT g.grade_code FROM core.product_grades g JOIN core.products p ON p.id=g.product_id WHERE p.code='TOM_THE' ORDER BY g.rank LIMIT 1`)), qty_basis: 'weighed', qty_g: 100000, ask_price_vnd: 120000, floor_price_vnd: 110000 });
   th.bang('Tôm chưa xác minh ở vườn chị Năm: 422 MAT_HANG_CHUA_XAC_MINH', r.json.errors?.[0]?.code, 'MAT_HANG_CHUA_XAC_MINH');
 });
@@ -42,7 +42,7 @@ them('TH-NV-02', 'Nhật ký canh tác: danh sách theo vụ, phun thuốc tính
   th.bang('Người giúp không có diary.write: 403', giup.status, 403);
 });
 
-them('TH-NV-03', 'Bán gấp: bật có hạn và lý do, bên mua thấy cờ ở đầu danh sách, tắt được', async (may, th) => {
+them('TH-NV-03', 'Bán gấp: bật có hạn và lý do, người mua thấy cờ ở đầu danh sách, tắt được', async (may, th) => {
   const nam = await may.dangNhap(SDT.nam); const ha = await may.dangNhap(SDT.ha);
   const lot = await may.v<string>(`SELECT id FROM core.lots WHERE code='L-0412'`);
   const thieu = await nam.post(`/v1/lots/${lot}/urgent-sale`, { until: new Date(Date.now() + 6 * 3600e3).toISOString() });
@@ -50,7 +50,7 @@ them('TH-NV-03', 'Bán gấp: bật có hạn và lý do, bên mua thấy cờ �
   const r = await nam.ok(`/v1/lots/${lot}/urgent-sale`, { until: new Date(Date.now() + 6 * 3600e3).toISOString(), reason: 'Trái chín nhanh sau mưa' });
   th.kiem('Có ban_gap từ/đến/lý do', !!r.data.ban_gap?.tu && !!r.data.ban_gap?.den && r.data.ban_gap?.ly_do === 'Trái chín nhanh sau mưa', r.data);
   const ds = (await ha.get('/v1/lots?product=XOAI_CAT_CHU')).json;
-  th.kiem('Bên mua thấy lô bán gấp ở đầu danh sách', ds[0]?.id === lot && ds[0]?.ban_gap === true, ds.slice(0, 2));
+  th.kiem('Người mua thấy lô bán gấp ở đầu danh sách', ds[0]?.id === lot && ds[0]?.ban_gap === true, ds.slice(0, 2));
   const tat = await nam.ok(`/v1/lots/${lot}/urgent-sale`, { on: false });
   th.bang('Tắt bán gấp', tat.data.ban_gap, null);
 });
@@ -83,13 +83,13 @@ them('TH-NV-04', 'Đặt trước khi hái: lập, ký, cọc 30%; danh sách/ch
   const anh = await b.nam.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'order', entity_id: id, captured_in_app: true });
   const cn = await b.nam.ok(`/v1/seasonal-orders/${id}/production-updates`, { qty_min_g: 1050000, qty_max_g: 1150000, harvest_from: '2026-12-03', harvest_to: '2026-12-18', note: 'Trái đậu tốt, ước 1,05–1,15 tấn', photo_document_ids: [anh.id], request_key: 'sl-1' });
   th.bang('Ghi cập nhật sản lượng', cn.status, 'recorded');
-  th.bang('Bên mua không cập nhật sản lượng: 403', (await thinh.post(`/v1/seasonal-orders/${id}/production-updates`, { qty_min_g: 1, qty_max_g: 2, harvest_from: '2026-12-03', harvest_to: '2026-12-18', note: 'x', request_key: 'sl-x' })).status, 403);
+  th.bang('Người mua không cập nhật sản lượng: 403', (await thinh.post(`/v1/seasonal-orders/${id}/production-updates`, { qty_min_g: 1, qty_max_g: 2, harvest_from: '2026-12-03', harvest_to: '2026-12-18', note: 'x', request_key: 'sl-x' })).status, 403);
   const fx = await b.nam.post(`/v1/seasonal-orders/${id}/harvest-fix`, { qty_g: 1100000 });
   th.kiem('Đề nghị chốt 1.100 kg tạo phụ lục chờ bên kia đồng ý', fx.status === 200 && fx.json.data.kind === 'fix_qty_price', fx.json);
   const ct2 = (await thinh.get(`/v1/seasonal-orders/${id}`)).json;
-  th.kiem('Bên mua thấy cập nhật sản lượng và đề nghị chờ trả lời', ct2.cap_nhat_san_luong.length === 1 && ct2.hanh_dong.includes('answer_amendment'), ct2.hanh_dong);
+  th.kiem('Người mua thấy cập nhật sản lượng và đề nghị chờ trả lời', ct2.cap_nhat_san_luong.length === 1 && ct2.hanh_dong.includes('answer_amendment'), ct2.hanh_dong);
   const dy = await thinh.post(`/v1/amendments/${fx.json.id}/accept`, {});
-  th.kiem('Bên mua đồng ý chốt: có phụ lục để ký', dy.status === 200 && !!dy.json.data?.annex_document_id, dy.json);
+  th.kiem('Người mua đồng ý chốt: có phụ lục để ký', dy.status === 200 && !!dy.json.data?.annex_document_id, dy.json);
   if (dy.status !== 200) return;
   for (const [p, extra] of [[b.nam, {}], [thinh, {}]] as const) {
     const c = await p.ok('/v1/otp/challenges', { purpose: 'amendment_sign', document_id: dy.json.data.annex_document_id }, { khongKhoa: true });
@@ -148,7 +148,7 @@ them('TH-NV-06', 'Bao tiêu theo vụ 2 đợt: lập, ký, cọc vụ; mất m�
   th.kiem('Đề nghị giảm lượng do mất mùa có chứng cứ', dn.status === 200, dn.json);
   if (dn.status !== 200) return;
   const dy = await thinh.post(`/v1/amendments/${dn.json.id}/accept`, {});
-  th.kiem('Bên mua đồng ý', dy.status === 200, dy.json);
+  th.kiem('Người mua đồng ý', dy.status === 200, dy.json);
   if (dy.status !== 200) return;
   let cuoi: any = null;
   for (const p of [b.nam, thinh]) {

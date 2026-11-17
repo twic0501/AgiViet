@@ -24,58 +24,58 @@ async function lamLai(kb = "thuan") {
 
 // ── 1. Luồng thuận, mỗi bên làm phần mình ──
 await lamLai("thuan");
-await buoc("Chị Năm đồng ý giá trong trò chuyện → HĐ-0018 sang bước bên mua soạn thỏa thuận", async () => {
+await buoc("Chị Năm đồng ý giá trong trò chuyện → HĐ-0018 sang bước người mua soạn thỏa thuận", async () => {
   await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1"); await cho(1500);
   await ban.click('[data-gia="dong-y"]'); await cho(300); await ban.click("#chot"); await cho(2500);
   assert.equal((await hd()).buoc, 1);
   await moMua("tin-nhan");
   assert.match(await mua.locator("#tn-chat").innerText(), /Hai bên đã đồng ý/);
 });
-await buoc("Nhắn qua lại: bên mua nhắn → chị Năm thấy; số điện thoại bên mua gửi bị che", async () => {
+await buoc("Nhắn qua lại: người mua nhắn → chị Năm thấy; số điện thoại người mua gửi bị che", async () => {
   await mua.fill("#tn-go", "Em gửi xe 66C-123.45 tới lúc 5 giờ 30 nha chị"); await mua.click("#tn-gui"); await cho(400);
   await mua.fill("#tn-go", "Chị gọi em 0277 386 210 nha"); await mua.click("#tn-gui"); await cho(400);
   await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1"); await cho(1500);
   const t = await ban.locator("#chat").innerText();
   assert.match(t, /66C-123\.45 tới lúc 5 giờ 30/);
-  assert.ok(!/0277 386 210/.test(t), "số bên mua gửi phải bị che");
+  assert.ok(!/0277 386 210/.test(t), "số người mua gửi phải bị che");
   await ban.fill("#go", "Dạ chị chờ ở đầu ấp 3 nha em"); await ban.click("#gui"); await cho(500);
   await moMua("tin-nhan"); assert.match(await mua.locator("#tn-chat").innerText(), /chờ ở đầu ấp 3/);
 });
-await buoc("Bên mua ký thỏa thuận → chị Năm ký bằng mã", async () => {
+await buoc("Người mua ký thỏa thuận → chị Năm ký bằng mã", async () => {
   await moMua("chi-tiet-don"); await muaLam(/Ký và gửi/); assert.equal((await hd()).buoc, 2);
   await moBan("man=ky-otp"); await ban.click("#ky"); await cho(800); assert.equal((await hd()).buoc, 3);
 });
-await buoc("Bên mua chuyển cọc → ngân hàng xác nhận → liên lạc mở trong trò chuyện", async () => {
+await buoc("Người mua chuyển cọc → ngân hàng xác nhận → liên lạc mở trong trò chuyện", async () => {
   await moMua("chi-tiet-don"); await muaLam(/Chuyển cọc/); assert.equal((await hd()).buoc, 4);
   await muaLam(/Mô phỏng: ngân hàng xác nhận/); assert.equal((await hd()).buoc, 5);
   assert.deepEqual((await ketQuaTien()).slice(0, 2), [13938000, 13800000], "bạn đã chi 13.938.000 (cọc + phí), ngân hàng giữ 13.800.000");
   await ban.goto(GOC + "ban-tin-nhan.html?thu=0918000421&mophong=1#tro=T1"); await cho(1200);
   assert.match(await ban.locator("#dau").innerText(), /liên lạc đã mở/);
 });
-await buoc("Bên mua trả thẳng 32,2 tr → chị Năm kiểm tiền xác nhận → bên mua thấy chị Năm đã nhận", async () => {
+await buoc("Người mua trả thẳng 32,2 tr → chị Năm kiểm tiền xác nhận → người mua thấy chị Năm đã nhận", async () => {
   await moMua("chi-tiet-don"); await muaLam(/Ghi đã trả/); assert.equal((await hd()).buoc, 6);
   await moBan("man=kiem-tien"); await ban.click("#xn"); await cho(1800);
   const h = await hd(); assert.equal(h.buoc, 7); assert.equal(h.nbXn, 32200000);
   await moMua("chi-tiet-don"); assert.equal((await ketQuaTien())[2], 32200000);
 });
-await buoc("Chị Năm bàn giao (đúng mã) → bên mua đạt khi bốc, ký nhận, gửi kết quả cân", async () => {
+await buoc("Chị Năm bàn giao (đúng mã) → người mua đạt khi bốc, ký nhận, gửi kết quả cân", async () => {
   await moBan("man=ban-giao"); await ban.click("#bg"); await cho(1800); assert.equal((await hd()).buoc, 8);
   await moMua("chi-tiet-don"); await muaLam(/Đạt khi bốc/); await muaLam(/Ký nhận/); await muaLam(/Gửi kết quả/);
   assert.equal((await hd()).buoc, 11);
 });
-await buoc("Chị Năm đồng ý kết quả → ngân hàng chi cọc 12,15 tr cho chị Năm, hoàn 1,65 tr bên mua", async () => {
+await buoc("Chị Năm đồng ý kết quả → ngân hàng chi cọc 12,15 tr cho chị Năm, hoàn 1,65 tr người mua", async () => {
   await moBan("man=ket-qua"); await ban.click("#dy"); await cho(1800); assert.equal((await hd()).buoc, 12);
   await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng chi cọc/); assert.equal((await hd()).buoc, 13);
   const t = await ketQuaTien(); assert.equal(t[1], 0, "ngân hàng hết giữ"); assert.equal(t[2], 44350000, "chị Năm nhận tổng 44.350.000");
 });
-await buoc("Bên mua xác nhận tiền hoàn về, nhập kho → hoàn tất; chị Năm thấy đơn xong", async () => {
+await buoc("Người mua xác nhận tiền hoàn về, nhập kho → hoàn tất; chị Năm thấy đơn xong", async () => {
   await muaLam(/Đã nhận lại 1\.650\.000/); await muaLam(/Nhập kho/);
   assert.equal((await hd()).buoc, 15);
-  assert.equal((await ketQuaTien())[0], 44488000, "bên mua chi ròng 44.350.000 + phí 138.000");
+  assert.equal((await ketQuaTien())[0], 44488000, "người mua chi ròng 44.350.000 + phí 138.000");
   await moBan("man=chi-tiet-don"); assert.match(await ban.locator(".m-viec h2").first().innerText(), /hoàn tất/i);
 });
 
-// ── 2. Lệch tiền: chị Năm báo chỉ thấy 20 tr → bên mua gửi chứng từ → người vận hành chốt ──
+// ── 2. Lệch tiền: chị Năm báo chỉ thấy 20 tr → người mua gửi chứng từ → người vận hành chốt ──
 await lamLai("lech"); await mua.evaluate(() => localStorage.setItem("agv-hd-0018", JSON.stringify({ ...JSON.parse(localStorage.getItem("agv-hd-0018")), buoc: 6, daTra: 32200000 })));
 await buoc("Kịch bản lệch tiền hai bên", async () => {
   await moBan("man=chi-tiet-don"); await ban.locator('[data-kb="lech"]').click(); await cho(1600);
@@ -86,7 +86,7 @@ await buoc("Kịch bản lệch tiền hai bên", async () => {
   const h = await hd(); assert.equal(h.buoc, 7); assert.equal(h.nbXn, 32200000);
 });
 
-// ── 3. Trả lại nhiều: 29,1 tr → hoàn hết cọc → chị Năm hoàn 3,1 tr → bên mua xác nhận ──
+// ── 3. Trả lại nhiều: 29,1 tr → hoàn hết cọc → chị Năm hoàn 3,1 tr → người mua xác nhận ──
 await lamLai("tra-lai"); await mua.evaluate(() => localStorage.setItem("agv-hd-0018", JSON.stringify({ ...JSON.parse(localStorage.getItem("agv-hd-0018")), buoc: 12, daTra: 32200000, nbXn: 32200000 })));
 await buoc("Kịch bản trả lại nhiều: số tiền và lượt hai bên", async () => {
   await moMua("chi-tiet-don"); await muaLam(/Mô phỏng: ngân hàng/);

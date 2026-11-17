@@ -48,7 +48,7 @@ export async function guiDeNghi(ht: HeThong, t: GiaoDich, nd: NguoiDung, orderId
   if (d.kind === 'force_majeure_reduction' && !(d.evidence_document_ids?.length)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Bất khả kháng cần bằng chứng (ảnh, xác nhận HTX, thông báo thiên tai).');
   if (d.kind === 'force_majeure_reduction' && phia !== 'seller') throw loi('KHONG_CO_QUYEN', 'Giảm lượng bất khả kháng do người bán gửi.');
   if (d.kind === 'change_price' && !(soGam(p.unit_price_vnd, 'unit_price_vnd') > 0n)) throw loi('DU_LIEU_KHONG_HOP_LE');
-  if (d.kind === 'change_receiver' && phia !== 'buyer') throw loi('KHONG_CO_QUYEN', 'Bên mua đổi người nhận.');
+  if (d.kind === 'change_receiver' && phia !== 'buyer') throw loi('KHONG_CO_QUYEN', 'Người mua đổi người nhận.');
   const payload=d.kind==='change_date'?{delivery_window:`[${new Date(p.delivery_from).toISOString()},${new Date(p.delivery_to).toISOString()})`,reason:d.reason??null}:{...p,reason:d.reason??null};
  const id=await appCmd<string>(t,nd,phia,'propose_amendment',[orderId,d.kind,payload,d.evidence_document_ids??[]]);
  const a=await t.mot<any>(`SELECT status,version FROM core.amendments WHERE id=$1`,[id]);return {id,status:a.status,revision:a.version,kind:d.kind};

@@ -6,8 +6,8 @@ import { loi } from '../loi.ts';
 type Phia = 'seller' | 'buyer' | 'ops';
 interface LuatHanhDong { phia: Phia; vai: string[]; nguoiGiup?: string; vaiVanHanh?: string[] }
 
-// Vai bên bán: owner (chủ hộ/chủ), coop_board (HTX ban điều hành), accountant (HTX kế toán), collection_staff, coop_member
-// Vai bên mua: owner (quản lý), purchaser (mua hàng), accountant (kế toán), warehouse (kho), site_receiver (người nhận)
+// Vai người bán: owner (chủ hộ/chủ), coop_board (HTX ban điều hành), accountant (HTX kế toán), collection_staff, coop_member
+// Vai người mua: owner (quản lý), purchaser (mua hàng), accountant (kế toán), warehouse (kho), site_receiver (người nhận)
 export const HANH_DONG: Record<string, LuatHanhDong> = {
   'lot.create': { phia: 'seller', vai: ['owner', 'coop_board'], nguoiGiup: 'lot.draft' },
   'lot.publish': { phia: 'seller', vai: ['owner', 'coop_board'], nguoiGiup: 'lot.draft' },
@@ -42,7 +42,7 @@ export const HANH_DONG: Record<string, LuatHanhDong> = {
   'delivery.plan': { phia: 'buyer', vai: ['owner', 'purchaser', 'accountant'] },
   'delivery.check': { phia: 'buyer', vai: ['owner', 'warehouse', 'site_receiver'] },
   'delivery.ship': { phia: 'seller', vai: ['owner', 'coop_board', 'collection_staff'], nguoiGiup: 'delivery.record' },
-  // Bắt đầu cân/ghi giao tại vườn: người bán nhập mã 6 số hoặc quét QR của người nhận bên mua (start-check).
+  // Bắt đầu cân/ghi giao tại vườn: người bán nhập mã 6 số hoặc quét QR của người nhận người mua (start-check).
   'delivery.record': { phia: 'seller', vai: ['owner', 'coop_board', 'collection_staff'], nguoiGiup: 'delivery.record' },
   'acceptance.respond': { phia: 'seller', vai: ['owner', 'coop_board'] },
   'delivery.arrival': { phia: 'buyer', vai: ['owner', 'warehouse', 'site_receiver'] },

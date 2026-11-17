@@ -79,7 +79,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   });
   app.get('/v1/auth/session', async (req) => hoSo(await bo.xacThuc(req)));
   app.get('/v1/me', async (req) => { const nd = await bo.xacThuc(req); const h: any = hoSo(nd);
-    // Phân khúc bên mua (nhà hàng, chế biến…) để app mua tạo nhu cầu đúng phân khúc.
+    // Phân khúc người mua (nhà hàng, chế biến…) để app mua tạo nhu cầu đúng phân khúc.
     if (nd.thanhVien.canBuy) h.org.segment_code = await bo.doc((t) => t.gtri<string>(`SELECT segment_code FROM core.org_buyer_segments WHERE org_id=$1 ORDER BY 1 LIMIT 1`, [nd.thanhVien.orgId]));
     return h; });
   app.get('/v1/test/demo-numbers', async () => { thu(); const { SO_DEMO } = await import('../demo/so-demo.ts'); return SO_DEMO; });
@@ -631,14 +631,14 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     if (!m.giuHo(nd.thanhVien.orgCode, may(req))) throw dangGiu(m, nd.thanhVien.orgCode);
     return { doi_tac: m.rutTep(nd.thanhVien.orgCode, Math.random, b.gan) };
   });
-  // Bản trình diễn — đạo diễn: đặt kịch bản cho lần nghiệm thu kế tiếp của bên mua ảo (hạ loại 10% / trả lại 80%).
+  // Bản trình diễn — đạo diễn: đặt kịch bản cho lần nghiệm thu kế tiếp của người mua ảo (hạ loại 10% / trả lại 80%).
   app.post('/v1/test/kich-ban', async (req) => {
     thu();
     const b = z.object({ ten: z.enum(['ha-cap', 'tra-lai-nhieu']).nullable() }).parse(req.body ?? {});
     const m = await import('../demo/doi-tac-ao.ts'); m.KICH_BAN.lanToi = b.ten;
     return { lan_toi: m.KICH_BAN.lanToi };
   });
-  // Bản trình diễn: bên mua là AI nên người bán thật không thấy QR người nhận → môi trường thử đóng vai người nhận
+  // Bản trình diễn: người mua là AI nên người bán thật không thấy QR người nhận → môi trường thử đóng vai người nhận
   // MỞ QR nhận hàng (đúng API receipt-qr của họ) rồi đưa mã 6 số đang hiện trên máy người nhận (như mã OTP thử).
   app.get('/v1/test/deliveries/:id/receipt-code', async (req) => {
     thu(); const nd = await bo.xacThuc(req);

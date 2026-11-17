@@ -27,7 +27,7 @@ export async function phiaTinNhan(t: GiaoDich, nd: NguoiDung, x: { offer_id?: st
   return (await cuoc(t, nd, x)).phia as 'buyer' | 'seller';
 }
 
-const CANH_BAO_CHE = 'Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của bên mua; lúc đó liên lạc mới mở.';
+const CANH_BAO_CHE = 'Tin có số điện thoại, Zalo hoặc số tài khoản nên đã được che. Hai bên trao đổi trong app tới khi ngân hàng đối tác nhận cọc của người mua; lúc đó liên lạc mới mở.';
 
 /** Đọc chữ trong ảnh qua dịch vụ AI (Gemini vision) rồi quét liên lạc bằng cùng bộ quét. Không đọc được → không gửi (an toàn). */
 async function quetAnh(t: GiaoDich, nd: NguoiDung, docId: string, ai: { url: string | null; key?: string | null }) {

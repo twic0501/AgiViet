@@ -29,7 +29,7 @@ them('TH-001', 'Đăng ký người bán mới, xác minh, tài khoản nhận t
   const xm = await khoa.ok(`/v1/ops/owner-verifications/${dx.id}/approve`, {});
   th.bang('Vận hành xác minh: hoạt động', xm.status, 'active');
   const muaKhongMst = await may.app.inject({ method: 'POST', url: '/v1/auth/register', payload: { challenge_id: await otp(may, '0909000299'), phone: '0909000299', code: '123456', name: 'Ai đó', org: { side: 'buy', kind: 'enterprise', display_name: 'Công ty thử' } } });
-  th.kiem('Bên mua thiếu MST bị chặn', muaKhongMst.statusCode === 422, muaKhongMst.json());
+  th.kiem('Người mua thiếu MST bị chặn', muaKhongMst.statusCode === 422, muaKhongMst.json());
 });
 
 them('TH-002', 'Mời thành viên theo gói (Thu mua tối đa 5), nhận lời mời bằng OTP đúng số', async (may, th) => {

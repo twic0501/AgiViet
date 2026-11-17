@@ -127,10 +127,10 @@ function ve() {
     ${du.co_so.length > 1 ? `<div class="vu-loc" role="group" aria-label="Lọc theo vườn"><button type="button" data-loc="tat-ca" aria-pressed="${loc === "tat-ca"}">Tất cả</button>${du.co_so.map((c) => `<button type="button" data-loc="${esc(c.id)}" aria-pressed="${loc === c.id}">${esc(c.name.split(",")[0])}</button>`).join("")}</div>` : ""}
     <section class="vu-vu" aria-label="Mùa vụ năm ${nam}"><h3>Mùa vụ ${nam}</h3>
       <div class="vu-moc">${[["flower", "Ra hoa"], ["fruit_set", "Đậu trái"], ["harvest", "Thu hoạch"], ["ban", "Bán"]].map(([a, t]) => `<div class="${a === "ban" ? "" : coViec(a) ? "xong" : ""}"><i></i>${t}</div>`).join("")}</div>
-      <p>${tongThu ? `Đã ghi thu hoạch <b>${esc(can(tongThu).join(" "))}</b> trong năm.` : "Chưa ghi lần thu hoạch nào năm nay."} Ghi đều tay thì bên mua tin hàng hơn.</p></section>
+      <p>${tongThu ? `Đã ghi thu hoạch <b>${esc(can(tongThu).join(" "))}</b> trong năm.` : "Chưa ghi lần thu hoạch nào năm nay."} Ghi đều tay thì người mua tin hàng hơn.</p></section>
     <section class="vu-khoi" aria-label="Nhật ký" style="gap:14px">
       <h2 style="margin:0;font-size:18px">Nhật ký canh tác</h2>
-      ${window.trauTuThe ? window.trauTuThe("12-ghi-so", "Ghi đều tay, bên mua tin hàng của bác hơn.", 72) : ""}
+      ${window.trauTuThe ? window.trauTuThe("12-ghi-so", "Ghi đều tay, người mua tin hàng của bác hơn.", 72) : ""}
       ${[...theoNgay].map(([ngay, ds], iNgay) => `<div class="vu-ngay" ${iNgay >= 6 ? "hidden data-cu" : ""}><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
         const [ten, ic, nen, mau] = VIEC[v.activity] || [v.ten_viec || v.activity, VIEC.care[1], "var(--giay-lot)", "var(--muc-phu)"];
         const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, được hái từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";
@@ -173,7 +173,7 @@ function moGhi(cu) {
       <div><label class="vu-nhan-o" for="g-ghi">Ghi chú</label>
         <div class="vu-ghi-chu"><textarea class="vu-o" id="g-ghi" maxlength="500" placeholder="Ví dụ: phun khu A sau mưa, 2 bình 16 lít">${esc(cu?.note || "")}</textarea>
         <button class="vu-mic" type="button" id="g-mic" aria-label="Nói để ghi"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div></div>
-      ${cu ? `<div><label class="vu-nhan-o" for="g-ly-do">Vì sao sửa?</label><input class="vu-o" id="g-ly-do" placeholder="Ví dụ: ghi nhầm ngày" maxlength="200"><p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:6px 0 0">Dòng cũ vẫn được giữ trong lịch sử, bên mua thấy là đã sửa.</p></div>` : ""}
+      ${cu ? `<div><label class="vu-nhan-o" for="g-ly-do">Vì sao sửa?</label><input class="vu-o" id="g-ly-do" placeholder="Ví dụ: ghi nhầm ngày" maxlength="200"><p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:6px 0 0">Dòng cũ vẫn được giữ trong lịch sử, người mua thấy là đã sửa.</p></div>` : ""}
       <p class="vu-bao do" id="g-loi" hidden></p></div>
     <div class="day"><button class="nut lui" type="button" id="g-huy">Thôi</button><button class="nut chinh-nut" type="button" id="g-luu">Lưu vào nhật ký</button></div></div></div>`);
   const che = $("che"); let viec = viecDau, dang = false;

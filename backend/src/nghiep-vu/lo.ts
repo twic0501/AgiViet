@@ -153,7 +153,7 @@ export async function danhSachLo(t: GiaoDich, nd: NguoiDung, q: { mine?: boolean
         THEN 'Hàng trả lại/hạ cấp tách thành lô riêng: nên bật bán gấp để bán nhanh.' END goi_y_ban_gap, l.parent_lot_id,
       (l.status IN ('on_sale','upcoming') AND coalesce(l.last_confirmed_at,l.created_at) <= $3::timestamptz - make_interval(days => $2)) an_tu_dong,
       CASE WHEN l.status IN ('on_sale','upcoming') AND coalesce(l.last_confirmed_at,l.created_at) <= $3::timestamptz - make_interval(days => $2)
-        THEN 'Quá ' || $2 || ' ngày chưa xác nhận còn hàng: bên mua không thấy. Bấm xác nhận còn hàng để hiện lại.' END an_ly_do,
+        THEN 'Quá ' || $2 || ' ngày chưa xác nhận còn hàng: người mua không thấy. Bấm xác nhận còn hàng để hiện lại.' END an_ly_do,
       (SELECT coalesce(sum(qty),0)::text FROM ledger.qty_balances b WHERE b.lot_id=l.id AND b.bucket='available') available_g
       FROM core.lots l JOIN core.products p ON p.id=l.product_id WHERE l.seller_org_id=$1 ORDER BY l.code`, [nd.thanhVien.orgId, CHINH_SACH.han.hienThiLoNgay, new Date(t.thoiDiemMs)]);
   }

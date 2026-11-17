@@ -193,7 +193,7 @@ async function agree(p) {
 }
 async function each(name,fn) {if(process.env.ROUND2_ONLY && !name.includes(process.env.ROUND2_ONLY))return;await step(name,fn,true); await writeFile(dir+'dang-chay.json',JSON.stringify({results,errors,pageErrors,deniedImages},null,2));}
 try {
-  await each('Hủy hai bên: bên mua xin, bên bán từ chối; bên bán xin, bên mua đồng ý (UI)',async()=>{
+  await each('Hủy hai bên: người mua xin, người bán từ chối; người bán xin, người mua đồng ý (UI)',async()=>{
     const o=await fresh();
     await go(b,`order/${o.id}/cancel`);let f=b.locator('form[data-form=cancel]');await f.locator('[name=reason]').fill('Nhà máy đổi lịch, xin hủy theo hệ quả đã xem.');await f.locator('[type=checkbox]').check();await submit(b,'cancel');
     let req=(await api(b,`/v1/orders/${o.id}/cancellation-requests`))[0];assert.equal(req.requested_by_side,'buyer');assert.deepEqual(req.hanh_dong,[]);

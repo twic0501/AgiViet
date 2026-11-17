@@ -54,7 +54,7 @@ export async function lapKhung(t: GiaoDich, nd: NguoiDung, d: LapKhung) {
     docType: 'framework_contract', code: `${code}-HDK`, seriesKey: `${code}-HDK`, versionNo: 1, orderId: null, ownerOrgId: buyer.id,
     noiDung: dieuKhoan, status: 'awaiting_signature', createdBy: nd.userId,
     trinhBay: { loai: 'HD', tieuDe: 'HỢP ĐỒNG KHUNG MUA ĐỊNH KỲ THEO TUẦN', muc: [
-      { tieuDe: 'Các bên', dong: [['Bên mua', buyer.display_name], ['Bên bán', seller.display_name], ['Tài khoản nhận tiền', `${bank.bank_code} ${bank.account_masked}`]] },
+      { tieuDe: 'Các bên', dong: [['Người mua', buyer.display_name], ['Người bán', seller.display_name], ['Tài khoản nhận tiền', `${bank.bank_code} ${bank.account_masked}`]] },
       { tieuDe: 'Lịch giao', dong: [['Ngày giao', d.ngay_giao.map((x) => THU[x]).join(', ')], ['Kỳ khung', `${d.tu_ngay} → ${d.den_ngay}`]] },
       { tieuDe: 'Món mỗi lần giao', bang: { cot: ['Món', 'Loại', 'Lượng', 'Giá', 'Giá xuống loại'], hang: items.map((x) => [x._ten, x.grade_code, kg(B(x.qty)), dong(B(x.unit_price_vnd)), x.downgrade_price_vnd ? dong(B(x.downgrade_price_vnd)) : '—']) } },
       { tieuDe: 'Tiền', dong: [['Giá trị mỗi lần giao', dong(moiLan)], ['Cọc khung (ngân hàng giữ, phủ một tuần)', dong(coc)], ['Thanh toán', 'Gộp cuối tuần, trong 72 giờ'], ['Nợ thêm ngoài cọc', 'Không'], ['Giá', 'Chốt lại mỗi tuần']] },
@@ -75,11 +75,11 @@ async function layKhung(t: GiaoDich, nd: NguoiDung, id: string) {
   return { f, phia: phia as 'buyer' | 'seller' };
 }
 
-/** Ký khung (OTP contract_sign đã xác minh ở route). Bên mua ký → gửi; người bán ký → chốt, mở cọc khung ở ngân hàng. */
+/** Ký khung (OTP contract_sign đã xác minh ở route). Người mua ký → gửi; người bán ký → chốt, mở cọc khung ở ngân hàng. */
 export async function kyKhung(t: GiaoDich, nd: NguoiDung, id: string, d: { challenge_id: string; device_id?: string }) {
   const { f, phia } = await layKhung(t, nd, id);
   canQuyen(nd, phia === 'buyer' ? 'order.sign.buyer' : 'order.sign.seller');
-  if (phia === 'buyer' && f.status !== 'drafting') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Khung không còn ở bước bên mua ký.');
+  if (phia === 'buyer' && f.status !== 'drafting') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Khung không còn ở bước người mua ký.');
   if (phia === 'seller' && f.status !== 'awaiting_signature') throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Chưa tới lượt người bán ký khung.');
   const login = await damBaoDangNhap(t, nd.userId, nd.thanhVien.orgId, phia);
   await t.voiDangNhap(login, () => t.q(`SELECT cmd.sign_document($1,$2,$3,$4,$5::text[])`, [f.document_id, phia, d.challenge_id, d.device_id ?? nd.thietBi ?? 'thiet-bi', phia === 'seller' ? ['commitment_ack'] : []]));
@@ -105,7 +105,7 @@ export async function xemKhung(t: GiaoDich, nd: NguoiDung, id: string) {
   const maSp = new Map(ten.map((x: any) => [x.id, x.code]));
   const buyer = await t.gtri<string>(`SELECT display_name FROM core.organizations WHERE id=$1`, [f.buyer_org_id]);
   const seller = await t.gtri<string>(`SELECT display_name FROM core.organizations WHERE id=$1`, [f.seller_org_id]);
-  const TT: Record<string, string> = { drafting: 'Bên mua đang soạn', awaiting_signature: 'Chờ người bán ký', awaiting_deposit: 'Chờ bên mua chuyển cọc khung', running: 'Đang chạy', needs_security: 'Tạm dừng: nợ vượt cọc', closed: 'Đã kết thúc' };
+  const TT: Record<string, string> = { drafting: 'Người mua đang soạn', awaiting_signature: 'Chờ người bán ký', awaiting_deposit: 'Chờ người mua chuyển cọc khung', running: 'Đang chạy', needs_security: 'Tạm dừng: nợ vượt cọc', closed: 'Đã kết thúc' };
   const toiLuot = f.status === 'drafting' ? 'buyer' : f.status === 'awaiting_signature' ? 'seller' : f.status === 'awaiting_deposit' ? 'buyer' : null;
   return {
     id: f.id, code: f.code, seller_org_id: f.seller_org_id, buyer_org_id: f.buyer_org_id, status: f.status, ten_trang_thai: TT[f.status] ?? f.status, phia, toi_luot: toiLuot, ben_mua: buyer, ben_ban: seller,
@@ -153,7 +153,7 @@ export async function traLoiGiaTuan(t: GiaoDich, nd: NguoiDung, priceId: string,
   if (!w) throw loi('KHONG_TIM_THAY');
   const { phia } = await layKhung(t, nd, w.framework_id);
   if (d.dong_y && phia === 'seller' && (w.items as any[]).some((x) => x.downgrade_price_vnd != null && BigInt(x.downgrade_price_vnd) * 10000n < BigInt(x.unit_price_vnd) * 7000n) && !d.low_downgrade_price_ack)
-    throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Giá tuần có giá xuống loại thấp hơn 70% giá món. Bác xác nhận riêng rồi mới đồng ý, hoặc không đồng ý để bên mua đề nghị lại.', { gia_ha_cap_thap: true });
+    throw loi('TRANG_THAI_KHONG_CHO_PHEP', 'Giá tuần có giá xuống loại thấp hơn 70% giá món. Bác xác nhận riêng rồi mới đồng ý, hoặc không đồng ý để người mua đề nghị lại.', { gia_ha_cap_thap: true });
   const kq = await appCmd<string>(t, nd, phia, 'answer_framework_week_price', [priceId, !!d.dong_y]);
   return { id: priceId, trang_thai: kq };
 }
@@ -164,11 +164,11 @@ export async function giaTuanCuaKhung(t: GiaoDich, frameworkId: string) {
 }
 
 // ---------------- Bước 3a: gọi hàng một buổi (đơn con framework_calloff) ----------------
-/** Bên mua gọi hàng cho một buổi giao: trước 24 giờ, trong kỳ, đúng ngày lịch, tuần đó đã chốt giá (DB 0084 chặn nếu chưa).
- *  Giao tại vườn, bên mua lo xe, người gọi là người nhận. Đơn con kích hoạt ngay (không cọc riêng — cọc khung bảo đảm). */
+/** Người mua gọi hàng cho một buổi giao: trước 24 giờ, trong kỳ, đúng ngày lịch, tuần đó đã chốt giá (DB 0084 chặn nếu chưa).
+ *  Giao tại vườn, người mua lo xe, người gọi là người nhận. Đơn con kích hoạt ngay (không cọc riêng — cọc khung bảo đảm). */
 export async function goiHang(t: GiaoDich, nd: NguoiDung, id: string, d: { ngay: string; gio_tu?: string; gio_den?: string; dong: { lot_id: string; kg: number }[] }) {
   const { f, phia } = await layKhung(t, nd, id);
-  if (phia !== 'buyer') throw loi('KHONG_CO_QUYEN', 'Chỉ bên mua gọi hàng.');
+  if (phia !== 'buyer') throw loi('KHONG_CO_QUYEN', 'Chỉ người mua gọi hàng.');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(d.ngay ?? '')) throw loi('DU_LIEU_KHONG_HOP_LE', 'Cần ngày giao (YYYY-MM-DD).');
   const thu = new Date(d.ngay + 'T00:00:00Z').getUTCDay();
   if (!(f.schedule?.weekdays ?? []).includes(thu)) throw loi('DU_LIEU_KHONG_HOP_LE', `Ngày ${d.ngay} không phải ngày giao trong lịch khung.`);
@@ -186,7 +186,7 @@ export async function goiHang(t: GiaoDich, nd: NguoiDung, id: string, d: { ngay:
 }
 
 // ---------------- Bước 3b: trả gộp cuối tuần + chặn nợ vượt cọc ----------------
-/** Chốt kỳ tuần: gộp quyết toán cuối của mọi buổi gọi hàng lập trong tuần thành MỘT khoản bên mua trả thẳng người bán (hạn 72 giờ).
+/** Chốt kỳ tuần: gộp quyết toán cuối của mọi buổi gọi hàng lập trong tuần thành MỘT khoản người mua trả thẳng người bán (hạn 72 giờ).
  *  DB (0043) chặn khi tuần chưa hết hoặc còn buổi chưa quyết toán; gọi lại cùng tuần trả về kỳ cũ. Sau đó làm mới trạng thái bảo đảm:
  *  nợ (phải thu người bán + buổi đã gọi chưa quyết toán) vượt cọc → khung "Tạm dừng: nợ vượt cọc", DB chặn gọi hàng mới (0016). Không cấp thêm tín dụng. */
 export async function chotTuan(t: GiaoDich, nd: NguoiDung, id: string, d: { tuan: string }) {

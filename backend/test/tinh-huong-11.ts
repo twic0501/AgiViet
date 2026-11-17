@@ -55,7 +55,7 @@ them('TH-TI-02', 'Tin nông nghiệp lọc theo mặt hàng/tỉnh, chỉ tiêu 
   may.ht.layMang = (u, i) => fetch(u, i);
 });
 
-them('TH-TI-03', 'Lịch sử người bán gộp lô, lời chào, đơn; bên mua không xem được', async (may, th) => {
+them('TH-TI-03', 'Lịch sử người bán gộp lô, lời chào, đơn; người mua không xem được', async (may, th) => {
   const b = await dangNhapCacBen(may);
   await chaoVaDongY(b, null); await lapVaKy(b, null); await chuyenCoc(b);
   const ds = (await b.nam.get('/v1/seller/history?limit=100')).json;
@@ -63,5 +63,5 @@ them('TH-TI-03', 'Lịch sử người bán gộp lô, lời chào, đơn; bên 
   th.kiem('Có lô, lời chào, đơn', loai.has('lot') && loai.has('offer') && loai.has('order'), [...loai]);
   th.kiem('Mới nhất trước', ds.every((x: any, i: number) => i === 0 || new Date(ds[i - 1].luc) >= new Date(x.luc)), ds.slice(0, 3));
   th.kiem('Có đơn vừa lập', ds.some((x: any) => x.loai === 'order' && x.order_id === b.orderId), ds.filter((x: any) => x.loai === 'order'));
-  th.bang('Bên mua: 403', (await b.ha.get('/v1/seller/history')).status, 403);
+  th.bang('Người mua: 403', (await b.ha.get('/v1/seller/history')).status, 403);
 });

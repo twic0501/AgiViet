@@ -109,14 +109,14 @@ const MAN = {
     ${the("Họ hỏi", `<p>"Chị còn đủ 2 tấn loại 1 giao 28/10 không?"</p>`)}
     <p class="th-ghi">Nhận lời thì mở trò chuyện. Số điện thoại vẫn che tới khi ngân hàng giữ cọc.</p>
     ${day(lk("Nhận lời, nhắn tin", "./ban-tin-nhan.html" + T + "#tro=T1", "th-vang"), nutPhu("Từ chối", "tu-choi"))}` },
-  "ho-so-ben-mua": { chao: "Bên mua", tieu: "Nhà máy sấy Đồng Xanh", ve: () => `
+  "ho-so-ben-mua": { chao: "Người mua", tieu: "Nhà máy sấy Đồng Xanh", ve: () => `
     <div class="th-hai"><section class="th-the th-so"><small>Trả đúng hạn</small><b>98%</b></section><section class="th-the th-so"><small>Người bán chấm</small><b>4,7</b><span class="th-sao">${ic("sao", 16).repeat(5)}</span></section></div>
     ${the("Đã xác minh", dong("Giấy phép kinh doanh", nhan("Đã xác minh", "th-xanh")) + dong("Tài khoản công ty", nhan("Đúng tên", "th-xanh")) + dong("Kho nhận hàng", "KCN Sa Đéc, Đồng Tháp") + dong("Mua trên AgiViet từ", "06/2026 · 15 đơn"))}
     ${the("Người bán nói gì", [["Anh Sáu · Bến Tre", "Nghiệm thu nhanh, trả tiền đúng giờ."], ["Chị Mười · Cao Lãnh", "Có lệch tiền một lần, đã đối soát xong."]].map(([a, b]) => `<div class="th-dong" style="display:block"><b>${a}</b><p class="th-ghi">${b}</p></div>`).join(""))}
     ${day(lk("Nhắn tin", "./ban-tin-nhan.html" + T + "#tro=T1", "chinh-nut"))}` },
   "so-sanh": { chao: "Lô L-0412", tieu: "So sánh khách", ve: () => `
-    <p class="th-ghi">3 bên mua cùng muốn lô L-0412. Giá cao nhất chưa chắc lợi nhất: xem ai lo xe, trả tiền lúc nào, đã xác minh chưa.</p>
-    ${[["Nhà máy sấy Đồng Xanh", 23000, "2.000 kg", "Bên mua lo xe · trả thẳng trước bốc", "4,7 sao · đã xác minh", 1], ["Vựa Ba Cường", 23500, "1.000 kg", "Bác giao tận vựa · trả khi nhận", "4,1 sao · chưa xác minh", 0], ["HTX Tân Thuận", 22800, "3.000 kg", "Bên mua lo xe · trả trước bốc", "4,7 sao · đã xác minh", 1]].map(([a, g, l, gn, u, xm]) => `<section class="th-the" style="gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>${a}</b><b class="so" style="font-size:18px">${so(g)} đ/kg</b></div><p class="th-ghi">${l} · ${gn}</p><p class="th-ghi">${u}</p>${xm ? "" : `<p class="th-ghi" style="color:var(--dau-do)">Chưa xác minh: chỉ nên bán khi có cọc ngân hàng giữ.</p>`}</section>`).join("")}` },
+    <p class="th-ghi">3 người mua cùng muốn lô L-0412. Giá cao nhất chưa chắc lợi nhất: xem ai lo xe, trả tiền lúc nào, đã xác minh chưa.</p>
+    ${[["Nhà máy sấy Đồng Xanh", 23000, "2.000 kg", "Người mua lo xe · trả thẳng trước bốc", "4,7 sao · đã xác minh", 1], ["Vựa Ba Cường", 23500, "1.000 kg", "Bác giao tận vựa · trả khi nhận", "4,1 sao · chưa xác minh", 0], ["HTX Tân Thuận", 22800, "3.000 kg", "Người mua lo xe · trả trước bốc", "4,7 sao · đã xác minh", 1]].map(([a, g, l, gn, u, xm]) => `<section class="th-the" style="gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>${a}</b><b class="so" style="font-size:18px">${so(g)} đ/kg</b></div><p class="th-ghi">${l} · ${gn}</p><p class="th-ghi">${u}</p>${xm ? "" : `<p class="th-ghi" style="color:var(--dau-do)">Chưa xác minh: chỉ nên bán khi có cọc ngân hàng giữ.</p>`}</section>`).join("")}` },
   "chon-luong": { chao: "HĐ-0018", tieu: "Hứa bán bao nhiêu?", ve: () => `
     <label class="th-o">Lượng bác hứa giao (kg)<input inputmode="numeric" value="2000" id="luong" style="font-size:26px;font-weight:700"></label>
     ${the("", dong("Lô L-0412 còn", "3.500 kg (ước chừng)") + dong("Được hứa tối đa", "2.800 kg (80%)") + dong("Sai số cho phép", "±5% · 1.900–2.100 kg"))}
@@ -132,11 +132,11 @@ const MAN = {
     ${day(nutVang("Đặt lịch ký giấy", "dat-ky"))}` },
   "mo-lien-lac": { chao: "HĐ-0018", tieu: "Đã mở liên lạc", ve: () => `
     ${viec("Ngân hàng đã giữ cọc", "Liên lạc hai bên đã mở. Vẫn nên nhắn qua app để có bằng chứng khi cần.", "", "th-xong")}
-    ${the("Bên mua", dong("Người liên hệ", "Chị Thu Hà") + dong("Số điện thoại", "0277 386 210") + dong("Xe tới lấy", "66C-123.45 · anh Lộc") + dong("Mã nhận hàng", "Tài xế đọc khi tới vườn"))}
+    ${the("Người mua", dong("Người liên hệ", "Chị Thu Hà") + dong("Số điện thoại", "0277 386 210") + dong("Xe tới lấy", "66C-123.45 · anh Lộc") + dong("Mã nhận hàng", "Tài xế đọc khi tới vườn"))}
     ${day(`<a class="nut th-vang" href="tel:0277386210" style="text-decoration:none">${ic("dien", 20)} Gọi chị Thu Hà</a>`, lk("Nhắn tin", "./ban-tin-nhan.html" + T + "#tro=T1").replace("width:100%", ""))}` },
   "tien-ve": { chao: "HĐ-0018", tieu: "Tiền đã về", ve: () => `
     <div class="th-tien-ve"><span class="th-vong">${ic("tien", 44)}</span><small class="th-ghi">Ngân hàng vừa chuyển</small><b id="so-ve">${d(12150000)}</b><p class="th-ghi">vào Agribank •••• 2186 · 28/10 15:42</p></div>
-    ${the("HĐ-0018 tổng cộng", dong("Bên mua trả thẳng", d(32200000)) + dong("Ngân hàng chuyển từ cọc", d(12150000)) + dong("Bác nhận tổng", d(44350000), "th-tong"))}
+    ${the("HĐ-0018 tổng cộng", dong("Người mua trả thẳng", d(32200000)) + dong("Ngân hàng chuyển từ cọc", d(12150000)) + dong("Bác nhận tổng", d(44350000), "th-tong"))}
     <p class="th-ghi">Chỉ bấm khi đã thấy tiền trong tài khoản. Chưa thấy thì báo, AgiViet kiểm với ngân hàng.</p>
     ${day(nutVang("Đã thấy tiền về", "da-ve"), nutPhu("Chưa thấy", "chua-ve"))}` },
   "ung-tien": { chao: "Tiền", tieu: "Nhận tiền trước", ve: () => `
@@ -152,16 +152,16 @@ const MAN = {
     const ds = { kiem: [["Trung tâm kiểm định Cần Thơ", "850.000 đ · kết quả 24 giờ (minh họa)"], ["Vinacontrol Đồng Tháp", "1.100.000 đ · kết quả 12 giờ (minh họa)"]], xe: [["Xe tải 2,5 tấn", "Cao Lãnh → Sa Đéc · khoảng 1,2 triệu đ (minh họa)"], ["Xe lạnh 5 tấn", "Ghép chuyến · khoảng 2,4 triệu đ (minh họa)"]], kho: [["Kho lạnh HTX Mỹ Xương", "Khoảng 300 đ/kg/ngày (minh họa)"]] }[l];
     const ten = { kiem: "Kiểm dư lượng thuốc", xe: "Xe chở hàng", kho: "Kho lạnh" }[l];
     return `<p class="th-ghi">${esc(ten)}</p>${chon("dv", ds)}<label class="th-o">Ngày<input type="date" value="2026-11-05"></label>${day(nutVang("Đặt lịch", "dat"))}`; } },
-  "danh-gia": { chao: "HĐ-0018 · Nhà máy sấy Đồng Xanh", tieu: "Đánh giá bên mua", ve: () => `
-    <h2 style="font-size:20px">Bác thấy bên mua này thế nào?</h2>
+  "danh-gia": { chao: "HĐ-0018 · Nhà máy sấy Đồng Xanh", tieu: "Đánh giá người mua", ve: () => `
+    <h2 style="font-size:20px">Bác thấy người mua này thế nào?</h2>
     <div style="display:flex;gap:6px;justify-content:center" id="sao">${[1, 2, 3, 4, 5].map((k) => `<button type="button" data-sao="${k}" aria-label="${k} sao" style="width:52px;height:52px;border:0;background:none;color:#e2a92c;cursor:pointer;display:grid;place-items:center">${ic("sao", 40)}</button>`).join("")}</div>
     <div class="th-chon">${["Trả tiền đúng giờ", "Xe tới đúng hẹn", "Cân rõ ràng", "Lịch sự"].map((t, i) => `<label><input type="checkbox" ${i < 2 ? "checked" : ""}><span><b>${t}</b></span></label>`).join("")}</div>
-    <p class="th-ghi">Bên mua cũng đánh giá bác. Hai bên chỉ thấy đánh giá của nhau sau khi cả hai đã gửi, để không ai sửa theo người kia.</p>
+    <p class="th-ghi">Người mua cũng đánh giá bác. Hai bên chỉ thấy đánh giá của nhau sau khi cả hai đã gửi, để không ai sửa theo người kia.</p>
     ${day(nutVang("Gửi đánh giá", "gui-dg"))}` },
   "phan-cua-toi": { chao: "Lô gộp HTX Mỹ Xương", tieu: "Phần hàng của tôi", ve: () => `
-    <div class="th-so"><small>Phần của bác trong lô gộp L-G021</small><b>1.200 kg</b><span class="th-ghi">trên tổng 5.000 kg · 6 hộ · HTX Mỹ Xương ký với bên mua</span></div>
+    <div class="th-so"><small>Phần của bác trong lô gộp L-G021</small><b>1.200 kg</b><span class="th-ghi">trên tổng 5.000 kg · 6 hộ · HTX Mỹ Xương ký với người mua</span></div>
     ${the("Tiến độ phần của bác", dong("Đã khai", "1.200 kg") + dong("Cân thật khi gom", "1.180 kg") + dong("Loại 1 / hạ cấp", "1.120 / 60 kg") + `<div class="th-thanh"><i style="width:98%"></i></div>`)}
-    ${the("Tiền phần của bác", dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Tạm tính", d(1120 * 23000 + 60 * 15000), "th-tong") + `<p class="th-ghi">HTX nhận tiền từ bên mua rồi chuyển cho từng hộ theo phần cân thật. Bác xem được chứng từ chia tiền.</p>`)}` },
+    ${the("Tiền phần của bác", dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Tạm tính", d(1120 * 23000 + 60 * 15000), "th-tong") + `<p class="th-ghi">HTX nhận tiền từ người mua rồi chuyển cho từng hộ theo phần cân thật. Bác xem được chứng từ chia tiền.</p>`)}` },
 };
 
 const m = MAN[q.get("man")];
@@ -184,9 +184,9 @@ xong("bao-toi", "Đã ghi", "AgiViet sẽ báo bác khi mở nhận tiền trư�
 xong("dat", "Đã đặt", "Đã gửi yêu cầu, đối tác xác nhận trong ngày");
 xong("da-ve", "Đã xác nhận", "Đã xác nhận tiền về 12.150.000 đ");
 xong("chua-ve", "Đã báo", "Đã báo AgiViet kiểm với ngân hàng");
-xong("gui-dg", "Đã gửi", "Đã gửi đánh giá. Bác sẽ thấy đánh giá của bên mua khi họ gửi.");
+xong("gui-dg", "Đã gửi", "Đã gửi đánh giá. Bác sẽ thấy đánh giá của người mua khi họ gửi.");
 document.querySelectorAll("[data-sao]").forEach((b) => b.addEventListener("click", () => document.querySelectorAll("[data-sao]").forEach((x) => { x.style.color = Number(x.dataset.sao) <= Number(b.dataset.sao) ? "#e2a92c" : "var(--ke-dam)"; x.animate?.([{ transform: "scale(.85)" }, { transform: "scale(1.12)" }, { transform: "none" }], { duration: 240 }); })));
-$("tu-choi")?.addEventListener("click", () => window.HieuUngThem?.thongBaoRoi(document.querySelector(".trang"), "Đã từ chối, bên mua được báo lịch sự"));
+$("tu-choi")?.addEventListener("click", () => window.HieuUngThem?.thongBaoRoi(document.querySelector(".trang"), "Đã từ chối, người mua được báo lịch sự"));
 $("nghe")?.addEventListener("click", () => { try { window.giongViet?.docTo([...document.querySelectorAll(".th-dong-buoc p")].map((p) => p.textContent).join(". ")); } catch {} });
 if ($("so-ve")) setTimeout(() => window.HieuUng?.demSo($("so-ve"), 0, 12150000), 300);
 // Lượng hứa: chặn vượt 80% (rung + báo ngay dưới ô)

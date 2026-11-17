@@ -38,7 +38,7 @@ export class NganHangMoPhong {
     return event_id;
   }
 
-  /** Bên mua chuyển khoản vào tài khoản ảo của đơn (VietQR). */
+  /** Người mua chuyển khoản vào tài khoản ảo của đơn (VietQR). */
   chuyenKhoan(d: { virtual_account_no?: string; payment_ref: string; amount_vnd: string | number; payer?: { bank_code: string; account_no: string; name: string } }) {
     const gd: GiaoDichNH = {
       bank_txn_ref: this.maGd('FT'), kind: 'deposit_received', amount_vnd: String(d.amount_vnd), payment_ref: d.payment_ref,

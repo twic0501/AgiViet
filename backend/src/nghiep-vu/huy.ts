@@ -57,10 +57,10 @@ async function tinhHeQua(t: GiaoDich, o: any, rk: LyDoHuy) {
   return {
     reason_kind: rk,
     hang: `${kg(cam)} trở về lô (khả dụng)`,
-    coc: { so_tien_vnd: C.toString(), ve: cocVeNguoiBan ? 'seller' : 'buyer', cau: cocVeNguoiBan ? `Cọc ${dong(C)} chi cho người bán` : `Cọc ${dong(C)} hoàn bên mua` },
+    coc: { so_tien_vnd: C.toString(), ve: cocVeNguoiBan ? 'seller' : 'buyer', cau: cocVeNguoiBan ? `Cọc ${dong(C)} chi cho người bán` : `Cọc ${dong(C)} hoàn người mua` },
     phi: { so_tien_vnd: F.toString(), hoan: hoanPhi, cau: hoanPhi ? `Hoàn phí ${dong(F)}` : 'Phí không hoàn' },
-    tra_thang: { da_nhan_vnd: D.toString(), cau: D > 0n ? `Người bán hoàn ${dong(D)} cho bên mua (ngoài app, bên mua xác nhận)` : 'Chưa có khoản trả thẳng' },
-    uy_tin: rk === 'seller_request' ? 'Ghi "hủy sau cọc" cho người bán' : rk === 'buyer_request' ? 'Ghi "hủy sau cọc" cho bên mua' : 'Không ai bị trừ uy tín',
+    tra_thang: { da_nhan_vnd: D.toString(), cau: D > 0n ? `Người bán hoàn ${dong(D)} cho người mua (ngoài app, người mua xác nhận)` : 'Chưa có khoản trả thẳng' },
+    uy_tin: rk === 'seller_request' ? 'Ghi "hủy sau cọc" cho người bán' : rk === 'buyer_request' ? 'Ghi "hủy sau cọc" cho người mua' : 'Không ai bị trừ uy tín',
   };
 }
 

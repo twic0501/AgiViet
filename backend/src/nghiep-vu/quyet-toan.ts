@@ -1,6 +1,6 @@
 import { appCmd, systemCmd, loginCmd } from '../db/command.ts';
 // Quyết toán (04 mục 5–6): lập settlements từ chứng cứ và sổ hiện tại, tạo lệnh chi cọc người bán (đích = tài khoản
-// trong phiên bản đã ký), lệnh hoàn cọc bên mua (về tài khoản nguồn của sự kiện ngân hàng), nghĩa vụ T_bm/T_nb,
+// trong phiên bản đã ký), lệnh hoàn cọc người mua (về tài khoản nguồn của sự kiện ngân hàng), nghĩa vụ T_bm/T_nb,
 // PDF bảng quyết toán; đơn sang hoàn tất / còn công nợ khi lệnh đã đối soát.
 import type { GiaoDich } from '../db/co-so-du-lieu.ts';
 import type { HeThong } from '../he-thong.ts';

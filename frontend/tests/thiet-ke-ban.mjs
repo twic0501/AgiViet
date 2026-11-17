@@ -196,7 +196,7 @@ await trang("hang-hoa", async (p) => {
   await p.waitForFunction(() => /lời chào đang mở/.test(document.querySelector('.lo[data-lo="L-0412"] .hoi')?.textContent || ""), null, { timeout: 8000 });
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}05-hang-hoa.png`, fullPage: true });
-  // Lời chào hiện ngay trên lô, có tên bên mua và tới lượt ai
+  // Lời chào hiện ngay trên lô, có tên người mua và tới lượt ai
   assert.match(await p.locator('.lo[data-lo="L-0412"] .chao-lo').innerText(), /chào[\s\S]*đ\/kg[\s\S]*Chờ bác/);
   // Quản lý lô: chặn giá thấp nhất cao hơn giá mong muốn ngay trên máy; lưu giá hợp lệ; bật bán nhanh
   await p.locator('.lo[data-lo="L-0413"] [data-ql]').click();
@@ -216,7 +216,7 @@ await trang("hang-hoa", async (p) => {
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}05c-quan-ly-lo.png` });
   await p.locator("#ql-dong").click();
-  // Ngăn Bên mua đang cần → chào hàng vào một nhu cầu khớp
+  // Ngăn Người mua đang cần → chào hàng vào một nhu cầu khớp
   await p.locator("#ngan-can").click();
   await p.locator("#p-can .the-nc").first().waitFor({ timeout: 8000 });
   assert.ok(await p.locator("#p-can .khop").count() > 0, "có nhu cầu khớp hàng của bác");
@@ -299,7 +299,7 @@ await trang("cho-chi-tiet", async (p) => {
   const dem = { dongY: 0, toiBac: 0, cho: 0 };
   for (const c of moiNhat.values()) if (c.status === "accepted") dem.dongY++; else if (c.status === "sent" && c.vong_cuoi.from_side === "buyer") dem.toiBac++; else if (c.status === "sent" && (c.vong_cuoi.round_no || 1) === 1) dem.cho++; else if (c.status === "sent") dem.daTraGia = (dem.daTraGia || 0) + 1;
   assert.equal(await p.locator(".loi-cua-bac.dong-y").count(), dem.dongY, "lời chào đã đồng ý");
-  assert.equal(await p.locator(".loi-cua-bac.toi-bac").count(), dem.toiBac, "bên mua trả giá, tới lượt bác");
+  assert.equal(await p.locator(".loi-cua-bac.toi-bac").count(), dem.toiBac, "người mua trả giá, tới lượt bác");
   assert.equal(await p.locator(".loi-cua-bac [data-huy]").count(), dem.cho, "chỉ lời chào chưa được trả lời mới sửa/hủy được");
   // Hai bên đã trả giá qua lại: không còn nút hủy/sửa (quy trình B3, backend 0074)
   if (dem.daTraGia) assert.ok((await p.locator(".loi-cua-bac").allInnerTexts()).some((t) => /không hủy hay sửa được nữa/.test(t)), "lời chào đã trả giá qua lại ghi rõ không hủy được");
@@ -424,7 +424,7 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await p.locator('[data-r="xac"]').click();
   await p.getByText(/nhận đủ khoản/).waitFor({ timeout: 10000 });
   k1 = (await (await fetch(`${G}/v1/orders/${b.o.id}/payments`, { headers: { authorization: "Bearer " + b.t } })).json()).find((k) => k.id === k0.id);
-  assert.equal(Number(k1.confirmed_vnd), baoVnd, "tổng xác nhận đúng bằng số bên mua báo");
+  assert.equal(Number(k1.confirmed_vnd), baoVnd, "tổng xác nhận đúng bằng số người mua báo");
 
   // 3. Kết quả cân: đồng ý và ký biên bản bằng PIN
   const c = await tim("0939000160", "0004", (ct) => ct.dot_giao?.some((d) => d.status === "awaiting_seller"));
@@ -440,7 +440,7 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await p.getByText("Bác nhập đủ 4 số PIN.").waitFor();
   await p.locator('[data-r="pin"]').fill("2468");
   await p.locator('[data-r="chinh"]').click();
-  // Trả khi nhận tại vườn: bên mua chưa chuyển phần còn lại thì chưa ký được, hàng chưa rời vườn
+  // Trả khi nhận tại vườn: người mua chưa chuyển phần còn lại thì chưa ký được, hàng chưa rời vườn
   await p.getByText(/trước khi hàng rời vườn/).waitFor({ timeout: 10000 });
   await kiemChung(p);
   // Báo dòng hạ cấp không đúng → gửi phản đối thật (lần chạy trước đã phản đối thì tình huống demo giữ nguyên: bỏ qua bước này)
@@ -457,7 +457,7 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   assert.ok(dv.ket_qua.at(-1).lines.some((x) => x.status === "disputed") || dv.status !== "awaiting_seller", "dòng bị phản đối được ghi nhận");
   }
 
-  // 4. Bàn giao tại vườn: người nhận bên mua mở mã 6 số trên app của họ, bác nhập để bắt đầu cân
+  // 4. Bàn giao tại vườn: người nhận người mua mở mã 6 số trên app của họ, bác nhập để bắt đầu cân
   const g = await tim("0918000421", "0008", (ct) => ct.dot_giao?.some((d) => d.status === "ready"));
   const dotG = g.ct.dot_giao.find((d) => d.status === "ready");
   const tNhan = await dn("0903000411");
@@ -489,7 +489,7 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await kiemChung(p);
   await p.screenshot({ path: `${ANH}19-xin-huy.png` });
   await p.locator('[data-r="gui"]').click();
-  await p.getByText("Bác ghi rõ lý do để bên mua hiểu.").waitFor();
+  await p.getByText("Bác ghi rõ lý do để người mua hiểu.").waitFor();
   await p.locator('[data-r="ly"]').fill("Mưa lớn làm rụng trái, chỉ còn khoảng 40% hàng");
   await p.locator('[data-r="gui"]').click();
   await p.getByText(/cần ít nhất một ảnh chứng cứ/).waitFor();
@@ -502,7 +502,7 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   assert.equal(await p.locator("#xin-huy").count(), 0, "đang chờ trả lời thì không xin hủy lần nữa");
   assert.match(await p.locator("#vd").innerText(), /Bác đã xin hủy/);
 
-  // 6. Tranh chấp (demo 0009: bên mua báo khác mẫu, chờ kiểm định) hiện ở khối Có vấn đề
+  // 6. Tranh chấp (demo 0009: người mua báo khác mẫu, chờ kiểm định) hiện ở khối Có vấn đề
   const tcd = await tim("0918000421", "0009", async (ct, tien, tk) => (await (await fetch(`${G}/v1/orders/${ct.id}/disputes`, { headers: { authorization: "Bearer " + tk } })).json()).length > 0);
   await mo("0918000421", tcd.o.id);
   const vd = await p.locator("#vd").innerText();
@@ -511,7 +511,7 @@ await trang("hop-dong-ky-tien-can", async (p) => {
   await p.screenshot({ path: `${ANH}20-tranh-chap.png`, fullPage: true });
   // Quyết toán tạm (đang tranh chấp): bảng tính từng bước + lệnh ngân hàng
   const qt = await p.locator(".qt-bang").innerText();
-  assert.match(qt, /Tiền hàng theo kết quả cân[\s\S]*Bác được nhận tổng[\s\S]*Bên mua đã trả thẳng[\s\S]*Ngân hàng chuyển từ cọc cho bác/, "bảng quyết toán đủ các bước");
+  assert.match(qt, /Tiền hàng theo kết quả cân[\s\S]*Bác được nhận tổng[\s\S]*Người mua đã trả thẳng[\s\S]*Ngân hàng chuyển từ cọc cho bác/, "bảng quyết toán đủ các bước");
   assert.match(await p.locator("body").innerText(), /Quyết toán \(tạm\)[\s\S]*ngân hàng còn giữ/);
   // Màn Tiền: lịch sử theo tháng, chi cọc về tài khoản là tiền VÀO, chưa đối soát = đang chuyển
   await p.goto(`${GOC}/thiet-ke/ban-tien.html?thu=0918000421`);
@@ -550,7 +550,7 @@ await trang("toi", async (p) => {
 });
 
 await trang("tin-nhan-tra-loi", async (p) => {
-  // Luồng chào giá B3 thật: bên mua chào → bác chào giá mới → bên mua trả giá → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
+  // Luồng chào giá B3 thật: người mua chào → bác chào giá mới → người mua trả giá → bác đồng ý (giữ hàng, chưa phải hợp đồng); lời chào khác → không bán
   const G = "http://127.0.0.1:18980";
   const dn = async (sdt) => (await (await fetch(G + "/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: sdt }) })).json()).token;
   const tBan = await dn("0918000421"), tMua = await dn("0938000610");
@@ -581,7 +581,7 @@ await trang("tin-nhan-tra-loi", async (p) => {
   await p.getByText("Đã gửi giá").waitFor({ timeout: 8000 });
   await mua.post(`/v1/offers/${id1}/counter`, { price_vnd: String(g1 + 1000) });
   await mo(id1);
-  assert.match(await p.locator(".tam-lc").innerText(), /còn 1 lần chào giá mới/, "bác đã chào giá mới 1 lần → còn 1 lượt (bên bán là chào giá, bên mua là trả giá)");
+  assert.match(await p.locator(".tam-lc").innerText(), /còn 1 lần chào giá mới/, "bác đã chào giá mới 1 lần → còn 1 lượt (người bán là chào giá, người mua là trả giá)");
   assert.equal(await p.locator(".tam-lc .lc-vong p").count(), 3, "lịch sử 3 vòng");
   await p.locator('.tam-lc [data-r="dong-y"]').click();
   assert.match(await p.locator(".tam-lc").innerText(), /chưa phải hợp đồng/, "nhắc chưa phải hợp đồng trước khi chốt");
@@ -716,7 +716,7 @@ await trang("dang-bai-truoc-mua", async (p) => {
   await p.locator("#chup-anh").setInputFiles(anhNgauNhien());
   await p.locator("#luoi-anh .o").first().waitFor();
   await p.locator("#tiep").click();
-  assert.ok(!/23\.400/.test(await p.locator("#xem-lai").innerText()), "bên mua không thấy giá thấp nhất");
+  assert.ok(!/23\.400/.test(await p.locator("#xem-lai").innerText()), "người mua không thấy giá thấp nhất");
   await kiemChung(p);
   await p.locator("#tiep").click();
   await p.locator('[data-m="xong"]').waitFor({ state: "visible", timeout: 10000 });
@@ -763,7 +763,7 @@ await trang("hoi-agiviet", async (p) => {
   await p.goto(`${GOC}/thiet-ke/ban-thong-bao.html?thu=0918000421#ho-tro`);
   assert.equal(await p.locator("#p-ht").isVisible(), true, "mở thẳng thẻ Hỏi AgiViet từ nút tai nghe");
   assert.ok(await p.locator("#gui").isDisabled(), "chưa có nội dung thì chưa gửi");
-  await p.getByRole("button", { name: "Bên mua chưa ký hợp đồng" }).click();
+  await p.getByRole("button", { name: "Người mua chưa ký hợp đồng" }).click();
   await p.locator("#noi-dung").press("End");
   await p.locator("#noi-dung").pressSequentially("Hợp đồng DEMO56 chờ lâu rồi.");
   await p.locator("#gui").click();
@@ -774,7 +774,7 @@ await trang("hoi-agiviet", async (p) => {
 });
 
 await trang("tin-nhan-chao-gia", async (p) => {
-  // Có lời chào giá thật của bên mua thì phải hiện, mục tới lượt bác đứng đầu
+  // Có lời chào giá thật của người mua thì phải hiện, mục tới lượt bác đứng đầu
   const t = (await (await fetch("http://127.0.0.1:18980/v1/test/impersonate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ phone: "0918000421" }) })).json()).token;
   const chao = await (await fetch("http://127.0.0.1:18980/v1/offers", { headers: { authorization: "Bearer " + t } })).json();
   const mo = chao.filter((c) => /sent|countered|open/.test(c.status)).length;
@@ -836,7 +836,7 @@ await trang("tro-ly-ai", async (p) => {
   await p.locator(".tl-hoi .tl-di").last().waitFor({ timeout: 3000 });
   assert.match(await p.locator(".tl-hoi .tl-di").last().getAttribute("href"), /ban-dang-bai\.html/);
   // "cho tôi hỏi…" không được dẫn nhầm sang Chợ → đi hỏi AI và có câu trả lời
-  await p.locator("#tl-o").fill("cho tôi hỏi bên mua đặt cọc thế nào?");
+  await p.locator("#tl-o").fill("cho tôi hỏi người mua đặt cọc thế nào?");
   await p.locator("#tl-go button").click();
   await p.waitForFunction(() => { const b = [...document.querySelectorAll(".tl-bong.ai")].at(-1); return b && !b.classList.contains("cho") && b.textContent.length > 10; }, null, { timeout: 30000 });
   const traLoi = await p.locator(".tl-bong.ai").last().innerText();

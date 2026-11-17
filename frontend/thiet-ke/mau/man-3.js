@@ -1,10 +1,10 @@
-// Màn 42–80: Đơn · Tiền · Tôi (+ Kiểm tiền, Bàn giao, Đánh giá bên mua)
+// Màn 42–80: Đơn · Tiền · Tôi (+ Kiểm tiền, Bàn giao, Đánh giá người mua)
 import { esc, d, so, kg, ic, the, dong, viec, nhan, lk, nut, chang, chon, o } from "./tien-ich.js";
 import { BUOC, TIEN } from "./du-lieu.js";
 import { docHD, ghiHD, tinhTien, dtTien } from "../giao-dich-chung.js";
 import { BANG, bangTrang, tenAi } from "../kich-ban-bang.js";
 
-const AI = { bac: "Bác", mua: "Bên mua", nh: "Ngân hàng" };
+const AI = { bac: "Bác", mua: "Người mua", nh: "Ngân hàng" };
 // Tiền đang ở đâu theo bước (nhìn từ phía bác)
 function tienO(b) {
   // Đọc HĐ dùng chung: hủy, trả một phần, hoàn dư đều phải khớp với app mua (tinhTien)
@@ -25,7 +25,7 @@ function tienO(b) {
     ${[["Bác đã nhận", nhan, "var(--la)", "o-bac"], ["Ngân hàng giữ", giu, "var(--chin)", "o-nh"], ["Còn chờ", cho, "var(--muc-phu)", "o-cho"]].map(([t, v, c, id], i) => `<div id="${id}" style="padding:10px 10px 12px;${i ? "border-left:1px solid var(--ke)" : ""}"><small class="m-ghi" style="font-size:12.5px">${t}</small><b class="m-so" data-v="${v}" style="display:block;font-size:15px;color:${c};border-radius:6px">${so(v)}</b></div>`).join("")}</div>`;
 }
 // Kịch bản do app mua nạp (giao-dich-chung.js): những lúc tới lượt chị Năm làm
-const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: bên mua chưa trả", "tien-mat": "Tiền mặt khi nhận", bkk: "Bất khả kháng", "khac-mau": "Hàng tới khác mẫu lúc bốc", "hang-tra": "Xử lý hàng bị trả lại", "hai-can": "Lấy tại vườn: hai cân lệch", "du-luong": "Dư lượng không đạt", "hai-kq": "Hai phòng kiểm cho kết quả khác nhau", "nh-cam-ket": "Trả sau qua ngân hàng", "nh-tu-choi": "Trả sau qua ngân hàng: bên mua từ chối hàng đạt", ung: "Người bán ứng tiền", "bien-the": "Tại vườn: sai người, đòi hạ giá, xe thiếu tải", "nhieu-de-nghi": "Nhiều đề nghị", "bo-cuoc": "Được chọn nhưng không ký", "xem-hang": "Đến xem vườn", "dang-ky": "Đăng ký người bán", "dau-ra": "Không tìm được đầu ra", "dat-truoc": "Đặt trước khi hái", ...Object.fromEntries(Object.entries(BANG).map(([k, v]) => [k, v.meta.tom])) };
+const TEN_KB = { "doi-ngay": "Đổi ngày giao trước khi ký", thieu: "Trả thiếu rồi bổ sung", lech: "Lệch tiền", "tra-lai": "Trả lại nhiều", "phan-doi": "Phản đối một dòng", "can-lech": "Cân lệch trong ±5%", huy: "Xin hủy sau cọc", "khong-giao": "Người bán không giao", "im-lang": "Người bán im lặng khi nghiệm thu", "tra-sau": "Trả sau nghiệm thu", "chua-tra": "Trả sau: người mua chưa trả", "tien-mat": "Tiền mặt khi nhận", bkk: "Bất khả kháng", "khac-mau": "Hàng tới khác mẫu lúc bốc", "hang-tra": "Xử lý hàng bị trả lại", "hai-can": "Lấy tại vườn: hai cân lệch", "du-luong": "Dư lượng không đạt", "hai-kq": "Hai phòng kiểm cho kết quả khác nhau", "nh-cam-ket": "Trả sau qua ngân hàng", "nh-tu-choi": "Trả sau qua ngân hàng: người mua từ chối hàng đạt", ung: "Người bán ứng tiền", "bien-the": "Tại vườn: sai người, đòi hạ giá, xe thiếu tải", "nhieu-de-nghi": "Nhiều đề nghị", "bo-cuoc": "Được chọn nhưng không ký", "xem-hang": "Đến xem vườn", "dang-ky": "Đăng ký người bán", "dau-ra": "Không tìm được đầu ra", "dat-truoc": "Đặt trước khi hái", ...Object.fromEntries(Object.entries(BANG).map(([k, v]) => [k, v.meta.tom])) };
 const BKK_COC = 1200 * 23000 * 0.3;
 const TS = (h) => h.kb === "tra-sau" || h.kb === "chua-tra" || h.kb === "tien-mat" || h.kb === "ung";
 const CK = (h) => h.kb === "nh-cam-ket" || h.kb === "nh-tu-choi";
@@ -41,35 +41,35 @@ function viecKichBan() {
     return viec(`Đang chờ ${tenAi(b.ai)}: ${b.viec}`, g, "", "m-cho");
   }
   if (h.kb === "bkk") {
-    if (h.bkkXong) return viec("Đơn đã sửa: giao 1.200 kg (bản 2)", "Bên mua đã nhận lại cọc dư. Không ai bị phạt. Phần giao 1.200 kg chạy tiếp như luồng thuận (mô phỏng dừng ở đây).", "", "m-cho");
+    if (h.bkkXong) return viec("Đơn đã sửa: giao 1.200 kg (bản 2)", "Người mua đã nhận lại cọc dư. Không ai bị phạt. Phần giao 1.200 kg chạy tiếp như luồng thuận (mô phỏng dừng ở đây).", "", "m-cho");
     if (!h.phu && h.buoc === 5) return viec("Vườn bị thiệt hại?", "Mưa đá, ngập, sâu bệnh làm không đủ hàng thì báo ngay kèm ảnh vườn. Nhân viên AgiViet đến xác nhận; đủ điều kiện miễn trách thì không ai bị phạt.", `<div style="display:grid;gap:8px">${nutKb("Báo bất khả kháng: chỉ giao được 1.200 kg", "bao-bkk", "m-phu")}</div>`);
     if (h.phu === "bkk") return viec("Đã báo thiệt hại", "Chờ nhân viên AgiViet đến vườn xác nhận.", "", "m-cho");
-    if (h.phu === "bkk-tl") return viec("Thiệt hại đã được xác nhận", "Chờ bên mua đề nghị: giảm lượng, dời lịch hoặc nguồn bù.", "", "m-cho");
-    if (h.phu === "bkk-de") return viec("Bên mua đề nghị: nhận 1.200 kg + tìm nguồn bù 800 kg", "Đồng ý thì soạn bản sửa 1.200 kg. Không ai bị phạt.", nutKb("Đồng ý đề nghị", "bkk-ok"));
-    if (h.phu === "bkk-ky") return viec("Chờ bên mua ký bản sửa", "Bản 2: 1.200 kg · 27.600.000 đ.", "", "m-cho");
-    if (h.phu === "bkk-cho-ban") return viec("Ký bản sửa 1.200 kg", "Bên mua đã ký bản 2.", nutKb("Ký bản sửa", "bkk-ky-ban"));
-    if (h.phu === "bkk-hoan") return viec("Hai bên đã ký bản sửa", "Ngân hàng đang hoàn cọc dư cho bên mua.", "", "m-cho");
+    if (h.phu === "bkk-tl") return viec("Thiệt hại đã được xác nhận", "Chờ người mua đề nghị: giảm lượng, dời lịch hoặc nguồn bù.", "", "m-cho");
+    if (h.phu === "bkk-de") return viec("Người mua đề nghị: nhận 1.200 kg + tìm nguồn bù 800 kg", "Đồng ý thì soạn bản sửa 1.200 kg. Không ai bị phạt.", nutKb("Đồng ý đề nghị", "bkk-ok"));
+    if (h.phu === "bkk-ky") return viec("Chờ người mua ký bản sửa", "Bản 2: 1.200 kg · 27.600.000 đ.", "", "m-cho");
+    if (h.phu === "bkk-cho-ban") return viec("Ký bản sửa 1.200 kg", "Người mua đã ký bản 2.", nutKb("Ký bản sửa", "bkk-ky-ban"));
+    if (h.phu === "bkk-hoan") return viec("Hai bên đã ký bản sửa", "Ngân hàng đang hoàn cọc dư cho người mua.", "", "m-cho");
   }
   if (CK(h)) {
-    if (h.buoc === 3) return viec("Bên mua trả sau qua ngân hàng", "Không có cọc. Ngân hàng đối tác đang phát hành cam kết thanh toán theo đơn; có cam kết thì liên lạc mở và bác chuẩn bị giao.", "", "m-cho");
-    if (h.tcXong || h.phu === "tc-phi") return viec("Bên mua từ chối lô hàng đạt: bác được bồi thường", `Ngân hàng đã chi ${d(h.nbXn)} cho bác (ghi nợ bên mua). AgiViet gợi ý bán gấp lô hàng đang có.`, "", "m-xong");
-    if (h.phu === "tc") return viec("Bên mua từ chối cả lô", "Mẫu niêm phong đang kiểm định. Hàng đạt thì bác được bồi thường qua cam kết của ngân hàng.", "", "m-cho");
+    if (h.buoc === 3) return viec("Người mua trả sau qua ngân hàng", "Không có cọc. Ngân hàng đối tác đang phát hành cam kết thanh toán theo đơn; có cam kết thì liên lạc mở và bác chuẩn bị giao.", "", "m-cho");
+    if (h.tcXong || h.phu === "tc-phi") return viec("Người mua từ chối lô hàng đạt: bác được bồi thường", `Ngân hàng đã chi ${d(h.nbXn)} cho bác (ghi nợ người mua). AgiViet gợi ý bán gấp lô hàng đang có.`, "", "m-xong");
+    if (h.phu === "tc") return viec("Người mua từ chối cả lô", "Mẫu niêm phong đang kiểm định. Hàng đạt thì bác được bồi thường qua cam kết của ngân hàng.", "", "m-cho");
     if (h.phu === "tc-dat") return viec("Kiểm định: hàng của bác đạt", "Từ chối không có căn cứ. Quản trị AgiViet đang duyệt lệnh bồi thường.", "", "m-cho");
     if (h.phu === "tc-duyet") return viec("Đã duyệt bồi thường", "Chờ ngân hàng chi cho bác.", "", "m-cho");
     if (h.buoc === 12 && h.phu === "cho-xn-gn") return viec(`Ngân hàng đã giải ngân ${d(h.nbXn)}`, "Bác mở app ngân hàng xem Agribank •••• 2186 rồi xác nhận.", nutKb(`Đã nhận ${d(h.nbXn)}`, "xn-gn"));
-    if (h.buoc === 12) return viec("Chờ ngân hàng giải ngân theo nghiệm thu", "Ngân hàng chuyển thẳng toàn bộ cho bác; bên mua trả ngân hàng sau.", "", "m-cho");
+    if (h.buoc === 12) return viec("Chờ ngân hàng giải ngân theo nghiệm thu", "Ngân hàng chuyển thẳng toàn bộ cho bác; người mua trả ngân hàng sau.", "", "m-cho");
   }
   if (h.kb === "ung" && h.buoc === 7 && !h.ung) {
     if (h.phu === "ung-cho") return viec("Đã đề nghị ứng 20.000.000 đ", "Chờ ngân hàng duyệt.", "", "m-cho");
-    return viec("Cần tiền trước khi bốc?", "Bác có thể ứng tiền từ ngân hàng trên đơn này (phí ứng 200.000 đ). Bên mua sẽ trả phần còn lại vào tài khoản đơn; ngân hàng thu lại khoản ứng rồi chuyển phần dư cho bác.", `<div style="display:grid;gap:8px">${nutKb("Đề nghị ứng 20.000.000 đ", "de-nghi-ung", "m-phu")}${nut("Bàn giao hàng", { ma: "ban-giao", lop: "m-vang m-rong" })}</div>`);
+    return viec("Cần tiền trước khi bốc?", "Bác có thể ứng tiền từ ngân hàng trên đơn này (phí ứng 200.000 đ). Người mua sẽ trả phần còn lại vào tài khoản đơn; ngân hàng thu lại khoản ứng rồi chuyển phần dư cho bác.", `<div style="display:grid;gap:8px">${nutKb("Đề nghị ứng 20.000.000 đ", "de-nghi-ung", "m-phu")}${nut("Bàn giao hàng", { ma: "ban-giao", lop: "m-vang m-rong" })}</div>`);
   }
-  if (h.kb === "ung" && h.buoc === 12 && h.phu === "ung-nh") return viec("Bên mua đã trả vào tài khoản đơn", "Ngân hàng đang thu lại khoản ứng 20.000.000 đ, rồi chuyển phần dư cho bác.", "", "m-cho");
+  if (h.kb === "ung" && h.buoc === 12 && h.phu === "ung-nh") return viec("Người mua đã trả vào tài khoản đơn", "Ngân hàng đang thu lại khoản ứng 20.000.000 đ, rồi chuyển phần dư cho bác.", "", "m-cho");
   if (h.kb === "ung" && h.buoc === 12 && h.phu === "cho-xn-sau") return viec("Ngân hàng chuyển phần dư 24.350.000 đ", "Đã thu lại khoản ứng 20.000.000 đ. Bác kiểm tài khoản rồi xác nhận.", nutKb("Đã nhận 24.350.000 đ", "xn-sau"));
   if (h.kb === "dang-ky") {
     if (!h.phu) return viec("Đăng ký bán trên AgiViet", "Cần số điện thoại, căn cước, loại tổ chức (hộ cá thể, HTX…). Nhân viên AgiViet sẽ đến vườn xác minh trước khi bác chào giá được.", nutKb("Gửi đăng ký: hộ cá thể", "dk-gui"));
     if (h.phu === "dk-xm") return viec("Chờ nhân viên AgiViet đến vườn xác minh", "Kiểm người, diện tích, mặt hàng, giấy tờ.", "", "m-cho");
-    if (h.phu === "dk-hang") return viec("Tài khoản bán đã mở · hạng: đã xác minh tại vườn", "Ghi nhật ký sản xuất (phun thuốc, bón phân, cách ly) để lên hạng. Bên mua thấy rõ phần đã kiểm và phần bác tự khai.", nutKb("Ghi nhật ký: phun thuốc 12/10, cách ly 14 ngày", "dk-nhat-ky"));
-    return viec("Đã ghi nhật ký sản xuất", "Mục này hiện cho bên mua là \"người bán tự khai\".", "", "m-xong");
+    if (h.phu === "dk-hang") return viec("Tài khoản bán đã mở · hạng: đã xác minh tại vườn", "Ghi nhật ký sản xuất (phun thuốc, bón phân, cách ly) để lên hạng. Người mua thấy rõ phần đã kiểm và phần bác tự khai.", nutKb("Ghi nhật ký: phun thuốc 12/10, cách ly 14 ngày", "dk-nhat-ky"));
+    return viec("Đã ghi nhật ký sản xuất", "Mục này hiện cho người mua là \"người bán tự khai\".", "", "m-xong");
   }
   if (h.kb === "dau-ra") {
     if (!h.phu) return viec("Lô L-0415 · 6 tấn xoài · cần bán trong 7 ngày", "Chưa có đề nghị phù hợp. Sau 48 giờ nhân viên AgiViet sẽ tìm giúp.", "", "m-cho");
@@ -83,103 +83,103 @@ function viecKichBan() {
   if (h.kb === "dat-truoc") {
     const i = dtTien(h).i;
     const V = [
-      ["Hợp đồng đặt trước: 8 tấn × 15.000 đ/kg", "Chờ bên mua ký.", "", "m-cho"],
-      ["Bên mua đã ký hợp đồng đặt trước", "8 tấn dự kiến, chốt lại gần ngày hái.", nutKb("Ký hợp đồng đặt trước", "dt-ky-ban")],
-      ["Chờ bên mua chuyển cọc 36.000.000 đ", "", "", "m-cho"],
-      ["Cập nhật vườn 2 tuần/lần", "Ảnh vườn, tình hình trái. Bên mua dựa vào đây để chốt lượng.", nutKb("Cập nhật: trái lớn đều, ước 9 tấn", "dt-vuon")],
-      ["Chờ bên mua chốt lượng", "Đề nghị chốt 9 tấn × 15.000.", "", "m-cho"],
-      ["Bên mua đồng ý 9 tấn, cọc bổ sung xong", "Hái, giao, nghiệm thu rồi chốt số.", nutKb("Đã giao 9 tấn, chốt số nghiệm thu", "dt-giao")],
-      ["Chờ bên mua trả thẳng 94.500.000 đ", "", "", "m-cho"],
-      ["Bên mua báo đã trả 94.500.000 đ", "Kiểm tài khoản rồi xác nhận.", nutKb("Đã nhận 94.500.000 đ", "dt-xn")],
+      ["Hợp đồng đặt trước: 8 tấn × 15.000 đ/kg", "Chờ người mua ký.", "", "m-cho"],
+      ["Người mua đã ký hợp đồng đặt trước", "8 tấn dự kiến, chốt lại gần ngày hái.", nutKb("Ký hợp đồng đặt trước", "dt-ky-ban")],
+      ["Chờ người mua chuyển cọc 36.000.000 đ", "", "", "m-cho"],
+      ["Cập nhật vườn 2 tuần/lần", "Ảnh vườn, tình hình trái. Người mua dựa vào đây để chốt lượng.", nutKb("Cập nhật: trái lớn đều, ước 9 tấn", "dt-vuon")],
+      ["Chờ người mua chốt lượng", "Đề nghị chốt 9 tấn × 15.000.", "", "m-cho"],
+      ["Người mua đồng ý 9 tấn, cọc bổ sung xong", "Hái, giao, nghiệm thu rồi chốt số.", nutKb("Đã giao 9 tấn, chốt số nghiệm thu", "dt-giao")],
+      ["Chờ người mua trả thẳng 94.500.000 đ", "", "", "m-cho"],
+      ["Người mua báo đã trả 94.500.000 đ", "Kiểm tài khoản rồi xác nhận.", nutKb("Đã nhận 94.500.000 đ", "dt-xn")],
       ["Chờ ngân hàng chuyển cọc 40.500.000 đ", "", "", "m-cho"],
       ["Hoàn tất đặt trước · đã nhận 135.000.000 đ", "", "", "m-xong"],
     ][i];
     return viec(V[0], V[1], V[2] || "", V[3] || "");
   }
-  if (h.kb === "nhieu-de-nghi" && h.buoc === 0) return viec("2 bên mua cùng muốn lô L-0412 · 2.000 kg", `So theo tiền bác thực nhận, không chỉ giá đ/kg:<br>· <b>Vựa Ba Cường</b>: 24.000 đ/kg, bác tự chở (≈2.500.000 đ) → còn <b>${d(45500000)}</b><br>· <b>Nhà máy sấy Đồng Xanh</b>: 23.000 đ/kg, bên mua tự lấy tại vườn → còn <b>${d(46000000)}</b><br>Chọn rồi chưa phải đã bán: hàng giữ 24 giờ chờ ký và cọc.`, `<div style="display:grid;gap:8px">${nutKb("Chọn Đồng Xanh (còn 46.000.000 đ)", "chon-b")}${nutKb("Chọn Vựa Ba Cường (còn 45.500.000 đ)", "chon-a", "m-phu")}</div>`);
-  if (h.kb === "bo-cuoc" && h.buoc === 1 && !h.phu) return viec("Đã chọn Đồng Xanh · giữ 2.000 kg trong 24 giờ", "Chọn chưa là đã bán: chờ bên mua ký và cọc. Quá hạn thì lô tự mở lại.", "", "m-cho");
+  if (h.kb === "nhieu-de-nghi" && h.buoc === 0) return viec("2 người mua cùng muốn lô L-0412 · 2.000 kg", `So theo tiền bác thực nhận, không chỉ giá đ/kg:<br>· <b>Vựa Ba Cường</b>: 24.000 đ/kg, bác tự chở (≈2.500.000 đ) → còn <b>${d(45500000)}</b><br>· <b>Nhà máy sấy Đồng Xanh</b>: 23.000 đ/kg, người mua tự lấy tại vườn → còn <b>${d(46000000)}</b><br>Chọn rồi chưa phải đã bán: hàng giữ 24 giờ chờ ký và cọc.`, `<div style="display:grid;gap:8px">${nutKb("Chọn Đồng Xanh (còn 46.000.000 đ)", "chon-b")}${nutKb("Chọn Vựa Ba Cường (còn 45.500.000 đ)", "chon-a", "m-phu")}</div>`);
+  if (h.kb === "bo-cuoc" && h.buoc === 1 && !h.phu) return viec("Đã chọn Đồng Xanh · giữ 2.000 kg trong 24 giờ", "Chọn chưa là đã bán: chờ người mua ký và cọc. Quá hạn thì lô tự mở lại.", "", "m-cho");
   if (h.kb === "bo-cuoc" && h.phu === "mo-lai") return viec("Đồng Xanh không ký trong 24 giờ · 2.000 kg đã mở lại", "Đề nghị của Vựa Ba Cường (24.000 đ/kg, bác chở) vẫn còn hiệu lực.", nutKb("Hỏi Vựa Ba Cường còn mua không", "hoi-a"));
   if (h.kb === "bo-cuoc" && h.phu === "hoi-a") return viec("Đã hỏi Vựa Ba Cường", "Chờ họ trả lời.", nutKb("Mô phỏng: Vựa Ba Cường xác nhận còn mua", "a-con", "m-phu"));
   if (h.kb === "bo-cuoc" && h.phu === "a-con") return viec("Vựa Ba Cường còn mua theo đề nghị cũ", "24.000 đ/kg, bác tự chở, trả trước bàn giao. Chọn thì giữ hàng 24 giờ chờ họ ký; hoặc chờ đề nghị mới.", nutKb("Chọn Vựa Ba Cường", "chon-a"));
   if (h.kb === "bo-cuoc" && h.phu === "chon-a") return viec("Đã chọn Vựa Ba Cường", "Hàng giữ 24 giờ chờ họ ký. Đơn mới với Vựa Ba Cường (mô phỏng dừng ở đây).", "", "m-xong");
   if (h.kb === "xem-hang" && h.buoc === 0) {
     if (!h.phu) return viec("Lô L-0412 đang mở", "Chưa có yêu cầu xem vườn.", "", "m-cho");
-    if (h.phu === "ks-cho") return viec("Bên mua xin đến xem vườn 26/10", "Nhà máy sấy Đồng Xanh · chị Thu Hà + 1 người. Số điện thoại hai bên vẫn che tới khi bác đồng ý lịch.", nutKb("Đồng ý, 8:00 sáng 26/10", "ks-ok"));
-    if (h.phu === "ks-lich") return viec("Lịch xem vườn: 8:00 sáng 26/10", "Bên mua: chị Thu Hà 0277 386 210 (chỉ dùng cho chuyến này).", "", "m-cho");
-    if (h.phu === "ks-xong") return viec("Bên mua đã xem vườn, chưa mua", "Lô vẫn mở cho bên khác. Không phát sinh nghĩa vụ.", "", "m-cho");
+    if (h.phu === "ks-cho") return viec("Người mua xin đến xem vườn 26/10", "Nhà máy sấy Đồng Xanh · chị Thu Hà + 1 người. Số điện thoại hai bên vẫn che tới khi bác đồng ý lịch.", nutKb("Đồng ý, 8:00 sáng 26/10", "ks-ok"));
+    if (h.phu === "ks-lich") return viec("Lịch xem vườn: 8:00 sáng 26/10", "Người mua: chị Thu Hà 0277 386 210 (chỉ dùng cho chuyến này).", "", "m-cho");
+    if (h.phu === "ks-xong") return viec("Người mua đã xem vườn, chưa mua", "Lô vẫn mở cho bên khác. Không phát sinh nghĩa vụ.", "", "m-cho");
   }
   if (h.kb === "bien-the" && h.buoc === 7 && !h.btXong) {
-    if (!h.phu) return viec("Xe bên mua đã tới vườn", "Quét mã, đối chiếu người đến và biển số với danh sách bên mua đã khai. Sai người thì không cho bốc.", `<div style="display:grid;gap:8px">${nutKb("Người đến không có tên trong danh sách", "bt-sai-nguoi", "m-phu")}${nutKb("Đúng người, đúng xe", "bt-dung-nguoi")}</div>`);
-    if (h.phu === "bt1") return viec("Đã báo sai người", "Chờ bên mua bổ sung danh sách. Chưa cho bốc.", "", "m-cho");
-    if (h.phu === "bt2") return viec("Người kiểm bên mua đang xem hàng", "", "", "m-cho");
-    if (h.phu === "bt3") return viec("Người kiểm bên mua đòi hạ giá tại chỗ", "Giá đã ký không đổi tại chỗ. Bác có quyền từ chối; đơn giữ nguyên bản đã ký.", nutKb("Không đồng ý hạ giá", "bt-tu-choi-gia"));
-    if (h.phu === "bt4") return viec("Bên mua đang bốc lên xe", "", "", "m-cho");
-    if (h.phu === "bt5") return viec("Xe bên mua chỉ chở được 1.600 kg", "400 kg còn lại vẫn là của bên mua: hẹn chuyến sau trong 24 giờ. Bác giữ hàng, không bán cho người khác trong thời gian này.", nutKb("Đồng ý giữ 400 kg tới chuyến sau", "bt-hen-chuyen"));
+    if (!h.phu) return viec("Xe người mua đã tới vườn", "Quét mã, đối chiếu người đến và biển số với danh sách người mua đã khai. Sai người thì không cho bốc.", `<div style="display:grid;gap:8px">${nutKb("Người đến không có tên trong danh sách", "bt-sai-nguoi", "m-phu")}${nutKb("Đúng người, đúng xe", "bt-dung-nguoi")}</div>`);
+    if (h.phu === "bt1") return viec("Đã báo sai người", "Chờ người mua bổ sung danh sách. Chưa cho bốc.", "", "m-cho");
+    if (h.phu === "bt2") return viec("Người kiểm người mua đang xem hàng", "", "", "m-cho");
+    if (h.phu === "bt3") return viec("Người kiểm người mua đòi hạ giá tại chỗ", "Giá đã ký không đổi tại chỗ. Bác có quyền từ chối; đơn giữ nguyên bản đã ký.", nutKb("Không đồng ý hạ giá", "bt-tu-choi-gia"));
+    if (h.phu === "bt4") return viec("Người mua đang bốc lên xe", "", "", "m-cho");
+    if (h.phu === "bt5") return viec("Xe người mua chỉ chở được 1.600 kg", "400 kg còn lại vẫn là của người mua: hẹn chuyến sau trong 24 giờ. Bác giữ hàng, không bán cho người khác trong thời gian này.", nutKb("Đồng ý giữ 400 kg tới chuyến sau", "bt-hen-chuyen"));
   }
   if (h.kb === "hai-can" && h.buoc === 7 && !h.canXong) {
-    if (!h.phu) return viec("Xe bên mua đã tới vườn", "Quét mã đối chiếu người và biển số, rồi cân bằng cân của bác. Bên mua sẽ cân lại bằng cân của họ.", nutKb("Cân của tôi: 2.000 kg", "can-ban"));
-    if (h.phu === "can1") return viec("Chờ bên mua cân bằng cân của họ", "Bác đã ghi 2.000 kg.", "", "m-cho");
+    if (!h.phu) return viec("Xe người mua đã tới vườn", "Quét mã đối chiếu người và biển số, rồi cân bằng cân của bác. Người mua sẽ cân lại bằng cân của họ.", nutKb("Cân của tôi: 2.000 kg", "can-ban"));
+    if (h.phu === "can1") return viec("Chờ người mua cân bằng cân của họ", "Bác đã ghi 2.000 kg.", "", "m-cho");
     if (h.phu === "can-lech2") return viec("Hai cân lệch: 2.000 kg và 1.940 kg", "App không tự chọn, không lấy trung bình. Hai bên kiểm bì, cân lại từng sọt rồi ghi số đã thống nhất.", nutKb("Cân lại có hai bên: 1.980 kg", "can-lai"));
-    if (h.phu === "can-chot") return viec("Chờ bên mua xác nhận 1.980 kg", "", "", "m-cho");
+    if (h.phu === "can-chot") return viec("Chờ người mua xác nhận 1.980 kg", "", "", "m-cho");
   }
   if (h.kb === "du-luong" && h.buoc === 12) {
     const tra = (h.daTra || 0) + 1500000;
-    if (h.dlXong) return viec("Đơn đóng: dư lượng không đạt", `Bên mua đã nhận lại đủ ${d(tra)}; hàng đã tiêu hủy có biên bản.`, "", "m-cho");
-    if (!h.phu) return viec("Hàng đang cách ly ở kho bên mua", "Chờ kết quả dư lượng. Cọc vẫn do ngân hàng giữ.", "", "m-cho");
+    if (h.dlXong) return viec("Đơn đóng: dư lượng không đạt", `Người mua đã nhận lại đủ ${d(tra)}; hàng đã tiêu hủy có biên bản.`, "", "m-cho");
+    if (!h.phu) return viec("Hàng đang cách ly ở kho người mua", "Chờ kết quả dư lượng. Cọc vẫn do ngân hàng giữ.", "", "m-cho");
     if (h.phu === "dl-hong") return viec("Dư lượng không đạt", "Bác có quyền yêu cầu kiểm lại mẫu lưu niêm phong.", nutKb("Yêu cầu kiểm lại mẫu lưu", "dl-kiem-lai"));
     if (h.phu === "dl-kiem-lai") return viec("Đang kiểm lại mẫu lưu", "", "", "m-cho");
-    if (h.phu === "dl-loi") return viec("Kết luận: lỗi ở hàng của bác", "Ngân hàng hoàn cọc cho bên mua. Bác hoàn tiền hàng đã nhận và phí kiểm lần đầu, nhận lại hàng để tiêu hủy có biên bản.", "", "m-cho");
+    if (h.phu === "dl-loi") return viec("Kết luận: lỗi ở hàng của bác", "Ngân hàng hoàn cọc cho người mua. Bác hoàn tiền hàng đã nhận và phí kiểm lần đầu, nhận lại hàng để tiêu hủy có biên bản.", "", "m-cho");
     if (h.phu === "dl-cho-nb-hoan") return viec(`Bác cần hoàn ${d(tra)}`, `Gồm ${d(h.daTra)} tiền hàng đã nhận và 1.500.000 đ phí kiểm lần đầu. Nhận lại hàng để tiêu hủy có biên bản.`, nutKb(`Tôi đã hoàn ${d(tra)}`, "dl-nb-hoan"));
-    if (h.phu === "dl-da-hoan") return viec("Chờ bên mua xác nhận đã nhận lại tiền", "", "", "m-cho");
+    if (h.phu === "dl-da-hoan") return viec("Chờ người mua xác nhận đã nhận lại tiền", "", "", "m-cho");
   }
   if (h.kb === "hai-kq" && h.buoc === 12 && !h.hkXong) {
     if (!h.phu) return viec("Hàng đang cách ly · chờ kết quả dư lượng", "", "", "m-cho");
-    if (h.phu === "kq1") return viec("Phòng A (bên mua đặt) báo không đạt", "Bác có quyền gửi mẫu lưu niêm phong tới phòng B.", nutKb("Yêu cầu kiểm mẫu lưu ở phòng B", "kq2"));
+    if (h.phu === "kq1") return viec("Phòng A (người mua đặt) báo không đạt", "Bác có quyền gửi mẫu lưu niêm phong tới phòng B.", nutKb("Yêu cầu kiểm mẫu lưu ở phòng B", "kq2"));
     if (h.phu === "kq2-cho") return viec("Phòng B đang kiểm mẫu lưu", "", "", "m-cho");
     if (h.phu === "trai") return viec("Hai kết quả trái nhau", "Chưa kết luận. Mẫu lưu thứ hai gửi phòng trọng tài; hai bên ứng đôi phí.", "", "m-cho");
-    if (h.phu === "hk-phi") return viec("Phòng trọng tài: đạt", "Bên mua hoàn bác 2.800.000 đ phí kiểm, rồi ngân hàng chuyển cọc.", "", "m-cho");
-    if (h.phu === "hk-phi-cho") return viec("Bên mua báo đã chuyển 2.800.000 đ phí kiểm", "Kiểm tài khoản rồi xác nhận.", nutKb("Đã nhận 2.800.000 đ", "hk-phi-xn"));
+    if (h.phu === "hk-phi") return viec("Phòng trọng tài: đạt", "Người mua hoàn bác 2.800.000 đ phí kiểm, rồi ngân hàng chuyển cọc.", "", "m-cho");
+    if (h.phu === "hk-phi-cho") return viec("Người mua báo đã chuyển 2.800.000 đ phí kiểm", "Kiểm tài khoản rồi xác nhận.", nutKb("Đã nhận 2.800.000 đ", "hk-phi-xn"));
   }
-  if (h.kb === "khac-mau" && h.phu === "km") return viec("Bên mua báo hàng tới khác mẫu lúc bốc", "180 kg đang giữ ở kho lạnh. Mẫu niêm phong M-2291 đang kiểm định so mẫu.", "", "m-cho");
+  if (h.kb === "khac-mau" && h.phu === "km") return viec("Người mua báo hàng tới khác mẫu lúc bốc", "180 kg đang giữ ở kho lạnh. Mẫu niêm phong M-2291 đang kiểm định so mẫu.", "", "m-cho");
   if (h.kb === "khac-mau" && h.phu === "km-kl" && h.buoc <= 11) return viec("Kết luận: sai từ lúc bốc (lỗi bác)", "180 kg khác mẫu bị trả lại. Bác chịu phí kho lạnh và kiểm định 1.050.000 đ (phiếu bồi hoàn).", h.buoc === 11 ? `<div>${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>` : "", h.buoc === 11 ? "" : "m-cho");
   if (h.kb === "hang-tra" && h.buoc >= 12 && h.buoc < 15 && !h.hangXong) {
     if (!h.hangChon) return viec("30 kg trả lại đang giữ tại kho Đồng Xanh (Bến Lức)", "Bác chọn trong 48 giờ: bán gấp tại chỗ (AgiViet báo bên nhận hàng kém loại gần đó) hoặc nhận lại, tự lo xe. Quá hạn thì xử lý theo điều khoản.", `<div style="display:grid;gap:8px">${nutKb("Bán gấp tại chỗ", "ban-gap")}${nutKb("Nhận lại, tự lo xe", "nhan-lai", "m-phu")}</div>`);
     return viec(h.hangChon === "ban-gap" ? "Bác chọn bán gấp tại chỗ" : h.hangChon === "nhan-lai" ? "Bác nhận lại 30 kg" : "Quá hạn chọn: xử lý theo điều khoản", "AgiViet đã báo các bên nhận hàng kém loại gần Long An.", "", "m-cho");
   }
-  if (h.no) return viec("Đơn đóng: bên mua chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(TIEN.COC)} cho bác. Bên mua còn nợ ${d(t.nt - TIEN.COC)}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho bác.`, "", "m-cho");
+  if (h.no) return viec("Đơn đóng: người mua chưa trả phần còn lại", `Ngân hàng đã chuyển cọc ${d(TIEN.COC)} cho bác. Người mua còn nợ ${d(t.nt - TIEN.COC)}: bị trừ uy tín, khóa đơn mới; AgiViet cấp hồ sơ đòi nợ cho bác.`, "", "m-cho");
   if (TS(h) && h.buoc === 12 && !h.traSauXong) {
     const x = t.nt - TIEN.COC;
-    if (h.phu === "cho-xn-sau" && h.kb === "tien-mat") return viec(`Bên mua trả tiền mặt ${d(h.daTra)}`, "Bác đếm đủ, hai bên ký biên nhận rồi mới cho dỡ hàng. Thiếu thì chưa dỡ.", nutKb(`Đếm đủ, đã nhận ${d(h.daTra)}`, "xn-sau"));
-    if (h.phu === "cho-xn-sau") return viec(`Bên mua báo đã chuyển ${d(h.daTra)}`, "Bác mở app ngân hàng xem Agribank •••• 2186. Chỉ bấm khi thấy tiền thật.", nutKb(`Đã nhận ${d(h.daTra)}`, "xn-sau"));
-    if (h.phu === "qua-han") return viec("Đã báo bên mua: quá hạn trả", `Bên mua có 48 giờ để trả ${d(x)} hoặc gửi chứng từ. Nhân viên AgiViet gọi hai bên đối chiếu.`, "", "m-cho");
-    if (h.phu === "xu-ly-no") return viec("Bên mua vẫn chưa trả sau 48 giờ", `Ngân hàng sẽ chuyển cọc ${d(TIEN.COC)} cho bác, trừ vào tiền hàng. Phần còn lại AgiViet cấp hồ sơ đòi nợ.`, "", "m-cho");
-    if (h.kb === "tien-mat") return viec(`Chờ bên mua trả tiền mặt ${d(x)}`, "Bác đã chốt số. Bên mua trả tiền mặt tại kho trước khi dỡ; bác đếm đủ mới cho dỡ.", "", "m-cho");
-    return viec(`Chờ bên mua trả phần còn lại ${d(x)}`, "Hạn 24 giờ sau khi chốt nghiệm thu. Quá hạn mà chưa thấy tiền thì bấm báo chưa nhận.", nutKb("Quá hạn, chưa nhận được tiền", "qua-han-sau", "m-phu"));
+    if (h.phu === "cho-xn-sau" && h.kb === "tien-mat") return viec(`Người mua trả tiền mặt ${d(h.daTra)}`, "Bác đếm đủ, hai bên ký biên nhận rồi mới cho dỡ hàng. Thiếu thì chưa dỡ.", nutKb(`Đếm đủ, đã nhận ${d(h.daTra)}`, "xn-sau"));
+    if (h.phu === "cho-xn-sau") return viec(`Người mua báo đã chuyển ${d(h.daTra)}`, "Bác mở app ngân hàng xem Agribank •••• 2186. Chỉ bấm khi thấy tiền thật.", nutKb(`Đã nhận ${d(h.daTra)}`, "xn-sau"));
+    if (h.phu === "qua-han") return viec("Đã báo người mua: quá hạn trả", `Người mua có 48 giờ để trả ${d(x)} hoặc gửi chứng từ. Nhân viên AgiViet gọi hai bên đối chiếu.`, "", "m-cho");
+    if (h.phu === "xu-ly-no") return viec("Người mua vẫn chưa trả sau 48 giờ", `Ngân hàng sẽ chuyển cọc ${d(TIEN.COC)} cho bác, trừ vào tiền hàng. Phần còn lại AgiViet cấp hồ sơ đòi nợ.`, "", "m-cho");
+    if (h.kb === "tien-mat") return viec(`Chờ người mua trả tiền mặt ${d(x)}`, "Bác đã chốt số. Người mua trả tiền mặt tại kho trước khi dỡ; bác đếm đủ mới cho dỡ.", "", "m-cho");
+    return viec(`Chờ người mua trả phần còn lại ${d(x)}`, "Hạn 24 giờ sau khi chốt nghiệm thu. Quá hạn mà chưa thấy tiền thì bấm báo chưa nhận.", nutKb("Quá hạn, chưa nhận được tiền", "qua-han-sau", "m-phu"));
   }
   if (h.kb === "khong-giao") {
     const tra = TIEN.TRA_THANG + TIEN.BOI_HOAN;
-    if (h.vpXong) return viec("Đơn đã đóng: bác không giao", `Bên mua đã nhận lại đủ ${d(tra)}. Hạng của bác bị trừ theo quy định.`, "", "m-cho");
-    if (h.phu === "khong-hang") return viec("Xe bên mua đã chờ 2 giờ ở vườn", "Bác chưa giao hàng. Nếu không giao được thì báo ngay: AgiViet ghi vi phạm, cọc hoàn bên mua, bác trả lại tiền đã nhận trước và bồi hoàn tiền xe.", `<div style="display:grid;gap:8px">${nutKb("Tôi không giao được", "khong-giao", "m-phu")}${nut("Bàn giao hàng", { ma: "ban-giao", lop: "m-vang m-rong" })}</div>`);
-    if (h.phu === "vi-pham") return viec("AgiViet ghi vi phạm: bác không giao", `Ngân hàng đang hoàn cọc ${d(TIEN.COC)} cho bên mua.`, "", "m-cho");
-    if (h.phu === "cho-nb-tra") return viec(`Bác cần trả lại ${d(tra)}`, `Gồm ${d(TIEN.TRA_THANG)} bên mua đã trả trước và ${d(TIEN.BOI_HOAN)} bồi hoàn tiền xe. Chuyển vào tài khoản công ty Đồng Xanh, nội dung HD0018 BOIHOAN. Hạn 7 ngày; không trả thì bị trừ hạng và khóa đơn mới.`, nutKb(`Tôi đã chuyển ${d(tra)}`, "nb-tra-vp"));
-    if (h.phu === "nb-da-tra-vp") return viec("Chờ bên mua xác nhận đã nhận lại tiền", `Bác báo đã chuyển ${d(tra)}.`, "", "m-cho");
+    if (h.vpXong) return viec("Đơn đã đóng: bác không giao", `Người mua đã nhận lại đủ ${d(tra)}. Hạng của bác bị trừ theo quy định.`, "", "m-cho");
+    if (h.phu === "khong-hang") return viec("Xe người mua đã chờ 2 giờ ở vườn", "Bác chưa giao hàng. Nếu không giao được thì báo ngay: AgiViet ghi vi phạm, cọc hoàn người mua, bác trả lại tiền đã nhận trước và bồi hoàn tiền xe.", `<div style="display:grid;gap:8px">${nutKb("Tôi không giao được", "khong-giao", "m-phu")}${nut("Bàn giao hàng", { ma: "ban-giao", lop: "m-vang m-rong" })}</div>`);
+    if (h.phu === "vi-pham") return viec("AgiViet ghi vi phạm: bác không giao", `Ngân hàng đang hoàn cọc ${d(TIEN.COC)} cho người mua.`, "", "m-cho");
+    if (h.phu === "cho-nb-tra") return viec(`Bác cần trả lại ${d(tra)}`, `Gồm ${d(TIEN.TRA_THANG)} người mua đã trả trước và ${d(TIEN.BOI_HOAN)} bồi hoàn tiền xe. Chuyển vào tài khoản công ty Đồng Xanh, nội dung HD0018 BOIHOAN. Hạn 7 ngày; không trả thì bị trừ hạng và khóa đơn mới.`, nutKb(`Tôi đã chuyển ${d(tra)}`, "nb-tra-vp"));
+    if (h.phu === "nb-da-tra-vp") return viec("Chờ người mua xác nhận đã nhận lại tiền", `Bác báo đã chuyển ${d(tra)}.`, "", "m-cho");
   }
   if (h.kb === "im-lang" && h.buoc === 11 && (h.phu === "nhac" || h.phu === "da-goi")) return viec(h.phu === "nhac" ? "Bác chưa chốt kết quả cân · đã nhắc 3 lần" : "Nhân viên AgiViet vừa gọi bác", "Im lặng không phải đồng ý: ngân hàng chưa chi cọc tới khi bác chốt. Xem kết quả rồi đồng ý hoặc phản đối từng dòng.", `<div>${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>`);
-  if (h.huy) return viec("Đơn đã hủy theo thỏa thuận", `Hàng về lại lô L-0412. Cọc ${d(TIEN.COC)} ngân hàng chuyển cho bác. Phí bên mua không hoàn.`, "", "m-cho");
-  if (h.phu === "xin-huy") return viec("Bên mua xin hủy đơn", `Bác có 24 giờ để trả lời. Nếu hủy: cọc ${d(TIEN.COC)} chuyển cho bác, hàng về lại lô. Im lặng là không đồng ý.`, `<div style="display:grid;gap:8px">${nutKb("Đồng ý hủy", "huy-ok")}${nutKb("Không đồng ý", "huy-khong", "m-phu")}</div>`);
-  if (h.kb === "doi-ngay" && h.buoc === 2 && !h.daDeNghi) return viec("Bác cần đổi ngày giao?", "Mưa nhiều, bác có thể đề nghị đổi ngày giao 28/10 → 29/10 trước khi ký. Bên mua đồng ý thì sang bản 2.", `<div style="display:grid;gap:8px">${nutKb("Đề nghị đổi sang 29/10", "de-nghi", "m-phu")}${nut("Xem và ký", { ma: "ky", lop: "m-vang m-rong" })}</div>`);
-  if (h.phu === "de-nghi") return viec("Chờ bên mua trả lời đề nghị đổi ngày", "Đang đề nghị: chưa ký được tới khi bên mua trả lời.", "", "m-cho");
-  if (h.kb === "lech" && h.buoc === 6 && !h.phu) return viec("Bên mua báo đã chuyển 32.200.000 đ", "Bác kiểm tài khoản. Nếu chỉ thấy một phần thì báo đúng số bác thấy.", `<div style="display:grid;gap:8px">${nutKb("Tôi chỉ thấy 20.000.000 đ", "lech", "m-phu")}${nut("Kiểm tiền", { ma: "kiem-tien", lop: "m-vang m-rong" })}</div>`);
-  if (h.phu === "lech" || h.phu === "cho-vh") return viec("Lệch tiền, đang đối soát", "Bác thấy 20.000.000 đ, bên mua báo 32.200.000 đ. Đây là lệch, không phải vi phạm. Người vận hành đối chiếu sao kê trong 48 giờ. Chưa cho bốc.", "", "m-cho");
+  if (h.huy) return viec("Đơn đã hủy theo thỏa thuận", `Hàng về lại lô L-0412. Cọc ${d(TIEN.COC)} ngân hàng chuyển cho bác. Phí người mua không hoàn.`, "", "m-cho");
+  if (h.phu === "xin-huy") return viec("Người mua xin hủy đơn", `Bác có 24 giờ để trả lời. Nếu hủy: cọc ${d(TIEN.COC)} chuyển cho bác, hàng về lại lô. Im lặng là không đồng ý.`, `<div style="display:grid;gap:8px">${nutKb("Đồng ý hủy", "huy-ok")}${nutKb("Không đồng ý", "huy-khong", "m-phu")}</div>`);
+  if (h.kb === "doi-ngay" && h.buoc === 2 && !h.daDeNghi) return viec("Bác cần đổi ngày giao?", "Mưa nhiều, bác có thể đề nghị đổi ngày giao 28/10 → 29/10 trước khi ký. Người mua đồng ý thì sang bản 2.", `<div style="display:grid;gap:8px">${nutKb("Đề nghị đổi sang 29/10", "de-nghi", "m-phu")}${nut("Xem và ký", { ma: "ky", lop: "m-vang m-rong" })}</div>`);
+  if (h.phu === "de-nghi") return viec("Chờ người mua trả lời đề nghị đổi ngày", "Đang đề nghị: chưa ký được tới khi người mua trả lời.", "", "m-cho");
+  if (h.kb === "lech" && h.buoc === 6 && !h.phu) return viec("Người mua báo đã chuyển 32.200.000 đ", "Bác kiểm tài khoản. Nếu chỉ thấy một phần thì báo đúng số bác thấy.", `<div style="display:grid;gap:8px">${nutKb("Tôi chỉ thấy 20.000.000 đ", "lech", "m-phu")}${nut("Kiểm tiền", { ma: "kiem-tien", lop: "m-vang m-rong" })}</div>`);
+  if (h.phu === "lech" || h.phu === "cho-vh") return viec("Lệch tiền, đang đối soát", "Bác thấy 20.000.000 đ, người mua báo 32.200.000 đ. Đây là lệch, không phải vi phạm. Người vận hành đối chiếu sao kê trong 48 giờ. Chưa cho bốc.", "", "m-cho");
   if (h.buoc === 7 && (h.nbXn || 0) < TIEN.TRA_THANG && h.kb !== "lech" && !TS(h) && !CK(h)) {
-    if ((h.daTra || 0) > (h.nbXn || 0)) return viec(`Bên mua báo trả thêm ${d(h.daTra - h.nbXn)}`, `Bác đã xác nhận ${d(h.nbXn)}. Mở app ngân hàng xem Agribank •••• 2186 có thêm tiền chưa. Chỉ bấm khi thấy tiền thật.`, nutKb(`Đã nhận thêm ${d(h.daTra - h.nbXn)}`, "nhan-them"));
-    return viec(`Bên mua mới trả ${d(h.nbXn)} / ${d(TIEN.TRA_THANG)}`, `Còn thiếu ${d(TIEN.TRA_THANG - h.nbXn)}. Chưa cho bốc tới khi nhận đủ. Bên mua đã được báo trả nốt.`, "", "m-cho");
+    if ((h.daTra || 0) > (h.nbXn || 0)) return viec(`Người mua báo trả thêm ${d(h.daTra - h.nbXn)}`, `Bác đã xác nhận ${d(h.nbXn)}. Mở app ngân hàng xem Agribank •••• 2186 có thêm tiền chưa. Chỉ bấm khi thấy tiền thật.`, nutKb(`Đã nhận thêm ${d(h.daTra - h.nbXn)}`, "nhan-them"));
+    return viec(`Người mua mới trả ${d(h.nbXn)} / ${d(TIEN.TRA_THANG)}`, `Còn thiếu ${d(TIEN.TRA_THANG - h.nbXn)}. Chưa cho bốc tới khi nhận đủ. Người mua đã được báo trả nốt.`, "", "m-cho");
   }
   if (h.kb === "phan-doi" && h.buoc === 11 && !h.daPhanDoi) return viec("Có kết quả cân", "Đạt 1.850 · hạ cấp 120 · trả lại 30 kg. Bác thấy dòng hạ cấp không đúng thì phản đối riêng dòng đó.", `<div style="display:grid;gap:8px">${nutKb("Phản đối dòng hạ cấp 120 kg", "phan-doi", "m-phu")}${nut("Xem kết quả cân", { ma: "ket-qua", lop: "m-vang m-rong" })}</div>`);
-  if (h.phu === "phan-doi") return viec("Bác đã phản đối dòng hạ cấp", "Các dòng khác đã chốt. Bên mua đang cân lại dòng này.", "", "m-cho");
-  if (h.phu === "can-lai") return viec("Bên mua cân lại: vẫn 120 kg hạ cấp", "Bác đồng ý hoặc gửi mẫu M-2291 đi kiểm định 48 giờ. Bên sai chịu phí kiểm định.", `<div style="display:grid;gap:8px">${nutKb("Vẫn không đồng ý → kiểm định", "kd", "m-phu")}</div>`);
+  if (h.phu === "phan-doi") return viec("Bác đã phản đối dòng hạ cấp", "Các dòng khác đã chốt. Người mua đang cân lại dòng này.", "", "m-cho");
+  if (h.phu === "can-lai") return viec("Người mua cân lại: vẫn 120 kg hạ cấp", "Bác đồng ý hoặc gửi mẫu M-2291 đi kiểm định 48 giờ. Bên sai chịu phí kiểm định.", `<div style="display:grid;gap:8px">${nutKb("Vẫn không đồng ý → kiểm định", "kd", "m-phu")}</div>`);
   if (h.phu === "kiem-dinh") return viec("Đang kiểm định mẫu M-2291", "Kết quả trong 48 giờ.", "", "m-cho");
-  if (h.kb === "tra-lai" && h.buoc === 13 && h.phu === "cho-nb-hoan") return viec(`Bác cần hoàn ${d(t.nbHoan)} cho bên mua`, `Giá trị nghiệm thu ${d(t.nt)} thấp hơn số bác đã nhận ${d(TIEN.TRA_THANG)}. Chuyển phần dư vào tài khoản công ty Đồng Xanh, nội dung HD0018 HOAN.`, nutKb(`Tôi đã hoàn ${d(t.nbHoan)}`, "nb-hoan"));
+  if (h.kb === "tra-lai" && h.buoc === 13 && h.phu === "cho-nb-hoan") return viec(`Bác cần hoàn ${d(t.nbHoan)} cho người mua`, `Giá trị nghiệm thu ${d(t.nt)} thấp hơn số bác đã nhận ${d(TIEN.TRA_THANG)}. Chuyển phần dư vào tài khoản công ty Đồng Xanh, nội dung HD0018 HOAN.`, nutKb(`Tôi đã hoàn ${d(t.nbHoan)}`, "nb-hoan"));
   return "";
 }
 const viecDon = (s) => {
@@ -203,9 +203,9 @@ export const MAN_3 = {
     ${viecDon(s)}
     ${tienO(s.hd.buoc)}
     <section class="m-the">${chang(BUOC[Math.min(s.hd.buoc, 14)].chang, s.hd.buoc >= 15)}</section>
-    ${the("Thỏa thuận", dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Cọc ngân hàng giữ", d(TIEN.COC)) + dong("Bên mua trả thẳng trước bốc", d(TIEN.TRA_THANG)) + dong("Tiền về tài khoản", "Agribank •••• 2186"), lk("Bản đầy đủ", "ban-day-du"))}
+    ${the("Thỏa thuận", dong("Giá loại 1", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg") + dong("Cọc ngân hàng giữ", d(TIEN.COC)) + dong("Người mua trả thẳng trước bốc", d(TIEN.TRA_THANG)) + dong("Tiền về tài khoản", "Agribank •••• 2186"), lk("Bản đầy đủ", "ban-day-du"))}
     ${the("Các bước", `<details class="m-gon"><summary>Xem đủ 15 bước · đang ở bước ${Math.min(s.hd.buoc + 1, 15)}</summary><ol class="m-buoc">${BUOC.map((x, i) => `<li class="${i < s.hd.buoc ? "m-b-xong" : i === s.hd.buoc ? "m-b-nay" : "m-b-cho"}"><span class="m-b-vong">${i < s.hd.buoc ? ic("tich", 15) : i + 1}</span><div><small>${AI[x.ai]}${x.han && i >= s.hd.buoc ? ` · hạn ${esc(x.han)}` : ""}</small><b>${esc(x.lam)}</b></div></li>`).join("")}</ol></details>`, `<span class="m-ghi">${Math.min(s.hd.buoc, 15)}/15</span>`)}
-    ${the("Có vướng mắc?", `<div class="m-hai-o">${nut("Xin đổi lịch", { ma: "doi-lich", lop: "m-phu m-nho" })}${nut("Xin thay đổi", { ma: "yeu-cau-thay-doi", lop: "m-phu m-nho" })}</div><div class="m-hai-o">${nut("Nhắn bên mua", { ma: "chat", tham: { ma: "T1" }, lop: "m-phu m-nho" })}${nut("Xin hủy", { ma: "huy-don", lop: "m-huy m-nho" })}</div>`)}
+    ${the("Có vướng mắc?", `<div class="m-hai-o">${nut("Xin đổi lịch", { ma: "doi-lich", lop: "m-phu m-nho" })}${nut("Xin thay đổi", { ma: "yeu-cau-thay-doi", lop: "m-phu m-nho" })}</div><div class="m-hai-o">${nut("Nhắn người mua", { ma: "chat", tham: { ma: "T1" }, lop: "m-phu m-nho" })}${nut("Xin hủy", { ma: "huy-don", lop: "m-huy m-nho" })}</div>`)}
     <button class="m-nut m-chu m-rong" type="button" id="lai">Chạy lại hợp đồng từ đầu (mô phỏng)</button>` }),
     sau: (el, s, t, api) => {
       const HU = window.HieuUng, cu = window.__tienCu, buocCu = window.__buocCu;
@@ -224,16 +224,16 @@ export const MAN_3 = {
       }));
       const kbDang = docHD().kb; if (kbDang && kbDang !== "thuan") el.querySelector(".m-than").insertAdjacentHTML("afterbegin", `<p class="m-ghi">Kịch bản thử đang chạy: <b>${esc(TEN_KB[kbDang] || kbDang)}</b> (nạp từ app mua).</p>`);
     } },
-  "xac-nhan-don": { tieu: "Đơn mới", phu: "Bên mua gửi thỏa thuận", ve: () => ({ than: `
+  "xac-nhan-don": { tieu: "Đơn mới", phu: "Người mua gửi thỏa thuận", ve: () => ({ than: `
     ${viec("Nhà máy sấy Đồng Xanh gửi thỏa thuận HĐ-0018", "Bác có 24 giờ để xem và ký. Không ký thì hàng hết giữ, lô bán tiếp bình thường.")}
-    ${the("Tóm tắt", dong("Hàng", "2.000 kg xoài cát Chu loại 1") + dong("Giá", "23.000 đ/kg") + dong("Giao", "28/10 · 5:30 · tại vườn, bên mua lo xe") + dong("Bác nhận tổng", d(TIEN.GIA_TRI), "m-tong"))}`,
+    ${the("Tóm tắt", dong("Hàng", "2.000 kg xoài cát Chu loại 1") + dong("Giá", "23.000 đ/kg") + dong("Giao", "28/10 · 5:30 · tại vườn, người mua lo xe") + dong("Bác nhận tổng", d(TIEN.GIA_TRI), "m-tong"))}`,
     day: `<div class="m-hang-nut">${nut("Đề nghị sửa", { ma: "yeu-cau-thay-doi", lop: "m-phu" })}${nut("Xem và ký", { ma: "ky", lop: "m-vang" })}</div>` }) },
-  "so-sanh": { tieu: "So sánh khách", phu: "3 bên mua cùng muốn lô L-0412", ve: () => ({ than: `
-    ${[["Nhà máy sấy Đồng Xanh", "23.000", "2.000 kg", "Bên mua lo xe · trả thẳng trước bốc", "4,7★ · 98% trả đúng hạn", true], ["Vựa Ba Cường", "23.500", "1.000 kg", "Bác giao tận vựa · trả khi nhận", "4,1★ · chưa xác minh", false], ["HTX Tân Thuận", "22.800", "3.000 kg", "Bên mua lo xe · trả trước bốc", "4,7★", true]].map(([a, g, l, gn, u, xm]) => `<section class="m-the" style="gap:6px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${a}</b><b class="m-so">${g} đ/kg</b></div><p class="m-ghi">${l} · ${gn}</p><p class="m-ghi">${u} ${xm ? "· đã xác minh" : ""}</p></section>`).join("")}
+  "so-sanh": { tieu: "So sánh khách", phu: "3 người mua cùng muốn lô L-0412", ve: () => ({ than: `
+    ${[["Nhà máy sấy Đồng Xanh", "23.000", "2.000 kg", "Người mua lo xe · trả thẳng trước bốc", "4,7★ · 98% trả đúng hạn", true], ["Vựa Ba Cường", "23.500", "1.000 kg", "Bác giao tận vựa · trả khi nhận", "4,1★ · chưa xác minh", false], ["HTX Tân Thuận", "22.800", "3.000 kg", "Người mua lo xe · trả trước bốc", "4,7★", true]].map(([a, g, l, gn, u, xm]) => `<section class="m-the" style="gap:6px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${a}</b><b class="m-so">${g} đ/kg</b></div><p class="m-ghi">${l} · ${gn}</p><p class="m-ghi">${u} ${xm ? "· đã xác minh" : ""}</p></section>`).join("")}
     <p class="m-ghi">Giá cao nhất chưa chắc lợi nhất: xem ai lo xe, trả tiền lúc nào, đã xác minh chưa.</p>` }) },
   "phuong-thuc": { tieu: "Chọn cách giao dịch", phu: "HĐ-0018", ve: () => ({ than: `
     <h2 class="m-tieu">Bác muốn nhận tiền thế nào?</h2>
-    ${chon("pt", [["Trả trước khi bốc", "Bên mua chuyển đủ phần còn lại, bác mới cho bốc. An toàn nhất."], ["Kiểm rồi mới trả", "Bên mua kiểm tại vườn, đạt thì chuyển tiền rồi bốc."], ["Trả khi nhận tại kho", "Bác chịu rủi ro đường đi. Chỉ nên chọn với mối quen."]])}
+    ${chon("pt", [["Trả trước khi bốc", "Người mua chuyển đủ phần còn lại, bác mới cho bốc. An toàn nhất."], ["Kiểm rồi mới trả", "Người mua kiểm tại vườn, đạt thì chuyển tiền rồi bốc."], ["Trả khi nhận tại kho", "Bác chịu rủi ro đường đi. Chỉ nên chọn với mối quen."]])}
     ${viec("Cọc 30% luôn qua ngân hàng", "Dù chọn cách nào, cọc 13.800.000 đ vẫn do ngân hàng giữ tới khi xong đơn.", "", "m-cho")}`,
     day: nut("Tiếp tục", { ma: "chon-luong", lop: "m-vang m-rong" }) }) },
   "chon-luong": { tieu: "Hứa bán bao nhiêu?", phu: "HĐ-0018", ve: () => ({ than: `
@@ -244,8 +244,8 @@ export const MAN_3 = {
     day: nut("Tiếp tục", { ma: "ky", lop: "m-vang m-rong" }) }) },
   ky: { tieu: "Thỏa thuận", phu: "HĐ-0018 · bản 1", ve: () => ({ than: `
     ${the("Hàng và giá", dong("Hàng", "Xoài cát Chu loại 1") + dong("Lượng", "2.000 kg (±5%)") + dong("Giá", "23.000 đ/kg") + dong("Giá hạ cấp", "15.000 đ/kg"))}
-    ${the("Tiền", dong("Cọc ngân hàng giữ", d(TIEN.COC)) + dong("Bên mua trả thẳng trước bốc", d(TIEN.TRA_THANG)) + dong("Bác nhận tổng", d(TIEN.GIA_TRI), "m-tong"))}
-    ${the("Giao nhận", dong("Ngày", "28/10 · 5:30") + dong("Nơi", "Tại vườn, bên mua lo xe") + dong("Kiểm hàng", "Tại kho bên mua · 2 giờ"))}
+    ${the("Tiền", dong("Cọc ngân hàng giữ", d(TIEN.COC)) + dong("Người mua trả thẳng trước bốc", d(TIEN.TRA_THANG)) + dong("Bác nhận tổng", d(TIEN.GIA_TRI), "m-tong"))}
+    ${the("Giao nhận", dong("Ngày", "28/10 · 5:30") + dong("Nơi", "Tại vườn, người mua lo xe") + dong("Kiểm hàng", "Tại kho người mua · 2 giờ"))}
     <div class="m-hai-o">${nut("Quyền và trách nhiệm", { ma: "quyen", lop: "m-phu m-nho" })}${nut("Bản đầy đủ", { ma: "ban-day-du", lop: "m-phu m-nho" })}</div>`,
     day: `<div class="m-hang-nut">${nut("Không ký", { lop: "m-phu" }).replace('type="button"', 'type="button" data-lui')}${nut("Ký thỏa thuận", { ma: "ky-otp", lop: "m-vang" })}</div>` }) },
   quyen: { tieu: "Quyền và trách nhiệm", phu: "Nói gọn, đọc to được", ve: () => ({ than: `
@@ -260,24 +260,24 @@ export const MAN_3 = {
     day: nut("Ký", { id: "ky", lop: "m-vang m-rong" }) }),
     sau: (el, s, t, api) => el.querySelector("#ky").addEventListener("click", () => { api.doi((x) => { if (x.hd.buoc <= 2) x.hd.buoc = 3; }); api.thay("ky-xong"); }) },
   "ky-xong": { tieu: "Hoàn tất ký", phu: "HĐ-0018", sau: (el) => { const HU = window.HieuUng; if (!HU) return; HU.kyTen(el.querySelector("#net-ky"), 1200).then(() => HU.dongDau(el.querySelector("#dau-ky"))); }, ve: () => ({ than: `
-    <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:20px 0"><div style="position:relative;width:260px;height:150px;border-radius:16px;background:var(--giay-noi);box-shadow:0 0 0 1px var(--ke)"><svg viewBox="0 0 260 150" width="260" height="150" aria-hidden="true"><path id="net-ky" d="M30 100c18-40 30-52 38-40s-10 44 4 42 22-48 34-46-2 40 12 40 18-30 30-28 6 22 20 20 24-16 40-14" fill="none" stroke="#1c2a21" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="118" x2="236" y2="118" stroke="rgba(28,42,33,.2)"/></svg><span id="dau-ky" style="visibility:hidden;position:absolute;right:14px;top:14px;border:3px solid var(--do);color:var(--do);font-weight:800;font-size:15px;padding:4px 10px;border-radius:8px;transform:rotate(-8deg);letter-spacing:.06em">ĐÃ KÝ</span></div><h2 class="m-tieu">Bác đã ký HĐ-0018</h2><p class="m-ghi">Bên mua có 48 giờ để chuyển cọc 13.938.000 đ vào ngân hàng. Chưa có cọc thì bác chưa giao.</p></div>`,
+    <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:20px 0"><div style="position:relative;width:260px;height:150px;border-radius:16px;background:var(--giay-noi);box-shadow:0 0 0 1px var(--ke)"><svg viewBox="0 0 260 150" width="260" height="150" aria-hidden="true"><path id="net-ky" d="M30 100c18-40 30-52 38-40s-10 44 4 42 22-48 34-46-2 40 12 40 18-30 30-28 6 22 20 20 24-16 40-14" fill="none" stroke="#1c2a21" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="118" x2="236" y2="118" stroke="rgba(28,42,33,.2)"/></svg><span id="dau-ky" style="visibility:hidden;position:absolute;right:14px;top:14px;border:3px solid var(--do);color:var(--do);font-weight:800;font-size:15px;padding:4px 10px;border-radius:8px;transform:rotate(-8deg);letter-spacing:.06em">ĐÃ KÝ</span></div><h2 class="m-tieu">Bác đã ký HĐ-0018</h2><p class="m-ghi">Người mua có 48 giờ để chuyển cọc 13.938.000 đ vào ngân hàng. Chưa có cọc thì bác chưa giao.</p></div>`,
     day: nut("Xem hợp đồng", { ma: "chi-tiet-don", lop: "m-vang m-rong" }) }) },
   "ky-giay": { tieu: "Ký giấy", phu: "Cho bác quen ký tay", ve: () => ({ than: `
     ${viec("Nhân viên mang bản in tới", "Bác ký tay 2 bản, nhân viên chụp lại và gửi lên app. Hợp đồng có hiệu lực khi app nhận ảnh.", "", "m-cho")}
     ${the("Hẹn ký", dong("Ngày", "Thứ Ba 28/10 · 7:00") + dong("Nhân viên", "Anh Hùng · AgiViet"))}`,
     day: nut("Đặt lịch ký giấy", { lop: "m-vang m-rong" }) }) },
-  "so-ban": { tieu: "Các bản", phu: "HĐ-0018", ve: () => ({ than: `<ol class="m-buoc">${[["Bản 2 · đang hiệu lực", "Đổi ngày giao 28/10 → 29/10 · hai bên ký 27/10", 1], ["Bản 1", "Bên mua soạn 26/10", 1]].map(([a, b]) => `<li class="m-b-xong"><span class="m-b-vong">${ic("hd", 15)}</span><div><b>${a}</b><small>${b}</small></div></li>`).join("")}</ol>` }) },
+  "so-ban": { tieu: "Các bản", phu: "HĐ-0018", ve: () => ({ than: `<ol class="m-buoc">${[["Bản 2 · đang hiệu lực", "Đổi ngày giao 28/10 → 29/10 · hai bên ký 27/10", 1], ["Bản 1", "Người mua soạn 26/10", 1]].map(([a, b]) => `<li class="m-b-xong"><span class="m-b-vong">${ic("hd", 15)}</span><div><b>${a}</b><small>${b}</small></div></li>`).join("")}</ol>` }) },
   coc: { tieu: "Tiền cọc", phu: "HĐ-0018", ve: (s) => ({ than: `
     <div class="m-so-lon m-tien"><small>Ngân hàng đang giữ</small><b>${d(s.hd.buoc >= 4 && s.hd.buoc < 13 ? TIEN.COC : 0)}</b><span class="m-ghi">cọc 30% · ngân hàng đối tác</span></div>
-    ${the("Cọc đi đâu", `<ol class="m-buoc">${["Bên mua chuyển cọc vào ngân hàng", "Ngân hàng giữ, không ai rút được", "Xong cân, ngân hàng chuyển cho bác phần còn lại của tiền hàng"].map((x, i) => `<li class="m-b-cho"><span class="m-b-vong">${i + 1}</span><div><b>${x}</b></div></li>`).join("")}</ol>`)}` }) },
+    ${the("Cọc đi đâu", `<ol class="m-buoc">${["Người mua chuyển cọc vào ngân hàng", "Ngân hàng giữ, không ai rút được", "Xong cân, ngân hàng chuyển cho bác phần còn lại của tiền hàng"].map((x, i) => `<li class="m-b-cho"><span class="m-b-vong">${i + 1}</span><div><b>${x}</b></div></li>`).join("")}</ol>`)}` }) },
   "mo-lien-lac": { tieu: "Đã mở liên lạc", phu: "HĐ-0018", ve: () => ({ than: `
     ${viec("Ngân hàng đã giữ cọc", "Liên lạc hai bên đã mở. Vẫn nên nhắn qua app để có bằng chứng.", "", "m-xong")}
-    ${the("Bên mua", dong("Người liên hệ", "Chị Thu Hà") + dong("Số điện thoại", "0277 386 210") + dong("Xe tới lấy", "66C-123.45 · anh Lộc"))}`,
+    ${the("Người mua", dong("Người liên hệ", "Chị Thu Hà") + dong("Số điện thoại", "0277 386 210") + dong("Xe tới lấy", "66C-123.45 · anh Lộc"))}`,
     day: `<div class="m-hang-nut m-deu">${nut("Nhắn tin", { ma: "chat", tham: { ma: "T1" }, lop: "m-phu" })}${nut("Gọi", { lop: "m-vang", icon: "dien" })}</div>` }) },
   "ket-qua": { tieu: "Kết quả cân", phu: "HĐ-0018 · kho Đồng Xanh", ve: () => { const k = tinhTien(docHD()); return { than: `
-    ${viec("Bên mua gửi kết quả cân", "Bác có 24 giờ để đồng ý, hoặc phản đối từng dòng. Im lặng không tính là đồng ý.")}
+    ${viec("Người mua gửi kết quả cân", "Bác có 24 giờ để đồng ý, hoặc phản đối từng dòng. Im lặng không tính là đồng ý.")}
     ${the("Kết quả", dong("Đạt loại 1", `${so(k.dat)} kg × 23.000`) + dong("Hạ cấp", `${so(k.ha)} kg × 15.000`) + dong("Trả lại", `${so(k.tra)} kg (có ảnh)`) + dong("Tiền hàng", d(k.nt), "m-tong"))}
-    ${the("Bác sẽ nhận", dong("Bên mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(k.cocNB)) + dong("Cọc dư hoàn bên mua", d(k.hoanMua)) + (k.nbHoan ? dong("Bác phải hoàn bên mua", d(k.nbHoan), "m-tong") : ""))}
+    ${the("Bác sẽ nhận", dong("Người mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(k.cocNB)) + dong("Cọc dư hoàn người mua", d(k.hoanMua)) + (k.nbHoan ? dong("Bác phải hoàn người mua", d(k.nbHoan), "m-tong") : ""))}
     <div class="m-luoi-anh"><span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span><span style="background:repeating-linear-gradient(0deg,#fbf9f3 0 18px,#e8e1cf 18px 19px)"></span><span style="background-image:url(/assets/products/xoai-cat-chu.jpg);filter:sepia(.4)"></span></div>`,
     day: `<div class="m-hang-nut">${nut("Phản đối", { ma: "tranh-chap", lop: "m-phu" })}${nut("Đồng ý kết quả", { id: "dy", lop: "m-vang" })}</div>`  }; },
     sau: (el, s, t, api) => el.querySelector("#dy").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã đồng ý"); api.doi((x) => { if (x.hd.buoc === 11) x.hd.buoc = 12; }); api.toast("Đã đồng ý kết quả cân · chờ ngân hàng chuyển tiền"); api.lui(); }) },
@@ -288,7 +288,7 @@ export const MAN_3 = {
   "doi-lich": { tieu: "Xin đổi lịch", phu: "HĐ-0018", ve: () => ({ than: `
     ${o("Ngày giao mới", "29/10/2026")}
     ${chon("ld", [["Mưa lớn, không hái được", ""], ["Xe chưa sắp xếp kịp", ""], ["Lý do khác", ""]])}
-    <p class="m-ghi">Bên mua có 24 giờ đồng ý. Đồng ý thì sinh bản 2, hạn trả tiền dời theo.</p>`,
+    <p class="m-ghi">Người mua có 24 giờ đồng ý. Đồng ý thì sinh bản 2, hạn trả tiền dời theo.</p>`,
     day: nut("Gửi đề nghị", { lop: "m-vang m-rong" }) }) },
   "yeu-cau-thay-doi": { tieu: "Xin thay đổi", phu: "HĐ-0018", ve: () => ({ than: `
     <h2 class="m-tieu">Bác muốn đổi gì?</h2>
@@ -296,21 +296,21 @@ export const MAN_3 = {
     <label class="m-o"><span>Ghi rõ</span><textarea>Mưa làm rụng trái, chỉ còn đủ 1.800 kg loại 1.</textarea></label>`,
     day: nut("Gửi đề nghị sửa", { lop: "m-vang m-rong" }) }) },
   "huy-don": { tieu: "Xin hủy đơn", phu: "HĐ-0018", ve: () => ({ than: `
-    ${chon("ly", [["Mất mùa, thiên tai", "Cần ảnh và giấy xác nhận của xã"], ["Bác không giao được nữa", "Cọc hoàn bên mua, bác bị ghi \"hủy sau cọc\""]])}
-    ${the("Nếu hủy vì mất mùa", dong("Hàng", "Không phải giao") + dong("Cọc 13.800.000 đ", "Hoàn bên mua") + dong("Uy tín", "Không bị trừ"))}
+    ${chon("ly", [["Mất mùa, thiên tai", "Cần ảnh và giấy xác nhận của xã"], ["Bác không giao được nữa", "Cọc hoàn người mua, bác bị ghi \"hủy sau cọc\""]])}
+    ${the("Nếu hủy vì mất mùa", dong("Hàng", "Không phải giao") + dong("Cọc 13.800.000 đ", "Hoàn người mua") + dong("Uy tín", "Không bị trừ"))}
     ${nut("Chụp chứng từ", { lop: "m-phu m-rong", icon: "anh" })}
-    <p class="m-ghi">Bên mua có 24 giờ trả lời. Im lặng là không đồng ý; AgiViet sẽ xem xét chứng từ.</p>`,
+    <p class="m-ghi">Người mua có 24 giờ trả lời. Im lặng là không đồng ý; AgiViet sẽ xem xét chứng từ.</p>`,
     day: nut("Gửi yêu cầu hủy", { lop: "m-huy m-rong" }) }) },
   "tranh-chap": { tieu: "Đối soát", phu: "HĐ-0018 · dòng hạ cấp 120 kg", ve: () => ({ than: `
     ${viec("Bác phản đối dòng hạ cấp", "Các dòng khác đã chốt, tiền phần đó vẫn chuyển bình thường.")}
-    ${the("Dòng đang đối soát", dong("Bên mua ghi", "120 kg hạ cấp") + dong("Bác cho là", "Loại 1, trái đủ 350 g") + dong("Chênh lệch", d(960000), "m-tong"))}
+    ${the("Dòng đang đối soát", dong("Người mua ghi", "120 kg hạ cấp") + dong("Bác cho là", "Loại 1, trái đủ 350 g") + dong("Chênh lệch", d(960000), "m-tong"))}
     ${the("Bằng chứng của bác", `<div class="m-luoi-anh"><span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span><span style="background:var(--la-dam);display:grid;place-items:center;color:#f4f1e8">${ic("anh", 26)}</span><span style="border:1.5px dashed var(--ke-dam)"></span></div><p class="m-ghi">Video lúc bốc · mẫu niêm phong M-2291 còn tại kho.</p>`)}
     <p class="m-ghi">Hai bên không thống nhất thì gửi kiểm định trong 48 giờ, bên sai chịu phí.</p>`,
     day: nut("Gửi phản đối", { lop: "m-vang m-rong" }) }) },
-  "kiem-tien": { tieu: "Kiểm tiền", phu: "HĐ-0018 · bên mua báo đã chuyển", ve: () => ({ than: `
-    ${viec(`Bên mua báo đã chuyển ${d(docHD().daTra || TIEN.TRA_THANG)}`, "Bác mở app ngân hàng xem Agribank •••• 2186 đã có tiền chưa. Chỉ bấm khi thấy tiền thật.")}
+  "kiem-tien": { tieu: "Kiểm tiền", phu: "HĐ-0018 · người mua báo đã chuyển", ve: () => ({ than: `
+    ${viec(`Người mua báo đã chuyển ${d(docHD().daTra || TIEN.TRA_THANG)}`, "Bác mở app ngân hàng xem Agribank •••• 2186 đã có tiền chưa. Chỉ bấm khi thấy tiền thật.")}
     ${o("Số tiền bác thấy về", d(docHD().daTra || TIEN.TRA_THANG).replace(" đ", ""), "", 'inputmode="numeric"')}${o("Mã giao dịch ngân hàng", "FT2630012345")}
-    ${chon("kt", [["Đã nhận đủ", ""], ["Mới nhận một phần", "Ghi đúng số đã thấy"], ["Chưa thấy tiền", "Bên mua sẽ được báo kiểm lại"]])}`,
+    ${chon("kt", [["Đã nhận đủ", ""], ["Mới nhận một phần", "Ghi đúng số đã thấy"], ["Chưa thấy tiền", "Người mua sẽ được báo kiểm lại"]])}`,
     day: nut("Xác nhận", { id: "xn", lop: "m-vang m-rong" }) }),
     sau: (el, s, t, api) => el.querySelector("#xn").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã xác nhận"); api.doi((x) => { if (x.hd.buoc === 6) x.hd.buoc = 7; }); api.toast(`Đã xác nhận nhận ${d(docHD().daTra || TIEN.TRA_THANG)}`); api.lui(); }) },
   "ban-giao": { tieu: "Bàn giao hàng", phu: "HĐ-0018 · xe 66C-123.45", ve: () => ({ than: `
@@ -318,30 +318,30 @@ export const MAN_3 = {
     <div class="m-otp">${"482917".split("").map((c) => `<input aria-label="Số mã" maxlength="1" value="${c}" inputmode="numeric">`).join("")}</div>
     ${the("Khi bốc", dong("Cân xe", "Ghi số cân, chụp phiếu") + dong("Mẫu đối chứng", "Niêm phong M-2291") + dong("Quay video", "Lúc bốc lên xe"))}`,
     day: nut("Đúng mã, bắt đầu bốc", { id: "bg", lop: "m-vang m-rong" }) }),
-    sau: (el, s, t, api) => el.querySelector("#bg").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đúng mã"); api.doi((x) => { if (x.hd.buoc === 7) x.hd.buoc = 8; }); api.toast("Đã bàn giao · chờ bên mua xem video lúc bốc"); api.lui(); }) },
-  "danh-gia": { tieu: "Đánh giá bên mua", phu: "HĐ-0018 · Nhà máy sấy Đồng Xanh", ve: () => ({ than: `
-    <h2 class="m-tieu">Bác thấy bên mua này thế nào?</h2>
+    sau: (el, s, t, api) => el.querySelector("#bg").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đúng mã"); api.doi((x) => { if (x.hd.buoc === 7) x.hd.buoc = 8; }); api.toast("Đã bàn giao · chờ người mua xem video lúc bốc"); api.lui(); }) },
+  "danh-gia": { tieu: "Đánh giá người mua", phu: "HĐ-0018 · Nhà máy sấy Đồng Xanh", ve: () => ({ than: `
+    <h2 class="m-tieu">Bác thấy người mua này thế nào?</h2>
     <div style="display:flex;gap:8px;justify-content:center;color:var(--vang)" id="sao">${[1, 2, 3, 4, 5].map((k) => `<button type="button" data-sao="${k}" aria-label="${k} sao" style="border:0;background:none;color:${k <= 5 ? "var(--vang)" : "var(--ke-dam)"};width:48px;height:48px;cursor:pointer">${ic("sao", 40)}</button>`).join("")}</div>
     <div class="m-loc">${["Trả tiền đúng giờ", "Xe tới đúng hẹn", "Cân rõ ràng", "Lịch sự"].map((t, i) => `<button type="button" aria-pressed="${i < 2}">${t}</button>`).join("")}</div>
     <label class="m-o"><span>Ghi thêm</span><textarea>Chị Hà làm việc nhanh, rõ ràng.</textarea></label>
-    <p class="m-ghi">Bên mua cũng đánh giá bác. Hai bên chỉ thấy đánh giá của nhau sau khi cả hai đã gửi.</p>`,
+    <p class="m-ghi">Người mua cũng đánh giá bác. Hai bên chỉ thấy đánh giá của nhau sau khi cả hai đã gửi.</p>`,
     day: nut("Gửi đánh giá", { id: "dg", lop: "m-vang m-rong" }) }),
     sau: (el, s, t, api) => { el.querySelectorAll("[data-sao]").forEach((b) => b.addEventListener("click", () => el.querySelectorAll("[data-sao]").forEach((x) => { x.style.color = Number(x.dataset.sao) <= Number(b.dataset.sao) ? "var(--vang)" : "var(--ke-dam)"; x.animate([{ transform: "scale(.8)" }, { transform: "scale(1.15)" }, { transform: "none" }], { duration: 260 }); }))); el.querySelector("#dg").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã gửi"); api.doi((x) => { x.hd.buoc = 15; }); api.toast("Đã gửi đánh giá · HĐ-0018 hoàn tất"); api.lui(); }); } },
 
   // ── Tiền ──
   tien: { tieu: "Tiền hàng", phu: "Agribank •••• 2186", tab: "tien", ve: (s) => ({ than: `
     <section class="m-the" style="background:var(--la);color:#f4f1e8;box-shadow:none"><small style="opacity:.75">Đã nhận tháng này</small><b class="m-so" style="font-size:32px">${d(28760000 + (s.hd.buoc >= 7 ? TIEN.TRA_THANG : 0) + (s.hd.buoc >= 13 ? TIEN.COC_CHO_BAC : 0))}</b><small style="opacity:.75">vào tài khoản Agribank •••• 2186</small></section>
-    <div class="m-hai-o"><div class="m-the m-so-lon m-tien"><small>Ngân hàng đang giữ cọc</small><b style="font-size:20px">${d(s.hd.buoc >= 4 && s.hd.buoc < 13 ? TIEN.COC : 0)}</b></div><div class="m-the m-so-lon"><small>Bên mua còn phải trả</small><b style="font-size:20px">${d(s.hd.buoc < 7 ? TIEN.TRA_THANG : 0)}</b></div></div>
+    <div class="m-hai-o"><div class="m-the m-so-lon m-tien"><small>Ngân hàng đang giữ cọc</small><b style="font-size:20px">${d(s.hd.buoc >= 4 && s.hd.buoc < 13 ? TIEN.COC : 0)}</b></div><div class="m-the m-so-lon"><small>Người mua còn phải trả</small><b style="font-size:20px">${d(s.hd.buoc < 7 ? TIEN.TRA_THANG : 0)}</b></div></div>
     ${the("Theo hợp đồng", dong("HĐ-0018 · Đồng Xanh", nhan(s.hd.buoc >= 15 ? "Đã nhận đủ" : "Đang chạy", s.hd.buoc >= 15 ? "m-n-xong" : "m-n-tien")) + dong("HĐ-0011 · Bếp Sen", nhan("Tuần 4 chờ giao", "")) + dong("HĐ-0009 · Tân Thuận", nhan("Đã nhận đủ", "m-n-xong")), lk("Quyết toán", "quyet-toan"))}
     <div class="m-hai-o">${nut("Lịch sử tiền", { ma: "lich-su-tien", lop: "m-phu m-nho" })}${nut("Nhận tiền trước", { ma: "ung-tien", lop: "m-phu m-nho" })}</div>` }) },
   "tien-ve": { tieu: "Tiền đã về", phu: "HĐ-0018", ve: () => ({ than: `
     <div style="display:grid;justify-items:center;text-align:center;gap:10px;padding:24px 0"><span class="m-nay" style="width:96px;height:96px;border-radius:50%;background:var(--vang-nhat);color:var(--chin);display:grid;place-items:center">${ic("tien", 46)}</span><small class="m-ghi">Ngân hàng vừa chuyển</small><b class="m-so" id="so-ve" style="font-size:34px;color:var(--chin);border-radius:8px">${d(TIEN.COC_CHO_BAC)}</b><p class="m-ghi">vào Agribank •••• 2186 · 28/10 15:42</p></div>
-    ${the("HĐ-0018 tổng cộng", dong("Bên mua trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(TIEN.COC_CHO_BAC)) + dong("Bác nhận tổng", d(TIEN.NGHIEM_THU), "m-tong"))}
+    ${the("HĐ-0018 tổng cộng", dong("Người mua trả thẳng", d(TIEN.TRA_THANG)) + dong("Ngân hàng chuyển từ cọc", d(TIEN.COC_CHO_BAC)) + dong("Bác nhận tổng", d(TIEN.NGHIEM_THU), "m-tong"))}
     <p class="m-ghi">Chỉ bấm khi đã thấy tiền trong tài khoản. Chưa thấy thì báo, AgiViet kiểm với ngân hàng.</p>`,
     day: `<div class="m-hang-nut">${nut("Chưa thấy", { lop: "m-phu" })}${nut("Đã thấy tiền về", { id: "ve", lop: "m-vang" })}</div>` }),
     sau: (el, s, t, api) => (window.HieuUng?.demSo(el.querySelector("#so-ve"), 0, TIEN.COC_CHO_BAC), el.querySelector("#ve").addEventListener("click", async (e) => { await api.xong(e.currentTarget, "Đã nhận tiền"); api.doi((x) => { if (x.hd.buoc === 13) x.hd.buoc = 14; }); api.toast("Đã xác nhận tiền về"); api.thay("danh-gia"); })) },
   "quyet-toan": { tieu: "Quyết toán", phu: "HĐ-0018 · từng bước", ve: () => ({ than: `
-    ${the("Cách tính", dong("Tiền hàng theo kết quả cân", d(TIEN.NGHIEM_THU)) + dong("− Bác chịu bồi thường", "0 đ") + dong("= Bác được nhận tổng", d(TIEN.NGHIEM_THU), "m-tong") + dong("− Bên mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("= Ngân hàng chuyển từ cọc cho bác", d(TIEN.COC_CHO_BAC), "m-tong") + dong("Cọc dư hoàn bên mua", d(TIEN.HOAN_BEN_MUA)))}`,
+    ${the("Cách tính", dong("Tiền hàng theo kết quả cân", d(TIEN.NGHIEM_THU)) + dong("− Bác chịu bồi thường", "0 đ") + dong("= Bác được nhận tổng", d(TIEN.NGHIEM_THU), "m-tong") + dong("− Người mua đã trả thẳng", d(TIEN.TRA_THANG)) + dong("= Ngân hàng chuyển từ cọc cho bác", d(TIEN.COC_CHO_BAC), "m-tong") + dong("Cọc dư hoàn người mua", d(TIEN.HOAN_BEN_MUA)))}`,
     day: nut("Nghe đọc bảng tính", { lop: "m-phu m-rong", icon: "tai" }) }) },
   "lich-su-tien": { tieu: "Lịch sử tiền", phu: "Agribank •••• 2186", ve: (s) => ({ than: s.lichSuTien.map((t) => the(t.thang, t.dong.map(([n, nd, so2]) => dong(`${n} · ${esc(nd)}`, `<span style="color:var(--la)">+${so(so2)}</span>`)).join(""))).join("") }) },
   "ung-tien": { tieu: "Nhận tiền trước", phu: "Đang thử nghiệm", ve: () => ({ than: `
@@ -353,10 +353,10 @@ export const MAN_3 = {
   toi: { tieu: "Tôi", phu: "Cài đặt & hỗ trợ", ve: (s) => ({ than: `
     <section class="m-the" style="grid-template-columns:64px 1fr;align-items:center"><span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--la-nhat);color:var(--la);font-weight:700;font-size:24px">N</span><span><b style="font-size:18px">${esc(s.ho.ten)}</b><span class="m-ghi" style="display:block">${esc(s.ho.noi)}</span>${nhan("Đã xác minh", "m-n-xong")}</span></section>
     ${[["sao", "Uy tín của tôi", "uy-tin"], ["khien", "Phần hàng và giấy tờ của tôi", "phan-cua-toi"], ["tien", "Tài khoản nhận tiền", "tai-khoan-nhan"], ["xe", "Kiểm nghiệm, xe, kho", "dich-vu"], ["nguoi", "Người giúp", "nguoi-giup"], ["cai", "Cài đặt", "cai-dat"], ["khoa", "Bảo mật", "bao-mat"], ["khien", "Quyền riêng tư", "rieng-tu"], ["tai", "Trung tâm hỗ trợ", "ho-tro"]].map(([i, t, m]) => `<div class="m-hang" data-di="${m}" style="grid-template-columns:40px 1fr auto;padding:10px 12px"><span style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--la-nhat);color:var(--la)">${ic(i, 20)}</span><b>${t}</b>${ic("toi", 18)}</div>`).join("")}` }) },
-  "uy-tin": { tieu: "Uy tín của tôi", phu: "Bên mua thấy trước khi chào giá", ve: (s) => ({ than: `
-    <div class="m-hai-o"><div class="m-the m-so-lon m-tien"><small>Bên mua chấm</small><b>${s.ho.uyTin}★</b></div><div class="m-the m-so-lon"><small>Đơn đã xong</small><b>${s.ho.soDon}</b></div></div>
+  "uy-tin": { tieu: "Uy tín của tôi", phu: "Người mua thấy trước khi chào giá", ve: (s) => ({ than: `
+    <div class="m-hai-o"><div class="m-the m-so-lon m-tien"><small>Người mua chấm</small><b>${s.ho.uyTin}★</b></div><div class="m-the m-so-lon"><small>Đơn đã xong</small><b>${s.ho.soDon}</b></div></div>
     ${the("Từng mục", [["Giao đủ lượng", 97], ["Đúng loại", 94], ["Đúng hẹn", 100]].map(([a, b]) => `<div style="display:grid;gap:4px;padding:6px 0"><div style="display:flex;justify-content:space-between"><span>${a}</span><b>${b}%</b></div><div style="height:8px;border-radius:4px;background:var(--giay-sau)"><i style="display:block;height:100%;width:${b}%;border-radius:4px;background:var(--la)"></i></div></div>`).join(""))}
-    ${the("Bên mua nói gì", [["Nhà máy Đồng Xanh", "Hàng đều, cân đúng, bốc đúng giờ.", 5], ["Vựa Ba Cường", "Có 2% dập, chị chủ động báo trước.", 4]].map(([a, b, c]) => `<div class="m-dong" style="display:block"><b>${a} · ${"★".repeat(c)}</b><p class="m-ghi">${b}</p></div>`).join(""))}` }) },
+    ${the("Người mua nói gì", [["Nhà máy Đồng Xanh", "Hàng đều, cân đúng, bốc đúng giờ.", 5], ["Vựa Ba Cường", "Có 2% dập, chị chủ động báo trước.", 4]].map(([a, b, c]) => `<div class="m-dong" style="display:block"><b>${a} · ${"★".repeat(c)}</b><p class="m-ghi">${b}</p></div>`).join(""))}` }) },
   "dich-vu": { tieu: "Kiểm nghiệm, xe, kho", phu: "Đối tác của AgiViet", ve: () => ({ than: [["khien", "Kiểm dư lượng thuốc", "Lấy mẫu tại vườn · 24–48 giờ · từ 850.000 đ"], ["xe", "Xe chở hàng", "Xe thường, xe lạnh, ghép chuyến"], ["la", "Kho lạnh gần vườn", "Gửi theo ngày"]].map(([i, t, g]) => `<div class="m-hang" data-di="dat-dich-vu"><span class="m-anh" style="display:grid;place-items:center;background:var(--la-nhat);color:var(--la)">${ic(i, 28)}</span><span><b>${t}</b><small>${g}</small></span>${ic("toi", 18)}</div>`).join("") }) },
   "dat-dich-vu": { tieu: "Đặt dịch vụ", phu: "Kiểm dư lượng thuốc", ve: () => ({ than: `
     ${chon("dv", [["Trung tâm kiểm định Cần Thơ", "850.000 đ · kết quả 24 giờ"], ["Vinacontrol Đồng Tháp", "1.100.000 đ · kết quả 12 giờ"]])}
@@ -366,17 +366,17 @@ export const MAN_3 = {
     ${the("Chữ và giọng", `<div class="m-loc"><button type="button" aria-pressed="false">Bình thường</button><button type="button" aria-pressed="true">Lớn</button><button type="button" aria-pressed="false">Rất lớn</button></div>` + dong("Tốc độ đọc", "Chậm") + dong("Tự đọc thông báo", nhan("Bật", "m-n-xong")))}
     ${the("Thông báo", dong("Lời chào mới", nhan("Bật", "m-n-xong")) + dong("Thời tiết nguy hiểm", nhan("Bật", "m-n-xong")) + dong("Tin ngành", nhan("Mỗi sáng", "")))}` }) },
   "ho-tro": { tieu: "Trung tâm hỗ trợ", ve: () => ({ than: `
-    ${[["Cọc là gì, ai giữ?", "Ngân hàng đối tác giữ, không ai rút được"], ["Bên mua không trả tiền thì sao?", "Không cho bốc khi chưa đủ tiền"], ["Phản đối kết quả cân thế nào?", "Phản đối từng dòng trong 24 giờ"]].map(([t, g]) => `<div class="m-hang" style="grid-template-columns:1fr auto"><span><b>${t}</b><small>${g}</small></span>${ic("toi", 18)}</div>`).join("")}`,
+    ${[["Cọc là gì, ai giữ?", "Ngân hàng đối tác giữ, không ai rút được"], ["Người mua không trả tiền thì sao?", "Không cho bốc khi chưa đủ tiền"], ["Phản đối kết quả cân thế nào?", "Phản đối từng dòng trong 24 giờ"]].map(([t, g]) => `<div class="m-hang" style="grid-template-columns:1fr auto"><span><b>${t}</b><small>${g}</small></span>${ic("toi", 18)}</div>`).join("")}`,
     day: `<div class="m-hang-nut m-deu">${nut("Gọi tổng đài", { lop: "m-phu", icon: "dien" })}${nut("Nhắn AgiViet", { ma: "can-ho-tro", lop: "m-vang" })}</div>` }) },
   "can-ho-tro": { tieu: "Cần hỗ trợ", phu: "Nhân viên AgiViet trả lời", ve: () => ({ than: `
-    <div class="m-loc">${["Tiền chưa về", "Không ký được", "Bên mua không trả lời", "Khác"].map((t, i) => `<button type="button" aria-pressed="${i === 0}">${t}</button>`).join("")}</div>
+    <div class="m-loc">${["Tiền chưa về", "Không ký được", "Người mua không trả lời", "Khác"].map((t, i) => `<button type="button" aria-pressed="${i === 0}">${t}</button>`).join("")}</div>
     <label class="m-o"><span>Bác nói hoặc gõ</span><textarea>Tiền cọc HĐ-0009 chưa thấy về Agribank.</textarea></label>
     ${nut("Nói thay vì gõ", { lop: "m-phu m-rong", icon: "mic" })}`,
     day: nut("Gửi cho AgiViet", { lop: "m-vang m-rong" }) }) },
   "trang-thai": { tieu: "Lỗi mẫu", phu: "Các trạng thái màn", ve: () => ({ than: `
     ${viec("Mất mạng", "Nhật ký và bài nháp vẫn lưu trên máy, có mạng sẽ tự gửi. Ký, tiền cần có mạng.", "", "m-cho")}
     ${viec("Không tải được hợp đồng", "Bác thử lại, hoặc gọi tổng đài nếu vẫn lỗi.", `<div>${nut("Tải lại", { lop: "m-phu m-rong" })}</div>`, "m-gap")}
-    <section class="m-the"><div class="m-rong" style="text-align:center;padding:16px;display:grid;gap:8px;justify-items:center"><b>Chưa có lời chào nào</b><span class="m-ghi">Đăng lô rõ ảnh, đúng lượng để bên mua tìm thấy.</span>${nut("Đăng hàng", { ma: "dang", lop: "m-phu m-nho" })}</div></section>` }) },
+    <section class="m-the"><div class="m-rong" style="text-align:center;padding:16px;display:grid;gap:8px;justify-items:center"><b>Chưa có lời chào nào</b><span class="m-ghi">Đăng lô rõ ảnh, đúng lượng để người mua tìm thấy.</span>${nut("Đăng hàng", { ma: "dang", lop: "m-phu m-nho" })}</div></section>` }) },
   "nguoi-giup": { tieu: "Người giúp", phu: "Con cháu dùng app hộ", ve: () => ({ than: `
     ${the("Đang giúp bác", dong("Nguyễn Văn Tâm (con)", nhan("Đăng hàng, ghi nhật ký", "m-n-xong")))}
     <p class="m-ghi">Người giúp không ký hợp đồng, không xác nhận tiền, không xin hủy được.</p>`,
@@ -386,7 +386,7 @@ export const MAN_3 = {
     ${viec("Đổi tài khoản phải chờ 24 giờ", "Để chống kẻ gian đổi tài khoản lấy tiền. Trong 24 giờ, tiền vẫn về tài khoản cũ.", "", "m-cho")}`,
     day: nut("Đổi tài khoản", { lop: "m-phu m-rong" }) }) },
   "bao-mat": { tieu: "Bảo mật", ve: () => ({ than: the("", dong("Mã PIN 4 số", nhan("Đã đặt", "m-n-xong")) + dong("Đăng nhập bằng vân tay", nhan("Bật", "m-n-xong")) + dong("Máy đang đăng nhập", "Điện thoại này")) + `<p class="m-ghi">AgiViet không bao giờ hỏi mã OTP hay mã PIN của bác qua điện thoại.</p>`, day: nut("Đăng xuất máy khác", { lop: "m-huy m-rong" }) }) },
-  "rieng-tu": { tieu: "Quyền riêng tư", ve: () => ({ than: the("Bên mua thấy gì", dong("Tên hay gọi", "Chị Năm") + dong("Vị trí vườn", "Tới cấp ấp") + dong("Số điện thoại", "Sau khi ngân hàng giữ cọc") + dong("Giá thấp nhất", "Không bao giờ")) }) },
+  "rieng-tu": { tieu: "Quyền riêng tư", ve: () => ({ than: the("Người mua thấy gì", dong("Tên hay gọi", "Chị Năm") + dong("Vị trí vườn", "Tới cấp ấp") + dong("Số điện thoại", "Sau khi ngân hàng giữ cọc") + dong("Giá thấp nhất", "Không bao giờ")) }) },
   "phan-cua-toi": { tieu: "Phần hàng và giấy tờ", phu: "Cập nhật hồ sơ, xin xác minh", ve: () => ({ than: `
     ${the("Giấy tờ", dong("Căn cước", nhan("Đã xác minh", "m-n-xong")) + dong("Mã vùng trồng", nhan("Đã xác minh", "m-n-xong")) + dong("VietGAP", nhan("Chưa có", "")) + dong("Kiểm dư lượng 15/10", nhan("Chờ duyệt", "m-n-tien")))}
     ${viec("Chưa có giấy kiểm định?", "Bác đặt nhân viên tới vườn lấy mẫu, hoặc chụp giấy đang có để AgiViet duyệt. Được duyệt thì lô có nhãn \"Đã kiểm\".", `<div class="m-hai-o">${nut("Chụp giấy tờ", { lop: "m-phu m-nho", icon: "anh" })}${nut("Đặt kiểm định", { ma: "dat-dich-vu", lop: "m-phu m-nho" })}</div>`)}` }) },

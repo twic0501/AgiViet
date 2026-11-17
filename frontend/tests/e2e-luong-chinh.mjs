@@ -232,7 +232,7 @@ try {
     await shot(s, "coc-dang-giu");
   });
   await step(
-    "Bên mua báo chuyển tiền với chứng từ thật đã tải lên",
+    "Người mua báo chuyển tiền với chứng từ thật đã tải lên",
     async () => {
       await go(b, `order/${order}/payments`);
       const token = await buyerSession();
@@ -293,7 +293,7 @@ try {
     await submit(s, "batDau");
     await shot(s, "bat-dau-nghiem-thu");
   });
-  await step("Bên mua nhập 3 phần nghiệm thu, người bán ký PIN", async () => {
+  await step("Người mua nhập 3 phần nghiệm thu, người bán ký PIN", async () => {
     await go(b, `order/${order}/delivery`);
     await b.locator("[name=weighed]").fill("2000");
     await b.locator("[name=seal]").fill("M-UI-2291");

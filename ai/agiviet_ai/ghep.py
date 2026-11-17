@@ -58,7 +58,7 @@ def danh_gia(nc, lo, luc):
     # kiện để hiện gợi ý: mẫu chỉ lấy khi đã có đơn (TH NC-3003: gom 6 nguồn rồi mới kiểm định).
     truoc_boc = sorted(x for x in bat_buoc if x.startswith('kiem_dinh') or x == 'ket_qua_kiem_dinh')
     bat_buoc -= set(truoc_boc)
-    bat_buoc.discard('ma_co_so_dong_goi')  # của bên mua (01 mục 4.1)
+    bat_buoc.discard('ma_co_so_dong_goi')  # của người mua (01 mục 4.1)
     # Nhật ký cách ly: chứng minh bằng ngày hết cách ly ghi trên lô (kiểm ở H5).
     if 'nhat_ky_cach_ly' in bat_buoc and lo.het_cach_ly is not None:
         bat_buoc.discard('nhat_ky_cach_ly')
@@ -203,7 +203,7 @@ def ghep(req: MatchRequest, noi_bo: bool = False):
 
 
 def ghep_nguoc(req: ReverseMatchRequest):
-    """Chiều người bán (05 mục 2.6): một lô -> các nhu cầu khớp. Không trả giá tối đa của bên mua."""
+    """Chiều người bán (05 mục 2.6): một lô -> các nhu cầu khớp. Không trả giá tối đa của người mua."""
     ra = []
     dem_can = 0
     for nc in req.nhu_cau:

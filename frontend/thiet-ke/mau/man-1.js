@@ -12,7 +12,7 @@ export const MAN_1 = {
       <img src="/assets/logo.svg" alt="" width="72" height="72" class="m-nay">
       <h1 class="m-tieu" style="font-size:28px;color:var(--la)">AgiViet</h1>
       <p style="color:var(--muc-phu);font-size:17px">Bán nông sản, thủy sản có hợp đồng.<br>Tiền cọc do ngân hàng giữ.</p></div>
-      ${[["khien", "Ngân hàng giữ cọc", "Bên mua chuyển cọc trước, bác mới giao hàng"], ["mic", "Nói là đăng được hàng", "App hỏi từng câu, bác trả lời bằng giọng nói"], ["nguoi", "Có người giúp khi vướng", "Gọi tổng đài, hoặc nhờ con cháu đăng nhập hộ"]].map(([i, t, g]) => `<div class="m-hang" style="cursor:default"><span class="m-anh" style="display:grid;place-items:center;background:var(--vang-nhat);color:var(--chin)">${ic(i, 28)}</span><span><b>${t}</b><small>${g}</small></span><span></span></div>`).join("")}`,
+      ${[["khien", "Ngân hàng giữ cọc", "Người mua chuyển cọc trước, bác mới giao hàng"], ["mic", "Nói là đăng được hàng", "App hỏi từng câu, bác trả lời bằng giọng nói"], ["nguoi", "Có người giúp khi vướng", "Gọi tổng đài, hoặc nhờ con cháu đăng nhập hộ"]].map(([i, t, g]) => `<div class="m-hang" style="cursor:default"><span class="m-anh" style="display:grid;place-items:center;background:var(--vang-nhat);color:var(--chin)">${ic(i, 28)}</span><span><b>${t}</b><small>${g}</small></span><span></span></div>`).join("")}`,
     day: `${nut("Bắt đầu", { ma: "dang-nhap", lop: "m-vang m-rong" })}${nut("Tôi đã có tài khoản", { ma: "dang-nhap", lop: "m-chu m-rong" })}` }) },
   "dang-nhap": { tieu: "Số điện thoại", phu: "Đăng nhập", ve: () => ({
     than: `<h2 class="m-tieu">Bác nhập số điện thoại</h2><p class="m-phu-de">App gửi mã 6 số qua tin nhắn.</p>
@@ -34,14 +34,14 @@ export const MAN_1 = {
       ${o("Giống, loại chính", "Xoài cát Chu", "Ví dụ: sầu riêng Ri6, tôm thẻ chân trắng")}`,
     day: nut("Tiếp tục", { ma: "ho-so", lop: "m-vang m-rong" }) }) },
   "ho-so": { tieu: "Hồ sơ", phu: "Bước 3 trên 5", ve: (s) => ({
-    than: `${buocBat(3)}<h2 class="m-tieu">Bên mua sẽ gọi bác là gì?</h2>
-      ${o("Họ tên (đúng căn cước)", s.ho.ten)}${o("Tên hay gọi", s.ho.goi, "Bên mua thấy tên này. Số điện thoại che tới khi có cọc.")}
+    than: `${buocBat(3)}<h2 class="m-tieu">Người mua sẽ gọi bác là gì?</h2>
+      ${o("Họ tên (đúng căn cước)", s.ho.ten)}${o("Tên hay gọi", s.ho.goi, "Người mua thấy tên này. Số điện thoại che tới khi có cọc.")}
       ${o("Xã, huyện, tỉnh", s.ho.noi)}
       <div class="m-hai-o"><label class="m-o"><span>Ngân hàng</span><select><option>Agribank</option><option>Vietcombank</option><option>BIDV</option></select></label>${o("Số tài khoản", "5104 2058 2186", "", 'inputmode="numeric"')}</div>
       <p class="m-ghi">Tài khoản phải đúng tên bác. Đổi tài khoản sau này phải chờ 24 giờ cho an toàn.</p>`,
     day: nut("Tiếp tục", { ma: "khai-bao-vuon", lop: "m-vang m-rong" }) }) },
   "khai-bao-vuon": { tieu: "Khai báo vườn", phu: "Bước 4 trên 5", ve: () => ({
-    than: `${buocBat(4)}<h2 class="m-tieu">Vườn của bác ở đâu?</h2><p class="m-phu-de">Đứng trong vườn rồi bấm lấy vị trí. Bên mua chỉ thấy tới cấp ấp.</p>
+    than: `${buocBat(4)}<h2 class="m-tieu">Vườn của bác ở đâu?</h2><p class="m-phu-de">Đứng trong vườn rồi bấm lấy vị trí. Người mua chỉ thấy tới cấp ấp.</p>
       <div style="aspect-ratio:16/10;border-radius:18px;background:linear-gradient(160deg,#cfdcc4,#b9cfa9 50%,#d9cfa9);position:relative;overflow:hidden"><i style="position:absolute;inset:22% 28% 30% 24%;border:2.5px dashed var(--la);border-radius:18% 30% 22% 26%;background:rgba(31,77,58,.12)"></i><i style="position:absolute;left:50%;top:46%;width:18px;height:18px;border-radius:50%;background:var(--do);box-shadow:0 0 0 6px rgba(168,57,44,.25);transform:translate(-50%,-50%)" class="m-nay"></i></div>
       ${nut("Lấy vị trí đang đứng", { lop: "m-phu m-rong", icon: "la" })}
       ${o("Tên vườn", "Vườn xoài ấp 3")}<div class="m-hai-o">${o("Diện tích", "1,2 ha")}${o("Số cây", "320")}</div>
@@ -65,7 +65,7 @@ export const MAN_1 = {
     return { than: `
       ${xong ? viec("HĐ-0018 đã hoàn tất", "Tiền xoài đã về đủ. Cảm ơn chị Năm.", "", "m-xong")
         : b.ai === "bac" ? viec(b.lam, `HĐ-0018 · Nhà máy sấy Đồng Xanh · 2.000 kg xoài${b.han ? ` · hạn ${b.han}` : ""}`, `<div style="margin-top:4px">${nut(b.nut, { ma: b.di || "chi-tiet-don", lop: "m-vang m-rong" })}</div>`)
-        : viec(`Đang chờ ${b.ai === "nh" ? "ngân hàng" : "bên mua"}`, `${esc(b.lam)}. Bác chưa phải làm gì.`, `<div>${nut("Xem hợp đồng", { ma: "chi-tiet-don", lop: "m-phu m-rong" })}</div>`, "m-cho")}
+        : viec(`Đang chờ ${b.ai === "nh" ? "ngân hàng" : "người mua"}`, `${esc(b.lam)}. Bác chưa phải làm gì.`, `<div>${nut("Xem hợp đồng", { ma: "chi-tiet-don", lop: "m-phu m-rong" })}</div>`, "m-cho")}
       <div class="m-loi-tat">${[["troi", "Thời tiết", "thoi-tiet"], ["so", "Nhật ký canh tác", "nhat-ky"], ["hd", "Hợp đồng", "lich"], ["bao", "Giá & tin tức", "gia-tin-tuc"], ["cai", "Cài đặt & Hỗ trợ", "toi"]].map(([i, t, m]) => `<button type="button" data-di="${m}">${ic(i, 28)}<span>${t}</span></button>`).join("")}</div>
       ${the("Hợp đồng đang chạy", `<div role="button" data-di="chi-tiet-don" style="display:grid;gap:10px;cursor:pointer"><div style="display:flex;justify-content:space-between;gap:10px"><b>HĐ-0018 · Đồng Xanh</b><span class="m-so">${d(46000000)}</span></div>${chang(b.chang, xong)}</div>
         ${s.hopDongKhac.map((h) => `<div class="m-dong"><span>${h.ma} · ${esc(h.ben)}<br><small class="m-ghi">${esc(h.viec)}</small></span><b>${h.luot === "bac" ? nhan("Tới lượt bác", "m-n-bac") : nhan("Xong", "m-n-xong")}</b></div>`).join("")}`, lk("Tất cả", "lich"))}
@@ -118,7 +118,7 @@ export const MAN_1 = {
     sau: (el, s, t, api) => el.querySelectorAll("[data-nk]").forEach((b) => b.addEventListener("click", () => {
       const n = s.nhatKy[Number(b.dataset.nk)];
       api.tam(`<div class="m-tam-than"><h2>${esc(n.ngay)} · ${esc(n.viec)}</h2><p>${esc(n.chi)}</p>
-        ${n.anh ? `<div class="m-luoi-anh">${Array.from({ length: Math.min(n.anh, 6) }, () => `<span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span>`).join("")}</div>` : `<p class="m-ghi" style="color:var(--chin)">Chưa có ảnh làm chứng. Bên mua tin dòng có ảnh chụp trong app hơn.</p>`}
+        ${n.anh ? `<div class="m-luoi-anh">${Array.from({ length: Math.min(n.anh, 6) }, () => `<span style="background-image:url(/assets/products/xoai-cat-chu.jpg)"></span>`).join("")}</div>` : `<p class="m-ghi" style="color:var(--chin)">Chưa có ảnh làm chứng. Người mua tin dòng có ảnh chụp trong app hơn.</p>`}
         ${dong("Cách ghi", n.nguon === "noi" ? "Nói để ghi" : n.nguon === "chup" ? "Chụp trong app" : n.nguon === "vh" ? "Nhân viên AgiViet" : "Tự gõ")}${dong("Xác minh", n.kiem ? "Nhân viên đã kiểm tại vườn" : "Chưa kiểm")}</div>
         <div class="m-day"><div class="m-hang-nut"><button class="m-nut m-phu" type="button" data-dong>Đóng</button><button class="m-nut" type="button">${ic("anh", 20)}Thêm ảnh làm chứng</button></div></div>`);
     })) },
@@ -145,7 +145,7 @@ export const MAN_1 = {
     <div class="m-so-lon"><small>Còn cách ly thuốc tới</small><b style="color:var(--do)">09/11/2026</b><span class="m-ghi">7 ngày nữa · lần phun 02/11 (Abamectin)</span></div>
     ${the("Trong lúc cách ly", dong("Đăng \"có hàng ngay\"", nhan("Không được", "m-n-bac")) + dong("Đăng \"sắp có hàng\"", nhan("Được, hái từ 09/11", "m-n-xong")) + dong("Giao hàng", nhan("Từ 09/11", "m-n-tien")))}
     <p class="m-ghi">Ngày hết cách ly lấy từ nhật ký phun thuốc. Nếu bác phun thêm mà chưa ghi, phải ghi trước khi đăng bán.</p>` }) },
-  "ho-so-vuon": { tieu: "Hồ sơ nguồn gốc", phu: "Bên mua thấy trang này", ve: () => ({ than: `
+  "ho-so-vuon": { tieu: "Hồ sơ nguồn gốc", phu: "Người mua thấy trang này", ve: () => ({ than: `
     ${the("Đã xác minh", dong("Danh tính", nhan("Căn cước · 14/09", "m-n-xong")) + dong("Vườn", nhan("Nhân viên tới 20/10", "m-n-nh")) + dong("Tài khoản nhận tiền", nhan("Đúng tên", "m-n-xong")))}
     ${the("Nhật ký 30 ngày", dong("Số lần ghi", "12") + dong("Có ảnh chụp trong app", "8") + dong("Nhân viên đã kiểm", "3"))}
     ${the("Giấy tờ", dong("Mã vùng trồng VN-DT-0412", nhan("Đã xác minh", "m-n-xong")) + dong("VietGAP", nhan("Chưa có", "")))}

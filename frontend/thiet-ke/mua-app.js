@@ -384,7 +384,7 @@ async function lamMoi() { await taiHet(); veHomNay(); veNguon(); veDon(); veTien
   if (!token) return location.replace("./dang-nhap.html?ben=mua");
   try {
     me = await api("/v1/me");
-    if (!me.org?.can_buy) { tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><p>Tài khoản <b>${esc(me.org?.name || "")}</b> là bên bán. App này dành cho bên mua.</p><a class="nut chinh" href="ban-hom-nay.html">Mở app người bán</a><button class="nut vien" id="dx2">Đăng xuất</button></div></div>`); $("#dx2").onclick = dangXuat; return; }
+    if (!me.org?.can_buy) { tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><p>Tài khoản <b>${esc(me.org?.name || "")}</b> là người bán. App này dành cho người mua.</p><a class="nut chinh" href="ban-hom-nay.html">Mở app người bán</a><button class="nut vien" id="dx2">Đăng xuất</button></div></div>`); $("#dx2").onclick = dangXuat; return; }
     // Tổ chức mới đăng ký: chưa có vai (chờ nhân viên AgiViet xác minh, hai người duyệt) → chưa dùng được chức năng mua.
     if (!(me.roles || []).length) { await tatSplash(); document.body.insertAdjacentHTML("beforeend", `<div class="man-full"><div class="the trong"><h2 style="margin:0;font-size:20px">${esc(me.org?.name || "")} đang chờ xác minh</h2><p>Nhân viên AgiViet sẽ gọi số ${esc(me.phone_masked)} để xác minh cơ sở và mã số thuế. Được duyệt (hai người duyệt, hiệu lực sau 24 giờ) thì bạn tìm nguồn, chào giá và ký hợp đồng được.</p><button class="nut vien" id="dx2">Đăng xuất</button></div></div>`); $("#dx2").onclick = dangXuat; return; }
     $("#ten-tc").textContent = `${me.org.name} · ${me.name}`;

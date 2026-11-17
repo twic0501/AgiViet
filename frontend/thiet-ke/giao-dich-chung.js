@@ -52,7 +52,7 @@ export function ngheHD(f) {
   addEventListener("agv-hd", () => f(docHD(), false));
 }
 
-// ── Trò chuyện chung (lưu theo góc nhìn người bán: ai "toi" = chị Năm, "ho" = bên mua) ──
+// ── Trò chuyện chung (lưu theo góc nhìn người bán: ai "toi" = chị Năm, "ho" = người mua) ──
 export const K_TC = "agv-tro-chuyen-v1";
 export const TC_DAU = [
   { ma: "T1", ben: "Nhà máy sấy Đồng Xanh", nguoi: "Chị Thu Hà", lo: "L-0412", xm: true, chuaDoc: 1, chuaDocMua: 0, moLienLac: false, tin: [
@@ -60,16 +60,16 @@ export const TC_DAU = [
     { k: "tin", ai: "ho", t: "Chào chị Năm, em bên Đồng Xanh. Xoài lô L-0412 còn đủ 2 tấn loại 1 không chị?", luc: "08:02" },
     { k: "tin", ai: "toi", t: "Dạ còn 3,5 tấn em. Trái 350–550 g, hái 27/10.", luc: "08:10" },
     { k: "anh", ai: "toi", anh: "/assets/products/xoai-cat-chu.jpg", luc: "08:11" },
-    { k: "gia", ai: "ho", gia: 22500, luong: 2000, ghi: "Giao tại vườn, bên mua lo xe", luc: "08:20", trang: "da-tra" },
+    { k: "gia", ai: "ho", gia: 22500, luong: 2000, ghi: "Giao tại vườn, người mua lo xe", luc: "08:20", trang: "da-tra" },
     { k: "gia", ai: "toi", gia: 23500, luong: 2000, ghi: "Bác trả lại", luc: "08:31", trang: "da-tra" },
-    { k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Lượt trả giá cuối của bên mua", luc: "09:05", trang: "cho-bac" },
+    { k: "gia", ai: "ho", gia: 23000, luong: 2000, ghi: "Lượt trả giá cuối của người mua", luc: "09:05", trang: "cho-bac" },
     { k: "tin", ai: "ho", t: "Chị đồng ý 23 ngàn thì em soạn thỏa thuận luôn nha.", luc: "09:06" },
   ] },
   { ma: "T2", ben: "Vựa Ba Cường", nguoi: "Anh Cường", lo: "L-0413", xm: false, chuaDoc: 1, moLienLac: false, tin: [
     { k: "tin", ai: "ho", t: "Chị ơi loại 2 bao nhiêu một ký?", luc: "16:40" },
     { k: "tin", ai: "toi", t: "15 ngàn em, có 800 ký.", luc: "16:52" },
     { k: "tin", ai: "ho", t: "Chị gọi em số ••• ••• ••• cho lẹ", luc: "17:01", che: true },
-    { k: "he", canh: true, t: "Tin vừa rồi có số điện thoại nên đã bị che. Trao đổi liên lạc trước khi có cọc là vi phạm (lần 1/3 của bên mua).", luc: "17:01" },
+    { k: "he", canh: true, t: "Tin vừa rồi có số điện thoại nên đã bị che. Trao đổi liên lạc trước khi có cọc là vi phạm (lần 1/3 của người mua).", luc: "17:01" },
   ] },
   { ma: "T3", ben: "Nhà hàng Bếp Sen", nguoi: "Anh Khoa", lo: "L-0412", xm: true, chuaDoc: 0, moLienLac: true, tin: [
     { k: "he", t: "Hợp đồng khung HĐ-0011 có hiệu lực, ngân hàng đã giữ cọc. Liên lạc đã mở.", luc: "20/10" },

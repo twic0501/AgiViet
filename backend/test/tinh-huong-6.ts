@@ -28,7 +28,7 @@ them('TH-040', 'Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục
   th.bang('Chênh cọc −3.450.000', dy.data.tinh.chenh_coc_vnd, '-3450000');
   th.bang('Phí mới 103.500', dy.data.tinh.phi_vnd, '103500');
   const k1 = await kyPL(b.ha, dn.id, dy.data.annex_document_id);
-  th.bang('Bên mua ký phụ lục, chờ bên kia', k1.status, 'cho_ben_kia_ky');
+  th.bang('Người mua ký phụ lục, chờ bên kia', k1.status, 'cho_ben_kia_ky');
   const k2 = await kyPL(b.nam, dn.id, dy.data.annex_document_id);
   th.bang('Phụ lục hiệu lực', k2.status, 'effective');
   th.bang('Hoàn phí 34.500', k2.data.he_qua?.hoan_phi_vnd, '34500');
@@ -61,7 +61,7 @@ them('TH-040', 'Bất khả kháng: giảm 2.000 → 1.500 kg bằng phụ lục
   th.bang('Hoàn tất', (await b.ha.get(`/v1/orders/${b.orderId}`)).json.status, 'completed');
 });
 
-them('TH-040s', 'Đề nghị giảm lượng, bên mua im lặng 24 giờ = không đồng ý', async (may, th) => {
+them('TH-040s', 'Đề nghị giảm lượng, người mua im lặng 24 giờ = không đồng ý', async (may, th) => {
   const b = await toiHieuLuc(may);
   const dn = await b.nam.ok(`/v1/orders/${b.orderId}/amendments`, { kind: 'decrease_qty', payload: { qty_g: 1800000 }, notice_days_before_delivery: 1 });
   const lan2 = await b.nam.post(`/v1/orders/${b.orderId}/amendments`, { kind: 'change_date', payload: { delivery_from: ng('2026-11-05T06:00:00+07:00'), delivery_to: ng('2026-11-05T12:00:00+07:00') } });

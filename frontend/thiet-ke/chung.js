@@ -2,7 +2,7 @@ import "./khung-dt.js";
 import "./lich.js";
 import "./hieu-ung-ghep.js";
 // Phần dùng chung cho các màn mẫu app bán: định dạng, phiên, tải dữ liệu, ảnh sản phẩm, chặng hợp đồng.
-export const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Bên mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
+export const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Người mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
 // Mã hạng (backend trả mã thô) → chữ cho bác: L1 → Loại 1, DAT → Hàng dạt, 48-52 (tôm) → Cỡ 48–52 con/kg…
 export const tenLoai = (ma) => {
   const m = String(ma || "");
@@ -72,13 +72,13 @@ export function chiSoChang(d) {
 // Hợp đồng còn đang chạy (bỏ đã xong/hủy/từ chối)
 export const dangLam = (d) => !/complet|cancel|declin|withdrawn|reject|expired|closed/.test(d.status || "");
 
-// "Chờ bên mua ký và gửi" / "Bác cần ký và gửi" — nói rõ ai làm
+// "Chờ người mua ký và gửi" / "Bác cần ký và gửi" — nói rõ ai làm
 export const viecCho = (d) => {
   const l = d.hien_thi?.toi_luot;
   if (!l) return d.hien_thi?.ten || d.status;
   const viec = l.viec.charAt(0).toLowerCase() + l.viec.slice(1);
-  const ai = LUOT[l.phia]?.[1] || "bên kia";   // giữ hoa tên riêng (AgiViet, Ngân hàng), chỉ hạ "Bên mua"
-  return l.phia === d.phia_cua_ban ? `Bác cần ${viec}` : `Chờ ${ai === "Bên mua" ? "bên mua" : ai} ${viec}`;
+  const ai = LUOT[l.phia]?.[1] || "bên kia";   // giữ hoa tên riêng (AgiViet, Ngân hàng), chỉ hạ "Người mua"
+  return l.phia === d.phia_cua_ban ? `Bác cần ${viec}` : `Chờ ${ai === "Người mua" ? "người mua" : ai} ${viec}`;
 };
 
 // Phiên: ưu tiên token thật từ đăng nhập OTP (lưu trong sessionStorage);
@@ -331,11 +331,11 @@ const BO_DAU = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").r
 const CAU_LUA_BAN = "Bác cẩn thận nhé: AgiViet không bao giờ hỏi mã OTP hay mật khẩu, và tiền chỉ đi qua tài khoản đảm bảo ngân hàng trong app. Đừng chuyển tiền hay đọc mã cho ai. Nếu có người yêu cầu, bác bấm Báo cáo trong mục Hỗ trợ.";
 const SOAN_SAN = [
   [/quyet toan|hoan (coc|tien)|ket thuc don|xu ly coc|don xong/, "Cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được bác xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."], // trước 'coc': 'hoàn cọc' là câu quyết toán
-  [/coc|dam bao|ngan hang giu/, "Bên mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở."],
-  [/dang (ban|lo|hang|bai)|ban (xoai|hang|lua|tom|ca)|dang len/, "Đăng lô: bác đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, bên mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng."],
-  [/chao gia|tra gia|gia moi|dua gia|tu choi|khong ban|thuong luong/, "Chào giá: bác đồng ý, chào giá mới hoặc không bán. Mỗi lượt 24 giờ; bên bán chào giá, bên mua trả giá, mỗi bên tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng."],
+  [/coc|dam bao|ngan hang giu/, "Người mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở."],
+  [/dang (ban|lo|hang|bai)|ban (xoai|hang|lua|tom|ca)|dang len/, "Đăng lô: bác đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, người mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng."],
+  [/chao gia|tra gia|gia moi|dua gia|tu choi|khong ban|thuong luong/, "Chào giá: bác đồng ý, chào giá mới hoặc không bán. Mỗi lượt 24 giờ; người bán chào giá, người mua trả giá, mỗi bên tối đa 2 lần. Đồng ý giá thì hàng được giữ 24 giờ. Đồng ý giá chưa phải hợp đồng."],
   [/\bky\b|hop dong/, "Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút."],
-  [/nhu cau|ben mua can|ghep|tim khach/, "Ghép: bác thấy bên mua đang cần hàng của mình trong mục Chợ và có thể chào hàng."], // trước 'giao': bỏ dấu thì 'cần' = 'cân'
+  [/nhu cau|ben mua can|ghep|tim khach/, "Ghép: bác thấy người mua đang cần hàng của mình trong mục Chợ và có thể chào hàng."], // trước 'giao': bỏ dấu thì 'cần' = 'cân'
   [/giao|boc|can|nghiem thu|xe/, "Giao nhận: đủ thẻ Sẵn sàng giao mới bốc; quét mã, bốc hàng, lập biên bản; bác xác nhận số cân trong 24 giờ, quá hạn thì người vận hành đối chiếu, cọc vẫn giữ."],
   [/tien (ve|con lai|hang)|tra tien|chuyen khoan|tien mat|da nhan/, "Phần tiền còn lại hai bên tự trả cho nhau theo hợp đồng. App ghi nhận và đối soát. Bác xác nhận đúng số đã nhận; im lặng không bao giờ bị coi là đã nhận."],
 ];
@@ -346,7 +346,7 @@ export function cauSoanSan(t) {
 }
 const DUONG = [
   [/dang (hang|bai|lo|ban)|ban hang moi|them lo/, "Đăng hàng mới", "./ban-dang-bai.html", "Bác bấm vào đây để đăng lô hàng: chọn mặt hàng, nhập lượng, giá và chụp ảnh."],
-  [/chao gia|tra gia|tin nhan|nhan tin/, "Xem chào giá", "./ban-tin-nhan.html", "Lời chào giá của bên mua nằm ở mục Tin nhắn."],
+  [/chao gia|tra gia|tin nhan|nhan tin/, "Xem chào giá", "./ban-tin-nhan.html", "Lời chào giá của người mua nằm ở mục Tin nhắn."],
   // Chợ so trên chữ CÓ dấu: bỏ dấu thì "chợ" trùng "cho" ("cho tôi hỏi…" sẽ bị dẫn nhầm)
   [/chợ|hàng đang bán|lô hàng|xem lô|sửa lô|còn bao nhiêu/, "Mở Chợ (hàng đang bán)", "./ban-hang-hoa.html", "Hàng bác đang bán nằm ở mục Chợ."],
   [/thong bao/, "Xem thông báo", "./ban-thong-bao.html#thong-bao", "Mọi cập nhật về lô, hợp đồng, tiền nằm trong Thông báo."],
@@ -354,7 +354,7 @@ const DUONG = [
   [/hop dong|ky /, "Xem hợp đồng", "./ban-hom-nay.html#t-hd", "Hợp đồng đang làm nằm ở Trang chủ, có thanh chặng cho từng hợp đồng."],
   [/thoi tiet|mua|nang/, "Xem thời tiết", "./ban-hom-nay.html#t-troi", "Thời tiết 4 ngày tới nằm ở cuối Trang chủ."],
 ];
-const GOI_Y = ["Xin nhân viên gọi lại", "Tiền cọc của tôi ở đâu?", "Đăng hàng mới", "Xem chào giá của bên mua"];
+const GOI_Y = ["Xin nhân viên gọi lại", "Tiền cọc của tôi ở đâu?", "Đăng hàng mới", "Xem chào giá của người mua"];
 const LOI_CHAO_TL = "Dạ, con là trâu trợ lý AgiViet. Bác cần gì cứ nói với con: bấm nút micro màu vàng rồi nói, hoặc gõ chữ. Muốn gặp người thật thì bấm Xin nhân viên gọi lại.";
 let troLy = null, nutMoTroLy = null;
 function dungTroLy() {
@@ -409,14 +409,14 @@ function dungTroLy() {
       try {
         const token = await phien(), h = { headers: { authorization: "Bearer " + token } };
         const ds = (await (await fetch("/v1/orders", h)).json()).filter((d) => !/cancel|declin|withdrawn|closed/.test(d.status));
-        const TT = { drafting: "chưa tới bước cọc (bên mua đang soạn hợp đồng)", awaiting_seller: "chưa tới bước cọc (chờ bác ký)", awaiting_deposit: "bên mua chưa chuyển cọc, ngân hàng chưa giữ gì", active: "ngân hàng đang giữ cọc, không bên nào rút được", awaiting_settlement: "ngân hàng đang quyết toán, sắp chuyển cho bác", outstanding: "đã giao xong, còn khoản phải trả", completed: "đã quyết toán xong" };
+        const TT = { drafting: "chưa tới bước cọc (người mua đang soạn hợp đồng)", awaiting_seller: "chưa tới bước cọc (chờ bác ký)", awaiting_deposit: "người mua chưa chuyển cọc, ngân hàng chưa giữ gì", active: "ngân hàng đang giữ cọc, không bên nào rút được", awaiting_settlement: "ngân hàng đang quyết toán, sắp chuyển cho bác", outstanding: "đã giao xong, còn khoản phải trả", completed: "đã quyết toán xong" };
         const dong = [];
         for (const d of ds.slice(0, 4)) {
           const ct = await (await fetch(`/v1/orders/${d.id}`, h)).json().catch(() => ({}));
           const coc = Number(ct.dieu_khoan?.deposit_vnd || 0);
           dong.push(`Hợp đồng ${d.code} với ${d.buyer_name}: cọc ${coc ? tien(coc) : "chưa có"}, ${TT[d.status] || d.status}.${d.hien_thi?.toi_luot ? ` Việc tiếp: ${d.hien_thi.toi_luot.viec}.` : ""}`);
         }
-        const chu = dong.length ? `Bác có ${ds.length} hợp đồng. ${dong.join(" ")} Tiền cọc luôn do ngân hàng đối tác giữ, không nằm ở AgiViet.` : "Bác chưa có hợp đồng nào nên chưa có tiền cọc. Khi bên mua chuyển cọc, ngân hàng đối tác giữ và con báo bác ngay.";
+        const chu = dong.length ? `Bác có ${ds.length} hợp đồng. ${dong.join(" ")} Tiền cọc luôn do ngân hàng đối tác giữ, không nằm ở AgiViet.` : "Bác chưa có hợp đồng nào nên chưa có tiền cọc. Khi người mua chuyển cọc, ngân hàng đối tác giữ và con báo bác ngay.";
         cho.classList.remove("cho"); cho.innerHTML = `${esc(chu)}<a class="tl-di" href="./ban-tien.html">Mở sổ tiền ›</a>`; giuThamSo(cho); traLoi(cho, chu, noi);
       } catch { cho.classList.remove("cho"); cho.textContent = "Con chưa đọc được sổ tiền, bác mở mục Tiền ở thanh dưới nhé."; traLoi(cho, cho.textContent, noi); }
       return;
@@ -629,7 +629,7 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
   const laBan = /\/ban-/.test(location.pathname), ma = (c) => String(c ?? "").replace("HĐ-", "HD-");
   // Câu báo theo lời người dùng: ai làm gì, với lô / nhu cầu / hợp đồng nào
   const cau = (v) => {
-    const ai = v.to_chuc.startsWith("TC-M") ? "Bên mua" : "Người bán", c = v.doi_tuong;
+    const ai = v.to_chuc.startsWith("TC-M") ? "Người mua" : "Người bán", c = v.doi_tuong;
     const m = /^(chào|trả) giá (.+)$/.exec(v.viec);
     if (m) return `${ai} trả giá ${m[2]} cho lô ${c}`;
     const b = /^báo giá (.+) cho nhu cầu$/.exec(v.viec);
@@ -659,7 +659,7 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
       document.body.append(d); }
     let lanDau = false; try { lanDau = !localStorage.getItem(LAN_DAU); localStorage.setItem(LAN_DAU, "1"); } catch {}
     const them = ds.length > 1 ? ` · và ${ds.length - 1} việc khác` : "";
-    const huong = !lanDau ? "" : laBan ? "Lần đầu dùng thử: bên mua này do AI đóng vai. Bấm Xem để đồng ý giá, trả giá lại hoặc không chốt."
+    const huong = !lanDau ? "" : laBan ? "Lần đầu dùng thử: người mua này do AI đóng vai. Bấm Xem để đồng ý giá, trả giá lại hoặc không chốt."
       : "Lần đầu dùng thử: người bán này do AI đóng vai. Bấm Xem để đồng ý giá, trả giá lại hoặc không mua.";
     d.innerHTML = `<span style="flex:1;min-width:0"><b style="display:block;color:#f4c84e">Ting! Có tin mới</b>${esc(cau(ds[0]) + them)}${huong ? `<small style="display:block;margin-top:4px;opacity:.85">${esc(huong)}</small>` : ""}</span><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:0;background:#f4c84e;color:#1f1503;font:700 15px inherit;cursor:pointer">Xem</button>`;
     d.querySelector("button").onclick = () => { const u = new URL(den || location.href, location.href); if (u.pathname === location.pathname && u.search === location.search) { location.hash = u.hash; location.reload(); } else location.href = u.href; };
@@ -672,13 +672,13 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     if (d) return laBan ? `./ban-don.html${q}${q ? "&" : "?"}id=${encodeURIComponent(d.id)}` : `./mua.html?man=chi-tiet-don&don=${encodeURIComponent(d.id)}${new URLSearchParams(q).get("thu") ? `&thu=${new URLSearchParams(q).get("thu")}` : ""}`;
     const o = of.find((x) => x.code === c || x.lot_code === c);
     if (laBan) return o ? `./ban-tin-nhan.html${q}#tro=o-${o.id}` : `./ban-tin-nhan.html${q}`;
-    // Bên mua: báo giá cho nhu cầu mang mã nhu cầu → lời chào mới nhất của người bán đang chờ mình trả lời
+    // Người mua: báo giá cho nhu cầu mang mã nhu cầu → lời chào mới nhất của người bán đang chờ mình trả lời
     const oc = o ?? of.find((x) => x.direction === "seller_quote" && x.status === "sent");
     const thu = new URLSearchParams(q).get("thu");
     return oc ? `./mua.html?man=bao-gia&loi-chao=${encodeURIComponent(oc.id)}${thu ? `&thu=${thu}` : ""}` : `./mua-app.html${q}#nhan`;
   };
   // Vào bản thử lần đầu trong phiên: báo trước để người thử biết sẽ có đối tác AI tìm tới
-  try { if (!sessionStorage.getItem("agv-da-bao-cho") && /ban-hom-nay|mua-app/.test(location.pathname)) { sessionStorage.setItem("agv-da-bao-cho", "1"); setTimeout(() => baoNhanh(laBan ? "Bản thử: bên mua do AI đóng vai sẽ tìm tới lô của bác trong ít giây. Nghe tiếng ting là có người trả giá." : "Bản thử: người bán do AI đóng vai sẽ báo giá cho nhu cầu của bạn trong ít giây. Có tiếng ting là có tin mới."), 1500); } } catch {}
+  try { if (!sessionStorage.getItem("agv-da-bao-cho") && /ban-hom-nay|mua-app/.test(location.pathname)) { sessionStorage.setItem("agv-da-bao-cho", "1"); setTimeout(() => baoNhanh(laBan ? "Bản thử: người mua do AI đóng vai sẽ tìm tới lô của bác trong ít giây. Nghe tiếng ting là có người trả giá." : "Bản thử: người bán do AI đóng vai sẽ báo giá cho nhu cầu của bạn trong ít giây. Có tiếng ting là có tin mới."), 1500); } } catch {}
   let dangChay = false, dangTin = false;
   // nhanh = vừa nhắn tin: chỉ cho bên kia trả lời tin, chạy riêng không chờ vòng đầy đủ (trên host vòng đầy đủ mất tới 30 s)
   const vong = async (nhanh = false) => {

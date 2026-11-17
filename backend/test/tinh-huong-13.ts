@@ -13,9 +13,9 @@ them('DC-NV11', 'Người bán (chủ vườn) có quyền bắt đầu cân t�
   th.bang('Đợt sẵn sàng', d.status, 'ready');
   th.kiem('Đợt trả hanh_dong có start_check cho người bán', d.hanh_dong?.includes('start_check'), d.hanh_dong);
   const m = (await b.phuc.get(`/v1/deliveries/${b.deliveryId}`)).json;
-  th.kiem('Người nhận bên mua không có start_check (họ đọc mã, người bán nhập)', !m.hanh_dong?.includes('start_check'), m.hanh_dong);
+  th.kiem('Người nhận người mua không có start_check (họ đọc mã, người bán nhập)', !m.hanh_dong?.includes('start_check'), m.hanh_dong);
   const ha = (await b.ha.get('/v1/auth/session')).json;
-  th.kiem('Bên mua không có delivery.record', !ha.actions?.includes('delivery.record'), ha.actions);
+  th.kiem('Người mua không có delivery.record', !ha.actions?.includes('delivery.record'), ha.actions);
 });
 
 them('DC-NV26', 'GET đợt giao trả cờ ký nghiệm thu seller_agreed_at/buyer_agreed_at trên ket_qua', async (may, th) => {
@@ -54,11 +54,11 @@ them('DC-B08', 'Tin đăng tự ẩn khỏi tìm nguồn sau 14 ngày không xá
   await nam.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'lot', entity_id: lot.id, captured_in_app: true });
   await nam.ok(`/v1/lots/${lot.id}/publish`, {});
   const coTrongDs = async () => ((await ha.get('/v1/lots?product=XOAI_CAT_CHU')).json as any[]).some((x) => x.id === lot.id);
-  th.bang('Vừa đăng: bên mua thấy', await coTrongDs(), true);
+  th.bang('Vừa đăng: người mua thấy', await coTrongDs(), true);
   await may.he('/v1/test/clock', { advance_minutes: 13 * 24 * 60 });
   th.bang('13 ngày: vẫn thấy', await coTrongDs(), true);
   await may.he('/v1/test/clock', { advance_minutes: 24 * 60 + 1 });
-  th.bang('14 ngày 1 phút: bên mua không thấy', await coTrongDs(), false);
+  th.bang('14 ngày 1 phút: người mua không thấy', await coTrongDs(), false);
   const cuaToi = ((await nam.get('/v1/lots?mine=true')).json as any[]).find((x) => x.id === lot.id);
   th.kiem('Người bán thấy lô bị ẩn và lý do', cuaToi?.an_tu_dong === true && !!cuaToi?.an_ly_do, cuaToi);
   await nam.ok(`/v1/lots/${lot.id}/confirm-available`, {});
@@ -93,6 +93,6 @@ them('DC-B18', 'Người bán từ chối đơn: giữ lý do cụ thể khi đ�
   const tc = await b.nam.ok(`/v1/orders/${d2.id}/decline`, { reason: 'Vườn bị sâu đục trái, không đủ hàng loại 1' });
   th.bang('Đơn đóng', tc.status, 'closed');
   const doc = (await b.ha.get(`/v1/orders/${d2.id}`)).json;
-  th.bang('Bên mua đọc lại thấy lý do cụ thể', doc.ly_do_dong, 'Vườn bị sâu đục trái, không đủ hàng loại 1');
+  th.bang('Người mua đọc lại thấy lý do cụ thể', doc.ly_do_dong, 'Vườn bị sâu đục trái, không đủ hàng loại 1');
   th.bang('Mã lý do giữ nguyên', doc.close_reason, 'seller_declined');
 });

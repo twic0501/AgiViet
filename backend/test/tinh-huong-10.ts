@@ -1,4 +1,4 @@
-// Phiên 5: chủ đầu tiên qua xác minh hai người (0034), ảnh lô công khai cho bên mua, kiểm đầu vào nhu cầu.
+// Phiên 5: chủ đầu tiên qua xác minh hai người (0034), ảnh lô công khai cho người mua, kiểm đầu vào nhu cầu.
 import { SDT } from './khung.ts';
 import type { May } from './khung.ts';
 import { them } from './tinh-huong.ts';
@@ -33,12 +33,12 @@ them('TH-001B', 'Tổ chức mới: chủ đầu tiên qua xác minh hai ngườ
   th.kiem('Không cấp chủ lần hai', lai.status >= 400, lai.json);
 });
 
-them('TH-API-ANH', 'Bên mua đọc được ảnh của lô công khai, không đọc được chứng từ riêng', async (may, th) => {
+them('TH-API-ANH', 'Người mua đọc được ảnh của lô công khai, không đọc được chứng từ riêng', async (may, th) => {
   const nam = await may.dangNhap(SDT.nam); const ha = await may.dangNhap(SDT.ha);
   const lot = await may.v<string>(`SELECT l.id FROM core.lots l JOIN core.organizations o ON o.id=l.seller_org_id WHERE o.code='TC-B01' AND l.status='on_sale' ORDER BY l.code LIMIT 1`);
   const anh = await nam.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'lot', entity_id: lot, captured_in_app: true });
   const f = await ha.get(`/v1/documents/${anh.id}/file`);
-  th.bang('Bên mua tải ảnh lô: 200', f.status, 200);
+  th.bang('Người mua tải ảnh lô: 200', f.status, 200);
   th.kiem('Tên tệp .png', String(f.headers['content-disposition']).includes('.png'), f.headers['content-disposition']);
   const rieng = await may.v<string>(`SELECT id FROM core.documents WHERE doc_type='evidence' AND entity='organization' LIMIT 1`);
   if (rieng) th.bang('Chứng cứ tổ chức khác vẫn 404', (await ha.get(`/v1/documents/${rieng}/file`)).status, 404);
