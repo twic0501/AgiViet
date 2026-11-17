@@ -365,8 +365,20 @@ export class CoSoDuLieu {
   async lamTuoiLoMau(): Promise<number> {
     if (!this.laThu || (this.pool && !this.ownerUrl)) return 0;
     try {
-      const r = await this.nhapDuLieuThu((t) => t.q<{ id: string }>(`UPDATE core.lots SET last_confirmed_at=$1::timestamptz
-        WHERE status IN ('on_sale','upcoming') AND coalesce(last_confirmed_at,created_at) < $1::timestamptz - interval '7 days' RETURNING id`, [new Date(t.thoiDiemMs)]));
+      const r = await this.nhapDuLieuThu(async (t) => {
+        const luc = new Date(t.thoiDiemMs);
+        const xn = await t.q<{ id: string }>(`UPDATE core.lots SET last_confirmed_at=$1::timestamptz
+          WHERE status IN ('on_sale','upcoming') AND coalesce(last_confirmed_at,created_at) < $1::timestamptz - interval '7 days' RETURNING id`, [luc]);
+        // Ngày có hàng / ngày hái của lô mẫu cũ dần theo lịch → bộ ghép tính hạn dùng (ngày có hàng + số ngày bảo quản) đã qua
+        // và loại hết lô. Dời ngày theo hôm nay: đang bán = có hàng từ hôm qua; sắp có = 3 ngày tới. Chỉ môi trường thử.
+        await t.q(`UPDATE core.lots SET available_from=d.hom_qua, harvest_on=CASE WHEN harvest_on IS NULL THEN NULL ELSE d.hom_qua END
+          FROM (SELECT (($1::timestamptz AT TIME ZONE 'Asia/Ho_Chi_Minh')::date - 1) hom_qua) d
+          WHERE status='on_sale' AND available_from IS NOT NULL AND available_from < d.hom_qua`, [luc]);
+        await t.q(`UPDATE core.lots SET available_from=d.toi, harvest_on=CASE WHEN harvest_on IS NULL THEN NULL ELSE d.toi END
+          FROM (SELECT (($1::timestamptz AT TIME ZONE 'Asia/Ho_Chi_Minh')::date + 3) toi) d
+          WHERE status='upcoming' AND available_from IS NOT NULL AND available_from <= d.toi - 3`, [luc]);
+        return xn;
+      });
       return r.length;
     } catch (e: any) { console.warn('lam_tuoi_lo_mau', e?.message ?? e); return 0; }
   }

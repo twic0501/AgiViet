@@ -99,36 +99,7 @@ async function dungSnapshot(t: GiaoDich, demandId: string, luc: Date) {
   const lines = await t.q<any>(`SELECT l.*, (SELECT max_price_vnd FROM core.demand_line_max_prices p WHERE p.demand_line_id=l.id ORDER BY id DESC LIMIT 1)::text maxp FROM core.demand_lines l WHERE l.demand_id=$1`, [demandId]);
   const out = [];
   for (const l of lines) {
-    const lots = await t.q<any>(`SELECT l.id lot_id,l.seller_org_id,l.code,l.qty_basis,l.declared_qty::text declared,l.available_from::text af,l.harvest_on::text ho,l.spray_clear_on::text sc,l.last_confirmed_at,l.status,l.safety_locked_at,l.urgent_sale_until,
-        o.code seller_code,o.display_name seller_name,o.province_code,o.kind,o.verification_level,s.lat,s.lng,pp.shelf_life_days,
-        (SELECT floor_price_vnd FROM core.lot_price_versions v WHERE v.lot_id=l.id ORDER BY v.id DESC LIMIT 1)::text floor,
-        coalesce((SELECT sum(qty) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND bucket='held'),0)::text held,
-        coalesce((SELECT sum(qty) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND bucket IN ('committed','in_transit','delivered')),0)::text committed,
-        (SELECT count(*)::int FROM core.orders x WHERE x.seller_org_id=l.seller_org_id AND x.status='completed') so_hoan_tat,
-        (SELECT count(*)::int FROM core.orders x WHERE x.seller_org_id=l.seller_org_id AND x.buyer_org_id=$4 AND x.status='completed') so_voi_bm
-      FROM core.lots l JOIN core.organizations o ON o.id=l.seller_org_id LEFT JOIN core.production_sites s ON s.id=l.site_id
-      JOIN core.product_profiles pp ON pp.product_id=l.product_id AND pp.profile_version=l.profile_version
-      WHERE l.product_id=$1 AND l.grade_code=$2 AND l.status IN ('on_sale','upcoming') AND l.seller_org_id<>$3`, [d.product_id, l.grade_code, d.buyer_org_id, d.buyer_org_id]);
-    for (const x of lots) x.seller_name = await tenHien(t, d.buyer_org_id, x.seller_org_id, x.seller_name, 'ban');
-    const loTheoMa = new Map<string, any>();
-    const lo = [];
-    for (const x of lots) {
-      if (!x.floor || Number(x.floor) <= 0) continue;
-      const giay = await t.q<any>(`SELECT kind, market, lower(valid_during)::text tu, (upper(valid_during)-1)::text den, verified_at, revoked_at FROM core.certifications WHERE org_id=(SELECT seller_org_id FROM core.lots WHERE id=$1) AND valid_during IS NOT NULL`, [x.lot_id]);
-      const ngay = x.af ?? luc.toISOString().slice(0, 10);
-      const han = new Date(Date.parse(x.ho ?? ngay) + (x.shelf_life_days ?? 30) * 86400_000).toISOString().slice(0, 10);
-      loTheoMa.set(x.code, x);
-      lo.push({
-        id: x.code, ben_ban_id: x.seller_code, mat_hang: d.product_code, dang: 'tuoi', loai: l.grade_code,
-        luong_khai_kg: Number(x.declared) / 1000, da_can: x.qty_basis === 'weighed', da_cam_ket_kg: Number(x.committed) / 1000, dang_giu_kg: Number(x.held) / 1000,
-        ngay_co_hang: ngay, han_su_dung: han < ngay ? ngay : han, het_cach_ly: x.sc ?? null,
-        vi_tri: x.lat != null ? { vi_do: x.lat, kinh_do: x.lng } : MAC_DINH,
-        giay_to: [...new Map(giay.map((g) => [g.kind + (g.market ? ':' + g.market : ''), { ma: g.kind + (g.market ? ':' + g.market : ''), trang_thai: g.revoked_at ? 'het_han' : g.verified_at ? 'da_xac_minh' : 'tu_khai', tu_ngay: g.tu, den_ngay: g.den }])).values()],
-        gia_thap_nhat_kin: Number(x.floor), so_don_hoan_tat: x.so_hoan_tat, so_don_voi_ben_mua: x.so_voi_bm,
-        xac_nhan_luc: new Date(x.last_confirmed_at ?? luc).toISOString(), trang_thai: x.status === 'upcoming' ? 'sap_co_hang' : 'dang_ban',
-        khoa_an_toan: !!x.safety_locked_at, ban_gap: !!x.urgent_sale_until, loai_nguoi_ban: LOAI_NB[x.kind] ?? 'ho', nguoi_ban_da_xac_minh: x.verification_level >= 1,
-      });
-    }
+    const { lo, loTheoMa } = await dungLo(t, d.product_id, d.product_code, l.grade_code, d.buyer_org_id, luc);
     out.push({ lineId: l.id, grade: l.grade_code, qty: String(l.qty), loTheoMa, yeuCau: {
       nhu_cau: { id: l.id, ben_mua_id: d.buyer_code, phan_khuc: PK[d.segment_code] ?? 'che_bien', mat_hang: d.product_code, dang: 'tuoi', loai: [l.grade_code],
         luong_kg: Number(l.qty) / 1000, toi_thieu_nguon_kg: l.min_source_qty ? Number(l.min_source_qty) / 1000 : null, ngay_tu: d.tu, ngay_den: d.den,
@@ -138,6 +109,80 @@ async function dungSnapshot(t: GiaoDich, demandId: string, luc: Date) {
     } });
   }
   return out;
+}
+
+/** Lô ứng viên theo snapshot docs/ai/04 mục 3.1 (giá kín chỉ đi một chiều vào AI). grade null = mọi loại; tinh = lọc tỉnh người bán. */
+async function dungLo(t: GiaoDich, productId: string, productCode: string, grade: string | null, buyerOrgId: string, luc: Date, tinhLoc: string | null = null) {
+  {
+    const l = { grade_code: grade };
+    const d = { product_code: productCode };
+    const lots = await t.q<any>(`SELECT l.id lot_id,l.seller_org_id,l.site_id,l.grade_code lot_grade,l.code,l.qty_basis,l.declared_qty::text declared,l.available_from::text af,l.harvest_on::text ho,l.spray_clear_on::text sc,l.last_confirmed_at,l.status,l.safety_locked_at,l.urgent_sale_until,
+        o.code seller_code,o.display_name seller_name,o.province_code,o.kind,o.verification_level,s.lat,s.lng,pp.shelf_life_days,
+        (SELECT floor_price_vnd FROM core.lot_price_versions v WHERE v.lot_id=l.id ORDER BY v.id DESC LIMIT 1)::text floor,
+        coalesce((SELECT sum(qty) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND bucket='held'),0)::text held,
+        coalesce((SELECT sum(qty) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND bucket IN ('committed','in_transit','delivered')),0)::text committed,
+        (SELECT count(*)::int FROM core.orders x WHERE x.seller_org_id=l.seller_org_id AND x.status='completed') so_hoan_tat,
+        (SELECT count(*)::int FROM core.orders x WHERE x.seller_org_id=l.seller_org_id AND x.buyer_org_id=$4 AND x.status='completed') so_voi_bm
+      FROM core.lots l JOIN core.organizations o ON o.id=l.seller_org_id LEFT JOIN core.production_sites s ON s.id=l.site_id
+      JOIN core.product_profiles pp ON pp.product_id=l.product_id AND pp.profile_version=l.profile_version
+      WHERE l.product_id=$1 AND ($2::text IS NULL OR l.grade_code=$2) AND l.status IN ('on_sale','upcoming') AND l.seller_org_id<>$3 AND ($5::text IS NULL OR o.province_code=$5)`, [productId, l.grade_code, buyerOrgId, buyerOrgId, tinhLoc]);
+    for (const x of lots) x.seller_name = await tenHien(t, buyerOrgId, x.seller_org_id, x.seller_name, 'ban');
+    const loTheoMa = new Map<string, any>();
+    const lo = [];
+    for (const x of lots) {
+      if (!x.floor || Number(x.floor) <= 0) continue;
+      const giay = await t.q<any>(`SELECT kind, market, lower(valid_during)::text tu, (upper(valid_during)-1)::text den, verified_at, revoked_at FROM core.certifications WHERE org_id=(SELECT seller_org_id FROM core.lots WHERE id=$1) AND valid_during IS NOT NULL`, [x.lot_id]);
+      const ngay = x.af ?? luc.toISOString().slice(0, 10);
+      const han = new Date(Date.parse(x.ho ?? ngay) + (x.shelf_life_days ?? 30) * 86400_000).toISOString().slice(0, 10);
+      loTheoMa.set(x.code, x);
+      lo.push({
+        id: x.code, ben_ban_id: x.seller_code, mat_hang: d.product_code, dang: 'tuoi', loai: x.lot_grade,
+        luong_khai_kg: Number(x.declared) / 1000, da_can: x.qty_basis === 'weighed', da_cam_ket_kg: Number(x.committed) / 1000, dang_giu_kg: Number(x.held) / 1000,
+        ngay_co_hang: ngay, han_su_dung: han < ngay ? ngay : han, het_cach_ly: x.sc ?? null,
+        vi_tri: x.lat != null ? { vi_do: x.lat, kinh_do: x.lng } : MAC_DINH,
+        // Giấy theo thị trường (mã vùng trồng TQ/HQ…) vừa khớp yêu cầu đúng thị trường "growing_area_code:TQ", vừa khớp yêu cầu chung "growing_area_code"
+        giay_to: [...new Map(giay.flatMap((g) => [...new Set([g.kind, g.kind + (g.market ? ':' + g.market : '')])].map((ma) => [ma, { ma, trang_thai: g.revoked_at ? 'het_han' : g.verified_at ? 'da_xac_minh' : 'tu_khai', tu_ngay: g.tu, den_ngay: g.den }] as const))).values()],
+        gia_thap_nhat_kin: Number(x.floor), so_don_hoan_tat: x.so_hoan_tat, so_don_voi_ben_mua: x.so_voi_bm,
+        xac_nhan_luc: new Date(x.last_confirmed_at ?? luc).toISOString(), trang_thai: x.status === 'upcoming' ? 'sap_co_hang' : 'dang_ban',
+        khoa_an_toan: !!x.safety_locked_at, ban_gap: !!x.urgent_sale_until, loai_nguoi_ban: LOAI_NB[x.kind] ?? 'ho', nguoi_ban_da_xac_minh: x.verification_level >= 1,
+      });
+    }
+    return { lo, loTheoMa };
+  }
+}
+
+export interface Phieu { product_code: string; grade_code?: string | null; qty_g: string; max_price_vnd: string; needed_from: string; needed_to: string;
+  province_code?: string | null; required_docs?: string[]; farm_diary?: boolean; can_gom?: boolean }
+/** Tìm nguồn theo phiếu, KHÔNG đăng nhu cầu và KHÔNG ghi gì: so giá mong muốn với giá thấp nhất kín của người bán ở máy chủ,
+ *  lọc giấy tờ đã xác minh còn hạn, nhật ký canh tác ghi trong app, và gợi ý gom nhiều hộ khi một hộ không đủ lượng. */
+export async function timTheoPhieu(ht: HeThong, nd: NguoiDung, p: Phieu) {
+  if (!ht.cfg.aiUrl) throw loi('CHUA_HO_TRO', 'Dịch vụ ghép nguồn chưa bật.');
+  const luc = ht.dongHo.now();
+  const { snap, sp, nhat } = await ht.db.doc(async (t) => {
+    const sp = await t.mot<any>(`SELECT id, code, name_vi FROM core.products WHERE code=$1`, [p.product_code]);
+    if (!sp) throw loi('DU_LIEU_KHONG_HOP_LE', 'Mặt hàng không có trong danh mục.');
+    const org = await t.mot<any>(`SELECT code FROM core.organizations WHERE id=$1`, [nd.thanhVien.orgId]);
+    const { lo, loTheoMa } = await dungLo(t, sp.id, sp.code, p.grade_code || null, nd.thanhVien.orgId, luc, p.province_code || null);
+    // Nhật ký canh tác ghi trong app theo vườn của lô (người bán tự ghi hoặc AgiViet xác nhận)
+    const nhat = new Map<string, number>();
+    for (const x of loTheoMa.values()) if (x.site_id) nhat.set(x.code, Number(await t.gtri(`SELECT count(*) FROM core.cultivation_entries WHERE site_id=$1`, [x.site_id])));
+    const loai = p.grade_code ? [p.grade_code] : [...new Set(lo.map((x: any) => x.loai))];
+    return { sp, nhat, snap: { loTheoMa, yeuCau: {
+      nhu_cau: { id: 'phieu-' + nd.thanhVien.orgId.slice(0, 8), ben_mua_id: org?.code ?? 'BM', phan_khuc: 'dau_moi', mat_hang: sp.code, dang: 'tuoi', loai: loai.length ? loai : ['L1'],
+        luong_kg: Number(p.qty_g) / 1000, ngay_tu: p.needed_from, ngay_den: p.needed_to, vi_tri: MAC_DINH, giay_to_bat_buoc: p.required_docs ?? [],
+        gia_toi_da_kin: Number(p.max_price_vnd), can_gom: !!p.can_gom, kieu_giao: 'tu_lay', trang_thai: 'dang_mo' },
+      lo: p.farm_diary ? lo.filter((x: any) => (nhat.get(x.id) ?? 0) > 0) : lo, thoi_diem: luc.toISOString(), phien_ban_du_lieu: `phieu-${luc.toISOString()}` } } };
+  });
+  const r = await fetch(`${ht.cfg.aiUrl}/match`, { method: 'POST', signal: AbortSignal.timeout(Math.max(ht.cfg.aiTimeoutMs, 8000)),
+    headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify(snap.yeuCau) });
+  if (!r.ok) throw loi('LOI_HE_THONG', `Dịch vụ ghép nguồn trả HTTP ${r.status}.`);
+  const j: any = await r.json();
+  const mapLo = (x: any) => { const l = snap.loTheoMa.get(x.lo_id); return l ? { lot_id: l.lot_id, lot_code: l.code, seller_name: l.seller_name, province_code: l.province_code,
+    grade_code: l.lot_grade, kha_dung_cam_ket_g: String(Math.round(Number(x.kha_dung_cam_ket_kg ?? 0) * 1000)), diem: x.diem, ly_do_khop: x.ly_do_khop ?? [], thieu: x.thieu ?? [],
+    nhat_ky_muc: nhat.get(l.code) ?? 0 } : null; };
+  const gom = j.goi_y_gom ? { ...j.goi_y_gom, nguon: (j.goi_y_gom.nguon ?? []).map((n: any) => ({ ...mapLo({ lo_id: n.lo_id }), luong_g: String(Math.round(Number(n.luong_kg) * 1000)) })).filter((x: any) => x.lot_id) } : null;
+  return { mat_hang: sp.name_vi, khop_du: (j.khop_du ?? []).map(mapLo).filter(Boolean), khop_mot_phan: (j.khop_mot_phan ?? []).map(mapLo).filter(Boolean),
+    gan_khop_gia: (j.gan_khop_gia ?? []).map(mapLo).filter(Boolean), goi_y_gom: gom, so_lo_xet: snap.yeuCau.lo.length, chi_goi_y: true };
 }
 
 const LY_DO_HOP_LE = ['product','grade','quantity','distance','schedule','documents','reputation','relationship','price_compatible','partial_quantity','near_price'];

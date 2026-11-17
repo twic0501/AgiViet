@@ -255,6 +255,15 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/demands/:id/close', async (req) => bo.lenh(req, 'dong_nhu_cau', 'buyer', async (t, nd) => { canQuyen(nd, 'demand.create'); return NhuCau.dongNhuCau(t, nd, P(req).id); }));
   app.get('/v1/demands', async (req) => { const nd = await bo.xacThuc(req); const q: any = req.query; return bo.doc((t) => NhuCau.danhSachNhuCau(t, nd, { mine: q.mine === 'true', product_code: q.product })); });
   app.get('/v1/demands/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => NhuCau.xemNhuCau(t, nd, P(req).id)); });
+  // Tìm nguồn theo phiếu (không đăng nhu cầu, không ghi): giá mong muốn so ở máy chủ với giá thấp nhất kín, không trả số giá nào.
+  app.post('/v1/sourcing/search', async (req) => { const nd = await bo.xacThuc(req); canQuyen(nd, 'demand.create');
+    const so = z.string().regex(/^[1-9]\d*$/);
+    const b = z.object({ product_code: z.string().min(1).max(40), grade_code: z.string().max(20).nullish(), qty_g: so, max_price_vnd: so,
+      needed_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), needed_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), province_code: z.string().max(5).nullish(),
+      required_docs: z.array(z.enum(['growing_area_code', 'packing_house_code', 'spray_diary', 'pond_diary', 'residue_test', 'antibiotic_test', 'cadmium_test', 'vietgap', 'asc_bap', 'phytosanitary'])).max(10).optional(),
+      farm_diary: z.boolean().optional(), can_gom: z.boolean().optional() }).refine((x) => x.needed_from <= x.needed_to, 'Ngày cần không hợp lệ').parse(req.body);
+    const { timTheoPhieu } = await import('../nghiep-vu/ghep.ts'); return timTheoPhieu(ht, nd, b);
+  });
   app.get('/v1/demands/:id/matches', async (req) => {
     const nd = await bo.xacThuc(req);
     const { ghepNhuCau } = await import('../nghiep-vu/ghep.ts');

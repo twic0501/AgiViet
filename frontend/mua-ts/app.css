@@ -83,3 +83,7 @@ dialog#hop::backdrop { background: rgba(20, 30, 24, .45); }
 .o-nhap select { width: 100%; min-height: 48px; padding: 0 12px; border-radius: 12px; border: 1.5px solid var(--k); background: var(--gn); font-family: inherit; font-size: 16px; color: var(--m); }
 .o-nhap input[type="date"] { font-family: inherit; }
 .chon { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: 15px; } .chon input { width: 22px; height: 22px; accent-color: var(--xanh); }
+
+fieldset.giay { border: 1px solid var(--k); border-radius: 12px; padding: 6px 12px 8px; margin: 0; display: grid; }
+fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
+.the.gom { box-shadow: 0 0 0 2px var(--xanh); }

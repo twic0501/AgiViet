@@ -7,7 +7,12 @@ import type { Lo } from "../kieu";
 import { laySp } from "./nhu-cau";
 
 // Phiếu đang điền (giữ khi đổi tab rồi quay lại)
-const P = { sp: "", loai: "", kg: "", tinh: "", han: "", tu: "" };
+const P = { sp: "", loai: "", kg: "", tinh: "", han: "", tu: "", gia: "", giay: [] as string[], nhatKy: false, gom: false };
+const GIAY: [string, string][] = [["growing_area_code", "Mã số vùng trồng"], ["vietgap", "VietGAP"], ["spray_diary", "Nhật ký cách ly thuốc"], ["residue_test", "Kiểm dư lượng thuốc"],
+  ["phytosanitary", "Kiểm dịch thực vật"], ["pond_diary", "Nhật ký ao (thủy sản)"], ["antibiotic_test", "Test kháng sinh (thủy sản)"]];
+interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; ly_do_khop?: string[]; thieu?: string[]; nhat_ky_muc?: number; luong_g?: string }
+interface KetQuaTim { khop_du: LoGoiY[]; khop_mot_phan: LoGoiY[]; gan_khop_gia: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg: number; con_thieu_kg: number } | null; so_lo_xet: number }
+let tim: { khoa: string; kq?: KetQuaTim; loi?: string } | null = null, henTim = 0;
 const TINH_DS: [string, string][] = [["", "Mọi tỉnh"], ["DT", "Đồng Tháp"], ["TG", "Tiền Giang"], ["BT", "Bến Tre"], ["VL", "Vĩnh Long"], ["CT", "Cần Thơ"], ["AG", "An Giang"], ["ST", "Sóc Trăng"], ["CM", "Cà Mau"], ["KG", "Kiên Giang"], ["LA", "Long An"], ["TN", "Tây Ninh"]];
 // Mã số vùng trồng (vd MVT-DT-0412): gõ vào ô tìm là tra người bán sở hữu mã
 const LA_MA_VUNG = /^[A-Z]{2,5}-[A-Z]{2,4}-\d{2,6}$/i;
@@ -52,6 +57,21 @@ function veKetQua(o: HTMLElement): void {
       .catch((e) => { if (vung?.ma === ma) { vung.loi = (e as Error).message; veKetQua(o); } }); }
   if (!laMa) vung = null;
   let html: string;
+  const duMayChu = !laMa && P.sp && Number(P.kg.replace(",", ".")) > 0 && Number(P.gia.replace(/\D/g, "")) >= 1000;
+  if (duMayChu) {
+    const homNay = new Date().toISOString().slice(0, 10), den = P.han && P.han >= homNay ? P.han : new Date(Date.now() + 10 * 864e5).toISOString().slice(0, 10);
+    const than = { product_code: P.sp, grade_code: P.loai || null, qty_g: String(Math.round(Number(P.kg.replace(",", ".")) * 1000)), max_price_vnd: P.gia.replace(/\D/g, ""),
+      needed_from: homNay, needed_to: den, province_code: P.tinh || null, required_docs: P.giay, farm_diary: P.nhatKy, can_gom: P.gom };
+    const khoa = JSON.stringify(than);
+    if (tim?.khoa !== khoa) { tim = { khoa }; clearTimeout(henTim);
+      henTim = window.setTimeout(() => api<KetQuaTim>("/v1/sourcing/search", than).then((x) => { if (tim?.khoa === khoa) { tim.kq = x; veKetQua(o); } })
+        .catch((e) => { if (tim?.khoa === khoa) { tim.loi = (e as Error).message; veKetQua(o); } }), 500); }
+    kq.innerHTML = veTim(tim!, P);
+    kq.querySelectorAll<HTMLButtonElement>("[data-tra]").forEach((b) => (b.onclick = () => { const l = DL.lo.find((x) => x.id === b.dataset.tra); if (l) moTraGia(l, () => veKetQua(o)); }));
+    const gp = kq.querySelector<HTMLButtonElement>("#ng-gui-phieu");
+    if (gp) gp.onclick = () => { try { sessionStorage.setItem("agv-phieu-nhap", JSON.stringify(P)); } catch { /* bỏ qua */ } location.hash = "#nhu-cau/moi"; };
+    return;
+  }
   if (laMa) {
     html = veVung(vung!) + (vung?.kq ? tat.filter((l) => vung!.kq!.lo_ids.includes(l.id)).map((l) => theLo(l)).join("") : "");
   } else {
@@ -80,6 +100,12 @@ export async function veNguon(o: HTMLElement): Promise<void> {
         <label class="o-nhap">Lượng cần (kg)<input id="pk-kg" inputmode="decimal" value="${esc(P.kg)}" placeholder="vd 1000"></label></div>
       <div class="luoi2"><label class="o-nhap">Tỉnh<select id="pk-tinh">${TINH_DS.map(([m, t]) => `<option value="${m}"${m === P.tinh ? " selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="o-nhap">Cần trước ngày<input id="pk-han" type="date" value="${esc(P.han)}"></label></div>
+      <label class="o-nhap">Giá mong muốn (đ/kg)<input id="pk-gia" inputmode="numeric" value="${esc(P.gia)}" placeholder="vd 24000"></label>
+      <p class="phu">Giá mong muốn giữ kín: người bán không thấy, AgiViet chỉ so với giá thấp nhất (cũng giữ kín) của người bán để gợi ý.</p>
+      <fieldset class="giay"><legend>Giấy tờ yêu cầu (đã xác minh, còn hạn tới ngày cần)</legend>
+        ${GIAY.map(([m, t]) => `<label class="chon"><input type="checkbox" data-giay="${m}"${P.giay.includes(m) ? " checked" : ""}> ${t}</label>`).join("")}
+        <label class="chon"><input type="checkbox" id="pk-nk"${P.nhatKy ? " checked" : ""}> Có nhật ký canh tác ghi trong app</label></fieldset>
+      <label class="chon"><input type="checkbox" id="pk-gom"${P.gom ? " checked" : ""}> Cho gom từ nhiều hộ khi một hộ không đủ lượng</label>
       <label class="o-tim"><span class="an-chu">Tìm theo chữ hoặc mã vùng trồng</span><input id="ng-tu" type="search" placeholder="Hoặc gõ tên, nơi, mã vùng trồng MVT-…" value="${esc(P.tu)}" autocapitalize="characters"></label>
     </form>
     <div id="ng-kq"></div>
@@ -90,7 +116,10 @@ export async function veNguon(o: HTMLElement): Promise<void> {
   veLoai();
   $("#phieu").oninput = (e) => {
     const t = e.target as HTMLInputElement;
-    const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "ng-tu": "tu" } as const)[t.id as "pk-sp"];
+    if (t.dataset.giay) { P.giay = t.checked ? [...P.giay, t.dataset.giay] : P.giay.filter((x) => x !== t.dataset.giay); return veKetQua(o); }
+    if (t.id === "pk-nk") { P.nhatKy = t.checked; return veKetQua(o); }
+    if (t.id === "pk-gom") { P.gom = t.checked; return veKetQua(o); }
+    const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "ng-tu": "tu", "pk-gia": "gia" } as const)[t.id as "pk-sp"];
     if (!ten) return; P[ten] = t.value; if (ten === "sp") veLoai(); veKetQua(o);
   };
   veKetQua(o);
@@ -135,3 +164,30 @@ export async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
   h.showModal();
 }
 
+
+// Lý do nội bộ của bộ ghép không có nghĩa với người mua (khoảng cách khi chưa có địa chỉ nhận, điểm uy tín mặc định…)
+const LY_DO_KY_THUAT = /0[.,]0 km|uy tín mặc định|không yêu cầu giấy tờ|cùng mặt hàng, dạng và loại/i;
+const tenGiay = (m: string) => GIAY.find(([k]) => k === m)?.[1] ?? m;
+const theGoiY = (l: LoGoiY, nhan: string, xanh = false) => `<article class="the">
+  <div class="hang"><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><span class="chip ${xanh ? "la" : ""}">${nhan}</span></div>
+  <p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))} · đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg</p>
+  <div class="tin">${(l.ly_do_khop || []).filter((x) => !LY_DO_KY_THUAT.test(x)).map((x) => `<span class="chip la">${esc(x)}</span>`).join("")}${l.nhat_ky_muc ? `<span class="chip la">nhật ký canh tác ${l.nhat_ky_muc} mục</span>` : ""}${(l.thieu || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>
+  ${DL.lo.some((x) => x.id === l.lot_id) ? `<button type="button" class="nut chinh rong" data-tra="${esc(l.lot_id)}">Trả giá</button>` : ""}</article>`;
+
+/** Kết quả tìm theo phiếu từ máy chủ: khớp đủ, gom nhiều hộ, khớp một phần, gần mức giá (cần thương lượng). Không có số giá nào. */
+function veTim(t: { kq?: KetQuaTim; loi?: string }, p: typeof P): string {
+  if (t.loi) return `<section class="the"><p class="loi">${esc(t.loi)}</p></section>`;
+  if (!t.kq) return `<div class="khung-tai" aria-label="Đang tìm nguồn phù hợp"></div>`;
+  const k = t.kq, tong = k.khop_du.length + k.khop_mot_phan.length + k.gan_khop_gia.length;
+  const yeu = [...p.giay.map(tenGiay), ...(p.nhatKy ? ["nhật ký canh tác"] : [])];
+  return `<div class="hang"><h2>Gợi ý nguồn</h2><span class="phu">xét ${k.so_lo_xet} lô</span></div>
+    ${yeu.length ? `<p class="phu">Chỉ tính lô có: ${esc(yeu.join(", "))}.</p>` : ""}
+    ${k.khop_du.map((l) => theGoiY(l, "Khớp đủ", true)).join("")}
+    ${k.goi_y_gom?.nguon.length ? `<section class="the gom"><h2>Gom ${k.goi_y_gom.nguon.length} hộ</h2>
+      <p class="phu">Đã gom ${vnd(k.goi_y_gom.da_gom_kg)} kg${k.goi_y_gom.con_thieu_kg > 0 ? ` · còn thiếu ${vnd(k.goi_y_gom.con_thieu_kg)} kg` : " · đủ lượng"}. Các hộ ở gần nhau để gom chung một chuyến; mỗi hộ ký hợp đồng riêng.</p>
+      ${k.goi_y_gom.nguon.map((l) => theGoiY(l, "Trong nhóm gom")).join("")}</section>` : ""}
+    ${k.khop_mot_phan.filter((l) => !k.goi_y_gom?.nguon.some((g) => g.lot_id === l.lot_id)).map((l) => theGoiY(l, "Khớp một phần")).join("")}
+    ${k.gan_khop_gia.map((l) => theGoiY(l, "Gần mức giá · cần thương lượng")).join("")}
+    ${tong ? "" : trong(p.gom ? "Chưa có lô nào đạt phiếu, kể cả khi gom. Thử nới giá mong muốn, bớt giấy tờ yêu cầu, hoặc gửi phiếu để người bán báo giá." : "Chưa có lô nào đạt phiếu. Thử nới giá mong muốn, bớt giấy tờ yêu cầu, bật gom nhiều hộ, hoặc gửi phiếu để người bán báo giá.")}
+    <button type="button" class="nut vien rong" id="ng-gui-phieu">Gửi phiếu cho người bán báo giá</button>`;
+}
