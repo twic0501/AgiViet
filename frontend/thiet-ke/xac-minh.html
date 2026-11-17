@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xác minh tài liệu · AgiViet</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./so-vuon.css">
+<style>
+  /* Tiền tố xm- (trang công khai, mở từ QR trên PDF; không cần đăng nhập) */
+  body { margin: 0; background: var(--giay); color: var(--muc); font-family: var(--chu); }
+  .xm { max-width: 520px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 16px; }
+  .xm h1 { font-size: 24px; margin: 4px 0 0; }
+  .xm-the { border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); padding: 16px; display: grid; gap: 10px; }
+  .xm-dong { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--ke); padding: 6px 0; }
+  .xm-dong:last-child { border-bottom: 0; }
+  .xm-dong b { text-align: right; overflow-wrap: anywhere; }
+  .xm-ma { font: 500 12.5px/1.4 ui-monospace, monospace; overflow-wrap: anywhere; }
+  .xm-phu { color: var(--muc-nhat); font-size: 14.5px; margin: 0; }
+  .xm-kq { padding: 12px 14px; border-radius: 12px; font-weight: 700; }
+  .xm-kq.dung { background: var(--la-nhat); color: var(--la-dam); }
+  .xm-kq.sai { background: #fbe3df; color: #8a2419; }
+  .xm-nut { min-height: 48px; border-radius: 12px; border: 0; background: var(--la); color: var(--tren-la); font: 700 16px/1 var(--chu); display: grid; place-items: center; cursor: pointer; }
+</style>
+</head>
+<body>
+<main class="xm">
+  <h1>Xác minh tài liệu</h1>
+  <p class="xm-phu">Trang này mở từ mã QR in trên hợp đồng, biên bản hoặc bảng quyết toán của AgiViet.</p>
+  <section class="xm-the" id="xm-tt" aria-live="polite"><p class="xm-phu">Đang tra…</p></section>
+  <section class="xm-the" id="xm-tep" hidden>
+    <b>Kiểm file bạn đang cầm có đúng bản gốc không</b>
+    <p class="xm-phu">Chọn file PDF. Máy chủ tính mã băm SHA-256 của file và so với bản đã lưu lúc phát hành. Sửa dù một ký tự thì mã băm sẽ khác.</p>
+    <label class="xm-nut">Chọn file PDF<input type="file" id="xm-chon" accept="application/pdf" hidden></label>
+    <div id="xm-kq" role="status"></div>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const ma = new URLSearchParams(location.search).get("ma") || "";
+const LOAI = { contract: "Hợp đồng", settlement_statement: "Bảng quyết toán", acceptance_record: "Biên bản nghiệm thu", amendment: "Phụ lục" };
+const BEN = { buyer: "Bên mua", seller: "Người bán", platform: "AgiViet", ops: "AgiViet" };
+(async () => {
+  if (!ma) { $("xm-tt").innerHTML = `<p class="xm-kq sai">Thiếu mã tài liệu trong đường dẫn.</p>`; return; }
+  const r = await fetch(`/v1/verify/${encodeURIComponent(ma)}`).catch(() => null);
+  const j = r ? await r.json().catch(() => ({})) : {};
+  if (!r || !r.ok) { $("xm-tt").innerHTML = `<p class="xm-kq sai">Không tìm thấy tài liệu mã ${esc(ma)}. Tài liệu này không do AgiViet phát hành, hoặc mã đã bị sửa.</p>`; return; }
+  const d = j.data ?? j, ky = d.signatures || [];
+  $("xm-tt").innerHTML = `<p class="xm-kq dung">Có tài liệu này trong hệ thống AgiViet</p>
+    <div class="xm-dong"><span>Mã</span><b>${esc(d.code)}</b></div>
+    <div class="xm-dong"><span>Loại</span><b>${esc(LOAI[d.doc_type] || d.doc_type)}</b></div>
+    <div class="xm-dong"><span>Phiên bản</span><b>${esc(d.version_no)}</b></div>
+    <div class="xm-dong"><span>Phát hành</span><b>${esc(new Date(d.created_at).toLocaleString("vi-VN"))}</b></div>
+    <div class="xm-dong"><span>Đã ký</span><b>${ky.length ? ky.map((k) => `${esc(BEN[k.party] || k.party)} · ${esc(new Date(k.signed_at).toLocaleString("vi-VN"))}`).join("<br>") : "Chưa có chữ ký"}</b></div>
+    <div><span class="xm-phu">Mã băm SHA-256 của file</span><div class="xm-ma">${esc(d.file_sha256)}</div></div>
+    <p class="xm-phu">${esc(d.ghi_chu || "")}</p>`;
+  $("xm-tep").hidden = false;
+})();
+$("xm-chon").onchange = async () => {
+  const f = $("xm-chon").files[0]; if (!f) return;
+  $("xm-kq").innerHTML = `<p class="xm-phu">Đang kiểm…</p>`;
+  const b64 = await new Promise((ok, loi) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = loi; r.readAsDataURL(f); });
+  const r = await fetch(`/v1/verify/${encodeURIComponent(ma)}/file`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ data_base64: b64 }) }).catch(() => null);
+  const j = r ? await r.json().catch(() => ({})) : {}, k = j.data ?? j;
+  $("xm-kq").innerHTML = !r || !r.ok ? `<p class="xm-kq sai">Chưa kiểm được, thử lại sau.</p>`
+    : k.khop ? `<p class="xm-kq dung">Khớp: file này đúng bản gốc AgiViet đã phát hành.</p>`
+    : `<p class="xm-kq sai">Không khớp: file này đã bị sửa hoặc không phải bản phát hành.</p><div class="xm-ma">Mã băm file của bạn: ${esc(k.sha256_tep_tai_len)}</div>`;
+};
+</script>
+</body>
+</html>

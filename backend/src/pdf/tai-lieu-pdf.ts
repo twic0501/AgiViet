@@ -39,7 +39,7 @@ export async function taoTaiLieuPdf(t: GiaoDich, d: TaoTaiLieu) {
   const chuan = canonicalJson(noiDung) as string;
   const maBam = sha256Hex(chuan);
   const sinhLuc = new Date(t.thoiDiemMs).toISOString();
-  const bytes = await sinhPdf({ ...d.trinhBay, maTaiLieu: d.code, phienBan: d.versionNo, sinhLuc, maBamNoiDung: maBam, urlXacMinh: `https://agiviet.vn/xac-minh/${encodeURIComponent(d.code)}` });
+  const bytes = await sinhPdf({ ...d.trinhBay, maTaiLieu: d.code, phienBan: d.versionNo, sinhLuc, maBamNoiDung: maBam, urlXacMinh: `${(process.env.AGV_WEB_URL ?? "https://agiviet.id.vn").replace(/\/$/, "")}/thiet-ke/xac-minh.html?ma=${encodeURIComponent(d.code)}` });
   const { sha256: fileSha, key } = luuTep(bytes);
   let prevSha: string | null = d.prevContentSha256??null;
   if (d.prevDocumentId) prevSha = await t.gtri<string>(`SELECT encode(content_sha256,'hex') FROM core.documents WHERE id=$1`, [d.prevDocumentId]);
