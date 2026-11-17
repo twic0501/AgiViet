@@ -285,6 +285,14 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     return (await ZP()).taoDon(ht, h, nd.thanhVien.orgCode, b.quay_ve); });
   app.get('/v1/orders/:id/deposit/zalopay/:ma', async (req) => { const nd = await bo.xacThuc(req); const h = await bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id));
     return (await ZP()).kiemDon(ht, h, String((req.params as any).ma)); });
+  // Trả cọc qua MoMo sandbox (bản thử): trang MoMo cho trả bằng thẻ ATM test, không cần app
+  const MM = () => import('../nghiep-vu/momo.ts');
+  app.post('/v1/orders/:id/deposit/momo', async (req) => { const nd = await bo.xacThuc(req); const h = await bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id));
+    const b = z.object({ quay_ve: z.string().url().max(500) }).parse(req.body);
+    if (!/^https:\/\/(agiviet\.id\.vn|[a-z0-9-]+\.vercel\.app)\/|^http:\/\/127\.0\.0\.1:\d+\//.test(b.quay_ve)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Địa chỉ quay về không hợp lệ.');
+    return (await MM()).taoDon(ht, h, b.quay_ve); });
+  app.get('/v1/orders/:id/deposit/momo/:ma', async (req) => { const nd = await bo.xacThuc(req); const h = await bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id));
+    return (await MM()).kiemDon(ht, h, String((req.params as any).ma)); });
   app.get('/v1/orders/:id/deposit-instruction', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id)); });
 
   // ---------------- Đề nghị sửa, phụ lục ----------------

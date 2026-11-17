@@ -1108,12 +1108,13 @@ if (THAT) {
           ${chep("coc-nd", h.payment_ref, "Nội dung chuyển khoản (ghi đúng)")}
           <p style="margin:0;font-weight:600">Hạn chót: ${han.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}. Quá hạn chưa đủ cọc thì đơn tự đóng.</p>
           ${bao(esc(h.cau), "sl-bao-nh")}
-          <button type="button" class="sl-nut sl-vang" id="coc-zp" hidden style="max-width:100%;white-space:normal;height:auto">Trả cọc qua ZaloPay (thử) ${vnd(con)}</button>
+          <button type="button" class="sl-nut sl-vang" id="coc-mm" hidden style="max-width:100%;white-space:normal;height:auto">Trả cọc qua MoMo (thử, thẻ ATM test) ${vnd(con)}</button>
+          <button type="button" class="sl-nut sl-vien" id="coc-zp" hidden style="max-width:100%;white-space:normal;height:auto">Trả cọc qua ZaloPay (thử) ${vnd(con)}</button>
           <button type="button" class="sl-nut sl-vien" id="coc-gia-lap" hidden style="max-width:100%;white-space:normal;height:auto">Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>
           <p class="sl-ghi" id="coc-bao" role="status"></p></section>`);
         const o = khung.querySelector("#coc");
         // Nút giả lập ngân hàng theo máy chủ (test_tools), không theo ?thu= — đăng nhập chọn vai ở bản thi không có tham số này.
-        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) { o.querySelector("#coc-gia-lap")?.removeAttribute("hidden"); o.querySelector("#coc-zp")?.removeAttribute("hidden"); } }).catch(() => {});
+        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) { o.querySelector("#coc-gia-lap")?.removeAttribute("hidden"); o.querySelector("#coc-zp")?.removeAttribute("hidden"); o.querySelector("#coc-mm")?.removeAttribute("hidden"); } }).catch(() => {});
         if (h.vietqr) await veQr(o.querySelector("#coc-qr"), h.vietqr);
         o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
         // ZaloPay sandbox: sang cổng ZaloPay trả; quay về trang này với ?apptransid=… rồi máy chủ tự hỏi lại ZaloPay
@@ -1134,6 +1135,24 @@ if (THAT) {
             baoCoc("Quá 5 phút chưa thấy ZaloPay báo đã trả. Tải lại trang để thử lại.");
           } catch (err) { baoCoc(err.message); n.disabled = false; }
         };
+        // MoMo sandbox: sang trang MoMo trả bằng thẻ ATM test; MoMo đưa về đây kèm ?orderId=… rồi máy chủ tự hỏi lại MoMo
+        const BO_MM = ["partnerCode", "orderId", "requestId", "amount", "orderInfo", "orderType", "transId", "resultCode", "message", "payType", "responseTime", "extraData", "signature"];
+        o.querySelector("#coc-mm").onclick = async (e) => {
+          const n = e.currentTarget; n.disabled = true; baoCoc("Đang tạo đơn MoMo…");
+          const u = new URL(location.href); BO_MM.forEach((k) => u.searchParams.delete(k)); u.hash = "";
+          try { const r = await api(`/v1/orders/${d.id}/deposit/momo`, { quay_ve: u.href }); location.href = r.pay_url; }
+          catch (err) { baoCoc(err.message); n.disabled = false; }
+        };
+        const qMm = new URLSearchParams(location.search);
+        if (qMm.get("partnerCode") && qMm.get("orderId")) {
+          baoCoc("Đang hỏi MoMo kết quả thanh toán…");
+          const u = new URL(location.href); BO_MM.forEach((k) => u.searchParams.delete(k)); history.replaceState(null, "", u);
+          try {
+            const k = await api(`/v1/orders/${d.id}/deposit/momo/${encodeURIComponent(qMm.get("orderId"))}`);
+            if (k.trang_thai === "da_tra") { baoCoc(`MoMo đã nhận ${vnd(k.amount_vnd)} (mã ${k.ma_giao_dich}). Đang cập nhật cọc…`); setTimeout(() => ve(), 800); }
+            else baoCoc(k.trang_thai === "that_bai" ? `MoMo báo chưa thanh toán: ${k.cau}` : "MoMo chưa ghi nhận thanh toán, đợi ít giây rồi tải lại trang.");
+          } catch (err) { baoCoc(err.message); }
+        }
         const maZp = new URLSearchParams(location.search).get("apptransid");
         if (maZp) {
           baoCoc("Đang hỏi ZaloPay kết quả thanh toán…");
