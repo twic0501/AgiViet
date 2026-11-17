@@ -215,10 +215,11 @@ class NhaCungCap:
                     ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
         if loai == "may":
             return [gemini, ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
-        if loai == "doi_tac":  # chatbot đối tác AI nhắn tin: gemma4 trên Ollama Cloud (gói Free) → NIM gemma
-            # Ollama Cloud trả 402 khi hết hạn mức gói Free (đo 18/11) → Gemini lite → NIM nemotron (cả hai ~1–2 s)
-            return [("ollama", k.get("AGV_OLLAMA_MODEL") or "gemma4:31b"), gemini,
-                    ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
+        if loai == "doi_tac":  # chatbot đối tác AI nhắn tin
+            # 18/11: Ollama Cloud đòi credit với cả tài khoản mới (402 ở mọi khóa) → Gemini đứng đầu, NIM nemotron sau,
+            # Ollama xuống cuối (nạp credit là dùng lại được, không phải sửa mã).
+            return [gemini, ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b"),
+                    ("ollama", k.get("AGV_OLLAMA_MODEL") or "gemma4:31b")]
         if loai == "soan":
             return [("nim", k.get("AGV_NIM_MODEL_SOAN") or "nvidia/nemotron-3.5-lightning-30b-a3b"), gemini]
         raise ValueError(f"loại việc không hỗ trợ: {loai}")
