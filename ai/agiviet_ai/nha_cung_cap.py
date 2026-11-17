@@ -53,7 +53,7 @@ def doc_khoa(path: str = TEP_KHOA) -> dict[str, str]:
                 out[k.strip()] = v.strip().strip('"').strip("'")
     except OSError:
         pass
-    for k in ("GEMINI_API_KEY", "NVIDIA_API_KEY", "OLLAMA_API_KEY", "AGV_OLLAMA_MODEL", "AGV_TTS_MODEL", "AGV_TTS_GIONG", "AGV_GEMINI_MODEL", "AGV_NIM_MODEL", "AGV_NIM_MODEL_DU_PHONG",
+    for k in ("GEMINI_API_KEY", "NVIDIA_API_KEY", "OLLAMA_API_KEY", "OLLAMA_API_KEY_2", "OLLAMA_API_KEY_3", "AGV_OLLAMA_MODEL", "AGV_TTS_MODEL", "AGV_TTS_GIONG", "AGV_GEMINI_MODEL", "AGV_NIM_MODEL", "AGV_NIM_MODEL_DU_PHONG",
               "AGV_NIM_MODEL_MAY", "AGV_NIM_MODEL_SOAN"):
         if os.environ.get(k):
             out[k] = os.environ[k]
@@ -180,15 +180,25 @@ class NhaCungCap:
             raise LoiNhaCungCap(f"NIM trả sai dạng: {type(e).__name__}") from e
 
     def _ollama(self, model: str, he_thong: str, nguoi_dung: str, timeout_s: float, toi_da: int) -> str:
-        k = self.khoa.get("OLLAMA_API_KEY")
-        if not k:
+        # Nhiều khóa: OLLAMA_API_KEY, OLLAMA_API_KEY_2, OLLAMA_API_KEY_3 (hoặc nhiều khóa cách nhau dấu phẩy).
+        # Khóa trả 402 (hết hạn mức) hoặc 401 thì thử khóa kế; hết khóa thì báo lỗi để chuỗi chuyển sang Gemini/NIM.
+        ds = [x.strip() for ten in ("OLLAMA_API_KEY", "OLLAMA_API_KEY_2", "OLLAMA_API_KEY_3")
+              for x in (self.khoa.get(ten) or "").split(",") if x.strip()]
+        if not ds:
             raise LoiNhaCungCap("thiếu khóa Ollama")
-        r = self.client.post(OLLAMA_URL, headers={"authorization": "Bearer " + k}, timeout=timeout_s, json={
-            "model": model, "stream": False, "think": False, "options": {"temperature": 0.4, "num_predict": toi_da},
-            "messages": [{"role": "system", "content": he_thong}, {"role": "user", "content": nguoi_dung}],
-        })
+        ma: list[int] = []
+        for k in ds:
+            r = self.client.post(OLLAMA_URL, headers={"authorization": "Bearer " + k}, timeout=timeout_s, json={
+                "model": model, "stream": False, "think": False, "options": {"temperature": 0.4, "num_predict": toi_da},
+                "messages": [{"role": "system", "content": he_thong}, {"role": "user", "content": nguoi_dung}],
+            })
+            if r.status_code == 200:
+                break
+            ma.append(r.status_code)
+            if r.status_code not in (401, 402, 429):
+                break  # lỗi khác (mô hình bị gỡ, máy chủ lỗi): đổi khóa cũng không giúp
         if r.status_code != 200:
-            raise LoiNhaCungCap(f"Ollama HTTP {r.status_code}")  # 402 = hết hạn mức gói Free
+            raise LoiNhaCungCap(f"Ollama HTTP {'/'.join(map(str, ma))} ({len(ds)} khóa)")  # 402 = hết hạn mức
         try:
             return (r.json()["message"]["content"] or "").strip()
         except (KeyError, ValueError) as e:
