@@ -61,6 +61,7 @@ console.assert(docSo("12.5") === 12.5 && docSo("12,5") === 12.5 && docSo("1.500"
 export const so = (v, min = -Infinity, max = Infinity) => { const n = Number(v); return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : null; };
 
 // Ảnh minh họa theo mã mặt hàng (ảnh thật trong /assets/products); không khớp → null (giao diện dùng ô giữ chỗ trung tính)
+/** @type {[RegExp, string][]} */
 const ANH = [[/XOAI/, "xoai-cat-chu"], [/SAU_RIENG|DURIAN/, "sau-rieng"], [/THANH_LONG|DRAGON/, "thanh-long"], [/TOM|SHRIMP/, "tom"],
   [/CA_PHE|COFFEE/, "ca-phe"], [/LUA|GAO|RICE/, "lua-gao"], [/BUOI|POMELO|CAM_|QUYT|CHANH/, "buoi"], [/VAI|NHAN|CHOM/, "vai"],
   [/CHUOI|BANANA/, "chuoi"], [/DUA_HAU|DUA_LUOI|MELON/, "dua-hau"], [/RAU|^CAI|XA_LACH/, "rau-cai"], [/KHOAI|CA_ROT/, "cu"],
@@ -179,7 +180,7 @@ if (typeof window !== "undefined" && !window.__agv401) {
   setTimeout(() => { try { sessionStorage.removeItem(CO); } catch {} }, 8000);
   // Bản thử: mỗi trình duyệt một mã máy, gửi kèm mọi lệnh /v1/test/ → máy chủ khóa hộ cho riêng người đang thử
   let may = ""; try { may = localStorage.getItem("agv-may") || ""; if (!may) { may = (crypto.randomUUID?.() || String(Math.random()).slice(2) + Date.now()); localStorage.setItem("agv-may", may); } } catch {}
-  window.fetch = async (u, o) => {
+  window.fetch = async (/** @type {any} */ u, /** @type {any} */ o) => {
     if (may && /\/v1\/test\//.test(String(u?.url ?? u)) && (!o?.headers || typeof o.headers === "object" && !(o.headers instanceof Headers))) o = { ...(o || {}), headers: { ...(o?.headers || {}), "x-agv-may": may } };
     const r = await goc(u, o);
     try {
@@ -221,6 +222,7 @@ export async function phien() {
   return tk;
 }
 // Giữ tham số thử (?thu=) trên mọi liên kết nội bộ khi chuyển màn
+/** @param {ParentNode} [goc] */
 export function giuThamSo(goc = document) {
   const thu = new URLSearchParams(location.search).get("thu");
   if (!thu) return;
@@ -292,7 +294,7 @@ export function veTab(dangMo, soTin = 0) {
       cho = false;
     });
   }, { passive: true });
-  addEventListener("pointerdown", (e) => { if (!nav.contains(e.target) && !e.target.closest?.(".nut-cuon")) nav.classList.remove("thu"); }, { passive: true });
+  addEventListener("pointerdown", (e) => { if (!nav.contains(/** @type {Node} */ (e.target)) && !e.target.closest?.(".nut-cuon")) nav.classList.remove("thu"); }, { passive: true });
   nutCuonNhanh();
   return nav;
 }
@@ -340,6 +342,7 @@ export function veDau(goc, { chao, ten, chuDau, soThongBao = 0 }) {
 const BO_DAU = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
 // Câu soạn sẵn khi trợ lý AI chưa bật: chép đúng lời đã duyệt trong ai/agiviet_ai/tro_ly.py (CAU_LUA, QUY_TRINH), không thêm số.
 const CAU_LUA_BAN = "Bác cẩn thận nhé: AgiViet không bao giờ hỏi mã OTP hay mật khẩu, và tiền chỉ đi qua tài khoản đảm bảo ngân hàng trong app. Đừng chuyển tiền hay đọc mã cho ai. Nếu có người yêu cầu, bác bấm Báo cáo trong mục Hỗ trợ.";
+/** @type {[RegExp, string][]} */
 const SOAN_SAN = [
   [/quyet toan|hoan (coc|tien)|ket thuc don|xu ly coc|don xong/, "Cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được bác xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."], // trước 'coc': 'hoàn cọc' là câu quyết toán
   [/coc|dam bao|ngan hang giu/, "Người mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở."],
@@ -355,6 +358,7 @@ export function cauSoanSan(t) {
   const g = SOAN_SAN.find(([m]) => m.test(t));
   return g ? g[1] : "Trợ lý AI đang tạm nghỉ. Bác hỏi về cọc, đăng hàng, chào giá, ký, giao nhận hay tiền thì con trả lời được, hoặc nhắn AgiViet.";
 }
+/** @type {[RegExp, ...any[]][]} */
 const DUONG = [
   [/dang (hang|bai|lo|ban)|ban hang moi|them lo/, "Đăng hàng mới", "./ban-dang-bai.html", "Bác bấm vào đây để đăng lô hàng: chọn mặt hàng, nhập lượng, giá và chụp ảnh."],
   [/chao gia|tra gia|tin nhan|nhan tin/, "Xem chào giá", "./ban-tin-nhan.html", "Lời chào giá của người mua nằm ở mục Tin nhắn."],

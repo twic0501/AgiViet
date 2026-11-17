@@ -1,0 +1,16 @@
+{
+  // App bán (HTML + JS module thuần, Vite đóng gói khi build): kiểm kiểu TypeScript trên chính mã JS (checkJs), không đổi mã chạy.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": ["kieu-toan-cuc.d.ts", "chung.js", "the-giao-dich.js", "thoi-gian-thuc.js", "tro-chuyen-that.js", "tro-chuyen.js", "lien-lac.js", "giao-dich-chung.js", "lich.js", "huong-dan.js", "hieu-ung-app.js", "chuyen-trang.js", "khung-dt.js", "qua-cau.js", "kich-ban-bang.js"]
+}

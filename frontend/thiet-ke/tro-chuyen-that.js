@@ -37,7 +37,7 @@ export async function tai() {
     h.cuoi = t ? { chu: `${t.la_cua_toi ? "Bác: " : ""}${t.body}`, luc: t.created_at, cuaToi: t.la_cua_toi } : null;
     h.chuaDoc = t && !t.la_cua_toi && (!xem[h.ma] || new Date(t.created_at) > new Date(xem[h.ma])) ? 1 : 0;
   }
-  ds.sort((a, b) => new Date(b.cuoi?.luc || 0) - new Date(a.cuoi?.luc || 0));
+  ds.sort((a, b) => +new Date(b.cuoi?.luc || 0) - +new Date(a.cuoi?.luc || 0));
   return ds;
 }
 export const soChuaDoc = () => ds.reduce((t, h) => t + h.chuaDoc, 0);

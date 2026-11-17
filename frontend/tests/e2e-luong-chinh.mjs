@@ -189,9 +189,11 @@ try {
   await step("Lập hợp đồng và ký phía mua", async () => {
     await go(b, "create-order/" + offer);
     for(const [n,v] of Object.entries({mode:"at_farm",site:"tai_vuon",transport:"buyer",timing:"before_loading"})) await choose(b,"[name="+n+"]",v);
-    await b.locator("[name=downgrade]").fill("15000");
-    await b.locator("[name=from]").fill("2026-11-04T06:00");
-    await b.locator("[name=to]").fill("2026-11-04T12:00");
+    await b.locator("[name=downgrade]").fill("17000"); // ≥ 70% giá đơn 23.000 (quy tắc 02/11), dưới mức này người bán phải xác nhận riêng
+    // Ngày giao tương đối (mai, giờ VN): ngày cố định cũ trôi về quá khứ làm bước giao báo "Ngoài cửa sổ giao"
+    const mai = new Date(Date.now() + 7 * 36e5 + 864e5).toISOString().slice(0, 10);
+    await b.locator("[name=from]").fill(`${mai}T06:00`);
+    await b.locator("[name=to]").fill(`${mai}T12:00`);
     await shot(b, "lap-hop-dong");
     await submit(b, "createOrder");
     await b.getByRole("heading", { name: /^HD-/ }).waitFor();

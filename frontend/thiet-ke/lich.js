@@ -102,7 +102,7 @@ function moLich(o, nut, lb) {
   const $ = (s) => che.querySelector(s);
   const NHANH = [["Hôm nay", 0], ["Ngày mai", 1], ["3 ngày nữa", 3], ["Tuần sau", 7]];
   const ve = () => {
-    $(".lich-nhanh").innerHTML = NHANH.map(([t, k]) => { const d = new Date(homNay); d.setDate(d.getDate() + k); return `<button type="button" data-k="${k}" ${ngoai(d) ? "disabled" : ""} aria-pressed="${!!chon && isoNgay(d) === isoNgay(chon)}">${t}</button>`; }).join("");
+    $(".lich-nhanh").innerHTML = NHANH.map(([t, k]) => { const d = new Date(homNay); d.setDate(d.getDate() + Number(k)); return `<button type="button" data-k="${k}" ${ngoai(d) ? "disabled" : ""} aria-pressed="${!!chon && isoNgay(d) === isoNgay(chon)}">${t}</button>`; }).join("");
     const cuoiTruoc = new Date(thang.getFullYear(), thang.getMonth(), 0), dauSau = new Date(thang.getFullYear(), thang.getMonth() + 1, 1);
     $(".lich-thang").innerHTML = `<button type="button" data-t="-1" aria-label="Tháng trước" ${min && cuoiTruoc < min ? "disabled" : ""}>${MUI_T}</button><b>Tháng ${thang.getMonth() + 1}, ${thang.getFullYear()}</b><button type="button" data-t="1" aria-label="Tháng sau" ${max && dauSau > max ? "disabled" : ""}>${MUI_P}</button>`;
     const lech = (thang.getDay() + 6) % 7, soNgay = new Date(thang.getFullYear(), thang.getMonth() + 1, 0).getDate();

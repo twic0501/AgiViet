@@ -2,6 +2,7 @@
 // chấm sáng chạy dọc đường như hàng đang đi. Cầu xoay; điểm phía trước to/rõ, phía sau nhỏ/mờ.
 // Canvas 2D, không thư viện ngoài (chạy được khi ngoại tuyến). Tôn trọng prefers-reduced-motion.
 // mauDuong/mauVanh/mauCham: đổi màu khi đặt trên nền tối (vd. khối xanh)
+/** @param {HTMLCanvasElement} canvas @param {{ anh?: string[], so?: number, noi?: number, tocDo?: number, nghieng?: number, mauDuong?: string, mauVanh?: string, mauCham?: string }} [tuyChon] */
 export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0.35, mauDuong = "#1f4d3a", mauVanh = "rgba(31,77,58,.18)", mauCham = "#e8b53a" } = {}) {
   const ctx = canvas.getContext("2d");
   const giam = matchMedia("(prefers-reduced-motion: reduce)").matches;
