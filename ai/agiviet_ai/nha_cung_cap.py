@@ -197,7 +197,10 @@ class NhaCungCap:
         k = self.khoa
         gemini = ("gemini", k.get("AGV_GEMINI_MODEL") or "gemini-flash-lite-latest")
         if loai == "truc_tiep":
-            return [gemini, ("nim", k.get("AGV_NIM_MODEL") or "google/gemma-4-31b-it")]
+            # Ba bậc nhanh: Gemini lite hay 503 lúc quá tải → Gemini flash (mô hình khác) → NIM nemotron lightning.
+            # Bỏ NIM gemma khỏi bậc trả lời ngay: đo 17/11 chờ >40 s vẫn chưa trả lời.
+            return [gemini, ("gemini", k.get("AGV_GEMINI_MODEL_2") or "gemini-flash-latest"),
+                    ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
         if loai == "may":
             return [gemini, ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
         if loai == "doi_tac":  # chatbot đối tác AI nhắn tin: gemma4 trên Ollama Cloud (gói Free) → NIM gemma

@@ -130,7 +130,7 @@ def tra_loi(cau: str, vai: str = "ban", du_lieu: str = "", ncc: NhaCungCap | Non
         return TraLoi(CAU_NGOAI_LE[vai], "ngoai_le")
     ncc = ncc or NhaCungCap()
     kq = ncc.goi(HE_THONG[vai], f"QUY TRÌNH ĐÃ CHỐT:\n{QUY_TRINH}\n\nDỮ LIỆU:\n{du_lieu or '(trống)'}\n\nCÂU HỎI:\n{cau}",
-                 loai="truc_tiep", timeout_s=6.5, toi_da=300)  # 2 bậc × 6,5s < 15s backend chờ ở /v1/assistant/ask
+                 loai="truc_tiep", timeout_s=4.5, toi_da=300)  # 3 bậc × 4,5s < 15s backend chờ ở /v1/assistant/ask
     if kq.nguon == "soan_san":
         return TraLoi(CAU_SOAN_SAN, "soan_san", kq.nguon)
     la = so_la(kq.van_ban, du_lieu + " " + cau + " " + QUY_TRINH)
