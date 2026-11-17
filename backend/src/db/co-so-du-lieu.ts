@@ -281,6 +281,7 @@ export class CoSoDuLieu {
         await c.end();
         if ((this.pool as any).ended) this.pool = new pg.Pool({ connectionString: this.databaseUrl!, max: this.poolMax, idleTimeoutMillis: 30_000, application_name: 'agiviet-backend' });
       }
+      await this.lamTuoiLoMau();
       return true;
     }
     await this.khoa.chay(async () => {
@@ -290,6 +291,7 @@ export class CoSoDuLieu {
       await cu.close().catch(() => {});
       await this.chuanBiRuntime();
     });
+    await this.lamTuoiLoMau();
   }
 
   /** Giao dịch ghi: SERIALIZABLE, ngữ cảnh actor đặt bằng set_config(..., true). */
@@ -356,6 +358,17 @@ export class CoSoDuLieu {
       GRANT EXECUTE ON FUNCTION ref.ctx_user(),ref.ctx_org(),ref.ctx(text) TO agv_backend_meta;
       GRANT EXECUTE ON FUNCTION evt.claim_idempotency(text,text,bytea),evt.emit(text,uuid,text,jsonb,text[]) TO agv_backend_meta;
     `);
+  }
+
+  /** Chỉ môi trường thử: dữ liệu mẫu mang ngày xác nhận lô cố định, quá 14 ngày thì bên mua không còn thấy lô nào.
+   *  Sau khởi động và sau mỗi lần đặt lại, dời ngày xác nhận của lô mẫu đã cũ hơn 7 ngày về giờ hiện tại (theo đồng hồ thử). */
+  async lamTuoiLoMau(): Promise<number> {
+    if (!this.laThu || (this.pool && !this.ownerUrl)) return 0;
+    try {
+      const r = await this.nhapDuLieuThu((t) => t.q<{ id: string }>(`UPDATE core.lots SET last_confirmed_at=$1::timestamptz
+        WHERE status IN ('on_sale','upcoming') AND coalesce(last_confirmed_at,created_at) < $1::timestamptz - interval '7 days' RETURNING id`, [new Date(t.thoiDiemMs)]));
+      return r.length;
+    } catch (e: any) { console.warn('lam_tuoi_lo_mau', e?.message ?? e); return 0; }
   }
 
   /** Import fixture duy nhất, không dùng trong API. */

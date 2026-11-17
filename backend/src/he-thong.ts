@@ -38,7 +38,7 @@ export class HeThong {
     caiDatTaiLieuPdf(cfg);
   }
 
-  async khoiTao() { await this.db.khoiTao(); }
+  async khoiTao() { await this.db.khoiTao(); await this.db.lamTuoiLoMau(); }
 
   /** Đặt lại dữ liệu nền sạch (chỉ môi trường thử). */
   async datLai(conDuoc?: () => boolean) {
