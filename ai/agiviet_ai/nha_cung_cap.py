@@ -53,7 +53,7 @@ def doc_khoa(path: str = TEP_KHOA) -> dict[str, str]:
                 out[k.strip()] = v.strip().strip('"').strip("'")
     except OSError:
         pass
-    for k in ("GEMINI_API_KEY", "NVIDIA_API_KEY", "OLLAMA_API_KEY", "OLLAMA_API_KEY_2", "OLLAMA_API_KEY_3", "AGV_OLLAMA_MODEL", "AGV_TTS_MODEL", "AGV_TTS_GIONG", "AGV_GEMINI_MODEL", "AGV_NIM_MODEL", "AGV_NIM_MODEL_DU_PHONG",
+    for k in ("GEMINI_API_KEY", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3", "NVIDIA_API_KEY", "OLLAMA_API_KEY", "OLLAMA_API_KEY_2", "OLLAMA_API_KEY_3", "AGV_OLLAMA_MODEL", "AGV_TTS_MODEL", "AGV_TTS_GIONG", "AGV_GEMINI_MODEL", "AGV_NIM_MODEL", "AGV_NIM_MODEL_DU_PHONG",
               "AGV_NIM_MODEL_MAY", "AGV_NIM_MODEL_SOAN"):
         if os.environ.get(k):
             out[k] = os.environ[k]
@@ -70,16 +70,24 @@ class NhaCungCap:
 
     # ---- từng nhà cung cấp ----
     def _gemini(self, model: str, he_thong: str, nguoi_dung: str, timeout_s: float, toi_da: int) -> str:
-        k = self.khoa.get("GEMINI_API_KEY")
-        if not k:
+        # Nhiều khóa AI Studio (mỗi project một hạn mức): 429/403 thì thử khóa kế.
+        ds = [self.khoa[t] for t in ("GEMINI_API_KEY", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3") if self.khoa.get(t)]
+        if not ds:
             raise LoiNhaCungCap("thiếu khóa Gemini")
-        r = self.client.post(GEMINI_URL.format(m=model), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
-            "systemInstruction": {"parts": [{"text": he_thong}]},
-            "contents": [{"role": "user", "parts": [{"text": nguoi_dung}]}],
-            "generationConfig": {"temperature": 0.3, "maxOutputTokens": toi_da},
-        })
+        ma: list[int] = []
+        for k in ds:
+            r = self.client.post(GEMINI_URL.format(m=model), headers={"x-goog-api-key": k}, timeout=timeout_s, json={
+                "systemInstruction": {"parts": [{"text": he_thong}]},
+                "contents": [{"role": "user", "parts": [{"text": nguoi_dung}]}],
+                "generationConfig": {"temperature": 0.3, "maxOutputTokens": toi_da},
+            })
+            if r.status_code == 200:
+                break
+            ma.append(r.status_code)
+            if r.status_code not in (400, 401, 403, 429):  # 400 = khóa sai (API_KEY_INVALID)
+                break
         if r.status_code != 200:
-            raise LoiNhaCungCap(f"Gemini HTTP {r.status_code}")
+            raise LoiNhaCungCap(f"Gemini HTTP {'/'.join(map(str, ma))} ({len(ds)} khóa)")
         try:
             return "".join(p.get("text", "") for p in r.json()["candidates"][0]["content"]["parts"]).strip()
         except (KeyError, IndexError, ValueError) as e:
