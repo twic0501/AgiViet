@@ -73,6 +73,7 @@ export function veChat(h) {
   const theGD = gnTheGD($("tgd"), { ben: "seller", cuoc, goi: async (d, b) => { const j = await goi(d, b); return j?.data ?? j; }, linkDon: (id) => `./ban-don.html${location.search}${location.search ? "&" : "?"}id=${encodeURIComponent(id)}`, sauLam: () => dispatchEvent(new Event("agv-vong-ngay")), dauTrang: (chu) => { const p = document.querySelector("#dau .chao"); if (p) p.textContent = chu; } });
   const he = []; // dòng hệ thống chỉ hiện ở máy này (cảnh báo che, đã gửi báo cáo)
   let hen = 0, soCu = -1, dangGo = false;
+  addEventListener("agv-thay-doi", () => { clearTimeout(hen); tai(false); });
   const tai = async (cuon) => {
     clearTimeout(hen);
     try {
@@ -91,7 +92,7 @@ export function veChat(h) {
       }
       const cuoiHo = r.tin.filter((m) => !m.la_cua_toi).at(-1); if (cuoiHo) ghiXem(h.ma, cuoiHo.created_at);
     } catch (e) { $("tin").innerHTML = `<p class="bao loi">${esc(e.message)}</p>`; }
-    hen = setTimeout(() => tai(false), dangGo ? 1500 : 4000);
+    hen = setTimeout(() => tai(false), dangGo ? 1500 : window.__agvKenhSong ? 20000 : 4000);
   };
   const go = $("go");
   go.addEventListener("input", () => { go.style.height = "auto"; go.style.height = Math.min(120, go.scrollHeight) + "px"; });

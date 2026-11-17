@@ -617,6 +617,31 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   const TN = () => import('../nghiep-vu/tin-nhan.ts');
   const cuocTin = z.object({ offer_id: uuid.optional(), order_id: uuid.optional() });
   app.get('/v1/messages', async (req) => { const nd = await bo.xacThuc(req); const x = cuocTin.parse(req.query); const m = await TN(); return bo.doc((t) => m.docTinNhan(t, nd, x)); });
+  // Real-time: luồng Server-Sent Events. Máy chủ dò thay đổi của tổ chức (sự kiện lời chào/hợp đồng + tin nhắn) ~2,5 giây/lần
+  // và đẩy "thay_doi" ngay khi có; app đọc bằng fetch (gửi được Authorization). Mỗi luồng tự đóng sau 4 phút, app nối lại.
+  app.get('/v1/events', async (req, reply) => {
+    const nd = await bo.xacThuc(req); const org = nd.thanhVien.orgId; const TN2 = await TN();
+    const dau = async () => bo.doc(async (t) => {
+      const seq = await t.gtri<string>(`SELECT coalesce(max(e.seq),0)::text FROM evt.domain_events e WHERE e.aggregate_id IN
+        (SELECT id FROM core.offers WHERE buyer_org_id=$1 OR seller_org_id=$1 UNION ALL SELECT id FROM core.orders WHERE buyer_org_id=$1 OR seller_org_id=$1)`, [org]);
+      const tin = await TN2.tomTatTinNhan(t, nd) as any[];
+      return { seq: seq ?? '0', tin: (tin ?? []).map((x: any) => x.id).join() };
+    });
+    reply.hijack();
+    reply.raw.writeHead(200, { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache, no-transform', connection: 'keep-alive', 'x-accel-buffering': 'no' });
+    const gui = (ten: string, d: unknown) => reply.raw.write(`event: ${ten}\ndata: ${JSON.stringify(d)}\n\n`);
+    let cu = await dau().catch(() => null), song = true, n = 0;
+    gui('san_sang', { luc: new Date().toISOString() });
+    const hen = setInterval(async () => {
+      if (!song) return; n++;
+      const moi = await dau().catch(() => null);
+      if (moi && cu && (moi.seq !== cu.seq || moi.tin !== cu.tin)) gui('thay_doi', { giao_dich: moi.seq !== cu.seq, tin: moi.tin !== cu.tin });
+      if (moi) cu = moi;
+      if (n % 6 === 0) reply.raw.write(': giu\n\n');
+      if (n >= 96) { song = false; clearInterval(hen); reply.raw.end(); }
+    }, 2500);
+    req.raw.on('close', () => { song = false; clearInterval(hen); });
+  });
   app.get('/v1/messages/summary', async (req) => { const nd = await bo.xacThuc(req); const m = await TN(); return bo.doc((t) => m.tomTatTinNhan(t, nd)); });
   app.post('/v1/messages', async (req) => bo.lenh(req, 'gui_tin_nhan', async (t, nd) => (await TN()).phiaTinNhan(t, nd, cuocTin.parse(req.body)),
     async (t, nd, b) => (await TN()).guiTinNhan(t, nd, cuocTin.extend({ body: z.string().max(1000).optional().default(''), image_document_id: uuid.optional() })

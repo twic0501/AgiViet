@@ -170,6 +170,7 @@ const docJ = async (d) => { const r = await fetch(d, H()); if (!r.ok) throw new 
 const LOI_TAI = { __loi: true };
 const khoiLoi = (ten) => `<section class="hd-the"><h3><i class="cham"></i>${esc(ten)}</h3><p class="hd-bao do" style="margin:4px 0 14px">Chưa tải được phần này. Số liệu chưa hiện để bác không hiểu nhầm. <button class="nut-chu" type="button" data-tai-lai>Tải lại</button></p></section>`;
 
+addEventListener("agv-thay-doi", (e) => { if (e.detail?.giao_dich && !document.querySelector("dialog[open], .tam.mo, input:focus, textarea:focus")) tai().catch(() => {}); });
 async function tai() {
   token = await phien();
   if (!ID) { location.replace("./ban-hop-dong.html" + location.search); return; }

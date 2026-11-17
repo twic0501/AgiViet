@@ -81,7 +81,7 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
       tin = x.tin; ghiXem(tin.at(-1)?.id); DL.tin.filter((c) => (c as any)[Object.keys(cuoc)[0]] === id).forEach((c) => ghiXem(c.id));
       ve(cuon || cuoi); theGD?.ve(tin.filter((m) => m.la_cua_toi).at(-1)?.body ?? "");
     } catch (e) { if (!tin.length) luong.innerHTML = trong((e as Error).message); }
-    if (document.body.contains(luong)) hen = window.setTimeout(() => tai(), document.hidden ? 15000 : 3000);
+    if (document.body.contains(luong)) hen = window.setTimeout(() => tai(), document.hidden ? 15000 : (window as any).__agvKenhSong ? 20000 : 3000);
   };
   const gui = async (chu: string, tam?: Tin & { cho?: boolean; loi?: boolean }) => {
     const m = tam ?? { id: "tam-" + crypto.randomUUID(), body: chu, la_cua_toi: true, da_che: false, nguoi_gui: "Bạn", created_at: new Date().toISOString() };
@@ -89,6 +89,8 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
     try { await api("/v1/messages", { ...cuoc, body: chu }); dangCho = dangCho.filter((x) => x !== m); window.dispatchEvent(new Event("agv-vong-ngay")); dungChat(); await tai(true); }
     catch { m.cho = false; m.loi = true; dau = ""; ve(true); }
   };
+  const khiDoi = (e: Event) => { if (!document.body.contains(luong)) return removeEventListener("agv-thay-doi", khiDoi); clearTimeout(hen); tai(); };
+  addEventListener("agv-thay-doi", khiDoi);
   form.onsubmit = (e) => { e.preventDefault(); const chu = oGo.value.trim(); if (!chu) return; oGo.value = ""; oGo.style.height = ""; gui(chu); oGo.focus(); };
   oGo.onkeydown = (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } };
   oGo.oninput = () => { oGo.style.height = "auto"; oGo.style.height = Math.min(oGo.scrollHeight, 120) + "px"; };

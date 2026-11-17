@@ -193,6 +193,10 @@ if (typeof window !== "undefined" && !window.__agv401) {
     return r;
   };
 }
+// Real-time cho các trang app bán: một kênh /v1/events mỗi trang; thay đổi phát "agv-thay-doi".
+if (typeof document !== "undefined" && /\/ban-[\w-]+\.html$/.test(location.pathname)) {
+  try { if (sessionStorage.getItem(KHOA_PHIEN)) import("./thoi-gian-thuc.js").then((m) => m.moKenh(() => phien())); } catch {}
+}
 export async function phien() {
   const sdt = new URLSearchParams(location.search).get("thu");
   // Phiên đã lưu dùng lại, trừ khi ?thu= là số thử KHÁC số đã lưu (đổi người thử trong cùng tab)
@@ -694,7 +698,7 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     const r = await fetch("/v1/test/doi-tac-ao/vong", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + tk }, body: JSON.stringify(nhanh ? { chi_tin: true } : {}) }).catch(() => null);
     const j = r?.ok ? await r.json().catch(() => null) : null;
     if (nhanh) dangTin = false; else dangChay = false;
-    let xong = (j?.data ?? j)?.viec?.filter((v) => v.ket_qua === "xong") ?? [];
+    let xong = (j?.data ?? j)?.viec?.filter((v) => v.ket_qua === "xong" && !/tin nhắn/.test(v.viec)) ?? []; // tin nhắn tự hiện qua kênh real-time
     if (!xong.length) return;
     // Chỉ báo việc dính tới tổ chức đang đăng nhập (lời chào / lô / đơn của mình), không lộ giao dịch người khác.
     const lay = (u) => fetch(u, { headers: { authorization: "Bearer " + tk } }).then((x) => x.json()).then((x) => { const v = x?.data ?? x; return v?.items ?? v ?? []; }).catch(() => []);

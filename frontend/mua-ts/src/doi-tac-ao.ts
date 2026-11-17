@@ -62,7 +62,7 @@ export async function batDoiTacAo(): Promise<void> {
     let j: any = null;
     try { j = await api("/v1/test/doi-tac-ao/vong", nhanh ? { chi_tin: true } : {}); } catch { /* AI chậm/lỗi: vòng sau thử lại */ }
     if (nhanh) dangTin = false; else dangChay = false;
-    let xong: ViecAi[] = (j?.viec ?? []).filter((v: ViecAi) => v.ket_qua === "xong");
+    let xong: ViecAi[] = (j?.viec ?? []).filter((v: ViecAi) => v.ket_qua === "xong" && !/tin nhắn/.test(v.viec)); // tin nhắn đã tự hiện qua kênh real-time, không cần Ting
     if (!xong.length) return;
     const lay = (u: string) => api(u).then((x: any) => x?.items ?? x ?? []).catch(() => []);
     const [of, don, nc] = await Promise.all([lay("/v1/offers"), lay("/v1/orders"), lay("/v1/demands?mine=true")]);

@@ -207,6 +207,7 @@ function ve(k) {
 
 // ===== Nhắn tin thật hai bên (backend /v1/messages, che liên lạc trước khi lưu) =====
 let hen = 0;
+addEventListener("agv-thay-doi", () => { clearTimeout(hen); window.__taiTin?.(); });
 async function khungTin(o, cuoc, ten) {
   clearTimeout(hen);
   const q = cuoc.order_id ? `order_id=${cuoc.order_id}` : `offer_id=${cuoc.offer_id}`;
@@ -215,6 +216,7 @@ async function khungTin(o, cuoc, ten) {
     <p class="tn-bao" role="status"></p><p class="tn-luu">Không gửi số điện thoại, Zalo, số tài khoản: app tự che tới khi ngân hàng đối tác nhận cọc của người mua.</p></div>`;
   const ds = o.querySelector(".tn-ds"), bao = o.querySelector(".tn-bao");
   const tai = async () => {
+    window.__taiTin = tai;
     if (!o.isConnected) return;
     const r = await fetch(`/v1/messages?${q}`, { headers: { authorization: "Bearer " + tokenG } }).then((x) => (x.ok ? x.json() : null)).catch(() => null);
     if (!r) { ds.innerHTML = `<p class="tn-trong">Chưa tải được tin nhắn.</p>`; return; }
@@ -222,7 +224,7 @@ async function khungTin(o, cuoc, ten) {
     ds.innerHTML = r.tin.length ? r.tin.map((m) => `<div class="tn-bong ${m.la_cua_toi ? "toi" : ""}"><span>${esc(m.body)}</span><small>${m.la_cua_toi ? "Bác" : esc(m.nguoi_gui)} · ${gio(m.created_at)}${m.da_che ? " · đã che liên lạc" : ""}</small></div>`).join("")
       : `<p class="tn-trong">Chưa có tin nhắn. Bác hỏi thêm về hàng, ngày hái, cách giao ở đây.</p>`;
     if (cuoi) ds.scrollTop = ds.scrollHeight;
-    hen = setTimeout(tai, 5000);
+    hen = setTimeout(tai, window.__agvKenhSong ? 20000 : 5000);
   };
   o.querySelector("form").onsubmit = async (e) => {
     e.preventDefault();
