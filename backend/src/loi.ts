@@ -18,7 +18,7 @@ export const MA_LOI: Record<string, MoTaLoi> = {
   DANG_XIN_HUY: { http: 409, cau: 'Đơn đang có yêu cầu hủy chờ trả lời.', khacPhuc: 'Chờ bên kia trả lời yêu cầu hủy.' },
   KHONG_DU_LUONG: { http: 409, cau: 'Lô không còn đủ lượng khả dụng.', khacPhuc: 'Giảm lượng hoặc chọn lô khác.' },
   VUOT_80_UOC_TINH: { http: 409, cau: 'Lô ước tính chỉ được cam kết tối đa 80% lượng.', khacPhuc: 'Giảm lượng hoặc cân thực rồi cập nhật lô.' },
-  MAT_HANG_CHUA_XAC_MINH: { http: 422, cau: 'Mặt hàng/loại này ở vườn này chưa được AgiViet xác minh hoặc đã hết hạn.', khacPhuc: 'Xem GET /v1/seller/verified-products; liên hệ nhân viên để xác minh trước khi đăng.' },
+  MAT_HANG_CHUA_XAC_MINH: { http: 422, cau: 'Mặt hàng/loại này ở vườn này chưa được AgiViet xác minh hoặc đã hết hạn.', khacPhuc: 'Xem GET /v1/seller/verified-products; nộp giấy tờ mặt hàng ở mục Tôi để AgiViet xác minh trước khi đăng.' },
   CHUA_HET_CACH_LY: { http: 422, cau: 'Vườn còn cách ly thuốc.', khacPhuc: 'Chọn ngày hái sau ngày hết cách ly.' },
   DUOI_60_THAM_KHAO: { http: 422, cau: 'Giá chào thấp hơn 60% giá tham khảo.', khacPhuc: 'Nâng giá chào.' },
   CHAO_VUOT_LUONG: { http: 409, cau: 'Tổng lượng chào đang mở vượt 2 lần lượng cần.', khacPhuc: 'Chờ lời chào cũ được trả lời hoặc rút bớt.' },

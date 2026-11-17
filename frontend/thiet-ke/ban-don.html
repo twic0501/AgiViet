@@ -200,7 +200,7 @@ function viecChinh() {
 function nhacTheoBuoc() {
   const n = window.nhacTrau; if (!n) return;
   const v = viecChinh();
-  if (v?.chu === "Ký hợp đồng") return n({ khoa: "ky-" + ID, mat: "lo", chu: "Trước khi ký, bác đọc kỹ lượng chắc giao, ngày giao và cách trả tiền. Mã OTP gửi về máy chỉ bác nhập, không đọc cho ai kể cả người xưng nhân viên." });
+  if (v?.chu === "Ký hợp đồng") return n({ khoa: "ky-" + ID, mat: "lo", chu: "Trước khi ký, bác đọc kỹ lượng chắc giao, ngày giao và cách trả tiền. Mã OTP gửi về máy chỉ bác nhập, không đọc cho ai kể cả người xưng là AgiViet." });
   if (v?.chu === "Kiểm tiền và xác nhận") return n({ khoa: "tien-" + ID, mat: "lo", chu: "Chỉ bấm xác nhận khi bác thấy tiền đã vào tài khoản trong app ngân hàng. Ảnh chụp màn hình chuyển khoản có thể là giả." });
   if (v?.chu === "Bàn giao hàng") return n({ khoa: "giao-" + ID, mat: "vui", chu: "Chỉ bốc hàng khi người nhận đưa đúng mã 6 số trên app của họ. Cân xong hai bên cùng xem số rồi mới ký." });
   if (v?.chu === "Xem kết quả cân") return n({ khoa: "can-" + ID, mat: "ngac-nhien", chu: "Bác xem từng dòng: đạt, hạ loại, trả lại. Dòng nào không đúng thì bấm Không đúng, có ảnh làm bằng chứng." });
@@ -397,7 +397,7 @@ function moKy() {
   const traSau = dk.payment_timing === "after_days";
   const khongBaoDam = traSau ? Math.max(0, Number(dk.contract_value_vnd || 0) - Number(dk.deposit_vnd || 0)) : 0;
   moTam(`<div class="than"><h2 id="t-ky">Ký hợp đồng ${esc(don.code)}</h2>
-    ${thieuDk ? `<p class="hd-bao do" style="margin:0">Chưa tải được toàn bộ điều khoản của bản hợp đồng này nên chưa ký được. Bác bấm Tải lại; vẫn lỗi thì nhắn nhân viên.</p><button class="nut phu-nut" type="button" onclick="location.reload()">Tải lại</button>` : ""}
+    ${thieuDk ? `<p class="hd-bao do" style="margin:0">Chưa tải được toàn bộ điều khoản của bản hợp đồng này nên chưa ký được. Bác bấm Tải lại; vẫn lỗi thì bấm Hỗ trợ.</p><button class="nut phu-nut" type="button" onclick="location.reload()">Tải lại</button>` : ""}
     <div class="hd-the" style="padding:2px 14px">
       <div class="hd-dong"><span>Hàng</span><b>${esc(can(dk.qty_g).join(" "))}</b>${the["Hàng"] ? `<small>${esc(the["Hàng"])}</small>` : ""}</div>
       <div class="hd-dong"><span>Giá</span><b>${vnd(dk.unit_price_vnd)} đ/kg</b><small>${dk.downgrade_price_vnd ? `Hàng hạ cấp tính ${vnd(dk.downgrade_price_vnd)} đ/kg.` : "Chưa có giá hạ cấp: hàng không đạt sẽ trả lại."} Hàng lỗi cho phép ${esc((Number(dk.reject_allowance_bps || 0) / 100).toLocaleString("vi-VN"))}%.</small></div>
@@ -650,7 +650,7 @@ function veVanDe() {
         <p>${esc(x.opened_by_side === "buyer" ? "Người mua" : "Bác")} báo: “${esc(x.reason)}”${x.delivery_code ? ` (đợt ${esc(x.delivery_code)})` : ""}.</p>
         <p><b style="font-size:16px">${esc(TT_TC[x.status] || x.status)}</b>${kd ? ` · kiểm định ${vnd(kd.fee_vnd)} đ, ${kd.prepaid_by_side === "buyer" ? "người mua trả trước" : "bác trả trước"}; bên sai chịu phí` : ""}${kd?.result ? ` · kết quả: ${esc(kd.result)}` : ""}</p>
         ${x.next_due_at ? `<p class="vd-han">Hạn tiếp theo ${esc(gioNgay(x.next_due_at))} · ${esc(conLai(x.next_due_at))}</p>` : ""}
-        <p>Phần không tranh chấp vẫn tính tiền bình thường. Nhân viên AgiViet theo dõi, bác giữ ảnh và mẫu hàng.</p></div>`; }).join("")}
+        <p>Phần không tranh chấp vẫn tính tiền bình thường. AgiViet ghi nhận tranh chấp, bác giữ ảnh và mẫu hàng.</p></div>`; }).join("")}
     ${dn.map((a) => { const doi = Object.entries(a.payload || {}).filter(([k2]) => TRUONG_DN[k2]); const choBac = !a.la_cua_toi && /^open$|await|pending|proposed/.test(a.status); const choKy = a.status === "accepted" && a.annex_document_id && Number(a.resulting_version_no) > Number(don.effective_version_no || 0);
       return `<div class="vd-muc"><b>${esc(a.la_cua_toi ? "Bác đề nghị" : "Người mua đề nghị")}: ${esc(LOAI_DN[a.kind] || "Sửa hợp đồng")}</b>
         ${doi.length ? `<div class="vd-doi">${doi.map(([k2, v]) => `<span>${esc(TRUONG_DN[k2][0])}</span><b style="font-size:16px">${esc(TRUONG_DN[k2][1](v))}</b>`).join("")}</div>` : ""}
@@ -669,7 +669,7 @@ async function traLoiDeNghi(id, lam) {
 }
 async function traLoiHuy(id, lam) {
   try { await lenh(`/v1/cancellation-requests/${id}/${lam === "dong-y" ? "accept" : "reject"}`, {}, "huy-tl-" + lam);
-    await tai(); thongBaoXanh(lam === "dong-y" ? "Đã đồng ý hủy. AgiViet xử lý tiền cọc theo hợp đồng." : "Bác không đồng ý hủy. Nhân viên AgiViet sẽ liên hệ hai bên."); }
+    await tai(); thongBaoXanh(lam === "dong-y" ? "Đã đồng ý hủy. AgiViet xử lý tiền cọc theo hợp đồng." : "Bác không đồng ý hủy. Cọc vẫn do ngân hàng giữ tới khi hai bên thỏa thuận."); }
   catch (e) { alertLoi(e); }
 }
 const thongBaoXanh = (chu) => { const b = document.createElement("p"); b.className = "hd-bao xanh"; b.setAttribute("role", "status"); b.textContent = chu; $("noi").prepend(b); scrollTo({ top: 0 }); };
@@ -702,7 +702,7 @@ function moXinHuy() {
       <p class="hd-ghi" data-r="cc-trang" style="margin-top:6px"></p></div>
     <label style="font-weight:600;color:var(--muc-phu);font-size:16px" for="ly-huy">Bác ghi rõ lý do</label>
     <textarea class="hd-o" id="ly-huy" data-r="ly" maxlength="400" placeholder="Ví dụ: mưa lớn làm rụng trái, chỉ còn 40% hàng"></textarea>
-    <p class="hd-ghi">Người mua có hạn để trả lời. Hai bên đồng ý thì AgiViet xử lý tiền như trên; không đồng ý thì nhân viên đứng giữa xem xét.</p>
+    <p class="hd-ghi">Người mua có hạn để trả lời. Hai bên đồng ý thì AgiViet xử lý tiền như trên; không đồng ý thì cọc vẫn do ngân hàng giữ tới khi hai bên thỏa thuận.</p>
     <p class="hd-bao" data-r="bao" hidden></p></div>
     <div class="day"><button class="nut do" type="button" data-r="gui">Gửi yêu cầu hủy</button><button class="nut lui" type="button" data-r="huy">Thôi, giữ hợp đồng</button></div>`, (goc) => {
     goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-huy");
@@ -779,7 +779,7 @@ function moCan(d) {
       <div class="hd-chon">
         <label><input type="radio" name="thieu" value="backfill" checked><span><b>Giao bù sau</b><small>Hẹn đợt bù phần còn thiếu.</small></span></label>
         <label><input type="radio" name="thieu" value="end"><span><b>Kết thúc, không giao phần thiếu</b><small>Có thể bị trừ bồi thường theo hợp đồng.</small></span></label>
-        <label><input type="radio" name="thieu" value="force_majeure"><span><b>Bất khả kháng (mưa bão, dịch bệnh)</b><small>Cần chứng cứ, nhân viên AgiViet xem xét.</small></span></label>
+        <label><input type="radio" name="thieu" value="force_majeure"><span><b>Bất khả kháng (mưa bão, dịch bệnh)</b><small>Cần ảnh hoặc giấy tờ làm chứng cứ.</small></span></label>
       </div></div>
     <div data-r="khoi-phan" hidden>
       <label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="dong-sai">Dòng nào không đúng?</label>

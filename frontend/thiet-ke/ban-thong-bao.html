@@ -75,13 +75,12 @@
 
     <section id="p-ht" role="tabpanel" aria-labelledby="t-ht" hidden>
       <div class="hoi">
-        <p class="goi-y" style="color:var(--muc-phu)">Bác gặp khó ở đâu cứ nhắn, nhân viên AgiViet trả lời trong giờ làm việc.</p>
+        <p class="goi-y" style="color:var(--muc-phu)">Bác gặp khó ở đâu cứ nhắn, AgiViet trả lời trong giờ làm việc.</p>
         <div class="goi-nhanh" id="goi-nhanh">
           <button type="button">Tôi chưa nhận được tiền cọc</button>
           <button type="button">Người mua chưa ký hợp đồng</button>
           <button type="button">Tôi muốn sửa lô hàng đã đăng</button>
-          <button type="button">Hẹn nhân viên tới xác minh vườn</button>
-        </div>
+                  </div>
         <label class="nhan-o" for="noi-dung" style="font-size:14px;font-weight:600;color:var(--muc-phu)">Nội dung</label>
         <textarea id="noi-dung" maxlength="1000" placeholder="Ví dụ: Lô L-0412 tôi muốn đổi giá…"></textarea>
         <p class="bao loi" id="loi" hidden></p>
@@ -285,7 +284,7 @@ $("gui").onclick = async () => {
     const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: khoa, message: nd }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được, bác thử lại.");
-    $("da-gui").innerHTML = `<b>Đã gửi cho AgiViet.</b><br>Nhân viên sẽ gọi hoặc nhắn lại cho bác. Mã yêu cầu: ${esc((j.data?.code || j.id || "").toString().slice(0, 12))}`;
+    $("da-gui").innerHTML = `<b>Đã gửi cho AgiViet.</b><br>AgiViet sẽ nhắn lại cho bác trong app. Mã yêu cầu: ${esc((j.data?.code || j.id || "").toString().slice(0, 12))}`;
     $("da-gui").hidden = false; $("noi-dung").value = ""; khoa = null;
   } catch (e) { $("loi").textContent = e.message; $("loi").hidden = false; }
   $("gui").textContent = "Gửi cho AgiViet"; $("gui").disabled = $("noi-dung").value.trim().length < 5;

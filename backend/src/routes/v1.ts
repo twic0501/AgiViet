@@ -540,9 +540,10 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   // Trợ lý AI cho app: gọi dịch vụ AI nội bộ kèm bối cảnh thật của tổ chức (lô, hợp đồng) để không bịa số. Không phải lệnh ghi.
   app.post('/v1/assistant/ask', async (req, reply) => {
     const nd = await bo.xacThuc(req);
-    const b = z.object({ cau: z.string().min(1).max(600) }).parse(req.body);
-    if (!ht.cfg.aiUrl) return reply.status(503).send({ errors: [{ code: 'AI_CHUA_BAT', message: 'Trợ lý AI đang tạm nghỉ.', fix: 'Bác dùng các nút gợi ý hoặc nhắn nhân viên AgiViet.' }] });
-    const vai = nd.thanhVien.canSell ? 'ban' : 'mua';
+    const b = z.object({ cau: z.string().min(1).max(600), ben: z.enum(['ban', 'mua']).optional() }).parse(req.body);
+    if (!ht.cfg.aiUrl) return reply.status(503).send({ errors: [{ code: 'AI_CHUA_BAT', message: 'Trợ lý AI đang tạm nghỉ.', fix: 'Bác dùng các nút gợi ý hoặc bấm Hỗ trợ AgiViet.' }] });
+    // Vai theo app đang hỏi (một tổ chức có thể vừa bán vừa mua); không gửi thì đoán theo quyền bán.
+    const vai = b.ben ?? (nd.thanhVien.canSell ? 'ban' : 'mua');
     const duLieu = await ht.db.doc(async (t) => {
       const lo = await t.q<any>(`SELECT l.code, p.name_vi, l.grade_code, l.status, l.declared_qty::text qty_g FROM core.lots l JOIN core.products p ON p.id=l.product_id WHERE l.seller_org_id=$1 AND l.status IN ('on_sale','draft','upcoming') ORDER BY l.created_at DESC LIMIT 8`, [nd.thanhVien.orgId]);
       const don = await t.q<any>(`SELECT code, status FROM core.orders WHERE seller_org_id=$1 OR buyer_org_id=$1 ORDER BY created_at DESC LIMIT 6`, [nd.thanhVien.orgId]);
@@ -555,7 +556,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       if (!r.ok) throw new Error(String(r.status));
       return await r.json();
     } catch {
-      return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Trợ lý chưa trả lời được lúc này.', fix: 'Bác thử lại sau ít phút hoặc nhắn nhân viên AgiViet.' }] });
+      return reply.status(503).send({ errors: [{ code: 'AI_TAM_LOI', message: 'Trợ lý chưa trả lời được lúc này.', fix: 'Bác thử lại sau ít phút hoặc bấm Hỗ trợ AgiViet.' }] });
     }
   });
   // Đọc thành tiếng bằng giọng máy chủ (Gemini TTS qua dịch vụ AI): giọng đều trên mọi máy. Chỉ người đã đăng nhập (giữ hạn mức).

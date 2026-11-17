@@ -78,7 +78,7 @@ const VAI = { owner: "Chủ hộ", coop_board: "Ban quản trị HTX", member: "
 const QUYEN = { view: "Xem đơn và hàng", "lot.draft": "Soạn tin đăng nháp", "message.send": "Nhắn tin", "diary.write": "Ghi nhật ký vườn", "lot.create": "Đăng hàng", "offer.reply": "Trả lời lời chào", "delivery.record": "Ghi giao nhận" };
 const TT_HT = { new: ["Đã nhận, chờ xử lý", "vang"], in_progress: ["Đang xử lý", "vang"], resolved: ["Đã xong", "xanh"], closed: ["Đã đóng", "xam"] };
 let token, me, hoSo;
-const TT_GT = { da_xac_minh: ["Đã xác minh", "xanh"], cho_doi_chieu: ["Chờ nhân viên đối chiếu", "vang"], het_han: ["Hết hạn, cần nộp lại", "do"] };
+const TT_GT = { da_xac_minh: ["Đã xác minh", "xanh"], cho_doi_chieu: ["Chờ AgiViet đối chiếu", "vang"], het_han: ["Hết hạn, cần nộp lại", "do"] };
 const H = () => ({ headers: { authorization: "Bearer " + token } });
 const doc = async (d) => { const r = await fetch(d, H()); return r.ok ? r.json() : { __loi: r.status }; };
 
@@ -122,7 +122,7 @@ async function tai() {
       <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:4px 0 8px">Con cháu được làm thay một số việc. Ký hợp đồng và xác nhận tiền chỉ bác làm.</p>
       ${Array.isArray(giup) && giup.length ? giup.map((g) => { const conHan = !g.revoked_at && (!g.valid_to || new Date(g.valid_to) > new Date());
         return `<div class="to-dong"><span><b style="text-align:left">${esc(g.helper_name)}</b></span>${conHan ? `<button class="nut-chu" type="button" data-thu-hoi="${esc(g.id)}">Thu hồi</button>` : `<span class="to-nhan xam">${g.revoked_at ? "Đã thu hồi" : "Hết hạn"}</span>`}
-        <small>${esc((g.actions || []).map((a) => QUYEN[a] || a).join(", "))}${g.valid_to ? ` · tới ${esc(gio(g.valid_to))}` : ""}</small></div>`; }).join("") : `<p class="hd-ghi" style="padding-bottom:12px">Chưa có người giúp. Muốn thêm, bác bấm Hỗ trợ để nhân viên mời người nhà vào.</p>`}</section>
+        <small>${esc((g.actions || []).map((a) => QUYEN[a] || a).join(", "))}${g.valid_to ? ` · tới ${esc(gio(g.valid_to))}` : ""}</small></div>`; }).join("") : `<p class="hd-ghi" style="padding-bottom:12px">Chưa có người giúp. Muốn thêm, bác bấm Hỗ trợ để mời người nhà vào.</p>`}</section>
 
     <section class="to-the"><h2><i class="cham"></i>Cài đặt</h2>
       <div style="padding-top:6px"><span style="font-size:14px;font-weight:600;color:var(--muc-phu)">Cỡ chữ</span>
@@ -180,10 +180,10 @@ function moHoTro(goiY) {
   traVe = document.activeElement; const khoa = crypto.randomUUID();
   document.body.insertAdjacentHTML("beforeend", `<div class="to-che man-che" id="che"><div class="to-tam" role="dialog" aria-modal="true" aria-labelledby="t-ht">
     <div class="than"><h2 id="t-ht">Gửi yêu cầu hỗ trợ</h2>
-      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Nhân viên AgiViet đọc và trả lời trong giờ làm việc. Việc gấp về tiền hoặc giao hàng được xử lý trước.</p>
+      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">AgiViet đọc và trả lời trong giờ làm việc. Việc gấp về tiền hoặc giao hàng được xử lý trước.</p>
       <label for="ht-noi" style="font-weight:600;color:var(--muc-phu);font-size:14px">Bác cần giúp gì?</label>
       <textarea class="to-o" id="ht-noi" maxlength="1000">${esc(goiY)}</textarea>
-      ${goiY ? `<p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:0">Đổi tài khoản nhận tiền cần xác minh chính chủ: nhân viên sẽ gọi lại và gửi mã về số của bác. Tài khoản mới có hiệu lực sau thời gian chờ để chống bị lừa đổi tài khoản.</p>` : ""}
+      ${goiY ? `<p class="hd-ghi" style="font-size:13px;color:var(--muc-nhat);margin:0">Đổi tài khoản nhận tiền cần xác minh chính chủ: AgiViet gửi mã xác minh về số của bác. Tài khoản mới có hiệu lực sau thời gian chờ để chống bị lừa đổi tài khoản.</p>` : ""}
       <p class="to-bao do" id="ht-loi" hidden></p></div>
     <div class="day"><button class="nut lui" type="button" id="ht-huy">Thôi</button><button class="nut chinh-nut" type="button" id="ht-gui">Gửi</button></div></div></div>`);
   document.addEventListener("keydown", thoat);
@@ -197,12 +197,12 @@ function moHoTro(goiY) {
     dongTam(); await tai(); thongBao("Đã gửi. AgiViet sẽ trả lời bác sớm.");
   };
 }
-// Nộp giấy tờ: chọn loại, số, hạn, chụp ảnh → chờ nhân viên đối chiếu
+// Nộp giấy tờ: chọn loại, số, hạn, chụp ảnh → chờ AgiViet đối chiếu
 function moNopGiayTo() {
   traVe = document.activeElement; const khoa = crypto.randomUUID();
   document.body.insertAdjacentHTML("beforeend", `<div class="to-che man-che" id="che"><div class="to-tam" role="dialog" aria-modal="true" aria-labelledby="t-gt">
     <div class="than"><h2 id="t-gt">Nộp giấy tờ</h2>
-      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Chụp rõ cả tờ giấy. Nhân viên AgiViet đối chiếu rồi mới hiện "Đã xác minh" cho người mua.</p>
+      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Chụp rõ cả tờ giấy. AgiViet đối chiếu rồi mới hiện "Đã xác minh" cho người mua.</p>
       <label class="to-nhan-o" for="gt-loai">Loại giấy tờ</label>
       <select class="to-o" id="gt-loai">${hoSo.loai_giay_to.map((k) => `<option value="${esc(k.code)}">${esc(k.ten)}</option>`).join("")}</select>
       <label class="to-nhan-o" for="gt-so">Số giấy tờ (nếu có)</label><input class="to-o" id="gt-so" maxlength="80" autocomplete="off">
@@ -225,16 +225,16 @@ function moNopGiayTo() {
       const post = async (d, b) => { const r = await fetch(d, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify(b) }); const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || "Chưa nộp được."); return j.data ?? j; };
       const tep = await post("/v1/files", { idempotency_key: khoa + "-anh", mime: anh.mime, data_base64: anh.data, entity: "organization", entity_id: me.org.id, captured_in_app: true });
       const kq = await post("/v1/seller/certifications", { idempotency_key: khoa, kind: $("gt-loai").value, number: $("gt-so").value.trim() || undefined, market: $("gt-tt-khoi").hidden ? undefined : $("gt-tt").value.trim() || undefined, valid_to: $("gt-han").value || undefined, evidence_document_id: tep.id });
-      dongTam(); await tai(); thongBao(kq.cau || "Đã nộp. Chờ nhân viên đối chiếu.");
+      dongTam(); await tai(); thongBao(kq.cau || "Đã nộp. Chờ AgiViet đối chiếu.");
     } catch (e) { loi(e.message); $("gt-gui").disabled = false; }
   };
 }
-// Đổi tên, địa chỉ vườn: cần nhân viên xác minh lại → gửi đề nghị
+// Đổi tên, địa chỉ vườn: cần AgiViet xác minh lại → gửi đề nghị
 function moSuaHoSo() {
   traVe = document.activeElement; const khoa = crypto.randomUUID();
   document.body.insertAdjacentHTML("beforeend", `<div class="to-che man-che" id="che"><div class="to-tam" role="dialog" aria-modal="true" aria-labelledby="t-hs">
     <div class="than"><h2 id="t-hs">Đề nghị sửa thông tin</h2>
-      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Tên hộ, địa chỉ vườn, diện tích cần nhân viên xác minh lại nên không đổi ngay. Bác ghi điều cần sửa, nhân viên sẽ gọi cho bác.</p>
+      <p class="hd-ghi" style="font-size:14px;color:var(--muc-phu);margin:0">Tên hộ, địa chỉ vườn, diện tích cần AgiViet xác minh lại nên không đổi ngay. Bác ghi điều cần sửa, AgiViet sẽ nhắn lại cho bác.</p>
       <textarea class="to-o" id="hs-noi" maxlength="600" placeholder="Ví dụ: vườn đã mở rộng thêm 3 công ở ấp Mỹ Thới"></textarea>
       <p class="to-bao do" id="hs-loi" hidden></p></div>
     <div class="day"><button class="nut lui" type="button" id="hs-huy">Thôi</button><button class="nut chinh-nut" type="button" id="hs-gui">Gửi</button></div></div></div>`);
@@ -277,7 +277,7 @@ const ICON = {
   "riêng tư": '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
 };
 const iconCho = (t) => { const k = Object.keys(ICON).find((x) => t.toLowerCase().includes(x)); return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ICON["cài đặt"]}</svg>`; };
-const PHU = { "giấy tờ": "Nộp giấy tờ, đề nghị sửa thông tin", "tài khoản": "Nơi người mua chuyển tiền cho bác", "người giúp": "Con cháu làm thay một số việc", "cài đặt": "Cỡ chữ, tốc độ đọc", "hỗ trợ": "Hỏi nhân viên AgiViet, xem lại hướng dẫn", "riêng tư": "Người mua thấy gì về bác" };
+const PHU = { "giấy tờ": "Nộp giấy tờ, đề nghị sửa thông tin", "tài khoản": "Nơi người mua chuyển tiền cho bác", "người giúp": "Con cháu làm thay một số việc", "cài đặt": "Cỡ chữ, tốc độ đọc", "hỗ trợ": "Hỏi AgiViet, xem lại hướng dẫn", "riêng tư": "Người mua thấy gì về bác" };
 let MUC = [];
 function ganMenu() {
   const noi = $("noi"), hs = noi.querySelector(".to-ho-so");

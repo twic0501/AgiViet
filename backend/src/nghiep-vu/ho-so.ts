@@ -6,7 +6,7 @@ import type { NguoiDung } from '../auth/phien.ts';
 import { loi } from '../loi.ts';
 import { taoViec } from './tien.ts';
 
-const MUC = ['Đã xác minh số điện thoại', 'Đã xác minh giấy tờ tùy thân / mã số thuế', 'Nhân viên đã đối chiếu hồ sơ tại chỗ'];
+const MUC = ['Đã xác minh số điện thoại', 'Đã xác minh giấy tờ tùy thân / mã số thuế', 'AgiViet đã đối chiếu hồ sơ'];
 
 export async function hoSoNguoiBan(t: GiaoDich, nd: NguoiDung) {
   const org = nd.thanhVien.orgId;
@@ -26,12 +26,12 @@ export async function nopGiayTo(t: GiaoDich, nd: NguoiDung, b: { kind: string; n
   const id = await appCmd<string>(t, nd, 'seller', 'submit_certification', [b.kind, b.number ?? null, b.market ?? null, b.valid_to ?? null, b.evidence_document_id]);
   const ten = await t.gtri<string>(`SELECT label_vi FROM ref.document_kinds WHERE code=$1`, [b.kind]);
   await taoViec(t, 'V23', 2, 'organization', nd.thanhVien.orgId, null, 'field', `giayto:${id}`, `Đối chiếu giấy tờ người bán nộp: ${ten}${b.number ? ' số ' + b.number : ''}`);
-  return { id, trang_thai: 'cho_doi_chieu', cau: `Đã nộp ${ten}. Nhân viên AgiViet sẽ đối chiếu, thường trong 1–2 ngày làm việc; bác sẽ nhận thông báo.` };
+  return { id, trang_thai: 'cho_doi_chieu', cau: `Đã nộp ${ten}. AgiViet sẽ đối chiếu, thường trong 1–2 ngày làm việc; bác sẽ nhận thông báo.` };
 }
 
 export async function deNghiSuaHoSo(t: GiaoDich, nd: NguoiDung, b: { noi_dung: string }) {
   const nd2 = String(b.noi_dung ?? '').trim();
   if (!nd2) throw loi('DU_LIEU_KHONG_HOP_LE', 'Bác ghi điều cần sửa.');
   const v = await taoViec(t, 'V23', 3, 'organization', nd.thanhVien.orgId, null, 'field', `suahs:${nd.userId}:${t.thoiDiemMs}`, `Người bán đề nghị sửa hồ sơ: ${nd2.slice(0, 300)}`);
-  return { id: v.id, cau: 'Đã gửi đề nghị. Tên và địa chỉ vườn cần nhân viên xác minh lại nên chưa đổi ngay; nhân viên sẽ gọi cho bác.' };
+  return { id: v.id, cau: 'Đã gửi đề nghị. Tên và địa chỉ vườn cần AgiViet xác minh lại nên chưa đổi ngay; AgiViet sẽ nhắn lại cho bác trong app.' };
 }

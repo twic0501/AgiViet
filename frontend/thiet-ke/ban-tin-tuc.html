@@ -80,7 +80,7 @@ async function mo() {
   const laHoc = (n) => /kỹ thuật|cách |phòng trừ|bón|tưới|chăm sóc|bao trái|sâu bệnh/i.test(n.tieu_de);
   const tinThuong = ds.filter((n) => !laHoc(n)), hoc = ds.filter(laHoc);
   $("tab-tin").innerHTML = tinThuong.length ? tinThuong.map((n) => theTin(n, anhTin(n))).join("") : `<section class="m-the"><p style="margin:0">Chưa tải được tin tức. Bác thử lại sau.</p></section>`;
-  $("tab-hoc").innerHTML = hoc.length ? hoc.map((n) => theTin(n, anhTin(n))).join("") : `<section class="m-the"><p style="margin:0;font-size:16px">Chưa có bài kỹ thuật mới cho mặt hàng của bác. Bác cần hỏi gì thì bấm Hỗ trợ để nhân viên AgiViet giúp.</p></section>`;
+  $("tab-hoc").innerHTML = hoc.length ? hoc.map((n) => theTin(n, anhTin(n))).join("") : `<section class="m-the"><p style="margin:0;font-size:16px">Chưa có bài kỹ thuật mới cho mặt hàng của bác. Bác cần hỏi gì thì bấm Hỗ trợ để AgiViet giúp.</p></section>`;
 }
 
 mo().catch((e) => { $("tab-gia").innerHTML = `<section class="m-the"><p style="margin:0">Không tải được: ${esc(e.message)}</p></section>`; }).finally(() => { giuThamSo(); $("noi").setAttribute("aria-busy", "false"); });

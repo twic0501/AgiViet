@@ -391,7 +391,7 @@ async function mo() {
   const nk = await nkTai;
   if (nk) { st.nk = nk; if (nk.hom_nay) homNay = nk.hom_nay; for (const c of nk.co_so || []) if (c.ngay_het_cach_ly_gan_nhat) st.cachLy.set(c.id, c.ngay_het_cach_ly_gan_nhat); }
   const theoSp = [...new Set(ds.map((x) => x.product_code))];
-  if (!theoSp.length) { $("the-hang").innerHTML = `<p class="bao" style="grid-column:1/-1;margin:0">Chưa có mặt hàng nào được xác minh. Bác bấm Hỗ trợ để hẹn nhân viên tới vườn.</p>`; nhom("cach").forEach((b) => (b.disabled = true)); return; }
+  if (!theoSp.length) { $("the-hang").innerHTML = `<p class="bao" style="grid-column:1/-1;margin:0">Chưa có mặt hàng nào được xác minh. Bác bấm Hỗ trợ để AgiViet hướng dẫn xác minh mặt hàng.</p>`; nhom("cach").forEach((b) => (b.disabled = true)); return; }
   $("ds-hang").innerHTML = theoSp.map((ma) => { const x = ds.find((d) => d.product_code === ma), a = ANH_SP(ma);
     return `<button type="button" data-ma="${esc(ma)}" aria-pressed="false"><span class="anh" ${a ? `style="background-image:url(${a})"` : ""}></span><span><b>${esc(x.product_name)}</b><br><small style="color:var(--muc-nhat)">${esc(x.site_name)}</small></span></button>`; }).join("");
   nhom("ds-hang").forEach((b) => (b.onclick = () => { chonHang(b.dataset.ma); $("ds-hang").hidden = true; }));

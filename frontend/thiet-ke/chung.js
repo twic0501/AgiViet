@@ -342,7 +342,7 @@ const SOAN_SAN = [
 export function cauSoanSan(t) {
   if (/\botp\b|mat khau|ma xac|doc ma|gui ma|tai khoan rieng|chuyen (truoc|ngoai)|ngoai app/.test(t)) return CAU_LUA_BAN;
   const g = SOAN_SAN.find(([m]) => m.test(t));
-  return g ? g[1] : "Trợ lý AI đang tạm nghỉ. Bác hỏi về cọc, đăng hàng, chào giá, ký, giao nhận hay tiền thì con trả lời được, hoặc nhắn nhân viên AgiViet.";
+  return g ? g[1] : "Trợ lý AI đang tạm nghỉ. Bác hỏi về cọc, đăng hàng, chào giá, ký, giao nhận hay tiền thì con trả lời được, hoặc nhắn AgiViet.";
 }
 const DUONG = [
   [/dang (hang|bai|lo|ban)|ban hang moi|them lo/, "Đăng hàng mới", "./ban-dang-bai.html", "Bác bấm vào đây để đăng lô hàng: chọn mặt hàng, nhập lượng, giá và chụp ảnh."],
@@ -350,7 +350,7 @@ const DUONG = [
   // Chợ so trên chữ CÓ dấu: bỏ dấu thì "chợ" trùng "cho" ("cho tôi hỏi…" sẽ bị dẫn nhầm)
   [/chợ|hàng đang bán|lô hàng|xem lô|sửa lô|còn bao nhiêu/, "Mở Chợ (hàng đang bán)", "./ban-hang-hoa.html", "Hàng bác đang bán nằm ở mục Chợ."],
   [/thong bao/, "Xem thông báo", "./ban-thong-bao.html#thong-bao", "Mọi cập nhật về lô, hợp đồng, tiền nằm trong Thông báo."],
-  [/nhan vien|goi|tong dai|xac minh|gap nguoi/, "Nhắn nhân viên AgiViet", "./ban-thong-bao.html#ho-tro", "Bác nhắn cho nhân viên, họ sẽ gọi lại cho bác."],
+  [/nhan vien|goi|tong dai|xac minh|gap nguoi/, "Nhắn AgiViet", "./ban-thong-bao.html#ho-tro", "Bác nhắn cho nhân viên, họ sẽ gọi lại cho bác."],
   [/hop dong|ky /, "Xem hợp đồng", "./ban-hom-nay.html#t-hd", "Hợp đồng đang làm nằm ở Trang chủ, có thanh chặng cho từng hợp đồng."],
   [/thoi tiet|mua|nang/, "Xem thời tiết", "./ban-hom-nay.html#t-troi", "Thời tiết 4 ngày tới nằm ở cuối Trang chủ."],
 ];
@@ -393,7 +393,7 @@ function dungTroLy() {
       const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...nguCanhHoTro(noiDung) }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được.");
-      const chu = "Dạ con đã báo nhân viên AgiViet. Nhân viên sẽ gọi lại cho bác trong giờ làm việc, sáu giờ sáng tới chín giờ tối. Bác xem tiến độ ở trang hồ sơ, mục Hỗ trợ.";
+      const chu = "Dạ con đã báo AgiViet. Nhân viên sẽ gọi lại cho bác trong giờ làm việc, sáu giờ sáng tới chín giờ tối. Bác xem tiến độ ở trang hồ sơ, mục Hỗ trợ.";
       cho.classList.remove("cho"); cho.textContent = chu; traLoi(cho, chu, noi);
     } catch (e) { cho.classList.remove("cho"); cho.textContent = e.message + " Bác gọi tổng đài 1900 1234 nhé."; traLoi(cho, cho.textContent, noi); }
   }
@@ -433,7 +433,7 @@ function dungTroLy() {
     const cho = them("ai cho", "Đang nghĩ…");
     try {
       const token = await phien();
-      const r = await fetch("/v1/assistant/ask", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ cau }) });
+      const r = await fetch("/v1/assistant/ask", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ cau, ben: /\/ban-/.test(location.pathname) ? "ban" : "mua" }) });
       const j = await r.json().catch(() => ({}));
       // AI chưa bật / lỗi máy chủ: trả câu soạn sẵn đã duyệt (lời của ai/agiviet_ai/tro_ly.py), không bịa
       const soan = !r.ok && (j.errors?.[0]?.code === "AI_CHUA_BAT" || r.status >= 500) ? cauSoanSan(t) : null;

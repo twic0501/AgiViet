@@ -51,7 +51,7 @@ export async function dangKy(ht:HeThong,d:DangKy){
   const receipt = await t.voiVai('agiviet_auth_worker', () => t.gtri<string>(`SELECT cmd.record_registration($1::jsonb,$2)`, [payload, `otp:${d.challenge_id}`]));
   const kq = await systemCmd<any>(t, 'register_organization', [receipt]);
   await systemCmd(t, 'create_task', ['V01', 2, 'organization', kq.org_id, null, 'field', `verify:${kq.org_id}`, 'Xác minh tổ chức mới đăng ký']);
-  return { user_id: kq.user_id, org_id: kq.org_id, org_status: kq.status, thong_bao: 'Đã đăng ký. Nhân viên xác minh rồi cấp vai chủ (hai người duyệt, hiệu lực sau 24 giờ).' };
+  return { user_id: kq.user_id, org_id: kq.org_id, org_status: kq.status, thong_bao: 'Đã đăng ký. AgiViet xác minh rồi cấp vai chủ (hai người duyệt, hiệu lực sau 24 giờ).' };
  });
 }
 

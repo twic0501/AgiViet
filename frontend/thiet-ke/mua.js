@@ -193,8 +193,8 @@ function veViec(h, url) {
   }
   // ── Bất khả kháng (v23 bat-kha-khang) ──
   if (h.kb === "bkk") {
-    if (h.bkkXong) return theViec("sl-xong", "Đã sửa đơn: còn 1.200 kg (bản 2)", `Ngân hàng đã hoàn ${d(BKK_HOAN)} cọc dư cho bạn; cọc còn giữ ${d(BKK_COC)}. Nhân viên AgiViet đang tìm nguồn bù 800 kg cùng hạng. Không ai bị phạt. Phần giao 1.200 kg chạy tiếp như luồng thuận (mô phỏng dừng ở đây).`, "");
-    if (h.phu === "bkk") return theViec("sl-cho", "Chị Năm báo bất khả kháng: mưa đá, chỉ giao được 1.200 kg", "Có ảnh vườn. Nhân viên AgiViet đến vườn xác nhận thiệt hại rồi mới thương lượng. Cọc vẫn do ngân hàng giữ.", nutMp("Mô phỏng: nhân viên xác nhận thiệt hại tại vườn", "bkk-xn"));
+    if (h.bkkXong) return theViec("sl-xong", "Đã sửa đơn: còn 1.200 kg (bản 2)", `Ngân hàng đã hoàn ${d(BKK_HOAN)} cọc dư cho bạn; cọc còn giữ ${d(BKK_COC)}. AgiViet đang tìm nguồn bù 800 kg cùng hạng. Không ai bị phạt. Phần giao 1.200 kg chạy tiếp như luồng thuận (mô phỏng dừng ở đây).`, "");
+    if (h.phu === "bkk") return theViec("sl-cho", "Chị Năm báo bất khả kháng: mưa đá, chỉ giao được 1.200 kg", "Có ảnh vườn. AgiViet đến vườn xác nhận thiệt hại rồi mới thương lượng. Cọc vẫn do ngân hàng giữ.", nutMp("Mô phỏng: nhân viên xác nhận thiệt hại tại vườn", "bkk-xn"));
     if (h.phu === "bkk-tl") return theViec("", "Thương lượng: giảm lượng, dời lịch hoặc tìm nguồn bù", "Thiệt hại đã được xác nhận và đủ điều kiện miễn trách: không ai bị phạt. Chọn đề nghị gửi chị Năm.", nutVang("Đề nghị: nhận 1.200 kg + tìm nguồn bù 800 kg", "bkk-de"));
     if (h.phu === "bkk-de") return theViec("sl-cho", "Đang chờ chị Năm trả lời đề nghị", "Nhận 1.200 kg theo giá cũ; AgiViet tìm nguồn bù 800 kg cùng hạng.", nutMp("Mô phỏng: chị Năm đồng ý", "bkk-ok"));
     if (h.phu === "bkk-ky") return theViec("", "Ký bản sửa: 1.200 kg · 27.600.000 đ", `Cọc mới ${d(BKK_COC)}. Hai bên ký xong, ngân hàng hoàn bạn ${d(BKK_HOAN)} cọc dư.`, nutVang("Ký bản sửa", "bkk-ky-mua"));
@@ -217,15 +217,15 @@ function veViec(h, url) {
   if (h.kb === "ung" && h.buoc === 12 && h.phu === "ung-nh") return theViec("sl-cho", "Ngân hàng thu khoản ứng, chuyển phần dư cho chị Năm", `Tài khoản đơn có ${d(COC + h.daTra)}: thu lại ${d(UNG)} ứng, chuyển ${d(COC + h.daTra - UNG)} cho chị Năm.`, nutMp("Mô phỏng: ngân hàng thu ứng, chuyển phần dư", "ung-thu"));
   // ── Người bán đăng ký (v23 dang-ky) ──
   if (h.kb === "dang-ky") {
-    const hoSo = (nk) => `<b>Đã kiểm tại vườn</b> (nhân viên AgiViet 24/10): người đăng ký, diện tích 2 ha, mặt hàng xoài cát Chu, giấy tờ đất. <b>Người bán tự khai</b>: sản lượng ước 6 tấn/vụ${nk ? ", nhật ký sản xuất 1 mục (phun thuốc 12/10, cách ly 14 ngày)" : ""}.`;
+    const hoSo = (nk) => `<b>Đã kiểm tại vườn</b> (AgiViet 24/10): người đăng ký, diện tích 2 ha, mặt hàng xoài cát Chu, giấy tờ đất. <b>Người bán tự khai</b>: sản lượng ước 6 tấn/vụ${nk ? ", nhật ký sản xuất 1 mục (phun thuốc 12/10, cách ly 14 ngày)" : ""}.`;
     if (!h.phu) return theViec("sl-cho", "Chị Năm đang đăng ký bán", "Chưa xác minh thì chưa chào giá, chưa nhận đề nghị được.", "");
-    if (h.phu === "dk-xm") return theViec("sl-cho", "Chờ nhân viên AgiViet xác minh tại vườn", "Kiểm người, diện tích, mặt hàng, giấy tờ.", nutMp("Mô phỏng: nhân viên xác minh xong (2 ha xoài cát Chu)", "dk-xm-xong"));
+    if (h.phu === "dk-xm") return theViec("sl-cho", "Chờ AgiViet xác minh tại vườn", "Kiểm người, diện tích, mặt hàng, giấy tờ.", nutMp("Mô phỏng: nhân viên xác minh xong (2 ha xoài cát Chu)", "dk-xm-xong"));
     return theViec(h.phu === "dk-xong" ? "sl-xong" : "", "Hồ sơ chị Năm · hạng: đã xác minh tại vườn", hoSo(h.phu === "dk-xong"), "");
   }
   // ── Không tìm được đầu ra (v23 khong-co-dau-ra) ──
   if (h.kb === "dau-ra") {
-    if (!h.phu) return theViec("sl-cho", "Lô L-0415 của chị Năm (6 tấn xoài, cần bán trong 7 ngày) chưa có đề nghị phù hợp", "Sau 48 giờ, hệ thống giao việc cho nhân viên AgiViet tìm đầu ra.", nutMp("Mô phỏng: hết 48 giờ, tạo việc cho nhân viên", "dr-48"));
-    if (h.phu === "dr-nv") return theViec("sl-cho", "Nhân viên AgiViet đang tìm đầu ra", "Theo thứ tự: mở rộng vùng mua, đổi quy cách, nguồn chế biến.", nutMp("Mô phỏng: đề xuất tách 2 tấn loại 2 cho nơi chế biến", "dr-de-xuat"));
+    if (!h.phu) return theViec("sl-cho", "Lô L-0415 của chị Năm (6 tấn xoài, cần bán trong 7 ngày) chưa có đề nghị phù hợp", "Sau 48 giờ, hệ thống giao việc cho AgiViet tìm đầu ra.", nutMp("Mô phỏng: hết 48 giờ, tạo việc cho nhân viên", "dr-48"));
+    if (h.phu === "dr-nv") return theViec("sl-cho", "AgiViet đang tìm đầu ra", "Theo thứ tự: mở rộng vùng mua, đổi quy cách, nguồn chế biến.", nutMp("Mô phỏng: đề xuất tách 2 tấn loại 2 cho nơi chế biến", "dr-de-xuat"));
     if (h.phu === "dr-tach") return theViec("sl-cho", "Chờ chị Năm đồng ý tách lô", "2 tấn loại 2 hợp với nhà máy sấy của bạn.", "");
     if (h.phu === "dr-cb") return theViec("", "Lô 2 tấn xoài loại 2 (tách từ L-0415) hợp với nhà máy sấy", "Gửi đề nghị thì chị Năm giữ 2 tấn cho bạn trong hạn thương lượng.", nutVang("Gửi đề nghị 2 tấn loại 2 · 14.000 đ/kg", "dr-cb-dn"));
     if (h.phu === "dr-ngay4") return theViec("sl-cho", "Đề nghị 2 tấn đã gửi · đang thương lượng", "4 tấn loại 1 còn lại vẫn đang tìm đầu ra.", nutMp("Mô phỏng: ngày 4, 4 tấn loại 1 vẫn chưa có đầu ra", "dr-ngay4"));
@@ -290,7 +290,7 @@ function veViec(h, url) {
     if (!h.phu) return theViec("sl-cho", "Hàng cách ly · chờ kết quả dư lượng (phòng A, bạn đặt)", "Cọc giữ chờ kết quả.", nutMp("Mô phỏng: phòng A báo KHÔNG đạt", "kq1"));
     if (h.phu === "kq1") return theViec("sl-cho", "Phòng A: không đạt · chờ chị Năm", "Chị Năm có quyền gửi mẫu lưu tới phòng B.", nutMp("Mô phỏng: chị Năm yêu cầu kiểm ở phòng B", "kq2"));
     if (h.phu === "kq2-cho") return theViec("sl-cho", "Phòng B đang kiểm mẫu lưu", "", nutMp("Mô phỏng: phòng B báo ĐẠT", "trai"));
-    if (h.phu === "trai") return theViec("sl-chan-lai", "Hai kết quả trái nhau: chưa kết luận", "Hàng tiếp tục cách ly. Nhân viên AgiViet gửi mẫu lưu thứ hai tới phòng trọng tài đã thỏa thuận; hai bên ứng đôi phí.", nutMp("Mô phỏng: phòng trọng tài báo ĐẠT", "trong-tai"));
+    if (h.phu === "trai") return theViec("sl-chan-lai", "Hai kết quả trái nhau: chưa kết luận", "Hàng tiếp tục cách ly. AgiViet gửi mẫu lưu thứ hai tới phòng trọng tài đã thỏa thuận; hai bên ứng đôi phí.", nutMp("Mô phỏng: phòng trọng tài báo ĐẠT", "trong-tai"));
     if (h.phu === "hk-phi") return theViec("", "Phòng trọng tài: đạt · bạn hoàn chị Năm 2.800.000 đ phí kiểm", "Theo điều khoản kết quả trái nhau: bên có kết quả sai chịu phí. Chuyển vào Agribank •••• 2186, nội dung HD0018 PHI.", nutVang("Đã chuyển 2.800.000 đ phí", "hk-phi"));
     if (h.phu === "hk-phi-cho") return theViec("sl-cho", "Chờ chị Năm xác nhận đã nhận phí", "", nutMp("Mô phỏng: chị Năm xác nhận", "hk-phi-xn"));
   }
@@ -307,7 +307,7 @@ function veViec(h, url) {
     const x = TRA_SAU(h);
     if (h.phu === "cho-xn-sau") return theViec("sl-cho", `Đang chờ chị Năm đếm và xác nhận ${d(h.daTra)}`, h.kb === "tien-mat" ? "Chị Năm đếm đủ tiền mặt, ký biên nhận rồi mới cho dỡ hàng. Xác nhận xong ngân hàng mới chuyển cọc." : "Chị Năm kiểm tài khoản. Xác nhận xong ngân hàng mới chuyển cọc.", nutMp("Mô phỏng: chị Năm xác nhận đã nhận", "xn-sau"));
     if (h.phu === "qua-han") return theViec("sl-chan-lai", "Quá hạn trả: chị Năm báo chưa nhận tiền", `Bạn có 48 giờ để trả ${d(x)} hoặc gửi chứng từ đã chuyển. Hết hạn: ngân hàng chuyển cọc cho chị Năm, bạn bị trừ uy tín và khóa đơn mới.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau") + nutMp("Mô phỏng: hết 48 giờ vẫn chưa trả", "het-48h"));
-    if (h.phu === "xu-ly-no") return theViec("sl-cho", "Nhân viên AgiViet đã gọi hai bên: chưa có tiền", "Ngân hàng chuyển cọc cho chị Năm, trừ vào tiền hàng. Phần còn lại ghi thành nợ của bạn.", nutMp("Mô phỏng: ngân hàng chuyển cọc cho chị Năm", "no-chot"));
+    if (h.phu === "xu-ly-no") return theViec("sl-cho", "AgiViet đã gọi hai bên: chưa có tiền", "Ngân hàng chuyển cọc cho chị Năm, trừ vào tiền hàng. Phần còn lại ghi thành nợ của bạn.", nutMp("Mô phỏng: ngân hàng chuyển cọc cho chị Năm", "no-chot"));
     if (h.kb === "ung") return theViec("", `Trả phần còn lại ${d(x)} vào tài khoản đơn ở ngân hàng`, `Nghiệm thu ${d(t.nt)} − cọc ${d(COC)}. Chị Năm đã ứng tiền nên KHÔNG trả thẳng cho chị Năm; ngân hàng thu khoản ứng rồi chuyển phần dư.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau"));
     if (h.kb === "tien-mat") return theViec("", `Trả tiền mặt ${d(x)} trước khi dỡ hàng`, `Nghiệm thu ${d(t.nt)} − cọc ${d(COC)} ngân hàng giữ. Trả tại kho, hai bên ký biên nhận (chụp ảnh biên nhận vào app). Chị Năm đếm đủ mới dỡ.`, nutVang(`Đã trả tiền mặt ${d(x)}`, "tra-sau"));
     return theViec("", `Chuyển phần còn lại ${d(x)} cho chị Năm`, `Nghiệm thu ${d(t.nt)} − cọc ${d(COC)} ngân hàng giữ. Chuyển thẳng vào Agribank •••• 2186 (đúng tài khoản trong hợp đồng), nội dung HD0018. Hạn 24 giờ sau khi chốt nghiệm thu.`, nutVang(`Ghi đã trả ${d(x)}`, "tra-sau"));
@@ -315,13 +315,13 @@ function veViec(h, url) {
   // ── Người bán không giao (v23 ban-vi-pham) ──
   if (h.kb === "khong-giao") {
     if (h.vpXong) return theViec("sl-xong", "Đơn đóng: người bán không giao, bạn đã nhận lại đủ", `Cọc ${d(COC)} và phí ${d(PHI)} đã hoàn. ${d(TRA_THANG)} trả trước và ${d(BOI_HOAN)} bồi hoàn tiền xe đã về. Chị Năm bị trừ hạng theo quy định.`, "");
-    if (h.phu === "khong-hang") return theViec("sl-cho", "Xe đã chờ 2 giờ ở vườn, không có hàng", "Nhân viên AgiViet đang gọi chị Năm. Chưa bốc nên hàng và rủi ro vẫn ở người bán; cọc vẫn do ngân hàng giữ.", nutMp("Mô phỏng: chị Năm xác nhận không giao được", "nb-khong-giao"));
+    if (h.phu === "khong-hang") return theViec("sl-cho", "Xe đã chờ 2 giờ ở vườn, không có hàng", "AgiViet đang gọi chị Năm. Chưa bốc nên hàng và rủi ro vẫn ở người bán; cọc vẫn do ngân hàng giữ.", nutMp("Mô phỏng: chị Năm xác nhận không giao được", "nb-khong-giao"));
     if (h.phu === "vi-pham") return theViec("sl-cho", "AgiViet ghi người bán vi phạm: không giao", `Ngân hàng hoàn cọc ${d(COC)} cho bạn, phí giới thiệu ${d(PHI)} được hoàn. Chị Năm phải trả lại ${d(TRA_THANG)} đã nhận trước và bồi hoàn tiền xe ${d(BOI_HOAN)}.`, nutMp("Mô phỏng: ngân hàng hoàn cọc", "hoan-coc-vp"));
     if (h.phu === "cho-nb-tra") return theViec("sl-cho", `Đang chờ chị Năm trả lại ${d(TRA_VP)}`, `Gồm ${d(TRA_THANG)} bạn đã trả trước và ${d(BOI_HOAN)} bồi hoàn tiền xe. Hạn 7 ngày; không trả thì chị Năm bị trừ hạng, khóa đơn mới và AgiViet cấp hồ sơ đòi nợ.`, nutMp("Mô phỏng: chị Năm đã chuyển trả", "nb-tra-vp"));
     if (h.phu === "nb-da-tra-vp") return theViec("", `Chị Năm báo đã chuyển ${d(TRA_VP)}`, "Kiểm tài khoản công ty. Chỉ bấm khi tiền đã về đúng số.", nutVang(`Đã nhận lại ${d(TRA_VP)}`, "nhan-vp") + `<button class="sl-nut sl-vien" data-lam="chua">Chưa nhận</button>`);
   }
   // ── Người bán im lặng khi nghiệm thu (v23 nghiem-thu-im-lang) ──
-  if (h.kb === "im-lang" && h.buoc === 11 && h.phu === "nhac") return theViec("sl-cho", "Chị Năm chưa chốt kết quả sau 24 giờ", "Đã nhắc 3 lần. <b>Im lặng không phải đồng ý</b>: ngân hàng chưa chi cọc. Nhân viên AgiViet gọi chị Năm, đối chiếu biên bản bốc, ảnh và mẫu.", nutMp("Mô phỏng: nhân viên đã gọi chị Năm", "da-goi"));
+  if (h.kb === "im-lang" && h.buoc === 11 && h.phu === "nhac") return theViec("sl-cho", "Chị Năm chưa chốt kết quả sau 24 giờ", "Đã nhắc 3 lần. <b>Im lặng không phải đồng ý</b>: ngân hàng chưa chi cọc. AgiViet gọi chị Năm, đối chiếu biên bản bốc, ảnh và mẫu.", nutMp("Mô phỏng: nhân viên đã gọi chị Năm", "da-goi"));
   if (h.huy) return theViec("sl-cho", "Đơn đã hủy theo thỏa thuận", `Hàng về lại lô L-0412 của chị Năm. Cọc ${d(COC)} chuyển cho chị Năm, phí ${d(PHI)} không hoàn (đề xuất, chờ chốt). Chưa có khoản trả thẳng.`, "");
   if (luot === "xong") return theViec("sl-xong", "Hoàn tất · hết nghĩa vụ hai bên", `Đã nhập kho ${so(t.dat)} kg loại 1 và ${so(t.ha)} kg hạ cấp. Bảng kê tháng 10 đã có dòng này.`, `<a class="sl-nut sl-vien" href="${url("bang-ke")}">Tải bảng kê</a>`);
   // ── Nhánh kịch bản ──
@@ -1372,7 +1372,7 @@ if (THAT) {
             <p class="sl-ghi" style="margin:0">Hàng khác mẫu đã niêm phong? Đừng chốt, gửi khiếu nại để AgiViet xử lý.</p><button type="button" class="sl-nut sl-vien" id="den-kn">Khiếu nại hàng khác mẫu</button>`}
           <p class="sl-ghi" id="den-bao" role="status"></p></section>`);
         const o = khung.querySelector("#den"), bao6 = o.querySelector("#den-bao");
-        o.querySelector("#den-kn")?.addEventListener("click", async (e) => { const n = e.currentTarget; n.disabled = true; try { await api("/v1/support", { message: `Khiếu nại ${d.code}: hàng khác mẫu đã niêm phong`, order_id: d.id }); bao6.textContent = "AgiViet đã nhận khiếu nại, nhân viên sẽ gọi lại. Bạn chưa cần chốt nhận hàng."; } catch (x) { bao6.textContent = x.message; n.disabled = false; } });
+        o.querySelector("#den-kn")?.addEventListener("click", async (e) => { const n = e.currentTarget; n.disabled = true; try { await api("/v1/support", { message: `Khiếu nại ${d.code}: hàng khác mẫu đã niêm phong`, order_id: d.id }); bao6.textContent = "AgiViet đã ghi nhận khiếu nại, cọc vẫn do ngân hàng giữ. Bạn chưa cần chốt nhận hàng."; } catch (x) { bao6.textContent = x.message; n.disabled = false; } });
         o.querySelector("#den-gui")?.addEventListener("click", async (e) => {
           const can = Number((o.querySelector("#den-can").value || "").replace(",", ".")); if (!(can > 0)) return (bao6.textContent = "Nhập lượng cân tại kho.");
           e.currentTarget.disabled = true;

@@ -14,6 +14,8 @@ them('TH-NV-01', 'Mặt hàng đã xác minh của tổ chức; lô mặt hàng 
   th.bang('Tôm chưa xác minh ở vườn chị Năm: 422 MAT_HANG_CHUA_XAC_MINH', r.json.errors?.[0]?.code, 'MAT_HANG_CHUA_XAC_MINH');
 });
 
+const ngayLech = (d: number) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10);
+const PHUN = ngayLech(-3), PHUN_SAU = ngayLech(-2), HET = ngayLech(7);
 them('TH-NV-02', 'Nhật ký canh tác: danh sách theo vụ, phun thuốc tính ngày cách ly, ảnh, nhãn tự ghi/nhân viên, sửa bằng bản mới', async (may, th) => {
   const nam = await may.dangNhap(SDT.nam);
   const nk = (await nam.get('/v1/farm-diary')).json;
@@ -21,24 +23,24 @@ them('TH-NV-02', 'Nhật ký canh tác: danh sách theo vụ, phun thuốc tính
   th.kiem('Có nhãn tự ghi và tên việc', nk.viec.every((x: any) => x.nhan && x.ten_viec), nk.viec[0]);
   const site = nk.co_so[0].id;
   const anh = await nam.ok('/v1/files', { mime: 'image/png', data_base64: ANH_PNG, entity: 'production_site', entity_id: site, captured_in_app: true });
-  const thieu = await nam.post('/v1/farm-diary', { site_id: site, occurred_on: '2026-11-01', activity: 'spray', note: 'Phun ngừa', request_key: 'nk-1' });
+  const thieu = await nam.post('/v1/farm-diary', { site_id: site, occurred_on: PHUN, activity: 'spray', note: 'Phun ngừa', request_key: 'nk-1' });
   th.bang('Phun thuốc thiếu tên/ngày cách ly: 422', thieu.status, 422);
-  const p = await nam.ok('/v1/farm-diary', { site_id: site, occurred_on: '2026-11-01', activity: 'spray', note: 'Phun ngừa thán thư (dữ liệu thử)', medicine_name: 'Thuốc mẫu B (ẢO)', withdrawal_days: 10, photo_document_ids: [anh.id], request_key: 'nk-2' });
-  th.bang('Ngày hết cách ly = ngày phun + 10', p.data.clear_on, '2026-11-11');
+  const p = await nam.ok('/v1/farm-diary', { site_id: site, occurred_on: PHUN, activity: 'spray', note: 'Phun ngừa thán thư (dữ liệu thử)', medicine_name: 'Thuốc mẫu B (ẢO)', withdrawal_days: 10, photo_document_ids: [anh.id], request_key: 'nk-2' });
+  th.bang('Ngày hết cách ly = ngày phun + 10', p.data.clear_on, HET);
   th.bang('Nhãn tự ghi', p.data.nhan, 'Tự ghi');
-  th.bang('Ngày hết cách ly gần nhất của vườn', p.data.ngay_het_cach_ly_gan_nhat, '2026-11-11');
-  const lai = await nam.ok('/v1/farm-diary', { site_id: site, occurred_on: '2026-11-01', activity: 'spray', note: 'Phun ngừa thán thư (dữ liệu thử)', medicine_name: 'Thuốc mẫu B (ẢO)', withdrawal_days: 10, photo_document_ids: [anh.id], request_key: 'nk-2' });
+  th.bang('Ngày hết cách ly gần nhất của vườn', p.data.ngay_het_cach_ly_gan_nhat, HET);
+  const lai = await nam.ok('/v1/farm-diary', { site_id: site, occurred_on: PHUN, activity: 'spray', note: 'Phun ngừa thán thư (dữ liệu thử)', medicine_name: 'Thuốc mẫu B (ẢO)', withdrawal_days: 10, photo_document_ids: [anh.id], request_key: 'nk-2' });
   th.bang('Gửi lặp cùng khóa trả cùng ID', lai.id, p.id);
-  const sua = await nam.ok('/v1/farm-diary', { site_id: site, occurred_on: '2026-11-01', activity: 'spray', note: 'Phun ngừa thán thư (sửa tên thuốc)', medicine_name: 'Thuốc mẫu C (ẢO)', withdrawal_days: 3, supersedes_id: p.id, correction_reason: 'Ghi nhầm tên thuốc', request_key: 'nk-3' });
-  th.bang('Sửa không rút ngắn cách ly (giữ mốc lớn nhất)', sua.data.ngay_het_cach_ly_gan_nhat, '2026-11-11');
+  const sua = await nam.ok('/v1/farm-diary', { site_id: site, occurred_on: PHUN, activity: 'spray', note: 'Phun ngừa thán thư (sửa tên thuốc)', medicine_name: 'Thuốc mẫu C (ẢO)', withdrawal_days: 3, supersedes_id: p.id, correction_reason: 'Ghi nhầm tên thuốc', request_key: 'nk-3' });
+  th.bang('Sửa không rút ngắn cách ly (giữ mốc lớn nhất)', sua.data.ngay_het_cach_ly_gan_nhat, HET);
   const nk2 = (await nam.get('/v1/farm-diary')).json;
   th.kiem('Danh sách chỉ bản hiện hành (bản cũ ẩn)', !nk2.viec.some((x: any) => x.id === p.id) && nk2.viec.some((x: any) => x.id === sua.id), null);
-  th.kiem('Còn cách ly tới 11/11', nk2.co_so[0].con_cach_ly === true && nk2.co_so[0].ngay_het_cach_ly_gan_nhat === '2026-11-11', nk2.co_so[0]);
+  th.kiem('Còn cách ly tới ngày hết cách ly', nk2.co_so[0].con_cach_ly === true && nk2.co_so[0].ngay_het_cach_ly_gan_nhat === HET, nk2.co_so[0]);
   const field = await may.dangNhap('0901000002');
-  const nv = await field.post('/v1/farm-diary', { site_id: site, occurred_on: '2026-11-02', activity: 'care', note: 'Nhân viên kiểm vườn, xác nhận tỉa cành', request_key: 'nk-nv-1' });
-  th.kiem('Nhân viên field ghi: nhãn nhân viên AgiViet xác nhận', nv.status === 200 && nv.json.data.nhan === 'Nhân viên AgiViet xác nhận', nv.json);
+  const nv = await field.post('/v1/farm-diary', { site_id: site, occurred_on: PHUN_SAU, activity: 'care', note: 'Nhân viên kiểm vườn, xác nhận tỉa cành', request_key: 'nk-nv-1' });
+  th.kiem('Nhân viên field ghi: nhãn AgiViet xác nhận', nv.status === 200 && nv.json.data.nhan === 'AgiViet xác nhận', nv.json);
   const teo = await may.dangNhap(SDT.teo);
-  const giup = await teo.post('/v1/farm-diary', { site_id: site, occurred_on: '2026-11-02', activity: 'water', note: 'Tưới', request_key: 'nk-teo-1' });
+  const giup = await teo.post('/v1/farm-diary', { site_id: site, occurred_on: PHUN_SAU, activity: 'water', note: 'Tưới', request_key: 'nk-teo-1' });
   th.bang('Người giúp không có diary.write: 403', giup.status, 403);
 });
 

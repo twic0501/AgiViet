@@ -6,7 +6,7 @@ import { appCmd } from '../db/command.ts';
 import { loi } from '../loi.ts';
 import { soGam } from './chung.ts';
 
-const NHAN_NGUON: Record<string, string> = { self_recorded: 'Tự ghi', agiviet_confirmed: 'Nhân viên AgiViet xác nhận' };
+const NHAN_NGUON: Record<string, string> = { self_recorded: 'Tự ghi', agiviet_confirmed: 'AgiViet xác nhận' };
 const TEN_VIEC: Record<string, string> = {
   fertilize: 'Bón phân', spray: 'Phun thuốc', water: 'Tưới', flower: 'Ra hoa', fruit_set: 'Đậu trái', harvest: 'Thu hoạch',
   weather_incident: 'Sự cố thời tiết', pest_incident: 'Sâu bệnh', care: 'Chăm sóc',

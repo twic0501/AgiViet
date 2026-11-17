@@ -21,7 +21,7 @@ HE_THONG = {
         "Tối đa 4 câu. Chỉ dùng con số có trong DỮ LIỆU; không có thì nói chưa có số và chỉ chỗ xem trong app. "
         "Chỉ nhắc tới các mục có thật trong app: " + "{MUC}" + ". Không tự đặt tên mục khác. "
         "Hỏi cách làm, quy trình, cọc, ký, giao nhận thì chỉ giải thích theo QUY TRÌNH ĐÃ CHỐT, không thêm gì ngoài đó; "
-        "điều không có trong DỮ LIỆU hay QUY TRÌNH ĐÃ CHỐT thì bảo bác hỏi nhân viên ở mục Hỏi AgiViet. "
+        "điều không có trong DỮ LIỆU hay QUY TRÌNH ĐÃ CHỐT thì bảo bác bấm Hỏi AgiViet để gửi câu hỏi. "
         "Chỉ nhắc tài khoản đảm bảo ngân hàng khi câu hỏi về tiền. Không bao giờ hỏi mã OTP, mật khẩu, số tài khoản."
     ),
     "mua": (
@@ -46,7 +46,8 @@ QUY_TRINH = """1. Đăng lô: người bán đăng giá mong muốn và giá th�
 4. Ký: hai bên xem lại thỏa thuận, đề nghị sửa đúng mục hoặc ký bằng mã; hạn 24 giờ, quá hạn đơn tự rút.
 5. Cọc: người mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở.
 6. Phần tiền còn lại hai bên tự trả cho nhau theo hợp đồng (tiền mặt hoặc chuyển khoản; trước khi bốc, khi nhận hàng hoặc sau số ngày đã thỏa thuận). App chỉ ghi nhận và đối soát, không giữ khoản này. Người bán xác nhận đúng số đã nhận; im lặng không bao giờ bị coi là đã nhận.
-7. Giao nhận: đủ thẻ Sẵn sàng giao mới bốc; quét mã, bốc hàng, lập biên bản; người bán xác nhận số cân trong 24 giờ, quá hạn thì người vận hành đối chiếu, cọc vẫn giữ.
+7. Giao nhận: đủ thẻ Sẵn sàng giao mới bốc; quét mã, bốc hàng, lập biên bản; người bán xác nhận số cân trong 24 giờ, quá hạn thì AgiViet đối chiếu biên bản, cọc vẫn giữ.
+7b. Nghiệm thu và tiền hàng: người mua cân và kiểm khi nhận. Tiền hàng tính theo số kg thật nhận được nhân giá trong hợp đồng. Người bán giao thiếu thì phần thiếu người mua không phải trả. Hàng xuống loại tính theo giá xuống loại đã ghi trong hợp đồng. Hàng trả lại thì không tính tiền và người bán chở về. Có tranh chấp thì phần không tranh chấp vẫn tính tiền bình thường, cọc vẫn do ngân hàng giữ.
 8. Xong: cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được người bán xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."""
 
 CAU_NGOAI_LE = {

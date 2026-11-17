@@ -123,7 +123,7 @@ function ve() {
       <span class="bieu" aria-hidden="true">${HINH_VUON[c.kind] || HINH_VUON.orchard}</span>
       <div style="min-width:0"><b>${esc(c.name)}</b><small>${esc(LOAI_VUON[c.kind] || "Cơ sở")}${c.area_m2 ? ` · ${Number(c.area_m2).toLocaleString("vi-VN")} m²` : ""}</small></div>
       ${c.ngay_het_cach_ly_gan_nhat ? `<p class="vu-cl ${c.con_cach_ly ? "con" : "het"}">${c.con_cach_ly ? `<b>Đang cách ly thuốc</b> tới ${esc(ngayDai(c.ngay_het_cach_ly_gan_nhat))}. Chưa hái bán trước ngày này.` : `Đã hết cách ly thuốc từ ${esc(ngayNgan(c.ngay_het_cach_ly_gan_nhat))}.`}</p>` : `<p class="vu-cl het">Chưa ghi lần phun thuốc nào. Phun thì ghi ngay để app tính ngày được hái.</p>`}
-    </div>`).join("") || `<p class="bao">Chưa có vườn nào. Bác bấm Hỗ trợ để nhân viên AgiViet tới khảo sát và khai báo vườn.</p>`}</section>
+    </div>`).join("") || `<p class="bao">Chưa có vườn nào. Bác bấm Hỗ trợ để AgiViet hướng dẫn khai báo vườn.</p>`}</section>
     ${du.co_so.length > 1 ? `<div class="vu-loc" role="group" aria-label="Lọc theo vườn"><button type="button" data-loc="tat-ca" aria-pressed="${loc === "tat-ca"}">Tất cả</button>${du.co_so.map((c) => `<button type="button" data-loc="${esc(c.id)}" aria-pressed="${loc === c.id}">${esc(c.name.split(",")[0])}</button>`).join("")}</div>` : ""}
     <section class="vu-vu" aria-label="Mùa vụ năm ${nam}"><h3>Mùa vụ ${nam}</h3>
       <div class="vu-moc">${[["flower", "Ra hoa"], ["fruit_set", "Đậu trái"], ["harvest", "Thu hoạch"], ["ban", "Bán"]].map(([a, t]) => `<div class="${a === "ban" ? "" : coViec(a) ? "xong" : ""}"><i></i>${t}</div>`).join("")}</div>
