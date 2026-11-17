@@ -277,6 +277,14 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.get('/v1/orders/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => Don.xemDon(t, nd, P(req).id)); });
   app.get('/v1/orders/:id/terms', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => Don.tomTatDieuKhoan(t, nd, P(req).id)); });
   app.get('/v1/orders/:id/money', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => Tien.tienCuaDon(t, nd, P(req).id)); });
+  // Trả cọc qua ZaloPay sandbox (bản thử): tạo đơn, rồi kiểm trạng thái bằng cách hỏi lại ZaloPay
+  const ZP = () => import('../nghiep-vu/zalopay.ts');
+  app.post('/v1/orders/:id/deposit/zalopay', async (req) => { const nd = await bo.xacThuc(req); const h = await bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id));
+    const b = z.object({ quay_ve: z.string().url().max(500) }).parse(req.body);
+    if (!/^https:\/\/(agiviet\.id\.vn|[a-z0-9-]+\.vercel\.app)\/|^http:\/\/127\.0\.0\.1:\d+\//.test(b.quay_ve)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Địa chỉ quay về không hợp lệ.');
+    return (await ZP()).taoDon(ht, h, nd.thanhVien.orgCode, b.quay_ve); });
+  app.get('/v1/orders/:id/deposit/zalopay/:ma', async (req) => { const nd = await bo.xacThuc(req); const h = await bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id));
+    return (await ZP()).kiemDon(ht, h, String((req.params as any).ma)); });
   app.get('/v1/orders/:id/deposit-instruction', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => Tien.huongDanCoc(t, nd, P(req).id)); });
 
   // ---------------- Đề nghị sửa, phụ lục ----------------

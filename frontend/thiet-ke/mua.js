@@ -1108,13 +1108,42 @@ if (THAT) {
           ${chep("coc-nd", h.payment_ref, "Nội dung chuyển khoản (ghi đúng)")}
           <p style="margin:0;font-weight:600">Hạn chót: ${han.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}. Quá hạn chưa đủ cọc thì đơn tự đóng.</p>
           ${bao(esc(h.cau), "sl-bao-nh")}
+          <button type="button" class="sl-nut sl-vang" id="coc-zp" hidden style="max-width:100%;white-space:normal;height:auto">Trả cọc qua ZaloPay (thử) ${vnd(con)}</button>
           <button type="button" class="sl-nut sl-vien" id="coc-gia-lap" hidden style="max-width:100%;white-space:normal;height:auto">Môi trường thử: giả lập ngân hàng nhận ${vnd(con)}</button>
           <p class="sl-ghi" id="coc-bao" role="status"></p></section>`);
         const o = khung.querySelector("#coc");
         // Nút giả lập ngân hàng theo máy chủ (test_tools), không theo ?thu= — đăng nhập chọn vai ở bản thi không có tham số này.
-        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) o.querySelector("#coc-gia-lap")?.removeAttribute("hidden"); }).catch(() => {});
+        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) { o.querySelector("#coc-gia-lap")?.removeAttribute("hidden"); o.querySelector("#coc-zp")?.removeAttribute("hidden"); } }).catch(() => {});
         if (h.vietqr) await veQr(o.querySelector("#coc-qr"), h.vietqr);
         o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
+        // ZaloPay sandbox: sang cổng ZaloPay trả; quay về trang này với ?apptransid=… rồi máy chủ tự hỏi lại ZaloPay
+        const baoCoc = (t) => (o.querySelector("#coc-bao").textContent = t);
+        o.querySelector("#coc-zp").onclick = async (e) => {
+          const n = e.currentTarget; n.disabled = true; baoCoc("Đang tạo đơn ZaloPay…");
+          try {
+            const r = await api(`/v1/orders/${d.id}/deposit/zalopay`, { quay_ve: location.href.split("#")[0] });
+            n.insertAdjacentHTML("afterend", `<div id="coc-zp-qr" style="display:grid;gap:6px;justify-items:center;text-align:center"><p class="sl-ghi" style="margin:0">Quét bằng app <b>ZaloPay Sandbox</b> để trả ${vnd(r.amount_vnd)}. Trang tự cập nhật khi ZaloPay báo đã nhận.</p></div>`);
+            await veQr(o.querySelector("#coc-zp-qr"), r.qr); n.hidden = true; baoCoc("Đang chờ ZaloPay…");
+            // Hỏi lại máy chủ 4 giây một lần, tối đa 5 phút; máy chủ hỏi ZaloPay, không tin trình duyệt
+            for (let i = 0; i < 75 && document.body.contains(o); i++) {
+              await new Promise((x) => setTimeout(x, 4000));
+              const k = await api(`/v1/orders/${d.id}/deposit/zalopay/${encodeURIComponent(r.app_trans_id)}`).catch(() => null);
+              if (k?.trang_thai === "da_tra") { baoCoc(`ZaloPay đã nhận ${vnd(k.amount_vnd)} (mã ${k.zp_trans_id}). Đang cập nhật cọc…`); return setTimeout(() => ve(), 800); }
+              if (k?.trang_thai === "that_bai") return baoCoc(`ZaloPay báo thanh toán không thành công: ${k.cau}`);
+            }
+            baoCoc("Quá 5 phút chưa thấy ZaloPay báo đã trả. Tải lại trang để thử lại.");
+          } catch (err) { baoCoc(err.message); n.disabled = false; }
+        };
+        const maZp = new URLSearchParams(location.search).get("apptransid");
+        if (maZp) {
+          baoCoc("Đang hỏi ZaloPay kết quả thanh toán…");
+          try {
+            const k = await api(`/v1/orders/${d.id}/deposit/zalopay/${encodeURIComponent(maZp)}`);
+            const u = new URL(location.href); ["apptransid", "appid", "amount", "status", "checksum", "pmcid", "bankcode", "discountamount"].forEach((x) => u.searchParams.delete(x)); history.replaceState(null, "", u);
+            if (k.trang_thai === "da_tra") { baoCoc(`ZaloPay đã nhận ${vnd(k.amount_vnd)} (mã ${k.zp_trans_id}). Đang cập nhật cọc…`); setTimeout(() => ve(), 800); }
+            else baoCoc(k.trang_thai === "that_bai" ? `ZaloPay báo thanh toán không thành công: ${k.cau}` : "ZaloPay chưa ghi nhận thanh toán. Nếu bạn vừa trả, đợi ít giây rồi tải lại trang.");
+          } catch (err) { baoCoc(err.message); }
+        }
         const gl = o.querySelector("#coc-gia-lap");
         if (gl) gl.onclick = async () => {
           gl.disabled = true; o.querySelector("#coc-bao").textContent = "Đang giả lập chuyển khoản…";
