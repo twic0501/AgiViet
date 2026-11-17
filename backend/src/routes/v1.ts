@@ -269,7 +269,9 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     const b = z.object({ challenge_id: z.string(), code: z.string(), commitment_ack: z.boolean().optional(), abnormal_price_ack: z.boolean().optional(), device_id: z.string().optional() }).passthrough().parse(req.body);
     const cu = await bo.layLai(req, 'ky'); if (cu) return cu;
     await ht.otp.xacMinh(nd, b.challenge_id, b.code);
-    return bo.lenh(req, 'ky', (t, n) => phiaDon(t, n, P(req).id), (t, n, body) => Don.kyDon(t, n, P(req).id, body, body.expected_revision));
+    const kq = await bo.lenh(req, 'ky', (t, n) => phiaDon(t, n, P(req).id), (t, n, body) => Don.kyDon(t, n, P(req).id, body, body.expected_revision));
+    await (await import('../nghiep-vu/tem-thoi-gian.ts')).dongDauDon(ht, P(req).id).catch(() => 0);
+    return kq;
   });
   app.post('/v1/orders/:id/decline', async (req) => bo.lenh(req, 'tu_choi_ky', 'seller', (t, nd, b) => Don.tuChoiKy(t, nd, P(req).id, b.reason)));
   app.post('/v1/orders/:id/withdraw', async (req) => bo.lenh(req, 'rut_don', 'buyer', (t, nd, b) => Don.rutDon(t, nd, P(req).id, b.reason)));
@@ -415,6 +417,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       (SELECT json_agg(json_build_object('party',party,'method',method,'signed_at',signed_at)) FROM core.signatures s WHERE s.document_id=d.id) signatures
       FROM core.documents d WHERE code=$1 AND doc_type<>'evidence'`, [P(req).code]);
     if (!d) throw loi('KHONG_TIM_THAY');
+    d.tem_thoi_gian = await t.q(`SELECT s.party, x.gen_time, x.tsa_url, encode(x.imprint,'hex') imprint_hex FROM core.signature_timestamps x JOIN core.signatures s ON s.id=x.signature_id JOIN core.documents d ON d.id=s.document_id WHERE d.code=$1 ORDER BY x.gen_time`, [P(req).code]);
     return { ...d, ghi_chu: 'DỮ LIỆU THỬ. Ký OTP là chữ ký điện tử đơn giản; ký số là mô phỏng, không phải chữ ký số công cộng.' };
   }));
   app.post('/v1/verify/:code/file', async (req) => {

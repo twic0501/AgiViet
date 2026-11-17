@@ -53,6 +53,7 @@ const BEN = { buyer: "Bên mua", seller: "Người bán", platform: "AgiViet", o
     <div class="xm-dong"><span>Phiên bản</span><b>${esc(d.version_no)}</b></div>
     <div class="xm-dong"><span>Phát hành</span><b>${esc(new Date(d.created_at).toLocaleString("vi-VN"))}</b></div>
     <div class="xm-dong"><span>Đã ký</span><b>${ky.length ? ky.map((k) => `${esc(BEN[k.party] || k.party)} · ${esc(new Date(k.signed_at).toLocaleString("vi-VN"))}`).join("<br>") : "Chưa có chữ ký"}</b></div>
+    <div class="xm-dong"><span>Tem thời gian (bên thứ ba)</span><b>${(d.tem_thoi_gian || []).length ? d.tem_thoi_gian.map((x) => `${esc(BEN[x.party] || x.party)} · ${esc(new Date(x.gen_time).toLocaleString("vi-VN"))} · ${esc(new URL(x.tsa_url).hostname)}`).join("<br>") : "Chưa có"}</b></div>
     <div><span class="xm-phu">Mã băm SHA-256 của file</span><div class="xm-ma">${esc(d.file_sha256)}</div></div>
     <p class="xm-phu">${esc(d.ghi_chu || "")}</p>`;
   $("xm-tep").hidden = false;

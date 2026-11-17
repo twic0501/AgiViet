@@ -36,3 +36,19 @@ export async function dongDau(bam: Buffer, f: typeof fetch = fetch) {
   if (d.trangThai !== 0 && d.trangThai !== 1) throw loi('LOI_HE_THONG', `TSA từ chối (trạng thái ${d.trangThai}).`);
   return { tsa: url, gio: d.gio, tra_loi: tl };
 }
+
+/** Sau khi ký: xin tem cho mọi chữ ký thuộc đơn mà chưa có tem. Lỗi TSA không chặn việc ký (ghi log; lần ký sau thử lại). */
+export async function dongDauDon(ht: { db: { tx: (o: any, fn: (t: any) => Promise<any>) => Promise<any> } }, orderId: string, f: typeof fetch = fetch) {
+  const { systemCmd } = await import('../db/command.ts');
+  const ds: { id: string; imprint_hex: string }[] = await ht.db.tx({ actor: 'system', lenh: 'tem_thoi_gian_doc' },
+    (t) => t.voiHeThong(() => t.q(`SELECT * FROM core.untimestamped_signatures($1)`, [orderId])));
+  let n = 0;
+  for (const s of ds) {
+    try {
+      const r = await dongDau(Buffer.from(s.imprint_hex, 'hex'), f);
+      await ht.db.tx({ actor: 'system', lenh: 'tem_thoi_gian_ghi' }, (t) => systemCmd(t, 'record_signature_timestamp', [s.id, Buffer.from(s.imprint_hex, 'hex'), r.tsa, r.gio, r.tra_loi]));
+      n++;
+    } catch (e) { console.warn('[tem-thoi-gian] chưa xin được tem cho chữ ký', s.id, (e as Error).message); }
+  }
+  return n;
+}
