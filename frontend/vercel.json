@@ -11,8 +11,9 @@
     { "source": "/www", "destination": "/", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/v1/:path*", "destination": "https://agiviet-api.onrender.com/v1/:path*" },
-    { "source": "/health", "destination": "https://agiviet-api.onrender.com/health" },
-    { "source": "/health/:path*", "destination": "https://agiviet-api.onrender.com/health/:path*" }
+    { "source": "/v1/:path*", "destination": "https://agiviet-cong.onrender.com/v1/:path*" },
+    { "source": "/v2/:path*", "destination": "https://agiviet-cong.onrender.com/v2/:path*" },
+    { "source": "/health", "destination": "https://agiviet-cong.onrender.com/health" },
+    { "source": "/health/:path*", "destination": "https://agiviet-cong.onrender.com/health/:path*" }
   ]
 }
