@@ -1121,7 +1121,9 @@ if (THAT) {
           <p class="sl-ghi" id="coc-bao" role="status"></p></section>`);
         const o = khung.querySelector("#coc");
         // Nút giả lập ngân hàng theo máy chủ (test_tools), không theo ?thu= — đăng nhập chọn vai ở bản thi không có tham số này.
-        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) { ["#coc-gia-lap", "#coc-gia-lap-ghi", "#coc-cong", "#coc-zp", "#coc-mm"].forEach((k) => o.querySelector(k)?.removeAttribute("hidden")); } }).catch(() => {});
+        fetch("/frontend-capabilities.json").then((r) => r.json()).then((c) => { if (c.test_tools) { ["#coc-gia-lap", "#coc-gia-lap-ghi"].forEach((k) => o.querySelector(k)?.removeAttribute("hidden"));
+          // Cổng MoMo/ZaloPay sandbox chưa phải dịch vụ thật: chỉ hiện khi thêm &cong=1 vào đường dẫn
+          if (new URLSearchParams(location.search).has("cong")) ["#coc-cong", "#coc-zp", "#coc-mm"].forEach((k) => o.querySelector(k)?.removeAttribute("hidden")); } }).catch(() => {});
         if (h.vietqr) await veQr(o.querySelector("#coc-qr"), h.vietqr);
         o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
         // ZaloPay sandbox: sang cổng ZaloPay trả; quay về trang này với ?apptransid=… rồi máy chủ tự hỏi lại ZaloPay
