@@ -79,3 +79,7 @@ dialog#hop::backdrop { background: rgba(20, 30, 24, .45); }
 #ai-bao[hidden] { display: none; }
 
 .tn-gd { padding: 0 16px; max-height: 45dvh; overflow-y: auto; } .tn-gd:empty { display: none; }
+
+.o-nhap select { width: 100%; min-height: 48px; padding: 0 12px; border-radius: 12px; border: 1.5px solid var(--k); background: var(--gn); font-family: inherit; font-size: 16px; color: var(--m); }
+.o-nhap input[type="date"] { font-family: inherit; }
+.chon { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: 15px; } .chon input { width: 22px; height: 22px; accent-color: var(--xanh); }

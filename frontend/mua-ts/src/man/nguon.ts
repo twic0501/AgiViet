@@ -11,6 +11,9 @@ const LA_MA_VUNG = /^[A-Z]{2,5}-[A-Z]{2,4}-\d{2,6}$/i;
 interface VungTrong { ma: string; nguoi_ban: string; tinh?: string; vuon?: string; lo_ids: string[]; thi_truong: { thi_truong: string; da_xac_minh: boolean; bi_thu_hoi: boolean; con_han: boolean; het_han?: string }[] }
 let vung: { ma: string; kq?: VungTrong; loi?: string } | null = null;
 
+let dauPhieu = "";
+/** Gắn khối "Phiếu tìm nguồn" lên đầu tab (tải riêng, không chặn danh sách lô). */
+export async function napDauPhieu(o: HTMLElement): Promise<void> { const { dsPhieu } = await import("./nhu-cau"); dauPhieu = await dsPhieu(); const d = o.querySelector("#dau-phieu"); if (d) d.innerHTML = dauPhieu; }
 export function veNguon(o: HTMLElement): void {
   const tat = DL.lo.filter((l) => !l.is_substandard || l.ban_gap);
   const nhom = ["Tất cả", ...new Set(tat.map((l) => NHOM(l.product_code)))];
@@ -22,6 +25,7 @@ export function veNguon(o: HTMLElement): void {
   if (!laMa) vung = null;
   const ds = laMa ? tat.filter((l) => vung?.kq?.lo_ids.includes(l.id)) : tat.filter((l) => (loc === "Tất cả" || NHOM(l.product_code) === loc) && (!q || `${l.product_name} ${l.seller_name} ${tinh(l.province_code)}`.toLowerCase().includes(q)));
   o.innerHTML = `
+    <div id="dau-phieu">${dauPhieu}</div>
     <label class="o-tim"><span class="an-chu">Tìm nguồn hoặc mã vùng trồng</span><input id="ng-tu" type="search" placeholder="Xoài, Đồng Tháp hoặc mã vùng trồng MVT-…" value="${esc(tu)}" autocapitalize="characters"></label>
     ${vung ? veVung(vung) : ""}
     <div class="loc" role="group" aria-label="Lọc nhóm hàng">${nhom.map((m) => `<button type="button" aria-pressed="${m === loc}" data-loc="${esc(m)}">${esc(m)}</button>`).join("")}</div>
@@ -34,7 +38,7 @@ export function veNguon(o: HTMLElement): void {
         <p class="phu so">Còn ${vnd(kg(l.available_g ?? l.qty?.available))} kg · từ ${ngay(l.available_from)}</p>
         <div class="tin">${l.qty_basis === "weighed" ? `<span class="chip la">Đã cân</span>` : `<span class="chip">Người bán ước tính</span>`}${anh ? `<span class="chip la">${anh} ảnh chụp trong app</span>` : ""}${l.ban_gap ? `<span class="chip do">Bán gấp</span>` : ""}</div>
         ${coChao ? `<a class="nut vien rong" href="${manCu("bao-gia", `loi-chao=${coChao.id}`)}">Xem lời chào của bạn</a>` : `<button type="button" class="nut chinh rong" data-tra="${l.id}">Trả giá</button>`}
-      </article>`; }).join("") : trong("Không có lô nào khớp. Gửi nhu cầu để người bán báo giá cho bạn.", `<a class="nut vien" href="${manCu("nhu-cau")}">Gửi nhu cầu</a>`)}`;
+      </article>`; }).join("") : trong("Không có lô nào khớp. Gửi phiếu tìm nguồn để người bán báo giá cho bạn.", `<a class="nut vien" href="#nhu-cau/moi">Gửi phiếu tìm nguồn</a>`)}`;
   o.querySelectorAll<HTMLButtonElement>("[data-loc]").forEach((b) => (b.onclick = () => { loc = b.dataset.loc!; veNguon(o); }));
   o.querySelectorAll<HTMLButtonElement>("[data-tra]").forEach((b) => (b.onclick = () => moTraGia(DL.lo.find((l) => l.id === b.dataset.tra)!, () => veNguon(o))));
   const tim = o.querySelector<HTMLInputElement>("#ng-tu")!;
@@ -42,7 +46,7 @@ export function veNguon(o: HTMLElement): void {
 }
 
 /** Hộp trả giá: giá + lượng, so với giá giao dịch gần đây cùng loại; gửi POST /v1/offers. */
-async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
+export async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
   const g = await thu(api<{ status: string; price_vnd: string }>(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`));
   const neo = g?.status === "du_du_lieu" ? Number(g.price_vnd) : null, con = kg(l.available_g ?? l.qty?.available);
   const h = document.querySelector<HTMLDialogElement>("#hop")!;

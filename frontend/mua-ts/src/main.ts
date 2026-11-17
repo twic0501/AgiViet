@@ -3,13 +3,14 @@ import { layPhien } from "./api";
 import { batDoiTacAo } from "./doi-tac-ao";
 import { DL, napHet } from "./du-lieu";
 import { dsViec, veHomNay } from "./man/hom-nay";
-import { veNguon } from "./man/nguon";
+import { napDauPhieu, veNguon } from "./man/nguon";
+import { veChiTietPhieu, veTaoPhieu } from "./man/nhu-cau";
 import { veChiTietDon, veDsDon } from "./man/don";
 import { veTien } from "./man/tien";
 import { dungChat, soTinMoi, veChat, veDsTin } from "./man/tin";
 import { $, esc, trong } from "./ui";
 
-const TIEU_DE: Record<string, string> = { "hom-nay": "Hôm nay", nguon: "Nguồn hàng", don: "Đơn", tien: "Tiền", tin: "Tin nhắn" };
+const TIEU_DE: Record<string, string> = { "hom-nay": "Hôm nay", nguon: "Nguồn hàng", "nhu-cau": "Phiếu tìm nguồn", don: "Đơn", tien: "Tiền", tin: "Tin nhắn" };
 
 async function veTheoDuong(): Promise<void> {
   const [man = "hom-nay", a, b] = location.hash.slice(1).split("/");
@@ -17,9 +18,10 @@ async function veTheoDuong(): Promise<void> {
   dungChat();
   $("#tieu-de").textContent = man === "don" && a ? "Chi tiết đơn" : TIEU_DE[man] || "Hôm nay";
   $("#lui").hidden = !sau; document.body.dataset.man = man + (sau ? "-con" : "");
-  document.querySelectorAll<HTMLAnchorElement>(".tab a").forEach((x) => x.setAttribute("aria-current", x.hash === "#" + man ? "page" : "false"));
+  document.querySelectorAll<HTMLAnchorElement>(".tab a").forEach((x) => x.setAttribute("aria-current", x.hash === "#" + (man === "nhu-cau" ? "nguon" : man) ? "page" : "false"));
   try {
-    if (man === "nguon") veNguon(o);
+    if (man === "nguon") { veNguon(o); napDauPhieu(o); }
+    else if (man === "nhu-cau") a === "moi" ? await veTaoPhieu(o) : await veChiTietPhieu(o, a);
     else if (man === "don") a ? await veChiTietDon(o, a) : veDsDon(o);
     else if (man === "tien") veTien(o);
     else if (man === "tin") a && b ? await veChat(o, a, b) : veDsTin(o);
