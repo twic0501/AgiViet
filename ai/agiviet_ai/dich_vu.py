@@ -175,6 +175,15 @@ class DoiTacRequest(BaseModel):
     lich_su: str = Field(default='', max_length=1500)   # vài tin gần nhất của cuộc trò chuyện (cũ → mới)
 
 
+# Luật cứng cho chatbot đối tác (bộ chấm danh_gia/danh_gia_doi_tac.py đo cùng các luật này)
+SAI_LUAT_DOI_TAC = re.compile(r"sẽ ký|ký luôn|ký liền|đồng ý giá|chốt luôn|giá[^.?!]{0,20}được (nha|nhé|luôn)|đang online|(tôi|em) là (bên bán|bên mua|người bán|người mua)|vietgap nhưng|vườn (anh|tôi|em) vietgap", re.I)
+VI_DU_DOI_TAC = (
+    "- Người kia: 'Giá 24 ngàn được không?' (tới lượt bạn trả lời giá) → ĐÚNG: 'Dạ để tôi coi lại rồi trả lời trong lời chào liền nha.' · SAI: 'Giá 24.000 được nha.'\n"
+    "- Người kia: 'Ký luôn nha' (điều khoản chưa thống nhất) → ĐÚNG: 'Dạ em đang coi điều khoản, xong em trả lời trong app liền nha bác.' · SAI: 'Em sẽ ký luôn.'\n"
+    "- Người kia: 'hello' (hợp đồng chờ cọc) → ĐÚNG: 'Dạ chào anh/chị, bên tôi chờ cọc ngân hàng xác nhận là chuẩn bị hàng liền.' · SAI: 'Tôi là bên bán X, hợp đồng HD-3002 đang ở trạng thái…'\n"
+    "- Lời chào đã đóng, người mua đưa 20.000 → ĐÚNG: 'Dạ mức đó bên tôi chưa bán được, anh/chị gửi lời chào mới giúp tôi nha.' · SAI: 'Giá bên tôi 20.000 không bớt được.'")
+
+
 @app.post('/doi-tac/tra-loi')
 def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
     """Chatbot đối tác AI (bản thử): trả lời 1–2 câu đúng bước giao dịch. Lỗi/bịa số → 503, backend dùng câu soạn sẵn theo bước."""
@@ -194,6 +203,10 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
           " Nhắn như người thật đang chat trên điện thoại, tiếng Việt tự nhiên, ngắn 1–2 câu. TRƯỚC HẾT đáp thẳng vào đúng ý người kia vừa nhắn "
           "(họ chào thì chào lại, hỏi gì đáp nấy, xin thêm giá thì trả lời chuyện giá), rồi mới nhắc bước kế nếu cần. Không đọc lại mã hợp đồng hay trạng thái như máy, "
           "không lặp lại câu bạn đã nói trong LỊCH SỬ. Giá đã chốt mà người kia xin đổi: nói thật là giá hai bên đã chốt, từ chối rõ ràng, lịch sự; không tự đồng ý giá mới. "
+          "Giá trong TÌNH TRẠNG luôn ghi rõ của ai đưa: không bao giờ nhận giá người kia đưa là giá của mình. "
+          "Đồng ý/từ chối giá, đồng ý điều khoản, ký hợp đồng đều làm bằng nút trong app, KHÔNG làm bằng lời: trong tin nhắn không nói 'được', 'đồng ý', 'chốt luôn', 'sẽ ký' với một con số hay điều khoản; chỉ nói đang xem và sẽ trả lời trong app. "
+          "Lời chào đã đóng thì không nói 'đã chốt'. Không tự giới thiệu lại tên, không nói mình đang online. "
+          "Chứng nhận (VietGAP, mã vùng trồng…) mà TÌNH TRẠNG không ghi là có thì trả lời đúng: chưa có thông tin trong app, sẽ kiểm rồi báo; không nói có, không nói 'có nhưng chưa làm giấy'. "
           "KHÔNG hứa bù, thưởng, tính lại, nâng giá đợt sau; không hứa giữ hàng, đổi ngày hay bất cứ gì khác ngoài TÌNH TRẠNG. "
           "Người kia hỏi giấy chứng nhận, VietGAP, mã vùng trồng, xe, số tấn, giờ cụ thể mà TÌNH TRẠNG không có: nói thật là chưa có thông tin đó, sẽ kiểm rồi báo, tuyệt đối không tự khẳng định. "
           "Lý do giá phải đúng mặt hàng trong TÌNH TRẠNG (hàng tươi không nói chi phí sấy), và không nói chi phí xe nếu không phải phần của bạn. "
@@ -204,16 +217,22 @@ def doi_tac_tra_loi(req: DoiTacRequest, request: Request):
           "Không xin số điện thoại, Zalo, tài khoản riêng. Nếu TÌNH TRẠNG có 'Mức cao nhất bạn chịu' hoặc 'Mức thấp nhất bạn chịu' và người kia xin đổi giá "
           "thì nêu con số đó MỘT lần khi LỊCH SỬ chưa có nó; nếu bạn đã nói con số đó rồi thì KHÔNG nhắc lại nguyên câu, hãy nói khác đi: đưa lý do thật (giá chợ hôm nay, chi phí sấy/vận chuyển, hàng loại mấy) hoặc hỏi họ chốt được không. "
           "Không bao giờ nói đây là 'mức cuối' hay 'tốt nhất'. Người kia nói thôi / khỏi / không bán nữa thì nhận lời nhẹ nhàng, để ngỏ lần sau, KHÔNG nài nỉ, không lặp giá. "
-          "Văn nói miền Nam/Tây, dùng từ đời thường (dạ, thiệt, nha, hen, nè), mỗi lượt một kiểu câu khác nhau, không mở đầu giống câu trước. \nTÌNH TRẠNG: " + req.tinh_trang
+          "Văn nói miền Nam/Tây, dùng từ đời thường (dạ, thiệt, nha, hen, nè), mỗi lượt một kiểu câu khác nhau, không mở đầu giống câu trước. "
+          "\nVÍ DỤ (đúng / sai):\n" + VI_DU_DOI_TAC + "\nTÌNH TRẠNG: " + req.tinh_trang
           + (f"\nLỊCH SỬ (cũ → mới, chỉ để hiểu ngữ cảnh):\n{req.lich_su}" if req.lich_su else ''))
     if not LLM_SLOT.acquire(timeout=CHO_SLOT_S):
         raise HTTPException(503, 'bận')
     try:
         k = NhaCungCap().goi(he, req.tin, loai='doi_tac', timeout_s=6.0, toi_da=160)
+        # Lời hứa làm bằng lời việc phải bấm nút (ký, đồng ý giá) hoặc tự giới thiệu như máy: hỏi lại một lần kèm lời nhắc, vẫn sai thì bỏ
+        if SAI_LUAT_DOI_TAC.search(k.van_ban):
+            k = NhaCungCap().goi(he + "\nLƯU Ý: câu trước của bạn vi phạm luật (hứa ký/đồng ý bằng lời hoặc tự giới thiệu). Viết lại 1–2 câu, chỉ đáp ý người kia và nói sẽ xem/trả lời trong app.", req.tin, loai='doi_tac', timeout_s=6.0, toi_da=160)
     except LoiNhaCungCap:
         raise HTTPException(503, 'không gọi được mô hình')
     finally:
         LLM_SLOT.release()
+    if SAI_LUAT_DOI_TAC.search(k.van_ban):
+        raise HTTPException(503, 'câu trả lời hứa việc phải làm bằng nút trong app')
     la = so_la(k.van_ban, req.tinh_trang + ' ' + req.tin + ' ' + req.lich_su)
     # Lời hứa miệng ngoài hợp đồng (tin nhắn lưu làm bằng chứng): bỏ, backend dùng câu soạn sẵn
     if re.search(r"đợt sau.{0,30}(bù|tính lại|nâng|thêm)|em bù|bên tôi bù|sẽ giữ hàng", k.van_ban, re.I):

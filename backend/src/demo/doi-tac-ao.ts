@@ -358,7 +358,7 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const gn = ((await get(`/v1/orders/${s.order_id}/terms`, t))?.the ?? []).find((x: any) => x.tieu_de === 'Giao nhận')?.noi_dung;
           const cw = (d.dot_giao ?? []).map((x: any) => x.window_from).find(Boolean);
           gioGiao = cw ? new Date(cw).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
-          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}${gn ? ` Giao nhận: ${gn}.` : ''}${gioGiao ? ` Giờ giao: từ ${gioGiao}.` : ''}`;
+          tinhTrang = `Hợp đồng ${d.code ?? ''}: ${ht.ten ?? TEN_TT[d.status] ?? d.status}.${luot}${gn ? ` Giao nhận: ${gn}.` : ''}${gioGiao ? ` Giờ giao: từ ${gioGiao}.` : ''} Chỉ nói đúng bước hiện tại; KHÔNG nhắc các bước chưa tới (ký, cọc, giao, nghiệm thu, quyết toán) như thể đang làm.`;
           buocTin = d.status === 'drafting' && phiaTin === 'buyer' ? 'soan_hd' : tl && tl.phia !== phiaTin && /ký/i.test(tl.viec) ? 'cho_ky' : '';
         }
       } else if (s.offer_id) {
@@ -372,13 +372,21 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
           const mucCau = mucTin == null || v.from_side !== phiaTin ? '' : phiaTin === 'buyer'
             ? ` Mức cao nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người bán đòi cao hơn thì từ chối khéo kèm lý do; đòi ≤ mức này thì bảo họ bấm "Chào giá mới" với mức đó, bạn sẽ đồng ý.`
             : ` Mức thấp nhất bạn chịu: ${soVN(mucTin)} (giữ kín, chỉ hé ra khi cần). Người mua trả thấp hơn thì từ chối khéo kèm lý do; trả ≥ mức này thì bảo họ bấm "Trả giá" với mức đó, bạn sẽ đồng ý.`;
-          tinhTrang = (of.product_name ? `Mặt hàng: ${of.product_name}. ` : '') + (of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. Bước kế: người mua gửi hợp đồng để người bán xem và ký.`
+          tinhTrang = (of.product_name ? `Mặt hàng: ${of.product_name}. ` : '') + (of.status === 'accepted' ? `Lời chào ${of.code ?? ''}: hai bên đã đồng ý giá ${gia}${kg}. ${await buocDieuKhoan(of.id, phiaTin)}`
             : of.status === 'sent' ? `Lời chào ${of.code ?? ''}: giá gần nhất ${gia}${kg} do ${ai} đưa; ${v.from_side === phiaTin ? 'đang chờ người kia trả lời' : 'TỚI LƯỢT BẠN trả lời: người kia không bấm được gì lúc này; hãy nói bạn đang xem và sẽ trả lời trong lời chào ngay, KHÔNG bảo họ bấm Chào giá/Trả giá'}.${mucCau}`
-            : of.status === 'auto_rejected' ? `Lời chào ${of.code ?? ''} đã đóng: hệ thống tự từ chối vì giá ${phiaTin === 'seller' ? 'người mua đưa' : 'người bán chào'} chưa tới mức bên bạn chấp nhận (KHÔNG nói con số mức đó). Mời người kia gửi lời chào mới với giá ${phiaTin === 'seller' ? 'cao' : 'thấp'} hơn; giá đã đưa ${gia} không thay đổi được nữa.`
+            : of.status === 'auto_rejected' ? `Lời chào ${of.code ?? ''} đã đóng: hệ thống tự từ chối vì giá ${phiaTin === 'seller' ? 'người mua đưa' : 'người bán chào'} chưa tới mức bên bạn chấp nhận (KHÔNG nói con số mức đó). Mời người kia gửi lời chào mới với giá ${phiaTin === 'seller' ? 'cao' : 'thấp'} hơn. ${gia} là giá NGƯỜI KIA đã đưa (không phải giá của bạn): KHÔNG nói đó là giá của bạn, KHÔNG nói 'giá bên tôi ${gia}'.`
             : `Lời chào ${of.code ?? ''} đã đóng (${of.status === 'rejected' ? 'đã bị từ chối' : of.status === 'expired' ? 'đã hết hạn' : 'đã rút'}); muốn mua bán tiếp thì gửi lời chào mới.`);
           // Chỉ nhắc người kia bấm Chào giá/Trả giá khi đang CHỜ HỌ; tới lượt mình thì nói sẽ trả lời trong lời chào
           if (of.status === 'accepted') buocTin = 'da_dong_y'; else if (of.status === 'sent' && v.from_side === phiaTin) dangMacCa = true;
         }
+      }
+      // Bước điều khoản sau khi chốt giá (khung chung → điều khoản riêng → tạo hợp đồng), nói theo vai.
+      async function buocDieuKhoan(offerId: string, phia: 'buyer' | 'seller') {
+        const dk = await get(`/v1/offers/${offerId}/terms`, t); if (!dk) return '';
+        if (dk.trang_thai === 'da_thong_nhat') return phia === 'buyer' ? 'Điều khoản đã thống nhất; bước kế: BẠN tạo hợp đồng để hai bên ký.' : 'Điều khoản đã thống nhất; bước kế: người mua tạo hợp đồng để hai bên ký.';
+        if (dk.trang_thai === 'cho_tra_loi') return dk.de_xuat_boi === phia ? 'Bạn đã gửi đề xuất điều khoản, đang chờ người kia trả lời.' : 'Người kia vừa đề xuất điều khoản; bạn đang xem để trả lời.';
+        if (dk.trang_thai === 'bi_tu_choi') return 'Điều khoản đang được hai bên sửa lại từng mục.';
+        return 'Bước kế: hai bên đọc khung điều khoản chung của AgiViet trong app rồi thống nhất điều khoản riêng (ngày giao, giá xuống loại, trả tiền, xe). Chưa có hợp đồng.';
       }
       const ls = ((await get(`/v1/messages?${s.order_id ? `order_id=${s.order_id}` : `offer_id=${s.offer_id}`}`, t))?.tin ?? []).slice(-7, -1)
         .map((m: any) => `${m.la_cua_toi ? 'Bạn' : 'Người kia'}: ${String(m.body ?? '').slice(0, 200)}`).join('\n').slice(-1400);
