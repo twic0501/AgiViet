@@ -74,8 +74,8 @@ export function quetLienLacDayDu(t) {
     .replace(new RegExp(`(\\b(?:${NGAN_HANG})\\b[^\\d]{0,12})((?:\\d[\\s.\\-_/,()·・|]{0,2}){6,})`, "gi"), (m, a) => `${a}•••`)
     .replace(/(^|[^\p{L}])(zalo|za lô|za lo|dê lô|de lo|da lô|da lo|zl|facebook|fb|phây|phay|messenger|viber|telegram|tiktok|instagram)(?![\p{L}])/giu, (m, a) => `${a}•••`);
   // đã có kênh nhắn ngoài thì che luôn mẩu số đi kèm (≥ 3 chữ số), kể cả số chưa đủ dài
-  if (kenh) che = che.replace(/\d[\d\s.\-]{2,}\d/g, "•••");
-  if (stk) che = che.replace(/[\d•][\d•\s.\-]*\d/g, "•••");
+  if (kenh) che = che.replace(/\d[\d\s.-]{2,}\d/g, "•••");
+  if (stk) che = che.replace(/[\d•][\d•\s.-]*\d/g, "•••");
   if ((sdtChu || emailLach) && che.replace(/•••/g, "") === goc.replace(/•••/g, "")) che = sdtChu ? "Tin có số điện thoại đọc bằng chữ (đã che)" : "Tin có địa chỉ email viết tránh (đã che)";
   return { sach: false, che, loai };
 }

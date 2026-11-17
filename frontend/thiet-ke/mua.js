@@ -1417,7 +1417,7 @@ if (THAT) {
         if (dung) { o.innerHTML = `<p style="margin:0">Người bán hoàn vào: <b>${esc(dung.bank_code)} ${esc(dung.account_masked)}</b> (${esc(dung.holder_name)}).</p>`; return; }
         if (cho) {
           const het = new Date(cho.cooldown_until), xongCho = true; // backend (đồng hồ nghiệp vụ) quyết định đã hết giờ chờ chưa
-          o.innerHTML = `<p style="margin:0">Tài khoản ${esc(cho.bank_code)} ${esc(cho.account_masked)}: ${false ? "" : `dùng được từ ${het.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })} (chờ 24 giờ để chống kẻ gian đổi tài khoản).`}</p>
+          o.innerHTML = `<p style="margin:0">Tài khoản ${esc(cho.bank_code)} ${esc(cho.account_masked)}: ${`dùng được từ ${het.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })} (chờ 24 giờ để chống kẻ gian đổi tài khoản).`}</p>
             ${xongCho ? `<button type="button" class="sl-nut sl-vang" data-kich>Kích hoạt tài khoản này</button>` : ""}<p class="sl-ghi" data-tkb></p>`;
           o.querySelector("[data-kich]")?.addEventListener("click", async (e) => { e.currentTarget.disabled = true; try { await api(`/v1/payout-accounts/${cho.id}/activate`, {}); await ve(); } catch (err) { o.querySelector("[data-tkb]").textContent = err.message; e.currentTarget.disabled = false; } });
           return;

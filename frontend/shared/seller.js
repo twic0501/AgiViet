@@ -864,13 +864,8 @@ export function moHuongDan(c, view) {
   });
   ve();
 }
-export function tuMoHuongDan(c, view) {
-  return; // Theo bản chấm: hướng dẫn chỉ mở khi người dùng bấm "?", không tự che màn.
-  const key = khoaTour(view);
-  if (!key) return;
-  try { if (localStorage.getItem("agv-ban-da-xem-" + key)) return; } catch { return; }
-  setTimeout(() => moHuongDan(c, view), 500);
-}
+// Theo bản chấm: hướng dẫn chỉ mở khi người dùng bấm "?", không tự che màn.
+export function tuMoHuongDan(c, view) {}
 
 /* ---------- Thanh dưới ---------- */
 export const navBan = [

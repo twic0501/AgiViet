@@ -150,6 +150,7 @@ async function docMayChu(doan, toc, luot) {
 }
 // Đọc thành tiếng; trả true khi đọc xong (hoặc máy không đọc được), false khi bị dừng giữa chừng.
 export function docTo(doan, toc) {
+  // eslint-disable-next-line no-async-promise-executor -- mọi lỗi đã bắt trong try, luôn gọi xong()
   return new Promise(async (xong) => {
     try {
       try { speechSynthesis.cancel(); } catch {}

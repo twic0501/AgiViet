@@ -22,10 +22,10 @@ async function veTheoDuong(): Promise<void> {
   document.querySelectorAll<HTMLAnchorElement>(".tab a").forEach((x) => x.setAttribute("aria-current", x.hash === "#" + (man === "nhu-cau" ? "nguon" : man) ? "page" : "false"));
   try {
     if (man === "nguon") { await veNguon(o); napDauPhieu(o); }
-    else if (man === "nhu-cau") a === "moi" ? await veTaoPhieu(o) : await veChiTietPhieu(o, a);
-    else if (man === "don") a ? await veChiTietDon(o, a) : veDsDon(o);
+    else if (man === "nhu-cau") await (a === "moi" ? veTaoPhieu(o) : veChiTietPhieu(o, a));
+    else if (man === "don") await (a ? veChiTietDon(o, a) : veDsDon(o));
     else if (man === "tien") veTien(o);
-    else if (man === "tin") a && b ? await veChat(o, a, b) : veDsTin(o);
+    else if (man === "tin") await (a && b ? veChat(o, a, b) : veDsTin(o));
     else veHomNay(o);
   } catch (e) { o.innerHTML = trong((e as Error).message); }
   demTab();

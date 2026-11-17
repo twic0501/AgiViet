@@ -13,7 +13,6 @@ export function quetLienLac(t) {
   const coKenh = /\b(zalo|zl|facebook|fb|messenger|viber|telegram|tele|sđt|sdt)\b|@[a-z0-9_.]{3,}|kết bạn/.test(thap);
   if (!coSo && !coKenh) return { sach: true, che: t };
   let che = t.replace(/(\d[\s.\-_]*){8,}/g, (x) => "••• ••• •••" + (/\s$/.test(x) ? " " : "")).replace(/\b(zalo|zl|facebook|fb|messenger|viber|telegram|tele)\b/gi, "•••").replace(/@[A-Za-z0-9_.]{3,}/g, "•••");
-  if (!coSo && coKenh) che = che;
   if (coSo && che === t) che = "Tin có số điện thoại đọc bằng chữ (đã che)";
   return { sach: false, che, loai: coSo ? "số điện thoại" : "kênh nhắn ngoài" };
 }
