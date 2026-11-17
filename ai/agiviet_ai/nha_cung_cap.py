@@ -3,7 +3,7 @@
 Ba loại việc:
 - "truc_tiep": trả lời người dùng ngay — Gemini → NIM gemma → câu soạn sẵn.
 - "may": việc máy nhanh (phân loại, trích) — Gemini → NIM nemotron lightning.
-- "soan": soạn sẵn/chấm điểm, không gấp — NIM deepseek → Gemini.
+- "soan": soạn sẵn/chấm điểm, không gấp — NIM nemotron → Gemini (deepseek-v4.1-flash bị gỡ, HTTP 410 ngày 18/11).
 Khóa đọc từ biến môi trường, nếu thiếu thì từ ~/.local/share/agiviet/ai-keys.env. Không bao giờ ghi khóa ra log.
 """
 from __future__ import annotations
@@ -168,6 +168,8 @@ class NhaCungCap:
             raise LoiNhaCungCap("thiếu khóa NIM")
         r = self.client.post(NIM_URL, headers={"authorization": "Bearer " + k}, timeout=timeout_s, json={
             "model": model, "temperature": 0.3, "max_tokens": toi_da, "stream": False,
+            # Mô hình suy luận (nemotron, deepseek): tắt phần nghĩ, không thì hết token cho phần nghĩ và content rỗng (đo 18/11)
+            "chat_template_kwargs": {"enable_thinking": False},
             "messages": [{"role": "system", "content": he_thong}, {"role": "user", "content": nguoi_dung}],
         })
         if r.status_code != 200:
@@ -204,9 +206,11 @@ class NhaCungCap:
         if loai == "may":
             return [gemini, ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
         if loai == "doi_tac":  # chatbot đối tác AI nhắn tin: gemma4 trên Ollama Cloud (gói Free) → NIM gemma
-            return [("ollama", k.get("AGV_OLLAMA_MODEL") or "gemma4:31b"), ("nim", k.get("AGV_NIM_MODEL") or "google/gemma-4-31b-it")]
+            # Ollama Cloud trả 402 khi hết hạn mức gói Free (đo 18/11) → Gemini lite → NIM nemotron (cả hai ~1–2 s)
+            return [("ollama", k.get("AGV_OLLAMA_MODEL") or "gemma4:31b"), gemini,
+                    ("nim", k.get("AGV_NIM_MODEL_MAY") or "nvidia/nemotron-3.5-lightning-30b-a3b")]
         if loai == "soan":
-            return [("nim", k.get("AGV_NIM_MODEL_SOAN") or "deepseek-ai/deepseek-v4.1-flash"), gemini]
+            return [("nim", k.get("AGV_NIM_MODEL_SOAN") or "nvidia/nemotron-3.5-lightning-30b-a3b"), gemini]
         raise ValueError(f"loại việc không hỗ trợ: {loai}")
 
     def _dang_nghi(self, bac: str) -> bool:
