@@ -12,7 +12,7 @@ const GIAY: [string, string][] = [["growing_area_code", "Mã số vùng trồng"
   ["phytosanitary", "Kiểm dịch thực vật"], ["pond_diary", "Nhật ký ao (thủy sản)"], ["antibiotic_test", "Test kháng sinh (thủy sản)"]];
 interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; ly_do_khop?: string[]; thieu?: string[]; nhat_ky_muc?: number; luong_g?: string }
 interface KetQuaTim { khop_du: LoGoiY[]; khop_mot_phan: LoGoiY[]; gan_khop_gia: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg: number; con_thieu_kg: number } | null; so_lo_xet: number }
-let tim: { khoa: string; kq?: KetQuaTim; loi?: string } | null = null, henTim = 0;
+let tim: { khoa: string; kq?: KetQuaTim; loi?: string; dangDanhThuc?: boolean } | null = null, henTim = 0;
 const TINH_DS: [string, string][] = [["", "Mọi tỉnh"], ["DT", "Đồng Tháp"], ["TG", "Tiền Giang"], ["BT", "Bến Tre"], ["VL", "Vĩnh Long"], ["CT", "Cần Thơ"], ["AG", "An Giang"], ["ST", "Sóc Trăng"], ["CM", "Cà Mau"], ["KG", "Kiên Giang"], ["LA", "Long An"], ["TN", "Tây Ninh"]];
 // Mã số vùng trồng (vd MVT-DT-0412): gõ vào ô tìm là tra người bán sở hữu mã
 const LA_MA_VUNG = /^[A-Z]{2,5}-[A-Z]{2,4}-\d{2,6}$/i;
@@ -64,8 +64,12 @@ function veKetQua(o: HTMLElement): void {
       needed_from: homNay, needed_to: den, province_code: P.tinh || null, required_docs: P.giay, farm_diary: P.nhatKy, can_gom: P.gom };
     const khoa = JSON.stringify(than);
     if (tim?.khoa !== khoa) { tim = { khoa }; clearTimeout(henTim);
-      henTim = window.setTimeout(() => api<KetQuaTim>("/v1/sourcing/search", than).then((x) => { if (tim?.khoa === khoa) { tim.kq = x; veKetQua(o); } })
-        .catch((e) => { if (tim?.khoa === khoa) { tim.loi = (e as Error).message; veKetQua(o); } }), 500); }
+      // Dịch vụ ghép (Render gói miễn phí) ngủ sau ~15 phút: lần đầu có thể trả lỗi khi đang thức dậy → thử lại một lần sau 6 giây
+      const goi = (lan: number): Promise<void> => api<KetQuaTim>("/v1/sourcing/search", than).then((x) => { if (tim?.khoa === khoa) { tim.kq = x; veKetQua(o); } })
+        .catch((e) => { if (tim?.khoa !== khoa) return;
+          if (lan === 0) { tim.loi = ""; tim.dangDanhThuc = true; veKetQua(o); return new Promise<void>((r) => setTimeout(r, 6000)).then(() => goi(1)); }
+          tim.dangDanhThuc = false; tim.loi = (e as Error).message; veKetQua(o); });
+      henTim = window.setTimeout(() => goi(0), 500); }
     kq.innerHTML = veTim(tim!, P);
     kq.querySelectorAll<HTMLButtonElement>("[data-tra]").forEach((b) => (b.onclick = () => { const l = DL.lo.find((x) => x.id === b.dataset.tra); if (l) moTraGia(l, () => veKetQua(o)); }));
     const gp = kq.querySelector<HTMLButtonElement>("#ng-gui-phieu");
@@ -175,7 +179,8 @@ const theGoiY = (l: LoGoiY, nhan: string, xanh = false) => `<article class="the"
   ${DL.lo.some((x) => x.id === l.lot_id) ? `<button type="button" class="nut chinh rong" data-tra="${esc(l.lot_id)}">Trả giá</button>` : ""}</article>`;
 
 /** Kết quả tìm theo phiếu từ máy chủ: khớp đủ, gom nhiều hộ, khớp một phần, gần mức giá (cần thương lượng). Không có số giá nào. */
-function veTim(t: { kq?: KetQuaTim; loi?: string }, p: typeof P): string {
+function veTim(t: { kq?: KetQuaTim; loi?: string; dangDanhThuc?: boolean }, p: typeof P): string {
+  if (t.dangDanhThuc && !t.kq) return `<p class="phu" role="status">Đang khởi động dịch vụ ghép nguồn, chờ vài giây…</p><div class="khung-tai"></div>`;
   if (t.loi) return `<section class="the"><p class="loi">${esc(t.loi)}</p></section>`;
   if (!t.kq) return `<div class="khung-tai" aria-label="Đang tìm nguồn phù hợp"></div>`;
   const k = t.kq, tong = k.khop_du.length + k.khop_mot_phan.length + k.gan_khop_gia.length;
