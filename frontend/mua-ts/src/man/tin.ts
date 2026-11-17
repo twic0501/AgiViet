@@ -64,7 +64,7 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
   const gui = async (chu: string, tam?: Tin & { cho?: boolean; loi?: boolean }) => {
     const m = tam ?? { id: "tam-" + crypto.randomUUID(), body: chu, la_cua_toi: true, da_che: false, nguoi_gui: "Bạn", created_at: new Date().toISOString() };
     m.cho = true; m.loi = false; if (!tam) dangCho.push(m); dau = ""; ve(true);
-    try { await api("/v1/messages", { ...cuoc, body: chu }); dangCho = dangCho.filter((x) => x !== m); dungChat(); await tai(true); }
+    try { await api("/v1/messages", { ...cuoc, body: chu }); dangCho = dangCho.filter((x) => x !== m); window.dispatchEvent(new Event("agv-vong-ngay")); dungChat(); await tai(true); }
     catch { m.cho = false; m.loi = true; dau = ""; ve(true); }
   };
   form.onsubmit = (e) => { e.preventDefault(); const chu = oGo.value.trim(); if (!chu) return; oGo.value = ""; oGo.style.height = ""; gui(chu); oGo.focus(); };

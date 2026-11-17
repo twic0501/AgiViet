@@ -53,7 +53,7 @@ async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
   nut.onclick = async (e) => { e.preventDefault(); if (!tinhTong()) return; nut.disabled = true;
     try { const { gia, soKg } = doc(); const of = await api<{ status: string; code?: string }>("/v1/offers", { direction: "buyer_bid", lot_id: l.id, qty_g: Math.round(soKg * 1000), price_vnd: gia });
       h.close(); bao(/rejected/.test(of.status) ? "Chưa tới mức người bán chấp nhận. Lời chào đã đóng." : `Đã gửi ${of.code || "lời chào"}. Chờ người bán trả lời trong 24 giờ.`);
-      window.dispatchEvent(new Event("agv-lam-moi")); sauGui();
+      window.dispatchEvent(new Event("agv-lam-moi")); window.dispatchEvent(new Event("agv-vong-ngay")); sauGui();
     } catch (err) { h.querySelector("#tg-loi")!.textContent = (err as Error).message; nut.disabled = false; } };
   h.showModal();
 }

@@ -1,5 +1,6 @@
 // App MUA (Vite + TypeScript). Điều hướng bằng #: #hom-nay, #nguon, #don, #don/<id>, #tien, #tin, #tin/<order|offer>/<id>.
 import { layPhien } from "./api";
+import { batDoiTacAo } from "./doi-tac-ao";
 import { DL, napHet } from "./du-lieu";
 import { dsViec, veHomNay } from "./man/hom-nay";
 import { veNguon } from "./man/nguon";
@@ -43,6 +44,8 @@ async function batDau(): Promise<void> {
   // Sau thao tác đổi trạng thái (trả giá…), và mỗi 30 giây: nạp lại dữ liệu nhưng không vẽ lại khung chat đang mở.
   const lamMoi = async () => { await napHet().catch(() => {}); if (!location.hash.startsWith("#tin/")) veTheoDuong(); else demTab(); };
   addEventListener("agv-lam-moi", lamMoi);
+  // Bản thử: AI đóng vai người bán (trả lời lời chào, nhắn tin, báo giá nhu cầu).
+  batDoiTacAo().catch(() => {});
   setInterval(() => { if (!document.hidden) lamMoi(); }, 30000);
   // Quay lại từ màn sâu (app cũ) bằng nút lùi: trang lấy từ bfcache → tải lại để số luôn mới.
   addEventListener("pageshow", (e) => { if (e.persisted) location.reload(); });
