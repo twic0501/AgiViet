@@ -624,16 +624,59 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
   // Chưa đăng nhập, không số thử (vd mua.html mô phỏng trong trang thử quy trình) → không chạy; gọi phien() lúc này sẽ đá trang về đăng nhập.
   try { if (!sessionStorage.getItem(KHOA_PHIEN) && !new URLSearchParams(location.search).has("thu")) return; } catch { return; }
   let tk = null; try { tk = await phien(); } catch { return; }
-  const ten = (v) => `${v.to_chuc.startsWith("TC-M") ? "Bên mua" : "Người bán"} ${v.viec} · ${v.doi_tuong}`;
-  const bao = (ds) => {
+  const laBan = /\/ban-/.test(location.pathname), ma = (c) => String(c ?? "").replace("HĐ-", "HD-");
+  // Câu báo theo lời người dùng: ai làm gì, với lô / nhu cầu / hợp đồng nào
+  const cau = (v) => {
+    const ai = v.to_chuc.startsWith("TC-M") ? "Bên mua" : "Người bán", c = v.doi_tuong;
+    const m = /^(chào|trả) giá (.+)$/.exec(v.viec);
+    if (m) return `${ai} trả giá ${m[2]} cho lô ${c}`;
+    const b = /^báo giá (.+) cho nhu cầu$/.exec(v.viec);
+    if (b) return `${ai} báo giá ${b[1]} cho nhu cầu ${c}`;
+    if (v.viec === "trả lời tin nhắn") return `${ai} vừa nhắn tin cho bạn`;
+    return `${ai} ${v.viec} · ${c}`;
+  };
+  // Tiếng "ting ting" bằng Web Audio, không cần tệp âm thanh. Trình duyệt chỉ cho phát sau khi người dùng chạm vào trang.
+  let am = null;
+  const moAm = () => { try { am ??= new (window.AudioContext || window.webkitAudioContext)(); if (am.state === "suspended") am.resume(); } catch {} };
+  addEventListener("pointerdown", moAm, true); addEventListener("keydown", moAm, true);
+  const ting = () => {
+    try { navigator.vibrate?.([70, 50, 70]); } catch {}
+    if (!am || am.state !== "running") return;
+    const t0 = am.currentTime;
+    for (const [tan, tre] of [[1318.5, 0], [1760, 0.16]]) {
+      const o = am.createOscillator(), g = am.createGain(); o.type = "sine"; o.frequency.value = tan;
+      g.gain.setValueAtTime(0.0001, t0 + tre); g.gain.exponentialRampToValueAtTime(0.25, t0 + tre + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t0 + tre + 0.35);
+      o.connect(g).connect(am.destination); o.start(t0 + tre); o.stop(t0 + tre + 0.4);
+    }
+  };
+  const LAN_DAU = "agv-lan-dau-thu";
+  const bao = (ds, den) => {
     let d = document.getElementById("agv-ai-bao");
     if (!d) { d = Object.assign(document.createElement("div"), { id: "agv-ai-bao" }); d.setAttribute("role", "status");
-      d.style.cssText = "position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9998;width:min(92vw,420px);display:flex;gap:10px;align-items:center;padding:10px 10px 10px 14px;border-radius:14px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.4 inherit;box-shadow:0 8px 24px rgba(0,0,0,.2)";
+      d.style.cssText = "position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9998;width:min(92vw,420px);display:flex;gap:10px;align-items:center;padding:12px 10px 12px 14px;border-radius:16px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.4 inherit;box-shadow:0 10px 28px rgba(0,0,0,.28)";
       document.body.append(d); }
-    d.innerHTML = `<span style="flex:1;min-width:0">${esc(ds.map(ten).join(" · "))}</span><button type="button" style="min-height:44px;padding:0 14px;border-radius:999px;border:0;background:#f4c84e;color:#1f1503;font:700 15px inherit;cursor:pointer">Xem</button>`;
-    d.querySelector("button").onclick = () => location.reload();
-    d.hidden = false; clearTimeout(d._an); d._an = setTimeout(() => (d.hidden = true), 12000);
+    let lanDau = false; try { lanDau = !localStorage.getItem(LAN_DAU); localStorage.setItem(LAN_DAU, "1"); } catch {}
+    const them = ds.length > 1 ? ` · và ${ds.length - 1} việc khác` : "";
+    const huong = !lanDau ? "" : laBan ? "Lần đầu dùng thử: bên mua này do AI đóng vai. Bấm Xem để đồng ý giá, trả giá lại hoặc không chốt."
+      : "Lần đầu dùng thử: người bán này do AI đóng vai. Bấm Xem để đồng ý giá, trả giá lại hoặc không mua.";
+    d.innerHTML = `<span style="flex:1;min-width:0"><b style="display:block;color:#f4c84e">Ting! Có tin mới</b>${esc(cau(ds[0]) + them)}${huong ? `<small style="display:block;margin-top:4px;opacity:.85">${esc(huong)}</small>` : ""}</span><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:0;background:#f4c84e;color:#1f1503;font:700 15px inherit;cursor:pointer">Xem</button>`;
+    d.querySelector("button").onclick = () => { const u = new URL(den || location.href, location.href); if (u.pathname === location.pathname && u.search === location.search) { location.hash = u.hash; location.reload(); } else location.href = u.href; };
+    d.hidden = false; ting(); clearTimeout(d._an); if (!lanDau) d._an = setTimeout(() => (d.hidden = true), 15000);
   };
+  // Đường mở thẳng việc vừa tới: lời chào → khung chat của lời chào đó; hợp đồng → trang hợp đồng
+  const duongToi = (v, of, don) => {
+    const c = ma(v.doi_tuong), q = location.search;
+    const d = don.find((x) => ma(x.code) === c);
+    if (d) return laBan ? `./ban-don.html${q}${q ? "&" : "?"}id=${encodeURIComponent(d.id)}` : `./mua.html?man=chi-tiet-don&don=${encodeURIComponent(d.id)}${new URLSearchParams(q).get("thu") ? `&thu=${new URLSearchParams(q).get("thu")}` : ""}`;
+    const o = of.find((x) => x.code === c || x.lot_code === c);
+    if (laBan) return o ? `./ban-tin-nhan.html${q}#tro=o-${o.id}` : `./ban-tin-nhan.html${q}`;
+    // Bên mua: báo giá cho nhu cầu mang mã nhu cầu → lời chào mới nhất của người bán đang chờ mình trả lời
+    const oc = o ?? of.find((x) => x.direction === "seller_quote" && x.status === "sent");
+    const thu = new URLSearchParams(q).get("thu");
+    return oc ? `./mua.html?man=bao-gia&loi-chao=${encodeURIComponent(oc.id)}${thu ? `&thu=${thu}` : ""}` : `./mua-app.html${q}#nhan`;
+  };
+  // Vào bản thử lần đầu trong phiên: báo trước để người thử biết sẽ có đối tác AI tìm tới
+  try { if (!sessionStorage.getItem("agv-da-bao-cho") && /ban-hom-nay|mua-app/.test(location.pathname)) { sessionStorage.setItem("agv-da-bao-cho", "1"); setTimeout(() => baoNhanh(laBan ? "Bản thử: bên mua do AI đóng vai sẽ tìm tới lô của bác trong ít giây. Nghe tiếng ting là có người trả giá." : "Bản thử: người bán do AI đóng vai sẽ báo giá cho nhu cầu của bạn trong ít giây. Có tiếng ting là có tin mới."), 1500); } } catch {}
   let dangChay = false, dangTin = false;
   // nhanh = vừa nhắn tin: chỉ cho bên kia trả lời tin, chạy riêng không chờ vòng đầy đủ (trên host vòng đầy đủ mất tới 30 s)
   const vong = async (nhanh = false) => {
@@ -646,10 +689,11 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     if (!xong.length) return;
     // Chỉ báo việc dính tới tổ chức đang đăng nhập (lời chào / lô / đơn của mình), không lộ giao dịch người khác.
     const lay = (u) => fetch(u, { headers: { authorization: "Bearer " + tk } }).then((x) => x.json()).then((x) => { const v = x?.data ?? x; return v?.items ?? v ?? []; }).catch(() => []);
-    const [of, don] = await Promise.all([lay("/v1/offers"), lay("/v1/orders")]);
-    const cua = new Set([...of.flatMap((o) => [o.code, o.lot_code]), ...don.map((d) => d.code)].filter(Boolean).map((c) => c.replace("HĐ-", "HD-")));
-    xong = xong.filter((v) => cua.has(String(v.doi_tuong).replace("HĐ-", "HD-")));
-    if (xong.length) bao(xong);
+    const [of, don, nc] = await Promise.all([lay("/v1/offers"), lay("/v1/orders"), laBan ? [] : lay("/v1/demands?mine=true")]);
+    // Báo giá cho nhu cầu mang mã nhu cầu (không phải mã lời chào) nên phải tính cả nhu cầu của mình
+    const cua = new Set([...of.flatMap((o) => [o.code, o.lot_code]), ...don.map((d) => d.code), ...nc.map((n) => n.code)].filter(Boolean).map(ma));
+    xong = xong.filter((v) => cua.has(ma(v.doi_tuong)));
+    if (xong.length) bao(xong, duongToi(xong[0], of, don));
   };
   setTimeout(() => vong(), 2500); setInterval(() => vong(), 8000);
   addEventListener("agv-vong-ngay", () => setTimeout(() => vong(true), 300));   // vừa nhắn tin: bên kia trả lời ngay, không chờ nhịp 8 giây
