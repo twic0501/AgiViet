@@ -5,7 +5,7 @@ import type { NguoiDung } from '../auth/phien.ts';
 import { duocPhep } from '../auth/quyen.ts';
 import { loi } from '../loi.ts';
 import { CHINH_SACH } from '../chinh-sach.ts';
-import { phat } from './chung.ts';
+import { phat, tenHien } from './chung.ts';
 import { B, chiaNuaLen } from './tinh-tien.ts';
 import { taoViec } from './tien.ts';
 
@@ -40,11 +40,12 @@ export async function soTien(t: GiaoDich, nd: NguoiDung, q: { from?: string; to?
 export async function soSanhLoiChao(t: GiaoDich, nd: NguoiDung, demandId: string) {
   const d = await t.mot<any>(`SELECT buyer_org_id FROM core.demands WHERE id=$1`, [demandId]);
   if (!d || d.buyer_org_id !== nd.thanhVien.orgId) throw loi('KHONG_TIM_THAY');
-  const ds = await t.q<any>(`SELECT o.id offer_id, o.code, o.status, l.code lot_code, s.display_name seller_name, s.province_code,
+  const ds = await t.q<any>(`SELECT o.id offer_id, o.code, o.status, l.code lot_code, o.seller_org_id, s.display_name seller_name, s.province_code,
       r.price_vnd::text gia_vnd, r.qty::text luong_g, r.from_side, l.qty_basis
       FROM core.offers o JOIN core.demand_lines dl ON dl.id=o.demand_line_id JOIN core.lots l ON l.id=o.lot_id JOIN core.organizations s ON s.id=o.seller_org_id
       JOIN LATERAL (SELECT * FROM core.offer_rounds x WHERE x.offer_id=o.id ORDER BY round_no DESC LIMIT 1) r ON true
       WHERE dl.demand_id=$1 AND (o.status IN ('accepted') OR (o.status='sent' AND r.from_side='seller') OR o.current_round>1) ORDER BY o.created_at`, [demandId]);
+  for (const x of ds) x.seller_name = await tenHien(t, nd.thanhVien.orgId, x.seller_org_id, x.seller_name, 'ban');
   return ds.map((x) => ({ ...x, gia_tai_kho_vnd: null, thanh_phan_thieu: ['cuoc_xe', 'hao_hut_duong', 'phi_kiem_dinh', 'chi_phi_von_theo_han_tra'],
     ghi_chu: 'Chưa đủ dữ liệu cước xe/hao hụt/kiểm định để quy về giá tại kho; chỉ so giá chào.' }));
 }
@@ -110,7 +111,7 @@ export async function hoSoNguon(t: GiaoDich, nd: NguoiDung, lotId: string) {
       CASE WHEN c.revoked_at IS NOT NULL THEN 'het_hieu_luc' WHEN c.verified_at IS NOT NULL THEN 'da_xac_minh' ELSE 'tu_khai' END trang_thai
       FROM core.certifications c JOIN ref.document_kinds k ON k.code=c.kind WHERE c.org_id=$1 ORDER BY c.kind`, [l.seller_org_id]);
   const anh = await t.q(`SELECT id, CASE WHEN captured_in_app THEN 'chup_trong_app' ELSE 'anh_tai_len' END nhan, captured_at FROM core.documents WHERE entity='lot' AND entity_id=$1 AND doc_type='evidence' ORDER BY created_at`, [lotId]);
-  return { lot_id: l.id, lot_code: l.code, nguoi_ban: { ten: l.display_name, loai: l.kind, muc_xac_minh: l.verification_level, tinh: l.province_code },
+  return { lot_id: l.id, lot_code: l.code, nguoi_ban: { ten: await tenHien(t, nd.thanhVien.orgId, l.seller_org_id, l.display_name, 'ban'), loai: l.kind, muc_xac_minh: l.verification_level, tinh: l.province_code },
     vi_tri: l.site_id ? { ten: l.site_name, loai: l.site_kind, ghi_chu: 'Tên vị trí do người bán khai; chưa có tọa độ đối chiếu.' } : null,
     giay_to: giayTo, anh, don_hoan_tat_tren_app: l.don_hoan_tat_tren_app, uy_tin: null, ghi_chu_uy_tin: 'Chưa tính điểm uy tín (05 mục 5) ở backend.' };
 }

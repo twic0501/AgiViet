@@ -21,8 +21,10 @@ const tinCuoi = async (u, id) => ((await u.get(`/v1/messages?offer_id=${id}`)).t
 if (process.env.CHI !== 'B') {
   const u = await vao('0908000510');
   let of = null, gia = 0;
+  // Tên người bán đã ẩn trước hợp đồng nên tránh hộ TC-B01 theo mã tổ chức
+  const tcB01 = (await (await vao('0918000421')).get('/v1/me'))?.org?.id;
   for (const l of await u.get('/v1/lots')) {
-    if (l.status !== 'on_sale') continue; const ct = await u.get(`/v1/lots/${l.id}`); if (/Nguyễn Thị Năm/.test(ct?.seller_name ?? '')) continue;
+    if (l.status !== 'on_sale') continue; const ct = await u.get(`/v1/lots/${l.id}`); if (!tcB01 || ct?.seller_org_id === tcB01) continue;
     const tk = await u.get(`/v1/reference-prices?product=${encodeURIComponent(l.product_code)}&grade=${encodeURIComponent(l.grade_code)}`); if (tk?.status !== 'du_du_lieu') continue;
     gia = Math.round(Number(tk.price_vnd) / 100) * 100;
     const r = await u.post('/v1/offers', { direction: 'buyer_bid', lot_id: l.id, qty_g: 100000, price_vnd: gia }); if (r.s < 300) { of = r.j; break; }

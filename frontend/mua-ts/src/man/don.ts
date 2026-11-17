@@ -32,6 +32,7 @@ export async function veChiTietDon(o: HTMLElement, id: string): Promise<void> {
       ${tl ? `<p><b>${toi ? "Tới lượt bạn" : `Chờ ${ai(tl.phia).toLowerCase()}`}:</b> ${esc(tl.viec)}</p>` : ""}
       ${toi ? `<a class="nut chinh rong" href="${manCu("chi-tiet-don", `don=${d.id}`)}">${esc(tl!.viec)}</a>` : ""}
       ${khoan.map((p) => `<a class="nut chinh rong" href="#tien">Trả ${vnd(conTra(p))} đ</a>`).join("")}
+      <p class="phu">${d.lien_lac_ben_kia ? `Liên lạc người bán: <b>${esc(d.lien_lac_ben_kia.ten)}</b> · <a href="tel:${esc(d.lien_lac_ben_kia.so_dien_thoai)}">${esc(d.lien_lac_ben_kia.so_dien_thoai)}</a>` : "Số điện thoại người bán mở sau khi ngân hàng xác nhận cọc."}</p>
     </section>
     <section class="the"><h2>Điều khoản</h2>
       ${dong("Người bán", esc(d.seller?.display_name || d.seller?.name || d.seller_name || ""))}

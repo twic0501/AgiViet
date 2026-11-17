@@ -66,9 +66,12 @@ export async function guiTinNhan(t: GiaoDich, nd: NguoiDung, b: GuiTin & { image
 
 export async function docTinNhan(t: GiaoDich, nd: NguoiDung, x: { offer_id?: string; order_id?: string }) {
   const c = await cuoc(t, nd, x);
-  const ds = await t.q<any>(`SELECT m.id, m.body, m.had_contact da_che, m.sender_org_id = $1 la_cua_toi, u.display_name nguoi_gui, m.created_at, m.attachment_document_id anh_id
+  const ds = await t.q<any>(`SELECT m.id, m.body, m.had_contact da_che, m.sender_org_id = $1 la_cua_toi, m.sender_org_id, u.display_name nguoi_gui, m.created_at, m.attachment_document_id anh_id
       FROM core.chat_messages_of($1) m JOIN core.users u ON u.id = m.sender_user_id
       WHERE ($2::uuid IS NOT NULL AND m.offer_id = $2) OR ($3::uuid IS NOT NULL AND m.order_id = $3) ORDER BY m.created_at`, [nd.thanhVien.orgId, c.offerId, c.orderId]);
+  // Chưa có hợp đồng với nhau: tên người gửi bên kia chỉ là mã ẩn danh (cùng luật tenHien với lô, lời chào, nhu cầu)
+  const { tenHien } = await import('./chung.ts');
+  for (const m of ds) { if (!m.la_cua_toi) m.nguoi_gui = await tenHien(t, nd.thanhVien.orgId, m.sender_org_id, m.nguoi_gui, c.phia === 'seller' ? 'mua' : 'ban'); delete m.sender_org_id; }
   return { offer_id: c.offerId, order_id: c.orderId, phia: c.phia, tin: ds };
 }
 

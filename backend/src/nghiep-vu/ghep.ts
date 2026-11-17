@@ -5,7 +5,7 @@ import type { NguoiDung } from '../auth/phien.ts';
 import type { GiaoDich } from '../db/co-so-du-lieu.ts';
 import { loi } from '../loi.ts';
 import { CHINH_SACH } from '../chinh-sach.ts';
-import { kg } from './chung.ts';
+import { kg, tenHien } from './chung.ts';
 
 interface UngVien { lot_id: string; code: string; seller_org_id: string; seller_name: string; province_code: string; qty_basis: string; declared: bigint; available: bigint; held: bigint; committed: bigint; floor: bigint; available_from: string | null }
 
@@ -27,6 +27,7 @@ export async function ghepTheoLuat(t: GiaoDich, demandId: string) {
         coalesce((SELECT sum(qty) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND bucket IN ('committed','in_transit','delivered')),0)::text committed
       FROM core.lots l JOIN core.organizations o ON o.id=l.seller_org_id
       WHERE l.product_id=$1 AND l.grade_code=$2 AND l.status IN ('on_sale','upcoming') AND l.safety_locked_at IS NULL AND l.seller_org_id<>$3`, [d.product_id, l.grade_code, d.buyer_org_id]);
+    for (const u of uv) u.seller_name = await tenHien(t, d.buyer_org_id, u.seller_org_id, u.seller_name, 'ban');
     const can = BigInt(l.qty); const maxp = BigInt(l.maxp);
     const nhom: Record<string, any[]> = { khop_du: [], khop_mot_phan: [], gan_khop_gia: [] };
     for (const r of uv) {
@@ -98,7 +99,7 @@ async function dungSnapshot(t: GiaoDich, demandId: string, luc: Date) {
   const lines = await t.q<any>(`SELECT l.*, (SELECT max_price_vnd FROM core.demand_line_max_prices p WHERE p.demand_line_id=l.id ORDER BY id DESC LIMIT 1)::text maxp FROM core.demand_lines l WHERE l.demand_id=$1`, [demandId]);
   const out = [];
   for (const l of lines) {
-    const lots = await t.q<any>(`SELECT l.id lot_id,l.code,l.qty_basis,l.declared_qty::text declared,l.available_from::text af,l.harvest_on::text ho,l.spray_clear_on::text sc,l.last_confirmed_at,l.status,l.safety_locked_at,l.urgent_sale_until,
+    const lots = await t.q<any>(`SELECT l.id lot_id,l.seller_org_id,l.code,l.qty_basis,l.declared_qty::text declared,l.available_from::text af,l.harvest_on::text ho,l.spray_clear_on::text sc,l.last_confirmed_at,l.status,l.safety_locked_at,l.urgent_sale_until,
         o.code seller_code,o.display_name seller_name,o.province_code,o.kind,o.verification_level,s.lat,s.lng,pp.shelf_life_days,
         (SELECT floor_price_vnd FROM core.lot_price_versions v WHERE v.lot_id=l.id ORDER BY v.id DESC LIMIT 1)::text floor,
         coalesce((SELECT sum(qty) FROM ledger.qty_balances b WHERE b.lot_id=l.id AND bucket='held'),0)::text held,
@@ -108,6 +109,7 @@ async function dungSnapshot(t: GiaoDich, demandId: string, luc: Date) {
       FROM core.lots l JOIN core.organizations o ON o.id=l.seller_org_id LEFT JOIN core.production_sites s ON s.id=l.site_id
       JOIN core.product_profiles pp ON pp.product_id=l.product_id AND pp.profile_version=l.profile_version
       WHERE l.product_id=$1 AND l.grade_code=$2 AND l.status IN ('on_sale','upcoming') AND l.seller_org_id<>$3`, [d.product_id, l.grade_code, d.buyer_org_id, d.buyer_org_id]);
+    for (const x of lots) x.seller_name = await tenHien(t, d.buyer_org_id, x.seller_org_id, x.seller_name, 'ban');
     const loTheoMa = new Map<string, any>();
     const lo = [];
     for (const x of lots) {

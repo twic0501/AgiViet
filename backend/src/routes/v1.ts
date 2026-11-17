@@ -229,7 +229,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/lots/:id/close', async (req) => bo.lenh(req, 'dong_lo', 'seller', async (t, nd) => { canQuyen(nd, 'lot.close'); return Lo.dongLo(t, nd, P(req).id); }));
   // Tra mã số vùng trồng (vd MVT-DT-0412): người mua gõ mã → người bán, vườn, mã đã xác minh/còn hạn chưa, lô đang bán để trả giá.
   // Chỉ trả thông tin công khai của mã (không số điện thoại): liên lạc đi qua lời chào giá / tin nhắn trong app.
-  app.get('/v1/growing-areas/:ma', async (req) => { await bo.xacThuc(req);
+  app.get('/v1/growing-areas/:ma', async (req) => { const nd = await bo.xacThuc(req);
     const ma = String((req.params as any).ma).trim().toUpperCase();
     if (!/^[A-Z0-9][A-Z0-9-]{2,39}$/.test(ma)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Mã vùng trồng chỉ gồm chữ, số và dấu gạch, ví dụ MVT-DT-0412.');
     return bo.doc(async (t) => {
@@ -239,7 +239,8 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
         WHERE c.kind='growing_area_code' AND upper(c.number)=$1 ORDER BY c.market`, [ma]);
       if (!ds.length) throw loi('KHONG_TIM_THAY', `Không thấy mã vùng trồng ${ma} trên AgiViet, hoặc người bán chưa khai mã này.`);
       const lo = await t.q<any>(`SELECT id FROM core.lots WHERE seller_org_id=$1 AND status IN ('on_sale','upcoming') ORDER BY created_at DESC LIMIT 20`, [ds[0].nguoi_ban_id]);
-      return { ma, nguoi_ban: ds[0].nguoi_ban, nguoi_ban_id: ds[0].nguoi_ban_id, tinh: ds[0].tinh, vuon: ds[0].vuon,
+      const { tenHien } = await import('../nghiep-vu/chung.ts');
+      return { ma, nguoi_ban: await tenHien(t, nd.thanhVien.orgId, ds[0].nguoi_ban_id, ds[0].nguoi_ban, 'ban'), nguoi_ban_id: ds[0].nguoi_ban_id, tinh: ds[0].tinh, vuon: ds[0].vuon,
         thi_truong: ds.map((x) => ({ thi_truong: x.thi_truong, da_xac_minh: x.da_xac_minh, bi_thu_hoi: x.bi_thu_hoi, con_han: x.con_han, het_han: x.het_han })),
         lo_ids: lo.map((x) => x.id) };
     }); });

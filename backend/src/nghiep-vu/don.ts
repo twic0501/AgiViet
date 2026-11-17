@@ -341,6 +341,15 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
   for(const doc of danhSachBanTrinhBay(id)){if(await t.mot(`SELECT 1 FROM core.settlements WHERE id=$1 AND order_id=$2`,[doc.canonical_content.settlement_id,id]))taiLieu.push(doc);}
   const dots = await t.q<any>(`SELECT id,code,batch_no,planned_qty::text planned_qty_g,status,version revision,receiver_user_id,lower(delivery_window) window_from,upper(delivery_window) window_to FROM core.deliveries WHERE order_id=$1 ORDER BY batch_no`, [id]);
   const lien = await t.mot<any>(`SELECT mode FROM core.contact_grants WHERE order_id=$1 AND revoked_at IS NULL`, [id]);
+  // Người liên lạc bên kia = người đã ký hợp đồng ở phía đó. Chỉ mở khi quyền liên lạc 'full' (cọc đã được ngân hàng giữ).
+  // shortcut: bản thử lưu số dạng TEST-PLAINTEXT nên đọc thẳng; bản thật giải mã bằng khóa ở dịch vụ riêng, ở đây chỉ trả số đã che.
+  let lienLacBenKia: any = null;
+  if (lien?.mode === 'full') {
+    const k = await t.mot<any>(`SELECT u.display_name ten, convert_from(c.phone_enc,'UTF8') so, c.phone_masked che FROM core.signatures s
+        JOIN core.documents d ON d.id=s.document_id JOIN core.users u ON u.id=s.signer_user_id JOIN pii.user_contacts c ON c.user_id=u.id
+        WHERE d.order_id=$1 AND d.doc_type='contract' AND s.party=$2 ORDER BY s.signed_at LIMIT 1`, [id, phia === 'buyer' ? 'seller' : 'buyer']);
+    if (k) lienLacBenKia = { ten: k.ten, so_dien_thoai: String(k.so).startsWith('TEST-PLAINTEXT:') ? String(k.so).slice(15) : k.che };
+  }
   return {
     id: o.id, code: o.code, status: o.status, revision: o.version, close_reason: o.close_reason, phia_cua_ban: phia,
     ly_do_dong: o.status === 'closed' ? await t.gtri<string>(`SELECT payload->>'ly_do' FROM evt.domain_events WHERE aggregate_id=$1 AND event_type='don.dong_truoc_coc' ORDER BY seq DESC LIMIT 1`, [id]) : null,
@@ -361,7 +370,7 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
     } : null,
     dong_mon: o.contract_type === 'framework_calloff' ? await t.q<any>(`SELECT l.line_no, p.name_vi mat_hang, p.code ma, lo.code lo, l.qty::text qty_g, l.unit_price_vnd::text gia_vnd, l.downgrade_price_vnd::text gia_ha_cap_vnd
       FROM core.order_lines l JOIN core.lots lo ON lo.id=l.lot_id JOIN core.products p ON p.id=lo.product_id WHERE l.order_id=$1 AND l.version_no=$2 ORDER BY l.line_no`, [id, o.effective_version_no]) : null,
-    lien_lac: lien?.mode ?? 'chua_mo', dot_giao: dots, han, lich_su: lichSu, tai_lieu: taiLieu,
+    lien_lac: lien?.mode ?? 'chua_mo', lien_lac_ben_kia: lienLacBenKia, dot_giao: dots, han, lich_su: lichSu, tai_lieu: taiLieu,
     ky: await trangThaiKy(t, nd, o, phia, v),
     hanh_dong: hanhDongDon(nd, o, phia, await trangThaiKy(t, nd, o, phia, v)),
   };

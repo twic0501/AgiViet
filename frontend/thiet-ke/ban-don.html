@@ -228,6 +228,7 @@ function ve() {
         <div class="gia" title="${esc(tienDu(dk.contract_value_vnd))}">${esc(tien(dk.contract_value_vnd))}<small>${esc(can(dk.qty_g).join(" "))} · ${vnd(dk.unit_price_vnd)} đ/kg</small></div></div>
       <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
       <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
+      <p class="hd-ghi" style="margin:12px 0 0">${don.lien_lac_ben_kia ? `Liên lạc người mua: <b>${esc(don.lien_lac_ben_kia.ten)}</b> · <a href="tel:${esc(don.lien_lac_ben_kia.so_dien_thoai)}">${esc(don.lien_lac_ben_kia.so_dien_thoai)}</a>` : "Số điện thoại người mua mở sau khi ngân hàng xác nhận cọc."}</p>
     </section>
 
     ${/ký/i.test(don?.hien_thi?.toi_luot?.viec || "") ? `${veDieuKhoan()}${veTien()}${veGiao()}` : `${veTien()}${veGiao()}${veDieuKhoan()}`}

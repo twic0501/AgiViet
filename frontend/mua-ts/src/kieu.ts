@@ -16,6 +16,7 @@ export interface ChiTietDon extends Don {
   dieu_khoan?: DieuKhoan;
   hanh_dong?: string[];
   tai_lieu?: { id: string; code: string; doc_type: string; status?: string }[];
+  lien_lac_ben_kia?: { ten: string; so_dien_thoai: string } | null;
 }
 export interface Lo {
   id: string; code: string; product_code: string; product_name?: string; grade_code: string; seller_name?: string; province_code?: string;

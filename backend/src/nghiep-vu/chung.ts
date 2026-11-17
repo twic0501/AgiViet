@@ -1,8 +1,21 @@
 // Hàm dùng chung cho mọi lệnh nghiệp vụ: chuyển trạng thái qua MỘT chỗ, phát sự kiện outbox, hạn, mã đối tượng.
 // DB cưỡng chế máy trạng thái (evt.guard_status + ref.state_transitions) và ghi state_history trong cùng giao dịch;
 // hàm ở đây thêm khóa lạc quan (version), lý do, tên lệnh và sự kiện nghiệp vụ.
+import { createHash } from 'node:crypto';
 import type { GiaoDich } from '../db/co-so-du-lieu.ts';
 import { loi } from '../loi.ts';
+
+/** Mã ẩn danh ổn định của một tổ chức: cùng tổ chức luôn ra cùng mã, nhưng không suy ngược ra tên. */
+export const maAnDanh = (phia: 'ban' | 'mua', orgId: string) =>
+  `${phia === 'ban' ? 'Người bán NB' : 'Người mua NM'}-${createHash('sha256').update(orgId).digest('hex').slice(0, 4).toUpperCase()}`;
+
+/** Tên bên kia mà tổ chức `xem` được thấy: tên thật khi là chính mình hoặc hai bên đã từng có hợp đồng
+ *  (hợp đồng bắt buộc ghi tên hai bên); còn lại chỉ mã ẩn danh, để không lộ mối hàng và nguồn mua trước khi cam kết. */
+export async function tenHien(t: GiaoDich, xem: string | null | undefined, ben: string, ten: string, phia: 'ban' | 'mua') {
+  if (xem && xem === ben) return ten;
+  const quen = xem && await t.mot(`SELECT 1 FROM core.orders WHERE (buyer_org_id=$1 AND seller_org_id=$2) OR (buyer_org_id=$2 AND seller_org_id=$1) LIMIT 1`, [xem, ben]);
+  return quen ? ten : maAnDanh(phia, ben);
+}
 
 export const BANG: Record<string, string> = {
   lot: 'core.lots', demand: 'core.demands', offer: 'core.offers', hold: 'core.holds', order: 'core.orders',
