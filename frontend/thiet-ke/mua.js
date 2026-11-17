@@ -3,6 +3,7 @@
 import { esc, d, kg, so, icon, taoKho, chayApp } from "./so-lam-an.js";
 import { BANG, bangTrang, tenAi } from "./kich-ban-bang.js";
 import { THAT, napThat, chaoGia, api } from "./mua-that.js";
+import { phien } from "./chung.js";
 import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
 
 // ── Dữ liệu ──
@@ -1476,6 +1477,7 @@ if (THAT) {
         const d = await api("/v1/orders/" + qDon()), k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
         const kg2 = Number(k.qty_g || 0) / 1000, hcThap = k.downgrade_price_vnd && Number(k.downgrade_price_vnd) < 0.7 * Number(k.unit_price_vnd);
         const coKy = (d.hanh_dong || []).includes("sign") && d.ky?.duoc_ky;
+        const hdDoc = [...(d.tai_lieu || [])].reverse().find((x) => x.doc_type === "contract" && x.status !== "draft");
         khung.innerHTML = `
           <section class="sl-the" style="display:grid;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0;font-size:20px">${esc(maHD(d.code))}</h2><span class="sl-nhan${toi ? " sl-n-xong" : ""}">${esc(d.hien_thi?.ten || d.status)}</span></div>
             <p style="margin:0">${tl ? `<b>${toi ? "Tới lượt bạn" : tl.phia === "seller" ? "Chờ người bán" : "Chờ AgiViet"}:</b> ${esc(tl.viec)}` : ""}</p></section>
@@ -1489,7 +1491,11 @@ if (THAT) {
             <p class="sl-ghi">Bấm "Gửi mã" để nhận mã OTP, nhập mã rồi bấm Ký. Ký xong không sửa được điều khoản; muốn đổi phải làm phụ lục.</p>
             <div style="display:grid;gap:10px;max-width:420px"><button class="sl-nut sl-vien" id="ky-ma">1. Gửi mã OTP</button>
             <label style="display:grid;gap:4px;font-weight:600;min-width:0">2. Nhập mã 6 số<input id="ky-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box;letter-spacing:4px;font-size:20px"></label>
-            <button class="sl-nut sl-vang" id="ky-gui" disabled>3. Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}`;
+            <button class="sl-nut sl-vang" id="ky-gui" disabled>3. Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}
+          ${!coKy && hdDoc ? `<section class="sl-the" style="display:grid;gap:10px"><h2 style="margin:0;font-size:18px">Ký số bằng VNPT SmartCA (thử)</h2>
+            <p class="sl-ghi">Thêm chữ ký số có chứng thư lên PDF hợp đồng. Nhập số CCCD đã đăng ký SmartCA, bấm gửi, rồi mở app VNPT SmartCA trên điện thoại để xác nhận.</p>
+            <div style="display:grid;gap:10px;max-width:420px"><label style="display:grid;gap:4px;font-weight:600;min-width:0">Số CCCD<input id="sca-cccd" inputmode="numeric" maxlength="12" autocomplete="off" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+            <button class="sl-nut sl-vien" id="sca-gui">Gửi sang SmartCA để ký</button></div><p class="sl-ghi" id="sca-bao" role="status"></p></section>` : ""}`;
         if ((d.hanh_dong || []).includes("deposit_instruction")) await veCoc(d);
         const dot = (d.dot_giao || []).find((x) => !/closed|cancel|shortfall_ended/.test(x.status));
         if (dot && ["preparing", "ready"].includes(dot.status)) await veGiao(d, dot);
@@ -1498,6 +1504,24 @@ if (THAT) {
         await veTien(d);
         await veHoan(d);
         await veTongTien(d);
+        const scaNut = khung.querySelector("#sca-gui");
+        if (scaNut) scaNut.onclick = async () => {
+          const bao3 = khung.querySelector("#sca-bao"), cccd = khung.querySelector("#sca-cccd").value.trim();
+          if (!/^\d{12}$/.test(cccd)) { bao3.textContent = "Số CCCD gồm 12 số."; return; }
+          scaNut.disabled = true; bao3.textContent = "Đang gửi sang VNPT…";
+          try {
+            const r = await api(`/v1/documents/${hdDoc.id}/smartca`, { user_id: cccd }); bao3.textContent = r.cau;
+            const tk = await phien(), het = Date.now() + 5 * 60e3;
+            while (Date.now() < het && khung.isConnected) {
+              await new Promise((x) => setTimeout(x, 5000));
+              const f = await fetch(`/v1/documents/${hdDoc.id}/smartca/${encodeURIComponent(r.giao_dich)}`, { headers: { authorization: "Bearer " + tk } });
+              if (!f.ok) throw new Error((await f.json().catch(() => ({}))).errors?.[0]?.message || `Lỗi ${f.status}`);
+              if ((f.headers.get("content-type") || "").includes("pdf")) { const u = URL.createObjectURL(await f.blob());
+                bao3.innerHTML = `Đã ký số. <a href="${u}" target="_blank" rel="noopener" download="${esc(maHD(d.code))}-smartca.pdf">Tải PDF đã ký</a>`; return; }
+            }
+            bao3.textContent = "Chưa thấy xác nhận trên app SmartCA. Bấm gửi lại khi sẵn sàng."; scaNut.disabled = false;
+          } catch (err) { bao3.textContent = err.message; scaNut.disabled = false; }
+        };
         if (!coKy) return;
         let ch = null; const bao2 = khung.querySelector("#ky-bao"), nutKy = khung.querySelector("#ky-gui");
         khung.querySelector("#ky-ma").onclick = async (e) => {

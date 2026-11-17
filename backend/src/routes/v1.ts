@@ -395,6 +395,20 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     reply.header('content-type', d.mime_type).header('content-disposition', `inline; filename="${d.code}.${duoi[d.mime_type] ?? 'bin'}"`);
     return reply.send(docTep(d.storage_key));
   });
+  // Ký số bổ sung bằng VNPT SmartCA lên PDF hợp đồng (người ký xác nhận trên app SmartCA)
+  const docPdfCuaToi = async (req: any) => { const nd = await bo.xacThuc(req); return bo.doc(async (t) => {
+    const x = await t.mot<any>(`SELECT code, storage_key, mime_type, order_id, owner_org_id FROM core.documents WHERE id=$1 AND doc_type<>'evidence'`, [P(req).id]);
+    if (!x || x.mime_type !== 'application/pdf') throw loi('KHONG_TIM_THAY');
+    if (x.order_id) await phiaDon(t, nd, x.order_id); else if (x.owner_org_id !== nd.thanhVien.orgId && !(await laBenKhung(t, nd, P(req).id))) throw loi('KHONG_TIM_THAY');
+    return x; }); };
+  const SCA = () => import('../nghiep-vu/vnpt-smartca.ts');
+  app.post('/v1/documents/:id/smartca', async (req) => { const d = await docPdfCuaToi(req);
+    const b = z.object({ user_id: z.string().regex(/^\d{9,12}$/) }).parse(req.body);
+    return (await SCA()).guiKy(P(req).id, docTep(d.storage_key), b.user_id, `${d.code}.pdf`); });
+  app.get('/v1/documents/:id/smartca/:gd', async (req, reply) => { const d = await docPdfCuaToi(req);
+    const k = await (await SCA()).kiemKy(P(req).id, String((req.params as any).gd));
+    if (!k.pdf) return k;
+    reply.header('content-type', 'application/pdf').header('content-disposition', `inline; filename="${d.code}-smartca.pdf"`); return reply.send(k.pdf); });
   // Trang xác minh công khai (QR-06): chỉ metadata, không trả bản gốc (N-05).
   app.get('/v1/verify/:code', async (req) => bo.doc(async (t) => {
     const d = await t.mot<any>(`SELECT code,doc_type,version_no,status,encode(content_sha256,'hex') content_sha256,encode(file_sha256,'hex') file_sha256,created_at,
