@@ -1,6 +1,22 @@
 # AgiViet production v2 · Giao diện
 
-Hai app HTML/CSS/JS module thuần, chung lớp API. Không cần cài thư viện hoặc build để mở app.
+## Bản đồ thư mục (mỗi thư mục có README riêng)
+
+| Thư mục | Là gì |
+|---|---|
+| `thiet-ke/` | **App người bán đang chạy** (`ban-*.html`) + module dùng chung hai app: thẻ giao dịch, real-time, chat |
+| `mua-ts/` | **App người mua đang chạy** (Vite + TypeScript) |
+| `shared/`, `ban/`, `mua/`, `quan-tri/` | bản app đầu + trang quản trị (giữ cho E2E luồng chính và quản trị) |
+| `tests/` | unit, E2E, soát giao diện |
+| `assets/`, `am-thanh/` | ảnh, biểu tượng, câu đọc sẵn |
+| `mo-phong-quy-trinh/` | sân mô phỏng quy trình nghiệp vụ |
+| `scripts/` | công cụ phụ |
+
+Lệnh: `npm run build` (Vite), `npm run check` (ESLint + tsc hai app + unit), `npm test`. Hệ thiết kế: `.interface-design/system.md`. API: `../backend/README-API.md`.
+
+---
+
+Hai app HTML/CSS/JS module thuần, chung lớp API. Không cần cài thư viện hoặc build để mở app (riêng `mua-ts/` cần `npm run build`).
 
 ## Chạy
 
