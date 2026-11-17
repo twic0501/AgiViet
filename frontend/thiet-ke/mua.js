@@ -1492,7 +1492,7 @@ if (THAT) {
             <div style="display:grid;gap:10px;max-width:420px"><button class="sl-nut sl-vien" id="ky-ma">1. Gửi mã OTP</button>
             <label style="display:grid;gap:4px;font-weight:600;min-width:0">2. Nhập mã 6 số<input id="ky-otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box;letter-spacing:4px;font-size:20px"></label>
             <button class="sl-nut sl-vang" id="ky-gui" disabled>3. Ký hợp đồng</button></div><p class="sl-ghi" id="ky-bao" role="status"></p></section>` : ""}
-          ${!coKy && hdDoc ? `<section class="sl-the" style="display:grid;gap:10px"><h2 style="margin:0;font-size:18px">Ký số bằng VNPT SmartCA (thử)</h2>
+          ${!coKy && hdDoc && new URLSearchParams(location.search).has("smartca") ? `<section class="sl-the" style="display:grid;gap:10px"><h2 style="margin:0;font-size:18px">Ký số bằng VNPT SmartCA (thử)</h2>
             <p class="sl-ghi">Thêm chữ ký số có chứng thư lên PDF hợp đồng. Nhập số CCCD đã đăng ký SmartCA, bấm gửi, rồi mở app VNPT SmartCA trên điện thoại để xác nhận.</p>
             <div style="display:grid;gap:10px;max-width:420px"><label style="display:grid;gap:4px;font-weight:600;min-width:0">Số CCCD<input id="sca-cccd" inputmode="numeric" maxlength="12" autocomplete="off" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
             <button class="sl-nut sl-vien" id="sca-gui">Gửi sang SmartCA để ký</button></div><p class="sl-ghi" id="sca-bao" role="status"></p></section>` : ""}`;
