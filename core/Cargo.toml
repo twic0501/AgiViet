@@ -1,0 +1,8 @@
+[workspace]
+members = ["nghiep-vu", "may-chu"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "LicenseRef-Proprietary"
+publish = false

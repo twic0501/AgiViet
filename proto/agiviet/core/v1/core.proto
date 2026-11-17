@@ -1,0 +1,44 @@
+// Hợp đồng gRPC giữa cổng (Go) và lõi nghiệp vụ (Rust).
+// Tiền là số nguyên đồng. Ngày là yyyy-mm-dd.
+syntax = "proto3";
+
+package agiviet.core.v1;
+
+option go_package = "agiviet/gateway/internal/pb;pb";
+
+service Core {
+  // Đọc mã QR CCCD gắn chip và kiểm tính nhất quán. Thẻ sai trả INVALID_ARGUMENT kèm câu tiếng Việt.
+  rpc DocQrCccd(DocQrCccdRequest) returns (TheCccd);
+  // Quyết toán một đơn: chia cọc, khoản trả thêm, khoản hoàn.
+  rpc QuyetToan(QuyetToanRequest) returns (QuyetToanReply);
+}
+
+message DocQrCccdRequest {
+  string qr = 1;
+  // Ngày hôm nay theo đồng hồ của bên gọi, yyyy-mm-dd.
+  string hom_nay = 2;
+}
+
+message TheCccd {
+  string so = 1;
+  string ho_ten = 2;
+  string ngay_sinh = 3;
+  bool nu = 4;
+  string ngay_cap = 5;
+}
+
+message QuyetToanRequest {
+  int64 gia_tri_hang = 1;
+  int64 da_tra_thang = 2;
+  int64 coc = 3;
+  int64 nguoi_ban_chiu_them = 4;
+  int64 ben_mua_chiu_them = 5;
+}
+
+message QuyetToanReply {
+  int64 n = 1;
+  int64 coc_ve_nguoi_ban = 2;
+  int64 coc_hoan_ben_mua = 3;
+  int64 ben_mua_tra_them = 4;
+  int64 nguoi_ban_hoan = 5;
+}

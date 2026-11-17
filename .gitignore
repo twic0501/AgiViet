@@ -32,3 +32,7 @@ backend/.dong-thoi-ket-qua.json
 
 # Rive: thư mục dựng tạm (khung chụp, log); .riv dùng trong app ở frontend/assets/trau/
 frontend/trau-rive/build/
+.neon
+
+# Rust / Go
+core/target/
