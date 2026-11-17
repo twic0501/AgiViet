@@ -143,7 +143,7 @@ const cau = quaCau($("cau"), { anh: ["xoai-cat-chu", "tom", "lua-gao", "ca-phe",
 let cheDo = "dang-nhap", thuThach = null, demNguoc = null, nutMo = null, dangGui = false, dangXacNhan = 0;
 // Một màn đăng nhập cho cả hai app: ?ben=mua là app bên mua.
 const MUA = new URLSearchParams(location.search).get("ben") === "mua" || location.hostname.startsWith("mua."); // mua.agiviet.id.vn luôn là cửa bên mua
-const APP = MUA ? "./mua-app.html" : "./ban-hom-nay.html";
+const APP = MUA ? "/mua-ts/" : "./ban-hom-nay.html"; // app mua bản Vite + TypeScript; bản cũ vẫn ở ./mua-app.html
 if (MUA) {
   document.title = "Đăng nhập · AgiViet mua";
   $("nut-dk").textContent = "Đăng ký mua hàng";

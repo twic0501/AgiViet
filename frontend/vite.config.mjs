@@ -25,7 +25,7 @@ const chepPhanCon = () => ({
     let n = 0;
     for (const p of tatCa) {
       const rel = path.relative(goc, p);
-      if (/^(vite\.config|server)\.mjs$|^package(-lock)?\.json$|\.md$/.test(rel)) continue;
+      if (/^(vite\.config|server)\.mjs$|^package(-lock)?\.json$|\.md$|\.ts$|tsconfig\.json$/.test(rel)) continue;
       const dich = path.join(goc, "dist", rel);
       if (existsSync(dich)) continue; // file Vite đã build (html, js có gắn băm) giữ nguyên
       mkdirSync(path.dirname(dich), { recursive: true }); copyFileSync(p, dich); n++;
