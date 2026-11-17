@@ -227,6 +227,22 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/lots/:id/confirm-available', async (req) => bo.lenh(req, 'xac_nhan_con_hang', 'seller', async (t, nd) => { canQuyen(nd, 'lot.update'); return Lo.xacNhanConHang(t, nd, P(req).id); }));
   app.post('/v1/lots/:id/price', async (req) => bo.lenh(req, 'sua_gia', 'seller', async (t, nd, b) => { canQuyen(nd, 'lot.price'); return Lo.suaGia(t, nd, P(req).id, b); }));
   app.post('/v1/lots/:id/close', async (req) => bo.lenh(req, 'dong_lo', 'seller', async (t, nd) => { canQuyen(nd, 'lot.close'); return Lo.dongLo(t, nd, P(req).id); }));
+  // Tra mã số vùng trồng (vd MVT-DT-0412): người mua gõ mã → người bán, vườn, mã đã xác minh/còn hạn chưa, lô đang bán để trả giá.
+  // Chỉ trả thông tin công khai của mã (không số điện thoại): liên lạc đi qua lời chào giá / tin nhắn trong app.
+  app.get('/v1/growing-areas/:ma', async (req) => { await bo.xacThuc(req);
+    const ma = String((req.params as any).ma).trim().toUpperCase();
+    if (!/^[A-Z0-9][A-Z0-9-]{2,39}$/.test(ma)) throw loi('DU_LIEU_KHONG_HOP_LE', 'Mã vùng trồng chỉ gồm chữ, số và dấu gạch, ví dụ MVT-DT-0412.');
+    return bo.doc(async (t) => {
+      const ds = await t.q<any>(`SELECT c.number ma, c.market thi_truong, c.verified_at IS NOT NULL da_xac_minh, c.revoked_at IS NOT NULL bi_thu_hoi,
+          upper(c.valid_during) het_han, (c.valid_during @> current_date) con_han, s.name vuon, o.id nguoi_ban_id, o.display_name nguoi_ban, o.province_code tinh
+        FROM core.certifications c JOIN core.organizations o ON o.id=c.org_id LEFT JOIN core.production_sites s ON s.id=c.site_id
+        WHERE c.kind='growing_area_code' AND upper(c.number)=$1 ORDER BY c.market`, [ma]);
+      if (!ds.length) throw loi('KHONG_TIM_THAY', `Không thấy mã vùng trồng ${ma} trên AgiViet, hoặc người bán chưa khai mã này.`);
+      const lo = await t.q<any>(`SELECT id FROM core.lots WHERE seller_org_id=$1 AND status IN ('on_sale','upcoming') ORDER BY created_at DESC LIMIT 20`, [ds[0].nguoi_ban_id]);
+      return { ma, nguoi_ban: ds[0].nguoi_ban, nguoi_ban_id: ds[0].nguoi_ban_id, tinh: ds[0].tinh, vuon: ds[0].vuon,
+        thi_truong: ds.map((x) => ({ thi_truong: x.thi_truong, da_xac_minh: x.da_xac_minh, bi_thu_hoi: x.bi_thu_hoi, con_han: x.con_han, het_han: x.het_han })),
+        lo_ids: lo.map((x) => x.id) };
+    }); });
   app.get('/v1/lots', async (req) => { const nd = await bo.xacThuc(req); const q: any = req.query; return bo.doc((t) => Lo.danhSachLo(t, nd, { mine: q.mine === 'true', product_code: q.product, grade_code: q.grade })); });
   app.get('/v1/lots/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => Lo.xemLo(t, nd, P(req).id)); });
   app.get('/v1/lots/:id/qty', async (req) => { await bo.xacThuc(req); return bo.doc((t) => Lo.soLuongLo(t, P(req).id)); });

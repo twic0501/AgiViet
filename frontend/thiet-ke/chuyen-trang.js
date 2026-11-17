@@ -33,7 +33,8 @@
   addEventListener("pageswap", function (e) {
     if (!e.viewTransition) return;
     var nuot = function () {}; e.viewTransition.ready.catch(nuot); e.viewTransition.finished.catch(nuot); e.viewTransition.updateCallbackDone.catch(nuot);
-    if (window.top !== window) e.viewTransition.skipTransition();
+    // Trong khung, hoặc trang tự chuyển ngay lúc vừa nạp (màn chưa có → app mới): bỏ chuyển cảnh, tránh lỗi "Transition was aborted"
+    if (window.top !== window || window.__boChuyenCanh) e.viewTransition.skipTransition();
   });
   addEventListener("pagereveal", function (e) {
     var h = null; try { h = sessionStorage.getItem("hu-vt"); sessionStorage.removeItem("hu-vt"); } catch (x) {}

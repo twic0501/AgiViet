@@ -1626,6 +1626,7 @@ if (THAT) {
     sau: async (g) => {
       const goc = g.querySelector("#kh-ct");
       const ve = async () => {
+        if (!qK()) { goc.innerHTML = `<p class="sl-ghi">Chưa chọn hợp đồng khung. <a href="/mua-ts/#don">Về danh sách đơn</a></p>`; return; }
         const k = await api("/v1/frameworks/" + qK());
         const hm = k.han_muc || {}, chay = k.status === "running", dung = k.status === "needs_security";
         const tuanCo = new Map((k.gia_tuan || []).filter((x) => x.trang_thai !== "rejected").map((x) => [x.tuan, x]));
@@ -1735,11 +1736,12 @@ if (THAT) {
   const dai = `<div role="note" style="background:#fdecc8;border:1.5px solid #c98a12;color:#5a3d00;border-radius:10px;padding:10px 14px;font-weight:600">Màn này còn là <b>bản mô phỏng</b>: số liệu là số mẫu, thao tác chưa lưu thật. Dữ liệu thật hiện có ở Nguồn hàng, Lời chào giá và Đơn.</div>`;
   const daiLoi = () => `<div role="alert" style="background:#fbe3df;border:1.5px solid #a8392c;color:#6b1d13;border-radius:10px;padding:10px 14px;font-weight:600">Không tải được dữ liệu thật: ${esc(window.__agvLoiNap)}. Kiểm tra mạng rồi tải lại trang. Chưa có hàng nào hiện ra để tránh nhầm với hàng mẫu.</div>`;
   // Màn chưa nối dữ liệu thật → chuyển sang tab tương ứng của app mua mới (mua-app), không hiện số mẫu trong đường thi.
-  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "nhan", "nhu-cau": "nguon-hang", "ke-hoach": "them", "moi-quen": "them" };
+  // Màn chưa nối dữ liệu thật → màn tương ứng của app mua mới (/mua-ts/); không có thì về Hôm nay.
+  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "tin", "nhu-cau": "nguon", "don-hang": "don" };
   for (const [k, m] of Object.entries(man)) {
     const ve0 = m.ve; if (typeof ve0 !== "function") continue;
     // Chỉ chuyển khi đúng màn được mở bằng ?man= (lần vẽ màn mặc định trước đó không được đá màn thật như chi-tiet-don ra ngoài).
-    if (!MAN_THAT.has(k)) m.ve = (...a) => { if (new URLSearchParams(location.search).get("man") === k) { location.replace(`./mua-app.html#${SANG_APP_MOI[k] || "them"}`); return dai; } return dai + ve0(...a); };
+    if (!MAN_THAT.has(k)) m.ve = (...a) => { if (new URLSearchParams(location.search).get("man") === k) { window.__boChuyenCanh = true; location.replace(`/mua-ts/${location.search.includes("thu=") ? `?thu=${new URLSearchParams(location.search).get("thu")}` : ""}#${SANG_APP_MOI[k] || "hom-nay"}`); return dai; } return dai + ve0(...a); };
     // Đang chuyển sang app mới thì màn cũ không vẽ, nên bỏ luôn phần gắn nút (trước: lỗi null.addEventListener ở tin-nhan).
     if (!MAN_THAT.has(k) && typeof m.sau === "function") { const sau0 = m.sau; m.sau = (...a) => (new URLSearchParams(location.search).get("man") === k ? undefined : sau0(...a)); }
     else if (k === "nguon-hang" || k === "chi-tiet-lo") m.ve = (...a) => (window.__agvLoiNap ? daiLoi() : "") + ve0(...a);

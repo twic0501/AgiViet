@@ -6,16 +6,26 @@ import type { Lo } from "../kieu";
 
 const NHOM = (ma = ""): string => (/^(TOM|CA_|CUA|NGHEU|SO_|OC|MUC)/.test(ma) ? "Thủy sản" : /^(LUA|GAO|CAPHE|TIEU|DIEU|HAT|CACAO)/.test(ma) ? "Hạt, cà phê" : /^(RAU|CAI|HANH|OT|KHOAI|CU_|BAP)/.test(ma) ? "Rau củ" : "Trái cây");
 let loc = "Tất cả", tu = "";
+// Mã số vùng trồng (vd MVT-DT-0412): gõ vào ô tìm là tra người bán sở hữu mã, để trả giá / nhắn người bán.
+const LA_MA_VUNG = /^[A-Z]{2,5}-[A-Z]{2,4}-\d{2,6}$/i;
+interface VungTrong { ma: string; nguoi_ban: string; tinh?: string; vuon?: string; lo_ids: string[]; thi_truong: { thi_truong: string; da_xac_minh: boolean; bi_thu_hoi: boolean; con_han: boolean; het_han?: string }[] }
+let vung: { ma: string; kq?: VungTrong; loi?: string } | null = null;
 
 export function veNguon(o: HTMLElement): void {
   const tat = DL.lo.filter((l) => !l.is_substandard || l.ban_gap);
   const nhom = ["Tất cả", ...new Set(tat.map((l) => NHOM(l.product_code)))];
   const q = tu.trim().toLowerCase();
-  const ds = tat.filter((l) => (loc === "Tất cả" || NHOM(l.product_code) === loc) && (!q || `${l.product_name} ${l.seller_name} ${tinh(l.province_code)}`.toLowerCase().includes(q)));
+  const laMa = LA_MA_VUNG.test(tu.trim());
+  if (laMa && vung?.ma !== tu.trim().toUpperCase()) { const ma = tu.trim().toUpperCase(); vung = { ma };
+    api<VungTrong>(`/v1/growing-areas/${encodeURIComponent(ma)}`).then((kq) => { if (vung?.ma === ma) { vung.kq = kq; veNguon(o); } })
+      .catch((e) => { if (vung?.ma === ma) { vung.loi = (e as Error).message; veNguon(o); } }); }
+  if (!laMa) vung = null;
+  const ds = laMa ? tat.filter((l) => vung?.kq?.lo_ids.includes(l.id)) : tat.filter((l) => (loc === "Tất cả" || NHOM(l.product_code) === loc) && (!q || `${l.product_name} ${l.seller_name} ${tinh(l.province_code)}`.toLowerCase().includes(q)));
   o.innerHTML = `
-    <label class="o-tim"><span class="an-chu">Tìm nguồn</span><input id="ng-tu" type="search" placeholder="Xoài, tôm, Đồng Tháp…" value="${esc(tu)}"></label>
+    <label class="o-tim"><span class="an-chu">Tìm nguồn hoặc mã vùng trồng</span><input id="ng-tu" type="search" placeholder="Xoài, Đồng Tháp hoặc mã vùng trồng MVT-…" value="${esc(tu)}" autocapitalize="characters"></label>
+    ${vung ? veVung(vung) : ""}
     <div class="loc" role="group" aria-label="Lọc nhóm hàng">${nhom.map((m) => `<button type="button" aria-pressed="${m === loc}" data-loc="${esc(m)}">${esc(m)}</button>`).join("")}</div>
-    ${ds.length ? ds.map((l) => {
+    ${vung && !vung.kq ? "" : ds.length ? ds.map((l) => {
       const anh = (l.photos || []).filter((p) => p.captured_in_app).length;
       const coChao = DL.loiChao.find((c) => c.lot_code === l.code && /sent|accepted/.test(c.status));
       return `<article class="the">
@@ -56,4 +66,16 @@ async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
       window.dispatchEvent(new Event("agv-lam-moi")); window.dispatchEvent(new Event("agv-vong-ngay")); sauGui();
     } catch (err) { h.querySelector("#tg-loi")!.textContent = (err as Error).message; nut.disabled = false; } };
   h.showModal();
+}
+
+function veVung(v: { ma: string; kq?: VungTrong; loi?: string }): string {
+  if (v.loi) return `<section class="the"><p class="loi">${esc(v.loi)}</p></section>`;
+  if (!v.kq) return `<div class="khung-tai" aria-label="Đang tra mã vùng trồng"></div>`;
+  const k = v.kq;
+  return `<section class="the" aria-label="Mã vùng trồng ${esc(k.ma)}">
+    <div class="hang"><div><p class="nhan">Mã vùng trồng</p><h2>${esc(k.ma)}</h2></div></div>
+    <p><b>${esc(k.nguoi_ban)}</b>${k.vuon ? ` · ${esc(k.vuon)}` : ""}${k.tinh ? ` · ${esc(tinh(k.tinh))}` : ""}</p>
+    <div class="tin">${k.thi_truong.map((t) => `<span class="chip ${t.bi_thu_hoi || !t.con_han ? "do" : t.da_xac_minh ? "la" : ""}">Thị trường ${esc(t.thi_truong || "nội địa")} · ${t.bi_thu_hoi ? "đã thu hồi" : !t.con_han ? "hết hạn" : t.da_xac_minh ? "đã xác minh" : "người bán tự khai"}</span>`).join("")}</div>
+    <p class="phu">${k.lo_ids.length ? `${k.lo_ids.length} lô đang bán bên dưới. Trả giá để mở trao đổi với người bán.` : "Người bán chưa có lô đang bán. Gửi nhu cầu để người bán báo giá cho bạn."}</p>
+  </section>`;
 }
