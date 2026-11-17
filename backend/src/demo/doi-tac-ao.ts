@@ -307,7 +307,9 @@ export async function motVong(goi: Goi, nguoiThat: string[], idThat: string[] = 
       }
       // Người mua ảo: lời chào đã chốt mà chưa thành đơn → lập đơn (trùng thì backend từ chối, bỏ qua).
       if (of.status === 'accepted' && !of.order_id) {
-        const dk = await get(`/v1/offers/${of.id}/terms`, t), now = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
+        let dk = await get(`/v1/offers/${of.id}/terms`, t); const now = new Date((await get('/v1/test/clock', t))?.now ?? Date.now());
+        // Khung điều khoản chung phải được đọc trước khi đề xuất/đồng ý (luồng ① → ②).
+        if (dk?.da_doc_khung && !dk.da_doc_khung[dk.ben_toi]) { await post(`/v1/offers/${of.id}/terms/framework-read`, {}, t); dk = await get(`/v1/offers/${of.id}/terms`, t); }
         const nhan = (body: string) => post('/v1/messages', { offer_id: of.id, body }, t);
         const giaChot = Number(v?.price_vnd ?? 0), xung = phia === 'buyer' ? 'bác' : 'anh/chị';
         if (dk?.trang_thai === 'cho_tra_loi' && dk.de_xuat_boi !== phia) {

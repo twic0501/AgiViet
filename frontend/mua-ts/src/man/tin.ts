@@ -40,7 +40,8 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
   const cuoc: Cuoc = loai === "order" ? { order_id: id } : { offer_id: id };
   o.innerHTML = `<div class="chat">
       <div class="chat-dau"><a class="nut-tron" href="#tin" aria-label="Quay lại tin nhắn">‹</a><b>${esc(tenCuoc(cuoc))}</b>${loai === "order" ? `<a class="nut vien nho" href="#don/${id}">Xem đơn</a>` : ""}</div>
-      <div id="tn-gd" class="tn-gd"></div>
+      <button type="button" class="dai" id="dai" aria-haspopup="dialog" aria-controls="tam-gd" hidden><i aria-hidden="true"></i><span><b id="dai-tt"></b><span class="phu" id="dai-phu"></span></span><span class="dai-mo">Xem</span></button>
+      <dialog class="tam" id="tam-gd" aria-labelledby="tam-gd-tieu-de"><div class="tam-dau"><h2 id="tam-gd-tieu-de">Giá và điều khoản</h2><button type="button" class="nut-tron" data-dong aria-label="Đóng">×</button></div><div class="tam-than" id="tn-gd"></div></dialog>
       <div class="luong" id="luong" aria-live="polite"><div class="khung-tai"></div></div>
       <form class="o-go" id="o-go"><textarea id="tn-o" rows="1" maxlength="1000" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"></textarea><button class="nut chinh" id="tn-gui">Gửi</button></form>
       <p class="phu chat-ghi">Số điện thoại, Zalo, tài khoản riêng được che tự động. Giao dịch qua AgiViet để cọc được ngân hàng giữ.</p>
@@ -53,6 +54,18 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
       nguoiNhan: async () => DL.me?.user?.user_id, sauLam: () => { window.dispatchEvent(new Event("agv-lam-moi")); window.dispatchEvent(new Event("agv-vong-ngay")); } });
     theGD!.ve(tin.filter((m2) => m2.la_cua_toi).at(-1)?.body ?? "");
   }).catch(() => {});
+  // Dải trạng thái một dòng thay cho thẻ to chen giữa khung chat; bấm mở tấm giá/điều khoản (dialog gốc: khóa focus, Esc đóng).
+  const dai = o.querySelector<HTMLButtonElement>("#dai")!, tam = o.querySelector<HTMLDialogElement>("#tam-gd")!, gd = o.querySelector<HTMLElement>("#tn-gd")!;
+  const capDai = () => { const t = gd.querySelector(".tgd"); if (!t) return; dai.hidden = false;
+    const ds = [...t.querySelectorAll(":scope > p")].map((x) => x.textContent!.trim()).filter((x) => x && !/^(Áp cho|Bên kia chưa đọc)/.test(x));
+    const cau = ds.find((x) => /^(Bước|Bạn đã|Bên kia|Tới lượt|Chờ|Hai bên)/.test(x)) ?? ds[0] ?? "";
+    const toi = !!t.querySelector("button.c, a.n.c"); dai.classList.toggle("toi", toi);
+    // Dòng trên: việc đang ở bước nào (cái cần biết trước); dòng dưới: giá/lượng hoặc mã hợp đồng.
+    o.querySelector("#dai-tt")!.textContent = cau.replace(/[:.]$/, "");
+    o.querySelector("#dai-phu")!.textContent = (toi ? "Tới lượt bạn · " : "") + (t.querySelector("b")?.textContent?.trim().replace(/^Hai bên đã chốt /, "Đã chốt ") ?? ""); dai.setAttribute("aria-label", `${dai.textContent?.replace(/\s+/g, " ").trim()}. Mở giá và điều khoản`); };
+  new MutationObserver(capDai).observe(gd, { childList: true, subtree: true, characterData: true });
+  dai.onclick = () => tam.showModal();
+  tam.onclick = (e) => { if (e.target === tam || (e.target as HTMLElement).closest("[data-dong]")) tam.close(); };
   const luong = o.querySelector<HTMLElement>("#luong")!, oGo = o.querySelector<HTMLTextAreaElement>("#tn-o")!, form = o.querySelector<HTMLFormElement>("#o-go")!;
   let tin: Tin[] = [], dangCho: (Tin & { cho?: boolean; loi?: boolean })[] = [], dau = "";
   const sat = () => luong.scrollHeight - luong.scrollTop - luong.clientHeight < 80;

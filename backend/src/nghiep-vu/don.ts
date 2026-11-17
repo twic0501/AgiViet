@@ -132,6 +132,7 @@ export async function lapDon(t: GiaoDich, nd: NguoiDung, d: LapDon, vu?: ThongTi
     nghiem_thu: { loi_cho_phep_bps: lot.reject_allowance_bps, im_lang_gio: silent, mau_doi_chung: d.seal_sample_required ?? true, hao_hut_duong_bps: CHINH_SACH.hauHutDuongChoPhepBps },
     thieu_luong: { thang_phat_bps: CHINH_SACH.thangPhatThieuLuongBps },
     ...((d as any).ghi_chu ? { ghi_chu_hai_ben: String((d as any).ghi_chu) } : {}),
+    ...((d as any).muc_rieng?.length ? { muc_rieng: (d as any).muc_rieng } : {}),
     cau_bat_buoc: CAU_BAO_VE, chinh_sach: CHINH_SACH.phienBan,
     ...(vu ? { hop_dong_vu: { loai: vu.loai, luong_toi_da_g: vu.qty_max_g ?? null, cong_thuc_gia: vu.price_formula ?? null, thu_hoach: { tu: vu.harvest_from, den: vu.harvest_to },
       vat_tu_ung_vnd: vu.materials_advance_vnd ?? null, coc_vu_vnd: vu.loai === 'offtake' ? vu.deposit_vnd : null,
@@ -365,7 +366,8 @@ export async function xemDon(t: GiaoDich, nd: NguoiDung, id: string) {
       ref_price_vnd: v.ref_price_vnd == null ? null : String(v.ref_price_vnd), deposit_price_vnd: String(v.deposit_price_vnd), contract_value_vnd: String(v.contract_value_vnd),
       deposit_vnd: String(v.deposit_vnd), fee_vnd: String(v.fee_vnd), payment_timing: v.payment_timing, pay_after_days: v.pay_after_days,
       delivery_mode: v.delivery_mode, acceptance_point: v.acceptance_point, transport_by: v.transport_by,
-      delivery_from: v.window_from ? new Date(v.window_from).toISOString() : null, delivery_to: v.window_to ? new Date(v.window_to).toISOString() : null, seller_account: { bank_code: v.seller_bank_code, masked: v.seller_account_masked, holder: v.seller_account_holder },
+      delivery_from: v.window_from ? new Date(v.window_from).toISOString() : null, delivery_to: v.window_to ? new Date(v.window_to).toISOString() : null, // Người mua chỉ thấy tài khoản nhận tiền khi hợp đồng đã có hiệu lực (hai bên ký); trước đó là thông tin chưa cam kết.
+      seller_account: o.effective_version_no != null || nd.thanhVien.orgId === o.seller_org_id ? { bank_code: v.seller_bank_code, masked: v.seller_account_masked, holder: v.seller_account_holder } : null,
       designated_receiver_user_id: v.designated_receiver_user_id, silent_accept_hours: v.silent_accept_hours, reject_allowance_bps: v.reject_allowance_bps,
     } : null,
     dong_mon: o.contract_type === 'framework_calloff' ? await t.q<any>(`SELECT l.line_no, p.name_vi mat_hang, p.code ma, lo.code lo, l.qty::text qty_g, l.unit_price_vnd::text gia_vnd, l.downgrade_price_vnd::text gia_ha_cap_vnd
@@ -465,6 +467,7 @@ export async function tomTatDieuKhoan(t: GiaoDich, nd: NguoiDung, id: string) {
       { so: 6, tieu_de: 'Thiếu, vượt lượng', noi_dung: 'Phạt theo % cọc phần thiếu: 0% / 10% / 50% / 100%' },
       { so: 7, tieu_de: 'Tranh chấp', noi_dung: 'Cân lại 24 giờ, kiểm định 48 giờ, bên sai chịu phí' },
       { so: 8, tieu_de: 'Hủy', noi_dung: 'Cọc về bên không xin hủy; phí theo bảng hoàn' },
+      ...((c.muc_rieng ?? []) as { ten: string; noi_dung: string }[]).map((m, k) => ({ so: 9 + k, tieu_de: m.ten, noi_dung: m.noi_dung })),
     ],
     cau_bat_buoc: CAU_BAO_VE,
   };

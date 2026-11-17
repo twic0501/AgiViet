@@ -47,6 +47,7 @@ assert.match((await doc(mua, `/v1/lots/${loNb.id}`)).seller_name, AN_BAN, "trư�
 const of = await gui(mua, "/v1/offers", { direction: "buyer_bid", lot_id: loNb.id, qty_g: 100000, price_vnd: gia });
 await gui(nb, `/v1/offers/${of.id}/accept`, { expected_revision: (await doc(nb, `/v1/offers/${of.id}`)).revision });
 assert.match((await doc(nb, "/v1/offers")).find((o) => o.id === of.id).buyer_name, AN_MUA, "chốt giá chưa phải hợp đồng: người bán vẫn chỉ thấy mã người mua");
+await gui(mua, `/v1/offers/${of.id}/terms/framework-read`, {}); await gui(nb, `/v1/offers/${of.id}/terms/framework-read`, {});
 const dx = await gui(mua, `/v1/offers/${of.id}/terms`, (await doc(mua, `/v1/offers/${of.id}/terms`)).mac_dinh);
 await gui(nb, `/v1/offers/${of.id}/terms/accept`, { phien_ban: dx.phien_ban ?? 1 });
 await gui(mua, "/v1/orders", { offer_id: of.id, delivery_mode: "at_farm", designated_receiver_user_id: me.user_id });

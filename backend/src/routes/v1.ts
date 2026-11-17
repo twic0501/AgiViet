@@ -281,7 +281,9 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.get('/v1/offers/:id/terms', async (req) => { const nd = await bo.xacThuc(req); const m = await DK(); return bo.doc((t) => m.xemDieuKhoan(t, nd, P(req).id)); });
   app.post('/v1/offers/:id/terms', async (req) => bo.lenh(req, 'de_xuat_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).deXuatDieuKhoan(t, nd, P(req).id, b)));
   app.post('/v1/offers/:id/terms/accept', async (req) => bo.lenh(req, 'dong_y_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).dongYDieuKhoan(t, nd, P(req).id, b.phien_ban)));
-  app.post('/v1/offers/:id/terms/reject', async (req) => bo.lenh(req, 'tu_choi_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).tuChoiDieuKhoan(t, nd, P(req).id, b.phien_ban, b.ly_do)));
+  app.post('/v1/offers/:id/terms/reject', async (req) => bo.lenh(req, 'tu_choi_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).tuChoiDieuKhoan(t, nd, P(req).id, b.phien_ban, b.ly_do, b.y_kien)));
+  app.post('/v1/offers/:id/terms/framework-read', async (req) => bo.lenh(req, 'doc_khung_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd) => (await DK()).docKhungChung(t, nd, P(req).id)));
+  app.get('/v1/terms/framework', async () => ({ data: (await DK()).khungChung() }));
   app.get('/v1/offers', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => LoiChao.danhSachLoiChao(t, nd)); });
   app.get('/v1/offers/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => LoiChao.xemLoiChao(t, nd, P(req).id)); });
 

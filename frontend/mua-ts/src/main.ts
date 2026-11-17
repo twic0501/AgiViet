@@ -62,5 +62,5 @@ if (window.top === window && matchMedia("(min-width: 700px) and (pointer: fine)"
 }
 $("#lui").onclick = () => (history.length > 1 ? history.back() : (location.hash = (location.hash.split("/")[0] || "#hom-nay")));
 // Vercel Web Analytics (đếm lượt xem trang, không cookie); bản chạy trên máy tự bỏ qua
-inject();
+if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) inject();
 batDau().catch((e) => { $("#man").innerHTML = trong(esc((e as Error).message)); });

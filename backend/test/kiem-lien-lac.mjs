@@ -30,9 +30,13 @@ console.log("✔ chat chưa hợp đồng, người gửi:", tin.nguoi_gui);
 
 // 1) Chốt giá → điều khoản → hợp đồng → ký hai bên → chưa cọc: không có số
 await gui(nb, `/v1/offers/${of.id}/accept`, { expected_revision: (await doc(nb, `/v1/offers/${of.id}`)).revision });
+await gui(mua, `/v1/offers/${of.id}/terms/framework-read`, {}); await gui(nb, `/v1/offers/${of.id}/terms/framework-read`, {});
 const dx = await gui(mua, `/v1/offers/${of.id}/terms`, (await doc(mua, `/v1/offers/${of.id}/terms`)).mac_dinh);
 await gui(nb, `/v1/offers/${of.id}/terms/accept`, { phien_ban: dx.phien_ban ?? 1 });
 const don = await gui(mua, "/v1/orders", { offer_id: of.id, delivery_mode: "at_farm", designated_receiver_user_id: meMua.user_id ?? meMua.user?.user_id });
+assert.equal((await doc(mua, `/v1/orders/${don.id}`)).dieu_khoan?.seller_account, null, "chưa ký mà người mua đã thấy tài khoản người bán");
+assert.ok((await doc(nb, `/v1/orders/${don.id}`)).dieu_khoan?.seller_account?.bank_code, "người bán phải thấy tài khoản của mình");
+console.log("✔ chưa ký: người mua chưa thấy tài khoản nhận tiền của người bán");
 const ky = async (tk, phia) => { const d = await doc(tk, `/v1/orders/${don.id}`); const hd = [...(d.tai_lieu || [])].reverse().find((x) => x.doc_type === "contract");
   const ch = await gui(tk, "/v1/otp/challenges", { purpose: "contract_sign", document_id: hd.id });
   // Môi trường thử: mã OTP cố định 123456
@@ -41,6 +45,8 @@ for (const [tk, ten] of [[mua, "mua"], [nb, "bán"]]) { const d = await doc(tk, 
 assert.equal((await doc(mua, `/v1/orders/${don.id}`)).lien_lac_ben_kia, null, "chưa cọc mà đã lộ số người bán");
 assert.equal((await doc(nb, `/v1/orders/${don.id}`)).lien_lac_ben_kia, null, "chưa cọc mà đã lộ số người mua");
 console.log("✔ đã ký, chưa cọc: hai bên chưa thấy số điện thoại của nhau");
+assert.ok((await doc(mua, `/v1/orders/${don.id}`)).dieu_khoan?.seller_account?.bank_code, "đã ký mà người mua chưa thấy tài khoản người bán");
+console.log("✔ đã ký: người mua thấy tài khoản nhận tiền ghi trong hợp đồng");
 
 // Ngân hàng giả lập nhận đủ cọc → liên lạc mở
 const h = await doc(mua, `/v1/orders/${don.id}/deposit-instruction`);
