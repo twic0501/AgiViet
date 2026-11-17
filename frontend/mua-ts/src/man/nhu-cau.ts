@@ -10,7 +10,7 @@ interface LoKhop { lot_id: string; lot_code: string; seller_name?: string; provi
 interface DongKhop { grade_code: string; qty_g: string; khop_du?: LoKhop[]; khop_mot_phan?: LoKhop[]; gan_khop_gia?: LoKhop[] }
 
 let sp: SanPham[] | null = null;
-const laySp = async () => (sp ??= (await thu(api<SanPham[]>("/v1/products"))) ?? []);
+export const laySp = async () => (sp ??= (await thu(api<SanPham[]>("/v1/products"))) ?? []);
 const tenSp = (ma?: string) => sp?.find((x) => x.code === ma)?.name_vi || ma || "";
 const ngayLech = (n: number) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
 const TT: Record<string, string> = { draft: "Nháp", open: "Đang tìm", closed: "Đã đóng", fulfilled: "Đã đủ hàng", expired: "Hết hạn" };
@@ -20,9 +20,9 @@ export async function dsPhieu(): Promise<string> {
   const ds = (await thu(api<any>("/v1/demands?mine=true"))) as any;
   const pk: any[] = Array.isArray(ds) ? ds : ds?.items ?? [];
   await laySp();
-  return `<section class="the"><div class="hang"><h2>Phiếu tìm nguồn</h2><a class="nut chinh nho" href="#nhu-cau/moi">Gửi phiếu</a></div>
+  return `<section class="the"><div class="hang"><h2>Phiếu đã gửi người bán</h2><a class="nut vien nho" href="#nhu-cau/moi">Gửi phiếu</a></div>
     ${pk.length ? pk.slice(0, 5).map((n) => `<a class="viec" href="#nhu-cau/${n.id}"><i class="${n.status === "open" ? "do" : ""}"></i><div><b>${esc(n.code)} · ${esc(n.product_name || tenSp(n.product_code))}</b><p class="phu">${esc(TT[n.status] || n.status)}</p></div><span aria-hidden="true">›</span></a>`).join("")
-      : `<p class="phu">Ghi mặt hàng, lượng và giá tối đa của bạn; AgiViet gợi ý người bán phù hợp. Giá tối đa được giữ kín.</p>`}</section>`;
+      : `<p class="phu">Chưa gửi phiếu nào. Không thấy lô ưng ý thì gửi phiếu để người bán báo giá; giá tối đa được giữ kín.</p>`}</section>`;
 }
 
 export async function veTaoPhieu(o: HTMLElement): Promise<void> {
@@ -48,7 +48,13 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
   const neo = async () => { const g = await thu(api<any>(`/v1/reference-prices?product=${encodeURIComponent($<HTMLSelectElement>("#pk-sp").value)}&grade=${encodeURIComponent($<HTMLSelectElement>("#pk-loai").value)}`));
     $("#pk-neo").textContent = g?.status === "du_du_lieu" ? `Giá giao dịch gần đây: ${vnd(g.price_vnd)} đ/kg.` : "Chưa đủ dữ liệu giá chợ cho loại này.";
     if (g?.status === "du_du_lieu" && !$<HTMLInputElement>("#pk-gia").value) $<HTMLInputElement>("#pk-gia").value = String(g.price_vnd); };
-  veLoai(); neo();
+  // Điền sẵn từ phiếu tìm nguồn ở tab Nguồn (mặt hàng, loại, lượng, hạn)
+  try { const p = JSON.parse(sessionStorage.getItem("agv-phieu-nhap") || "null"); sessionStorage.removeItem("agv-phieu-nhap");
+    if (p?.sp) $<HTMLSelectElement>("#pk-sp").value = p.sp;
+    veLoai(); if (p?.loai) $<HTMLSelectElement>("#pk-loai").value = p.loai;
+    if (p?.kg) $<HTMLInputElement>("#pk-kg").value = p.kg; if (p?.han) $<HTMLInputElement>("#pk-den").value = p.han;
+  } catch { veLoai(); }
+  neo();
   $("#pk-sp").onchange = () => { veLoai(); $<HTMLInputElement>("#pk-gia").value = ""; neo(); };
   $("#pk-loai").onchange = () => { $<HTMLInputElement>("#pk-gia").value = ""; neo(); };
   $<HTMLFormElement>("#pk").onsubmit = async (e) => {

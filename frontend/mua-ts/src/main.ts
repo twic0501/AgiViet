@@ -20,7 +20,7 @@ async function veTheoDuong(): Promise<void> {
   $("#lui").hidden = !sau; document.body.dataset.man = man + (sau ? "-con" : "");
   document.querySelectorAll<HTMLAnchorElement>(".tab a").forEach((x) => x.setAttribute("aria-current", x.hash === "#" + (man === "nhu-cau" ? "nguon" : man) ? "page" : "false"));
   try {
-    if (man === "nguon") { veNguon(o); napDauPhieu(o); }
+    if (man === "nguon") { await veNguon(o); napDauPhieu(o); }
     else if (man === "nhu-cau") a === "moi" ? await veTaoPhieu(o) : await veChiTietPhieu(o, a);
     else if (man === "don") a ? await veChiTietDon(o, a) : veDsDon(o);
     else if (man === "tien") veTien(o);
