@@ -126,10 +126,6 @@ const MAN = {
     ${the("Bác được", ["Ngân hàng giữ cọc trước khi bác giao hàng", "Nhận đủ tiền thẳng trước khi cho bốc", "Phản đối từng dòng kết quả cân trong 24 giờ", "Mất mùa có chứng từ: được xem xét hủy không phạt"].map((x) => `<div class="th-dong-buoc"><span>${ic("tich", 16)}</span><p>${x}</p></div>`).join(""))}
     ${the("Bác cần", ["Giao đúng loại, đúng lượng ±5%", "Niêm phong mẫu đối chứng khi bốc", "Không đưa số điện thoại trước khi có cọc"].map((x) => `<div class="th-dong-buoc"><span style="background:var(--chin-nen);color:var(--chin)">${ic("khien", 16)}</span><p>${x}</p></div>`).join(""))}
     ${day(nutPhu("Nghe đọc to", "nghe"))}` },
-  "ky-giay": { chao: "HĐ-0018", tieu: "Ký giấy", ve: () => `
-    ${viec("Nhân viên mang bản in tới", "Bác ký tay 2 bản, nhân viên chụp lại và gửi lên app. Hợp đồng có hiệu lực khi app nhận đủ ảnh chữ ký.", "", "th-cho")}
-    ${the("Hẹn ký", dong("Ngày", "Thứ Tư 28/10 · 7:00") + dong("Nơi", "Nhà bác, ấp 3 Mỹ Xương") + dong("Nhân viên", "Anh Hùng · AgiViet"))}
-    ${day(nutVang("Đặt lịch ký giấy", "dat-ky"))}` },
   "mo-lien-lac": { chao: "HĐ-0018", tieu: "Đã mở liên lạc", ve: () => `
     ${viec("Ngân hàng đã giữ cọc", "Liên lạc hai bên đã mở. Vẫn nên nhắn qua app để có bằng chứng khi cần.", "", "th-xong")}
     ${the("Người mua", dong("Người liên hệ", "Chị Thu Hà") + dong("Số điện thoại", "0277 386 210") + dong("Xe tới lấy", "66C-123.45 · anh Lộc") + dong("Mã nhận hàng", "Tài xế đọc khi tới vườn"))}

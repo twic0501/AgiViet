@@ -81,7 +81,7 @@
   };
   // Màn mới làm theo kiểu đã chốt, chờ người sáng lập duyệt
   const MOI = { "chat": "ban-tin-nhan.html" + T + "#tro", "hen-xem": "ban-tin-nhan.html" + T + "#tro=T1", "bao-cao": "ban-tin-nhan.html" + T + "#tro=T1" };
-  ["tong-ket-tuan", "thu-chi", "ket-noi", "ho-so-ben-mua", "so-sanh", "chon-luong", "quyen", "ky-giay", "mo-lien-lac", "tien-ve", "ung-tien", "dich-vu", "dat-dich-vu", "phan-cua-toi", "danh-gia"].forEach((m) => { MOI[m] = "ban-them.html?man=" + m + T.replace("?", "&"); });
+  ["tong-ket-tuan", "thu-chi", "ket-noi", "ho-so-ben-mua", "so-sanh", "chon-luong", "quyen", "mo-lien-lac", "tien-ve", "ung-tien", "dich-vu", "dat-dich-vu", "phan-cua-toi", "danh-gia"].forEach((m) => { MOI[m] = "ban-them.html?man=" + m + T.replace("?", "&"); });
   const BAN_MAU = BAN_MAU_GOC.map(([n, ds]) => [n, ds.map(([t, u]) => {
     const ma = u.split("#man=")[1];
     if (CHOT[ma]) return [t + " · đã chốt", CHOT[ma]];

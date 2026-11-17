@@ -365,18 +365,18 @@ const DUONG = [
   // Chợ so trên chữ CÓ dấu: bỏ dấu thì "chợ" trùng "cho" ("cho tôi hỏi…" sẽ bị dẫn nhầm)
   [/chợ|hàng đang bán|lô hàng|xem lô|sửa lô|còn bao nhiêu/, "Mở Chợ (hàng đang bán)", "./ban-hang-hoa.html", "Hàng bác đang bán nằm ở mục Chợ."],
   [/thong bao/, "Xem thông báo", "./ban-thong-bao.html#thong-bao", "Mọi cập nhật về lô, hợp đồng, tiền nằm trong Thông báo."],
-  [/nhan vien|goi|tong dai|xac minh|gap nguoi/, "Nhắn AgiViet", "./ban-thong-bao.html#ho-tro", "Bác nhắn cho nhân viên, họ sẽ gọi lại cho bác."],
+  [/nhan vien|goi|tong dai|xac minh|gap nguoi/, "Nhắn AgiViet", "./ban-thong-bao.html#ho-tro", "Bác nhắn cho AgiViet, AgiViet sẽ gọi lại cho bác."],
   [/hop dong|ky /, "Xem hợp đồng", "./ban-hom-nay.html#t-hd", "Hợp đồng đang làm nằm ở Trang chủ, có thanh chặng cho từng hợp đồng."],
   [/thoi tiet|mua|nang/, "Xem thời tiết", "./ban-hom-nay.html#t-troi", "Thời tiết 4 ngày tới nằm ở cuối Trang chủ."],
 ];
-const GOI_Y = ["Xin nhân viên gọi lại", "Tiền cọc của tôi ở đâu?", "Đăng hàng mới", "Xem chào giá của người mua"];
-const LOI_CHAO_TL = "Dạ, con là trâu trợ lý AgiViet. Bác cần gì cứ nói với con: bấm nút micro màu vàng rồi nói, hoặc gõ chữ. Muốn gặp người thật thì bấm Xin nhân viên gọi lại.";
+const GOI_Y = ["Xin AgiViet gọi lại", "Tiền cọc của tôi ở đâu?", "Đăng hàng mới", "Xem chào giá của người mua"];
+const LOI_CHAO_TL = "Dạ, con là trâu trợ lý AgiViet. Bác cần gì cứ nói với con: bấm nút micro màu vàng rồi nói, hoặc gõ chữ. Muốn gặp người thật thì bấm Xin AgiViet gọi lại.";
 let troLy = null, nutMoTroLy = null;
 function dungTroLy() {
   const tam = document.createElement("div");
   tam.innerHTML = `<div class="tl-che" data-dong></div>
     <section class="tl-tam" role="dialog" aria-modal="true" aria-labelledby="tl-tieu" inert>
-      <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Nhân viên trâu AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
+      <div class="tl-dau"><span class="tl-tay"></span><h2 id="tl-tieu">Trâu trợ lý AgiViet</h2><button type="button" class="tl-dong" data-dong aria-label="Đóng">×</button></div>
       <div class="tl-hoi" id="tl-hoi" aria-live="polite">
         ${trauTuThe("23-tai-nghe", "", 72)}
         <div class="tl-bong ai" id="tl-chao">${esc(LOI_CHAO_TL)}</div>
@@ -402,13 +402,13 @@ function dungTroLy() {
     return { message: `${noiDung}\n— Đang ở: ${man}${buoc ? ` · bước: ${buoc}` : ""}`.slice(0, 1900), ...(laUuid ? { order_id: id } : {}) };
   }
   async function guiNhanVien(noiDung, noi) {
-    const cho = them("ai cho", "Đang gửi cho nhân viên…");
+    const cho = them("ai cho", "Đang gửi cho AgiViet…");
     try {
       const token = await phien();
       const r = await fetch("/v1/support", { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...nguCanhHoTro(noiDung) }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.errors?.[0]?.message || "Chưa gửi được.");
-      const chu = "Dạ con đã báo AgiViet. Nhân viên sẽ gọi lại cho bác trong giờ làm việc, sáu giờ sáng tới chín giờ tối. Bác xem tiến độ ở trang hồ sơ, mục Hỗ trợ.";
+      const chu = "Dạ con đã báo AgiViet. AgiViet sẽ gọi lại cho bác trong giờ làm việc, sáu giờ sáng tới chín giờ tối. Bác xem tiến độ ở trang hồ sơ, mục Hỗ trợ.";
       cho.classList.remove("cho"); cho.textContent = chu; traLoi(cho, chu, noi);
     } catch (e) { cho.classList.remove("cho"); cho.textContent = e.message + " Bác gọi tổng đài 1900 1234 nhé."; traLoi(cho, cho.textContent, noi); }
   }
@@ -416,7 +416,7 @@ function dungTroLy() {
     cau = cau.trim(); if (!cau) return;
     them("toi", esc(cau));
     const kd = BO_DAU(cau);
-    if (/goi lai|goi cho toi|gap nguoi that|gap nhan vien|noi chuyen voi nguoi/.test(kd)) return guiNhanVien("Xin nhân viên gọi lại: " + cau, noi);
+    if (/goi lai|goi cho toi|gap nguoi that|gap nhan vien|noi chuyen voi nguoi|xin agiviet/.test(kd)) return guiNhanVien("Xin AgiViet gọi lại: " + cau, noi);
     if (/^nhan (cho )?nhan vien/.test(kd)) return guiNhanVien(cau.replace(/^\s*nhắn\s*(cho\s*)?nhân viên[:,]?\s*/i, "") || cau, noi);
     // Hỏi tiền/cọc: trả lời bằng số liệu hợp đồng thật của bác (không để AI đoán)
     if (/tien coc|coc (cua toi|o dau)|tien (cua toi|o dau|ve chua|ve)|bao gio (co|nhan) tien|khi nao (co|nhan) tien/.test(kd)) {
@@ -452,11 +452,11 @@ function dungTroLy() {
       const j = await r.json().catch(() => ({}));
       // AI chưa bật / lỗi máy chủ: trả câu soạn sẵn đã duyệt (lời của ai/agiviet_ai/tro_ly.py), không bịa
       const soan = !r.ok && (j.errors?.[0]?.code === "AI_CHUA_BAT" || r.status >= 500) ? cauSoanSan(t) : null;
-      if (soan) { cho.classList.remove("cho"); cho.innerHTML = `${esc(soan)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Hỏi thêm nhân viên ›</a>`; giuThamSo(cho); traLoi(cho, soan, noi); return; }
+      if (soan) { cho.classList.remove("cho"); cho.innerHTML = `${esc(soan)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Hỏi thêm AgiViet ›</a>`; giuThamSo(cho); traLoi(cho, soan, noi); return; }
       if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || "Trợ lý chưa trả lời được.");
       cho.classList.remove("cho"); cho.textContent = j.tra_loi; traLoi(cho, j.tra_loi, noi);
     } catch (e) {
-      cho.classList.remove("cho"); cho.innerHTML = `${esc(e.message)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Nhắn nhân viên ›</a>`; giuThamSo(cho); traLoi(cho, e.message, noi);
+      cho.classList.remove("cho"); cho.innerHTML = `${esc(e.message)}<a class="tl-di" href="./ban-thong-bao.html#ho-tro">Nhắn AgiViet ›</a>`; giuThamSo(cho); traLoi(cho, e.message, noi);
     }
   }
   // Hỏi bằng giọng: bấm micro → nói → câu nói hiện vào ô rồi tự gửi (vi-VN). Máy không hỗ trợ thì báo rõ, vẫn gõ được.
