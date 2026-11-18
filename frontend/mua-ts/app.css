@@ -139,3 +139,5 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .tc { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) 3.4em; gap: 8px; align-items: center; padding: 6px 0; font-size: 14px; } .tc b { text-align: right; font-size: 13px; }
 
 .goi-y .tin .chip, .trong-ly .chip { white-space: normal; height: auto; min-height: 26px; text-align: left; flex: 0 1 auto; max-width: 100%; overflow-wrap: anywhere; }
+
+.tc:has(.thanh-pt.thap) span, .tc:has(.thanh-pt.thap) b { color: var(--doo); }

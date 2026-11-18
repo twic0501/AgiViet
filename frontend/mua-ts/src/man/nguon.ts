@@ -136,7 +136,8 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
   diemLo.clear(); k.ket_qua.forEach((l) => diemLo.set(l.lot_id, l));
   // Lô đã nằm trong nhóm gom thì không lặp lại ở danh sách bên dưới
   const ngoaiGom = k.ket_qua.filter((l) => !gom?.nguon.some((g) => g.lot_id === l.lot_id));
-  const cao = ngoaiGom.filter((l) => (l.phan_tram ?? 0) >= 80), con = ngoaiGom.filter((l) => (l.phan_tram ?? 0) < 80);
+  const laCao = (l: LoGoiY) => (l.phan_tram ?? 0) >= 80 && !(l.thieu || []).length; // "cao" = điểm cao và không thiếu gì
+  const cao = ngoaiGom.filter(laCao), con = ngoaiGom.filter((l) => !laCao(l));
   const an = k.so_lo_xet - k.ket_qua.length;
   kq.innerHTML = `<p class="phu">AgiViet chấm ${k.so_lo_xet} lô ${esc(tenSp)} đang bán theo phiếu của bạn, xếp từ phù hợp nhất.</p>
     ${gom ? `<section class="kq-nhom gom"><div class="hang"><h2>AgiViet đề xuất gom ${gom.nguon.length} hộ</h2></div>
@@ -188,8 +189,8 @@ const theGoiY = (l: LoGoiY) => { const pt = l.phan_tram ?? 0;
   <div class="hang"><div><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))}</p></div>
     <div class="pt ${mucMau(pt)}" aria-label="Phù hợp ${pt} phần trăm"><b>${pt}%</b><span>phù hợp</span></div></div>
   <div class="thanh-pt ${mucMau(pt)}" aria-hidden="true"><i style="width:${pt}%"></i></div>
-  <p class="phu">Đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg${l.nhat_ky_muc ? ` · nhật ký canh tác ${l.nhat_ky_muc} mục` : ""}${l.can_thuong_luong ? " · giá cần thương lượng" : ""}</p>
-  ${(l.thieu || []).length ? `<div class="tin">${(l.thieu || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>` : `<div class="tin"><span class="chip la">Đạt đủ phiếu</span></div>`}
+  <p class="phu">Đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg${l.nhat_ky_muc ? ` · nhật ký canh tác ${l.nhat_ky_muc} mục` : ""}</p>
+  ${(l.thieu || []).length ? `<div class="tin">${(l.thieu || []).map((x) => `<span class="chip do">${esc(x)}</span>`).join("")}</div>` : `<div class="tin"><span class="chip la">Đạt đủ phiếu</span></div>`}
   ${DL.lo.some((x) => x.id === l.lot_id) ? `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${esc(l.lot_id)}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${esc(l.lot_id)}">Trả giá</button></div>` : ""}</article>`; };
 
 

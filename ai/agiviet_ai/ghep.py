@@ -227,8 +227,8 @@ def ghep_nguoc(req: ReverseMatchRequest):
 # Chỉ loại những lô không thể giao dịch (sai mặt hàng, không bán, bị khóa, hết hạn, cùng tổ chức, chưa mở,
 # giá thấp nhất của người bán vượt xa mức người mua). Tỉnh, giấy tờ, loại, ngày, lượng, nhật ký thành
 # tiêu chí chấm điểm; tổng 100 → "Phù hợp X%". Giá không bao giờ lộ ra (chỉ nhãn cần thương lượng).
-DIEM_TOI_DA = {'luong': 25, 'giay_to': 20, 'vi_tri': 15, 'loai': 10, 'ngay': 10, 'uy_tin': 10, 'da_can': 5, 'nhat_ky': 5}
-TEN_TIEU_CHI = {'luong': 'Lượng đáp ứng', 'giay_to': 'Giấy tờ yêu cầu', 'vi_tri': 'Nơi bán', 'loai': 'Đúng loại',
+DIEM_TOI_DA = {'luong': 25, 'giay_to': 15, 'gia': 15, 'vi_tri': 10, 'loai': 10, 'ngay': 10, 'uy_tin': 5, 'da_can': 5, 'nhat_ky': 5}
+TEN_TIEU_CHI = {'luong': 'Lượng đáp ứng', 'giay_to': 'Giấy tờ yêu cầu', 'gia': 'Giá mong muốn', 'vi_tri': 'Nơi bán', 'loai': 'Đúng loại',
                 'ngay': 'Kịp ngày cần', 'uy_tin': 'Uy tín trên AgiViet', 'da_can': 'Lượng đã cân', 'nhat_ky': 'Nhật ký canh tác'}
 
 
@@ -239,8 +239,9 @@ def cham_phu_hop(nc, lo, luc):
     giao = max(lo.ngay_co_hang, nc.ngay_tu, hn)
     if (lo.mat_hang != nc.mat_hang or lo.trang_thai not in ('dang_ban', 'sap_co_hang') or lo.khoa_an_toan or lo.nguoi_ban_bi_khoa
             or lo.han_su_dung < giao or lo.ben_ban_id == nc.ben_mua_id or lo.ben_ban_id in nc.ben_ban_chan
-            or not lo.cap_mo_cho_phep or kg <= 0 or lo.gia_thap_nhat_kin * 100 > nc.gia_toi_da_kin * 115):
+            or not lo.cap_mo_cho_phep or kg <= 0):
         return None
+    ty_gia = lo.gia_thap_nhat_kin / max(1, nc.gia_toi_da_kin)
     yeu = sorted(set(nc.giay_to_bat_buoc))
     co = [x for x in yeu if giay_hop_le(lo, x, giao, max(nc.ngay_den, giao))]
     lech = max(0, (giao - nc.ngay_den).days)
@@ -248,17 +249,19 @@ def cham_phu_hop(nc, lo, luc):
     cung_tinh = not nc.tinh_uu_tien or lo.tinh == nc.tinh_uu_tien
     diem = {
         'luong': 25 * min(1, kg / nc.luong_kg),
-        'giay_to': 20 * (len(co) / len(yeu) if yeu else 1),
-        'vi_tri': 15 if cung_tinh else 6,
+        'giay_to': 15 * (len(co) / len(yeu) if yeu else 1),
+        # Giá: so mức thấp nhất (kín) của người bán với giá mong muốn (kín); không bao giờ trả số
+        'gia': 15 if ty_gia <= 1 else 10 if ty_gia <= 1.05 else 5 if ty_gia <= 1.15 else 0,
+        'vi_tri': 10 if cung_tinh else 4,
         'loai': 10 if lo.loai == nc.loai[0] else (7 if lo.loai in nc.loai else 3),
         'ngay': max(0, 10 - 3 * lech),
-        'uy_tin': 6 if moi else 10 * lo.uy_tin / 100,
+        'uy_tin': 3 if moi else 5 * lo.uy_tin / 100,
         'da_can': 5 if lo.da_can else 2,
         'nhat_ky': 5 if (not nc.can_nhat_ky or lo.so_muc_nhat_ky > 0) else 0,
     }
     if lo.vi_pham_90_ngay:
         diem['uy_tin'] = 0
-    gan_gia = lo.gia_thap_nhat_kin * 100 > nc.gia_toi_da_kin * 100
+    gan_gia = ty_gia > 1
     thieu_luong = f'Chỉ đáp ứng {kg:g}/{nc.luong_kg:g} kg'
     thieu = []
     if kg < nc.luong_kg: thieu.append(thieu_luong)
@@ -267,7 +270,9 @@ def cham_phu_hop(nc, lo, luc):
     if lo.loai != nc.loai[0]: thieu.append(f'Loại {lo.loai}')
     if lech: thieu.append(f'Giao chậm {lech} ngày')
     if nc.can_nhat_ky and lo.so_muc_nhat_ky == 0: thieu.append('Chưa ghi nhật ký trong app')
-    tong = sum(diem.values()) - (8 if gan_gia else 0)
+    if ty_gia > 1.15: thieu.append('Giá mong muốn thấp hơn mức người bán chấp nhận')
+    elif gan_gia: thieu.append('Giá cần thương lượng thêm')
+    tong = sum(diem.values())
     return {'lo_id': lo.id, 'phan_tram': max(0, min(100, round(tong))), 'kha_dung_cam_ket_kg': round(kg, 3),
             'tieu_chi': [{'ma': k, 'ten': TEN_TIEU_CHI[k], 'diem': round(v, 1), 'toi_da': DIEM_TOI_DA[k]} for k, v in diem.items()],
             'thieu': thieu, 'nhan_gia': 'can_thuong_luong' if gan_gia else 'trong_khoang', 'so_muc_nhat_ky': lo.so_muc_nhat_ky,
