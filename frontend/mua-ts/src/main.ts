@@ -17,11 +17,11 @@ async function veTheoDuong(): Promise<void> {
   const [man = "hom-nay", a, b] = location.hash.slice(1).split("/");
   const o = $("#man"), sau = !!a;
   dungChat();
-  $("#tieu-de").textContent = man === "don" && a ? "Chi tiết đơn" : TIEU_DE[man] || "Hôm nay";
+  $("#tieu-de").textContent = man === "don" && a ? "Chi tiết đơn" : man === "nguon" && a ? (a === "phieu" ? "Phiếu tìm nguồn" : "Kết quả tìm nguồn") : TIEU_DE[man] || "Hôm nay";
   $("#lui").hidden = !sau; document.body.dataset.man = man + (sau ? "-con" : "");
   document.querySelectorAll<HTMLAnchorElement>(".tab a").forEach((x) => x.setAttribute("aria-current", x.hash === "#" + (man === "nhu-cau" ? "nguon" : man) ? "page" : "false"));
   try {
-    if (man === "nguon") { await veNguon(o); napDauPhieu(o); }
+    if (man === "nguon") { await veNguon(o, a); if (!a) napDauPhieu(o); }
     else if (man === "nhu-cau") await (a === "moi" ? veTaoPhieu(o) : veChiTietPhieu(o, a));
     else if (man === "don") await (a ? veChiTietDon(o, a) : veDsDon(o));
     else if (man === "tien") veTien(o);
