@@ -84,7 +84,7 @@ async def loi_nhap(request,exc):
 async def loi_gia_tri(request,exc):
     return JSONResponse({'ma_loi':'DU_LIEU_KHONG_HOP_LE','request_id':request.state.request_id},status_code=422)
 
-@app.get('/health')
+@app.api_route('/health', methods=['GET', 'HEAD'])  # UptimeRobot kiểm bằng HEAD
 def health():return {'trang_thai':'san_sang','phien_ban':PHIEN_BAN,'luat':True,'stt_da_cau_hinh':stt_san_sang()}
 
 @app.post('/match/phu-hop')
