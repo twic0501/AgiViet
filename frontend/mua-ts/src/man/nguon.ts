@@ -71,19 +71,19 @@ async function vePhieu(o: HTMLElement): Promise<void> {
   o.innerHTML = `<form id="phieu" class="phieu" novalidate>
     <section class="the"><h2>Hàng</h2>
       <label class="o-nhap">Mặt hàng<select id="pk-sp"><option value="">Chọn mặt hàng</option>${sp.map((s) => `<option value="${esc(s.code)}"${s.code === P.sp ? " selected" : ""}>${esc(s.name_vi)}</option>`).join("")}</select></label>
-      <div class="luoi2"><label class="o-nhap">Loại<select id="pk-loai"></select></label>
+      <div class="luoi2 sau-sp"><label class="o-nhap">Loại<select id="pk-loai"></select></label>
         <label class="o-nhap">Lượng cần (kg)<input id="pk-kg" inputmode="decimal" value="${esc(P.kg)}" placeholder="vd 1000"></label></div>
     </section>
-    <section class="the"><h2>Giao</h2>
+    <section class="the sau-sp"><h2>Giao</h2>
       <div class="luoi2"><label class="o-nhap">Tỉnh<select id="pk-tinh">${TINH_DS.map(([m, t]) => `<option value="${m}"${m === P.tinh ? " selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="o-nhap">Cần trước ngày<input id="pk-han" type="date" value="${esc(P.han)}"></label></div>
     </section>
-    <section class="the"><h2>Giá và giấy tờ</h2>
+    <section class="the sau-sp"><h2>Giá và giấy tờ</h2>
       <label class="o-nhap">Giá mong muốn (đ/kg)<input id="pk-gia" inputmode="numeric" value="${esc(P.gia)}" placeholder="vd 24000"></label>
       <p class="phu">Giữ kín: người bán không thấy. AgiViet chỉ dùng để so với giá thấp nhất (cũng giữ kín) của người bán.</p>
       <fieldset class="giay" id="pk-giay"></fieldset>
     </section>
-    <div class="day-nut"><p class="phu" id="pk-thieu" role="status"></p><button type="submit" class="nut chinh rong" id="pk-tim">Tìm nguồn</button></div>
+    <div class="day-nut sau-sp"><p class="phu" id="pk-thieu" role="status"></p><button type="submit" class="nut chinh rong" id="pk-tim">Tìm nguồn</button></div>
   </form>`;
   const $ = <T extends HTMLElement>(s: string) => o.querySelector<T>(s)!;
   const veLoai = () => { const ds = loaiCua(P.sp); if (!ds.includes(P.loai)) P.loai = "";
@@ -94,13 +94,15 @@ async function vePhieu(o: HTMLElement): Promise<void> {
       ${P.sp ? ds.map(([m, t]) => `<label class="chon"><input type="checkbox" data-giay="${m}"${P.giay.includes(m) ? " checked" : ""}> ${t}</label>`).join("") : ""}
       <label class="chon"><input type="checkbox" id="pk-nk"${P.nhatKy ? " checked" : ""}> Có nhật ký ${laThuySan(nhomSp(P.sp)) ? "nuôi" : "canh tác"} ghi trong app</label>`; };
   veGiay();
+  const moDan = () => o.querySelectorAll<HTMLElement>(".sau-sp").forEach((x) => (x.hidden = !P.sp));
+  moDan();
   const capNut = () => { const t = thieuPhieu(); $<HTMLButtonElement>("#pk-tim").disabled = !!t.length; $("#pk-thieu").textContent = t.length ? `Còn thiếu: ${t.join(", ")}.` : ""; };
   veLoai(); capNut();
   $("#phieu").oninput = (e) => {
     const t = e.target as HTMLInputElement;
     if (t.dataset.giay) P.giay = t.checked ? [...P.giay, t.dataset.giay] : P.giay.filter((x) => x !== t.dataset.giay);
     else if (t.id === "pk-nk") P.nhatKy = t.checked;
-    else { const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "pk-gia": "gia" } as const)[t.id as "pk-sp"]; if (ten) { P[ten] = t.value; if (ten === "sp") { veLoai(); veGiay(); } } }
+    else { const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "pk-gia": "gia" } as const)[t.id as "pk-sp"]; if (ten) { P[ten] = t.value; if (ten === "sp") { veLoai(); veGiay(); moDan(); } } }
     capNut();
   };
   $<HTMLFormElement>("#phieu").onsubmit = (e) => { e.preventDefault(); if (!thieuPhieu().length) location.hash = "#nguon/ket-qua"; };
