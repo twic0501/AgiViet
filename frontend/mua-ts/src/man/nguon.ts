@@ -12,8 +12,12 @@ import { laySp } from "./nhu-cau";
 // Phiếu đang điền (giữ khi đổi màn rồi quay lại)
 const P = { sp: "", loai: "", kg: "", tinh: "", han: "", gia: "", giay: [] as string[], nhatKy: false };
 // Mã số vùng trồng không nằm ở đây: người bán đầu tiên của AgiViet là các trại đã có mã vùng trồng.
-const GIAY: [string, string][] = [["vietgap", "VietGAP"], ["spray_diary", "Nhật ký cách ly thuốc"], ["residue_test", "Kiểm dư lượng thuốc"],
-  ["phytosanitary", "Kiểm dịch thực vật"], ["pond_diary", "Nhật ký ao (thủy sản)"], ["antibiotic_test", "Test kháng sinh (thủy sản)"]];
+// Giấy tờ theo nhóm hàng: thủy sản (ao, kháng sinh) khác cây trồng (thuốc BVTV, kiểm dịch thực vật)
+const GIAY: [string, string, "chung" | "cay" | "thuy"][] = [["vietgap", "VietGAP", "chung"], ["spray_diary", "Nhật ký cách ly thuốc", "cay"], ["residue_test", "Kiểm dư lượng thuốc", "cay"],
+  ["phytosanitary", "Kiểm dịch thực vật", "cay"], ["pond_diary", "Nhật ký ao", "thuy"], ["antibiotic_test", "Test kháng sinh", "thuy"]];
+const laThuySan = (nhom?: string) => /aqua|seafood|thuy|fish|shrimp/i.test(nhom || "");
+let nhomSp: (ma: string) => string | undefined = () => undefined;
+const giayCua = (sp: string) => GIAY.filter(([, , n]) => n === "chung" || (laThuySan(nhomSp(sp)) ? n === "thuy" : n === "cay"));
 interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; ly_do_khop?: string[]; thieu?: string[]; nhat_ky_muc?: number; luong_g?: string }
 interface KetQuaTim { khop_du: LoGoiY[]; khop_mot_phan: LoGoiY[]; gan_khop_gia: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg: number; con_thieu_kg: number } | null; so_lo_xet: number }
 const TINH_DS: [string, string][] = [["", "Mọi tỉnh"], ["DT", "Đồng Tháp"], ["TG", "Tiền Giang"], ["BT", "Bến Tre"], ["VL", "Vĩnh Long"], ["CT", "Cần Thơ"], ["AG", "An Giang"], ["ST", "Sóc Trăng"], ["CM", "Cà Mau"], ["KG", "Kiên Giang"], ["LA", "Long An"], ["TN", "Tây Ninh"]];
@@ -31,7 +35,7 @@ const theLo = (l: Lo) => {
     <p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))}</p>
     <p class="phu so">Còn ${vnd(kg(l.available_g ?? l.qty?.available))} kg · từ ${ngay(l.available_from)}${l.qty_basis === "weighed" ? " · đã cân" : " · người bán ước tính"}</p>
     ${l.ban_gap ? `<div class="tin"><span class="chip do">Bán gấp</span></div>` : ""}
-    ${coChao ? `<a class="nut vien rong" href="#tin/offer/${coChao.id}">Xem lời chào của bạn</a>` : `<button type="button" class="nut vien nho tra-gia" data-tra="${l.id}">Trả giá</button>`}
+    ${coChao ? `<a class="nut vien rong" href="#tin/offer/${coChao.id}">Xem lời chào của bạn</a>` : `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${l.id}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${l.id}">Trả giá</button></div>`}
   </article>`;
 };
 const ganTraGia = (o: HTMLElement, ve: () => void) => o.querySelectorAll<HTMLButtonElement>("[data-tra]").forEach((b) => (b.onclick = () => { const l = DL.lo.find((x) => x.id === b.dataset.tra); if (l) moTraGia(l, ve); }));
@@ -57,7 +61,7 @@ export async function veNguon(o: HTMLElement, man?: string): Promise<void> {
     <div class="loc" role="group" aria-label="Lọc theo mặt hàng"><button type="button" data-loc="" aria-pressed="${!locSp}">Tất cả</button>${coSp.map((m) => `<button type="button" data-loc="${esc(m)}" aria-pressed="${locSp === m}">${esc(tenSp(m))}</button>`).join("")}</div>
     ${ds.length ? ds.map(theLo).join("") : trong("Chưa có lô nào đang bán. Lập phiếu để người bán có hàng báo giá cho bạn.")}`;
   o.querySelectorAll<HTMLButtonElement>("[data-loc]").forEach((b) => (b.onclick = () => { locSp = b.dataset.loc!; veNguon(o); }));
-  ganTraGia(o, () => veNguon(o));
+  ganTraGia(o, () => veNguon(o)); ganChiTiet(o);
 }
 
 /** Phiếu tìm nguồn: ba nhóm, nút Tìm nguồn dính đáy. */
@@ -77,22 +81,26 @@ async function vePhieu(o: HTMLElement): Promise<void> {
     <section class="the"><h2>Giá và giấy tờ</h2>
       <label class="o-nhap">Giá mong muốn (đ/kg)<input id="pk-gia" inputmode="numeric" value="${esc(P.gia)}" placeholder="vd 24000"></label>
       <p class="phu">Giữ kín: người bán không thấy. AgiViet chỉ dùng để so với giá thấp nhất (cũng giữ kín) của người bán.</p>
-      <fieldset class="giay"><legend>Giấy tờ cần có (đã xác minh, còn hạn)</legend>
-        ${GIAY.map(([m, t]) => `<label class="chon"><input type="checkbox" data-giay="${m}"${P.giay.includes(m) ? " checked" : ""}> ${t}</label>`).join("")}
-        <label class="chon"><input type="checkbox" id="pk-nk"${P.nhatKy ? " checked" : ""}> Có nhật ký canh tác ghi trong app</label></fieldset>
+      <fieldset class="giay" id="pk-giay"></fieldset>
     </section>
     <div class="day-nut"><p class="phu" id="pk-thieu" role="status"></p><button type="submit" class="nut chinh rong" id="pk-tim">Tìm nguồn</button></div>
   </form>`;
   const $ = <T extends HTMLElement>(s: string) => o.querySelector<T>(s)!;
   const veLoai = () => { const ds = loaiCua(P.sp); if (!ds.includes(P.loai)) P.loai = "";
     $<HTMLSelectElement>("#pk-loai").innerHTML = `<option value="">Mọi loại</option>` + ds.map((g) => `<option value="${esc(g)}"${g === P.loai ? " selected" : ""}>${esc(tenLoai(g))}</option>`).join(""); };
+  nhomSp = (ma) => (sp.find((x) => x.code === ma) as { group_code?: string } | undefined)?.group_code;
+  const veGiay = () => { const ds = giayCua(P.sp); P.giay = P.giay.filter((g) => ds.some(([m]) => m === g));
+    $("#pk-giay").innerHTML = `<legend>Giấy tờ cần có (đã xác minh, còn hạn)</legend>${P.sp ? "" : `<p class="phu">Chọn mặt hàng để thấy giấy tờ phù hợp.</p>`}
+      ${P.sp ? ds.map(([m, t]) => `<label class="chon"><input type="checkbox" data-giay="${m}"${P.giay.includes(m) ? " checked" : ""}> ${t}</label>`).join("") : ""}
+      <label class="chon"><input type="checkbox" id="pk-nk"${P.nhatKy ? " checked" : ""}> Có nhật ký ${laThuySan(nhomSp(P.sp)) ? "nuôi" : "canh tác"} ghi trong app</label>`; };
+  veGiay();
   const capNut = () => { const t = thieuPhieu(); $<HTMLButtonElement>("#pk-tim").disabled = !!t.length; $("#pk-thieu").textContent = t.length ? `Còn thiếu: ${t.join(", ")}.` : ""; };
   veLoai(); capNut();
   $("#phieu").oninput = (e) => {
     const t = e.target as HTMLInputElement;
     if (t.dataset.giay) P.giay = t.checked ? [...P.giay, t.dataset.giay] : P.giay.filter((x) => x !== t.dataset.giay);
     else if (t.id === "pk-nk") P.nhatKy = t.checked;
-    else { const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "pk-gia": "gia" } as const)[t.id as "pk-sp"]; if (ten) { P[ten] = t.value; if (ten === "sp") veLoai(); } }
+    else { const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "pk-gia": "gia" } as const)[t.id as "pk-sp"]; if (ten) { P[ten] = t.value; if (ten === "sp") { veLoai(); veGiay(); } } }
     capNut();
   };
   $<HTMLFormElement>("#phieu").onsubmit = (e) => { e.preventDefault(); if (!thieuPhieu().length) location.hash = "#nguon/ket-qua"; };
@@ -126,9 +134,10 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
       ${gom.nguon.map((l) => theGoiY(l, "Trong nhóm gom")).join("")}</section>` : ""}
     ${nhom("Khớp một phần", "Đạt giấy tờ và giá nhưng thiếu lượng hoặc khác loại.", motPhan, "Khớp một phần")}
     ${nhom("Gần mức giá", "Giá thấp nhất của người bán cao hơn mức bạn muốn một chút; cần thương lượng.", k.gan_khop_gia, "Cần thương lượng")}
-    ${tong ? "" : trong("Chưa có lô nào đạt phiếu. Thử nới giá mong muốn hoặc bớt giấy tờ, hoặc gửi phiếu để người bán báo giá.")}
+    ${tong ? "" : viSaoTrong(tenSp)}
     <section class="the"><p class="phu">Chưa ưng nguồn nào? Gửi phiếu để người bán có hàng chủ động báo giá cho bạn.</p><button type="button" class="nut vien rong" id="ng-gui-phieu">Gửi phiếu cho người bán báo giá</button></section>`;
-  ganTraGia(kq, () => veKetQuaTim(o));
+  ganTraGia(kq, () => veKetQuaTim(o)); ganChiTiet(kq);
+  kq.querySelectorAll<HTMLButtonElement>("[data-go]").forEach((b) => (b.onclick = () => { const g = b.dataset.go; if (g === "tinh") P.tinh = ""; if (g === "loai") P.loai = ""; if (g === "giay") { P.giay = []; P.nhatKy = false; } if (g === "han") P.han = ""; veKetQuaTim(o); }));
   kq.querySelector<HTMLButtonElement>("#ng-gui-phieu")!.onclick = () => { try { sessionStorage.setItem("agv-phieu-nhap", JSON.stringify({ ...P, tu: "", gom: true })); } catch { /* bỏ qua */ } location.hash = "#nhu-cau/moi"; };
 }
 
@@ -167,5 +176,50 @@ const theGoiY = (l: LoGoiY, nhan: string, xanh = false) => `<article class="the"
   <div class="hang"><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><span class="chip ${xanh ? "la" : ""}">${nhan}</span></div>
   <p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))} · đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg</p>
   <div class="tin">${(l.ly_do_khop || []).filter((x) => !LY_DO_KY_THUAT.test(x)).map((x) => `<span class="chip la">${esc(x)}</span>`).join("")}${l.nhat_ky_muc ? `<span class="chip la">nhật ký canh tác ${l.nhat_ky_muc} mục</span>` : ""}${(l.thieu || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>
-  ${DL.lo.some((x) => x.id === l.lot_id) ? `<button type="button" class="nut vien nho tra-gia" data-tra="${esc(l.lot_id)}">Trả giá</button>` : ""}</article>`;
+  ${DL.lo.some((x) => x.id === l.lot_id) ? `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${esc(l.lot_id)}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${esc(l.lot_id)}">Trả giá</button></div>` : ""}</article>`;
 
+
+/** Không có lô đạt phiếu: tìm điều kiện đang chặn (dựa trên lô đang bán) và cho gỡ từng cái. */
+function viSaoTrong(tenSp: string): string {
+  const cungSp = DL.lo.filter((l) => l.product_code === P.sp && (!l.is_substandard || l.ban_gap));
+  const cungLoai = cungSp.filter((l) => !P.loai || l.grade_code === P.loai), cungTinh = cungLoai.filter((l) => !P.tinh || l.province_code === P.tinh);
+  const ly: string[] = [], nut: string[] = [];
+  const tinhKhac = [...new Set(cungLoai.map((l) => tinh(l.province_code)))];
+  if (!cungSp.length) ly.push(`Hiện chưa có ai đang bán ${esc(tenSp)}.`);
+  else if (!cungLoai.length) { ly.push(`Có ${cungSp.length} lô ${esc(tenSp)} nhưng không có ${esc(tenLoai(P.loai))}.`); nut.push(`<button type="button" class="nut vien nho" data-go="loai">Nhận mọi loại</button>`); }
+  else if (!cungTinh.length) { ly.push(`Không có ${esc(tenSp)} ${esc(tenLoai(P.loai))} ở ${esc(tinh(P.tinh))}; có ${cungLoai.length} lô ở ${esc(tinhKhac.join(", "))}.`); nut.push(`<button type="button" class="nut vien nho" data-go="tinh">Tìm ở mọi tỉnh</button>`); }
+  else {
+    if (P.giay.length || P.nhatKy) { ly.push(`Có ${cungTinh.length} lô đúng mặt hàng nhưng chưa lô nào có đủ giấy tờ bạn yêu cầu.`); nut.push(`<button type="button" class="nut vien nho" data-go="giay">Bỏ yêu cầu giấy tờ</button>`); }
+    if (P.han) { ly.push(`Có thể hàng chưa kịp trước ${ngay(P.han)}.`); nut.push(`<button type="button" class="nut vien nho" data-go="han">Bỏ hạn ngày</button>`); }
+    ly.push("Hoặc giá mong muốn thấp hơn mức thấp nhất người bán chấp nhận (mức này giữ kín, AgiViet không cho biết).");
+  }
+  return `<section class="the trong-ly"><h2>Chưa có lô nào đạt phiếu</h2>${ly.map((x) => `<p>${x}</p>`).join("")}${nut.length ? `<div class="tin">${nut.join("")}</div>` : ""}</section>`;
+}
+
+const TEN_VIEC: Record<string, string> = { fertilize: "Bón phân", spray: "Phun thuốc", water: "Tưới", flower: "Ra hoa", fruit_set: "Đậu trái", harvest: "Thu hoạch", weather_incident: "Sự cố thời tiết", pest_incident: "Sâu bệnh", care: "Chăm sóc" };
+const TT_GIAY: Record<string, [string, string]> = { da_xac_minh: ["Đã xác minh", "la"], tu_khai: ["Người bán tự khai", ""], het_hieu_luc: ["Hết hiệu lực", "do"] };
+interface HoSoNguon { lot_code: string; nguoi_ban: { ten: string; muc_xac_minh?: string; tinh?: string }; vi_tri: { ten?: string } | null; don_hoan_tat_tren_app: number; anh: { nhan: string }[];
+  giay_to: { kind: string; label_vi: string; market?: string; den?: string; trang_thai: string }[];
+  nhat_ky: { ngay: string; viec: string; ghi_chu?: string; thuoc?: string; ngay_cach_ly?: number; het_cach_ly?: string }[] }
+
+/** Tấm chi tiết một lô: người bán, giấy tờ (trạng thái, hạn), nhật ký canh tác, ảnh. */
+async function moChiTietLo(lotId: string): Promise<void> {
+  const t = document.createElement("dialog"); t.className = "tam"; t.setAttribute("aria-labelledby", "ct-lo-td");
+  t.innerHTML = `<div class="tam-dau"><h2 id="ct-lo-td">Hồ sơ nguồn</h2><button type="button" class="nut-tron" data-dong aria-label="Đóng">×</button></div><div class="tam-than"><div class="khung-tai"></div></div>`;
+  document.body.append(t); t.showModal();
+  t.addEventListener("click", (e) => { if (e.target === t || (e.target as HTMLElement).closest("[data-dong]")) t.close(); }); t.addEventListener("close", () => t.remove());
+  const than = t.querySelector<HTMLElement>(".tam-than")!;
+  let h: HoSoNguon;
+  try { h = await api<HoSoNguon>(`/v1/lots/${lotId}/source-profile`); } catch (e) { than.innerHTML = `<p class="loi">${esc((e as Error).message)}</p>`; return; }
+  const l = DL.lo.find((x) => x.id === lotId);
+  than.innerHTML = `<div class="ct-lo">
+    <section><h3>${esc(h.lot_code)}${l ? ` · ${esc(l.product_name || "")} ${esc(tenLoai(l.grade_code))}` : ""}</h3>
+      <p class="phu">${esc(h.nguoi_ban.ten)} · ${esc(tinh(h.nguoi_ban.tinh))}${h.vi_tri?.ten ? ` · ${esc(h.vi_tri.ten)}` : ""}</p>
+      <p class="phu">${h.don_hoan_tat_tren_app ? `${h.don_hoan_tat_tren_app} đơn đã hoàn tất trên AgiViet` : "Chưa có đơn hoàn tất trên AgiViet"} · ${h.anh.filter((a) => a.nhan === "chup_trong_app").length} ảnh chụp trong app</p></section>
+    <section><h3>Giấy tờ</h3>${h.giay_to.length ? h.giay_to.map((g) => { const [n, c] = TT_GIAY[g.trang_thai] ?? [g.trang_thai, ""];
+      return `<div class="dk-dong"><span>${esc(g.label_vi)}${g.market ? ` · thị trường ${esc(g.market)}` : ""}</span><p><span class="chip ${c}">${n}</span>${g.den ? ` <span class="phu">còn hạn tới ${ngay(g.den)}</span>` : ""}</p></div>`; }).join("") : `<p class="phu">Người bán chưa khai giấy tờ nào.</p>`}</section>
+    <section><h3>Nhật ký canh tác</h3>${h.nhat_ky.length ? h.nhat_ky.map((n) => `<div class="dk-dong"><span>${ngay(n.ngay)}</span><p>${esc(TEN_VIEC[n.viec] ?? n.viec)}${n.thuoc ? ` · ${esc(n.thuoc)}${n.ngay_cach_ly ? `, cách ly ${n.ngay_cach_ly} ngày (hết ${ngay(n.het_cach_ly)})` : ""}` : ""}${n.ghi_chu ? `<br><span class="phu">${esc(n.ghi_chu)}</span>` : ""}</p></div>`).join("") : `<p class="phu">Vườn này chưa ghi nhật ký trong app.</p>`}</section>
+    ${l ? `<button type="button" class="nut chinh rong" data-tra="${esc(lotId)}">Trả giá lô này</button>` : ""}</div>`;
+  than.querySelector<HTMLButtonElement>("[data-tra]")?.addEventListener("click", () => { t.close(); if (l) moTraGia(l, () => window.dispatchEvent(new Event("agv-lam-moi"))); });
+}
+const ganChiTiet = (o: HTMLElement) => o.querySelectorAll<HTMLButtonElement>("[data-ct]").forEach((b) => (b.onclick = () => moChiTietLo(b.dataset.ct!)));

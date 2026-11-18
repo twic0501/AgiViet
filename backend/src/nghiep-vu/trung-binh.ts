@@ -111,9 +111,13 @@ export async function hoSoNguon(t: GiaoDich, nd: NguoiDung, lotId: string) {
       CASE WHEN c.revoked_at IS NOT NULL THEN 'het_hieu_luc' WHEN c.verified_at IS NOT NULL THEN 'da_xac_minh' ELSE 'tu_khai' END trang_thai
       FROM core.certifications c JOIN ref.document_kinds k ON k.code=c.kind WHERE c.org_id=$1 ORDER BY c.kind`, [l.seller_org_id]);
   const anh = await t.q(`SELECT id, CASE WHEN captured_in_app THEN 'chup_trong_app' ELSE 'anh_tai_len' END nhan, captured_at FROM core.documents WHERE entity='lot' AND entity_id=$1 AND doc_type='evidence' ORDER BY created_at`, [lotId]);
+  // Nhật ký canh tác của vườn làm ra lô (20 mục gần nhất, bản hiện hành; không có ảnh, không có người ghi)
+  const nhatKy = l.site_id ? await t.q(`SELECT e.occurred_on::text ngay, e.activity viec, e.note ghi_chu, e.medicine_name thuoc, e.withdrawal_days ngay_cach_ly, e.clear_on::text het_cach_ly, e.source nguon
+      FROM core.cultivation_entries e WHERE e.site_id=$1 AND NOT EXISTS(SELECT 1 FROM core.cultivation_entries n WHERE n.supersedes_id=e.id)
+      ORDER BY e.occurred_on DESC, e.recorded_at DESC LIMIT 20`, [l.site_id]) : [];
   return { lot_id: l.id, lot_code: l.code, nguoi_ban: { ten: await tenHien(t, nd.thanhVien.orgId, l.seller_org_id, l.display_name, 'ban'), loai: l.kind, muc_xac_minh: l.verification_level, tinh: l.province_code },
     vi_tri: l.site_id ? { ten: l.site_name, loai: l.site_kind, ghi_chu: 'Tên vị trí do người bán khai; chưa có tọa độ đối chiếu.' } : null,
-    giay_to: giayTo, anh, don_hoan_tat_tren_app: l.don_hoan_tat_tren_app, uy_tin: null, ghi_chu_uy_tin: 'Chưa tính điểm uy tín (05 mục 5) ở backend.' };
+    giay_to: giayTo, nhat_ky: nhatKy, anh, don_hoan_tat_tren_app: l.don_hoan_tat_tren_app, uy_tin: null, ghi_chu_uy_tin: 'Chưa tính điểm uy tín (05 mục 5) ở backend.' };
 }
 
 export { CHINH_SACH, duocPhep };

@@ -118,3 +118,6 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .tom-phieu { gap: 8px; } .tom-phieu .nut { justify-self: start; }
 .kq-nhom { display: grid; gap: 10px; } .kq-nhom.gom { padding: 12px; border-radius: 16px; background: var(--xanh-nhat); }
 .tra-gia { justify-self: start; min-width: 120px; }
+
+.ct-lo { display: grid; gap: 16px; padding-top: 8px; } .ct-lo h3 { margin: 0 0 4px; font-size: 16px; } .ct-lo section > p { margin: 0 0 2px; }
+.trong-ly p { margin: 0; } .trong-ly .tin { margin-top: 4px; }
