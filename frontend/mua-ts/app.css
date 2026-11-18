@@ -129,3 +129,13 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .o-nhap select { min-height: 48px; padding: 0 12px; border-radius: 12px; border: 1.5px solid var(--k); background: var(--gn); font: inherit; color: var(--m); }
 .luoi2 > * { min-width: 0; }
 .nut.nho { min-height: 44px; }
+
+/* Phù hợp %: số lớn bên phải thẻ, thanh mảnh; màu theo mức (cao xanh lá, vừa vàng, thấp xám) */
+.goi-y .hang { align-items: flex-start; }
+.pt { flex: none; display: grid; justify-items: end; line-height: 1.1; } .pt b { font-size: 24px; font-variant-numeric: tabular-nums; } .pt span { font-size: 12px; color: var(--mn); }
+.pt.cao b { color: var(--xanh); } .pt.vua b { color: #8a6400; } .pt.thap b { color: var(--mn); }
+.thanh-pt { height: 6px; border-radius: 3px; background: var(--gl); overflow: hidden; } .thanh-pt i { display: block; height: 100%; border-radius: 3px; background: var(--mn); }
+.thanh-pt.cao i { background: var(--xanh); } .thanh-pt.vua i { background: #d9a400; }
+.tc { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) 3.4em; gap: 8px; align-items: center; padding: 6px 0; font-size: 14px; } .tc b { text-align: right; font-size: 13px; }
+
+.goi-y .tin .chip, .trong-ly .chip { white-space: normal; height: auto; min-height: 26px; text-align: left; flex: 0 1 auto; max-width: 100%; overflow-wrap: anywhere; }

@@ -87,6 +87,14 @@ async def loi_gia_tri(request,exc):
 @app.get('/health')
 def health():return {'trang_thai':'san_sang','phien_ban':PHIEN_BAN,'luat':True,'stt_da_cau_hinh':stt_san_sang()}
 
+@app.post('/match/phu-hop')
+def match_phu_hop(req:MatchRequest,request:Request):
+    """Phiếu tìm nguồn: chấm "phù hợp %" từng lô (tỉnh, giấy tờ, loại… là tiêu chí, không phải điều kiện loại)."""
+    from .ghep import xep_phu_hop
+    request.state.snapshot=req.phien_ban_du_lieu;request.state.che_do='phu_hop'
+    return xep_phu_hop(req)
+
+
 @app.post('/match')
 def match(req:MatchRequest,request:Request):
     request.state.snapshot=req.phien_ban_du_lieu;request.state.che_do='luat'

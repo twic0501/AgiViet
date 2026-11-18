@@ -18,8 +18,11 @@ const GIAY: [string, string, "chung" | "cay" | "thuy"][] = [["vietgap", "VietGAP
 const laThuySan = (nhom?: string) => /aqua|seafood|thuy|fish|shrimp/i.test(nhom || "");
 let nhomSp: (ma: string) => string | undefined = () => undefined;
 const giayCua = (sp: string) => GIAY.filter(([, , n]) => n === "chung" || (laThuySan(nhomSp(sp)) ? n === "thuy" : n === "cay"));
-interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; ly_do_khop?: string[]; thieu?: string[]; nhat_ky_muc?: number; luong_g?: string }
-interface KetQuaTim { khop_du: LoGoiY[]; khop_mot_phan: LoGoiY[]; gan_khop_gia: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg: number; con_thieu_kg: number } | null; so_lo_xet: number }
+interface TieuChi { ma: string; ten: string; diem: number; toi_da: number }
+interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; phan_tram?: number; tieu_chi?: TieuChi[]; thieu?: string[]; can_thuong_luong?: boolean; nhat_ky_muc?: number; luong_g?: string }
+interface KetQuaTim { ket_qua: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg: number; con_thieu_kg: number } | null; so_lo_xet: number }
+// Điểm phù hợp của lần tìm gần nhất (tấm chi tiết dùng lại)
+const diemLo = new Map<string, LoGoiY>();
 const TINH_DS: [string, string][] = [["", "Mọi tỉnh"], ["DT", "Đồng Tháp"], ["TG", "Tiền Giang"], ["BT", "Bến Tre"], ["VL", "Vĩnh Long"], ["CT", "Cần Thơ"], ["AG", "An Giang"], ["ST", "Sóc Trăng"], ["CM", "Cà Mau"], ["KG", "Kiên Giang"], ["LA", "Long An"], ["TN", "Tây Ninh"]];
 let locSp = "", dauPhieu = "";
 const soKg = () => Number(P.kg.replace(",", ".")) || 0, soGia = () => Number(P.gia.replace(/\D/g, "")) || 0;
@@ -129,17 +132,20 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
   try { k = await (async () => { for (let lan = 0; ; lan++) { try { return await api<KetQuaTim>("/v1/sourcing/search", than); } catch (e) { if (lan >= 2) throw e; baoCho("Dịch vụ ghép nguồn đang khởi động, đang thử lại…"); await new Promise((r) => setTimeout(r, 8000)); } } })(); }
   catch (e) { kq.innerHTML = `<section class="the"><p class="loi">${esc((e as Error).message)}</p><button type="button" class="nut vien" id="ng-lai">Thử lại</button></section>`; kq.querySelector<HTMLButtonElement>("#ng-lai")!.onclick = () => veKetQuaTim(o); return; }
   finally { clearTimeout(hen); }
-  const gom = k.goi_y_gom?.nguon.length ? k.goi_y_gom : null, motPhan = k.khop_mot_phan.filter((l) => !gom?.nguon.some((g) => g.lot_id === l.lot_id));
-  const nhom = (tieuDe: string, ghi: string, ds: LoGoiY[], nhan: string, xanh = false) => ds.length ? `<section class="kq-nhom"><div class="hang"><h2>${tieuDe}</h2><span class="phu">${ds.length} lô</span></div>${ghi ? `<p class="phu">${ghi}</p>` : ""}${ds.map((l) => theGoiY(l, nhan, xanh)).join("")}</section>` : "";
-  const tong = k.khop_du.length + motPhan.length + k.gan_khop_gia.length + (gom?.nguon.length ?? 0);
-  kq.innerHTML = `<p class="phu">AgiViet đã xét ${k.so_lo_xet} lô đang bán.</p>
-    ${nhom("Khớp đủ", "Một hộ đáp ứng đủ lượng, giấy tờ và mức giá.", k.khop_du, "Khớp đủ", true)}
+  const gom = k.goi_y_gom?.nguon.length ? k.goi_y_gom : null;
+  diemLo.clear(); k.ket_qua.forEach((l) => diemLo.set(l.lot_id, l));
+  // Lô đã nằm trong nhóm gom thì không lặp lại ở danh sách bên dưới
+  const ngoaiGom = k.ket_qua.filter((l) => !gom?.nguon.some((g) => g.lot_id === l.lot_id));
+  const cao = ngoaiGom.filter((l) => (l.phan_tram ?? 0) >= 80), con = ngoaiGom.filter((l) => (l.phan_tram ?? 0) < 80);
+  const an = k.so_lo_xet - k.ket_qua.length;
+  kq.innerHTML = `<p class="phu">AgiViet chấm ${k.so_lo_xet} lô ${esc(tenSp)} đang bán theo phiếu của bạn, xếp từ phù hợp nhất.</p>
     ${gom ? `<section class="kq-nhom gom"><div class="hang"><h2>AgiViet đề xuất gom ${gom.nguon.length} hộ</h2></div>
       <p class="phu">Không hộ nào đủ ${vnd(soKg())} kg. Gom được ${vnd(gom.da_gom_kg)} kg${gom.con_thieu_kg > 0 ? `, còn thiếu ${vnd(gom.con_thieu_kg)} kg` : ", đủ lượng"}. Các hộ ở gần nhau để chở chung một chuyến; mỗi hộ ký hợp đồng riêng.</p>
-      ${gom.nguon.map((l) => theGoiY(l, "Trong nhóm gom")).join("")}</section>` : ""}
-    ${nhom("Khớp một phần", "Đạt giấy tờ và giá nhưng thiếu lượng hoặc khác loại.", motPhan, "Khớp một phần")}
-    ${nhom("Gần mức giá", "Giá thấp nhất của người bán cao hơn mức bạn muốn một chút; cần thương lượng.", k.gan_khop_gia, "Cần thương lượng")}
-    ${tong ? "" : viSaoTrong(tenSp)}
+      ${gom.nguon.map((l) => theGoiY({ ...(diemLo.get(l.lot_id) ?? {}), ...l })).join("")}</section>` : ""}
+    ${cao.length ? `<section class="kq-nhom"><div class="hang"><h2>Phù hợp cao</h2><span class="phu">${cao.length} lô</span></div>${cao.map((l) => theGoiY(l)).join("")}</section>` : ""}
+    ${con.length ? `<section class="kq-nhom"><div class="hang"><h2>${cao.length || gom ? "Phù hợp một phần" : "Gần với phiếu nhất"}</h2><span class="phu">${con.length} lô</span></div><p class="phu">Chưa đạt hết phiếu; xem dòng "thiếu" trên từng lô.</p>${con.map((l) => theGoiY(l)).join("")}</section>` : ""}
+    ${an > 0 && k.ket_qua.length ? `<p class="phu">${an} lô khác không hiện: giá thấp nhất của người bán cao hơn nhiều so với mức bạn muốn, hoặc lô đã hết hàng, hết hạn.</p>` : ""}
+    ${k.ket_qua.length ? "" : viSaoTrong(tenSp)}
     <section class="the"><p class="phu">Chưa ưng nguồn nào? Gửi phiếu để người bán có hàng chủ động báo giá cho bạn.</p><button type="button" class="nut vien rong" id="ng-gui-phieu">Gửi phiếu cho người bán báo giá</button></section>`;
   ganTraGia(kq, () => veKetQuaTim(o)); ganChiTiet(kq);
   kq.querySelectorAll<HTMLButtonElement>("[data-go]").forEach((b) => (b.onclick = () => { const g = b.dataset.go; if (g === "tinh") P.tinh = ""; if (g === "loai") P.loai = ""; if (g === "giay") { P.giay = []; P.nhatKy = false; } if (g === "han") P.han = ""; veKetQuaTim(o); }));
@@ -175,13 +181,16 @@ export async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
 
 
 // Lý do nội bộ của bộ ghép không có nghĩa với người mua (khoảng cách khi chưa có địa chỉ nhận, điểm uy tín mặc định…)
-const LY_DO_KY_THUAT = /0[.,]0 km|uy tín mặc định|không yêu cầu giấy tờ|cùng mặt hàng, dạng và loại/i;
 const tenGiay = (m: string) => GIAY.find(([k]) => k === m)?.[1] ?? m;
-const theGoiY = (l: LoGoiY, nhan: string, xanh = false) => `<article class="the">
-  <div class="hang"><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><span class="chip ${xanh ? "la" : ""}">${nhan}</span></div>
-  <p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))} · đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg</p>
-  <div class="tin">${(l.ly_do_khop || []).filter((x) => !LY_DO_KY_THUAT.test(x)).map((x) => `<span class="chip la">${esc(x)}</span>`).join("")}${l.nhat_ky_muc ? `<span class="chip la">nhật ký canh tác ${l.nhat_ky_muc} mục</span>` : ""}${(l.thieu || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>
-  ${DL.lo.some((x) => x.id === l.lot_id) ? `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${esc(l.lot_id)}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${esc(l.lot_id)}">Trả giá</button></div>` : ""}</article>`;
+const mucMau = (pt: number) => (pt >= 80 ? "cao" : pt >= 60 ? "vua" : "thap");
+const theGoiY = (l: LoGoiY) => { const pt = l.phan_tram ?? 0;
+  return `<article class="the goi-y">
+  <div class="hang"><div><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))}</p></div>
+    <div class="pt ${mucMau(pt)}" aria-label="Phù hợp ${pt} phần trăm"><b>${pt}%</b><span>phù hợp</span></div></div>
+  <div class="thanh-pt ${mucMau(pt)}" aria-hidden="true"><i style="width:${pt}%"></i></div>
+  <p class="phu">Đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg${l.nhat_ky_muc ? ` · nhật ký canh tác ${l.nhat_ky_muc} mục` : ""}${l.can_thuong_luong ? " · giá cần thương lượng" : ""}</p>
+  ${(l.thieu || []).length ? `<div class="tin">${(l.thieu || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div>` : `<div class="tin"><span class="chip la">Đạt đủ phiếu</span></div>`}
+  ${DL.lo.some((x) => x.id === l.lot_id) ? `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${esc(l.lot_id)}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${esc(l.lot_id)}">Trả giá</button></div>` : ""}</article>`; };
 
 
 /** Không có lô đạt phiếu: tìm điều kiện đang chặn (dựa trên lô đang bán) và cho gỡ từng cái. */
@@ -217,7 +226,9 @@ async function moChiTietLo(lotId: string): Promise<void> {
   let h: HoSoNguon;
   try { h = await api<HoSoNguon>(`/v1/lots/${lotId}/source-profile`); } catch (e) { than.innerHTML = `<p class="loi">${esc((e as Error).message)}</p>`; return; }
   const l = DL.lo.find((x) => x.id === lotId);
+  const d = diemLo.get(lotId);
   than.innerHTML = `<div class="ct-lo">
+    ${d?.tieu_chi?.length ? `<section><h3>Phù hợp ${d.phan_tram}% với phiếu của bạn</h3>${d.tieu_chi.map((t) => `<div class="tc"><span>${esc(t.ten)}</span><div class="thanh-pt ${mucMau(100 * t.diem / t.toi_da)}"><i style="width:${Math.round(100 * t.diem / t.toi_da)}%"></i></div><b class="so">${vnd(Math.round(t.diem * 10) / 10)}/${t.toi_da}</b></div>`).join("")}</section>` : ""}
     <section><h3>${esc(h.lot_code)}${l ? ` · ${esc(l.product_name || "")} ${esc(tenLoai(l.grade_code))}` : ""}</h3>
       <p class="phu">${esc(h.nguoi_ban.ten)} · ${esc(tinh(h.nguoi_ban.tinh))}${h.vi_tri?.ten ? ` · ${esc(h.vi_tri.ten)}` : ""}</p>
       <p class="phu">${h.don_hoan_tat_tren_app ? `${h.don_hoan_tat_tren_app} đơn đã hoàn tất trên AgiViet` : "Chưa có đơn hoàn tất trên AgiViet"} · ${h.anh.filter((a) => a.nhan === "chup_trong_app").length} ảnh chụp trong app</p></section>

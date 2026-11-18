@@ -47,6 +47,8 @@ class NhuCau(Model):
     ben_ban_chan: list[Ma] = Field(default_factory=list, max_length=1000)
     kieu_giao: Literal['tu_lay','giao_toi'] = 'tu_lay'
     trang_thai: Literal['dang_mo','da_dong','het_han','du_luong'] = 'dang_mo'
+    tinh_uu_tien: Ma | None = None   # chế độ phù hợp: tỉnh người mua muốn (chấm điểm, không loại)
+    can_nhat_ky: bool = False          # chế độ phù hợp: người mua muốn có nhật ký canh tác trong app
     @model_validator(mode='after')
     def thu_tu(self):
         if self.ngay_tu > self.ngay_den: raise ValueError('Cửa sổ ngày đảo chiều')
@@ -78,6 +80,8 @@ class Lo(Model):
     cap_mo_cho_phep: bool = True
     co_kiem_dinh_phu_vung: bool = False
     vi_pham_90_ngay: bool = False
+    tinh: Ma | None = None
+    so_muc_nhat_ky: int = Field(default=0, ge=0)
     ban_gap: bool = False
     giao_duoc: bool | None = None
     loai_nguoi_ban: Literal['ho','trang_trai','htx','vua','to_hop_tac'] = 'ho'

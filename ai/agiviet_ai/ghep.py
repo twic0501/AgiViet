@@ -221,3 +221,79 @@ def ghep_nguoc(req: ReverseMatchRequest):
         del x['_k']
     return {'phien_ban_luat': PHIEN_BAN_LUAT, 'phien_ban_du_lieu': req.phien_ban_du_lieu, 'lo_id': req.lo.id,
             'nhu_cau_khop': ra, 'so_nhu_cau_dang_can': dem_can, 'chi_goi_y': True}
+
+
+# ---------------- Chế độ "phù hợp %" cho phiếu tìm nguồn của người mua ----------------
+# Chỉ loại những lô không thể giao dịch (sai mặt hàng, không bán, bị khóa, hết hạn, cùng tổ chức, chưa mở,
+# giá thấp nhất của người bán vượt xa mức người mua). Tỉnh, giấy tờ, loại, ngày, lượng, nhật ký thành
+# tiêu chí chấm điểm; tổng 100 → "Phù hợp X%". Giá không bao giờ lộ ra (chỉ nhãn cần thương lượng).
+DIEM_TOI_DA = {'luong': 25, 'giay_to': 20, 'vi_tri': 15, 'loai': 10, 'ngay': 10, 'uy_tin': 10, 'da_can': 5, 'nhat_ky': 5}
+TEN_TIEU_CHI = {'luong': 'Lượng đáp ứng', 'giay_to': 'Giấy tờ yêu cầu', 'vi_tri': 'Nơi bán', 'loai': 'Đúng loại',
+                'ngay': 'Kịp ngày cần', 'uy_tin': 'Uy tín trên AgiViet', 'da_can': 'Lượng đã cân', 'nhat_ky': 'Nhật ký canh tác'}
+
+
+def cham_phu_hop(nc, lo, luc):
+    """Trả kết quả chấm (dict) hoặc None nếu lô không thể giao dịch."""
+    hn = luc.astimezone(VN).date()
+    kg = max(0.0, lo.luong_khai_kg * (1 if lo.da_can else .8) - lo.da_cam_ket_kg - lo.dang_giu_kg)
+    giao = max(lo.ngay_co_hang, nc.ngay_tu, hn)
+    if (lo.mat_hang != nc.mat_hang or lo.trang_thai not in ('dang_ban', 'sap_co_hang') or lo.khoa_an_toan or lo.nguoi_ban_bi_khoa
+            or lo.han_su_dung < giao or lo.ben_ban_id == nc.ben_mua_id or lo.ben_ban_id in nc.ben_ban_chan
+            or not lo.cap_mo_cho_phep or kg <= 0 or lo.gia_thap_nhat_kin * 100 > nc.gia_toi_da_kin * 115):
+        return None
+    yeu = sorted(set(nc.giay_to_bat_buoc))
+    co = [x for x in yeu if giay_hop_le(lo, x, giao, max(nc.ngay_den, giao))]
+    lech = max(0, (giao - nc.ngay_den).days)
+    moi = lo.so_don_hoan_tat < 3 or lo.uy_tin is None
+    cung_tinh = not nc.tinh_uu_tien or lo.tinh == nc.tinh_uu_tien
+    diem = {
+        'luong': 25 * min(1, kg / nc.luong_kg),
+        'giay_to': 20 * (len(co) / len(yeu) if yeu else 1),
+        'vi_tri': 15 if cung_tinh else 6,
+        'loai': 10 if lo.loai == nc.loai[0] else (7 if lo.loai in nc.loai else 3),
+        'ngay': max(0, 10 - 3 * lech),
+        'uy_tin': 6 if moi else 10 * lo.uy_tin / 100,
+        'da_can': 5 if lo.da_can else 2,
+        'nhat_ky': 5 if (not nc.can_nhat_ky or lo.so_muc_nhat_ky > 0) else 0,
+    }
+    if lo.vi_pham_90_ngay:
+        diem['uy_tin'] = 0
+    gan_gia = lo.gia_thap_nhat_kin * 100 > nc.gia_toi_da_kin * 100
+    thieu_luong = f'Chỉ đáp ứng {kg:g}/{nc.luong_kg:g} kg'
+    thieu = []
+    if kg < nc.luong_kg: thieu.append(thieu_luong)
+    if yeu and len(co) < len(yeu): thieu.append('Chưa có: ' + ', '.join(x for x in yeu if x not in co))
+    if not cung_tinh: thieu.append('Khác tỉnh bạn chọn')
+    if lo.loai != nc.loai[0]: thieu.append(f'Loại {lo.loai}')
+    if lech: thieu.append(f'Giao chậm {lech} ngày')
+    if nc.can_nhat_ky and lo.so_muc_nhat_ky == 0: thieu.append('Chưa ghi nhật ký trong app')
+    tong = sum(diem.values()) - (8 if gan_gia else 0)
+    return {'lo_id': lo.id, 'phan_tram': max(0, min(100, round(tong))), 'kha_dung_cam_ket_kg': round(kg, 3),
+            'tieu_chi': [{'ma': k, 'ten': TEN_TIEU_CHI[k], 'diem': round(v, 1), 'toi_da': DIEM_TOI_DA[k]} for k, v in diem.items()],
+            'thieu': thieu, 'nhan_gia': 'can_thuong_luong' if gan_gia else 'trong_khoang', 'so_muc_nhat_ky': lo.so_muc_nhat_ky,
+            '_du_dk': thieu in ([], [thieu_luong]), '_vt': lo.vi_tri, '_gom': lo.diem_gom_id}
+
+
+def xep_phu_hop(req: MatchRequest):
+    nc = req.nhu_cau
+    ds = sorted((r for r in (cham_phu_hop(nc, lo, req.thoi_diem) for lo in req.lo) if r), key=lambda r: (-r['phan_tram'], r['lo_id']))
+    gom = None
+    du_mot_ho = any(r['kha_dung_cam_ket_kg'] >= nc.luong_kg and r['_du_dk'] for r in ds)
+    if nc.can_gom and not du_mot_ho:
+        # Gom: chỉ lô đạt mọi điều kiện khác ngoài lượng, ở gần nhau (cùng điểm gom hoặc ≤ 30 km)
+        con = nc.luong_kg; chon = []
+        for r in (x for x in ds if x['_du_dk']):
+            if chon and not all((r['_gom'] and r['_gom'] == c['_gom']) or khoang_cach(r['_vt'], c['_vt']) <= 30 for c in chon):
+                continue
+            n = min(con, r['kha_dung_cam_ket_kg'])
+            if n < toi_thieu_nguon(nc):
+                continue
+            chon.append({**r, 'luong_kg': round(n, 3)}); con -= n
+            if con <= 1e-6 or len(chon) >= 6:
+                break
+        if len(chon) >= 2:
+            gom = {'nguon': [{'lo_id': c['lo_id'], 'luong_kg': c['luong_kg']} for c in chon], 'da_gom_kg': round(nc.luong_kg - con, 3), 'con_thieu_kg': round(max(0, con), 3)}
+    for r in ds:
+        for k in [k for k in r if k.startswith('_')]:
+            del r[k]
+    return {'phien_ban_luat': PHIEN_BAN_LUAT, 'ket_qua': ds, 'goi_y_gom': gom, 'so_lo_xet': len(req.lo), 'chi_goi_y': True}

@@ -162,23 +162,25 @@ export async function timTheoPhieu(ht: HeThong, nd: NguoiDung, p: Phieu) {
     const sp = await t.mot<any>(`SELECT id, code, name_vi FROM core.products WHERE code=$1`, [p.product_code]);
     if (!sp) throw loi('DU_LIEU_KHONG_HOP_LE', 'Mặt hàng không có trong danh mục.');
     const org = await t.mot<any>(`SELECT code FROM core.organizations WHERE id=$1`, [nd.thanhVien.orgId]);
-    const { lo, loTheoMa } = await dungLo(t, sp.id, sp.code, p.grade_code || null, nd.thanhVien.orgId, luc, p.province_code || null);
+    // Chế độ phù hợp %: lấy mọi lô của mặt hàng; tỉnh, loại, giấy tờ, nhật ký là tiêu chí chấm điểm (dịch vụ AI), không lọc trước.
+    const { lo, loTheoMa } = await dungLo(t, sp.id, sp.code, null, nd.thanhVien.orgId, luc, null);
     // Nhật ký canh tác ghi trong app theo vườn của lô (người bán tự ghi hoặc AgiViet xác nhận)
     const nhat = new Map<string, number>();
     for (const x of loTheoMa.values()) if (x.site_id) nhat.set(x.code, Number(await t.gtri(`SELECT count(*) FROM core.cultivation_entries WHERE site_id=$1`, [x.site_id])));
     const loai = p.grade_code ? [p.grade_code] : [...new Set(lo.map((x: any) => x.loai))];
+    for (const x of lo as any[]) { const g = loTheoMa.get(x.id); x.tinh = g?.province_code ?? null; x.so_muc_nhat_ky = nhat.get(x.id) ?? 0; }
     return { sp, nhat, snap: { loTheoMa, yeuCau: {
       nhu_cau: { id: 'phieu-' + nd.thanhVien.orgId.slice(0, 8), ben_mua_id: org?.code ?? 'BM', phan_khuc: 'dau_moi', mat_hang: sp.code, dang: 'tuoi', loai: loai.length ? loai : ['L1'],
         luong_kg: Number(p.qty_g) / 1000, ngay_tu: p.needed_from, ngay_den: p.needed_to, vi_tri: MAC_DINH, giay_to_bat_buoc: p.required_docs ?? [],
-        gia_toi_da_kin: Number(p.max_price_vnd), can_gom: !!p.can_gom, kieu_giao: 'tu_lay', trang_thai: 'dang_mo' },
-      lo: p.farm_diary ? lo.filter((x: any) => (nhat.get(x.id) ?? 0) > 0) : lo, thoi_diem: luc.toISOString(), phien_ban_du_lieu: `phieu-${luc.toISOString()}` } } };
+        gia_toi_da_kin: Number(p.max_price_vnd), can_gom: !!p.can_gom, kieu_giao: 'tu_lay', trang_thai: 'dang_mo', tinh_uu_tien: p.province_code || null, can_nhat_ky: !!p.farm_diary },
+      lo, thoi_diem: luc.toISOString(), phien_ban_du_lieu: `phieu-${luc.toISOString()}` } } };
   });
   // Dịch vụ AI gói miễn phí ngủ sau ~15 phút: lúc đang thức dậy Render trả 502/503 hoặc treo. Thử lại tới ~45 giây rồi mới báo lỗi.
   let r: Response | null = null, lyDo = '';
   for (const cho of [0, 5000, 10000, 15000]) {
     if (cho) await new Promise((x) => setTimeout(x, cho));
     try {
-      r = await fetch(`${ht.cfg.aiUrl}/match`, { method: 'POST', signal: AbortSignal.timeout(Math.max(ht.cfg.aiTimeoutMs, 12000)),
+      r = await fetch(`${ht.cfg.aiUrl}/match/phu-hop`, { method: 'POST', signal: AbortSignal.timeout(Math.max(ht.cfg.aiTimeoutMs, 12000)),
         headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify(snap.yeuCau) });
       if (r.ok || ![502, 503, 504].includes(r.status)) break;
       lyDo = `HTTP ${r.status}`;
@@ -186,12 +188,14 @@ export async function timTheoPhieu(ht: HeThong, nd: NguoiDung, p: Phieu) {
   }
   if (!r?.ok) throw loi('LOI_HE_THONG', `Dịch vụ ghép nguồn đang khởi động (${r ? `HTTP ${r.status}` : lyDo}), thử lại sau khoảng 1 phút.`);
   const j: any = await r.json();
+  // Tên giấy tờ cho người đọc (dịch vụ AI trả mã)
+  const tenGiay: Record<string, string> = { vietgap: 'VietGAP', spray_diary: 'nhật ký cách ly thuốc', residue_test: 'kiểm dư lượng thuốc', phytosanitary: 'kiểm dịch thực vật', pond_diary: 'nhật ký ao', antibiotic_test: 'test kháng sinh', growing_area_code: 'mã vùng trồng' };
   const mapLo = (x: any) => { const l = snap.loTheoMa.get(x.lo_id); return l ? { lot_id: l.lot_id, lot_code: l.code, seller_name: l.seller_name, province_code: l.province_code,
-    grade_code: l.lot_grade, kha_dung_cam_ket_g: String(Math.round(Number(x.kha_dung_cam_ket_kg ?? 0) * 1000)), diem: x.diem, ly_do_khop: x.ly_do_khop ?? [], thieu: x.thieu ?? [],
-    nhat_ky_muc: nhat.get(l.code) ?? 0 } : null; };
+    grade_code: l.lot_grade, kha_dung_cam_ket_g: String(Math.round(Number(x.kha_dung_cam_ket_kg ?? 0) * 1000)), phan_tram: x.phan_tram, tieu_chi: x.tieu_chi ?? [],
+    thieu: (x.thieu ?? []).map((t: string) => t.replace(/^Chưa có: (.*)$/, (_m, ds) => 'Chưa có: ' + ds.split(', ').map((g: string) => tenGiay[g] ?? g).join(', ')).replace(/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?) kg/, (_m, a, b) => `${Number(a).toLocaleString('vi-VN')}/${Number(b).toLocaleString('vi-VN')} kg`)),
+    can_thuong_luong: x.nhan_gia === 'can_thuong_luong', nhat_ky_muc: nhat.get(l.code) ?? 0 } : null; };
   const gom = j.goi_y_gom ? { ...j.goi_y_gom, nguon: (j.goi_y_gom.nguon ?? []).map((n: any) => ({ ...mapLo({ lo_id: n.lo_id }), luong_g: String(Math.round(Number(n.luong_kg) * 1000)) })).filter((x: any) => x.lot_id) } : null;
-  return { mat_hang: sp.name_vi, khop_du: (j.khop_du ?? []).map(mapLo).filter(Boolean), khop_mot_phan: (j.khop_mot_phan ?? []).map(mapLo).filter(Boolean),
-    gan_khop_gia: (j.gan_khop_gia ?? []).map(mapLo).filter(Boolean), goi_y_gom: gom, so_lo_xet: snap.yeuCau.lo.length, chi_goi_y: true };
+  return { mat_hang: sp.name_vi, ket_qua: (j.ket_qua ?? []).map(mapLo).filter(Boolean), goi_y_gom: gom, so_lo_xet: snap.yeuCau.lo.length, chi_goi_y: true };
 }
 
 const LY_DO_HOP_LE = ['product','grade','quantity','distance','schedule','documents','reputation','relationship','price_compatible','partial_quantity','near_price'];
