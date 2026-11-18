@@ -62,12 +62,13 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
     const toi = !!t.querySelector("button.c, a.n.c"); dai.classList.toggle("toi", toi);
     // Dòng trên: việc đang ở bước nào (cái cần biết trước); dòng dưới: giá/lượng hoặc mã hợp đồng.
     o.querySelector("#dai-tt")!.textContent = cau.replace(/[:.]$/, "");
-    o.querySelector("#dai-phu")!.textContent = (toi ? "Tới lượt bạn · " : "") + (t.querySelector("b")?.textContent?.trim().replace(/^Hai bên đã chốt /, "Đã chốt ") ?? ""); dai.setAttribute("aria-label", `${dai.textContent?.replace(/\s+/g, " ").trim()}. Mở giá và điều khoản`); };
+    const bt = t.querySelector("b")?.textContent?.trim().replace(/^Hai bên đã chốt /, "Đã chốt ") ?? "";
+    o.querySelector("#dai-phu")!.textContent = [toi ? "Tới lượt bạn" : "Đang chờ bên kia", cau.includes(bt.replace(/^Đã chốt /, "")) ? "" : bt].filter(Boolean).join(" · "); dai.setAttribute("aria-label", `${dai.textContent?.replace(/\s+/g, " ").trim()}. Mở giá và điều khoản`); };
   new MutationObserver(capDai).observe(gd, { childList: true, subtree: true, characterData: true });
   dai.onclick = () => tam.showModal();
   tam.onclick = (e) => { if (e.target === tam || (e.target as HTMLElement).closest("[data-dong]")) tam.close(); };
   const luong = o.querySelector<HTMLElement>("#luong")!, oGo = o.querySelector<HTMLTextAreaElement>("#tn-o")!, form = o.querySelector<HTMLFormElement>("#o-go")!;
-  let tin: Tin[] = [], dangCho: (Tin & { cho?: boolean; loi?: boolean })[] = [], dau = "";
+  let tin: Tin[] = [], dangCho: (Tin & { cho?: boolean; loi?: boolean })[] = [], dau: string | null = null; // null: chưa vẽ lần nào (cuộc trống vẫn phải thay khung đang tải)
   const sat = () => luong.scrollHeight - luong.scrollTop - luong.clientHeight < 80;
   const ve = (cuon: boolean) => {
     const tat = [...tin, ...dangCho];
@@ -85,9 +86,9 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
   };
   const gui = async (chu: string, tam?: Tin & { cho?: boolean; loi?: boolean }) => {
     const m = tam ?? { id: "tam-" + crypto.randomUUID(), body: chu, la_cua_toi: true, da_che: false, nguoi_gui: "Bạn", created_at: new Date().toISOString() };
-    m.cho = true; m.loi = false; if (!tam) dangCho.push(m); dau = ""; ve(true);
+    m.cho = true; m.loi = false; if (!tam) dangCho.push(m); dau = null; ve(true);
     try { await api("/v1/messages", { ...cuoc, body: chu }); dangCho = dangCho.filter((x) => x !== m); window.dispatchEvent(new Event("agv-vong-ngay")); dungChat(); await tai(true); }
-    catch { m.cho = false; m.loi = true; dau = ""; ve(true); }
+    catch { m.cho = false; m.loi = true; dau = null; ve(true); }
   };
   const khiDoi = (e: Event) => { if (!document.body.contains(luong)) return removeEventListener("agv-thay-doi", khiDoi); clearTimeout(hen); tai(); };
   addEventListener("agv-thay-doi", khiDoi);

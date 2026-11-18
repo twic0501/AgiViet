@@ -29,7 +29,8 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
   const ds = await laySp();
   if (!ds.length) { o.innerHTML = trong("Chưa tải được danh mục mặt hàng. Thử tải lại trang."); return; }
   o.innerHTML = `<form class="the" id="pk" novalidate>
-    <h2>Phiếu tìm nguồn</h2>
+    <h2>Gửi phiếu cho người bán báo giá</h2>
+    <p class="phu">Người bán có hàng phù hợp sẽ chủ động báo giá cho bạn.</p>
     <label class="o-nhap">Mặt hàng<select id="pk-sp">${ds.map((s) => `<option value="${esc(s.code)}">${esc(s.name_vi)}</option>`).join("")}</select></label>
     <label class="o-nhap">Loại<select id="pk-loai"></select></label>
     <div class="luoi2"><label class="o-nhap">Lượng cần (kg)<input id="pk-kg" inputmode="decimal" value="1000"></label>
@@ -38,7 +39,6 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
     <p class="phu">Giá tối đa chỉ bạn thấy. Người bán không thấy số này; họ báo giá, AgiViet chỉ gợi ý lô không vượt mức của bạn.</p>
     <div class="luoi2"><label class="o-nhap">Cần từ ngày<input id="pk-tu" type="date" value="${ngayLech(2)}"></label>
       <label class="o-nhap">Đến ngày<input id="pk-den" type="date" value="${ngayLech(9)}"></label></div>
-    <label class="chon"><input type="checkbox" id="pk-mvt"> Cần mã số vùng trồng (hàng đi thị trường có yêu cầu)</label>
     <p class="phu">Nhận tại vườn, bạn lo xe.</p>
     <p class="loi" id="pk-loi" role="alert"></p>
     <button class="nut chinh rong" id="pk-gui">Gửi phiếu và xem gợi ý</button></form>`;
@@ -69,7 +69,7 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
       const qty = Math.round(soKg * 1000), seg = (DL.me as any)?.org?.segment_code || "horeca";
       const n = await api<{ id: string; code: string; status: string; revision: number }>("/v1/demands", {
         product_code: $<HTMLSelectElement>("#pk-sp").value, segment_code: seg, needed_from: tu, needed_to: den, delivery_mode: "self_pickup",
-        required_docs: $<HTMLInputElement>("#pk-mvt").checked ? ["ma_vung_trong"] : [],
+        required_docs: [],
         lines: [{ grade_code: $<HTMLSelectElement>("#pk-loai").value, qty_g: String(qty), max_price_vnd: String(gia), min_source_qty_g: String(Math.min(qty, 20000)) }] });
       if (n.status === "draft") await api(`/v1/demands/${n.id}/publish`, { expected_revision: n.revision });
       bao(`Đã gửi phiếu ${n.code}. Người bán có món này sẽ báo giá cho bạn.`);

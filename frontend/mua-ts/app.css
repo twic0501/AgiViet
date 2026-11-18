@@ -16,7 +16,7 @@ main { display: grid; gap: 12px; padding: 12px 16px calc(var(--tab-cao) + 24px +
 .the p { margin: 0; } a.the.bam { text-decoration: none; } a.the.bam:active { background: var(--gl); }
 .hang { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-width: 0; } .hang > :first-child { min-width: 0; }
 .phu { color: var(--mn); font-size: 14px; margin: 0; } .mot-dong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.nhan { margin: 0; font-size: 13px; font-weight: 600; color: var(--mn); text-transform: uppercase; letter-spacing: .04em; }
+.nhan { margin: 0; font-size: 14px; font-weight: 600; color: var(--mn); }
 .so { font-variant-numeric: tabular-nums; } .so-lon { font-size: 30px; font-weight: 700; } .so-lon small { font-size: 16px; font-weight: 500; }
 .chip { flex: none; display: inline-flex; align-items: center; min-height: 26px; padding: 2px 10px; border-radius: 999px; background: var(--gl); font-size: 13px; font-weight: 600; white-space: nowrap; }
 .chip.la { background: var(--xanh-nhat); color: var(--xanh); } .chip.do { background: #f6dcd5; color: var(--doo); } .chip.bien { background: #dbe7f2; color: #1d4f7a; }
@@ -38,7 +38,7 @@ main { display: grid; gap: 12px; padding: 12px 16px calc(var(--tab-cao) + 24px +
 .o-tim input, .o-nhap input { width: 100%; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--k); background: var(--gn); font-family: inherit; font-size: 16px; color: var(--m); }
 .o-nhap { display: grid; gap: 4px; font-size: 14px; font-weight: 600; }
 .loc { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
-.loc button { flex: none; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--k); background: var(--gn); font-family: inherit; font-size: 14px; font-weight: 600; color: var(--m); }
+.loc button { flex: none; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--k); background: var(--gn); font-family: inherit; font-size: 14px; font-weight: 600; color: var(--m); }
 .loc button[aria-pressed="true"] { background: var(--xanh); border-color: var(--xanh); color: #f4f1e8; }
 .trong { padding: 24px 16px; text-align: center; color: var(--mn); display: grid; gap: 12px; justify-items: center; }
 .loi { color: var(--doo); font-size: 14px; margin: 0; } .loi:empty { display: none; }
@@ -48,7 +48,7 @@ main { display: grid; gap: 12px; padding: 12px 16px calc(var(--tab-cao) + 24px +
 .tab { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(5, 1fr); height: calc(var(--tab-cao) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--gn); border-top: 1px solid var(--k); }
 .tab a { position: relative; display: grid; justify-items: center; align-content: center; gap: 2px; font-size: 12px; font-weight: 600; color: var(--mn); text-decoration: none; }
 .tab a[aria-current="page"] { color: var(--xanh); } .tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.dem { position: absolute; top: 6px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--doo); color: #fff; font-size: 11px; line-height: 18px; text-align: center; }
+.dem { position: absolute; top: 6px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--doo); color: #fff; font-size: 12px; line-height: 18px; text-align: center; }
 
 /* Chat: chiếm cả màn dưới đầu trang; luồng tin tự cuộn, ô gõ dính đáy (trên thanh tab) */
 body[data-man="tin-con"] .tab, body[data-man="tin-con"] .dau { display: none; }
@@ -123,3 +123,9 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .trong-ly p { margin: 0; } .trong-ly .tin { margin-top: 4px; }
 
 .sau-sp[hidden] { display: none !important; }
+
+/* Soát 390px: ô nhập/chọn không tràn khung; nút nhỏ vẫn đủ vùng chạm */
+.o-nhap select, .o-nhap input { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+.o-nhap select { min-height: 48px; padding: 0 12px; border-radius: 12px; border: 1.5px solid var(--k); background: var(--gn); font: inherit; color: var(--m); }
+.luoi2 > * { min-width: 0; }
+.nut.nho { min-height: 44px; }

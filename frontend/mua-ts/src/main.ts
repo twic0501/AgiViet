@@ -11,7 +11,7 @@ import { veTien } from "./man/tien";
 import { dungChat, soTinMoi, veChat, veDsTin } from "./man/tin";
 import { $, esc, trong } from "./ui";
 
-const TIEU_DE: Record<string, string> = { "hom-nay": "Hôm nay", nguon: "Nguồn hàng", "nhu-cau": "Phiếu tìm nguồn", don: "Đơn", tien: "Tiền", tin: "Tin nhắn" };
+const TIEU_DE: Record<string, string> = { "hom-nay": "Hôm nay", nguon: "Nguồn hàng", "nhu-cau": "Gửi phiếu báo giá", don: "Đơn", tien: "Tiền", tin: "Tin nhắn" };
 
 async function veTheoDuong(): Promise<void> {
   const [man = "hom-nay", a, b] = location.hash.slice(1).split("/");

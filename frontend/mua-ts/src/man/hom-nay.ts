@@ -9,7 +9,7 @@ export function dsViec(): Viec[] {
   return [
     ...DL.don.filter((d) => d.hien_thi?.toi_luot?.phia === "buyer").map((d) => ({ gap: /cọc|trả|ký/i.test(d.hien_thi!.toi_luot!.viec), ten: `${maHD(d.code)} · ${d.seller_name || ""}`, phu: d.hien_thi!.toi_luot!.viec, href: `#don/${d.id}` })),
     ...DL.loiChao.filter((c) => c.status === "sent" && c.vong_cuoi?.from_side === "seller").map((c) => ({ gap: true, ten: `Người bán chào giá lại ${vnd(c.vong_cuoi!.price_vnd)} đ/kg`, phu: `${c.code} · lô ${c.lot_code || ""}`, href: manCu("bao-gia", `loi-chao=${c.id}`) })),
-    ...DL.loiChao.filter((c) => c.status === "accepted" && !DL.don.some((d) => d.offer_id === c.id)).map((c) => ({ gap: true, ten: "Lập đơn", phu: `${c.code} · hai bên đã chốt giá`, href: manCu("bao-gia", `loi-chao=${c.id}`) })),
+    ...DL.loiChao.filter((c) => c.status === "accepted" && !DL.don.some((d) => d.offer_id === c.id)).map((c) => ({ gap: true, ten: "Thống nhất điều khoản", phu: `${c.code} · hai bên đã chốt giá, tiếp theo là điều khoản rồi hợp đồng`, href: `#tin/offer/${c.id}` })),
     ...DL.khoan.filter(canTra).map((p) => ({ gap: true, ten: `Trả ${vnd(conTra(p))} đ`, phu: `${p.nguon}${p.due_at ? ` · hạn ${ngay(p.due_at)}` : ""}`, href: "#tien" })),
   ];
 }
