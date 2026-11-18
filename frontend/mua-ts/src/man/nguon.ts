@@ -122,10 +122,13 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
   const than = { product_code: P.sp, grade_code: P.loai || null, qty_g: String(Math.round(soKg() * 1000)), max_price_vnd: String(soGia()),
     needed_from: homNay, needed_to: den, province_code: P.tinh || null, required_docs: P.giay, farm_diary: P.nhatKy, can_gom: true };
   const kq = o.querySelector<HTMLElement>("#ng-kq")!;
-  // Dịch vụ ghép (gói miễn phí) ngủ sau ~15 phút: lần đầu lỗi thì thử lại một lần sau 6 giây
+  // Dịch vụ ghép (gói miễn phí) ngủ sau ~15 phút: máy chủ tự chờ ~45 s; app thử thêm 2 lần, mỗi lần cách 8 s
   let k: KetQuaTim;
-  try { k = await api<KetQuaTim>("/v1/sourcing/search", than).catch(async () => { kq.querySelector("p")!.textContent = "Đang khởi động dịch vụ ghép nguồn, chờ vài giây…"; await new Promise((r) => setTimeout(r, 6000)); return api<KetQuaTim>("/v1/sourcing/search", than); }); }
+  const baoCho = (t: string) => { const x = kq.querySelector("p"); if (x) x.textContent = t; };
+  const hen = window.setTimeout(() => baoCho("Đang khởi động dịch vụ ghép nguồn, có thể mất tới 1 phút…"), 3000);
+  try { k = await (async () => { for (let lan = 0; ; lan++) { try { return await api<KetQuaTim>("/v1/sourcing/search", than); } catch (e) { if (lan >= 2) throw e; baoCho("Dịch vụ ghép nguồn đang khởi động, đang thử lại…"); await new Promise((r) => setTimeout(r, 8000)); } } })(); }
   catch (e) { kq.innerHTML = `<section class="the"><p class="loi">${esc((e as Error).message)}</p><button type="button" class="nut vien" id="ng-lai">Thử lại</button></section>`; kq.querySelector<HTMLButtonElement>("#ng-lai")!.onclick = () => veKetQuaTim(o); return; }
+  finally { clearTimeout(hen); }
   const gom = k.goi_y_gom?.nguon.length ? k.goi_y_gom : null, motPhan = k.khop_mot_phan.filter((l) => !gom?.nguon.some((g) => g.lot_id === l.lot_id));
   const nhom = (tieuDe: string, ghi: string, ds: LoGoiY[], nhan: string, xanh = false) => ds.length ? `<section class="kq-nhom"><div class="hang"><h2>${tieuDe}</h2><span class="phu">${ds.length} lô</span></div>${ghi ? `<p class="phu">${ghi}</p>` : ""}${ds.map((l) => theGoiY(l, nhan, xanh)).join("")}</section>` : "";
   const tong = k.khop_du.length + motPhan.length + k.gan_khop_gia.length + (gom?.nguon.length ?? 0);

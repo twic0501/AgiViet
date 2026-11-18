@@ -173,9 +173,18 @@ export async function timTheoPhieu(ht: HeThong, nd: NguoiDung, p: Phieu) {
         gia_toi_da_kin: Number(p.max_price_vnd), can_gom: !!p.can_gom, kieu_giao: 'tu_lay', trang_thai: 'dang_mo' },
       lo: p.farm_diary ? lo.filter((x: any) => (nhat.get(x.id) ?? 0) > 0) : lo, thoi_diem: luc.toISOString(), phien_ban_du_lieu: `phieu-${luc.toISOString()}` } } };
   });
-  const r = await fetch(`${ht.cfg.aiUrl}/match`, { method: 'POST', signal: AbortSignal.timeout(Math.max(ht.cfg.aiTimeoutMs, 8000)),
-    headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify(snap.yeuCau) });
-  if (!r.ok) throw loi('LOI_HE_THONG', `Dịch vụ ghép nguồn trả HTTP ${r.status}.`);
+  // Dịch vụ AI gói miễn phí ngủ sau ~15 phút: lúc đang thức dậy Render trả 502/503 hoặc treo. Thử lại tới ~45 giây rồi mới báo lỗi.
+  let r: Response | null = null, lyDo = '';
+  for (const cho of [0, 5000, 10000, 15000]) {
+    if (cho) await new Promise((x) => setTimeout(x, cho));
+    try {
+      r = await fetch(`${ht.cfg.aiUrl}/match`, { method: 'POST', signal: AbortSignal.timeout(Math.max(ht.cfg.aiTimeoutMs, 12000)),
+        headers: { 'content-type': 'application/json', ...(ht.cfg.aiKey ? { 'x-ai-key': ht.cfg.aiKey } : {}) }, body: JSON.stringify(snap.yeuCau) });
+      if (r.ok || ![502, 503, 504].includes(r.status)) break;
+      lyDo = `HTTP ${r.status}`;
+    } catch (e) { r = null; lyDo = (e as Error).name; }
+  }
+  if (!r?.ok) throw loi('LOI_HE_THONG', `Dịch vụ ghép nguồn đang khởi động (${r ? `HTTP ${r.status}` : lyDo}), thử lại sau khoảng 1 phút.`);
   const j: any = await r.json();
   const mapLo = (x: any) => { const l = snap.loTheoMa.get(x.lo_id); return l ? { lot_id: l.lot_id, lot_code: l.code, seller_name: l.seller_name, province_code: l.province_code,
     grade_code: l.lot_grade, kha_dung_cam_ket_g: String(Math.round(Number(x.kha_dung_cam_ket_kg ?? 0) * 1000)), diem: x.diem, ly_do_khop: x.ly_do_khop ?? [], thieu: x.thieu ?? [],
