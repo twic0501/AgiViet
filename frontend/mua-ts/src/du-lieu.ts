@@ -11,15 +11,18 @@ export const DL = {
   tien: null as TienTong | null,
   tin: [] as TomTatTin[],
   khoan: [] as Khoan[],
+  matHangChinh: [] as string[], // mã mặt hàng chính của tổ chức (tối đa 5); rỗng = chưa chọn
   thieuKhoan: 0, // số đơn không tải được khoản trả: không được hiện "còn phải trả 0 đ"
 };
 
 const ds = <T>(x: any): T[] => (Array.isArray(x) ? x : x?.items ?? []);
 
 export async function napHet(): Promise<void> {
-  const [me, don, loiChao, lots, tien, tin] = await Promise.all([
+  const [me, don, loiChao, lots, tien, tin, mhc] = await Promise.all([
     thu(api<Me>("/v1/me")), api("/v1/orders"), thu(api("/v1/offers")), thu(api("/v1/lots")), thu(api<TienTong>("/v1/money/summary")), thu(api("/v1/messages/summary")),
+    thu(api<{ code: string }[]>("/v1/org/main-products")),
   ]);
+  DL.matHangChinh = (mhc ?? []).map((x) => x.code);
   DL.me = me; DL.don = ds<Don>(don); DL.loiChao = ds<LoiChao>(loiChao).filter((o) => o.la_ben_mua); DL.tien = tien; DL.tin = ds<TomTatTin>(tin);
   DL.lo = (await Promise.all(ds<Lo>(lots).slice(0, 30).map((l) => thu(api<Lo>(`/v1/lots/${l.id}`)).then((c) => ({ ...l, ...(c || {}) })))));
   DL.thieuKhoan = 0;

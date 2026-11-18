@@ -26,7 +26,8 @@ export async function dsPhieu(): Promise<string> {
 }
 
 export async function veTaoPhieu(o: HTMLElement): Promise<void> {
-  const ds = await laySp();
+  // Chỉ mặt hàng chính của tổ chức (0092); chưa chọn thì hiện tất cả để không chặn người mới
+  const ds = (await laySp()).filter((x) => !DL.matHangChinh.length || DL.matHangChinh.includes(x.code));
   if (!ds.length) { o.innerHTML = trong("Chưa tải được danh mục mặt hàng. Thử tải lại trang."); return; }
   o.innerHTML = `<form class="the" id="pk" novalidate>
     <h2>Gửi phiếu cho người bán báo giá</h2>

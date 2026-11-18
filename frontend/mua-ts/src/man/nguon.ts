@@ -45,10 +45,12 @@ const ganTraGia = (o: HTMLElement, ve: () => void) => o.querySelectorAll<HTMLBut
 
 /** Màn chính: lối vào phiếu + phiếu đã gửi + lô đang bán. */
 export async function veNguon(o: HTMLElement, man?: string): Promise<void> {
+  if (man === "mat-hang") return veChonMatHang(o);
+  if (!DL.matHangChinh.length) return veChonMatHang(o, true);
   if (man === "phieu") return vePhieu(o);
   if (man === "ket-qua") return veKetQuaTim(o);
   const sp = await laySp();
-  const tat = DL.lo.filter((l) => !l.is_substandard || l.ban_gap), coSp = [...new Set(tat.map((l) => l.product_code))];
+  const tat = DL.lo.filter((l) => (!l.is_substandard || l.ban_gap) && DL.matHangChinh.includes(l.product_code)), coSp = [...new Set(tat.map((l) => l.product_code))];
   const ds = tat.filter((l) => !locSp || l.product_code === locSp);
   const tenSp = (m: string) => sp.find((x) => x.code === m)?.name_vi ?? m;
   o.innerHTML = `
@@ -59,6 +61,7 @@ export async function veNguon(o: HTMLElement, man?: string): Promise<void> {
         <div class="hai-nut"><a class="nut vien" href="#nguon/phieu">Sửa phiếu</a>${thieuPhieu().length ? "" : `<a class="nut chinh" href="#nguon/ket-qua">Xem kết quả</a>`}</div>`
         : `<a class="nut chinh rong" href="#nguon/phieu">Lập phiếu tìm nguồn</a>`}
     </section>
+    <p class="phu mhc">Mặt hàng chính: <b>${DL.matHangChinh.map((m) => esc(tenSp(m))).join(", ")}</b> · <a href="#nguon/mat-hang">Đổi</a></p>
     <div id="dau-phieu">${dauPhieu}</div>
     <div class="hang"><h2>Đang bán</h2><span class="phu">${ds.length} lô</span></div>
     <div class="loc" role="group" aria-label="Lọc theo mặt hàng"><button type="button" data-loc="" aria-pressed="${!locSp}">Tất cả</button>${coSp.map((m) => `<button type="button" data-loc="${esc(m)}" aria-pressed="${locSp === m}">${esc(tenSp(m))}</button>`).join("")}</div>
@@ -73,7 +76,8 @@ async function vePhieu(o: HTMLElement): Promise<void> {
   const loaiCua = (ma: string) => sp.find((x) => x.code === ma)?.grades?.map((g) => g.grade_code) ?? [];
   o.innerHTML = `<form id="phieu" class="phieu" novalidate>
     <section class="the"><h2>Hàng</h2>
-      <label class="o-nhap">Mặt hàng<select id="pk-sp"><option value="">Chọn mặt hàng</option>${sp.map((s) => `<option value="${esc(s.code)}"${s.code === P.sp ? " selected" : ""}>${esc(s.name_vi)}</option>`).join("")}</select></label>
+      <label class="o-nhap">Mặt hàng<select id="pk-sp"><option value="">Chọn mặt hàng</option>${sp.filter((s) => DL.matHangChinh.includes(s.code)).map((s) => `<option value="${esc(s.code)}"${s.code === P.sp ? " selected" : ""}>${esc(s.name_vi)}</option>`).join("")}</select></label>
+      <p class="phu">Chỉ hiện mặt hàng chính của bạn · <a href="#nguon/mat-hang">Đổi mặt hàng chính</a></p>
       <div class="luoi2 sau-sp"><label class="o-nhap">Loại<select id="pk-loai"></select></label>
         <label class="o-nhap">Lượng cần (kg)<input id="pk-kg" inputmode="decimal" value="${esc(P.kg)}" placeholder="vd 1000"></label></div>
     </section>
@@ -240,3 +244,25 @@ async function moChiTietLo(lotId: string): Promise<void> {
   than.querySelector<HTMLButtonElement>("[data-tra]")?.addEventListener("click", () => { t.close(); if (l) moTraGia(l, () => window.dispatchEvent(new Event("agv-lam-moi"))); });
 }
 const ganChiTiet = (o: HTMLElement) => o.querySelectorAll<HTMLButtonElement>("[data-ct]").forEach((b) => (b.onclick = () => moChiTietLo(b.dataset.ct!)));
+
+const TEN_NHOM: Record<string, string> = { fresh_fruit: "Trái cây tươi", aquaculture: "Thủy sản nuôi", seafood: "Hải sản", grain: "Lúa gạo, ngũ cốc", vegetable: "Rau củ", spice: "Gia vị", nut: "Hạt", other: "Khác" };
+/** Chọn mặt hàng chính (tối đa 5). batDau = lần đầu vào tab Nguồn khi chưa chọn. */
+async function veChonMatHang(o: HTMLElement, batDau = false): Promise<void> {
+  const sp = await laySp() as (Awaited<ReturnType<typeof laySp>>[number] & { group_code?: string })[];
+  const chon = new Set(DL.matHangChinh);
+  const nhom = [...new Set(sp.map((s) => s.group_code || "other"))];
+  o.innerHTML = `<form class="phieu" id="mhc" novalidate>
+    <section class="the nguon-dau"><h2>${batDau ? "Bạn thường mua mặt hàng nào?" : "Mặt hàng chính"}</h2>
+      <p class="phu">Chọn tối đa 5 mặt hàng bạn mua thường xuyên. AgiViet chỉ gợi ý nguồn và cho người bán thấy nhu cầu của bạn ở các mặt hàng này.</p></section>
+    ${nhom.map((n) => `<section class="the"><h2>${esc(TEN_NHOM[n] ?? n)}</h2><div class="tin">${sp.filter((s) => (s.group_code || "other") === n).map((s) =>
+      `<label class="chip-chon"><input type="checkbox" value="${esc(s.code)}"${chon.has(s.code) ? " checked" : ""}> ${esc(s.name_vi)}</label>`).join("")}</div></section>`).join("")}
+    <div class="day-nut"><p class="phu" id="mhc-dem" role="status"></p><p class="loi" id="mhc-loi" role="alert"></p><button type="submit" class="nut chinh rong" id="mhc-luu">Lưu mặt hàng chính</button></div></form>`;
+  const dem = () => { const n = o.querySelectorAll<HTMLInputElement>("#mhc input:checked").length;
+    o.querySelectorAll<HTMLInputElement>("#mhc input:not(:checked)").forEach((x) => (x.disabled = n >= 5));
+    o.querySelector("#mhc-dem")!.textContent = n ? `Đã chọn ${n}/5` : "Chưa chọn mặt hàng nào"; o.querySelector<HTMLButtonElement>("#mhc-luu")!.disabled = !n; };
+  dem(); o.querySelector("#mhc")!.addEventListener("change", dem);
+  o.querySelector<HTMLFormElement>("#mhc")!.onsubmit = async (e) => { e.preventDefault();
+    const ma = [...o.querySelectorAll<HTMLInputElement>("#mhc input:checked")].map((x) => x.value), nut = o.querySelector<HTMLButtonElement>("#mhc-luu")!; nut.disabled = true;
+    try { await api("/v1/org/main-products", { product_codes: ma }); DL.matHangChinh = ma; if (P.sp && !ma.includes(P.sp)) P.sp = ""; locSp = ""; location.hash = "#nguon"; if (!batDau) return; veNguon(o); }
+    catch (err) { o.querySelector("#mhc-loi")!.textContent = (err as Error).message; nut.disabled = false; } };
+}

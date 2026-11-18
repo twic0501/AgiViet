@@ -141,3 +141,9 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .goi-y .tin .chip, .trong-ly .chip { white-space: normal; height: auto; min-height: 26px; text-align: left; flex: 0 1 auto; max-width: 100%; overflow-wrap: anywhere; }
 
 .tc:has(.thanh-pt.thap) span, .tc:has(.thanh-pt.thap) b { color: var(--doo); }
+
+/* Chọn mặt hàng chính: chip có ô tích, đủ 44px */
+.chip-chon { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 999px; background: var(--gn); box-shadow: inset 0 0 0 1.5px var(--k); font-size: 15px; font-weight: 600; cursor: pointer; }
+.chip-chon:has(input:checked) { background: var(--xanh-nhat); box-shadow: inset 0 0 0 1.5px var(--xanh); color: var(--xanh); }
+.chip-chon:has(input:disabled) { opacity: .5; } .chip-chon input { width: 18px; height: 18px; margin: 0; accent-color: var(--xanh); }
+.mhc { margin: 0; } .mhc a { color: var(--xanh); font-weight: 600; }

@@ -116,6 +116,18 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
     await appCmd(t, nd, nd.thanhVien.canSell ? 'seller' : 'buyer', 'revoke_delegation', [P(req).id]);
     return { id: P(req).id, status: 'revoked' };
   }));
+  // Mặt hàng chính của người mua (0092): tối đa 5; phiếu tìm nguồn và danh sách lô chỉ hiện các mặt hàng này.
+  app.get('/v1/org/main-products', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => t.q(`SELECT p.code, p.name_vi FROM core.buyer_main_products m JOIN core.products p ON p.id=m.product_id WHERE m.org_id=$1 ORDER BY m.created_at, p.name_vi`, [nd.thanhVien.orgId])); });
+  app.post('/v1/org/main-products', async (req) => bo.lenh(req, 'dat_mat_hang_chinh', 'buyer', async (t, nd, b) => {
+    if (!nd.thanhVien.canBuy) throw (await import('../loi.ts')).loi('KHONG_CO_QUYEN', 'Chỉ tổ chức mua chọn mặt hàng chính.');
+    const ma = [...new Set((Array.isArray(b.product_codes) ? b.product_codes : []).map(String))];
+    if (ma.length < 1 || ma.length > 5) throw (await import('../loi.ts')).loi('DU_LIEU_KHONG_HOP_LE', 'Chọn từ 1 tới 5 mặt hàng chính.');
+    const ids = await t.q<{ id: string }>(`SELECT id FROM core.products WHERE code = ANY($1::text[])`, [ma]);
+    if (ids.length !== ma.length) throw (await import('../loi.ts')).loi('DU_LIEU_KHONG_HOP_LE', 'Có mặt hàng không nằm trong danh mục.');
+    const { appCmd } = await import('../db/command.ts');
+    const so = await appCmd<number>(t, nd, 'buyer', 'set_buyer_main_products', [ids.map((x) => x.id)]);
+    return { id: null, so_mat_hang: so, product_codes: ma };
+  }));
   app.get('/v1/org/members', async (req) => { const nd = await bo.xacThuc(req); const m = await import('../nghiep-vu/to-chuc.ts'); return bo.doc((t) => m.danhSachThanhVien(t, nd)); });
   app.post('/v1/org/members/invitations', async (req) => bo.lenh(req, 'moi_thanh_vien', 'system', async (t, nd, b) => {
     const x = z.object({ phone: z.string(), name: z.string().min(1), roles: z.array(z.string()).min(1), approval_limit_vnd: soNguyen.optional() }).parse(b);
