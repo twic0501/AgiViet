@@ -4,12 +4,16 @@
 
 const BO_DAU = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
 // Chữ số đọc bằng chữ (đã bỏ dấu): không, một/mốt, hai, ba, bốn/tư, năm/lăm, sáu, bảy, tám, chín, linh/lẻ = 0, "o" = 0
-const SO_CHU = { khong: "0", linh: "0", le: "0", o: "0", mot: "1", mot1: "1", hai: "2", ba: "3", bon: "4", tu: "4", nam: "5", lam: "5", sau: "6", bay: "7", tam: "8", chin: "9" };
+const SO_CHU = { khong: "0", linh: "0", le: "0", o: "0", mot: "1", mot1: "1", hai: "2", ba: "3", bon: "4", tu: "4", nam: "5", lam: "5", sau: "6", bay: "7", tam: "8", chin: "9", zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8", nine: "9" };
 const NGAN_HANG = "vcb|vietcombank|agribank|agri|acb|mb|mbbank|techcombank|tcb|bidv|vietinbank|vtb|tpbank|vpbank|sacombank|shb|ocb|hdbank|vib|msb|seabank|stk|so tk|so tai khoan|tai khoan|tk";
 const KENH = /\b(zalo|za lo|da lo|de lo|zl|facebook|fb|face|phay|messenger|mess|viber|telegram|tele|tiktok|instagram|insta|ket ban|sdt|so dt|dien thoai)\b/;
 const LINK = /https?:\/\/\S+|www\.\S+|\b[a-z0-9-]+\.(com|vn|me|net|org|ly|io|app|link|info|biz)(\/\S*)?\b/gi;
 const EMAIL = /\b[\w.+-]+@[\w-]+\.[\w.]+\b/g;
 const HANDLE = /(^|\s)@[a-z0-9_.]{3,}/gi;
+// Thông tin tra ra được người kia ngoài app (trước khi ngân hàng nhận cọc): mã số thuế, mã vùng trồng, địa chỉ, rủ tìm trên mạng
+const MA_SO_THUE = /\b(ma so thue|mst|ma doanh nghiep|giay phep kinh doanh|gpkd)\b/;
+const MA_VUNG = /\b(ma (so )?vung trong|mvt|ma so vung|ma vung)\b|\b[a-z]{2,4}-[a-z]{2,6}-\d{2,6}\b/;
+const DIA_CHI = /\b(dia chi|so nha|ap \d+|hem \d+|kiet \d+|to \d+ ap|ghe (nha|choi|tham|qua)|toi nha|den nha|qua nha|nha (toi|em|anh|chi|minh|tui|con|bac|chu|co) (o|tai|gan)|vuon (toi|em|anh|chi|minh|tui) (o|tai|gan)|toa do|dinh vi|google|gg ?map|maps?|tra tren mang|tim tren mang|tra ten)\b/;
 // Email viết lách: "ten at gmail dot com", "ten a còng gmail chấm com"
 const EMAIL_LACH = /[a-z0-9._-]{2,}\s*(\(at\)|\bat\b|a cong|acong|\[at\])\s*[a-z0-9-]{2,}\s*(\.|\bdot\b|\bcham\b|\(dot\))\s*(com|vn|net|org)\b/;
 // Chữ cái hay dùng thay chữ số khi lách: o→0, l/i→1 (chỉ tính khi đứng sát chữ số khác)
@@ -64,6 +68,10 @@ export function quetLienLacDayDu(t) {
   if (link) loai.push("đường link");
   if (email) loai.push("email");
   if (kenh || handle) loai.push("kênh nhắn ngoài");
+  const coMst = MA_SO_THUE.test(x), coMvt = MA_VUNG.test(x), coDc = DIA_CHI.test(x);
+  if (coMst) loai.push("mã số thuế");
+  if (coMvt) loai.push("mã vùng trồng");
+  if (coDc) loai.push("địa chỉ, tìm ngoài app");
   if (!loai.length) return { sach: true, che: goc, loai };
   // che trên chữ gốc
   let che = goc
@@ -77,5 +85,7 @@ export function quetLienLacDayDu(t) {
   if (kenh) che = che.replace(/\d[\d\s.\-]{2,}\d/g, "•••");
   if (stk) che = che.replace(/[\d•][\d•\s.\-]*\d/g, "•••");
   if ((sdtChu || emailLach) && che.replace(/•••/g, "") === goc.replace(/•••/g, "")) che = sdtChu ? "Tin có số điện thoại đọc bằng chữ (đã che)" : "Tin có địa chỉ email viết tránh (đã che)";
+  // Mã số thuế, mã vùng trồng, địa chỉ: không che được từng mẩu an toàn (tra ngược ra người) → thay cả tin bằng câu báo
+  if (coMst || coMvt || coDc) che = `Tin có ${loai.filter((l) => /thuế|vùng|địa chỉ/.test(l)).join(", ")} nên đã che. Thông tin này hiện sau khi ngân hàng nhận cọc.`;
   return { sach: false, che, loai };
 }

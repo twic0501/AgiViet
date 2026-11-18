@@ -44,7 +44,7 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
       <dialog class="tam" id="tam-gd" aria-labelledby="tam-gd-tieu-de"><div class="tam-dau"><h2 id="tam-gd-tieu-de">Giá và điều khoản</h2><button type="button" class="nut-tron" data-dong aria-label="Đóng">×</button></div><div class="tam-than" id="tn-gd"></div></dialog>
       <div class="luong" id="luong" aria-live="polite"><div class="khung-tai"></div></div>
       <form class="o-go" id="o-go"><textarea id="tn-o" rows="1" maxlength="1000" placeholder="Nhắn người bán…" aria-label="Nội dung tin nhắn"></textarea><button class="nut chinh" id="tn-gui">Gửi</button></form>
-      <p class="phu chat-ghi">Số điện thoại, Zalo, tài khoản riêng được che tự động. Giao dịch qua AgiViet để cọc được ngân hàng giữ.</p>
+      <p class="phu chat-ghi">Số điện thoại, Zalo, tài khoản, mã số thuế, mã vùng trồng, địa chỉ được che tự động tới khi ngân hàng nhận cọc. Giao dịch qua AgiViet để cọc được ngân hàng giữ.</p>
     </div>`;
   // Thẻ giao dịch dùng chung với app người bán (giá → điều khoản → hợp đồng): đồng ý / sửa điều khoản ngay trong chat.
   // shortcut: nạp module JS của app cũ ở thời điểm chạy; viết lại bằng TS khi chuyển nốt màn hợp đồng.
