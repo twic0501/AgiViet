@@ -60,10 +60,12 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
     const ds = [...t.querySelectorAll(":scope > p")].map((x) => x.textContent!.trim()).filter((x) => x && !/^(Áp cho|Bên kia chưa đọc)/.test(x));
     const cau = ds.find((x) => /^(Bước|Bạn đã|Bên kia|Tới lượt|Chờ|Hai bên)/.test(x)) ?? ds[0] ?? "";
     const toi = !!t.querySelector("button.c, a.n.c"); dai.classList.toggle("toi", toi);
+    // QA-06: đơn đã hoàn tất/đóng/hủy không còn "đang chờ bên kia"
+    const xong = !toi && /hoàn tất|đã đóng|đã hủy|đã kết thúc/i.test(t.textContent ?? "");
     // Dòng trên: việc đang ở bước nào (cái cần biết trước); dòng dưới: giá/lượng hoặc mã hợp đồng.
     o.querySelector("#dai-tt")!.textContent = cau.replace(/[:.]$/, "");
     const bt = t.querySelector("b")?.textContent?.trim().replace(/^Hai bên đã chốt /, "Đã chốt ") ?? "";
-    o.querySelector("#dai-phu")!.textContent = [toi ? "Tới lượt bạn" : "Đang chờ bên kia", cau.includes(bt.replace(/^Đã chốt /, "")) ? "" : bt].filter(Boolean).join(" · "); dai.setAttribute("aria-label", `${dai.textContent?.replace(/\s+/g, " ").trim()}. Mở giá và điều khoản`); };
+    o.querySelector("#dai-phu")!.textContent = [toi ? "Tới lượt bạn" : xong ? "Đã xong" : "Đang chờ bên kia", cau.includes(bt.replace(/^Đã chốt /, "")) ? "" : bt].filter(Boolean).join(" · "); dai.setAttribute("aria-label", `${dai.textContent?.replace(/\s+/g, " ").trim()}. Mở giá và điều khoản`); };
   new MutationObserver(capDai).observe(gd, { childList: true, subtree: true, characterData: true });
   dai.onclick = () => tam.showModal();
   tam.onclick = (e) => { if (e.target === tam || (e.target as HTMLElement).closest("[data-dong]")) tam.close(); };

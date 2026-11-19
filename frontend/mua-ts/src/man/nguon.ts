@@ -1,3 +1,4 @@
+import { docSo } from "../../../thiet-ke/so.ts";
 // Nguồn hàng, 3 màn tách riêng:
 //  #nguon          lô đang bán (lọc theo mặt hàng) + nút "Lập phiếu tìm nguồn" + phiếu đã gửi người bán
 //  #nguon/phieu    phiếu tìm nguồn: Hàng → Giao → Giá và giấy tờ, nút "Tìm nguồn" dính đáy
@@ -25,7 +26,7 @@ interface KetQuaTim { ket_qua: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg
 const diemLo = new Map<string, LoGoiY>();
 const TINH_DS: [string, string][] = [["", "Mọi tỉnh"], ["DT", "Đồng Tháp"], ["TG", "Tiền Giang"], ["BT", "Bến Tre"], ["VL", "Vĩnh Long"], ["CT", "Cần Thơ"], ["AG", "An Giang"], ["ST", "Sóc Trăng"], ["CM", "Cà Mau"], ["KG", "Kiên Giang"], ["LA", "Long An"], ["TN", "Tây Ninh"]];
 let locSp = "", dauPhieu = "";
-const soKg = () => Number(P.kg.replace(",", ".")) || 0, soGia = () => Number(P.gia.replace(/\D/g, "")) || 0;
+const soKg = () => docSo(P.kg) || 0, soGia = () => Number(P.gia.replace(/\D/g, "")) || 0;
 const thieuPhieu = () => [!P.sp && "mặt hàng", !(soKg() > 0) && "lượng cần", !(soGia() >= 1000) && "giá mong muốn"].filter(Boolean) as string[];
 
 /** Phiếu đã gửi người bán (tải riêng, không chặn màn). */
@@ -171,7 +172,7 @@ export async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
     <p class="loi" id="tg-loi" role="alert"></p>
     <button class="nut chinh rong" id="tg-gui" value="gui">Gửi lời trả giá</button><button class="nut vien rong" value="huy" formnovalidate>Để sau</button></form>`;
   const giaO = h.querySelector<HTMLInputElement>("#tg-gia")!, kgO = h.querySelector<HTMLInputElement>("#tg-kg")!, nut = h.querySelector<HTMLButtonElement>("#tg-gui")!;
-  const doc = () => ({ gia: Number(giaO.value.replace(/\D/g, "")), soKg: Number(kgO.value.replace(",", ".")) });
+  const doc = () => ({ gia: Number(giaO.value.replace(/\D/g, "")), soKg: docSo(kgO.value) });
   const tinhTong = () => { const { gia, soKg } = doc(), ok = gia >= 1000 && soKg > 0 && soKg <= con;
     h.querySelector("#tg-tong")!.innerHTML = ok ? `Thành tiền <b class="so">${vnd(Math.round(gia * soKg))} đ</b>${neo && gia !== neo ? ` · ${gia < neo ? "thấp" : "cao"} hơn giá gần đây ${vnd(Math.abs(neo - gia))} đ/kg` : ""}` : "Nhập giá (≥ 1.000 đ/kg) và lượng không quá lượng còn."; return ok; };
   h.oninput = tinhTong; tinhTong();

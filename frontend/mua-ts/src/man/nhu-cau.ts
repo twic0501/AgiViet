@@ -1,3 +1,4 @@
+import { docSo } from "../../../thiet-ke/so.ts";
 // Phiếu tìm nguồn: người mua ghi mặt hàng, loại, lượng, giá tối đa (KÍN), ngày cần → AgiViet gợi ý lô khớp để trả giá.
 // API: POST /v1/demands (+ /publish), GET /v1/demands?mine=true, GET /v1/demands/:id, GET /v1/demands/:id/matches (ghép luật + AI).
 import { api, thu } from "../api";
@@ -60,7 +61,7 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
   $("#pk-loai").onchange = () => { $<HTMLInputElement>("#pk-gia").value = ""; neo(); };
   $<HTMLFormElement>("#pk").onsubmit = async (e) => {
     e.preventDefault(); const nut = $<HTMLButtonElement>("#pk-gui"), loi = $("#pk-loi"); loi.textContent = "";
-    const soKg = Number($<HTMLInputElement>("#pk-kg").value.replace(",", ".")), gia = Number($<HTMLInputElement>("#pk-gia").value.replace(/\D/g, ""));
+    const soKg = docSo($<HTMLInputElement>("#pk-kg").value), gia = Number($<HTMLInputElement>("#pk-gia").value.replace(/\D/g, ""));
     const tu = $<HTMLInputElement>("#pk-tu").value, den = $<HTMLInputElement>("#pk-den").value;
     if (!(soKg > 0)) return void (loi.textContent = "Nhập lượng cần (kg).");
     if (!(gia >= 1000)) return void (loi.textContent = "Nhập giá tối đa, ít nhất 1.000 đ/kg.");

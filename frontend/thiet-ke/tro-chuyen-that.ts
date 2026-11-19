@@ -13,7 +13,7 @@ const KHOA = "agv-tc-that-da-xem";
 const daXem = () => { try { return JSON.parse(localStorage.getItem(KHOA) || "{}"); } catch { return {}; } };
 const ghiXem = (ma, luc) => { try { const x = daXem(); x[ma] = luc; localStorage.setItem(KHOA, JSON.stringify(x)); } catch {} };
 
-let token = null, ds = [];
+let token = null, ds = [], loiTai = false;
 const goi = async (duong: string, than?: Record<string, any>) => {
   const r = await fetch(duong, than ? { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) } : { headers: { authorization: "Bearer " + token } });
   const j = await r.json().catch(() => ({}));
@@ -24,7 +24,10 @@ const goi = async (duong: string, than?: Record<string, any>) => {
 /** Tải danh sách hội thoại: lời chào còn mở + hợp đồng chưa xong, kèm tin cuối. */
 export async function tai() {
   token = await phien();
-  const [chao, don, tom] = await Promise.all([goi("/v1/offers").catch(() => []), goi("/v1/orders").catch(() => []), goi("/v1/messages/summary").catch(() => [])]);
+  // QA-04: lỗi tải không được hiểu thành "chưa có ai để nhắn"
+  loiTai = false;
+  const thu = (p: Promise<any>) => p.catch(() => { loiTai = true; return []; });
+  const [chao, don, tom] = await Promise.all([thu(goi("/v1/offers")), thu(goi("/v1/orders")), thu(goi("/v1/messages/summary"))]);
   const dsChao = Array.isArray(chao) ? chao : chao.items || [];
   const coDon = new Set(don.map((d) => d.offer_id).filter(Boolean));
   const xem = daXem();
@@ -50,7 +53,9 @@ export function veDanhSach(khoi) {
     ${ds.length ? `<div class="tc-ds">${ds.map((h) => `<a class="tc-dong ${h.chuaDoc ? "tc-moi" : ""}" href="./ban-tin-nhan.html${esc(location.search)}#tro=${h.ma}" data-tro="${h.ma}"><span class="tc-anh">${esc(vietTat(h.ben))}</span>
         <span style="min-width:0"><b>${esc(h.ben)}</b><small>${esc(h.cuoi?.chu || `${h.ghi} · chưa có tin nhắn`)}</small></span>
         <span class="tc-ben"><span>${h.cuoi ? esc(gioNgan(h.cuoi.luc)) : ""}</span>${h.chuaDoc ? `<span class="tc-dem">${h.chuaDoc}</span>` : ""}</span></a>`).join("")}</div>`
-      : `<p class="tc-ghi" style="padding:16px 4px">Chưa có ai để nhắn. Khi người mua chào giá lô hàng của bác, cuộc trò chuyện sẽ hiện ở đây.</p>`}`;
+      : loiTai ? `<p class="tc-ghi" role="alert" style="padding:16px 4px">Chưa tải được tin nhắn. Bác kiểm tra mạng rồi bấm thử lại.</p><button class="nut phu-nut" type="button" onclick="location.reload()">Thử lại</button>`
+      : `<p class="tc-ghi" style="padding:16px 4px">Chưa có ai để nhắn. Khi người mua chào giá lô hàng của bác, cuộc trò chuyện sẽ hiện ở đây.</p>`}
+    ${ds.length && loiTai ? `<p class="tc-ghi" role="alert" style="padding:8px 4px">Một phần tin nhắn chưa tải được; danh sách có thể thiếu. Kéo xuống hoặc mở lại để tải lại.</p>` : ""}`;
   giuThamSo(khoi);
 }
 

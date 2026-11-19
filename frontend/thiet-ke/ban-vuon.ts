@@ -75,7 +75,9 @@ function ve() {
 // ---------- Tấm ghi / sửa ----------
 let traVe = null;
 const phimThoat = (e) => { if (e.key === "Escape") dongTam(); };
-function dongTam() { $("che")?.remove(); document.removeEventListener("keydown", phimThoat); traVe?.focus?.(); }
+// QA-05: hộp mở thì nền inert (Tab không ra nút phía sau), đóng thì gỡ
+const datNen = (khoa: boolean) => { for (const el of document.body.children) if (el.id !== "che") (el as HTMLElement).inert = khoa; };
+function dongTam() { $("che")?.remove(); datNen(false); document.removeEventListener("keydown", phimThoat); traVe?.focus?.(); }
 function moGhi(cu) {
   traVe = document.activeElement;
   const coSo = du.co_so, viecDau = cu?.activity || "care", khoa = crypto.randomUUID();
@@ -101,6 +103,16 @@ function moGhi(cu) {
     <div class="day"><button class="nut lui" type="button" id="g-huy">Thôi</button><button class="nut chinh-nut" type="button" id="g-luu">Lưu vào nhật ký</button></div></div></div>`);
   const che = $("che"); let viec = viecDau, dang = false;
   che.addEventListener("click", (e) => { if (e.target === che) dongTam(); });
+  datNen(true);
+  // Tab quay vòng trong hộp (đầu ↔ cuối), không rơi ra thanh trình duyệt
+  che.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const ds = [...che.querySelectorAll<HTMLElement>("button, input, select, textarea, [tabindex]:not([tabindex='-1'])")].filter((x) => !x.hidden && !(x as HTMLButtonElement).disabled && x.offsetParent !== null);
+    if (!ds.length) return;
+    const dau = ds[0], cuoi = ds[ds.length - 1];
+    if (e.shiftKey && document.activeElement === dau) { e.preventDefault(); cuoi.focus(); }
+    else if (!e.shiftKey && document.activeElement === cuoi) { e.preventDefault(); dau.focus(); }
+  });
   document.addEventListener("keydown", phimThoat);
   const capNhat = () => {
     che.querySelectorAll("[data-viec]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.viec === viec)));
