@@ -1,6 +1,6 @@
 // App MUA thật: đăng nhập OTP → màn chào (lần đầu) → 5 tab dữ liệu từ API. Luồng sâu (ký, cọc, giao nhận, khung) mở màn thật sẵn có trong mua.html.
-import { esc, ANH_SP, luuPhien, tenLoai } from "./chung.js";
-import { gnTheGD } from "./the-giao-dich.js";
+import { esc, ANH_SP, luuPhien, tenLoai } from "./chung.ts";
+import { gnTheGD } from "./the-giao-dich.ts";
 
 const $ = (s) => document.querySelector(s);
 const vnd = (n) => Number(n || 0).toLocaleString("vi-VN");

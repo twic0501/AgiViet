@@ -2,8 +2,8 @@
 // chấm sáng chạy dọc đường như hàng đang đi. Cầu xoay; điểm phía trước to/rõ, phía sau nhỏ/mờ.
 // Canvas 2D, không thư viện ngoài (chạy được khi ngoại tuyến). Tôn trọng prefers-reduced-motion.
 // mauDuong/mauVanh/mauCham: đổi màu khi đặt trên nền tối (vd. khối xanh)
-/** @param {HTMLCanvasElement} canvas @param {{ anh?: string[], so?: number, noi?: number, tocDo?: number, nghieng?: number, mauDuong?: string, mauVanh?: string, mauCham?: string }} [tuyChon] */
-export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0.35, mauDuong = "#1f4d3a", mauVanh = "rgba(31,77,58,.18)", mauCham = "#e8b53a" } = {}) {
+type TuyChon = { anh?: string[], so?: number, noi?: number, tocDo?: number, nghieng?: number, mauDuong?: string, mauVanh?: string, mauCham?: string };
+export function quaCau(canvas: HTMLCanvasElement, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0.35, mauDuong = "#1f4d3a", mauVanh = "rgba(31,77,58,.18)", mauCham = "#e8b53a" }: TuyChon = {}) {
   const ctx = canvas.getContext("2d");
   const giam = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const dpr = Math.min(2, devicePixelRatio || 1);
@@ -42,7 +42,7 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
     diem.map((b, j) => [j, (a.x - b.x) ** 2 + (a.y - b.y) ** 2 + (a.z - b.z) ** 2]).filter(([j]) => j !== i)
       .sort((p, q) => p[1] - q[1]).slice(0, noi).forEach(([j]) => canh.add(i < j ? `${i}-${j}` : `${j}-${i}`));
   });
-  const dsCanh = [...canh].map((k) => k.split("-").map(Number));
+  const dsCanh = [...canh].map((k: string) => k.split("-").map(Number));
   // Chấm chạy: mỗi chấm đi trên một cạnh, vị trí 0→1
   const cham = Array.from({ length: 20 }, () => ({ c: Math.floor(Math.random() * dsCanh.length), p: Math.random(), v: 0.18 + Math.random() * 0.22 }));
 
@@ -57,7 +57,7 @@ export function quaCau(canvas, { anh, so = 70, noi = 3, tocDo = 0.2, nghieng = 0
     const RR = R * (0.6 + 0.4 * k);
     // Chiếu 3D → 2D (phối cảnh nhẹ)
     const ch = diem.map((p) => {
-      let x = p.x * cq + p.z * sq, z = -p.x * sq + p.z * cq, y = p.y;
+      const x = p.x * cq + p.z * sq; let z = -p.x * sq + p.z * cq, y = p.y;
       const y2 = y * cn - z * sn; z = y * sn + z * cn; y = y2;
       const pc = 1 / (1 - z * 0.18);
       return { X: W / 2 + x * RR * pc, Y: H / 2 + y * RR * pc, z, pc, anh: p.anh };

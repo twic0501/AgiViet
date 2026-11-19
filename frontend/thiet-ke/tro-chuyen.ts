@@ -1,13 +1,13 @@
 // Trò chuyện trực tiếp hai bên (màn 38) — dùng trong trang Tin nhắn (ban-tin-nhan.html#tro). Dữ liệu mô phỏng, chưa nối backend.
-import { esc, giuThamSo, phien } from "./chung.js";
+import { esc, giuThamSo, phien } from "./chung.ts";
 const $ = (id) => document.getElementById(id);
 const so = (n) => Number(n).toLocaleString("vi-VN");
 const SVG = (p, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>`;
 const I = { lui: "M15 5l-7 7 7 7", khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", canh: "M12 3l10 18H2zM12 10v5M12 18v.5", anh: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", gui: "M4 12l16-8-6 16-2-7z", can: "M12 4v16M5 8h14M5 8l-3 6a3 3 0 0 0 6 0zM19 8l-3 6a3 3 0 0 0 6 0z", lich: "M4 5h16v16H4zM4 10h16M8 3v4M16 3v4", co: "M5 21V4h11l-2 4 2 4H5", dien: "M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a1 1 0 0 1-1 1A17 17 0 0 1 4 5a1 1 0 0 1 1-1z", tich: "M5 12l5 5 9-10" };
 
 // ── Dữ liệu dùng chung với app mua (giao-dich-chung.js): tin chị Thu Hà gửi từ app mua hiện ngay ở đây ──
-import { docTC, ghiTC, ngheTC, docHD, ghiHD, ngheHD, quetLienLac, moLienLacT1 } from "./giao-dich-chung.js";
-let ds = docTC();
+import { docTC, ghiTC, ngheTC, docHD, ghiHD, ngheHD, quetLienLac, moLienLacT1 } from "./giao-dich-chung.ts";
+const ds = docTC();
 let viPham = Number(localStorage.getItem("agv-tro-chuyen-v1-vp")) || 0;
 const luu = () => { ghiTC(ds); try { localStorage.setItem("agv-tro-chuyen-v1-vp", String(viPham)); } catch {} };
 const quet = quetLienLac;
@@ -78,7 +78,7 @@ export function veChat(h) {
   $("gui").addEventListener("click", () => {
     const chu = go.value.trim(); if (!chu) return;
     if (!moLL(h) && viPham >= 3) { them({ k: "he", canh: true, t: "Bác đang bị tạm khóa nhắn 24 giờ sau lần vi phạm thứ 3.", luc: gio() }); window.HieuUngThem?.rung($("gui")); return; }
-    const kq = moLL(h) ? { sach: true, che: chu } : quet(chu);
+    const kq: any = moLL(h) ? { sach: true, che: chu } : quet(chu);
     go.value = ""; go.style.height = "auto";
     them({ k: "tin", ai: "toi", t: kq.che, luc: gio(), che: !kq.sach });
     if (!kq.sach) { viPham++; luu(); them({ k: "he", canh: true, t: `Tin có ${kq.loai} nên đã bị che. Trao đổi liên lạc trước khi ngân hàng giữ cọc là vi phạm (lần ${viPham}/3). ${viPham >= 3 ? "Bác đã bị tạm khóa nhắn 24 giờ." : "Lần 3 sẽ tạm khóa nhắn 24 giờ."}`, luc: gio() }); return; }
@@ -88,7 +88,7 @@ export function veChat(h) {
     setTimeout(() => { $("chat").appendChild(g); scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }, 500);
     setTimeout(() => { g.remove(); them({ k: "tin", ai: "ho", t: "Dạ em ghi nhận, cảm ơn chị.", luc: gio() }); }, 2200);
   });
-  const tam = (html, gan) => {
+  const tam = (html: string, gan?: (n: any, dong: any) => any) => {
     const n = document.createElement("div"); n.className = "tc-che-nen";
     n.innerHTML = `<div class="tc-tam" role="dialog" aria-modal="true">${html}</div>`;
     const dong = () => n.remove();

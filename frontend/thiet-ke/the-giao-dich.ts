@@ -35,7 +35,7 @@ const YK = { dong_y: "Đồng ý", sua: "Cần sửa", khong: "Không đồng ý
 const cacMuc = (b) => [["ngay_giao", "Ngày giao", ngay(b.delivery_from)], ["xuong_loai", "Giá xuống loại", `${vnd(b.downgrade_price_vnd)} đ/kg`],
   ["tra_tien", "Trả tiền", TRA[b.payment_timing] || b.payment_timing], ["xe", "Xe", XE[b.transport_by] || b.transport_by],
   ...(b.ghi_chu ? [["ghi_chu", "Ghi chú", b.ghi_chu]] : []), ...(b.muc_rieng || []).map((m, i) => [`rieng:${i}`, m.ten, m.noi_dung])];
-const veDK = (b, yk, chon) => `<dl>${cacMuc(b).map(([k, t, v]) => `<dt>${e(t)}</dt><dd>${e(v)}${yk?.[k] && yk[k] !== "dong_y" ? ` <span class="yk ${yk[k]}">${YK[yk[k]]}</span>` : ""}${chon ? `<select data-yk="${k}" aria-label="Ý kiến về ${e(t)}">${Object.entries(YK).map(([a, n]) => `<option value="${a}">${n}</option>`).join("")}</select>` : ""}</dd>`).join("")}</dl>`;
+const veDK = (b, yk?: Record<string, any>, chon?: any) => `<dl>${cacMuc(b).map(([k, t, v]) => `<dt>${e(t)}</dt><dd>${e(v)}${yk?.[k] && yk[k] !== "dong_y" ? ` <span class="yk ${yk[k]}">${YK[yk[k]]}</span>` : ""}${chon ? `<select data-yk="${k}" aria-label="Ý kiến về ${e(t)}">${Object.entries(YK).map(([a, n]) => `<option value="${a}">${n}</option>`).join("")}</select>` : ""}</dd>`).join("")}</dl>`;
 const veKhung = (kc) => `<p><b>Khung điều khoản chung của AgiViet</b></p><p class="ghi">Áp cho mọi hợp đồng trên AgiViet. Đọc trước, sau đó hai bên thương lượng điều khoản riêng.</p>
   ${(kc?.muc || []).map((m) => `<details><summary>${e(m.ten)}</summary><p>${e(m.noi_dung)}</p></details>`).join("")}`;
 const formDK = (b) => `<div data-fdk style="display:grid;gap:8px"><label>Ngày giao<input type="date" data-f="ngay" min="${new Date(Date.now() + 864e5 + 7 * 36e5).toISOString().slice(0, 10)}" value="${new Date(b.delivery_from).toISOString().slice(0, 10)}"></label>
@@ -45,7 +45,7 @@ const formDK = (b) => `<div data-fdk style="display:grid;gap:8px"><label>Ngày g
 <label>Ghi chú<input maxlength="300" data-f="ghi" value="${e(b.ghi_chu || "")}"></label>
 <p><b>Mục riêng</b> <span class="ghi">(đóng gói, giờ cắt, chứng từ…)</span></p><div data-mrs style="display:grid;gap:8px">${(b.muc_rieng || []).map(dongMuc).join("")}</div>
 <button data-l="them-muc">Thêm mục</button><button class="c" data-l="gui-dk">Gửi đề xuất cho bên kia</button></div>`;
-const dongMuc = (m = {}) => `<div data-mr class="mr"><input maxlength="80" data-mt placeholder="Tên mục" aria-label="Tên mục" value="${e(m.ten || "")}"><textarea maxlength="400" data-mn rows="2" placeholder="Nội dung" aria-label="Nội dung mục">${e(m.noi_dung || "")}</textarea><button data-l="bo-muc">Bỏ mục</button></div>`;
+const dongMuc = (m: Record<string, any> = {}) => `<div data-mr class="mr"><input maxlength="80" data-mt placeholder="Tên mục" aria-label="Tên mục" value="${e(m.ten || "")}"><textarea maxlength="400" data-mn rows="2" placeholder="Nội dung" aria-label="Nội dung mục">${e(m.noi_dung || "")}</textarea><button data-l="bo-muc">Bỏ mục</button></div>`;
 
 /** ctx: { goi(path, body) → dữ liệu, cuoc: {offer_id}|{order_id}, linkDon(id), nguoiNhan(), sauLam() }. Trả về { ve(tinCuoiCuaToi) }. */
 export function gnTheGD(o, ctx) {
@@ -92,7 +92,7 @@ export function gnTheGD(o, ctx) {
     const daTc = dk.trang_thai === "bi_tu_choi", cuaToi = daTc && tc?.ben !== dk.ben_toi;
     return the(`${dau}${benKia}<p>${daTc ? (cuaToi ? `Bên kia chưa đồng ý bản ${dk.phien_ban}${tc?.ly_do ? `: “${e(tc.ly_do)}”` : ""}. Sửa các mục được đánh dấu rồi gửi lại:` : "Bạn đã gửi ý kiến, chờ bên kia sửa lại.") : "Bước 2/3: thống nhất điều khoản riêng. Sửa, thêm hoặc bỏ mục rồi gửi bên kia."}</p>${veDK(ban, daTc ? tc?.y_kien : null)}<div class="hang"><button class="c" data-l="${daTc ? "mo-sua" : "gui-mac-dinh"}">${daTc ? "Sửa điều khoản" : "Gửi điều khoản này"}</button>${daTc ? "" : `<button data-l="mo-sua">Sửa trước khi gửi</button>`}</div>`);
   };
-  const ve = async (tin, ep) => {
+  const ve = async (tin?: string, ep?: boolean) => {
     if (tin !== undefined && tin !== tinCuoi) { tinCuoi = tin; vongTin = null; }
     if (!ep && o.contains(document.activeElement) && /INPUT|SELECT/.test(document.activeElement.tagName)) return;
     if (!ep && !o.querySelector("[data-otra]")?.hidden && o.querySelector("[data-otra]")) return;

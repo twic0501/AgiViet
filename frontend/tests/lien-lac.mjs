@@ -1,6 +1,6 @@
 // Kiểm bộ quét liên lạc thiet-ke/lien-lac.js: phải bắt các cách lách hay gặp, KHÔNG che nhầm số tiền / khối lượng / ngày / mã.
 // Chạy: node tests/lien-lac.mjs
-import { quetLienLacDayDu as q } from "../thiet-ke/lien-lac.js";
+import { quetLienLacDayDu as q } from "../thiet-ke/lien-lac.ts";
 const PHAI_BAT = [
   "Chị gọi em 0918000421 nha", "0918 000 421", "0918.000.421", "0918-000-421", "0 9 1 8 0 0 0 4 2 1", "+84 918 000 421", "84918000421",
   "không chín một tám không không không bốn hai một", "khong chin mot tam khong khong khong bon hai mot", "không, chín, một, tám, linh, linh, linh, bốn, hai, một",

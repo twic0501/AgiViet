@@ -1,7 +1,7 @@
 // Trò chuyện THẬT hai bên (màn 38) — cùng bố cục với bản mô phỏng tro-chuyen.js, dữ liệu từ backend:
 // mỗi lời chào giá / hợp đồng với một người mua là một hội thoại; tin qua /v1/messages, backend che liên lạc trước khi lưu.
-import { esc, giuThamSo, phien } from "./chung.js";
-import { gnTheGD } from "./the-giao-dich.js";
+import { esc, giuThamSo, phien } from "./chung.ts";
+import { gnTheGD } from "./the-giao-dich.ts";
 const $ = (id) => document.getElementById(id);
 const SVG = (p, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>`;
 const I = { anh: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", lui: "M15 5l-7 7 7 7", khien: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z", canh: "M12 3l10 18H2zM12 10v5M12 18v.5", gui: "M4 12l16-8-6 16-2-7z", lich: "M4 5h16v16H4zM4 10h16M8 3v4M16 3v4", co: "M5 21V4h11l-2 4 2 4H5", giay: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM9 13h6M9 17h4", tich: "M5 12l5 5 9-10" };
@@ -14,7 +14,7 @@ const daXem = () => { try { return JSON.parse(localStorage.getItem(KHOA) || "{}"
 const ghiXem = (ma, luc) => { try { const x = daXem(); x[ma] = luc; localStorage.setItem(KHOA, JSON.stringify(x)); } catch {} };
 
 let token = null, ds = [];
-const goi = async (duong, than) => {
+const goi = async (duong: string, than?: Record<string, any>) => {
   const r = await fetch(duong, than ? { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) } : { headers: { authorization: "Bearer " + token } });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error([j.errors?.[0]?.message, j.errors?.[0]?.fix].filter(Boolean).join(" ") || `Lỗi ${r.status}`);

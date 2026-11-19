@@ -110,5 +110,5 @@ function theoDoi() {
 if (typeof document !== "undefined") {
   nap(); huongVao();
   const bat = () => { ganChuyenTrang(); theoDoi(); };
-  document.readyState === "loading" ? addEventListener("DOMContentLoaded", bat) : bat();
+  if (document.readyState === "loading") addEventListener("DOMContentLoaded", bat); else bat();
 }

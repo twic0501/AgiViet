@@ -8,4 +8,5 @@ declare global {
   interface EventTarget { [k: string]: any }
   interface Event { [k: string]: any }
   const navigation: any;
+  const rive: any; // thư viện con trâu nạp bằng <script> (assets/vendor/rive)
 }

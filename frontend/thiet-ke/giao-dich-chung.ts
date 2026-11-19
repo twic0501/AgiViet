@@ -1,4 +1,4 @@
-import { quetLienLacDayDu } from "./lien-lac.js";
+import { quetLienLacDayDu } from "./lien-lac.ts";
 // Giao dịch HĐ-0018 dùng CHUNG giữa app bán (chị Năm) và app mua (chị Thu Hà) — dữ liệu mô phỏng trong localStorage.
 // Hai app mở ở hai khung (cùng máy) thấy cùng một trạng thái: bên này bấm, bên kia vẽ lại ngay (sự kiện storage).
 // Không gọi backend. Không có hiệu ứng phụ khi nạp module.

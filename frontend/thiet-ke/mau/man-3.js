@@ -1,7 +1,7 @@
 // Màn 42–80: Đơn · Tiền · Tôi (+ Kiểm tiền, Bàn giao, Đánh giá người mua)
 import { esc, d, so, kg, ic, the, dong, viec, nhan, lk, nut, chang, chon, o } from "./tien-ich.js";
 import { BUOC, TIEN } from "./du-lieu.js";
-import { docHD, ghiHD, tinhTien, dtTien } from "../giao-dich-chung.js";
+import { docHD, ghiHD, tinhTien, dtTien } from "../giao-dich-chung.ts";
 import { BANG, bangTrang, tenAi } from "../kich-ban-bang.js";
 
 const AI = { bac: "Bác", mua: "Người mua", nh: "Ngân hàng" };

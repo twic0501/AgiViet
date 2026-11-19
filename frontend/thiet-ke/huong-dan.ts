@@ -1,6 +1,6 @@
 // Hướng dẫn dùng app lần đầu (tour trên Trang chủ thật): mỗi bước rọi sáng đúng một chỗ, trâu chỉ vào, lời ngắn + nút Nghe.
 // Hiện một lần (agv-tour-xong); xem lại từ trang Tôi (ban-hom-nay.html?huong-dan=1). Không chặn người dùng: có "Bỏ qua".
-import { esc, docTo, datCoChu, CO_CHU } from "./chung.js";
+import { esc, docTo, datCoChu, CO_CHU } from "./chung.ts";
 
 const KHOA = "agv-tour-xong";
 const daXong = () => { try { return localStorage.getItem(KHOA) === "1"; } catch { return false; } };

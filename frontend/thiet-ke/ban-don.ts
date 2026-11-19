@@ -1,0 +1,698 @@
+import { esc, phien, giuThamSo, tien, tienDu, can, tenLoai, CHANG, chiSoChang, viecCho, LUOT, docSo } from "./chung.ts";
+const $ = (id) => document.getElementById(id);
+const thamSo = new URLSearchParams(location.search);
+const ID = thamSo.get("id");
+let token, don, tienDon, dieuKhoan;
+const H = () => ({ headers: { authorization: "Bearer " + token } });
+const vnd = (n) => Number(n || 0).toLocaleString("vi-VN");
+const VN = { timeZone: "Asia/Ho_Chi_Minh" };
+const gioNgay = (s) => (s ? new Date(s).toLocaleString("vi-VN", { ...VN, hour: "2-digit", minute: "2-digit", day: "numeric", month: "numeric" }) : "");
+const ngayVN = (s) => new Date(s).toLocaleDateString("vi-VN", VN);
+const khungGio = (a, b) => (ngayVN(a) === ngayVN(b) ? `${gioNgay(a)} – ${new Date(b).toLocaleTimeString("vi-VN", { ...VN, hour: "2-digit", minute: "2-digit" })}` : `${gioNgay(a)} – ${gioNgay(b)}`);
+const conLai = (s) => { const ms = +new Date(s) - Date.now(); if (ms <= 0) return "đã quá hạn"; const h = Math.floor(ms / 36e5), d = Math.floor(h / 24); return d ? `còn ${d} ngày ${h % 24} giờ` : h ? `còn ${h} giờ` : `còn ${Math.max(1, Math.round(ms / 6e4))} phút`; };
+const LY_DO = { DAP: "Dập", THOI: "Thối", SAU_DUC: "Sâu đục", SAI_GIONG: "Sai giống", TRAY_VO: "Trầy vỏ", AN_TOAN: "Không đạt an toàn" };
+const LOAI_DONG = { accepted: ["Đạt", "xanh"], downgraded: ["Hạ cấp", "vang"], rejected: ["Trả lại", "do"] };
+const TT_DOT = { arrival_check: ["Kiểm tại nơi đến", "vang"], closed: ["Đã đóng", "xam"], preparing: ["Đang chuẩn bị", "xam"], ready: ["Sẵn sàng giao", "xanh"], loading: ["Đang bốc hàng", "vang"], in_transit: ["Đang chở", "vang"], checking: ["Đang cân, kiểm", "vang"], awaiting_seller: ["Chờ bác xác nhận cân", "do"], accepted: ["Đã nghiệm thu", "xanh"], disputed: ["Đang tranh chấp", "do"], completed: ["Xong", "xanh"], cancelled: ["Đã hủy", "xam"] };
+const TT_KHOAN = { fully_received: ["Bác đã nhận đủ", "xanh"], partially_received: ["Nhận một phần", "vang"], due: ["Đến hạn trả", "vang"], closed: ["Đã đóng", "xam"], cancelled: ["Đã hủy", "xam"], pending: ["Chưa trả", "xam"], payer_reported: ["Người mua báo đã trả", "vang"], confirmed: ["Bác đã nhận", "xanh"], partial: ["Nhận một phần", "vang"], mismatch: ["Bác báo chưa thấy tiền", "do"], overdue: ["Quá hạn", "do"] };
+const TT_COC = { awaiting_transfer: "Chờ người mua chuyển cọc vào ngân hàng.", partially_received: "Ngân hàng mới nhận một phần cọc; chưa đủ thì hợp đồng chưa hiệu lực.", fully_processed: "Ngân hàng đã xử lý xong tiền cọc (chuyển cho bác hoặc hoàn theo quyết toán).", void: "Không phát sinh cọc (đơn đóng trước khi cọc).", held: "Ngân hàng đang giữ. Không ai rút được nếu chưa xong việc.", processing: "Ngân hàng đang giữ và tạm khóa chờ xử lý (tranh chấp hoặc hủy). Chưa ai nhận được.", pending: "Người mua đã báo nộp, chờ ngân hàng xác nhận.", released: "Ngân hàng đã chuyển cọc theo kết quả.", refunded: "Ngân hàng đã hoàn cọc cho người mua." };
+const LOAI_KHOAN = { goods_before_loading: "Trả trước khi bốc", goods_on_receipt: "Trả khi nhận hàng", goods_after_days: "Trả sau nghiệm thu", goods_after_acceptance: "Trả sau nghiệm thu", goods_extra: "Tiền thêm", goods_batch: "Tiền theo đợt" };
+const nhan = ([t, l]) => `<span class="hd-nhan ${l}">${esc(t)}</span>`;
+const chuTat = (s) => String(s || "").split(/\s+/).filter((w) => /^[A-ZĐÀ-Ỹ]/.test(w)).slice(-2).map((w) => w[0]).join("") || "?";
+
+function veDau(ten = "Hợp đồng") {
+  $("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div style="flex:1;min-width:0"><p class="chao">Hợp đồng</p><h1>${esc(ten)}</h1></div>`;
+  $("dong").onclick = () => (history.length > 1 ? history.back() : (location.href = "./ban-hop-dong.html" + location.search));
+}
+veDau();
+
+// Một thao tác = một khóa chống lặp: bấm lại/mất phản hồi gửi lại cùng khóa + cùng nội dung → backend trả kết quả cũ, không làm 2 lần.
+const KHOA = new Map();
+const khoaCho = (viec, than) => { const k = viec + "|" + JSON.stringify(than); if (!KHOA.has(k)) KHOA.set(k, crypto.randomUUID()); return KHOA.get(k); };
+async function lenh(duong, than = {}, viec = duong) {
+  const r = await fetch(duong, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: khoaCho(viec, than), ...than }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = j.errors?.[0] || {}; const x = new Error([e.message, e.fix].filter(Boolean).join(" ") || "Chưa làm được, bác thử lại."); (x as any).ma = e.code; (x as any).chiTiet = e.details; throw x; }
+  return j;
+}
+const docJ = async (d) => { const r = await fetch(d, H()); if (!r.ok) throw new Error(r.status === 404 ? "Không tìm thấy hợp đồng này." : "Chưa tải được, bác bấm Tải lại."); return r.json(); };
+const LOI_TAI = { __loi: true };
+const khoiLoi = (ten) => `<section class="hd-the"><h3><i class="cham"></i>${esc(ten)}</h3><p class="hd-bao do" style="margin:4px 0 14px">Chưa tải được phần này. Số liệu chưa hiện để bác không hiểu nhầm. <button class="nut-chu" type="button" data-tai-lai>Tải lại</button></p></section>`;
+
+addEventListener("agv-thay-doi", (e) => { if (e.detail?.giao_dich && !document.querySelector("dialog[open], .tam.mo, input:focus, textarea:focus")) tai().catch(() => {}); });
+async function tai() {
+  token = await phien();
+  if (!ID) { location.replace("./ban-hop-dong.html" + location.search); return; }
+  [don, tienDon, dieuKhoan] = await Promise.all([docJ(`/v1/orders/${ID}`), docJ(`/v1/orders/${ID}/money`).catch(() => LOI_TAI), docJ(`/v1/orders/${ID}/terms`).catch(() => null)]);
+  don.dot = await Promise.all((don.dot_giao || []).map((d) => docJ(`/v1/deliveries/${d.id}`).catch(() => ({ ...d, __loi: true }))));
+  [don.tranhChap, don.deNghi, don.xinHuy] = await Promise.all([docJ(`/v1/orders/${ID}/disputes`).catch(() => []), docJ(`/v1/orders/${ID}/amendments`).catch(() => []), docJ(`/v1/orders/${ID}/cancellation-requests`).catch(() => [])]);
+  ve();
+}
+
+// ---------- Việc tới lượt bác: một nút chính theo đúng trạng thái backend ----------
+const alertLoi = (e) => { const b = document.createElement("p"); b.className = "hd-bao do"; b.textContent = e.message; $("noi").prepend(b); };
+function viecChinh() {
+  const choKyPL = (a) => a.status === "accepted" && a.annex_document_id && Number(a.resulting_version_no) > Number(don.effective_version_no || 0);
+  const dnCho = (don.deNghi || []).find((a) => (!a.la_cua_toi && /^open$|await|pending|proposed/.test(a.status)) || choKyPL(a));
+  if (dnCho) return { chu: "Xem đề nghị sửa", mo: () => document.getElementById("vd")?.scrollIntoView({ behavior: "smooth" }), phu: "Người mua đề nghị sửa hợp đồng. Bác xem cũ và mới rồi đồng ý hoặc không." };
+  const huyCho = (don.xinHuy || []).find((x) => !x.la_cua_toi && x.status === "awaiting_reply");
+  if (huyCho) return { chu: "Xem yêu cầu hủy", mo: () => document.getElementById("vd")?.scrollIntoView({ behavior: "smooth" }), phu: "Người mua xin hủy hợp đồng. Bác xem hậu quả về cọc và tiền rồi trả lời." };
+  if (don.hanh_dong?.includes("sign")) return { chu: "Ký hợp đồng", mo: moKy, phu: "Đọc kỹ cam kết rồi ký bằng mã OTP gửi về điện thoại." };
+  const khoan = tienDon?.__loi ? null : (tienDon?.khoan_tra_thang || []).find((k) => k.direction === "buyer_to_seller" && Number(k.reported_vnd) > Number(k.confirmed_vnd || 0) && !["mismatch", "closed", "cancelled"].includes(k.status));
+  if (khoan) return { chu: "Kiểm tiền và xác nhận", mo: () => moTien(khoan), phu: `Người mua báo đã chuyển ${vnd(khoan.reported_vnd)} đ vào tài khoản ${khoan.payee_account_masked}.` };
+  const bg = don.dot.find((d) => d.hanh_dong?.includes("start_check") || d.hanh_dong?.includes("dispatch"));
+  if (bg) return { chu: "Bàn giao hàng", mo: () => moBanGiao(bg), phu: bg.hanh_dong.includes("start_check") ? `Đợt ${bg.batch_no} sẵn sàng. Người nhận của người mua tới, bác nhập mã 6 số trên app của họ để bắt đầu cân tại chỗ.` : `Đợt ${bg.batch_no} sẵn sàng xuất. Nhập mã 6 số của người nhận, số ký đã bốc và biển số xe.` };
+  const dot = don.dot.find((d) => d.hanh_dong?.includes("agree_acceptance"));
+  if (dot) return { chu: "Xem kết quả cân", mo: () => moCan(dot), phu: `Đợt ${dot.batch_no}: người mua đã nhập kết quả cân, chờ bác đồng ý hoặc báo dòng không đúng.` };
+  return null;
+}
+
+function nhacTheoBuoc() {
+  const n = window.nhacTrau; if (!n) return;
+  const v = viecChinh();
+  if (v?.chu === "Ký hợp đồng") return n({ khoa: "ky-" + ID, mat: "lo", chu: "Trước khi ký, bác đọc kỹ lượng chắc giao, ngày giao và cách trả tiền. Mã OTP gửi về máy chỉ bác nhập, không đọc cho ai kể cả người xưng là AgiViet." });
+  if (v?.chu === "Kiểm tiền và xác nhận") return n({ khoa: "tien-" + ID, mat: "lo", chu: "Chỉ bấm xác nhận khi bác thấy tiền đã vào tài khoản trong app ngân hàng. Ảnh chụp màn hình chuyển khoản có thể là giả." });
+  if (v?.chu === "Bàn giao hàng") return n({ khoa: "giao-" + ID, mat: "vui", chu: "Chỉ bốc hàng khi người nhận đưa đúng mã 6 số trên app của họ. Cân xong hai bên cùng xem số rồi mới ký." });
+  if (v?.chu === "Xem kết quả cân") return n({ khoa: "can-" + ID, mat: "ngac-nhien", chu: "Bác xem từng dòng: đạt, hạ loại, trả lại. Dòng nào không đúng thì bấm Không đúng, có ảnh làm bằng chứng." });
+  if (don.status === "awaiting_deposit") return n({ khoa: "coc-" + ID, mat: "ngu", chu: "Đang chờ người mua chuyển cọc vào ngân hàng. Ngân hàng xác nhận cọc rồi mới hái và giao, bác chưa cần làm gì." });
+}
+function ve() {
+  setTimeout(nhacTheoBuoc, 900);
+  veDau(don.code);
+  const dk = don.dieu_khoan || {}, k = chiSoChang(don), luot = don.hien_thi?.toi_luot, bac = luot?.phia === don.phia_cua_ban;
+  const viec = viecChinh(), han = (don.han || []).filter((h) => h.status === "open").sort((a, b) => (a.due_at < b.due_at ? -1 : 1))[0];
+  const dongXong = /complet|cancel|declin|withdrawn|closed/.test(don.status);
+  $("noi").innerHTML = `
+    <section class="hd-viec ${viec || bac ? "bac" : "cho"}" aria-live="polite">
+      <h2>${esc(dongXong ? don.hien_thi?.ten || "Đã đóng" : viecCho(don))}</h2>
+      ${viec ? `<p class="hd-ghi" style="color:inherit">${esc(viec.phu)}</p>` : ""}
+      ${han && !dongXong ? `<p class="han"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hạn <b>${esc(gioNgay(han.due_at))}</b> · ${esc(conLai(han.due_at))}</p>` : ""}
+      ${viec ? `<button class="nut vang" type="button" id="viec-chinh">${esc(viec.chu)}</button>` : ""}
+      ${don.hanh_dong?.includes("decline") ? `<button class="nut lui" type="button" id="tu-choi">Không ký hợp đồng này</button>` : ""}
+    </section>
+
+    ${veVanDe()}
+    <section class="hd-the" style="padding:14px 16px">
+      <div class="hd-ben"><span class="logo">${esc(chuTat(don.buyer?.display_name))}</span>
+        <div style="min-width:0"><b>${esc(don.buyer?.display_name)}</b><small>Người mua · ${esc(don.code)}</small></div>
+        <div class="gia" title="${esc(tienDu(dk.contract_value_vnd))}">${esc(tien(dk.contract_value_vnd))}<small>${esc(can(dk.qty_g).join(" "))} · ${vnd(dk.unit_price_vnd)} đ/kg</small></div></div>
+      <div class="chang" aria-label="Chặng ${k + 1} trên ${CHANG.length}: ${CHANG[k]}">${CHANG.map((_, i) => `<i class="${i < k ? "xong" : i === k ? "dang" : ""}"></i>`).join("")}</div>
+      <div class="chang-ten">${CHANG.map((c, i) => `<span class="${i === k ? "dang" : ""}">${c}</span>`).join("")}</div>
+      <p class="hd-ghi" style="margin:12px 0 0">${don.lien_lac_ben_kia ? `Liên lạc người mua: <b>${esc(don.lien_lac_ben_kia.ten)}</b> · <a href="tel:${esc(don.lien_lac_ben_kia.so_dien_thoai)}">${esc(don.lien_lac_ben_kia.so_dien_thoai)}</a>` : "Số điện thoại người mua mở sau khi ngân hàng xác nhận cọc."}</p>
+    </section>
+
+    ${/ký/i.test(don?.hien_thi?.toi_luot?.viec || "") ? `${veDieuKhoan()}${veTien()}${veGiao()}` : `${veTien()}${veGiao()}${veDieuKhoan()}`}
+    <details class="hd-the"><summary>Lịch sử hợp đồng</summary><ol class="hd-ls">${(don.lich_su || []).slice().reverse().map((x) => `<li>${esc(chuLichSu(x))}<time>${esc(gioNgay(x.at))}</time></li>`).join("") || "<li>Chưa có</li>"}</ol></details>
+    ${don.hanh_dong?.includes("request_cancel") && !(don.xinHuy || []).some((x) => ["awaiting_reply", "processing_money"].includes(x.status)) ? `<button class="vd-huy" type="button" id="xin-huy">Xin hủy hợp đồng</button>` : ""}
+    <p class="hd-tro">Có vướng mắc? <a href="./ban-tin-nhan.html${esc(location.search)}">Nhắn người mua</a> hoặc bấm Hỗ trợ ở đầu trang chủ.</p>`;
+  $("viec-chinh")?.addEventListener("click", viec.mo);
+  if (location.hash === "#dieu-khoan") $("dieu-khoan")?.scrollIntoView({ block: "start" });
+  $("tu-choi")?.addEventListener("click", moTuChoi);
+  $("xin-huy")?.addEventListener("click", moXinHuy);
+  $("nghe-qt")?.addEventListener("click", () => { try { window.giongViet?.docTo(docQT); } catch {} });
+  document.querySelectorAll("[data-dn]").forEach((b) => (b.onclick = () => traLoiDeNghi(b.dataset.dn, b.dataset.lam)));
+  document.querySelectorAll("[data-huy-tl]").forEach((b) => (b.onclick = () => traLoiHuy(b.dataset.huyTl, b.dataset.lam)));
+  document.querySelectorAll("[data-tai-lai]").forEach((b) => (b.onclick = () => tai().catch((e) => alertLoi(e))));
+  document.querySelectorAll("[data-ban-giao]").forEach((b) => (b.onclick = () => moBanGiao(don.dot.find((d) => d.id === b.dataset.banGiao))));
+  document.querySelectorAll("[data-dat-xe]").forEach((b) => (b.onclick = () => moDatXe(don.dot.find((d) => d.id === b.dataset.datXe))));
+  document.querySelectorAll("[data-can]").forEach((b) => (b.onclick = () => moCan(don.dot.find((d) => d.id === b.dataset.can))));
+  document.querySelectorAll("[data-khoan]").forEach((b) => (b.onclick = () => moTien(tienDon.khoan_tra_thang.find((x) => x.id === b.dataset.khoan))));
+  document.querySelectorAll("[data-mo-hoan]").forEach((b) => (b.onclick = () => moHoan(b.dataset.moHoan, b.closest("[data-hoan]"))));
+}
+// Người bán hoàn tiền thừa: chỉ vào tài khoản ĐÃ XÁC MINH của người mua do AgiViet đưa (không theo số gửi qua tin nhắn).
+async function moHoan(id, khung) {
+  const o = khung.querySelector("[data-hoan-o]"); o.innerHTML = "Đang tải…";
+  try {
+    const r = await fetch(`/v1/payments/${id}/instruction`, H()); const j = await r.json(); if (!r.ok) throw new Error(j.errors?.[0]?.message || "Không tải được");
+    const h = j.data ?? j;
+    if (!h.tai_khoan) { o.innerHTML = `<p style="margin:0;font-size:16px">${esc(h.cau)}</p>`; return; }
+    o.innerHTML = `<div style="display:grid;gap:8px;font-size:16px">
+      <div data-qr style="text-align:center"></div>
+      <span>${esc(h.tai_khoan.ngan_hang)} · ${esc(h.tai_khoan.chu_tai_khoan)}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:20px">${esc(h.tai_khoan.so_tai_khoan)}</b><button type="button" class="nut phu-nut" data-chep="${esc(h.tai_khoan.so_tai_khoan)}" style="min-height:48px">Chép số</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>Nội dung: <b>${esc(h.noi_dung)}</b></span><button type="button" class="nut phu-nut" data-chep="${esc(h.noi_dung)}" style="min-height:48px">Chép</button></div>
+      ${h.canh_bao ? `<p style="margin:0;color:var(--do,#a8392c);font-weight:700">${esc(h.canh_bao)}. Nếu ai nhắn bác chuyển vào số khác thì đừng chuyển, gọi AgiViet.</p>` : ""}
+      <p style="margin:0">${esc(h.cau)}</p>
+      <label style="display:grid;gap:4px;font-weight:700">Chụp biên lai chuyển khoản<input type="file" accept="image/*" capture="environment" data-anh style="min-height:48px;font-size:16px"></label>
+      <button type="button" class="nut chinh-nut" data-gui style="min-height:52px;font-size:17px">Báo đã hoàn ${vnd(h.so_tien_con_vnd)} đ</button>
+      <p data-bao role="status" style="margin:0"></p></div>`;
+    o.querySelectorAll("[data-chep]").forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.chep); b.textContent = "Đã chép"; } catch { b.textContent = "Chép tay"; } }));
+    if (h.vietqr) try { const { default: QR } = await import("/assets/qr.js"); const c = document.createElement("canvas"); await QR.toCanvas(c, h.vietqr, { width: 220, margin: 2 }); c.style.maxWidth = "100%"; o.querySelector("[data-qr]").append(c); } catch {}
+    o.querySelector("[data-gui]").onclick = async (e) => {
+      const nut = e.currentTarget, bao = o.querySelector("[data-bao]"), tep = o.querySelector("[data-anh]").files?.[0];
+      if (!tep) { bao.textContent = "Bác chụp biên lai để người mua đối chiếu."; return; }
+      nut.disabled = true; bao.textContent = "Đang gửi…";
+      try {
+        const b64 = await new Promise((ok, loi) => { const rd = new FileReader(); rd.onload = () => ok(String(rd.result).split(",")[1]); rd.onerror = loi; rd.readAsDataURL(tep); });
+        const gui = async (u, than) => { const r2 = await fetch(u, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) }); const j2 = await r2.json(); if (!r2.ok) throw new Error(j2.errors?.[0]?.message || "Chưa gửi được"); return j2.data ?? j2; };
+        const anh = await gui("/v1/files", { mime: tep.type || "image/jpeg", data_base64: b64, entity: "payment", entity_id: id, captured_in_app: true });
+        await gui(`/v1/payments/${id}/report`, { amount_vnd: Number(h.so_tien_con_vnd), method: "bank_transfer", evidence_document_id: anh.id });
+        location.reload();
+      } catch (err) { bao.textContent = err.message; nut.disabled = false; }
+    };
+  } catch (err) { o.textContent = err.message; }
+}
+const VIEC_LS = { drafting: "Người mua soạn hợp đồng", awaiting_seller: "Người mua đã ký, chờ bác ký", awaiting_deposit: "Hai bên đã ký, chờ người mua chuyển cọc", active: "Ngân hàng đã giữ cọc, hợp đồng có hiệu lực", completed: "Hợp đồng hoàn tất", cancelled: "Hợp đồng đã hủy", seller_declined: "Bác không ký" };
+const chuLichSu = (x) => VIEC_LS[x.to_status] || `${x.entity === "order" ? "Hợp đồng" : "Đợt giao"}: ${x.to_status}${x.reason ? ` · ${x.reason}` : ""}`;
+
+function veTien() {
+  if (tienDon?.__loi) return khoiLoi("Tiền của hợp đồng");
+  const dk = don.dieu_khoan || {}, coc = tienDon?.coc, khoan = (tienDon?.khoan_tra_thang || []).filter((x) => x.direction === "buyer_to_seller");
+  const thuc = tienDon?.thuc_nhan?.nguoi_ban_vnd;
+  return `<section class="hd-the"><h3><i class="cham"></i>Tiền của hợp đồng</h3>
+    <div class="hd-dong"><span>Giá trị hợp đồng</span><b>${vnd(dk.contract_value_vnd)} đ</b></div>
+    <div class="hd-dong"><span>Tiền cọc người mua</span><b>${vnd(dk.deposit_vnd)} đ</b>
+      <small>${coc ? (TT_COC[coc.status] || "Ngân hàng đang xử lý tiền cọc.") : "Chưa chuyển cọc. Hợp đồng chỉ có hiệu lực khi ngân hàng nhận đủ cọc."}</small></div>
+    ${khoan.map((x) => `<div class="hd-dong"><span>${esc(LOAI_KHOAN[x.kind] || "Khoản người mua trả")}</span><b>${vnd(x.amount_due_vnd)} đ</b>
+      <small>${nhan(TT_KHOAN[x.status] || [x.status, "xam"])} · vào ${esc(x.payee_bank_code || "")} ${esc(x.payee_account_masked || "")}${x.due_at ? ` · hạn ${esc(gioNgay(x.due_at))}` : ""}${Number(x.confirmed_vnd || 0) ? ` · đã xác nhận ${vnd(x.confirmed_vnd)} đ` : ""}${Number(x.reported_vnd) > Number(x.confirmed_vnd || 0) && x.status !== "mismatch" ? ` · <button class="nut-chu" type="button" data-khoan="${esc(x.id)}">Kiểm tiền</button>` : ""}</small></div>`).join("")}
+    ${veQuyetToan()}
+    ${(tienDon?.khoan_tra_thang || []).filter((x) => x.direction === "seller_to_buyer").map((x) => {
+      const con = Number(x.amount_due_vnd) - Number(x.confirmed_vnd || 0);
+      const cho = x.status === "payer_reported", xong = x.status === "fully_received";
+      return `<div class="hd-bao" data-hoan="${x.id}" style="display:grid;gap:10px;background:${xong ? "var(--la-nhat,#e7f1e3)" : "var(--vang-lua-nhat,#fbefcf)"};margin-top:8px">
+        <b style="font-size:18px">${xong ? "Bác đã hoàn xong cho người mua" : cho ? "Bác đã báo hoàn, chờ người mua xác nhận" : "Bác cần hoàn lại cho người mua"}</b>
+        <div style="font-size:26px;font-weight:700">${vnd(xong ? x.amount_due_vnd : con)} đ</div>
+        ${!xong && !cho ? `<span>Theo quyết toán AgiViet gửi bác (trường hợp ngoại lệ). Có gì chưa rõ bác bấm Hỗ trợ trước khi chuyển.${x.due_at ? ` Hạn: <b>${esc(gioNgay(x.due_at))}</b>.` : ""}</span>
+          <button type="button" class="nut chinh-nut" data-mo-hoan="${x.id}" style="min-height:52px;font-size:17px">Hoàn tiền</button><div data-hoan-o></div>` : ""}
+      </div>`; }).join("")}
+    <div class="hd-dong"><span>Phí AgiViet (người mua trả)</span><b>${vnd(dk.fee_vnd)} đ</b></div>
+    <div class="hd-dong"><span><b style="color:var(--muc)">Bác đã thực nhận</b></span><b style="color:var(--la)">${vnd(thuc)} đ</b><small>Tính theo sổ cái, chỉ cộng khoản bác đã xác nhận nhận được.</small></div>
+  </section>`;
+}
+
+// Quyết toán (04 mục 5): N = V − X_nb + X_bm; cọc chuyển bác = min(C, max(0, N − D)); phần cọc còn lại hoàn người mua
+const LENH = { release_deposit_to_seller: "Ngân hàng chuyển cọc cho bác", refund_deposit_to_buyer: "Ngân hàng hoàn cọc người mua" };
+const TT_LENH = { created: "Đang lập lệnh", processing: "Ngân hàng đang xử lý", succeeded: "Tiền đã chuyển, chờ đối soát", draft: "Đang lập lệnh", sent: "Đã gửi ngân hàng, chờ tiền về", accepted: "Ngân hàng đã nhận lệnh", settled: "Tiền đã về", reconciled: "Tiền đã về, đã đối soát", failed: "Ngân hàng báo lỗi, AgiViet đang xử lý", cancelled: "Đã hủy lệnh" };
+let docQT = "";
+function veQuyetToan() {
+  const qt = (tienDon?.quyet_toan || []).filter((x) => x.is_effective).at(-1); if (!qt) return "";
+  const n = (k) => Number(qt[k] || 0);
+  const dong = (dau, chu, so, lop = "") => `<div class="qt-dong ${lop}"><span class="qt-dau">${dau}</span><span>${chu}</span><b>${vnd(so)} đ</b></div>`;
+  const ds = [dong("", "Tiền hàng theo kết quả cân", n("v_vnd"))];
+  if (n("x_nb_vnd")) ds.push(dong("−", "Bác chịu bồi thường theo hợp đồng", n("x_nb_vnd")));
+  if (n("x_bm_vnd")) ds.push(dong("+", "Người mua bù cho bác", n("x_bm_vnd")));
+  ds.push(dong("=", "Bác được nhận tổng", n("n_vnd"), "tong"));
+  ds.push(dong("−", "Người mua đã trả thẳng (bác đã xác nhận)", n("d_vnd")));
+  ds.push(dong("→", "Ngân hàng chuyển từ cọc cho bác", n("release_vnd"), "ve"));
+  if (n("refund_vnd")) ds.push(dong("→", "Cọc hoàn lại người mua", n("refund_vnd")));
+  if (n("t_bm_vnd")) ds.push(dong("!", "Người mua còn phải trả thêm cho bác", n("t_bm_vnd"), "no"));
+  if (n("t_nb_vnd")) ds.push(dong("!", "Bác phải hoàn lại cho người mua", n("t_nb_vnd"), "no"));
+  const giu = n("c_vnd") - n("release_vnd") - n("refund_vnd");
+  docQT = `Quyết toán ${qt.is_final ? "" : "tạm"}. Tiền hàng ${vnd(n("v_vnd"))} đồng. Bác được nhận tổng ${vnd(n("n_vnd"))} đồng. Người mua đã trả thẳng ${vnd(n("d_vnd"))} đồng. Ngân hàng chuyển từ cọc cho bác ${vnd(n("release_vnd"))} đồng.`;
+  const lenh = (tienDon?.lenh_ngan_hang || []);
+  return `<div style="padding:10px 0 4px;border-bottom:1px solid var(--ke)">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px">Quyết toán${qt.is_final ? "" : " (tạm)"}</b><button class="qt-nghe" type="button" id="nghe-qt"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>Nghe</button></div>
+    ${qt.is_final ? "" : `<span class="qt-tam">Đang tranh chấp: chỉ chi phần không tranh chấp${giu > 0 ? `, ngân hàng còn giữ ${vnd(giu)} đ` : ""}</span>`}
+    <div class="qt-bang">${ds.join("")}</div>
+    ${lenh.map((l) => `<p class="hd-ghi" style="margin:0 0 8px">${esc(LENH[l.kind] || "Lệnh ngân hàng")} ${vnd(l.amount_vnd)} đ: <b>${esc(TT_LENH[l.status] || "Đang xử lý")}</b>${l.target_account_masked ? ` · về ${esc(l.target_bank_code || "")} ${esc(l.target_account_masked)}` : ""}</p>`).join("")}
+  </div>`;
+}
+function veGiao() {
+  if (!don.dot.length) return `<section class="hd-the"><h3><i class="cham"></i>Giao nhận</h3><p class="hd-ghi" style="padding:4px 0 14px">Đợt giao sẽ hiện khi hợp đồng có hiệu lực (ngân hàng giữ cọc).</p></section>`;
+  return don.dot.map((d) => {
+    const kq = (d.ket_qua || []).at(-1);
+    return `<section class="hd-the"><h3><i class="cham"></i>Đợt giao ${esc(d.batch_no)} · ${esc(can(d.planned_qty_g).join(" "))}</h3>
+      <div class="hd-dong"><span>Trạng thái</span><b>${nhan(TT_DOT[d.status] || [d.status, "xam"])}</b></div>
+      ${d.window_from ? `<div class="hd-dong"><span>Khung giờ giao</span><b>${esc(khungGio(d.window_from, d.window_to))}</b></div>` : ""}
+      <div class="hd-dong"><span>Nơi nghiệm thu</span><b>${esc({ tai_vuon: "Tại vườn", tai_kho: "Tại kho người mua", noi_den: "Nơi đến" }[d.acceptance_point] || d.acceptance_point || "—")}</b></div>
+      ${d.__loi ? `<p class="hd-bao do" style="margin:4px 0 14px">Chưa tải được chi tiết đợt này. <button class="nut-chu" type="button" data-tai-lai>Tải lại</button></p>` : ""}
+      ${d.the_san_sang ? `<div class="hd-ss" aria-label="Điều kiện để bốc hàng">${d.the_san_sang.map((s) => `<div><span class="${s.ok ? "ok" : "chua"}">${s.ok ? "✓" : "•"}</span><span>${esc(s.ten)}${s.ok ? "" : `<small>${esc(s.ly_do || "Chưa xong")}</small>`}</span></div>`).join("")}</div>` : ""}
+      ${kq ? `<div class="hd-dong"><span>Cân được</span><b>${esc(can(kq.weighed_g).join(" "))}</b><small>${kq.seller_agreed ? "Bác đã ký biên bản nghiệm thu." : kq.buyer_agreed ? "Người mua đã ký, chờ bác." : ""}</small></div>` : ""}
+      ${d.hanh_dong?.includes("agree_acceptance") ? `<div style="padding:4px 0 14px"><button class="nut chinh-nut" type="button" data-can="${esc(d.id)}">Xem kết quả cân</button></div>` : ""}
+      ${d.hanh_dong?.some((h) => h === "start_check" || h === "dispatch") ? `<div style="padding:4px 0 14px"><button class="nut chinh-nut" type="button" data-ban-giao="${esc(d.id)}">Bàn giao hàng</button></div>` : ""}
+      ${d.the_san_sang?.some((x) => x.ma === "xe" && !x.ok) && ["seller", "partner_for_seller"].includes(don.dieu_khoan?.transport_by) ? `<div style="padding:0 0 14px"><button class="nut phu-nut" type="button" data-dat-xe="${esc(d.id)}" style="width:100%">Báo xe chở đợt này</button></div>` : ""}
+    </section>`;
+  }).join("");
+}
+
+function veDieuKhoan() {
+  const the = dieuKhoan?.the || [];
+  // Tự mở khi đang chờ ký (người bán phải đọc trước khi ký) hoặc khi tới từ nút "Đọc toàn bộ hợp đồng" trong chat
+  const mo = location.hash === "#dieu-khoan" || /ký/i.test(don?.hien_thi?.toi_luot?.viec || "");
+  return `<details class="hd-the" id="dieu-khoan"${mo ? " open" : ""}><summary>Điều khoản chính</summary>
+    ${the.map((x) => `<div class="hd-dong"><span style="color:var(--muc);font-weight:600">${esc(x.tieu_de)}</span><small style="font-size:16px;color:var(--muc-phu)">${esc(x.noi_dung)}</small></div>`).join("") || `<p class="hd-ghi">Chưa tải được điều khoản.</p>`}
+    ${dieuKhoan?.canh_bao ? `<p class="hd-ghi" style="padding:8px 0 14px">${esc(dieuKhoan.canh_bao)}</p>` : ""}</details>`;
+}
+
+// ---------- Tấm thao tác ----------
+let traVe = null;
+function moTam(html, sauKhiVe) {
+  dongTam(); traVe = document.activeElement;
+  document.body.insertAdjacentHTML("beforeend", `<div class="hd-che man-che" id="che"><div class="hd-tam" role="dialog" aria-modal="true">${html}</div></div>`);
+  $("che").addEventListener("click", (e) => { if (e.target.id === "che") dongTam(); });
+  document.addEventListener("keydown", phimThoat);
+  sauKhiVe?.($("che"));
+  ($("che").querySelector("input, button")?.focus());
+}
+function dongTam() { $("che")?.remove(); document.removeEventListener("keydown", phimThoat); traVe?.focus?.(); }
+const phimThoat = (e) => { if (e.key === "Escape") dongTam(); };
+const r = (k) => $("che")?.querySelector(`[data-r="${k}"]`);
+const baoTam = (m, lop = "do") => { const b = r("bao"); if (b) { b.className = `hd-bao ${lop}`; b.textContent = m; b.hidden = !m; } };
+async function xongViec(chu) { dongTam(); await tai(); const b = document.createElement("p"); b.className = "hd-bao xanh"; b.textContent = chu; b.setAttribute("role", "status"); $("noi").prepend(b); scrollTo({ top: 0 }); }
+
+// Ký: tóm tắt đủ cam kết bằng số thật → xác nhận đã đọc (và giá bất thường nếu có) → OTP; gửi lại mã được
+const NGUOI_CHO = { seller: "Bác lo xe", buyer: "Người mua lo xe", partner_for_buyer: "Đối tác xe (người mua trả)", partner_for_seller: "Đối tác xe (bác trả)" };
+const KHI_TRA = { before_loading: "Trả đủ trước khi bốc hàng", on_receipt: "Trả khi nhận hàng", after_days: "Trả sau nghiệm thu", inspect_then_before_loading: "Kiểm rồi trả trước khi bốc" };
+function oOtp(id) { return `<div data-r="khoi-otp" hidden><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="${id}">Nhập mã 6 số vừa gửi về điện thoại</label><input class="hd-otp" id="${id}" data-r="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><p class="hd-ghi" style="margin-top:6px">Chưa nhận được mã? <button class="nut-chu" type="button" data-r="gui-lai" disabled>Gửi lại mã</button></p></div>`; }
+// Gửi lại mã: chờ 30 giây giữa hai lần
+function henGuiLai(goc, guiMa) {
+  const nut = goc.querySelector('[data-r="gui-lai"]'); if (!nut) return;
+  let con = 30; nut.disabled = true; nut.textContent = `Gửi lại mã (${con}s)`;
+  const hen = setInterval(() => { con--; if (!goc.isConnected) return clearInterval(hen); if (con <= 0) { clearInterval(hen); nut.disabled = false; nut.textContent = "Gửi lại mã"; } else nut.textContent = `Gửi lại mã (${con}s)`; }, 1000);
+  nut.onclick = async () => { nut.disabled = true; try { await guiMa(true); henGuiLai(goc, guiMa); } catch (e) { baoTam(e.message); nut.disabled = false; } };
+}
+function moKy() {
+  const dk = don.dieu_khoan || {}, tk = dk.seller_account, the = Object.fromEntries((dieuKhoan?.the || []).map((x) => [x.tieu_de, x.noi_dung]));
+  const batThuong = !!don.co?.gia_bat_thuong;
+  // Chốt điều kiện: từng điều kiện phải tích; trả sau → phần không có cọc bảo đảm phải chấp thuận riêng; thiếu điều khoản → khóa ký
+  const thieuDk = !dieuKhoan || !(dieuKhoan.the || []).length;
+  const traSau = dk.payment_timing === "after_days";
+  const khongBaoDam = traSau ? Math.max(0, Number(dk.contract_value_vnd || 0) - Number(dk.deposit_vnd || 0)) : 0;
+  moTam(`<div class="than"><h2 id="t-ky">Ký hợp đồng ${esc(don.code)}</h2>
+    ${thieuDk ? `<p class="hd-bao do" style="margin:0">Chưa tải được toàn bộ điều khoản của bản hợp đồng này nên chưa ký được. Bác bấm Tải lại; vẫn lỗi thì bấm Hỗ trợ.</p><button class="nut phu-nut" type="button" onclick="location.reload()">Tải lại</button>` : ""}
+    <div class="hd-the" style="padding:2px 14px">
+      <div class="hd-dong"><span>Hàng</span><b>${esc(can(dk.qty_g).join(" "))}</b>${the["Hàng"] ? `<small>${esc(the["Hàng"])}</small>` : ""}</div>
+      <div class="hd-dong"><span>Giá</span><b>${vnd(dk.unit_price_vnd)} đ/kg</b><small>${dk.downgrade_price_vnd ? `Hàng hạ cấp tính ${vnd(dk.downgrade_price_vnd)} đ/kg.` : "Chưa có giá hạ cấp: hàng không đạt sẽ trả lại."} Hàng lỗi cho phép ${esc((Number(dk.reject_allowance_bps || 0) / 100).toLocaleString("vi-VN"))}%.</small></div>
+      <div class="hd-dong"><span>Giá trị</span><b>${vnd(dk.contract_value_vnd)} đ</b></div>
+      <div class="hd-dong"><span>Giao hàng</span><b>${esc(dk.delivery_from ? gioNgay(dk.delivery_from) : "Theo lịch đợt giao")}</b><small>${esc(the["Giao nhận"] || "")}${dk.transport_by ? ` · ${esc(NGUOI_CHO[dk.transport_by] || dk.transport_by)}` : ""}</small></div>
+      <div class="hd-dong"><span>Người mua cọc</span><b>${vnd(dk.deposit_vnd)} đ</b><small>Ngân hàng giữ. Bác không giao đúng thì có thể mất phần bồi thường theo hợp đồng.</small></div>
+      <div class="hd-dong"><span>Tiền về</span><b>${esc(tk ? `${tk.bank_code} ${tk.masked}` : "—")}</b><small>${esc(KHI_TRA[dk.payment_timing] || "Theo điều khoản")}${dk.payment_timing === "after_days" ? ` ${esc(dk.pay_after_days)} ngày` : ""}.</small></div>
+    </div>
+    <details class="hd-the"><summary>Xem toàn bộ điều khoản</summary>${(dieuKhoan?.the || []).map((x) => `<div class="hd-dong"><span style="color:var(--muc);font-weight:600">${esc(x.tieu_de)}</span><small style="font-size:16px;color:var(--muc-phu)">${esc(x.noi_dung)}</small></div>`).join("")}</details>
+    <div class="hd-chon">
+      <p style="margin:4px 0 0;font-weight:700;color:var(--muc)">Bác tích từng điều kiện để chốt:</p>
+      <label><input type="checkbox" data-r="dk-luong" data-dk><span><b>Giao ${esc(can(dk.qty_g).join(" "))}, ${esc(dk.delivery_from ? gioNgay(dk.delivery_from) : "theo lịch đợt giao")}</b><small>Đúng lượng và ngày bác hái được.</small></span></label>
+      <label><input type="checkbox" data-r="dk-xe" data-dk><span><b>${esc(NGUOI_CHO[dk.transport_by] || "Cách chở theo hợp đồng")}</b><small>${esc(the["Giao nhận"] || "Giao nhận theo điều khoản.")}</small></span></label>
+      ${dk.downgrade_price_vnd ? (() => { const ty = Number(dk.downgrade_price_vnd) / Number(dk.unit_price_vnd || 1), thap = ty < 0.7; /* ngưỡng 70% người sáng lập chốt 02/11 */
+        return `<label${thap ? ' style="border-color:var(--dau-do)"' : ""}><input type="checkbox" data-r="dk-ha-cap" data-dk><span><b>${thap ? "Tôi đã đọc và chấp nhận giá xuống loại này: " : "Hàng bị hạ loại tính "}${vnd(dk.downgrade_price_vnd)} đ/kg (${Math.round(ty * 100)}% giá)</b><small>${thap ? "<b style=\"color:var(--dau-do)\">Giá hạ cấp rất thấp.</b> Nếu lúc cân người mua hạ loại nhiều, bác nhận rất ít tiền. Bác nhắn người mua nâng giá này trước khi ký; thấy không hợp thì không ký." : "Hàng không đạt loại 1 khi cân sẽ tính giá này; dòng nào không đúng bác bấm Không đúng, có ảnh."}</small></span></label>`; })() : ""}
+      <label><input type="checkbox" data-r="dk-tien" data-dk><span><b>Tiền về ${esc(tk ? `${tk.bank_code} ${tk.masked}` : "tài khoản của bác")}, ${esc((KHI_TRA[dk.payment_timing] || "theo điều khoản").toLowerCase())}${traSau ? ` ${esc(dk.pay_after_days)} ngày` : ""}</b><small>Ngân hàng giữ cọc ${vnd(dk.deposit_vnd)} đ của người mua.</small></span></label>
+      ${traSau && khongBaoDam ? `<label style="border-color:var(--dau-do)"><input type="checkbox" data-r="dk-tra-sau" data-dk><span><b>Tôi đồng ý: ${vnd(khongBaoDam)} đ trả sau ${esc(dk.pay_after_days)} ngày KHÔNG có cọc bảo đảm</b><small>Nếu người mua chậm hay không trả phần này, AgiViet hỗ trợ đòi nhưng ngân hàng không trả thay.</small></span></label>` : ""}
+      <label><input type="checkbox" data-r="cam-ket"><span><b>Tôi đã đọc và cam kết giao đúng lượng, đúng loại, đúng hạn</b><small>Không đủ hàng thì báo sớm cho người mua và AgiViet, đừng im lặng.</small></span></label>
+      ${batThuong ? `<label><input type="checkbox" data-r="bat-thuong"><span><b>Tôi biết giá này khác xa giá thị trường</b><small>AgiViet đánh dấu giá bất thường. Bác chắc chắn mới ký.</small></span></label>` : ""}
+    </div>
+    ${oOtp("otp")}
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut vang" type="button" data-r="tiep" disabled>Gửi mã để ký</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-ky");
+    let thuThach = null, dang = false;
+    const du = () => !thieuDk && r("cam-ket").checked && (!batThuong || r("bat-thuong").checked) && [...goc.querySelectorAll("[data-dk]")].every((c) => c.checked);
+    goc.querySelectorAll('input[type="checkbox"]').forEach((c) => (c.onchange = () => { if (!thuThach) r("tiep").disabled = !du(); }));
+    r("huy").onclick = dongTam;
+    const guiMa = async (lai = false) => {
+      const tl = (don.tai_lieu || []).filter((x) => x.doc_type === "contract").at(-1);
+      const j = await lenh("/v1/otp/challenges", { purpose: "contract_sign", document_id: tl?.id }, lai ? "otp-ky-" + Date.now() : "otp-ky");
+      thuThach = j.challenge_id || j.data?.challenge_id;
+    };
+    r("tiep").onclick = async () => {
+      if (dang) return; dang = true; r("tiep").disabled = true; baoTam("");
+      try {
+        if (!thuThach) {
+          await guiMa();
+          r("khoi-otp").hidden = false; r("otp").focus(); r("tiep").textContent = "Ký hợp đồng";
+          goc.querySelectorAll('input[type="checkbox"]').forEach((c) => (c.disabled = true));
+          henGuiLai(goc, guiMa);
+        } else {
+          if (!/^\d{6}$/.test(r("otp").value)) throw new Error("Bác nhập đủ 6 số trong tin nhắn.");
+          await lenh(`/v1/orders/${don.id}/sign`, { challenge_id: thuThach, code: r("otp").value, commitment_ack: true, abnormal_price_ack: batThuong || undefined, low_downgrade_price_ack: (dk.downgrade_price_vnd && Number(dk.downgrade_price_vnd) < 0.7 * Number(dk.unit_price_vnd) && r("dk-ha-cap")?.checked) || undefined, expected_revision: don.revision }, "ky");
+          return xongViec("Bác đã ký. Chờ người mua chuyển cọc, AgiViet báo khi ngân hàng nhận đủ.");
+        }
+      } catch (e) { baoTam(/OTP|mã/i.test(e.message) && thuThach ? `${e.message} Bác bấm Gửi lại mã nếu mã đã hết hạn.` : e.message); }
+      dang = false; if (r("tiep")) r("tiep").disabled = false;
+    };
+  });
+}
+
+function moTuChoi() {
+  moTam(`<div class="than"><h2>Không ký hợp đồng này?</h2>
+    <p class="hd-ghi">Chưa có cọc nên bác không mất gì. Lý do giúp người mua hiểu và lần sau chào giá sát hơn.</p>
+    <div class="hd-chon">${["Giá không còn phù hợp", "Không đủ hàng như đã chào", "Điều kiện giao nhận không làm được", "Lý do khác"].map((x, i) => `<label><input type="radio" name="ly-do" value="${esc(x)}" ${i ? "" : "checked"}><span>${esc(x)}</span></label>`).join("")}</div>
+    <textarea class="hd-o" data-r="them" placeholder="Ghi thêm (không bắt buộc)" maxlength="300"></textarea>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut do" type="button" data-r="chot">Không ký</button><button class="nut lui" type="button" data-r="huy">Quay lại</button></div>`, () => {
+    r("huy").onclick = dongTam;
+    r("chot").onclick = async () => {
+      r("chot").disabled = true;
+      const ly = $("che").querySelector('input[name="ly-do"]:checked').value, them = r("them").value.trim();
+      try { await lenh(`/v1/orders/${don.id}/decline`, { reason: them ? `${ly}: ${them}` : ly }); xongViec("Bác đã từ chối ký. Hợp đồng đóng, lô hàng được nhả lại để bán."); }
+      catch (e) { baoTam(e.message); r("chot").disabled = false; }
+    };
+  });
+}
+
+// Kiểm tiền: chỉ xác nhận phần người mua MỚI báo (báo nhiều lần cộng dồn); chuyển khoản cần mã giao dịch, tiền mặt cần ảnh biên nhận
+function moTien(k) {
+  const phai = Number(k.amount_due_vnd), daNhan = Number(k.confirmed_vnd || 0), bao = Number(k.reported_vnd || 0);
+  const moi = Math.max(0, bao - daNhan), conThieu = Math.max(0, phai - daNhan);
+  moTam(`<div class="than"><h2 id="t-tien">Người mua báo chuyển thêm ${vnd(moi)} đ</h2>
+    <div class="hd-the" style="padding:2px 14px">
+      <div class="hd-dong"><span>${esc(LOAI_KHOAN[k.kind] || "Khoản")} · ${esc(k.code)}</span><b>${vnd(phai)} đ</b></div>
+      <div class="hd-dong"><span>Bác đã xác nhận nhận</span><b>${vnd(daNhan)} đ</b></div>
+      <div class="hd-dong"><span>Còn thiếu</span><b style="color:var(--chin)">${vnd(conThieu)} đ</b></div>
+      <div class="hd-dong"><span>Vào tài khoản</span><b>${esc(k.payee_bank_code)} ${esc(k.payee_account_masked)}</b><small>${esc(k.payee_account_holder || "")}</small></div>
+    </div>
+    ${(k.evidence_document_ids || []).length ? `<img class="hd-anh" alt="Ảnh chứng từ người mua gửi" data-r="anh">` : ""}
+    <p class="hd-bao vang"><b>Mở app ngân hàng xem số dư.</b> Ảnh chụp màn hình chuyển khoản có thể giả. Chỉ xác nhận số tiền đã thật sự vào tài khoản.${k.blocks_loading ? " Chưa nhận đủ khoản này thì chưa cho bốc hàng." : ""}</p>
+    <div class="db-doan" data-r="cach" role="group" aria-label="Người mua trả bằng" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:14px;background:var(--giay-lot)">
+      <button type="button" class="nut lui" data-cach="bank_transfer" aria-pressed="true" style="min-height:48px">Chuyển khoản</button><button type="button" class="nut lui" data-cach="cash" aria-pressed="false" style="min-height:48px">Tiền mặt</button></div>
+    <div data-r="khoi-ck"><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="ma-gd">Mã giao dịch trong app ngân hàng</label>
+      <input class="hd-o" id="ma-gd" data-r="ma-gd" autocomplete="off" placeholder="Ví dụ: FT2631012345" maxlength="40">
+      <p class="hd-ghi" style="margin-top:6px">Mở lịch sử giao dịch, chép mã của khoản tiền này. Mỗi mã chỉ dùng một lần.</p></div>
+    <div data-r="khoi-tm" hidden><p class="hd-ghi">Viết giấy biên nhận số tiền, hai bên ký, rồi chụp lại. Đếm đủ tiền mới xác nhận.</p>
+      <label class="nut phu-nut" style="width:100%;margin-top:8px;cursor:pointer"><input type="file" accept="image/*" capture="environment" data-r="bien-nhan" hidden>Chụp giấy biên nhận</label>
+      <p class="hd-ghi" data-r="bn-trang" style="margin-top:6px"></p></div>
+    <div data-r="khoi-thieu" hidden><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="so-nhan">Bác thật sự nhận được bao nhiêu?</label><input class="hd-o" id="so-nhan" data-r="so" inputmode="numeric" placeholder="0"></div>
+    ${oOtp("otp-t")}
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day" data-r="day">
+      <button class="nut chinh-nut" type="button" data-r="du">Đã nhận đủ ${vnd(moi)} đ</button>
+      <div class="hai"><button class="nut lui" type="button" data-r="thieu">Nhận ít hơn</button><button class="nut do" type="button" data-r="chua">Chưa thấy tiền</button></div>
+    </div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-tien");
+    // Gắn sự kiện ngay; ảnh chứng từ tải sau, đóng tấm trong lúc tải thì bỏ qua
+    let cach = "bank_transfer", bienNhan = null, soTien = 0, ketQua = null, thuThach = null, dang = false;
+    const khoaHet = (khoa) => goc.querySelectorAll("button, input").forEach((x) => { if (!x.closest('[data-r="khoi-otp"]')) x.disabled = khoa; });
+    goc.querySelectorAll("[data-cach]").forEach((nut) => (nut.onclick = () => {
+      cach = nut.dataset.cach; goc.querySelectorAll("[data-cach]").forEach((x) => x.setAttribute("aria-pressed", String(x === nut)));
+      r("khoi-ck").hidden = cach !== "bank_transfer"; r("khoi-tm").hidden = cach !== "cash";
+    }));
+    r("bien-nhan").onchange = async (e) => {
+      const f = e.target.files[0]; if (!f) return; r("bn-trang").textContent = "Đang gửi ảnh biên nhận…";
+      try {
+        const du = await new Promise((ok, loi) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1]); fr.onerror = loi; fr.readAsDataURL(f); });
+        const j = await lenh("/v1/files", { entity: "payment", entity_id: k.id, captured_in_app: true, mime: f.type || "image/jpeg", data_base64: du }, "bien-nhan-" + f.size + f.lastModified);
+        bienNhan = (j.data || j).id; if (goc.isConnected) r("bn-trang").textContent = "Đã gửi ảnh biên nhận.";
+      } catch (er) { if (goc.isConnected) r("bn-trang").textContent = er.message; }
+      e.target.value = "";
+    };
+    const ma = () => r("ma-gd").value.trim();
+    const kiemCach = () => {
+      if (cach === "bank_transfer" && ma().length < 4) { r("ma-gd").focus(); throw new Error("Bác chép mã giao dịch trong app ngân hàng vào ô Mã giao dịch."); }
+      if (cach === "cash" && !bienNhan) throw new Error("Tiền mặt cần ảnh giấy biên nhận hai bên ký. Bác bấm Chụp giấy biên nhận.");
+    };
+    const guiMa = async (lai = false) => {
+      const j = await lenh("/v1/otp/challenges", { purpose: "money_received", payment_id: k.id, amount_vnd: String(soTien) }, lai ? "otp-tien-" + Date.now() : "otp-tien");
+      thuThach = j.challenge_id || j.data?.challenge_id;
+    };
+    const batDauOtp = async () => {
+      await guiMa(); khoaHet(true);
+      r("khoi-otp").hidden = false; r("otp").focus(); henGuiLai(goc, guiMa);
+      r("day").innerHTML = `<button class="nut chinh-nut" type="button" data-r="xac">Xác nhận đã nhận ${vnd(soTien)} đ</button><button class="nut lui" type="button" data-r="huy">Để sau</button>`;
+      r("huy").onclick = dongTam;
+      r("xac").onclick = async () => {
+        if (dang) return; dang = true; r("xac").disabled = true; baoTam("");
+        try {
+          if (!/^\d{6}$/.test(r("otp").value)) throw new Error("Bác nhập đủ 6 số trong tin nhắn.");
+          const than = { challenge_id: thuThach, code: r("otp").value, amount_vnd: String(soTien), result: ketQua, method: cach, bank_txn_ref: cach === "bank_transfer" ? ma() : undefined, receipt_document_id: cach === "cash" ? bienNhan : undefined };
+          const j = await lenh(`/v1/payments/${k.id}/confirm`, than, "xac-tien");
+          const d = j.data || j, con = Number(d.remaining_vnd ?? conThieu - soTien);
+          return xongViec(con > 0 ? `Đã ghi nhận bác nhận ${vnd(soTien)} đ. Khoản này còn thiếu ${vnd(con)} đ, AgiViet nhắc người mua.` : `Đã ghi nhận bác nhận đủ khoản ${k.code}.`);
+        } catch (e) { baoTam(e.ma === "MA_GIAO_DICH_TRUNG" ? "Mã giao dịch này đã dùng cho khoản khác. Bác kiểm lại mã trong app ngân hàng." : e.message); }
+        dang = false; if (r("xac")) r("xac").disabled = false;
+      };
+    };
+    const chay = async (fn) => { if (dang) return; dang = true; khoaHet(true); baoTam(""); try { await fn(); } catch (e) { baoTam(e.message); khoaHet(false); } dang = false; };
+    r("du").onclick = () => chay(async () => { kiemCach(); soTien = moi; ketQua = daNhan + moi >= phai ? "full" : "partial"; await batDauOtp(); });
+    r("thieu").onclick = () => {
+      r("khoi-thieu").hidden = false; r("so").focus();
+      r("so").oninput = () => { const n = r("so").value.replace(/\D/g, ""); r("so").value = n ? vnd(n) : ""; };
+      r("day").innerHTML = `<button class="nut chinh-nut" type="button" data-r="gui">Tiếp tục</button><button class="nut lui" type="button" data-r="huy">Để sau</button>`;
+      r("huy").onclick = dongTam;
+      r("gui").onclick = () => chay(async () => {
+        soTien = Number(r("so").value.replace(/\D/g, ""));
+        if (!soTien || soTien >= moi) throw new Error(`Số nhận phải lớn hơn 0 và nhỏ hơn ${vnd(moi)} đ người mua báo.`);
+        kiemCach(); ketQua = "partial"; await batDauOtp();
+      });
+    };
+    r("chua").onclick = () => chay(async () => {
+      await lenh(`/v1/payments/${k.id}/not-received`, { reason: "Bác chưa thấy tiền về tài khoản" }, "chua-nhan");
+      xongViec("Đã báo người mua và AgiViet: bác chưa thấy tiền. Chưa bốc hàng cho tới khi tiền về.");
+    });
+    const anh = r("anh");
+    if (anh) fetch(`/v1/documents/${k.evidence_document_ids[0]}/file`, H()).then(async (f) => { if (!goc.isConnected) return; if (f.ok) anh.src = URL.createObjectURL(await f.blob()); else anh.remove(); }).catch(() => anh.isConnected && anh.remove());
+  });
+}
+
+// Bàn giao: người nhận của người mua mở mã trên app của họ; bác đối chiếu rồi nhập 6 số (QR là cùng mã, quét bằng app người nhận)
+const LOI_MA = { QR_KHONG_DUNG_DOT: "Mã không đúng đợt này. Bác hỏi lại người nhận mã trên app của họ.", QR_BI_KHOA: "Nhập sai 3 lần nên tạm khóa 15 phút. Bác gọi người mua hoặc AgiViet nếu cần gấp.", QR_HET_HAN: "Mã đã hết hạn hoặc đã dùng. Người nhận bấm làm mới mã trên app.", NGUOI_NHAN_KHONG_CHI_DINH: "Người mua chưa chỉ định người nhận. Bác nhắn người mua trước khi giao." };
+function moBanGiao(d) {
+  const taiCho = d.hanh_dong.includes("start_check");
+  moTam(`<div class="than"><h2 id="t-bg">Bàn giao đợt ${esc(d.batch_no)} · ${esc(can(d.planned_qty_g).join(" "))}</h2>
+    <ol class="hd-ls" style="padding-bottom:0">
+      <li>Người nhận của <b>${esc(don.buyer?.display_name)}</b> mở mục "Mã nhận hàng" trên app của họ.</li>
+      <li>Bác xem đúng người, đúng tên công ty, rồi nhập 6 số hiện trên máy họ.</li>
+      <li>${taiCho ? "Hai bên cùng cân tại chỗ. Người mua nhập kết quả, bác xem rồi ký." : "Bác bốc hàng lên xe, ghi số ký và biển số. Hàng được cân lại ở nơi đến."}</li>
+    </ol>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="ma6">Mã 6 số của người nhận</label>
+      <input class="hd-otp" id="ma6" data-r="ma6" inputmode="numeric" maxlength="6" autocomplete="off"></div>
+    ${taiCho ? "" : `<div class="hd-khoi" style="gap:10px">
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="kg-boc">Số ký đã bốc lên xe</label><input class="hd-o" id="kg-boc" data-r="kg" inputmode="decimal" placeholder="Ví dụ: 1.020"></div>
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-so">Biển số xe</label><input class="hd-o" id="bien-so" data-r="bien" autocomplete="off" placeholder="Ví dụ: 66C-123.45"></div>
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="niem">Số niêm phong (nếu có)</label><input class="hd-o" id="niem" data-r="niem" autocomplete="off"></div></div>`}
+    <p class="hd-bao vang">Không đưa hàng cho người không có mã. Ai nhận hàng mà không qua mã thì AgiViet không bảo vệ được bác khi có tranh chấp.</p>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut vang" type="button" data-r="tiep">${taiCho ? "Bắt đầu cân" : "Xác nhận xuất hàng"}</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-bg");
+    let dang = false;
+    // Môi trường thử: người mua là AI → hiện mã người nhận (như mã OTP thử); bản thật không có route này.
+    fetch(`/v1/test/deliveries/${d.id}/receipt-code`, { headers: { authorization: "Bearer " + token } }).then((x) => (x.ok ? x.json() : null)).then((m) => {
+      const ma = (m?.data ?? m)?.ma_6_so; if (!ma) return;
+      r("ma6").insertAdjacentHTML("afterend", `<p class="ma-thu" style="margin:8px 0 0;font-size:14px;color:var(--chin,#7a5a10)">Môi trường thử · mã người nhận: <b>${esc(ma)}</b></p>`);
+      // Chưa tới giờ giao: bản thử cho tua đồng hồ thử tới đầu khung giờ (buổi trình diễn không phải ngồi chờ). Bản thật không có.
+      fetch(`/v1/deliveries/${d.id}`, { headers: { authorization: "Bearer " + token } }).then((x) => x.json()).then(async (j) => {
+        const dv = j?.data ?? j; const tu = dv?.window_from ? new Date(dv.window_from) : null;
+        const now = new Date((await fetch("/v1/test/clock").then((x) => x.json()).catch(() => ({})))?.now ?? Date.now());
+        if (!tu || tu <= now) return;
+        r("ma6").closest("div").insertAdjacentHTML("afterend", `<div class="hd-bao vang" data-r="cho-gio">Chưa tới giờ giao (từ ${tu.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}). <button type="button" class="nut lui" data-r="tua" style="margin-top:8px;width:100%">Bản thử: tới giờ giao</button></div>`);
+        r("tua").onclick = async () => { r("tua").disabled = true; const kq = await fetch("/v1/test/clock", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ set: tu.toISOString() }) }); if (kq.ok) return r("cho-gio").remove(); r("cho-gio").textContent = (await kq.json().catch(() => ({}))).errors?.[0]?.message || "Chưa tua giờ được."; };
+      }).catch(() => {});
+    }).catch(() => {});
+    r("huy").onclick = dongTam;
+    r("tiep").onclick = async () => {
+      if (dang) return; dang = true; r("tiep").disabled = true; baoTam("");
+      try {
+        const ma6 = r("ma6").value.trim();
+        if (!/^\d{6}$/.test(ma6)) throw new Error("Bác nhập đủ 6 số người nhận đọc cho.");
+        if (taiCho) {
+          await lenh(`/v1/deliveries/${d.id}/start-check`, { ma_6_so: ma6 }, "bat-dau-can");
+          return xongViec("Đã mở bước cân. Hai bên cùng cân, người mua nhập kết quả, bác xem rồi ký ở đây.");
+        }
+        const kg = docSo(r("kg").value);
+        if (!(kg > 0)) throw new Error("Bác ghi số ký đã bốc lên xe.");
+        if (!r("bien").value.trim()) throw new Error("Bác ghi biển số xe chở hàng.");
+        await lenh(`/v1/deliveries/${d.id}/ship`, { ma_6_so: ma6, loaded_g: String(Math.round(kg * 1000)), plate_no: r("bien").value.trim().toUpperCase(), seal_code: r("niem").value.trim() || undefined }, "xuat-hang");
+        xongViec("Đã xuất hàng. Hàng được cân lại ở nơi đến, AgiViet báo kết quả cho bác.");
+      } catch (e) { baoTam(LOI_MA[e.ma] || e.message); }
+      dang = false; if (r("tiep")) r("tiep").disabled = false;
+    };
+  });
+}
+function moDatXe(d) {
+  moTam(`<div class="than"><h2 id="t-xe">Xe chở đợt ${esc(d.batch_no)}</h2>
+    <p class="hd-ghi">Hợp đồng ghi bác lo xe. Báo biển số để người nhận đối chiếu khi giao.</p>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-xe">Biển số xe</label><input class="hd-o" id="bien-xe" data-r="bien" autocomplete="off" placeholder="Ví dụ: 66C-123.45"></div>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="cuoc">Cước xe (nếu có, đồng)</label><input class="hd-o" id="cuoc" data-r="cuoc" inputmode="numeric" placeholder="0"></div>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut chinh-nut" type="button" data-r="gui">Báo xe</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-xe");
+    r("huy").onclick = dongTam;
+    r("gui").onclick = async () => {
+      r("gui").disabled = true; baoTam("");
+      try {
+        const bien = r("bien").value.trim().toUpperCase(); if (!bien) throw new Error("Bác ghi biển số xe.");
+        await lenh(`/v1/deliveries/${d.id}/trip`, { plate_no: bien, freight_vnd: r("cuoc").value.replace(/\D/g, "") || undefined }, "dat-xe");
+        xongViec(`Đã báo xe ${bien} cho đợt ${d.batch_no}.`);
+      } catch (e) { baoTam(e.ma === "DU_LIEU_KHONG_HOP_LE" ? "Biển số này chưa có trong danh sách xe. Bác nhờ AgiViet thêm xe trước." : e.message); r("gui").disabled = false; }
+    };
+  });
+}
+
+// ---------- Có vấn đề: tranh chấp, đề nghị sửa, yêu cầu hủy ----------
+const TT_TC = { open: "Đang xem xét", awaiting_inspection: "Chờ kết quả kiểm định", awaiting_reply: "Chờ bên kia trả lời", resolved: "Đã có kết quả", closed: "Đã đóng" };
+const LOAI_DN = { qty_change: "Đổi lượng", price_change: "Đổi giá", date_change: "Đổi ngày giao", schedule_change: "Đổi lịch giao", terms_change: "Đổi điều khoản" };
+const TRUONG_DN = { qty_g: ["Lượng", (v) => can(v).join(" ")], unit_price_vnd: ["Giá", (v) => `${vnd(v)} đ/kg`], delivery_from: ["Giao từ", gioNgay], delivery_to: ["Giao đến", gioNgay], reason: ["Lý do", (v) => v] };
+const TT_HUY = { awaiting_reply: "Chờ trả lời", processing_money: "Đang xử lý tiền", accepted: "Đã đồng ý hủy", rejected: "Không đồng ý hủy", expired: "Hết hạn" };
+function veVanDe() {
+  const tc = (don.tranhChap || []).filter((x) => x.status !== "closed");
+  const dn = (don.deNghi || []).filter((a) => !/rejected|withdrawn|expired/.test(a.status));
+  const huy = (don.xinHuy || []).filter((x) => ["awaiting_reply", "processing_money"].includes(x.status));
+  if (!tc.length && !dn.length && !huy.length) return "";
+  return `<section class="vd-khoi" id="vd" aria-label="Có vấn đề cần xử lý"><h3><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Có vấn đề cần xử lý</h3>
+    ${tc.map((x) => { const kd = (x.inspections || [])[0];
+      return `<div class="vd-muc"><b>Tranh chấp ${x.claim_kind === "quality" ? "chất lượng" : x.claim_kind === "quantity" ? "số lượng" : ""} · ${esc(can(x.disputed_qty_g).join(" "))}</b>
+        <p>${esc(x.opened_by_side === "buyer" ? "Người mua" : "Bác")} báo: “${esc(x.reason)}”${x.delivery_code ? ` (đợt ${esc(x.delivery_code)})` : ""}.</p>
+        <p><b style="font-size:16px">${esc(TT_TC[x.status] || x.status)}</b>${kd ? ` · kiểm định ${vnd(kd.fee_vnd)} đ, ${kd.prepaid_by_side === "buyer" ? "người mua trả trước" : "bác trả trước"}; bên sai chịu phí` : ""}${kd?.result ? ` · kết quả: ${esc(kd.result)}` : ""}</p>
+        ${x.next_due_at ? `<p class="vd-han">Hạn tiếp theo ${esc(gioNgay(x.next_due_at))} · ${esc(conLai(x.next_due_at))}</p>` : ""}
+        <p>Phần không tranh chấp vẫn tính tiền bình thường. AgiViet ghi nhận tranh chấp, bác giữ ảnh và mẫu hàng.</p></div>`; }).join("")}
+    ${dn.map((a) => { const doi = Object.entries(a.payload || {}).filter(([k2]) => TRUONG_DN[k2]); const choBac = !a.la_cua_toi && /^open$|await|pending|proposed/.test(a.status); const choKy = a.status === "accepted" && a.annex_document_id && Number(a.resulting_version_no) > Number(don.effective_version_no || 0);
+      return `<div class="vd-muc"><b>${esc(a.la_cua_toi ? "Bác đề nghị" : "Người mua đề nghị")}: ${esc(LOAI_DN[a.kind] || "Sửa hợp đồng")}</b>
+        ${doi.length ? `<div class="vd-doi">${doi.map(([k2, v]) => `<span>${esc(TRUONG_DN[k2][0])}</span><b style="font-size:16px">${esc(TRUONG_DN[k2][1](v))}</b>`).join("")}</div>` : ""}
+        ${a.han ? `<p class="vd-han">Trả lời trước ${esc(gioNgay(a.han))} · ${esc(conLai(a.han))}. Im lặng không phải là đồng ý.</p>` : ""}
+        ${choBac ? `<div class="vd-nut"><button class="nut chinh-nut" type="button" data-dn="${esc(a.id)}" data-lam="dong-y">Đồng ý</button><button class="nut do" type="button" data-dn="${esc(a.id)}" data-lam="khong">Không đồng ý</button></div>` : `<p>${esc(choKy ? "Hai bên đã đồng ý. Ký phụ lục bằng mã OTP để có hiệu lực." : a.status === "accepted" ? "Phụ lục đã có hiệu lực." : a.status === "rejected" ? "Đề nghị không được đồng ý." : a.la_cua_toi ? "Chờ người mua trả lời." : "Đã trả lời.")}</p>`}
+        ${choKy ? `<button class="nut vang" type="button" data-dn="${esc(a.id)}" data-lam="ky">Ký phụ lục</button>` : ""}</div>`; }).join("")}
+    ${huy.map((x) => `<div class="vd-muc"><b>${x.la_cua_toi ? "Bác đã xin hủy" : "Người mua xin hủy hợp đồng"}</b><p>${esc(x.reason_text || "")} · ${esc(TT_HUY[x.status] || x.status)}</p>
+      ${!x.la_cua_toi && x.status === "awaiting_reply" ? `<div class="vd-nut"><button class="nut chinh-nut" type="button" data-huy-tl="${esc(x.id)}" data-lam="dong-y">Đồng ý hủy</button><button class="nut lui" type="button" data-huy-tl="${esc(x.id)}" data-lam="khong">Không đồng ý</button></div>` : ""}</div>`).join("")}
+  </section>`;
+}
+async function traLoiDeNghi(id, lam) {
+  if (lam === "ky") return kyPhuLuc(don.deNghi.find((a) => a.id === id));
+  try { await lenh(`/v1/amendments/${id}/${lam === "dong-y" ? "accept" : "reject"}`, {}, "dn-" + lam);
+    await tai(); thongBaoXanh(lam === "dong-y" ? "Bác đã đồng ý đề nghị. Hai bên ký phụ lục để có hiệu lực." : "Bác đã không đồng ý. Hợp đồng giữ như cũ."); }
+  catch (e) { alertLoi(e); }
+}
+async function traLoiHuy(id, lam) {
+  try { await lenh(`/v1/cancellation-requests/${id}/${lam === "dong-y" ? "accept" : "reject"}`, {}, "huy-tl-" + lam);
+    await tai(); thongBaoXanh(lam === "dong-y" ? "Đã đồng ý hủy. AgiViet xử lý tiền cọc theo hợp đồng." : "Bác không đồng ý hủy. Cọc vẫn do ngân hàng giữ tới khi hai bên thỏa thuận."); }
+  catch (e) { alertLoi(e); }
+}
+const thongBaoXanh = (chu) => { const b = document.createElement("p"); b.className = "hd-bao xanh"; b.setAttribute("role", "status"); b.textContent = chu; $("noi").prepend(b); scrollTo({ top: 0 }); };
+// Ký phụ lục bằng OTP (cùng cách ký hợp đồng)
+function kyPhuLuc(a) {
+  moTam(`<div class="than"><h2 id="t-pl">Ký phụ lục sửa hợp đồng</h2><p class="hd-ghi">Phụ lục có hiệu lực khi hai bên cùng ký. Phần không sửa giữ như hợp đồng cũ.</p>${oOtp("otp-pl")}<p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut vang" type="button" data-r="tiep">Gửi mã để ký</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-pl");
+    let thuThach = null, dang = false; r("huy").onclick = dongTam;
+    const guiMa = async (lai = false) => { const j = await lenh("/v1/otp/challenges", { purpose: "amendment_sign", document_id: a.annex_document_id }, lai ? "otp-pl-" + Date.now() : "otp-pl"); thuThach = j.challenge_id || j.data?.challenge_id; };
+    r("tiep").onclick = async () => {
+      if (dang) return; dang = true; r("tiep").disabled = true; baoTam("");
+      try {
+        if (!thuThach) { await guiMa(); r("khoi-otp").hidden = false; r("otp").focus(); r("tiep").textContent = "Ký phụ lục"; henGuiLai(goc, guiMa); }
+        else { if (!/^\d{6}$/.test(r("otp").value)) throw new Error("Bác nhập đủ 6 số trong tin nhắn."); await lenh(`/v1/amendments/${a.id}/sign`, { challenge_id: thuThach, code: r("otp").value }, "ky-pl"); return xongViec("Bác đã ký phụ lục."); }
+      } catch (e) { baoTam(e.message); }
+      dang = false; if (r("tiep")) r("tiep").disabled = false;
+    };
+  });
+}
+// Xin hủy: xem trước hậu quả (hàng, cọc, phí, tiền đã nhận phải hoàn, uy tín) → lý do → gửi
+function moXinHuy() {
+  moTam(`<div class="than"><h2 id="t-huy">Xin hủy hợp đồng ${esc(don.code)}</h2>
+    <div class="hd-chon" role="radiogroup" aria-label="Vì sao hủy">
+      <label><input type="radio" name="ly-huy" data-ly="seller_request" checked><span><b>Bác không giao được</b><small>Thiếu hàng, đổi ý… người mua được hoàn cọc, bác bị ghi uy tín.</small></span></label>
+      <label><input type="radio" name="ly-huy" data-ly="force_majeure"><span><b>Thiên tai, dịch bệnh</b><small>Cần ảnh chứng cứ. Nếu được công nhận thì không ai bị trừ uy tín.</small></span></label></div>
+    <div class="vd-hq" data-r="hq"><div class="khung-tai" style="height:120px"></div></div>
+    <div data-r="khoi-cc" hidden><p class="hd-ghi">Bất khả kháng cần chứng cứ: ảnh vườn ngập, trái rụng, giấy báo dịch của xã…</p>
+      <label class="nut phu-nut" style="width:100%;margin-top:8px;cursor:pointer"><input type="file" accept="image/*" capture="environment" data-r="anh-cc" hidden>Chụp ảnh chứng cứ</label>
+      <p class="hd-ghi" data-r="cc-trang" style="margin-top:6px"></p></div>
+    <label style="font-weight:600;color:var(--muc-phu);font-size:16px" for="ly-huy">Bác ghi rõ lý do</label>
+    <textarea class="hd-o" id="ly-huy" data-r="ly" maxlength="400" placeholder="Ví dụ: mưa lớn làm rụng trái, chỉ còn 40% hàng"></textarea>
+    <p class="hd-ghi">Người mua có hạn để trả lời. Hai bên đồng ý thì AgiViet xử lý tiền như trên; không đồng ý thì cọc vẫn do ngân hàng giữ tới khi hai bên thỏa thuận.</p>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day"><button class="nut do" type="button" data-r="gui">Gửi yêu cầu hủy</button><button class="nut lui" type="button" data-r="huy">Thôi, giữ hợp đồng</button></div>`, (goc) => {
+    goc.querySelector(".hd-tam").setAttribute("aria-labelledby", "t-huy");
+    let ly = "seller_request", dang = false, soCC = 0;
+    r("anh-cc").onchange = async (e) => {
+      const f = e.target.files[0]; if (!f) return; r("cc-trang").textContent = "Đang gửi ảnh…";
+      try {
+        const du = await new Promise((ok, loi) => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(",")[1]); fr.onerror = loi; fr.readAsDataURL(f); });
+        await lenh("/v1/files", { entity: "order", entity_id: don.id, captured_in_app: true, mime: f.type || "image/jpeg", data_base64: du }, "cc-" + f.size + f.lastModified);
+        soCC++; if (goc.isConnected) r("cc-trang").textContent = `Đã gửi ${soCC} ảnh chứng cứ.`;
+      } catch (er) { if (goc.isConnected) r("cc-trang").textContent = er.message; }
+      e.target.value = "";
+    };
+    const ic = (d) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+    const xemTruoc = async () => {
+      r("hq").innerHTML = `<div class="khung-tai" style="height:120px"></div>`;
+      try {
+        const h = await docJ(`/v1/orders/${don.id}/cancellation-preview?reason_kind=${ly}`); if (!goc.isConnected) return;
+        r("hq").innerHTML = `<p style="margin:0;font-weight:700;font-size:15px">Nếu hủy thì:</p>
+          <div>${ic('<path d="M3 7h18l-2 12H5z"/>')}<span><b>Hàng:</b> ${esc(h.hang)}</span></div>
+          <div class="tien">${ic('<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}<span><b>Cọc:</b> ${esc(h.coc?.cau || "")}</span></div>
+          <div>${ic('<path d="M12 3v18M7 8h7a3 3 0 0 1 0 6H8"/>')}<span><b>Phí:</b> ${esc(h.phi?.cau || "")}</span></div>
+          ${Number(h.tra_thang?.da_nhan_vnd) ? `<div class="tien">${ic('<path d="M4 12h16M14 6l6 6-6 6"/>')}<span><b>Tiền bác đã nhận:</b> ${esc(h.tra_thang.cau)}</span></div>` : ""}
+          <div class="${/không ai|không bị/i.test(h.uy_tin || "") ? "" : "uy-tin"}">${ic('<path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/>')}<span><b>Uy tín:</b> ${esc(h.uy_tin)}</span></div>`;
+      } catch (e) { if (goc.isConnected) r("hq").innerHTML = `<p class="hd-bao do" style="margin:0">Chưa xem được hậu quả hủy: ${esc(e.message)}</p>`; }
+    };
+    goc.querySelectorAll("[data-ly]").forEach((b) => (b.onchange = () => { ly = b.dataset.ly; r("khoi-cc").hidden = ly !== "force_majeure"; xemTruoc(); }));
+    xemTruoc();
+    r("huy").onclick = dongTam;
+    r("gui").onclick = async () => {
+      if (dang) return; const lyDo = r("ly").value.trim();
+      if (lyDo.length < 5) return baoTam("Bác ghi rõ lý do để người mua hiểu."), r("ly").focus();
+      if (ly === "force_majeure" && !soCC) return baoTam("Bất khả kháng cần ít nhất một ảnh chứng cứ. Bác bấm Chụp ảnh chứng cứ.");
+      dang = true; r("gui").disabled = true; baoTam("");
+      try { await lenh(`/v1/orders/${don.id}/cancellation-requests`, { reason_kind: ly, reason_text: lyDo }, "xin-huy"); return xongViec("Đã gửi yêu cầu hủy. Chờ người mua trả lời; AgiViet báo kết quả cho bác."); }
+      catch (e) { baoTam(e.ma === "DANG_XIN_HUY" ? "Đơn này đang có yêu cầu hủy chờ trả lời." : /chứng cứ/.test(e.message) ? "Bất khả kháng cần ảnh chứng cứ. Bác chụp thêm rồi gửi lại." : e.message.replace(/\s*\(?POST [^ )]+\)?/g, "")); }
+      dang = false; if (r("gui")) r("gui").disabled = false;
+    };
+  });
+}
+
+// Ảnh bằng chứng từng dòng nghiệm thu: bấm "Xem ảnh" → tải có xác thực, hiện ngay dưới dòng; lỗi thì báo rõ.
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-anh]"); if (!b) return;
+  const dong = b.closest("tr"); const cu = dong?.nextElementSibling;
+  if (cu?.classList.contains("dong-anh")) { cu.remove(); b.textContent = "Xem ảnh"; return; } // bấm lần nữa để ẩn
+  b.disabled = true; b.textContent = "Đang tải…";
+  try {
+    const f = await fetch(`/v1/documents/${b.dataset.anh}/file`, H()); if (!f.ok) throw new Error();
+    const url = URL.createObjectURL(await f.blob());
+    dong.insertAdjacentHTML("afterend", `<tr class="dong-anh"><td colspan="2"><img class="hd-anh" src="${url}" alt="Ảnh bằng chứng của dòng này do người mua chụp" style="width:100%;border-radius:12px"></td></tr>`);
+    b.textContent = "Ẩn ảnh";
+  } catch { b.textContent = "Chưa tải được ảnh, bấm thử lại"; }
+  b.disabled = false;
+});
+// Kết quả cân: xem 3 phần, đồng ý ký bằng PIN, hoặc báo dòng không đúng
+function moCan(d) {
+  const kq = (d.ket_qua || []).at(-1); if (!kq) return;
+  const tong = kq.lines.reduce((t, x) => t + Number(x.value_vnd), 0), thieu = Number(d.planned_qty_g) - Number(kq.weighed_g);
+  moTam(`<div class="than"><h2>Kết quả cân đợt ${esc(d.batch_no)}</h2>
+    <div class="hd-the" style="padding:2px 14px">
+      <div class="hd-dong"><span>Cân được / kế hoạch</span><b>${esc(can(kq.weighed_g).join(" "))} / ${esc(can(d.planned_qty_g).join(" "))}</b>${thieu > 0 ? `<small>Thiếu ${esc(can(thieu).join(" "))} so với kế hoạch.</small>` : ""}</div>
+    </div>
+    <table class="hd-can"><tbody>
+      ${kq.lines.map((x) => `<tr><td>${nhan(LOAI_DONG[x.kind] || [x.kind, "xam"])} ${esc(can(x.qty_g).join(" "))}<small>${x.reason_code ? esc(LY_DO[x.reason_code] || x.reason_code) + " · " : ""}${Number(x.unit_price_vnd) ? `${vnd(x.unit_price_vnd)} đ/kg` : "không tính tiền"}${x.evidence_document_id ? ` <button type="button" class="nut-xem-anh" data-anh="${esc(x.evidence_document_id)}">Xem ảnh</button>` : ""}</small></td><td>${vnd(x.value_vnd)} đ</td></tr>`).join("")}
+      <tr><td>Thành tiền đợt này</td><td>${vnd(tong)} đ</td></tr>
+    </tbody></table>
+    <p class="hd-ghi">Phần trả lại vẫn là hàng của bác: app tạo lô riêng để bác bán tiếp. Phần hạ cấp tính theo giá hạ cấp đã ký.</p>
+    ${d.nguong_khong_dat?.vuot ? `<div class="hd-bao do" role="alert" style="display:grid;gap:8px"><b>Người mua chê ${(d.nguong_khong_dat.bps / 100).toFixed(1).replace(".", ",")}% hàng (xuống loại + trả lại), quá 20%.</b>
+      <span>App không tự chốt. Bác xem ảnh từng dòng. Thấy chưa đúng thì bấm <b>"Có dòng không đúng"</b> để mời bên kiểm định (bên sai chịu phí).</span>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-weight:700"><input type="checkbox" data-r="chap-nhan" style="width:24px;height:24px;flex:none;margin-top:2px"> Tôi đã xem và chấp nhận kết quả cân này</label></div>` : ""}
+    <div data-r="khoi-pin" hidden><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="pin">Nhập mã PIN app (bản thử: 2468) (4 số) để ký biên bản</label><input class="hd-otp" id="pin" data-r="pin" inputmode="numeric" maxlength="4" autocomplete="off" type="password"></div>
+    <div data-r="khoi-thieu" hidden><p class="hd-bao vang">Thiếu ngoài dung sai: bác chọn cách xử lý phần thiếu.</p>
+      <div class="hd-chon">
+        <label><input type="radio" name="thieu" value="backfill" checked><span><b>Giao bù sau</b><small>Hẹn đợt bù phần còn thiếu.</small></span></label>
+        <label><input type="radio" name="thieu" value="end"><span><b>Kết thúc, không giao phần thiếu</b><small>Có thể bị trừ bồi thường theo hợp đồng.</small></span></label>
+        <label><input type="radio" name="thieu" value="force_majeure"><span><b>Bất khả kháng (mưa bão, dịch bệnh)</b><small>Cần ảnh hoặc giấy tờ làm chứng cứ.</small></span></label>
+      </div></div>
+    <div data-r="khoi-phan" hidden>
+      <label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="dong-sai">Dòng nào không đúng?</label>
+      <select class="hd-o" id="dong-sai" data-r="dong">${kq.lines.map((x) => `<option value="${esc(x.line_no)}">${esc(LOAI_DONG[x.kind]?.[0] || x.kind)} ${esc(can(x.qty_g).join(" "))}${x.reason_code ? ` · ${esc(LY_DO[x.reason_code] || x.reason_code)}` : ""}</option>`).join("")}</select>
+      <textarea class="hd-o" data-r="ly" placeholder="Vì sao không đúng? Ví dụ: trái chỉ trầy nhẹ, vẫn đạt loại 1" maxlength="300" style="margin-top:8px"></textarea>
+      <div class="hd-chon" style="margin-top:8px">
+        <label><input type="radio" name="cach" value="chia_lai" checked><span><b>Hai bên cân, chia lại</b><small>Người mua xem lại dòng này cùng bác.</small></span></label>
+        <label><input type="radio" name="cach" value="rut_phan"><span><b>Rút phần này về</b><small>Bác lấy lại phần bị chê, không tính tiền.</small></span></label>
+        <label><input type="radio" name="cach" value="kiem_dinh"><span><b>Mời bên kiểm định</b><small>Bên sai chịu phí kiểm định.</small></span></label>
+      </div></div>
+    <p class="hd-bao" data-r="bao" hidden></p></div>
+    <div class="day" data-r="day"><button class="nut chinh-nut" type="button" data-r="dong-y">Đồng ý và ký biên bản</button><button class="nut lui" type="button" data-r="sai">Có dòng không đúng</button></div>`, () => {
+    let buoc = "dong-y";
+    const datDay = (chinh, phu) => { r("day").innerHTML = `<button class="nut chinh-nut" type="button" data-r="chinh">${chinh}</button><button class="nut lui" type="button" data-r="huy">${phu}</button>`; r("huy").onclick = dongTam; r("chinh").onclick = chot; };
+    const chot = async () => {
+      if (!/^\d{4}$/.test(r("pin").value)) return baoTam("Bác nhập đủ 4 số PIN."), r("pin").focus();
+      r("chinh").disabled = true; baoTam("");
+      try {
+        if (buoc === "dong-y") {
+          const xl = r("khoi-thieu").hidden ? undefined : { choice: $("che").querySelector('input[name="thieu"]:checked').value };
+          if (d.nguong_khong_dat?.vuot && !r("chap-nhan")?.checked) { r("chinh").disabled = false; return baoTam("Hàng bị chê quá 20%: bác đánh dấu \"Tôi đã xem và chấp nhận\" nếu đồng ý, hoặc bấm Thôi rồi chọn \"Có dòng không đúng\" để mời kiểm định.", "do"); }
+          await lenh(`/v1/deliveries/${d.id}/acceptance/agree`, { pin: r("pin").value, expected_sha256: kq.content_sha256, shortfall: xl, ...(d.nguong_khong_dat?.vuot ? { chap_nhan_vuot_nguong: true } : {}) });
+          return xongViec("Bác đã ký biên bản nghiệm thu. Tiền hàng tính theo kết quả này.");
+        }
+        if (!r("ly").value.trim()) throw new Error("Bác ghi lý do để người mua và AgiViet xem lại.");
+        await lenh(`/v1/deliveries/${d.id}/acceptance/dispute`, { line_no: Number(r("dong").value), reason: r("ly").value.trim(), option: $("che").querySelector('input[name="cach"]:checked').value, pin: r("pin").value });
+        xongViec("Đã gửi phản đối dòng cân. Các dòng còn lại giữ nguyên, chờ người mua xem lại.");
+      } catch (e) {
+        if (e.ma === "DU_LIEU_KHONG_HOP_LE" && e.chiTiet?.thieu_g) { r("khoi-thieu").hidden = false; baoTam(e.message, "vang"); }
+        else if (e.ma === "CHUA_DU_TIEN_TRUOC_BOC" && ["on_receipt", "before_loading", "inspect_then_before_loading"].includes(don.dieu_khoan?.payment_timing)) {
+          const coc = Number(don.dieu_khoan?.deposit_vnd || 0), canTra = Math.max(0, tong - coc);
+          baoTam(`Hợp đồng trả tiền khi nhận tại vườn: người mua cần chuyển ${vnd(canTra)} đ (thành tiền ${vnd(tong)} đ trừ cọc ${vnd(coc)} đ) trước khi hàng rời vườn. Tiền về, bác xác nhận ở mục Tiền của hợp đồng rồi ký biên bản. Chưa có tiền thì đừng cho bốc hàng.`, "vang");
+        }
+        else baoTam(e.message);
+        r("chinh").disabled = false;
+      }
+    };
+    r("dong-y").onclick = () => { buoc = "dong-y"; r("khoi-pin").hidden = false; r("pin").focus(); datDay("Ký biên bản", "Để sau"); };
+    r("sai").onclick = () => { buoc = "phan-doi"; r("khoi-phan").hidden = false; r("khoi-pin").hidden = false; r("dong").focus(); datDay("Gửi phản đối", "Để sau"); };
+  });
+}
+
+giuThamSo();
+tai().catch((e) => { $("noi").innerHTML = `<p class="bao loi">${esc(e.message)}</p><a class="nut phu-nut" href="./ban-hop-dong.html${esc(location.search)}" style="text-decoration:none">Về danh sách hợp đồng</a>`; });

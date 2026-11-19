@@ -147,4 +147,4 @@ function cai() {
   quet(document);
   new MutationObserver((ds) => ds.forEach((x) => x.addedNodes.forEach((nd) => { if (nd.nodeType !== 1) return; if (nd.matches?.('input[type="date"]')) lam(nd); quet(nd); }))).observe(document.body, { childList: true, subtree: true });
 }
-if (typeof document !== "undefined") (document.readyState === "loading" ? addEventListener("DOMContentLoaded", cai) : cai());
+if (typeof document !== "undefined") { if (document.readyState === "loading") addEventListener("DOMContentLoaded", cai); else cai(); }

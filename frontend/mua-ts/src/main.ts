@@ -48,7 +48,7 @@ async function batDau(): Promise<void> {
   const lamMoi = async () => { await napHet().catch(() => {}); if (!location.hash.startsWith("#tin/")) veTheoDuong(); else demTab(); };
   addEventListener("agv-lam-moi", lamMoi);
   // Real-time: máy chủ báo thay đổi → nạp lại ngay (nhịp 30 giây bên dưới chỉ còn là dự phòng)
-  import(/* @vite-ignore */ "/thiet-ke/thoi-gian-thuc.js" as string).then((m: { moKenh: (f: () => Promise<string | null>) => void }) => m.moKenh(layPhien)).catch(() => {});
+  import("../../thiet-ke/thoi-gian-thuc.ts" as string).then((m: { moKenh: (f: () => Promise<string | null>) => void }) => m.moKenh(layPhien)).catch(() => {});
   addEventListener("agv-thay-doi", (e) => { if ((e as CustomEvent).detail?.giao_dich || !location.hash.startsWith("#tin/")) lamMoi(); });
   // Bản thử: AI đóng vai người bán (trả lời lời chào, nhắn tin, báo giá nhu cầu).
   batDoiTacAo().catch(() => {});

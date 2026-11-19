@@ -3,8 +3,8 @@
 import { esc, d, kg, so, icon, taoKho, chayApp } from "./so-lam-an.js";
 import { BANG, bangTrang, tenAi } from "./kich-ban-bang.js";
 import { THAT, napThat, chaoGia, api } from "./mua-that.js";
-import { phien } from "./chung.js";
-import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.js";
+import { phien } from "./chung.ts";
+import { DT_PHA, dtTien, tinhTien, docHD, ghiHD, datLaiHD, ngheHD, docTC, ghiTC, ngheTC, quetLienLac, gioNay, moLienLacT1 } from "./giao-dich-chung.ts";
 // Bản mô phỏng (số mẫu) chỉ dành cho trang thử quy trình / hai bên. Mở thẳng hoặc trong khung điện thoại mà chưa đăng nhập
 // thì về màn đăng nhập người mua — tránh người dùng thấy số mẫu tưởng là đơn thật rồi bấm không được.
 if (!THAT) { let trongTrangThu = false; try { trongTrangThu = window.top !== window && !/khung-dt\.html$/.test(window.parent.location.pathname); } catch {}

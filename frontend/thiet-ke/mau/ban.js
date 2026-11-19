@@ -4,7 +4,7 @@ import { MAN_1 } from "./man-1.js";
 import { MAN_2 } from "./man-2.js";
 import { MAN_3 } from "./man-3.js";
 import { DAU } from "./du-lieu.js";
-import { docHD, ghiHD, ngheHD } from "../giao-dich-chung.js";
+import { docHD, ghiHD, ngheHD } from "../giao-dich-chung.ts";
 
 import { esc, ic } from "./tien-ich.js";
 export { esc, d, so, kg, ic } from "./tien-ich.js";

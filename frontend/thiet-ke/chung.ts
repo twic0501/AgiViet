@@ -1,6 +1,6 @@
-import "./khung-dt.js";
-import "./lich.js";
-import "./hieu-ung-ghep.js";
+import "./khung-dt.ts";
+import "./lich.ts";
+import "./hieu-ung-ghep.ts";
 // Phần dùng chung cho các màn mẫu app bán: định dạng, phiên, tải dữ liệu, ảnh sản phẩm, chặng hợp đồng.
 export const LUOT = { seller: ["bac", "Bác"], buyer: ["cho", "Người mua"], bank: ["tien", "Ngân hàng"], ops: ["cho", "AgiViet"], system: ["cho", "Hệ thống"] };
 // Mã hạng (backend trả mã thô) → chữ cho bác: L1 → Loại 1, DAT → Hàng dạt, 48-52 (tôm) → Cỡ 48–52 con/kg…
@@ -19,7 +19,7 @@ export const tenLoai = (ma) => {
 };
 // Cỡ chữ người dùng chọn ở màn Tôi: phóng cả trang (giữ bố cục), áp dụng ngay khi mọi màn nạp chung.js
 export const CO_CHU = [["1", "Bình thường"], ["1.12", "Lớn"], ["1.25", "Rất lớn"]];
-export function datCoChu(v) {
+export function datCoChu(v?: string) {
   try { if (v) localStorage.setItem("agv-co-chu", v); v = localStorage.getItem("agv-co-chu") || "1"; } catch { v = v || "1"; }
   document.documentElement.style.zoom = v === "1" ? "" : v;
 }
@@ -27,6 +27,7 @@ datCoChu();
 // Vercel Web Analytics cho các trang chạy thẳng (không qua bundler): cùng script mà inject() của @vercel/analytics gắn.
 // Chỉ trên tên miền thật (máy thử không có /_vercel/insights).
 if (typeof document !== "undefined" && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !document.querySelector('script[src="/_vercel/insights/script.js"]')) {
+  // eslint-disable-next-line prefer-rest-params -- đoạn mã chuẩn của Vercel Analytics đẩy nguyên đối tượng arguments
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   document.head.appendChild(Object.assign(document.createElement("script"), { src: "/_vercel/insights/script.js", defer: true }));
 }
@@ -62,16 +63,16 @@ export const so = (v, min = -Infinity, max = Infinity) => { const n = Number(v);
 
 // Ảnh minh họa theo mã mặt hàng (ảnh thật trong /assets/products); không khớp → null (giao diện dùng ô giữ chỗ trung tính)
 /** @type {[RegExp, string][]} */
-const ANH = [[/XOAI/, "xoai-cat-chu"], [/SAU_RIENG|DURIAN/, "sau-rieng"], [/THANH_LONG|DRAGON/, "thanh-long"], [/TOM|SHRIMP/, "tom"],
+const ANH: [RegExp, string][] = [[/XOAI/, "xoai-cat-chu"], [/SAU_RIENG|DURIAN/, "sau-rieng"], [/THANH_LONG|DRAGON/, "thanh-long"], [/TOM|SHRIMP/, "tom"],
   [/CA_PHE|COFFEE/, "ca-phe"], [/LUA|GAO|RICE/, "lua-gao"], [/BUOI|POMELO|CAM_|QUYT|CHANH/, "buoi"], [/VAI|NHAN|CHOM/, "vai"],
   [/CHUOI|BANANA/, "chuoi"], [/DUA_HAU|DUA_LUOI|MELON/, "dua-hau"], [/RAU|^CAI|XA_LACH/, "rau-cai"], [/KHOAI|CA_ROT/, "cu"],
   [/TIEU|PEPPER/, "ho-tieu"], [/DIEU|CASHEW/, "hat-dieu"], [/CA_TRA|BASA/, "ca-tra"], [/^CUA|CRAB/, "cua"]];
 export const ANH_SP = (ma) => { const t = ANH.find(([m]) => m.test(ma || "")); return t ? `/assets/products/${t[1]}.jpg` : null; };
 
 // Chặng hiện tại của hợp đồng (0 chào giá … 4 nhận tiền) theo hien_thi.chang của backend, rơi về trạng thái.
-export function chiSoChang(d) {
+export function chiSoChang(d): number {
   const c = (d.hien_thi?.chang || "").toLowerCase();
-  const theoTen = [["chào", 0], ["ký", 1], ["cọc", 2], ["giao", 3], ["nghiệm", 3], ["thanh toán", 4], ["quyết", 4], ["tiền", 4]].find(([k]) => c.includes(k));
+  const theoTen = ([["chào", 0], ["ký", 1], ["cọc", 2], ["giao", 3], ["nghiệm", 3], ["thanh toán", 4], ["quyết", 4], ["tiền", 4]] as [string, number][]).find(([k]) => c.includes(k));
   if (theoTen) return theoTen[1];
   const s = d.status || "";
   return /outstanding|settl|paid/.test(s) ? 4 : /draft|sign/.test(s) ? 1 : /deposit/.test(s) ? 2 : /deliver|ship|accept/.test(s) ? 3 : /settle|complet/.test(s) ? 4 : 1;
@@ -150,7 +151,7 @@ async function docMayChu(doan, toc, luot) {
   });
 }
 // Đọc thành tiếng; trả true khi đọc xong (hoặc máy không đọc được), false khi bị dừng giữa chừng.
-export function docTo(doan, toc) {
+export function docTo(doan: string, toc?: number) {
   // eslint-disable-next-line no-async-promise-executor -- mọi lỗi đã bắt trong try, luôn gọi xong()
   return new Promise(async (xong) => {
     try {
@@ -180,7 +181,7 @@ if (typeof window !== "undefined" && !window.__agv401) {
   setTimeout(() => { try { sessionStorage.removeItem(CO); } catch {} }, 8000);
   // Bản thử: mỗi trình duyệt một mã máy, gửi kèm mọi lệnh /v1/test/ → máy chủ khóa hộ cho riêng người đang thử
   let may = ""; try { may = localStorage.getItem("agv-may") || ""; if (!may) { may = (crypto.randomUUID?.() || String(Math.random()).slice(2) + Date.now()); localStorage.setItem("agv-may", may); } } catch {}
-  window.fetch = async (/** @type {any} */ u, /** @type {any} */ o) => {
+  window.fetch = async (u: any, o?: any) => {
     if (may && /\/v1\/test\//.test(String(u?.url ?? u)) && (!o?.headers || typeof o.headers === "object" && !(o.headers instanceof Headers))) o = { ...(o || {}), headers: { ...(o?.headers || {}), "x-agv-may": may } };
     const r = await goc(u, o);
     try {
@@ -196,7 +197,7 @@ if (typeof window !== "undefined" && !window.__agv401) {
 }
 // Real-time cho các trang app bán: một kênh /v1/events mỗi trang; thay đổi phát "agv-thay-doi".
 if (typeof document !== "undefined" && /\/ban-[\w-]+\.html$/.test(location.pathname)) {
-  try { if (sessionStorage.getItem(KHOA_PHIEN)) import("./thoi-gian-thuc.js").then((m) => m.moKenh(() => phien())); } catch {}
+  try { if (sessionStorage.getItem(KHOA_PHIEN)) import("./thoi-gian-thuc.ts").then((m) => m.moKenh(() => phien())); } catch {}
 }
 export async function phien() {
   const sdt = new URLSearchParams(location.search).get("thu");
@@ -223,7 +224,7 @@ export async function phien() {
 }
 // Giữ tham số thử (?thu=) trên mọi liên kết nội bộ khi chuyển màn
 /** @param {ParentNode} [goc] */
-export function giuThamSo(goc = document) {
+export function giuThamSo(goc: ParentNode = document) {
   const thu = new URLSearchParams(location.search).get("thu");
   if (!thu) return;
   goc.querySelectorAll('a[href*=".html"]').forEach((a) => {
@@ -294,7 +295,7 @@ export function veTab(dangMo, soTin = 0) {
       cho = false;
     });
   }, { passive: true });
-  addEventListener("pointerdown", (e) => { if (!nav.contains(/** @type {Node} */ (e.target)) && !e.target.closest?.(".nut-cuon")) nav.classList.remove("thu"); }, { passive: true });
+  addEventListener("pointerdown", (e) => { if (!nav.contains(e.target as Node) && !(e.target as Element).closest?.(".nut-cuon")) nav.classList.remove("thu"); }, { passive: true });
   nutCuonNhanh();
   return nav;
 }
@@ -343,7 +344,7 @@ const BO_DAU = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").r
 // Câu soạn sẵn khi trợ lý AI chưa bật: chép đúng lời đã duyệt trong ai/agiviet_ai/tro_ly.py (CAU_LUA, QUY_TRINH), không thêm số.
 const CAU_LUA_BAN = "Bác cẩn thận nhé: AgiViet không bao giờ hỏi mã OTP hay mật khẩu, và tiền chỉ đi qua tài khoản đảm bảo ngân hàng trong app. Đừng chuyển tiền hay đọc mã cho ai. Nếu có người yêu cầu, bác bấm Báo cáo trong mục Hỗ trợ.";
 /** @type {[RegExp, string][]} */
-const SOAN_SAN = [
+const SOAN_SAN: [RegExp, string][] = [
   [/quyet toan|hoan (coc|tien)|ket thuc don|xu ly coc|don xong/, "Cọc chỉ được xử lý khi nghiệm thu đã chốt, khoản trả thẳng đến hạn đã được bác xác nhận, không còn tranh chấp và ngân hàng xác nhận đủ điều kiện."], // trước 'coc': 'hoàn cọc' là câu quyết toán
   [/coc|dam bao|ngan hang giu/, "Người mua cọc 30% giá trị đơn vào tài khoản của ngân hàng đối tác; không bên nào rút được cọc. Hạn cọc 48 giờ (hàng tươi 12 giờ). Sau khi cọc, liên lạc hai bên mới mở."],
   [/dang (ban|lo|hang|bai)|ban (xoai|hang|lua|tom|ca)|dang len/, "Đăng lô: bác đăng giá mong muốn và giá thấp nhất (giá thấp nhất giữ kín, người mua không thấy). Lô tự ẩn sau 14 ngày nếu không xác nhận còn hàng."],
@@ -359,7 +360,7 @@ export function cauSoanSan(t) {
   return g ? g[1] : "Trợ lý AI đang tạm nghỉ. Bác hỏi về cọc, đăng hàng, chào giá, ký, giao nhận hay tiền thì con trả lời được, hoặc nhắn AgiViet.";
 }
 /** @type {[RegExp, ...any[]][]} */
-const DUONG = [
+const DUONG: [RegExp, ...string[]][] = [
   [/dang (hang|bai|lo|ban)|ban hang moi|them lo/, "Đăng hàng mới", "./ban-dang-bai.html", "Bác bấm vào đây để đăng lô hàng: chọn mặt hàng, nhập lượng, giá và chụp ảnh."],
   [/chao gia|tra gia|tin nhan|nhan tin/, "Xem chào giá", "./ban-tin-nhan.html", "Lời chào giá của người mua nằm ở mục Tin nhắn."],
   // Chợ so trên chữ CÓ dấu: bỏ dấu thì "chợ" trùng "cho" ("cho tôi hỏi…" sẽ bị dẫn nhầm)

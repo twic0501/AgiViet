@@ -124,7 +124,7 @@
   setInterval(async () => {
     try {
       const tep = (decodeURIComponent(location.hash.slice(1)) || "dang-nhap.html").split("?")[0];
-      const ds = ["so-vuon.css", "chung.js", "so-lam-an.css", "so-lam-an.js", "mua.js", "van-hanh.js", tep];
+      const ds = ["so-vuon.css", "chung.ts", "so-lam-an.css", "so-lam-an.js", "mua.js", "van-hanh.js", tep];
       const t = (await Promise.all(ds.map((f) => fetch("./" + f, { method: "HEAD", cache: "no-store" }).then((r) => r.headers.get("last-modified") || r.headers.get("etag") || "")))).join("|");
       if (dau !== null && t !== dau) mo();
       dau = t;

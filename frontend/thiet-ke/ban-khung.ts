@@ -1,0 +1,99 @@
+import { esc, phien, giuThamSo } from "./chung.ts";
+const $ = (id) => document.getElementById(id);
+let id = new URLSearchParams(location.search).get("id");
+$("dau").innerHTML = `<button class="nut-tron" type="button" id="dong" aria-label="Quay lại"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div style="flex:1;min-width:0"><p class="chao">Hợp đồng khung theo tuần</p><h1 id="tieu">Đang tải…</h1></div>`;
+$("dong").onclick = () => (history.length > 1 ? history.back() : (location.href = "./ban-hop-dong.html" + location.search));
+let token;
+const vnd = (x) => `${Number(x || 0).toLocaleString("vi-VN")} đ`;
+const kg = (g) => `${(Number(g || 0) / 1000).toLocaleString("vi-VN")} kg`;
+const THU = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+const ngay = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" }) : "");
+const ngayDu = (s) => (s ? new Date(s).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }) : "");
+const dong = (a, b) => `<div class="hd-dong"><span>${a}</span><b>${b}</b></div>`;
+async function goi(duong: string, than?: Record<string, any>) {
+  const r = await fetch(duong, than ? { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + token }, body: JSON.stringify({ idempotency_key: crypto.randomUUID(), ...than }) } : { headers: { authorization: "Bearer " + token } });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = j.errors?.[0] || {}; throw new Error([e.message, e.fix].filter(Boolean).join(" ") || "Chưa làm được, bác thử lại."); }
+  return j.data ?? j;
+}
+// Ô nhập mã OTP dùng chung: bấm lần 1 gửi mã, lần 2 xác nhận.
+function khoiOtp(goc, guiMa, xacNhan, chuNut) {
+  goc.insertAdjacentHTML("beforeend", `<label class="hd-o" data-otp hidden>Mã 6 số trong tin nhắn<input inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label>
+    <button class="nut chinh-nut" type="button" data-di>${chuNut[0]}</button><p class="hd-ghi" data-b role="status"></p>`);
+  let ch = null; const nut = goc.querySelector("[data-di]"), o = goc.querySelector("[data-otp]"), b = goc.querySelector("[data-b]");
+  nut.onclick = async () => {
+    nut.disabled = true; b.textContent = "";
+    try {
+      if (!ch) { ch = await guiMa(); o.hidden = false; o.querySelector("input").focus(); nut.textContent = chuNut[1]; }
+      else { const ma = o.querySelector("input").value.trim(); if (!/^\d{6}$/.test(ma)) throw new Error("Bác nhập đủ 6 số trong tin nhắn."); await xacNhan(ch, ma); return ve(); }
+    } catch (e) {
+      b.textContent = e.message;
+      // Lỗi ở bước xác nhận: mã OTP đã dùng → quay về bước gửi mã mới, mở lại các ô để sửa.
+      if (ch) { ch = null; o.hidden = true; o.querySelector("input").value = ""; nut.textContent = chuNut[0]; goc.closest("[data-p]")?.querySelectorAll("input").forEach((x) => (x.disabled = false)); b.textContent = e.message + " Sửa lại rồi bấm gửi mã mới."; }
+    }
+    nut.disabled = false;
+  };
+}
+async function ve() {
+  // Vào từ menu (không có ?id=): một khung thì mở luôn, nhiều khung thì cho chọn.
+  if (!id) {
+    const ds = (await goi("/v1/frameworks")).filter((x) => x.phia !== "buyer");
+    if (ds.length === 1) id = ds[0].id;
+    else {
+      $("tieu").textContent = ds.length ? "Chọn hợp đồng khung" : "Chưa có hợp đồng khung";
+      const q = new URLSearchParams(location.search);
+      $("noi").innerHTML = ds.length ? ds.map((x) => { q.set("id", x.id); return `<a class="hd-dong" href="./ban-khung.html?${q}"><span>${esc(x.code)} · ${esc(x.ben_mua || "")}</span><b>›</b></a>`; }).join("")
+        : `<p class="hd-bao">Bác chưa có hợp đồng khung theo tuần. Khi người mua đặt giao đều mỗi tuần và hai bên ký, khung hiện ở đây.</p>`;
+      return;
+    }
+  }
+  const k = await goi("/v1/frameworks/" + id);
+  $("tieu").textContent = `${k.code} · ${k.ben_mua}`;
+  const hm = k.han_muc || {}, chay = ["running", "needs_security"].includes(k.status);
+  const toiKy = k.status === "awaiting_signature";
+  $("noi").innerHTML = `
+    <p class="hd-bao${toiKy ? "" : " "}">${toiKy ? "<b>Tới lượt bác ký.</b> Người mua đã ký trước." : `<b>${esc(k.ten_trang_thai)}</b>`}</p>
+    <section class="hd-the"><h3><i class="cham"></i>Điều khoản</h3>
+      ${dong("Ngày giao", (k.ngay_giao || []).map((x) => THU[x]).join(", ") || "Theo buổi người mua gọi")}${dong("Kỳ khung", `${ngayDu(k.ky?.tu)} → ${ngayDu(k.ky?.den)}`)}
+      ${(k.mon || []).map((m) => dong(`${esc(m.mat_hang)} ${esc(m.loai)} mỗi buổi`, `${kg(m.luong_g)} · ${Number(m.gia_vnd).toLocaleString("vi-VN")} đ/kg`)).join("")}
+      ${dong("Cọc khung (ngân hàng giữ)", vnd(k.coc_khung_vnd))}${dong("Tiền về tài khoản", esc(k.tai_khoan_ban || "Tài khoản nhận tiền của HTX (đặt ở Tôi)"))}
+      <p class="hd-ghi">Giá chốt lại mỗi tuần: bác không đồng ý giá tuần nào thì tuần đó tạm dừng. Người mua trả gộp cuối tuần trong 72 giờ; nợ chưa trả vượt cọc thì người mua không gọi buổi mới được.</p></section>
+    <div id="ky"></div><div id="gia"></div><div id="buoi"></div><div id="tien"></div>`;
+  if (toiKy) {
+    $("ky").outerHTML = `<section class="hd-the" id="ky"><h3><i class="cham"></i>Ký hợp đồng khung</h3>
+      <label class="hd-chon"><input type="checkbox" id="cam-ket"> Tôi đã đọc lịch giao, món, giá và cam kết giao đúng lịch.</label></section>`;
+    const goc = $("ky");
+    khoiOtp(goc, async () => { if (!$("cam-ket").checked) throw new Error("Bác đánh dấu ô cam kết trước."); return (await goi("/v1/otp/challenges", { purpose: "contract_sign", document_id: k.document_id })).challenge_id; },
+      (ch, ma) => goi(`/v1/frameworks/${k.id}/sign`, { challenge_id: ch, code: ma }), ["Gửi mã để ký", "Ký hợp đồng khung"]);
+  }
+  if (!chay) return;
+  // Tuần đã có giá mới (đề nghị/chốt) thì ẩn dòng bị từ chối trước đó cho gọn.
+  const gia = (k.gia_tuan || []).filter((x) => x.trang_thai !== "rejected" || !(k.gia_tuan || []).some((y) => y.tuan === x.tuan && y.trang_thai !== "rejected"));
+  $("gia").outerHTML = `<section class="hd-the" id="gia"><h3><i class="cham"></i>Giá từng tuần</h3>
+    ${gia.length ? gia.map((x) => { const toi = x.trang_thai === "proposed" && x.de_nghi_boi === "buyer";
+      const thap = x.items.some((it) => it.downgrade_price_vnd && Number(it.downgrade_price_vnd) * 10 < Number(it.unit_price_vnd) * 7);
+      return `<div class="tuan" data-id="${x.id}" data-thap="${thap ? 1 : ""}"><div style="display:flex;justify-content:space-between;gap:6px 8px;align-items:center;flex-wrap:wrap"><b>Tuần từ ${ngay(x.tuan)}</b><span class="nhan${toi ? " bac" : ""}">${x.trang_thai === "agreed" ? "Đã chốt" : x.trang_thai === "rejected" ? "Không đồng ý" : toi ? "Người mua đề nghị · tới lượt bác" : "Chờ người mua"}</span></div>
+        ${x.items.map((it, i) => dong(esc(k.mon[i]?.mat_hang || ""), `${Number(it.unit_price_vnd).toLocaleString("vi-VN")} đ/kg${it.downgrade_price_vnd ? ` · xuống loại ${Number(it.downgrade_price_vnd).toLocaleString("vi-VN")}` : ""}`)).join("")}
+        ${toi && thap ? `<label class="hd-chon"><input type="checkbox" data-ack> Giá xuống loại thấp hơn 70% giá món. Tôi đã xem và chấp nhận.</label>` : ""}
+        ${toi ? `<div class="hd-nut"><button class="nut chinh-nut" data-tl="1">Đồng ý giá tuần</button><button class="nut phu-nut" data-tl="0">Không đồng ý</button></div>` : ""}
+        <p class="hd-ghi" data-b role="status"></p></div>`; }).join("") : `<p class="hd-ghi">Người mua chưa đề nghị giá tuần nào.</p>`}</section>`;
+  $("gia").onclick = async (e) => { const n = e.target.closest("[data-tl]"); if (!n) return; const r = n.closest("[data-id]"), b = r.querySelector("[data-b]");
+    if (n.dataset.tl === "1" && r.dataset.thap && !r.querySelector("[data-ack]").checked) { b.textContent = "Bác đánh dấu ô xác nhận giá xuống loại trước."; return; }
+    n.disabled = true; try { await goi(`/v1/framework-week-prices/${r.dataset.id}/answer`, { dong_y: n.dataset.tl === "1", low_downgrade_price_ack: !!r.querySelector("[data-ack]")?.checked }); await ve(); } catch (err) { b.textContent = err.message; n.disabled = false; } };
+  if ((k.buoi || []).length) $("buoi").outerHTML = `<section class="hd-the"><h3><i class="cham"></i>Các buổi người mua đã gọi</h3>${k.buoi.map((b) => `<a class="hd-dong" href="./ban-don.html?id=${b.id}${location.search.replace("?", "&").replace(/&id=[^&]*/, "")}" style="text-decoration:none;color:inherit"><span>${esc(String(b.code).replace(/^HD-/, "HĐ-"))} · ${ngay(b.ngay_giao)}</span><b>${vnd(b.gia_tri_vnd)}</b></a>`).join("")}</section>`;
+  const ky = k.ky_tuan || [];
+  $("tien").outerHTML = `<section class="hd-the" id="tien"><h3><i class="cham"></i>Tiền gộp cuối tuần</h3>
+    ${ky.length ? ky.map((p) => { const con = Number(p.gia_tri_vnd) - Number(p.da_nhan_vnd || 0); return `<div class="tuan" data-p="${p.payment_id}" data-so="${con}"><div style="display:flex;justify-content:space-between;gap:6px 8px;align-items:center;flex-wrap:wrap"><b>Tuần từ ${ngay(p.tu)} · ${vnd(p.gia_tri_vnd)}</b><span class="nhan${["payer_reported"].includes(p.trang_thai_tra) ? " bac" : ""}">${p.trang_thai_tra === "fully_received" ? "Bác đã nhận đủ" : p.trang_thai_tra === "payer_reported" ? "Người mua báo đã chuyển · tới lượt bác" : p.trang_thai_tra === "partially_received" ? `Bác đã nhận ${vnd(p.da_nhan_vnd)} · còn ${vnd(con)}` : p.trang_thai_tra === "overdue" ? `Quá hạn · người mua còn nợ ${vnd(con)}` : p.trang_thai_tra === "mismatch" ? "Bác báo chưa thấy tiền · AgiViet đang đối soát" : `Người mua trả trước ${ngay(p.han_tra)}`}</span></div>
+      ${p.trang_thai_tra === "payer_reported" ? `<p class="hd-ghi">Bác mở app ngân hàng xem tiền đã về chưa. Chỉ bấm khi đã thấy tiền.</p><label class="hd-o" style="font-size:15px">Số tiền thực nhận (đ)<input data-tn inputmode="numeric" value="${con}" style="font-size:17px;letter-spacing:0"></label><label class="hd-o" style="font-size:15px">Mã giao dịch ngân hàng<input data-ma style="font-size:17px;letter-spacing:0"></label><div data-otp-goc></div><button type="button" class="nut lui" data-chua-nhan style="margin-top:8px;width:100%;min-height:44px">Chưa thấy tiền về</button><p class="hd-ghi" data-cn role="status"></p>` : ""}</div>`; }).join("") : `<p class="hd-ghi">Chưa có khoản tuần nào. Hết tuần, các buổi đã chốt số gộp thành một khoản, người mua chuyển thẳng cho bác.</p>`}</section>`;
+  // Chưa nhận đồng nào: báo AgiViet đối soát (không bắt nhập số dương như khi đã nhận).
+  document.querySelectorAll("[data-chua-nhan]").forEach((n) => (n.onclick = async () => { const r = n.closest("[data-p]"); n.disabled = true;
+    try { await goi(`/v1/payments/${r.dataset.p}/not-received`, { reason: "Bác chưa thấy tiền tuần về tài khoản" }); r.querySelector("[data-cn]").textContent = "Đã báo AgiViet. AgiViet đối soát với người mua, có kết quả sẽ báo bác."; setTimeout(ve, 1800); }
+    catch (e) { r.querySelector("[data-cn]").textContent = e.message; n.disabled = false; } }));
+  document.querySelectorAll("[data-otp-goc]").forEach((goc) => { const r = goc.closest("[data-p]");
+    const soNhan = () => Number(String(r.querySelector("[data-tn]").value).replace(/\D/g, ""));
+    khoiOtp(goc, async () => { const n = soNhan(); if (!(n > 0) || n > Number(r.dataset.so)) throw new Error(`Số thực nhận phải từ 1 đến ${vnd(r.dataset.so)}.`); if (!r.querySelector("[data-ma]").value.trim()) throw new Error("Bác nhập mã giao dịch trong app ngân hàng."); r.querySelector("[data-tn]").disabled = true; return (await goi("/v1/otp/challenges", { purpose: "money_received", payment_id: r.dataset.p, amount_vnd: String(n) })).challenge_id; },
+      (ch, ma) => { const n = soNhan(); return goi(`/v1/payments/${r.dataset.p}/confirm`, { challenge_id: ch, code: ma, amount_vnd: n, result: n >= Number(r.dataset.so) ? "full" : "partial", bank_txn_ref: r.querySelector("[data-ma]").value.trim() }); }, ["Gửi mã xác nhận đã nhận", "Xác nhận đã nhận"]); });
+}
+giuThamSo();
+(async () => { token = await phien(); await ve(); })().catch((e) => { $("noi").innerHTML = `<p class="hd-bao do">${esc(e.message)}</p>`; });

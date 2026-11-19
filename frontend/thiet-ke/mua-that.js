@@ -1,6 +1,6 @@
 // App MUA — lớp dữ liệu THẬT (GĐ3, bước 1). Bật khi URL có ?thu=<số người mua> (môi trường thử) hoặc đã có phiên đăng nhập người mua.
 // Không có thì app mua giữ bản mô phỏng (trang thử quy trình dùng). Người mua KHÔNG thấy giá của lô khi tìm nguồn (quyết định A3.10).
-import { phien } from "./chung.js";
+import { phien } from "./chung.ts";
 
 // Dữ liệu thật khi có số thử (?thu=, chỉ môi trường thử) hoặc đã đăng nhập OTP (phiên trong sessionStorage).
 export const THAT = new URLSearchParams(location.search).has("thu") || (() => { try { return !!sessionStorage.getItem("agv-phien"); } catch { return false; } })();

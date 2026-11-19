@@ -68,7 +68,7 @@
 </div>
 <script type="module">
 import { KICH_BAN } from "./testquytrinhapp-kich-ban.js";
-import { K_TC } from "./giao-dich-chung.js";
+import { K_TC } from "./giao-dich-chung.ts";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const cho = (ms) => new Promise((r) => setTimeout(r, ms));

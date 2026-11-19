@@ -49,7 +49,7 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
   // Thẻ giao dịch dùng chung với app người bán (giá → điều khoản → hợp đồng): đồng ý / sửa điều khoản ngay trong chat.
   // shortcut: nạp module JS của app cũ ở thời điểm chạy; viết lại bằng TS khi chuyển nốt màn hợp đồng.
   let theGD: { ve: (tinCuoi: string) => void } | null = null;
-  import(/* @vite-ignore */ "/thiet-ke/the-giao-dich.js" as string).then((m: any) => {
+  import("../../../thiet-ke/the-giao-dich.ts" as string).then((m: any) => {
     theGD = m.gnTheGD(o.querySelector("#tn-gd"), { ben: "buyer", cuoc, goi: api, linkDon: (x: string) => `#don/${x}`,
       nguoiNhan: async () => DL.me?.user?.user_id, sauLam: () => { window.dispatchEvent(new Event("agv-lam-moi")); window.dispatchEvent(new Event("agv-vong-ngay")); } });
     theGD!.ve(tin.filter((m2) => m2.la_cua_toi).at(-1)?.body ?? "");
