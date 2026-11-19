@@ -64,6 +64,8 @@ async function moQuanLy(l) {
   const tam = che.querySelector(".tam");
   const dangGap = l.ban_gap_den && new Date(l.ban_gap_den) > new Date();
   const soChaoMo = dsChaoMo.filter((c) => c.lot_code === l.code).length;
+  // Lượng đang giữ/trong hợp đồng/đang giao: máy chủ không cho ngừng bán (409) → báo trước, khóa nút (QA F15)
+  const rangBuoc = ["held", "committed", "in_transit"].reduce((t, k) => t + Number(ct?.qty?.[k] || 0), 0);
   tam.innerHTML = `<h2 id="ql-t">${esc(ten)} · ${esc(l.code)}</h2>
     <form class="muc-tam" id="f-gia"><h3>Sửa giá</h3>
       <p>Sửa được 1 lần mỗi 24 giờ. Giá thấp nhất giữ kín, người mua không thấy; lời chào thấp hơn bị tự từ chối.${g?.price_vnd ? ` Giá tham khảo hiện ${Number(g.price_vnd).toLocaleString("vi-VN")} đ/kg.` : ""}</p>
@@ -76,9 +78,10 @@ async function moQuanLy(l) {
       <p class="bao-ket" id="bao-gap" role="status"></p>
       <button type="button" class="nut phu-nut" id="nut-gap">${dangGap ? "Tắt bán nhanh" : "Bật bán nhanh 3 ngày"}</button></div>
     <div class="muc-tam"><h3>Ngừng bán lô này</h3>
-      <p>Người mua sẽ không thấy lô nữa. Hợp đồng đã ký vẫn giữ nguyên. ${soChaoMo ? `<b>Lô đang có ${soChaoMo} lời chào mở: sau khi ngừng bán sẽ không đồng ý được nữa</b>, bác nên trả lời hoặc hủy các lời chào đó trước.` : ""} Lô đang giữ hàng cho người mua thì chưa ngừng bán được.</p>
+      <p>Người mua sẽ không thấy lô nữa. Hợp đồng đã ký vẫn giữ nguyên. ${soChaoMo ? `<b>Lô đang có ${soChaoMo} lời chào mở: sau khi ngừng bán sẽ không đồng ý được nữa</b>, bác nên trả lời hoặc hủy các lời chào đó trước.` : ""}</p>
+      ${rangBuoc ? `<p class="bao-ket" style="display:block"><b>Chưa ngừng bán được:</b> ${(rangBuoc / 1000).toLocaleString("vi-VN")} kg của lô đang giữ hoặc nằm trong hợp đồng với người mua. Khi giao xong hoặc hợp đồng đóng thì bác ngừng bán được.</p>` : ""}
       <p class="bao-ket" id="bao-dong" role="status"></p>
-      <button type="button" class="nut nut-do" id="nut-dong">Ngừng bán</button></div>
+      <button type="button" class="nut nut-do" id="nut-dong"${rangBuoc ? " disabled" : ""}>Ngừng bán</button></div>
     <div class="day-tam"><button type="button" class="nut phu-nut" id="ql-dong" style="width:100%">Đóng</button></div>`;
   tam.querySelector("#ql-dong").onclick = dong_;
   const f = tam.querySelector("#f-gia");
