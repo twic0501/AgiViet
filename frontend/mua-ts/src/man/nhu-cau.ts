@@ -51,11 +51,17 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
     $("#pk-neo").textContent = g?.status === "du_du_lieu" ? `Giá giao dịch gần đây: ${vnd(g.price_vnd)} đ/kg.` : "Chưa đủ dữ liệu giá chợ cho loại này.";
     if (g?.status === "du_du_lieu" && !$<HTMLInputElement>("#pk-gia").value) $<HTMLInputElement>("#pk-gia").value = String(g.price_vnd); };
   // Điền sẵn từ phiếu tìm nguồn ở tab Nguồn (mặt hàng, loại, lượng, hạn)
-  try { const p = JSON.parse(sessionStorage.getItem("agv-phieu-nhap") || "null"); sessionStorage.removeItem("agv-phieu-nhap");
+  let daDienSan = false;
+  try { const p = JSON.parse(sessionStorage.getItem("agv-phieu-nhap") || "null"); sessionStorage.removeItem("agv-phieu-nhap"); daDienSan = !!p?.sp;
     if (p?.sp) $<HTMLSelectElement>("#pk-sp").value = p.sp;
     veLoai(); if (p?.loai) $<HTMLSelectElement>("#pk-loai").value = p.loai;
     if (p?.kg) $<HTMLInputElement>("#pk-kg").value = p.kg; if (p?.han) $<HTMLInputElement>("#pk-den").value = p.han;
   } catch { veLoai(); }
+  // Bản nháp phiếu báo giá: giữ khi quay lại / tải lại (lỗi QA F04); phiếu điền sẵn từ tab Nguồn được ưu tiên
+  const O = ["pk-sp", "pk-loai", "pk-kg", "pk-gia", "pk-tu", "pk-den"];
+  try { const nh = JSON.parse(sessionStorage.getItem("agv-nhap-bao-gia") || "null"); if (nh && !daDienSan) { if (nh["pk-sp"]) { $<HTMLSelectElement>("#pk-sp").value = nh["pk-sp"]; veLoai(); }
+    for (const k of O.slice(1)) if (nh[k]) $<HTMLInputElement>("#" + k).value = nh[k]; } } catch { /* bỏ qua */ }
+  $("#pk").addEventListener("input", () => { try { sessionStorage.setItem("agv-nhap-bao-gia", JSON.stringify(Object.fromEntries(O.map((k) => [k, $<HTMLInputElement>("#" + k).value])))); } catch { /* bỏ qua */ } });
   neo();
   $("#pk-sp").onchange = () => { veLoai(); $<HTMLInputElement>("#pk-gia").value = ""; neo(); };
   $("#pk-loai").onchange = () => { $<HTMLInputElement>("#pk-gia").value = ""; neo(); };
@@ -74,6 +80,7 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
         required_docs: [],
         lines: [{ grade_code: $<HTMLSelectElement>("#pk-loai").value, qty_g: String(qty), max_price_vnd: String(gia), min_source_qty_g: String(Math.min(qty, 20000)) }] });
       if (n.status === "draft") await api(`/v1/demands/${n.id}/publish`, { expected_revision: n.revision });
+      try { sessionStorage.removeItem("agv-nhap-bao-gia"); } catch { /* bỏ qua */ }
       bao(`Đã gửi phiếu ${n.code}. Người bán có món này sẽ báo giá cho bạn.`);
       window.dispatchEvent(new Event("agv-vong-ngay")); // bản thử: người bán AI báo giá ngay
       location.hash = `#nhu-cau/${n.id}`;

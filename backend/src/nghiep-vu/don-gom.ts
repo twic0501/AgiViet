@@ -68,7 +68,7 @@ export async function xemDonGom(t: GiaoDich, nd: NguoiDung, id: string) {
 
 export async function dsDonGom(t: GiaoDich, nd: NguoiDung) {
   const ids = await t.q<any>(`SELECT aggregate_id id, payload->>'can_g' can_g, occurred_at FROM evt.domain_events WHERE aggregate_type='don_gom' AND event_type='don_gom.tao' AND actor_org_id=$1 ORDER BY seq DESC LIMIT 20`, [nd.thanhVien.orgId]);
-  return Promise.all(ids.map(async (x) => { const d = await xemDonGom(t, nd, x.id); return { id: x.id, can_g: d.can_g, da_chot_g: d.da_chot_g, so_ho: d.ho.length, tao_luc: x.occurred_at }; }));
+  return Promise.all(ids.map(async (x) => { const d = await xemDonGom(t, nd, x.id); return { id: x.id, can_g: d.can_g, da_chot_g: d.da_chot_g, so_ho: new Set(d.ho.map((h: any) => h.seller_name)).size, so_lo: d.ho.length, tao_luc: x.occurred_at }; }));
 }
 
 /** Nhắn cả nhóm: cùng nội dung vào từng khung 1-1 còn mở (qua bộ che liên lạc như tin thường). */

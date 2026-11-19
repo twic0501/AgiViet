@@ -148,10 +148,10 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
   const dsLo = [...ngoaiGom].sort((a, b) => a.lot_code.localeCompare(b.lot_code));
   const an = k.so_lo_xet - k.ket_qua.length;
   kq.innerHTML = `<p class="phu">AgiViet xem ${k.so_lo_xet} lô ${esc(tenSp)} đang bán theo phiếu của bạn. Lô nào còn thiếu so với phiếu thì ghi ngay dưới lô.</p>
-    ${gom ? `<section class="kq-nhom gom"><div class="hang"><h2>AgiViet đề xuất gom ${gom.nguon.length} hộ</h2></div>
+    ${gom ? `<section class="kq-nhom gom"><div class="hang"><h2>AgiViet đề xuất gom ${nhanGom(gom.nguon)}</h2></div>
       <p class="phu">Không hộ nào đủ ${vnd(soKg())} kg. Gom được ${vnd(gom.da_gom_kg)} kg${gom.con_thieu_kg > 0 ? `, còn thiếu ${vnd(gom.con_thieu_kg)} kg` : ", đủ lượng"}. Các hộ ở gần nhau để chở chung một chuyến; mỗi hộ ký hợp đồng riêng.</p>
       ${gom.nguon.map((l) => theGoiY({ ...(diemLo.get(l.lot_id) ?? {}), ...l })).join("")}
-      <button type="button" class="nut chinh rong" id="ng-gui-nhom">Gửi lời chào cho cả ${gom.nguon.length} hộ</button>
+      <button type="button" class="nut chinh rong" id="ng-gui-nhom">Gửi lời chào cho cả nhóm (${nhanGom(gom.nguon)})</button>
       <p class="phu">Cùng giá mong muốn của bạn; mỗi hộ nhận lời chào riêng với phần lượng của mình. Theo dõi ở tab Đơn.</p><p class="loi" id="ng-gn-loi" role="alert"></p></section>` : ""}
     ${dsLo.length ? `<section class="kq-nhom"><div class="hang"><h2>Các lô đang bán</h2><span class="phu">${dsLo.length} lô</span></div>${dsLo.map((l) => theGoiY(l)).join("")}</section>` : ""}
     ${an > 0 && k.ket_qua.length ? `<p class="phu">${an} lô khác không hiện: giá thấp nhất của người bán cao hơn nhiều so với mức bạn muốn, hoặc lô đã hết hàng, hết hạn.</p>` : ""}
@@ -282,4 +282,10 @@ async function veChonMatHang(o: HTMLElement, batDau = false): Promise<void> {
     const ma = [...o.querySelectorAll<HTMLInputElement>("#mhc input:checked")].map((x) => x.value), nut = o.querySelector<HTMLButtonElement>("#mhc-luu")!; nut.disabled = true;
     try { await api("/v1/org/main-products", { product_codes: ma }); DL.matHangChinh = ma; if (P.sp && !ma.includes(P.sp)) P.sp = ""; locSp = ""; location.hash = "#nguon"; if (!batDau) return; veNguon(o); }
     catch (err) { o.querySelector("#mhc-loi")!.textContent = (err as Error).message; nut.disabled = false; } };
+}
+
+/** Số hộ thật (người bán khác nhau) và số lô trong đề xuất gom. */
+function nhanGom(ds: { lot_id: string; seller_name?: string }[]): string {
+  const ho = new Set(ds.map((x) => diemLo.get(x.lot_id)?.seller_name ?? x.seller_name ?? x.lot_id)).size;
+  return ds.length > ho ? `${ho} hộ · ${ds.length} lô` : `${ho} hộ`;
 }

@@ -94,6 +94,7 @@ export async function veChiTietDon(o: HTMLElement, id: string): Promise<void> {
   let d: ChiTietDon, the: TheDK[] = [];
   try { [d, the] = await Promise.all([api<ChiTietDon>(`/v1/orders/${id}`), api<{ the?: TheDK[] }>(`/v1/orders/${id}/terms`).then((x) => x.the ?? []).catch(() => [])]); }
   catch (e) { o.innerHTML = trong((e as Error).message, `<a class="nut vien" href="#don">Về danh sách đơn</a>`); return; }
+  if (!location.hash.startsWith(`#don/${id}`)) return; // đã sang màn khác trong lúc tải
   const k = d.dieu_khoan || {}, tl = d.hien_thi?.toi_luot, toi = tl?.phia === "buyer";
   const coKy = (d.hanh_dong || []).includes("sign"), coCoc = toi && /cọc/i.test(tl?.viec || "") && d.status === "awaiting_deposit";
   const khoan = DL.khoan.filter((p) => p.don_id === d.id && canTra(p));

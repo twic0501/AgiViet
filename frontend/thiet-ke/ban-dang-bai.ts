@@ -25,7 +25,11 @@ const ngayNgan = (s) => (s ? `${s.slice(8, 10)}/${s.slice(5, 7)}` : "");
 const datNguon = (truong, nhan) => { st.nguon[truong] = nhan; const el = $({ luong: "ng-luong", hai: "ng-hai" }[truong]); if (el) { el.textContent = nhan || ""; el.hidden = !nhan; } };
 
 // ---------- Điều hướng ----------
-function den(m) {
+// Mỗi bước một mục lịch sử: nút quay lại của máy lùi đúng một bước, dữ liệu đã nhập vẫn còn (QA F03)
+history.replaceState({ ...(history.state || {}), buoc: "dau" }, "");
+addEventListener("popstate", (e) => { if (e.state?.buoc) den(e.state.buoc, true); });
+function den(m, tuLichSu = false) {
+  if (!tuLichSu && m !== man) (m === "xong" ? history.replaceState : history.pushState).call(history, { buoc: m }, "");
   man = m; hienLoi("");
   document.querySelectorAll("[data-m]").forEach((s) => (s.hidden = s.dataset.m !== m));
   const ds_ = st.cach ? LUONG[st.cach] : [], k = ds_.indexOf(m);
@@ -46,7 +50,7 @@ function den(m) {
   kiem(); scrollTo({ top: 0 });
 }
 const buocKe = (d = 1) => { const l = LUONG[st.cach], k = l.indexOf(man); return k + d < 0 ? "dau" : l[k + d]; };
-$("lui").onclick = () => { if (man === "noi" && noi.i > 0) return lui1Cau(); den(buocKe(-1)); };
+$("lui").onclick = () => { if (man === "noi" && noi.i > 0) return lui1Cau(); if (history.state?.buoc && history.state.buoc !== "dau") history.back(); else den(buocKe(-1)); };
 $("tiep").onclick = () => (man === "xem" ? dangBan() : man === "noi" ? xacNhanCau() : den(buocKe(1)));
 
 function kiem() {

@@ -113,6 +113,7 @@ async function khungTin(o, cuoc, ten) {
     window.__taiTin = tai;
     if (!o.isConnected) return;
     const r = await fetch(`/v1/messages?${q}`, { headers: { authorization: "Bearer " + tokenG } }).then((x) => (x.ok ? x.json() : null)).catch(() => null);
+    if (!o.isConnected || !ds) return; // đã rời màn trong lúc tải (QA F10)
     if (!r) { ds.innerHTML = `<p class="tn-trong">Chưa tải được tin nhắn.</p>`; return; }
     const cuoi = ds.scrollTop + ds.clientHeight >= ds.scrollHeight - 8;
     ds.innerHTML = r.tin.length ? r.tin.map((m) => `<div class="tn-bong ${m.la_cua_toi ? "toi" : ""}"><span>${esc(m.body)}</span><small>${m.la_cua_toi ? "Bác" : esc(m.nguoi_gui)} · ${gio(m.created_at)}${m.da_che ? " · đã che liên lạc" : ""}</small></div>`).join("")
