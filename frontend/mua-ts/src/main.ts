@@ -64,7 +64,18 @@ if (window.top === window && matchMedia("(min-width: 700px) and (pointer: fine)"
   location.replace("/thiet-ke/khung-dt.html?u=" + encodeURIComponent(location.pathname + location.search + location.hash));
   throw new Error("chuyển sang khung điện thoại");
 }
-$("#lui").onclick = () => (history.length > 1 ? history.back() : (location.hash = (location.hash.split("/")[0] || "#hom-nay")));
+// ‹: đã đi trong app thì lùi lại; mở thẳng từ ngoài (link sâu) thì về màn cha, không văng khỏi app.
+let buocTrongApp = 0; addEventListener("hashchange", () => buocTrongApp++);
+const CHA: Record<string, string> = { "don-gom": "#don", "nhu-cau": "#nguon" };
+$("#lui").onclick = () => { if (buocTrongApp > 0) { buocTrongApp -= 2; history.back(); return; }
+  const g = location.hash.slice(1).split("/")[0] || "hom-nay"; location.replace(CHA[g] ?? "#" + g); };
+// Tấm trượt (dialog): mở thì thêm một mục lịch sử để nút quay lại của máy chỉ đóng tấm, không rời màn.
+const moGoc = HTMLDialogElement.prototype.showModal;
+HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+  moGoc.call(this); history.pushState({ tam: true }, "");
+  this.addEventListener("close", () => { if (history.state?.tam) history.back(); }, { once: true });
+};
+addEventListener("popstate", () => document.querySelectorAll<HTMLDialogElement>("dialog[open]").forEach((d) => d.close()));
 // Vercel Web Analytics (đếm lượt xem trang, không cookie); bản chạy trên máy tự bỏ qua
 if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) inject();
 batDau().catch((e) => { $("#man").innerHTML = trong(esc((e as Error).message)); });

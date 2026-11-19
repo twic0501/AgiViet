@@ -36,13 +36,15 @@
     // Trong khung, hoặc trang tự chuyển ngay lúc vừa nạp (màn chưa có → app mới): bỏ chuyển cảnh, tránh lỗi "Transition was aborted"
     if (window.top !== window || window.__boChuyenCanh) e.viewTransition.skipTransition();
   });
+  // Trang lấy lại từ bfcache sẽ tải lại ngay (chung.ts) → bỏ chuyển cảnh, nếu không trình duyệt báo "Transition was aborted"
+  var tuBfcache = false; addEventListener("pageshow", function (e) { tuBfcache = e.persisted; });
   addEventListener("pagereveal", function (e) {
     var h = null; try { h = sessionStorage.getItem("hu-vt"); sessionStorage.removeItem("hu-vt"); } catch (x) {}
     if (!e.viewTransition) return;
     // Bị hủy giữa chừng (tải lại nhanh, trang ẩn) là bình thường — không để thành lỗi
     var nuot = function () {}; e.viewTransition.ready.catch(nuot); e.viewTransition.finished.catch(nuot); e.viewTransition.updateCallbackDone.catch(nuot);
     // Trong khung (trang thử hai bên) không cần chuyển cảnh
-    if (window.top !== window) { e.viewTransition.skipTransition(); return; }
+    if (window.top !== window || tuBfcache) { e.viewTransition.skipTransition(); return; }
     var nav = window.navigation && navigation.activation;
     if (!h && nav && nav.navigationType === "traverse") h = "lui";
     if (h) { e.viewTransition.types.add(h); document.documentElement.dataset.huVtLoai = h; }

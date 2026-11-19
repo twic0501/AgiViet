@@ -664,7 +664,7 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
   const bao = (ds, den) => {
     let d = document.getElementById("agv-ai-bao");
     if (!d) { d = Object.assign(document.createElement("div"), { id: "agv-ai-bao" }); d.setAttribute("role", "status");
-      d.style.cssText = "position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9998;width:min(92vw,420px);display:flex;gap:10px;align-items:center;padding:12px 10px 12px 14px;border-radius:16px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.4 inherit;box-shadow:0 10px 28px rgba(0,0,0,.28)";
+      d.style.cssText = "position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9998;width:min(92vw,420px);display:flex;gap:10px;align-items:center;padding:12px 10px 12px 14px;border-radius:16px;background:#1f2a22;color:#f4f1e8;font:500 15px/1.4 inherit;box-shadow:0 10px 28px rgba(0,0,0,.28)";
       document.body.append(d); }
     let lanDau = false; try { lanDau = !localStorage.getItem(LAN_DAU); localStorage.setItem(LAN_DAU, "1"); } catch {}
     const them = ds.length > 1 ? ` · và ${ds.length - 1} việc khác` : "";
@@ -687,7 +687,10 @@ if (typeof document !== "undefined" && /\/(ban-[\w-]+|mua-app|mua)\.html$/.test(
     return oc ? `./mua.html?man=bao-gia&loi-chao=${encodeURIComponent(oc.id)}${thu ? `&thu=${thu}` : ""}` : `./mua-app.html${q}#nhan`;
   };
   // Vào bản thử lần đầu trong phiên: báo trước để người thử biết sẽ có đối tác AI tìm tới
-  try { if (!sessionStorage.getItem("agv-da-bao-cho") && /ban-hom-nay|mua-app/.test(location.pathname)) { sessionStorage.setItem("agv-da-bao-cho", "1"); setTimeout(() => baoNhanh(laBan ? "Bản thử: người mua do AI đóng vai sẽ tìm tới lô của bác trong ít giây. Nghe tiếng ting là có người trả giá." : "Bản thử: người bán do AI đóng vai sẽ báo giá cho nhu cầu của bạn trong ít giây. Có tiếng ting là có tin mới."), 1500); } } catch {}
+  try { if (!sessionStorage.getItem("agv-da-bao-cho") && /ban-hom-nay|mua-app/.test(location.pathname)) { sessionStorage.setItem("agv-da-bao-cho", "1");
+    // Chờ màn hướng dẫn lần đầu xong (agv-tour-xong) rồi mới báo, để không đè lên thẻ hướng dẫn
+    const baoKhiRanh = (n = 0) => { let xong = true; try { xong = !!localStorage.getItem("agv-tour-xong"); } catch {} if (xong || n > 120) baoNhanh(laBan ? "Bản thử: người mua do AI đóng vai sẽ tìm tới lô của bác trong ít giây. Nghe tiếng ting là có người trả giá." : "Bản thử: người bán do AI đóng vai sẽ báo giá cho nhu cầu của bạn trong ít giây. Có tiếng ting là có tin mới."); else setTimeout(() => baoKhiRanh(n + 1), 1000); };
+    setTimeout(baoKhiRanh, 1500); } } catch {}
   let dangChay = false, dangTin = false;
   // nhanh = vừa nhắn tin: chỉ cho bên kia trả lời tin, chạy riêng không chờ vòng đầy đủ (trên host vòng đầy đủ mất tới 30 s)
   const vong = async (nhanh = false) => {

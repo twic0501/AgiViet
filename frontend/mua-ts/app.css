@@ -72,7 +72,7 @@ dialog#hop::backdrop { background: rgba(20, 30, 24, .45); }
 @media (prefers-reduced-motion: reduce) { .khung-tai { animation: none; } }
 
 /* Khung "Ting! Có tin mới" khi người bán (AI ở bản thử) vừa làm việc dính tới mình */
-#ai-bao { position: fixed; left: 50%; top: calc(10px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 20; width: min(92vw, 420px);
+#ai-bao { position: fixed; left: 50%; bottom: calc(var(--tab-cao) + 12px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 20; width: min(92vw, 420px);
   display: flex; gap: 10px; align-items: center; padding: 12px 10px 12px 14px; border-radius: 16px; background: #1f2a22; color: #f4f1e8; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
 #ai-bao > span { flex: 1; min-width: 0; font-size: 14px; } #ai-bao b { display: block; color: #f4c84e; } #ai-bao small { display: block; margin-top: 4px; opacity: .85; }
 #ai-bao .dong { width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: inherit; font-size: 22px; cursor: pointer; }
