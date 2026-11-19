@@ -25,7 +25,7 @@ const CSS = `.tgd{display:grid;gap:8px;margin:8px 0;padding:12px;border:1.5px so
 .tgd b.g{font-size:18px}.tgd p{margin:0;font-size:14px;line-height:1.4}.tgd .ghi{color:#55604f}.tgd .hang{display:flex;gap:8px;flex-wrap:wrap}
 .tgd button,.tgd a.n{min-height:44px;padding:0 14px;border-radius:12px;border:1.5px solid #1f4d3a;background:#fff;color:#1f4d3a;font-family:inherit;font-weight:600;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
 .tgd .c{background:#1f4d3a;color:#fff}.tgd label{display:grid;gap:4px;font-size:14px;font-weight:600}.tgd input,.tgd select{min-height:44px;width:100%;box-sizing:border-box;padding:0 10px;border:1.5px solid #b9bfae;border-radius:10px;font:inherit;background:#fff}
-.tgd dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0;font-size:14px}.tgd dd{margin:0;font-weight:600;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.tgd dd select{min-height:36px;width:auto;font-size:13px}.tgd .loi{color:#a12c22}
+.tgd dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0;font-size:14px}.tgd dd{margin:0;font-weight:600;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.tgd dd select{min-height:36px;width:auto;font-size:13px}.tgd .loi{color:#a12c22}.tgd .gom-dai{margin:0;padding:6px 10px;border-radius:10px;background:#e7efe5;color:#1f4d3a;font-size:13px;font-weight:600}
 .tgd details{border-top:1px solid #e3ddcc;padding:8px 0}.tgd summary{font-weight:600;font-size:14px;cursor:pointer;min-height:28px}.tgd details p{margin-top:6px}
 .tgd .mr{display:grid;gap:6px;padding:8px;border-radius:10px;background:#f4efe2}.tgd textarea{width:100%;box-sizing:border-box;padding:8px 10px;border:1.5px solid #b9bfae;border-radius:10px;font:inherit;background:#fff}
 .tgd .yk{font-size:12px;padding:2px 8px;border-radius:999px;background:#f6dcd5;color:#a12c22}.tgd .yk.sua{background:#f7ecc8;color:#6b4e00}`;
@@ -51,7 +51,9 @@ const dongMuc = (m: Record<string, any> = {}) => `<div data-mr class="mr"><input
 export function gnTheGD(o, ctx) {
   if (!document.getElementById("tgd-css")) document.head.append(Object.assign(document.createElement("style"), { id: "tgd-css", textContent: CSS }));
   let cu = "", sua = false, yKien = false, tinCuoi = "", loiCu = "", lc = null, dk = null, vongTin = null;
-  const the = (x) => `<section class="tgd" aria-live="polite">${x}${loiCu ? `<p class="loi" role="alert">${e(loiCu)}</p>` : ""}</section>`;
+  // Lời chào thuộc đơn gom: một dòng nói rõ phần của hộ này trong tổng lượng (không lộ các hộ khác)
+  const gomDai = () => { const g = lc?.don_gom, v = lc?.rounds?.at(-1); return g?.can_g && v ? `<p class="gom-dai">Thuộc đơn gom ${kg(g.can_g)} kg · ${ctx.ben === "seller" ? "phần của bác" : "phần hộ này"} ${kg(v.qty_g)} kg</p>` : ""; };
+  const the = (x) => `<section class="tgd" aria-live="polite">${gomDai()}${x}${loiCu ? `<p class="loi" role="alert">${e(loiCu)}</p>` : ""}</section>`;
   const nutTua = async (d) => { // chỉ bản thử: chờ tới giờ giao thì tua được, có người khác đang thử thì báo rõ
     const cw = (d.dot_giao || []).map((x) => x.window_from).filter(Boolean)[0]; if (!cw) return "";
     const cap = await fetch("/frontend-capabilities.json").then((r) => r.json()).catch(() => ({})); if (!cap.test_tools) return "";

@@ -147,12 +147,18 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
   kq.innerHTML = `<p class="phu">AgiViet xem ${k.so_lo_xet} lô ${esc(tenSp)} đang bán theo phiếu của bạn. Lô nào còn thiếu so với phiếu thì ghi ngay dưới lô.</p>
     ${gom ? `<section class="kq-nhom gom"><div class="hang"><h2>AgiViet đề xuất gom ${gom.nguon.length} hộ</h2></div>
       <p class="phu">Không hộ nào đủ ${vnd(soKg())} kg. Gom được ${vnd(gom.da_gom_kg)} kg${gom.con_thieu_kg > 0 ? `, còn thiếu ${vnd(gom.con_thieu_kg)} kg` : ", đủ lượng"}. Các hộ ở gần nhau để chở chung một chuyến; mỗi hộ ký hợp đồng riêng.</p>
-      ${gom.nguon.map((l) => theGoiY({ ...(diemLo.get(l.lot_id) ?? {}), ...l })).join("")}</section>` : ""}
+      ${gom.nguon.map((l) => theGoiY({ ...(diemLo.get(l.lot_id) ?? {}), ...l })).join("")}
+      <button type="button" class="nut chinh rong" id="ng-gui-nhom">Gửi lời chào cho cả ${gom.nguon.length} hộ</button>
+      <p class="phu">Cùng giá mong muốn của bạn; mỗi hộ nhận lời chào riêng với phần lượng của mình. Theo dõi ở tab Đơn.</p><p class="loi" id="ng-gn-loi" role="alert"></p></section>` : ""}
     ${dsLo.length ? `<section class="kq-nhom"><div class="hang"><h2>Các lô đang bán</h2><span class="phu">${dsLo.length} lô</span></div>${dsLo.map((l) => theGoiY(l)).join("")}</section>` : ""}
     ${an > 0 && k.ket_qua.length ? `<p class="phu">${an} lô khác không hiện: giá thấp nhất của người bán cao hơn nhiều so với mức bạn muốn, hoặc lô đã hết hàng, hết hạn.</p>` : ""}
     ${k.ket_qua.length ? "" : viSaoTrong(tenSp)}
     <section class="the"><p class="phu">Chưa ưng nguồn nào? Gửi phiếu để người bán có hàng chủ động báo giá cho bạn.</p><button type="button" class="nut vien rong" id="ng-gui-phieu">Gửi phiếu cho người bán báo giá</button></section>`;
   ganTraGia(kq, () => veKetQuaTim(o)); ganChiTiet(kq);
+  const gn = kq.querySelector<HTMLButtonElement>("#ng-gui-nhom");
+  if (gn && gom) gn.onclick = async () => { gn.disabled = true;
+    try { const { taoDonGom } = await import("./don-gom"); location.hash = `#don-gom/${await taoDonGom(gom.nguon as { lot_id: string; luong_g: string }[], Math.round(soKg() * 1000), soGia())}`; }
+    catch (e) { kq.querySelector("#ng-gn-loi")!.textContent = (e as Error).message; gn.disabled = false; } };
   kq.querySelectorAll<HTMLButtonElement>("[data-go]").forEach((b) => (b.onclick = () => { const g = b.dataset.go; if (g === "tinh") P.tinh = ""; if (g === "loai") P.loai = ""; if (g === "giay") { P.giay = []; P.nhatKy = false; } if (g === "han") P.han = ""; veKetQuaTim(o); }));
   kq.querySelector<HTMLButtonElement>("#ng-gui-phieu")!.onclick = () => { try { sessionStorage.setItem("agv-phieu-nhap", JSON.stringify({ ...P, tu: "", gom: true })); } catch { /* bỏ qua */ } location.hash = "#nhu-cau/moi"; };
 }

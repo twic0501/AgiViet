@@ -156,6 +156,7 @@ export async function xemLoiChao(t: GiaoDich, nd: NguoiDung, id: string) {
     // Giá tham khảo và % do backend tính (màn S2 không tự tính); câu thông báo sau khi đồng ý (màn S4).
     gia_tham_khao_vnd: ref,
     phan_tram_gia_tham_khao: ref && cuoi ? Math.round(Number(cuoi.price_vnd) * 100 / Number(ref)) : null,
+    don_gom: await (await import('./don-gom.ts')).donGomCuaLoiChao(t, o.id),
     thong_bao: o.status === 'accepted' ? `${CAU_CHUA_HOP_DONG}${hold ? ` Đã giữ ${kg(BigInt(hold.qty_g))}.` : ''}` : null,
   };
 }

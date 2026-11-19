@@ -296,6 +296,13 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   app.post('/v1/offers/:id/terms/reject', async (req) => bo.lenh(req, 'tu_choi_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd, b) => (await DK()).tuChoiDieuKhoan(t, nd, P(req).id, b.phien_ban, b.ly_do, b.y_kien)));
   app.post('/v1/offers/:id/terms/framework-read', async (req) => bo.lenh(req, 'doc_khung_dieu_khoan', (t, nd) => phiaLoiChao(t, nd, P(req).id), async (t, nd) => (await DK()).docKhungChung(t, nd, P(req).id)));
   app.get('/v1/terms/framework', async () => ({ data: (await DK()).khungChung() }));
+  // Đơn gom có điều phối: mỗi hộ một lời chào thường; nhóm lưu bằng sự kiện.
+  const DG = () => import('../nghiep-vu/don-gom.ts');
+  app.get('/v1/sourcing-groups', async (req) => { const nd = await bo.xacThuc(req); const m = await DG(); return bo.doc((t) => m.dsDonGom(t, nd)); });
+  app.get('/v1/sourcing-groups/:id', async (req) => { const nd = await bo.xacThuc(req); const m = await DG(); return bo.doc((t) => m.xemDonGom(t, nd, P(req).id)); });
+  app.post('/v1/sourcing-groups', async (req) => bo.lenh(req, 'tao_don_gom', 'buyer', async (t, nd, b) => (await DG()).taoDonGom(t, nd, b)));
+  app.post('/v1/sourcing-groups/:id/members', async (req) => bo.lenh(req, 'them_ho_don_gom', 'buyer', async (t, nd, b) => (await DG()).themHo(t, nd, P(req).id, b)));
+  app.post('/v1/sourcing-groups/:id/message', async (req) => bo.lenh(req, 'nhan_ca_nhom', 'buyer', async (t, nd, b) => { const body = String(b.body ?? '').trim(); if (!body || body.length > 1000) throw (await import('../loi.ts')).loi('DU_LIEU_KHONG_HOP_LE', 'Tin nhắn trống hoặc dài quá 1000 chữ.'); return (await DG()).nhanCaNhom(t, nd, P(req).id, body); }));
   app.get('/v1/offers', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => LoiChao.danhSachLoiChao(t, nd)); });
   app.get('/v1/offers/:id', async (req) => { const nd = await bo.xacThuc(req); return bo.doc((t) => LoiChao.xemLoiChao(t, nd, P(req).id)); });
 

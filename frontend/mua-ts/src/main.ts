@@ -17,13 +17,14 @@ async function veTheoDuong(): Promise<void> {
   const [man = "hom-nay", a, b] = location.hash.slice(1).split("/");
   const o = $("#man"), sau = !!a;
   dungChat();
-  $("#tieu-de").textContent = man === "don" && a ? "Chi tiết đơn" : man === "nguon" && a ? (a === "phieu" ? "Phiếu tìm nguồn" : a === "mat-hang" ? "Mặt hàng chính" : "Kết quả tìm nguồn") : TIEU_DE[man] || "Hôm nay";
+  $("#tieu-de").textContent = man === "don-gom" ? "Đơn gom" : man === "don" && a ? "Chi tiết đơn" : man === "nguon" && a ? (a === "phieu" ? "Phiếu tìm nguồn" : a === "mat-hang" ? "Mặt hàng chính" : "Kết quả tìm nguồn") : TIEU_DE[man] || "Hôm nay";
   $("#lui").hidden = !sau; document.body.dataset.man = man + (sau ? "-con" : "");
   document.querySelectorAll<HTMLAnchorElement>(".tab a").forEach((x) => x.setAttribute("aria-current", x.hash === "#" + (man === "nhu-cau" ? "nguon" : man) ? "page" : "false"));
   try {
     if (man === "nguon") { await veNguon(o, a); if (!a) napDauPhieu(o); }
     else if (man === "nhu-cau") await (a === "moi" ? veTaoPhieu(o) : veChiTietPhieu(o, a));
-    else if (man === "don") await (a ? veChiTietDon(o, a) : veDsDon(o));
+    else if (man === "don") { await (a ? veChiTietDon(o, a) : veDsDon(o)); if (!a) import("./man/don-gom").then(async (m) => { const h = await m.dsDonGomHtml(); if (h && location.hash.startsWith("#don")) o.insertAdjacentHTML("afterbegin", h); }); }
+    else if (man === "don-gom" && a) await (await import("./man/don-gom")).veDonGom(o, a);
     else if (man === "tien") veTien(o);
     else if (man === "tin") await (a && b ? veChat(o, a, b) : veDsTin(o));
     else veHomNay(o);
