@@ -694,7 +694,10 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
       return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j };
     };
     m.giuHo(nd.thanhVien.orgCode, may(req));
-    return { viec: await m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId], ht.cfg.aiUrl, ht.cfg.aiKey, (req.body as any)?.chi_tin === true) };
+    // AI chậm/mới thức dậy: trả sau tối đa 20 giây (vòng vẫn chạy nốt ở nền), tránh lớp chuyển tiếp Vercel báo 502 (QA F12)
+    const vong = m.motVong(goi, [nd.thanhVien.orgCode], [nd.thanhVien.orgId], ht.cfg.aiUrl, ht.cfg.aiKey, (req.body as any)?.chi_tin === true);
+    vong.catch(() => {});
+    return { viec: await Promise.race([vong, new Promise<any[]>((ok) => setTimeout(() => ok([]), 20000))]) };
   });
   // Bản trình diễn: chọn vai xong rút ngẫu nhiên 3–4 đối tác AI phía bên kia, mỗi bên một kiểu khách.
   app.post('/v1/test/tep-khach', async (req) => {

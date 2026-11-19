@@ -734,3 +734,6 @@ if (typeof document !== "undefined") document.addEventListener("click", (e) => {
 // Phạm vi /thiet-ke/ để không đụng app cũ /ban/, /mua/ (tự đăng ký riêng).
 if (typeof navigator !== "undefined" && "serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "127.0.0.1" || location.hostname === "localhost"))
   navigator.serviceWorker.register("/sw.js", { scope: "/thiet-ke/" }).catch(() => {});
+
+// Trang mở từ bản cũ, vừa đưa bản mới lên → mã nạp sau 404: tải lại một lần lấy bản mới (QA F13)
+addEventListener("vite:preloadError", (e) => { try { if (sessionStorage.getItem("agv-tai-lai-ban-moi") === location.href) return; sessionStorage.setItem("agv-tai-lai-ban-moi", location.href); } catch { /* bỏ qua */ } e.preventDefault(); location.reload(); });

@@ -79,3 +79,6 @@ addEventListener("popstate", () => document.querySelectorAll<HTMLDialogElement>(
 // Vercel Web Analytics (đếm lượt xem trang, không cookie); bản chạy trên máy tự bỏ qua
 if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) inject();
 batDau().catch((e) => { $("#man").innerHTML = trong(esc((e as Error).message)); });
+
+// Trang mở từ bản cũ, vừa đưa bản mới lên → mã nạp sau 404: tải lại một lần lấy bản mới (QA F13)
+addEventListener("vite:preloadError", (e) => { try { if (sessionStorage.getItem("agv-tai-lai-ban-moi") === location.href) return; sessionStorage.setItem("agv-tai-lai-ban-moi", location.href); } catch { /* bỏ qua */ } e.preventDefault(); location.reload(); });
