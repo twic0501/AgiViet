@@ -31,7 +31,7 @@ export async function veTaoPhieu(o: HTMLElement): Promise<void> {
   if (!ds.length) { o.innerHTML = trong("Chưa tải được danh mục mặt hàng. Thử tải lại trang."); return; }
   o.innerHTML = `<form class="the" id="pk" novalidate>
     <h2>Gửi phiếu cho người bán báo giá</h2>
-    <p class="phu">Người bán có hàng phù hợp sẽ chủ động báo giá cho bạn.</p>
+    <p class="phu">Người bán có hàng sẽ chủ động báo giá cho bạn.</p>
     <label class="o-nhap">Mặt hàng<select id="pk-sp">${ds.map((s) => `<option value="${esc(s.code)}">${esc(s.name_vi)}</option>`).join("")}</select></label>
     <label class="o-nhap">Loại<select id="pk-loai"></select></label>
     <div class="luoi2"><label class="o-nhap">Lượng cần (kg)<input id="pk-kg" inputmode="decimal" value="1000"></label>

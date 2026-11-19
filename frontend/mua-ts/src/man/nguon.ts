@@ -19,9 +19,9 @@ const laThuySan = (nhom?: string) => /aqua|seafood|thuy|fish|shrimp/i.test(nhom 
 let nhomSp: (ma: string) => string | undefined = () => undefined;
 const giayCua = (sp: string) => GIAY.filter(([, , n]) => n === "chung" || (laThuySan(nhomSp(sp)) ? n === "thuy" : n === "cay"));
 interface TieuChi { ma: string; ten: string; diem: number; toi_da: number }
-interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; phan_tram?: number; tieu_chi?: TieuChi[]; thieu?: string[]; can_thuong_luong?: boolean; nhat_ky_muc?: number; luong_g?: string }
+interface LoGoiY { lot_id: string; lot_code: string; seller_name?: string; province_code?: string; grade_code?: string; kha_dung_cam_ket_g: string; thieu?: string[]; can_thuong_luong?: boolean; nhat_ky_muc?: number; luong_g?: string }
 interface KetQuaTim { ket_qua: LoGoiY[]; goi_y_gom: { nguon: LoGoiY[]; da_gom_kg: number; con_thieu_kg: number } | null; so_lo_xet: number }
-// Điểm phù hợp của lần tìm gần nhất (tấm chi tiết dùng lại)
+// Kết quả lần tìm gần nhất theo lô (tấm chi tiết dùng lại phần còn thiếu)
 const diemLo = new Map<string, LoGoiY>();
 const TINH_DS: [string, string][] = [["", "Mọi tỉnh"], ["DT", "Đồng Tháp"], ["TG", "Tiền Giang"], ["BT", "Bến Tre"], ["VL", "Vĩnh Long"], ["CT", "Cần Thơ"], ["AG", "An Giang"], ["ST", "Sóc Trăng"], ["CM", "Cà Mau"], ["KG", "Kiên Giang"], ["LA", "Long An"], ["TN", "Tây Ninh"]];
 let locSp = "", dauPhieu = "";
@@ -97,7 +97,7 @@ async function vePhieu(o: HTMLElement): Promise<void> {
     $<HTMLSelectElement>("#pk-loai").innerHTML = `<option value="">Mọi loại</option>` + ds.map((g) => `<option value="${esc(g)}"${g === P.loai ? " selected" : ""}>${esc(tenLoai(g))}</option>`).join(""); };
   nhomSp = (ma) => (sp.find((x) => x.code === ma) as { group_code?: string } | undefined)?.group_code;
   const veGiay = () => { const ds = giayCua(P.sp); P.giay = P.giay.filter((g) => ds.some(([m]) => m === g));
-    $("#pk-giay").innerHTML = `<legend>Giấy tờ cần có (đã xác minh, còn hạn)</legend>${P.sp ? "" : `<p class="phu">Chọn mặt hàng để thấy giấy tờ phù hợp.</p>`}
+    $("#pk-giay").innerHTML = `<legend>Giấy tờ cần có (đã xác minh, còn hạn)</legend>${P.sp ? "" : `<p class="phu">Chọn mặt hàng để thấy giấy tờ của mặt hàng đó.</p>`}
       ${P.sp ? ds.map(([m, t]) => `<label class="chon"><input type="checkbox" data-giay="${m}"${P.giay.includes(m) ? " checked" : ""}> ${t}</label>`).join("") : ""}
       <label class="chon"><input type="checkbox" id="pk-nk"${P.nhatKy ? " checked" : ""}> Có nhật ký ${laThuySan(nhomSp(P.sp)) ? "nuôi" : "canh tác"} ghi trong app</label>`; };
   veGiay();
@@ -124,7 +124,7 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
       <div class="tin"><span class="chip">${esc(tenSp)}${P.loai ? ` ${esc(tenLoai(P.loai))}` : ""}</span><span class="chip">${vnd(soKg())} kg</span>${P.tinh ? `<span class="chip">${esc(tinh(P.tinh))}</span>` : ""}${P.han ? `<span class="chip">trước ${ngay(P.han)}</span>` : ""}<span class="chip">giá mong muốn (kín)</span></div>
       ${yeu.length ? `<p class="phu">Chỉ tính lô có: ${esc(yeu.join(", "))}.</p>` : ""}
       <a class="nut vien nho" href="#nguon/phieu">Sửa phiếu</a></section>
-    <div id="ng-kq"><p class="phu" role="status">Đang tìm nguồn phù hợp…</p><div class="khung-tai"></div></div>`;
+    <div id="ng-kq"><p class="phu" role="status">Đang tìm nguồn…</p><div class="khung-tai"></div></div>`;
   const homNay = new Date().toISOString().slice(0, 10), den = P.han && P.han >= homNay ? P.han : new Date(Date.now() + 10 * 864e5).toISOString().slice(0, 10);
   const than = { product_code: P.sp, grade_code: P.loai || null, qty_g: String(Math.round(soKg() * 1000)), max_price_vnd: String(soGia()),
     needed_from: homNay, needed_to: den, province_code: P.tinh || null, required_docs: P.giay, farm_diary: P.nhatKy, can_gom: true };
@@ -140,15 +140,14 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
   diemLo.clear(); k.ket_qua.forEach((l) => diemLo.set(l.lot_id, l));
   // Lô đã nằm trong nhóm gom thì không lặp lại ở danh sách bên dưới
   const ngoaiGom = k.ket_qua.filter((l) => !gom?.nguon.some((g) => g.lot_id === l.lot_id));
-  const laCao = (l: LoGoiY) => (l.phan_tram ?? 0) >= 80 && !(l.thieu || []).length; // "cao" = điểm cao và không thiếu gì
-  const cao = ngoaiGom.filter(laCao), con = ngoaiGom.filter((l) => !laCao(l));
+  // Không chấm điểm, không xếp hạng hộ (người sáng lập 19/11): thứ tự trung tính theo mã lô, mỗi lô tự ghi còn thiếu gì
+  const dsLo = [...ngoaiGom].sort((a, b) => a.lot_code.localeCompare(b.lot_code));
   const an = k.so_lo_xet - k.ket_qua.length;
-  kq.innerHTML = `<p class="phu">AgiViet chấm ${k.so_lo_xet} lô ${esc(tenSp)} đang bán theo phiếu của bạn, xếp từ phù hợp nhất.</p>
+  kq.innerHTML = `<p class="phu">AgiViet xem ${k.so_lo_xet} lô ${esc(tenSp)} đang bán theo phiếu của bạn. Lô nào còn thiếu so với phiếu thì ghi ngay dưới lô.</p>
     ${gom ? `<section class="kq-nhom gom"><div class="hang"><h2>AgiViet đề xuất gom ${gom.nguon.length} hộ</h2></div>
       <p class="phu">Không hộ nào đủ ${vnd(soKg())} kg. Gom được ${vnd(gom.da_gom_kg)} kg${gom.con_thieu_kg > 0 ? `, còn thiếu ${vnd(gom.con_thieu_kg)} kg` : ", đủ lượng"}. Các hộ ở gần nhau để chở chung một chuyến; mỗi hộ ký hợp đồng riêng.</p>
       ${gom.nguon.map((l) => theGoiY({ ...(diemLo.get(l.lot_id) ?? {}), ...l })).join("")}</section>` : ""}
-    ${cao.length ? `<section class="kq-nhom"><div class="hang"><h2>Phù hợp cao</h2><span class="phu">${cao.length} lô</span></div>${cao.map((l) => theGoiY(l)).join("")}</section>` : ""}
-    ${con.length ? `<section class="kq-nhom"><div class="hang"><h2>${cao.length || gom ? "Phù hợp một phần" : "Gần với phiếu nhất"}</h2><span class="phu">${con.length} lô</span></div><p class="phu">Chưa đạt hết phiếu; xem dòng "thiếu" trên từng lô.</p>${con.map((l) => theGoiY(l)).join("")}</section>` : ""}
+    ${dsLo.length ? `<section class="kq-nhom"><div class="hang"><h2>Các lô đang bán</h2><span class="phu">${dsLo.length} lô</span></div>${dsLo.map((l) => theGoiY(l)).join("")}</section>` : ""}
     ${an > 0 && k.ket_qua.length ? `<p class="phu">${an} lô khác không hiện: giá thấp nhất của người bán cao hơn nhiều so với mức bạn muốn, hoặc lô đã hết hàng, hết hạn.</p>` : ""}
     ${k.ket_qua.length ? "" : viSaoTrong(tenSp)}
     <section class="the"><p class="phu">Chưa ưng nguồn nào? Gửi phiếu để người bán có hàng chủ động báo giá cho bạn.</p><button type="button" class="nut vien rong" id="ng-gui-phieu">Gửi phiếu cho người bán báo giá</button></section>`;
@@ -187,15 +186,11 @@ export async function moTraGia(l: Lo, sauGui: () => void): Promise<void> {
 
 // Lý do nội bộ của bộ ghép không có nghĩa với người mua (khoảng cách khi chưa có địa chỉ nhận, điểm uy tín mặc định…)
 const tenGiay = (m: string) => GIAY.find(([k]) => k === m)?.[1] ?? m;
-const mucMau = (pt: number) => (pt >= 80 ? "cao" : pt >= 60 ? "vua" : "thap");
-const theGoiY = (l: LoGoiY) => { const pt = l.phan_tram ?? 0;
-  return `<article class="the goi-y">
-  <div class="hang"><div><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))}</p></div>
-    <div class="pt ${mucMau(pt)}" aria-label="Phù hợp ${pt} phần trăm"><b>${pt}%</b><span>phù hợp</span></div></div>
-  <div class="thanh-pt ${mucMau(pt)}" aria-hidden="true"><i style="width:${pt}%"></i></div>
+const theGoiY = (l: LoGoiY) => `<article class="the goi-y">
+  <div class="hang"><div><b>${esc(l.lot_code)} · ${esc(tenLoai(l.grade_code))}</b><p class="phu">${esc(l.seller_name || "")} · ${esc(tinh(l.province_code))}</p></div></div>
   <p class="phu">Đáp ứng được ${vnd(kg(l.luong_g ?? l.kha_dung_cam_ket_g))} kg${l.nhat_ky_muc ? ` · nhật ký canh tác ${l.nhat_ky_muc} mục` : ""}</p>
-  ${(l.thieu || []).length ? `<div class="tin">${(l.thieu || []).map((x) => `<span class="chip do">${esc(x)}</span>`).join("")}</div>` : `<div class="tin"><span class="chip la">Đạt đủ phiếu</span></div>`}
-  ${DL.lo.some((x) => x.id === l.lot_id) ? `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${esc(l.lot_id)}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${esc(l.lot_id)}">Trả giá</button></div>` : ""}</article>`; };
+  ${(l.thieu || []).length ? `<div class="tin"><span class="phu">Còn thiếu:</span>${(l.thieu || []).map((x) => `<span class="chip do">${esc(x)}</span>`).join("")}</div>` : `<div class="tin"><span class="chip la">Đủ theo phiếu</span></div>`}
+  ${DL.lo.some((x) => x.id === l.lot_id) ? `<div class="hang-nut"><button type="button" class="nut vien nho" data-ct="${esc(l.lot_id)}">Xem chi tiết</button><button type="button" class="nut chinh nho" data-tra="${esc(l.lot_id)}">Trả giá</button></div>` : ""}</article>`;
 
 
 /** Không có lô đạt phiếu: tìm điều kiện đang chặn (dựa trên lô đang bán) và cho gỡ từng cái. */
@@ -233,7 +228,7 @@ async function moChiTietLo(lotId: string): Promise<void> {
   const l = DL.lo.find((x) => x.id === lotId);
   const d = diemLo.get(lotId);
   than.innerHTML = `<div class="ct-lo">
-    ${d?.tieu_chi?.length ? `<section><h3>Phù hợp ${d.phan_tram}% với phiếu của bạn</h3>${d.tieu_chi.map((t) => `<div class="tc"><span>${esc(t.ten)}</span><div class="thanh-pt ${mucMau(100 * t.diem / t.toi_da)}"><i style="width:${Math.round(100 * t.diem / t.toi_da)}%"></i></div><b class="so">${vnd(Math.round(t.diem * 10) / 10)}/${t.toi_da}</b></div>`).join("")}</section>` : ""}
+    ${d ? `<section><h3>So với phiếu của bạn</h3>${(d.thieu || []).length ? `<div class="tin"><span class="phu">Còn thiếu:</span>${(d.thieu || []).map((x) => `<span class="chip do">${esc(x)}</span>`).join("")}</div>` : `<div class="tin"><span class="chip la">Đủ theo phiếu</span></div>`}</section>` : ""}
     <section><h3>${esc(h.lot_code)}${l ? ` · ${esc(l.product_name || "")} ${esc(tenLoai(l.grade_code))}` : ""}</h3>
       <p class="phu">${esc(h.nguoi_ban.ten)} · ${esc(tinh(h.nguoi_ban.tinh))}${h.vi_tri?.ten ? ` · ${esc(h.vi_tri.ten)}` : ""}</p>
       <p class="phu">${h.don_hoan_tat_tren_app ? `${h.don_hoan_tat_tren_app} đơn đã hoàn tất trên AgiViet` : "Chưa có đơn hoàn tất trên AgiViet"} · ${h.anh.filter((a) => a.nhan === "chup_trong_app").length} ảnh chụp trong app</p></section>
