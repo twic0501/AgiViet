@@ -33,7 +33,8 @@ export async function veDonGom(o: HTMLElement, id: string): Promise<void> {
     <section class="the"><h2>Nhắn cả nhóm</h2><p class="phu">Gửi cùng một tin vào từng khung chat riêng (vd giờ xe, điểm gom). Hộ trả lời trong khung của mình.</p>
       <label class="o-nhap"><span class="an-chu">Nội dung</span><textarea id="dg-tin" rows="3" maxlength="1000" placeholder="vd Xe tới điểm gom 6 giờ sáng thứ 7"></textarea></label>
       <button type="button" class="nut chinh rong" id="dg-gui">Gửi cho ${d.ho.filter((h) => h.trang_thai !== "da_dong").length} hộ</button><p class="phu" id="dg-bao" role="status"></p></section>
-    <a class="nut vien rong" href="#nguon/ket-qua">Tìm hộ thay hoặc thêm hộ</a></div>`;
+    <button type="button" class="nut vien rong" id="dg-thay">Tìm hộ thay hoặc thêm hộ</button></div>`;
+  o.querySelector<HTMLButtonElement>("#dg-thay")!.onclick = () => { try { sessionStorage.setItem("agv-dg-thay", id); } catch { /* bỏ qua */ } location.hash = "#nguon/ket-qua"; };
   o.querySelector<HTMLButtonElement>("#dg-gui")!.onclick = async (e) => {
     const n = e.currentTarget as HTMLButtonElement, chu = o.querySelector<HTMLTextAreaElement>("#dg-tin")!.value.trim(), bao = o.querySelector("#dg-bao")!;
     if (!chu) { bao.textContent = "Nhập nội dung trước."; return; }

@@ -12,6 +12,9 @@ import { laySp } from "./nhu-cau";
 
 // Phiếu đang điền (giữ khi đổi màn rồi quay lại)
 const P = { sp: "", loai: "", kg: "", tinh: "", han: "", gia: "", giay: [] as string[], nhatKy: false };
+// Phiếu đang điền lưu trong phiên trình duyệt: tải lại / mở lại app không mất phiếu
+try { Object.assign(P, JSON.parse(sessionStorage.getItem("agv-phieu-tim") || "{}")); } catch { /* bỏ qua */ }
+const luuP = () => { try { sessionStorage.setItem("agv-phieu-tim", JSON.stringify(P)); } catch { /* bỏ qua */ } };
 // Mã số vùng trồng không nằm ở đây: người bán đầu tiên của AgiViet là các trại đã có mã vùng trồng.
 // Giấy tờ theo nhóm hàng: thủy sản (ao, kháng sinh) khác cây trồng (thuốc BVTV, kiểm dịch thực vật)
 const GIAY: [string, string, "chung" | "cay" | "thuy"][] = [["vietgap", "VietGAP", "chung"], ["spray_diary", "Nhật ký cách ly thuốc", "cay"], ["residue_test", "Kiểm dư lượng thuốc", "cay"],
@@ -111,7 +114,7 @@ async function vePhieu(o: HTMLElement): Promise<void> {
     if (t.dataset.giay) P.giay = t.checked ? [...P.giay, t.dataset.giay] : P.giay.filter((x) => x !== t.dataset.giay);
     else if (t.id === "pk-nk") P.nhatKy = t.checked;
     else { const ten = ({ "pk-sp": "sp", "pk-loai": "loai", "pk-kg": "kg", "pk-tinh": "tinh", "pk-han": "han", "pk-gia": "gia" } as const)[t.id as "pk-sp"]; if (ten) { P[ten] = t.value; if (ten === "sp") { veLoai(); veGiay(); moDan(); } } }
-    capNut();
+    capNut(); luuP();
   };
   $<HTMLFormElement>("#phieu").onsubmit = (e) => { e.preventDefault(); if (!thieuPhieu().length) location.hash = "#nguon/ket-qua"; };
 }
@@ -155,6 +158,18 @@ async function veKetQuaTim(o: HTMLElement): Promise<void> {
     ${k.ket_qua.length ? "" : viSaoTrong(tenSp)}
     <section class="the"><p class="phu">Chưa ưng nguồn nào? Gửi phiếu để người bán có hàng chủ động báo giá cho bạn.</p><button type="button" class="nut vien rong" id="ng-gui-phieu">Gửi phiếu cho người bán báo giá</button></section>`;
   ganTraGia(kq, () => veKetQuaTim(o)); ganChiTiet(kq);
+  // Chế độ mời hộ thay cho đơn gom (từ màn Đơn gom): mỗi lô có nút "Mời vào đơn gom"
+  let thay = ""; try { thay = sessionStorage.getItem("agv-dg-thay") || ""; } catch { /* bỏ qua */ }
+  if (thay) {
+    kq.insertAdjacentHTML("afterbegin", `<section class="the nguon-dau"><b>Đang chọn hộ thay cho đơn gom</b><p class="phu">Bấm "Mời vào đơn gom" ở lô muốn mời; lời chào dùng giá mong muốn của phiếu.</p><button type="button" class="nut vien nho" id="dg-huy-thay">Thôi, không chọn nữa</button></section>`);
+    kq.querySelector<HTMLButtonElement>("#dg-huy-thay")!.onclick = () => { try { sessionStorage.removeItem("agv-dg-thay"); } catch { /* bỏ qua */ } veKetQuaTim(o); };
+    kq.querySelectorAll<HTMLButtonElement>("[data-tra]").forEach((b) => { const l = diemLo.get(b.dataset.tra!); if (!l) return;
+      b.textContent = "Mời vào đơn gom";
+      b.onclick = async () => { b.disabled = true;
+        try { await api(`/v1/sourcing-groups/${thay}/members`, { lot_id: l.lot_id, qty_g: String(Math.min(Number(l.kha_dung_cam_ket_g), Math.round(soKg() * 1000))), price_vnd: soGia() });
+          try { sessionStorage.removeItem("agv-dg-thay"); } catch { /* bỏ qua */ } location.hash = `#don-gom/${thay}`; }
+        catch (e) { b.disabled = false; b.textContent = (e as Error).message.slice(0, 60); } }; });
+  }
   const gn = kq.querySelector<HTMLButtonElement>("#ng-gui-nhom");
   if (gn && gom) gn.onclick = async () => { gn.disabled = true;
     try { const { taoDonGom } = await import("./don-gom"); location.hash = `#don-gom/${await taoDonGom(gom.nguon as { lot_id: string; luong_g: string }[], Math.round(soKg() * 1000), soGia())}`; }
