@@ -169,6 +169,29 @@ b.so, .giu b, .ket b { white-space: nowrap; }
 .nghe button:active { transform: scale(.97); }
 .dong-nhan { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
 
+/* Đang chạy thật / còn mô phỏng: hai cột, chấm xanh lá và chấm vàng */
+.that-gia { margin-top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.that-gia > div { background: var(--giay-buoc); border-radius: var(--bo); padding: clamp(24px, 2.6vw, 40px); }
+.that-gia h3 { font-size: var(--c3); line-height: 1.2; }
+.that-gia ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: var(--c4); }
+.that-gia li { display: flex; gap: 12px; }
+.that-gia li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--la); margin-top: .62em; flex: none; }
+.that-gia > div + div li::before { background: var(--chin-sang); }
+
+.lo-trinh { margin-top: var(--khoang); background: var(--la-dam); color: var(--tren-la); padding: 120px 0; }
+.lo-trinh .dau-muc { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 32px; align-items: end; }
+.lo-trinh h2 { font-size: var(--c2); max-width: 16ch; }
+.lo-trinh .dau-muc p { font-size: var(--c4); color: var(--tren-la-phu); max-width: 46ch; }
+.giai { margin: 64px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.giai li { background: var(--la-buoc); border-radius: var(--bo); padding: 26px; display: grid; align-content: start; gap: 14px; min-height: 340px; border-top: 4px solid transparent; }
+.giai li.dang { background: var(--giay-noi); color: var(--muc); border-top-color: var(--chin-sang); }
+.giai .so-gd { font-size: var(--c2); font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: var(--tren-la-phu); }
+.giai li.dang .so-gd { color: var(--la); }
+.giai .nhan-tt { justify-self: start; }
+.giai h3 { font-size: var(--c3); line-height: 1.2; }
+.giai p { font-size: var(--c5); color: var(--tren-la-phu); }
+.giai li.dang p { color: var(--muc-phu); }
+
 .mo-phong { margin-top: var(--khoang); background: var(--la-dam); color: var(--tren-la); }
 .mo-phong .khung { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 96px); align-items: stretch; }
 .mo-phong .chu-mp { padding-block: 112px; align-self: center; }
@@ -250,12 +273,13 @@ b.so, .giu b, .ket b { white-space: nowrap; }
   html { scroll-behavior: auto; }
 }
 
-@media (max-width: 1100px) { .day { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .day, .giai { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 900px) {
   .thanh nav { display: none; }
   .thanh .nut { margin-left: auto; }
   .dau { padding-top: 120px; }
-  .dau .khung, .van-de .khung, .buoc .dau-muc, .gia .khung, .hoi .khung, .mo-phong .khung { grid-template-columns: minmax(0, 1fr); }
+  .dau .khung, .van-de .khung, .buoc .dau-muc, .lo-trinh .dau-muc, .gia .khung, .hoi .khung, .mo-phong .khung, .that-gia { grid-template-columns: minmax(0, 1fr); }
+  .giai li { min-height: 0; }
   .dau h1 { font-size: clamp(44px, 13vw, 72px); }
   .dau .noi { font-size: 19px; }
   .van-de h2, .hoi h2, .san-khau { position: static; }
@@ -276,7 +300,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
   .chan nav { flex-wrap: wrap; }
   .chan .phai { text-align: left; }
 }
-@media (max-width: 600px) { .day { grid-template-columns: minmax(0, 1fr); } .the-buoc { min-height: 0; } }
+@media (max-width: 600px) { .day, .giai { grid-template-columns: minmax(0, 1fr); } .the-buoc { min-height: 0; } }
 @media (max-width: 480px) {
   .so-lieu { grid-template-columns: repeat(2, minmax(0, auto)); }
   .moi form { font-size: 26px; }
@@ -290,7 +314,8 @@ b.so, .giu b, .ket b { white-space: nowrap; }
     <a class="ten-hieu" href="/" aria-label="AgiViet, về đầu trang"><img src="/assets/logo.svg" alt="" width="30" height="30">AgiViet</a>
     <nav aria-label="Mục chính">
       <a href="#cach-hoat-dong">Cách hoạt động</a>
-      <a href="#hai-app">Hai app</a>
+      <a href="#hien-co">Đang có</a>
+      <a href="#lo-trinh">Lộ trình</a>
       <a href="#bang-gia">Bảng giá</a>
       <a href="#hoi-dap">Hỏi đáp</a>
     </nav>
@@ -309,7 +334,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
           <a class="nut nut-giay" href="/thiet-ke/dang-nhap.html">Tôi bán hàng</a>
           <a class="nut nut-vien" href="/thiet-ke/dang-nhap.html?ben=mua">Tôi thu mua</a>
         </div>
-        <p class="them">Bản đi thi: dữ liệu mẫu, ngân hàng và chữ ký mô phỏng, chưa chuyển tiền thật. Giám khảo, nhà đầu tư: <a class="lien" href="/mo-hinh-quy-trinh">xem 59 tình huống của quy trình</a></p>
+        <p class="them">Đây là bản thử: hai app chạy thật, thị trường do AI đóng vai người mua, người bán; ngân hàng giữ cọc là ngân hàng mô phỏng, chưa chuyển tiền thật. <a class="lien" href="#lo-trinh">Xem lộ trình tới khi có tiền thật</a></p>
       </div>
     </div>
 
@@ -319,7 +344,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
         <div><b id="phieu-ten">Xoài cát Chu loại 1</b><small class="so">500 kg × 23.400 đ · Hộ Nguyễn Thị Năm, Cao Lãnh</small></div>
         <span class="ma-don">HĐ-3001</span>
       </div>
-      <div class="giu"><span>Ngân hàng đối tác đang giữ cọc 30%</span><b class="so" id="p-coc">3.510.000 đ</b></div>
+      <div class="giu"><span>Ngân hàng giữ cọc 30%</span><b class="so" id="p-coc">3.510.000 đ</b></div>
       <div class="dk">
         <label for="p-nhan"><span class="hang"><span>Bên mua giữ lại sau nghiệm thu</span><span class="so" id="p-pt">100 / 500 kg · 20%</span></span>
           <input id="p-nhan" type="range" min="0" max="100" step="10" value="20" aria-describedby="p-chu">
@@ -367,9 +392,9 @@ b.so, .giu b, .ket b { white-space: nowrap; }
   <ol class="day" id="day" aria-label="Tám bước của đơn HĐ-3001">
     <li class="the-buoc"><span class="ai">Bên mua và người bán</span><h3>Chào giá, trả giá</h3><p>Chào giá kín: bên mua không thấy giá đáy của người bán. Mỗi bên trả giá tối đa hai lượt.</p>
       <div data-ui><div><span>LC-0001 · Xoài cát Chu</span><span class="nhan-tt xanh">Đã đồng ý</span></div><div><span>Chào</span><b class="so">23.600 đ/kg</b></div><div><span>Chốt</span><b class="so">23.400 đ/kg</b></div></div></li>
-    <li class="the-buoc"><span class="ai">Hai bên</span><h3>Ký hợp đồng</h3><p>Ký bằng mã OTP trên điện thoại. Hợp đồng PDF niêm phong, hai bên giữ cùng một bản. Bản thi: ký mô phỏng.</p>
+    <li class="the-buoc"><span class="ai">Hai bên</span><h3>Ký hợp đồng</h3><p>Ký bằng mã OTP trên điện thoại. Hợp đồng PDF có tem thời gian và mã QR để ai cũng kiểm được bản gốc, hai bên giữ cùng một bản.</p>
       <div data-ui><div><span>HĐ-3001</span><span class="nhan-tt xanh">Đã ký 2/2</span></div><div><span>Giá trị</span><b class="so">11.700.000 đ</b></div><div><span>Giao</span><b>Tại vườn, Cao Lãnh</b></div></div></li>
-    <li class="the-buoc"><span class="ai">Bên mua, qua ngân hàng</span><h3>Chuyển cọc</h3><p>Cọc vào tài khoản ngân hàng đối tác giữ hộ, không vào túi AgiViet, không vào túi bên nào.</p>
+    <li class="the-buoc"><span class="ai">Bên mua, qua ngân hàng</span><h3>Chuyển cọc</h3><p>Cọc vào tài khoản ngân hàng giữ hộ, không vào túi AgiViet, không vào túi bên nào. Bản thử: ngân hàng mô phỏng.</p>
       <div data-ui><div><span>Cọc 30%</span><span class="nhan-tt vang">Ngân hàng đang giữ</span></div><div><span>Số tiền</span><b class="so">3.510.000 đ</b></div></div></li>
     <li class="the-buoc"><span class="ai">Bên mua</span><h3>Chỉ định người nhận, đặt xe</h3><p>Người nhận có mã riêng cho đợt giao. Người lạ đến lấy hàng không có mã thì không giao.</p>
       <div data-ui><div><span>Đợt HĐ-3001-D1</span><span class="nhan-tt">Chờ giao</span></div><div><span>Khung giờ</span><b>07:00–11:00</b></div></div></li>
@@ -379,52 +404,87 @@ b.so, .giu b, .ket b { white-space: nowrap; }
       <div data-ui><div><span>Nhận</span><b class="so">100 kg</b></div><div><span>Trả lại, có ảnh</span><b class="so">400 kg</b></div><div><span>Người bán</span><span class="nhan-tt xanh">Đã ký đồng ý</span></div></div></li>
     <li class="the-buoc"><span class="ai">Bên mua, rồi người bán</span><h3>Trả tiền hàng</h3><p>Bên mua báo đã chuyển kèm chứng từ. Tiền chỉ được tính khi người bán tự bấm “đã nhận đủ”.</p>
       <div data-ui><div><span>Phần còn phải trả</span><b class="so">0 đ</b></div><div><span>Vì sao</span><span class="nhan-tt">Cọc đã đủ phần nhận</span></div></div></li>
-    <li class="the-buoc"><span class="ai">Ngân hàng và AgiViet</span><h3>Quyết toán, đối soát</h3><p>Ngân hàng chia cọc theo kết quả đã ký, nhân viên đối soát từng lệnh. Không bên nào phải tự hoàn cọc cho bên kia.</p>
+    <li class="the-buoc"><span class="ai">Ngân hàng và AgiViet</span><h3>Quyết toán, đối soát</h3><p>Máy chủ tính lại số tiền độc lập lần hai, lệch là chặn trước khi gửi lệnh. Ngân hàng chia cọc theo kết quả đã ký; không bên nào tự hoàn cọc cho bên kia.</p>
       <div data-ui><div><span>Chuyển người bán</span><b class="so">2.340.000 đ</b></div><div><span>Hoàn bên mua</span><b class="so">1.170.000 đ</b></div><div><span>Lệnh ngân hàng</span><span class="nhan-tt xanh">Đã đối soát</span></div></div></li>
   </ol>
 </section>
 
-<section class="hai-app" id="hai-app" aria-labelledby="ha-tieu">
+<section class="hai-app" id="hien-co" aria-labelledby="ha-tieu">
   <div class="khung">
-    <h2 id="ha-tieu" class="len">Hai app, cho hai cách làm ăn</h2>
-    <p class="mo len" style="--tre:80ms">Người bán dùng điện thoại, nút to, có đọc thành tiếng, con trâu dẫn đường. Bên mua dùng máy tính hay điện thoại, đủ công cụ để lo nguồn hàng cả tuần.</p>
+    <h2 id="ha-tieu" class="len">Hôm nay app làm được gì</h2>
+    <p class="mo len" style="--tre:80ms">Chỉ ghi những gì đang chạy được. Người bán dùng điện thoại, nút to, có đọc thành tiếng. Người mua dùng máy tính hay điện thoại để tìm nguồn và theo dõi đơn.</p>
     <div class="luoi">
       <article class="o len">
         <div class="chu-o"><span class="ben">App bán</span><h3>Nói để đăng hàng</h3><p>“Mười tấn xoài, tuần sau hái.” App ghi thành tin đăng; chưa cân vẫn đăng được, ghi rõ là ước tính.</p></div>
         <div class="manh"><div data-ui><div class="mic"><span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f6f2e7" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><span class="song" aria-hidden="true"><i style="animation-delay:0s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.15s"></i><i style="animation-delay:.25s"></i><i style="animation-delay:.05s"></i></span></div><div class="tin-noi">Xoài cát Chu loại 1 · 10 tấn ước tính · hái 12–14/11</div></div></div>
       </article>
       <article class="o dao len" style="--tre:80ms">
-        <div class="chu-o"><span class="ben">App bán</span><h3>So tiền về tay, không chỉ giá</h3><p>Giá cao chưa chắc nhiều tiền: trừ tiền xe, bốc xếp, ngày trả. App đặt hai khách cạnh nhau.</p></div>
-        <div class="manh"><div data-ui><div class="so-sanh"><div><small>Nhà máy · 24.000 đ/kg</small><b class="so">226 triệu</b><small>trả khi nhận, bác tự thuê xe</small></div><div class="hon"><small>Vựa · 23.200 đ/kg</small><b class="so">232 triệu</b><small>trả khi nhận, vựa tới lấy</small></div></div></div></div>
+        <div class="chu-o"><span class="ben">App mua</span><h3>Tìm nguồn theo độ phù hợp</h3><p>Ghi mặt hàng, lượng, ngày cần. App chấm từng lô theo 8 tiêu chí rồi xếp từ phù hợp cao xuống; thiếu gì tô đỏ chỗ đó.</p></div>
+        <div class="manh"><div data-ui>
+          <div class="hang-lo"><img src="/assets/products/xoai-cat-chu.jpg" alt="Xoài cát Chu" width="52" height="52" loading="lazy"><span>Xoài cát Chu loại 1<small>Cao Lãnh · đã cân · có nhật ký</small></span><span class="nhan-tt xanh">Phù hợp 92%</span></div>
+          <div class="hang-lo"><img src="/assets/products/buoi.jpg" alt="Bưởi da xanh" width="52" height="52" loading="lazy"><span>Bưởi da xanh loại 1<small>Bến Tre · thiếu giấy tờ</small></span><span class="nhan-tt vang">Phù hợp 64%</span></div>
+        </div></div>
       </article>
       <article class="o len" style="--tre:160ms">
-        <div class="chu-o"><span class="ben">App bán</span><h3>Nghe thay vì đọc</h3><p>Trợ lý giọng nói trả lời bằng lời, nút Nghe đọc số tiền ở các bước quan trọng. Con cháu nhập giúp được nhưng không ký thay.</p></div>
+        <div class="chu-o"><span class="ben">App bán</span><h3>Nghe thay vì đọc</h3><p>Trợ lý trả lời bằng lời, nút Nghe đọc số tiền ở các bước quan trọng. Con cháu nhập giúp được nhưng không ký thay.</p></div>
         <div class="manh"><div data-ui><div class="nghe"><span>Ngân hàng đang giữ cọc<br><b class="so">3.510.000 đ</b></span><button type="button" id="nut-nghe">Nghe</button></div><small style="color:var(--muc-phu)" id="nghe-chu">Bấm Nghe để app đọc số tiền.</small></div></div>
       </article>
       <article class="o dao len">
-        <div class="chu-o"><span class="ben">App mua</span><h3>Nguồn hàng có nhãn rõ</h3><p>Lô đã cân hay ước tính, ngày hái, lượng còn bán được. Lô hết lượng tự rời khỏi kết quả.</p></div>
+        <div class="chu-o"><span class="ben">Hai bên</span><h3>Trao đổi ẩn danh tới khi có cọc</h3><p>Nhắn tin, trả giá, thống nhất điều khoản ngay trong chat. Trước khi ngân hàng nhận cọc, tên hiện dạng mã và số điện thoại, số tài khoản bị che.</p></div>
         <div class="manh"><div data-ui>
-          <div class="hang-lo"><img src="/assets/products/sau-rieng.jpg" alt="Sầu riêng" width="52" height="52" loading="lazy"><span>Sầu riêng Ri6 loại A<small>Cái Bè · 3,2 tấn còn bán</small></span><span class="nhan-tt xanh">Đã cân</span></div>
-          <div class="hang-lo"><img src="/assets/products/tom.jpg" alt="Tôm thẻ" width="52" height="52" loading="lazy"><span>Tôm thẻ 48–52 con/kg<small>Bạc Liêu · 1,5 tấn</small></span><span class="nhan-tt">Ước tính</span></div>
-          <div class="hang-lo"><img src="/assets/products/thanh-long.jpg" alt="Thanh long" width="52" height="52" loading="lazy"><span>Thanh long ruột trắng<small>Bình Thuận · 6 tấn</small></span><span class="nhan-tt xanh">Đã cân</span></div>
+          <div class="dong-nhan"><span>NM-2041: “Gọi em ••• ••• nhé”</span><span class="nhan-tt vang">Đã che</span></div>
+          <div class="dong-nhan"><span>Điều khoản giao 7 giờ</span><span class="nhan-tt xanh">Hai bên đồng ý</span></div>
         </div></div>
       </article>
       <article class="o len" style="--tre:80ms">
-        <div class="chu-o"><span class="ben">App mua</span><h3>Tuần này đủ hay thiếu</h3><p>Cần bao nhiêu kg mỗi món, đơn đã ký chắc được bao nhiêu. Báo giá chưa chốt không được tính là đủ.</p></div>
-        <div class="manh"><div data-ui class="cot-tuan">
-          <div><span>Xoài cát Chu · cần 3.500 kg</span><div class="vach"><i style="width:57%"></i></div><small style="color:var(--muc-phu)">đã chắc 2.000 kg · thiếu 1.500 kg</small></div>
-          <div><span>Cá tra · cần 2.000 kg</span><div class="vach"><i style="width:100%"></i></div><small style="color:var(--muc-phu)">đã chắc đủ</small></div>
+        <div class="chu-o"><span class="ben">Hai bên</span><h3>Hợp đồng kiểm được</h3><p>Ký OTP, PDF có tem thời gian của đơn vị cấp dấu thời gian và mã QR. Quét mã là biết bản đang cầm có đúng bản gốc không.</p></div>
+        <div class="manh"><div data-ui>
+          <div class="dong-nhan"><span>HĐ-3001 · chữ ký 2/2</span><span class="nhan-tt xanh">Đúng bản gốc</span></div>
+          <div class="dong-nhan"><span>Tem thời gian</span><span class="nhan-tt">RFC 3161</span></div>
         </div></div>
       </article>
       <article class="o dao len" style="--tre:160ms">
-        <div class="chu-o"><span class="ben">Hai bên</span><h3>Mỗi con số có nguồn</h3><p>Ai nói, đã ai xác nhận. Đổi tài khoản nhận tiền phải chờ 24 giờ, bên mua thấy cảnh báo 30 ngày.</p></div>
+        <div class="chu-o"><span class="ben">Bản thử</span><h3>AI đóng vai bên kia</h3><p>Vào app là có thị trường: AI đóng người mua, người bán trả giá, nhắn tin, giao hàng để bạn đi trọn một đơn và tự đánh giá app có dễ dùng không.</p></div>
         <div class="manh"><div data-ui>
-          <div class="dong-nhan"><span>Số cân 480 kg</span><span class="nhan-tt">Bên mua tự khai</span></div>
-          <div class="dong-nhan"><span>Số cân 480 kg</span><span class="nhan-tt xanh">Hai bên đã ký</span></div>
-          <div class="dong-nhan"><span>Tài khoản nhận tiền</span><span class="nhan-tt vang">Vừa đổi · chờ 24 giờ</span></div>
+          <div class="dong-nhan"><span>NB-1187 trả giá 23.400 đ/kg</span><span class="nhan-tt">AI đóng vai</span></div>
+          <div class="dong-nhan"><span>Bạn: “Chốt giá này”</span><span class="nhan-tt xanh">Tạo hợp đồng</span></div>
         </div></div>
       </article>
     </div>
+    <div class="that-gia len">
+      <div><h3>Đang chạy thật</h3><ul>
+        <li>Đăng nhập OTP, hai app bán và mua, cài được vào điện thoại</li>
+        <li>Đăng hàng, nhật ký canh tác, ngày hết cách ly thuốc</li>
+        <li>Tìm nguồn, phiếu tìm nguồn, chào giá kín, trả giá</li>
+        <li>Chat có che liên lạc, thống nhất điều khoản, hợp đồng ký OTP</li>
+        <li>Giao bằng mã người nhận, cân, nghiệm thu có ảnh, quyết toán</li>
+        <li>Hợp đồng khung mua đều theo tuần, sổ tiền, thông báo</li>
+        <li>Trợ lý AI, thời tiết, tin giá</li>
+      </ul></div>
+      <div><h3>Còn mô phỏng</h3><ul>
+        <li>Ngân hàng giữ, chia, hoàn cọc</li>
+        <li>Ví điện tử MoMo, ZaloPay (bản sandbox)</li>
+        <li>Ký số VNPT SmartCA (bản giả lập)</li>
+        <li>Xe, kho lạnh, kiểm định của đối tác</li>
+        <li>Người mua, người bán trên chợ (AI đóng vai)</li>
+        <li>Thu phí theo gói</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="lo-trinh" id="lo-trinh" aria-labelledby="lt-tieu">
+  <div class="khung">
+    <div class="dau-muc">
+      <h2 id="lt-tieu" class="len">Lộ trình: làm chắc trước, mở rộng sau</h2>
+      <p class="len" style="--tre:80ms">Mỗi giai đoạn chỉ mở khi giai đoạn trước chạy chắc với người dùng thật. Thứ tự là dự kiến; mốc thời gian chốt theo kết quả thí điểm.</p>
+    </div>
+    <ol class="giai">
+      <li class="len dang"><span class="so-gd">01</span><span class="nhan-tt vang">Đang ở đây</span><h3>Bản thử</h3><p>Hai app chạy đủ một đơn từ chào giá tới quyết toán. AI đóng vai thị trường, ngân hàng mô phỏng. Mục tiêu: người bán, người mua thật thử thao tác và cho biết chỗ nào khó.</p></li>
+      <li class="len" style="--tre:80ms"><span class="so-gd">02</span><h3>Thí điểm có tiền thật</h3><p>Ngân hàng đối tác giữ cọc thật. Bật ví điện tử và ký số thật (đã nối bản thử). Một vùng, vài mặt hàng: chanh không hạt, bưởi da xanh, xoài cát Chu. Có người vận hành đối soát.</p></li>
+      <li class="len" style="--tre:160ms"><span class="so-gd">03</span><h3>Thêm dịch vụ</h3><p>Xe, kho lạnh, kiểm định do đối tác thật thay phần mô phỏng. Mở rộng mua đều theo tuần cho nhà hàng, gom nhiều hộ cho một đơn lớn.</p></li>
+      <li class="len" style="--tre:240ms"><span class="so-gd">04</span><h3>Tài chính và mở rộng</h3><p>Trả sau trong hạn mức, bao tiêu theo vụ (đã có trong đặc tả, đang tắt). Thêm vùng, thêm mặt hàng; xuất khẩu để sau cùng.</p></li>
+    </ol>
   </div>
 </section>
 
@@ -447,7 +507,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
 <section class="gia" id="bang-gia" aria-labelledby="g-tieu">
   <div class="khung">
     <div>
-      <div class="gia-dau"><h2 id="g-tieu" class="len">Người bán không cần phải trả tiền</h2><p class="len" style="--tre:80ms">Bên mua chọn gói theo cách mua. Phí tính trên giá trị hợp đồng, bên mua nộp cùng cọc, không trừ vào tiền của người bán.</p></div>
+      <div class="gia-dau"><h2 id="g-tieu" class="len">Người bán không cần phải trả tiền</h2><p class="len" style="--tre:80ms">Bên mua chọn gói theo cách mua. Phí tính trên giá trị hợp đồng, bên mua nộp cùng cọc, không trừ vào tiền của người bán. Đây là giá dự kiến khi chạy thật; bản thử chưa thu phí.</p></div>
       <div class="ten-goi" role="tablist" aria-label="Các gói">
         <button role="tab" type="button" id="g-ban" aria-controls="g-san" aria-selected="false" data-goi="ban">Người bán · 0 đ</button>
         <button role="tab" type="button" id="g-free" aria-controls="g-san" aria-selected="false" data-goi="free">Miễn phí</button>
@@ -472,13 +532,14 @@ b.so, .giu b, .ket b { white-space: nowrap; }
   <div class="khung">
     <h2 id="h-tieu" class="len">Bà con và doanh nghiệp hay hỏi</h2>
     <div class="ds-hoi">
-      <details name="hoi" open><summary>Tiền cọc nằm ở đâu?<span class="cong" aria-hidden="true"></span></summary><div>Ở tài khoản của ngân hàng đối tác, giữ hộ cho đơn. AgiViet không cầm tiền, người bán cũng không tự giữ cọc. Ngân hàng chỉ chuyển hay hoàn theo kết quả nghiệm thu hai bên đã ký, rồi nhân viên đối soát từng lệnh.</div></details>
+      <details name="hoi" open><summary>Tiền cọc nằm ở đâu?<span class="cong" aria-hidden="true"></span></summary><div>Ở tài khoản của ngân hàng đối tác, giữ hộ cho đơn. AgiViet không cầm tiền, người bán cũng không tự giữ cọc. Ngân hàng chỉ chuyển hay hoàn theo kết quả nghiệm thu hai bên đã ký, máy chủ tính lại độc lập trước mỗi lệnh. Bản thử dùng ngân hàng mô phỏng; ngân hàng thật vào ở giai đoạn thí điểm.</div></details>
       <details name="hoi"><summary>Bên mua trả lại hàng thì ai hoàn tiền?<span class="cong" aria-hidden="true"></span></summary><div>Ngân hàng. Phần cọc vượt quá giá trị hàng được nhận do ngân hàng tự hoàn về đúng tài khoản bên mua đã chuyển, người bán không phải hoàn cọc. Nếu bên mua đã trả thẳng tiền hàng nhiều hơn số được tính, người bán hoàn lại phần thừa ngay trong app và bên mua bấm xác nhận.</div></details>
       <details name="hoi"><summary>Tôi lớn tuổi, không rành điện thoại thì sao?<span class="cong" aria-hidden="true"></span></summary><div>Nút to, ít chữ, có trợ lý giọng nói và nút Nghe ở các bước quan trọng. Đăng hàng bằng cách nói. Con trâu chỉ đúng nút cần bấm. Con cháu nhập giúp được nhưng không ký thay và không đổi được tài khoản nhận tiền.</div></details>
       <details name="hoi"><summary>Cân lệch hoặc bị hạ loại vô lý thì sao?<span class="cong" aria-hidden="true"></span></summary><div>Số cân bên mua nhập mang nhãn tự khai tới khi người bán ký đồng ý. Trả lại hay hạ loại phải có ảnh. Người bán không đồng ý thì phần đó tách ra đối soát, phần không tranh chấp vẫn được chia đúng hạn.</div></details>
       <details name="hoi"><summary>Người bán không giao thì bên mua mất cọc không?<span class="cong" aria-hidden="true"></span></summary><div>Không. Cọc vẫn ở ngân hàng. Người bán vi phạm thì ngân hàng hoàn cọc cho bên mua, chi phí dịch vụ đã phát sinh được bồi hoàn theo hợp đồng.</div></details>
       <details name="hoi"><summary>Im lặng có bị coi là đồng ý không?<span class="cong" aria-hidden="true"></span></summary><div>Không bao giờ. Bước nào chưa có người bấm thì app ghi rõ đang chờ ai. Quá hạn thì xử lý theo điều khoản đã ký, không tự kết luận thay người dùng.</div></details>
-      <details name="hoi"><summary>Bản trên trang này là bản thật chưa?<span class="cong" aria-hidden="true"></span></summary><div>Là bản đi thi chạy trên máy chủ thật. Khi vào app, bạn chọn một vai mẫu; các bên còn lại (bên kia, ngân hàng, nhân viên) do AI đóng để bạn thấy trọn một giao dịch. Ngân hàng là ngân hàng mô phỏng, chưa chuyển tiền thật.</div></details>
+      <details name="hoi"><summary>Bản trên trang này là bản thật chưa?<span class="cong" aria-hidden="true"></span></summary><div>Là bản đi thi chạy trên máy chủ thật. Khi vào app, bạn chọn một vai mẫu; bên kia do AI đóng, ngân hàng là ngân hàng mô phỏng, để bạn đi trọn một giao dịch mà chưa chuyển tiền thật.</div></details>
+      <details name="hoi"><summary>Khi nào dùng được tiền thật?<span class="cong" aria-hidden="true"></span></summary><div>Ở giai đoạn thí điểm, khi có ngân hàng đối tác giữ cọc thật và chạy ở một vùng, vài mặt hàng trước. Phần ví điện tử và ký số đã nối ở bản thử, chỉ chờ bật. Xem <a class="lien" href="#lo-trinh" style="color:inherit">lộ trình</a>.</div></details>
     </div>
   </div>
 </section>
@@ -504,7 +565,7 @@ b.so, .giu b, .ket b { white-space: nowrap; }
   <div class="chan">
     <div class="khung">
       <span>AgiViet · sàn nông sản và thủy sản miền Tây</span>
-      <nav aria-label="Liên kết cuối trang"><a href="/thiet-ke/dang-nhap.html">App bán</a><a href="/thiet-ke/dang-nhap.html?ben=mua">App mua</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a></nav>
+      <nav aria-label="Liên kết cuối trang"><a href="/thiet-ke/dang-nhap.html">App bán</a><a href="/thiet-ke/dang-nhap.html?ben=mua">App mua</a><a href="#lo-trinh">Lộ trình</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a></nav>
       <span class="phai">© 2026 AgiViet</span>
     </div>
   </div>
@@ -549,7 +610,7 @@ $("nut-nghe").addEventListener("click", () => {
 
 // Bảng giá: tên gói là nút, nội dung đổi tại chỗ
 const GOI = {
-  ban: { ai: "nông dân, chủ ao, hợp tác xã", so: "0 đ", ky: "mãi mãi", ds: ["Đăng hàng bằng giọng nói, ảnh chụp", "So tiền về tay giữa các khách", "Cọc do ngân hàng giữ, xác nhận tiền từng khoản", "Hợp đồng khung giao theo tuần cho hợp tác xã"], nut: "Vào app bán", href: "/thiet-ke/dang-nhap.html" },
+  ban: { ai: "nông dân, chủ ao, hợp tác xã", so: "0 đ", ky: "mãi mãi", ds: ["Đăng hàng bằng giọng nói, ảnh chụp", "Nhật ký canh tác, thời tiết, tin giá", "Cọc do ngân hàng giữ, xác nhận tiền từng khoản", "Hợp đồng khung giao theo tuần cho hợp tác xã"], nut: "Vào app bán", href: "/thiet-ke/dang-nhap.html" },
   free: { ai: "bên mua mới thử", so: "0 đ", ky: "đồng / tháng", ds: ["Bên mua trả phí 1% đơn đầu, 0,5% từ đơn thứ hai", "Phí tối đa 2 triệu mỗi đơn", "1 tài khoản", "Lọc nguồn, chào giá, đơn, công nợ cơ bản"], nut: "Dùng gói Miễn phí", href: "/thiet-ke/dang-nhap.html?ben=mua" },
   thu: { ai: "vựa, nhà máy mua đều", so: "1,5 triệu", ky: "đồng / tháng", ds: ["Bên mua trả phí 0,3% đơn đầu với mỗi nguồn hàng mới", "0% từ đơn thứ hai với mối quen", "5 tài khoản, phân quyền ký và duyệt chi", "Kế hoạch mua theo tuần, so sánh nguồn"], nut: "Dùng gói Thu mua", href: "/thiet-ke/dang-nhap.html?ben=mua" },
   dn: { ai: "nhà máy, công ty xuất nhập khẩu", so: "4 triệu", ky: "đồng / tháng", ds: ["Bên mua trả phí 0,2% mọi đơn, tối đa 3 triệu mỗi đơn", "10 tài khoản, nhiều điểm nhận hàng", "Hợp đồng khung, gom nhiều vườn một đơn", "Hồ sơ đối soát cho kế toán"], nut: "Dùng gói Doanh nghiệp", href: "/thiet-ke/dang-nhap.html?ben=mua" },
