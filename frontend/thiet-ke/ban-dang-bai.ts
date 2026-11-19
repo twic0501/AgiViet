@@ -19,6 +19,9 @@ const so = docSo;
 const vnd = (n) => Number(n).toLocaleString("vi-VN");
 const luongG = () => { const n = so($("luong").value); return Number.isFinite(n) && n > 0 ? Math.round(n * (st.dv === "tan" ? 1e6 : 1e3)) : 0; };
 const hienLoi = (m) => { $("loi").textContent = m; $("loi").hidden = !m; };
+// Hàng nuôi ao: chữ nghề nuôi thay chữ cây trồng (QA F07)
+const ao = () => dongXm()?.site_kind === "pond";
+const H = (cay: string, nuoi: string) => (ao() ? nuoi : cay);
 const dongXm = () => ds.find((d) => d.product_code === st.sp && d.grade_code === st.loai) || ds.find((d) => d.product_code === st.sp);
 const ngayVN = (s) => (s ? new Date(s + "T00:00:00").toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" }) : "");
 const ngayNgan = (s) => (s ? `${s.slice(8, 10)}/${s.slice(5, 7)}` : "");
@@ -97,11 +100,21 @@ function chonHang(ma) {
   if (loai.length === 1) st.loai = loai[0].grade_code;
   veCach();
 }
+// Chữ cố định trong HTML theo nghề (cây / ao)
+function apChu() {
+  const dat = (sel, cay, nuoi) => { const el = document.querySelector(sel); if (el) el.textContent = H(cay, nuoi); };
+  dat('#nk-tinh [data-v="da-hai"]', "Đã hái, còn bán", "Đã thu, còn bán"); dat('#nk-tinh [data-v="sap-hai"]', "Chưa hái, sắp hái", "Chưa thu, sắp thu ao");
+  dat('#thuoc [data-v="khong"]', "Không xịt thêm", "Không dùng thêm"); dat('#thuoc [data-v="co"]', "Có xịt thêm", "Có dùng thêm");
+  dat("#thuoc-chan", "Bác ghi lần xịt đó vào nhật ký vườn trước (tên thuốc, ngày xịt, số ngày cách ly trên nhãn), app tính lại ngày được hái rồi mới đăng. Cần giúp thì bấm Hỗ trợ.",
+    "Bác ghi lần dùng thuốc đó vào nhật ký ao trước (tên thuốc, ngày dùng, số ngày cách ly trên nhãn), app tính lại ngày được thu rồi mới đăng. Cần giúp thì bấm Hỗ trợ.");
+  dat('label[for="ngay-hai"]', "Ngày hái / thu hoạch", "Ngày thu ao");
+}
 function veCach() {
+  apChu();
   // Chưa chọn loại thì vẫn cho Nói (app hỏi loại), hai cách kia cần loại trước
   for (const b of nhom("cach")) b.disabled = b.dataset.cach !== "noi" && !st.loai;
   const x = dongXm(), viec = nkViec(x?.site_id), hai = viec.find((v) => v.activity === "harvest");
-  $("cach-nk-chu").textContent = hai ? `Lần hái gần nhất ${ngayNgan(hai.occurred_on)}: ${can(Number(hai.harvested_qty_g)).join(" ")}` : st.nk ? "Lấy sẵn vườn, cách ly thuốc" : "Chưa tải được nhật ký";
+  $("cach-nk-chu").textContent = hai ? `${H("Lần hái", "Lần thu")} gần nhất ${ngayNgan(hai.occurred_on)}: ${can(Number(hai.harvested_qty_g)).join(" ")}` : st.nk ? "Lấy sẵn vườn, cách ly thuốc" : "Chưa tải được nhật ký";
 }
 nhom("cach").forEach((b) => (b.onclick = () => { st.cach = b.dataset.cach; den(LUONG[st.cach][0]); }));
 const nkViec = (siteId) => (st.nk?.theo_vu || []).flatMap((v) => v.viec || []).filter((v) => !siteId || v.site_id === siteId).sort((a, b) => (a.occurred_on < b.occurred_on ? 1 : -1));
@@ -114,7 +127,7 @@ function veNhatKy() {
   $("nk-tom").innerHTML = [
     `<div class="dong-nk">${icon('<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>')}<div><b>${esc(x?.site_name || "Vườn")}</b><small>${esc(x?.product_name || "")} · ${esc(tenLoai(st.loai))} · đã xác minh</small></div></div>`,
     `<div class="dong-nk">${icon('<path d="M9 3h6M10 3v5L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-11V3"/>')}<div>${het ? (conCL ? `<b style="color:var(--dau-do)">Còn cách ly thuốc tới ${ngayNgan(het)}</b><small>Chỉ đăng "sắp có hàng", hái từ ngày này trở đi</small>` : `<b>Đã hết cách ly thuốc từ ${ngayNgan(het)}</b><small>Theo dòng phun thuốc trong nhật ký</small>`) : `<b>Nhật ký chưa có dòng phun thuốc</b><small>Chưa ghi không có nghĩa là không phun. Bác kiểm lại trước khi bán.</small>`}</div></div>`,
-    `<div class="dong-nk">${icon('<path d="M3 7h18l-2 12H5z"/><path d="M8 7l4-4 4 4"/>')}<div>${hai ? `<b>Hái ${ngayNgan(hai.occurred_on)}: ${esc(can(Number(hai.harvested_qty_g)).join(" "))}</b><small>${esc((hai.note || "").slice(0, 70))}</small>` : `<b>Chưa ghi lần hái nào</b><small>Bác nhập lượng ở bước sau</small>`}</div></div>`,
+    `<div class="dong-nk">${icon('<path d="M3 7h18l-2 12H5z"/><path d="M8 7l4-4 4 4"/>')}<div>${hai ? `<b>${H("Hái", "Thu")} ${ngayNgan(hai.occurred_on)}: ${esc(can(Number(hai.harvested_qty_g)).join(" "))}</b><small>${esc((hai.note || "").slice(0, 70))}</small>` : `<b>Chưa ghi lần hái nào</b><small>Bác nhập lượng ở bước sau</small>`}</div></div>`,
     gan ? `<div class="dong-nk">${icon('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')}<div><b>Ghi gần nhất ${ngayNgan(gan.occurred_on)}</b><small>${esc(gan.ten_viec || gan.activity)} · ${esc(gan.nhan || "")}</small></div></div>` : "",
   ].join("");
   st.nkHai = hai; st.nkConCL = conCL;
@@ -131,12 +144,12 @@ nhom("nk-tinh").forEach((b) => (b.onclick = () => {
     if (hai) { $("luong").value = String(Number(hai.harvested_qty_g) / 1000).replace(".", ","); datNguon("luong", `nhật ký ${ngayNgan(hai.occurred_on)}`); $("ngay-hai").value = hai.occurred_on; datNguon("hai", "nhật ký"); }
     // Lượng đã hái chưa chắc còn nguyên, chưa chắc đã cân: để bác xác nhận
     st.coSo = "estimated";
-    $("nk-ghi").textContent = hai ? `App điền ${can(Number(hai.harvested_qty_g)).join(" ")} theo lần hái ${ngayNgan(hai.occurred_on)}. Bác đã bán bớt thì sửa lại, có cân thì chọn "Đã cân".` : "Bác nhập lượng còn bán ở bước sau.";
+    $("nk-ghi").textContent = hai ? `App điền ${can(Number(hai.harvested_qty_g)).join(" ")} theo ${H("lần hái", "lần thu")} ${ngayNgan(hai.occurred_on)}. Bác đã bán bớt thì sửa lại, có cân thì chọn "Đã cân".` : "Bác nhập lượng còn bán ở bước sau.";
   } else {
     st.khiCo = "sap"; st.coSo = "estimated"; $("luong").value = ""; datNguon("luong", "");
     const het = st.cachLy.get(x?.site_id), tu = het && het > homNay ? het : null;
     if (tu) { $("ngay-co").value = tu; $("ngay-hai").value = tu; datNguon("hai", "sau cách ly"); } else { $("ngay-hai").value = ""; datNguon("hai", ""); }
-    $("nk-ghi").textContent = `Đăng trước khi hái: người mua đặt trước tối đa 80% lượng ước.${tu ? ` Ngày hái sớm nhất ${ngayNgan(tu)} (hết cách ly).` : ""}`;
+    $("nk-ghi").textContent = `${H("Đăng trước khi hái", "Đăng trước khi thu")}: người mua đặt trước tối đa 80% lượng ước.${tu ? ` ${H("Ngày hái", "Ngày thu")} sớm nhất ${ngayNgan(tu)} (hết cách ly).` : ""}`;
   }
   $("nk-ghi").hidden = false; dongBo(); kiem();
 }));
@@ -153,7 +166,7 @@ for (const id of ["ngay-co", "ngay-hai"]) $(id).addEventListener("input", () => 
 function phunGanNhat() { const v = nkViec(dongXm()?.site_id).find((x) => x.activity === "spray"); return v?.occurred_on || null; }
 function veThuoc() {
   const g = phunGanNhat();
-  $("thuoc-hoi").textContent = g ? `Từ lần ghi xịt thuốc ngày ${ngayNgan(g)} tới giờ, bác có xịt thêm không?` : "Nhật ký chưa ghi lần xịt nào. Gần đây bác có xịt thuốc không?";
+  $("thuoc-hoi").textContent = g ? `Từ lần ghi ${H("xịt thuốc", "dùng thuốc")} ngày ${ngayNgan(g)} tới giờ, bác có ${H("xịt", "dùng thuốc")} thêm không?` : "Nhật ký chưa ghi lần xịt nào. Gần đây bác có xịt thuốc không?";
   bam("thuoc", st.thuoc); $("thuoc-chan").hidden = st.thuoc !== "co";
 }
 nhom("thuoc").forEach((b) => (b.onclick = () => { st.thuoc = b.dataset.v; veThuoc(); kiem(); }));
@@ -165,8 +178,8 @@ function kiemNgay() {
   if (st.khiCo === "sap" && !co) chan = "Bác chọn ngày có hàng.";
   else if (st.khiCo === "sap" && co <= homNay) chan = "Ngày có hàng phải sau hôm nay. Có hàng rồi thì bác chọn Có hàng ngay.";
   else if (st.khiCo === "ngay" && het && het > homNay) chan = `Vườn còn cách ly thuốc tới ${ngayVN(het)}. Bác chọn "Sắp có hàng" và ngày từ hôm đó.`;
-  else if (het && hai && hai < het) chan = `Ngày hái trước ngày hết cách ly thuốc (${ngayVN(het)}). Bác chọn ngày hái từ hôm đó trở đi.`;
-  else if (co && hai && hai > co) chan = "Ngày hái đang sau ngày có hàng. Bác kiểm lại hai ngày này.";
+  else if (het && hai && hai < het) chan = `${H("Ngày hái", "Ngày thu")} trước ngày hết cách ly thuốc (${ngayVN(het)}). Bác chọn ${H("ngày hái", "ngày thu")} từ hôm đó trở đi.`;
+  else if (co && hai && hai > co) chan = `${H("Ngày hái", "Ngày thu")} đang sau ngày có hàng. Bác kiểm lại hai ngày này.`;
   $("cach-ly").hidden = !(het || chan);
   $("cach-ly").className = "db-the " + (chan ? "do" : "xanh");
   $("cach-ly").textContent = chan || (het > homNay ? `Vườn cách ly thuốc tới ${ngayVN(het)} (theo nhật ký phun).` : het ? `Vườn đã hết cách ly thuốc từ ${ngayVN(het)} (theo nhật ký phun).` : "");
@@ -209,8 +222,8 @@ async function giaThamKhao() {
 const CAU = [
   { k: "loai", hoi: () => "Hàng của bác loại mấy?", goiY: "Ví dụ: loại một, hàng dạt", can: () => !st.loai, nhanh: () => ds.filter((d) => d.product_code === st.sp).map((d) => [d.grade_code, tenLoai(d.grade_code)]) },
   { k: "luong", hoi: () => "Đợt này bác còn bán bao nhiêu? Đã cân hay ước chừng?", goiY: "Ví dụ: chừng hai tạ, chưa cân · một tấn rưỡi đã cân", can: () => !luongG() },
-  { k: "ngay", hoi: () => "Khi nào người mua tới lấy được hàng?", goiY: "Ví dụ: có hàng ngay · tuần sau hái · mùng mười tháng sau", can: () => !st.noiNgay, nhanh: () => [["ngay", "Có hàng ngay"]] },
-  { k: "thuoc", hoi: () => { const g = phunGanNhat(); return g ? `Từ lần ghi xịt thuốc ngày ${ngayNgan(g)} tới giờ, bác có xịt thêm không?` : "Gần đây bác có xịt thuốc không?"; }, goiY: "Nói: không xịt thêm · hoặc: có xịt", can: () => st.thuoc !== "khong", nhanh: () => [["khong", "Không xịt thêm"], ["co", "Có xịt thêm"]] },
+  { k: "ngay", hoi: () => "Khi nào người mua tới lấy được hàng?", goiY: H("Ví dụ: có hàng ngay · tuần sau hái · mùng mười tháng sau", "Ví dụ: có hàng ngay · tuần sau thu ao · mùng mười tháng sau"), can: () => !st.noiNgay, nhanh: () => [["ngay", "Có hàng ngay"]] },
+  { k: "thuoc", hoi: () => { const g = phunGanNhat(); return g ? `Từ lần ghi ${H("xịt thuốc", "dùng thuốc")} ngày ${ngayNgan(g)} tới giờ, bác có ${H("xịt", "dùng thuốc")} thêm không?` : "Gần đây bác có xịt thuốc không?"; }, goiY: "Nói: không xịt thêm · hoặc: có xịt", can: () => st.thuoc !== "khong", nhanh: () => [["khong", "Không xịt thêm"], ["co", "Có xịt thêm"]] },
   { k: "gia", hoi: () => "Bác muốn bán bao nhiêu một ký?", goiY: "Ví dụ: hai mươi bốn ngàn", can: () => !so($("gia-muon").value) },
   { k: "san", hoi: () => `Giá thấp nhất giữ kín là ${vnd(so($("gia-san").value))} đ/kg, bác đồng ý không?`, goiY: "Người mua không thấy giá này. Đồng ý thì nói \"đúng rồi\", muốn khác thì nói giá.", doc: () => "Giá thấp nhất giữ kín app ghi trên màn hình. Bác đồng ý không?", can: () => !st.sanChot, nhanh: () => [["dong-y", "Đồng ý giá này"]] },
 ];
@@ -313,7 +326,7 @@ function docLai(h) {
   if (h.gia) x.push(`giá ${vnd(h.gia)} đồng một ký`);
   if (h.san) x.push("giá thấp nhất như trên màn hình");
   if (h.sanChot && !h.san) x.push("bác đồng ý giá thấp nhất");
-  if (h.thuoc) x.push(h.thuoc === "co" ? "có xịt thuốc thêm" : "không xịt thêm");
+  if (h.thuoc) x.push(h.thuoc === "co" ? H("có xịt thuốc thêm", "có dùng thuốc thêm") : H("không xịt thêm", "không dùng thêm"));
   return x.join(", ");
 }
 function tatHoiThoai(chu = "Đã tạm dừng. Bấm để nói tiếp.") {
@@ -346,7 +359,7 @@ async function hieuCau(cau) {
     if (v) { noi.hieu = { thuoc: v }; return veHieu(); }
     // Không rõ một nghĩa: KHÔNG đưa AI đoán, hỏi lại cho chắc
     noi.hieu = null; $("hieu").hidden = true;
-    $("noi-loi").textContent = "Bác nói rõ giúp em: có xịt thêm thuốc hay không xịt thêm?"; $("noi-loi").hidden = false;
+    $("noi-loi").textContent = H("Bác nói rõ giúp em: có xịt thêm thuốc hay không xịt thêm?", "Bác nói rõ giúp em: có dùng thêm thuốc hay không?"); $("noi-loi").hidden = false;
     return;
   }
   // Câu ngắn chỉ nói loại ("loại một", "hàng dạt"): hiểu ngay trên máy, không cần AI
@@ -393,9 +406,9 @@ function xacNhanCau() {
     st.thuoc = h.thuoc;
     if (h.thuoc === "co") {   // có xịt thêm: dừng, không đăng được tới khi ghi nhật ký
       noi.hieu = null; $("hieu").hidden = true;
-      $("noi-loi").textContent = "Bác ghi lần xịt đó vào nhật ký vườn trước (tên thuốc, ngày xịt, số ngày cách ly), app tính lại ngày được hái rồi mới đăng.";
+      $("noi-loi").textContent = H("Bác ghi lần xịt đó vào nhật ký vườn trước (tên thuốc, ngày xịt, số ngày cách ly), app tính lại ngày được hái rồi mới đăng.", "Bác ghi lần dùng thuốc đó vào nhật ký ao trước (tên thuốc, ngày dùng, số ngày cách ly), app tính lại ngày được thu rồi mới đăng.");
       $("noi-loi").hidden = false; kiem();
-      if (ht.bat) { ht.bat = false; noiRa($("noi-loi").textContent); datThe("nghi", "Đã dừng: cần ghi nhật ký xịt thuốc"); }
+      if (ht.bat) { ht.bat = false; noiRa($("noi-loi").textContent); datThe("nghi", H("Đã dừng: cần ghi nhật ký xịt thuốc", "Đã dừng: cần ghi nhật ký dùng thuốc")); }
       return;
     }
   }
@@ -434,7 +447,7 @@ function xemLai() {
     ${dong("Lượng", `${esc(can(g).join(" "))} · ${st.coSo === "estimated" ? "ước chừng" : "đã cân"}`, "luong")}
     ${dong("Giá mong muốn", `${vnd(muon)} đ/kg`, "gia")}
     ${dong("Vườn", esc(x?.site_name || "—"), "")}
-    ${$("ngay-hai").value ? dong("Ngày hái", new Date($("ngay-hai").value + "T00:00:00").toLocaleDateString("vi-VN"), "luong") : ""}
+    ${$("ngay-hai").value ? dong(H("Ngày hái", "Ngày thu"), new Date($("ngay-hai").value + "T00:00:00").toLocaleDateString("vi-VN"), "luong") : ""}
     ${dong("Ảnh", `${st.anh.length} ảnh · ${st.anh.filter((a) => a.chup).length} chụp ngay`, "anh")}</dl>`;
   $("chi-bac").dataset.thuoc = st.thuoc || "";
   $("chi-bac").innerHTML = `<dl>

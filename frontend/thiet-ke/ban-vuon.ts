@@ -15,6 +15,7 @@ const VIEC = {
   weather_incident: ["Sự cố thời tiết", SVG('<path d="M7 15a4 4 0 0 1-.3-8 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 17 15"/><path d="M12 13l-2 4h3l-2 4"/>'), "#e6e6ee", "#45466b"],
 };
 const HINH_VUON = { orchard: SVG('<path d="M12 21v-6"/><path d="M12 15c-4 0-7-2.5-7-6a7 7 0 0 1 14 0c0 3.5-3 6-7 6z"/><path d="M9 21h6"/>'), pond: SVG('<path d="M3 15c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0M3 19c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M8 10c2-2.5 5-2.5 7 0-2 2.5-5 2.5-7 0zM15 10l2-1.5v3z"/>'), field: SVG('<path d="M12 21V8M12 12c-2 0-3.5-1.5-3.5-3.5M12 10c2 0 3.5-1.5 3.5-3.5M12 15c-2 0-3.5-1.5-3.5-3.5M12 13c2 0 3.5-1.5 3.5-3.5M5 21h14"/>') };
+let laAo = false;
 const LOAI_VUON = { orchard: "Vườn", pond: "Ao", field: "Ruộng" };
 let token, du, loc = "tat-ca";
 const ngayDai = (s) => new Date(s + "T00:00:00+07:00").toLocaleDateString("vi-VN", { ...VN, weekday: "long", day: "numeric", month: "numeric", year: "numeric" });
@@ -40,23 +41,26 @@ function ve() {
   // Mùa vụ năm nay: các mốc đã ghi + sản lượng thu hoạch
   const nam = du.hom_nay.slice(0, 4), vuNay = viec.filter((v) => v.occurred_on.startsWith(nam));
   const coViec = (a) => vuNay.some((v) => v.activity === a);
+  // Cơ sở toàn ao nuôi → chữ nghề nuôi, bỏ mốc cây trồng (QA F07)
+  laAo = du.co_so.length > 0 && du.co_so.every((c) => c.kind === "pond");
+  if (laAo) Object.assign(VIEC, { spray: ["Xử lý thuốc", ...VIEC.spray.slice(1)], fertilize: ["Cho ăn, bón ao", ...VIEC.fertilize.slice(1)], water: ["Thay nước", ...VIEC.water.slice(1)], care: ["Chăm nuôi", ...VIEC.care.slice(1)], pest_incident: ["Dịch bệnh", ...VIEC.pest_incident.slice(1)] });
   const tongThu = vuNay.filter((v) => v.activity === "harvest").reduce((t, v) => t + Number(v.harvested_qty_g || 0), 0);
   $("noi").innerHTML = `
     <section class="vu-cac-vuon" aria-label="Vườn của tôi">${du.co_so.map((c) => `<div class="vu-vuon">
       <span class="bieu" aria-hidden="true">${HINH_VUON[c.kind] || HINH_VUON.orchard}</span>
       <div style="min-width:0"><b>${esc(c.name)}</b><small>${esc(LOAI_VUON[c.kind] || "Cơ sở")}${c.area_m2 ? ` · ${Number(c.area_m2).toLocaleString("vi-VN")} m²` : ""}</small></div>
-      ${c.ngay_het_cach_ly_gan_nhat ? `<p class="vu-cl ${c.con_cach_ly ? "con" : "het"}">${c.con_cach_ly ? `<b>Đang cách ly thuốc</b> tới ${esc(ngayDai(c.ngay_het_cach_ly_gan_nhat))}. Chưa hái bán trước ngày này.` : `Đã hết cách ly thuốc từ ${esc(ngayNgan(c.ngay_het_cach_ly_gan_nhat))}.`}</p>` : `<p class="vu-cl het">Chưa ghi lần phun thuốc nào. Phun thì ghi ngay để app tính ngày được hái.</p>`}
+      ${c.ngay_het_cach_ly_gan_nhat ? `<p class="vu-cl ${c.con_cach_ly ? "con" : "het"}">${c.con_cach_ly ? `<b>Đang cách ly thuốc</b> tới ${esc(ngayDai(c.ngay_het_cach_ly_gan_nhat))}. ${laAo ? "Chưa thu bán" : "Chưa hái bán"} trước ngày này.` : `Đã hết cách ly thuốc từ ${esc(ngayNgan(c.ngay_het_cach_ly_gan_nhat))}.`}</p>` : `<p class="vu-cl het">Chưa ghi lần phun thuốc nào. Phun thì ghi ngay để app tính ngày được hái.</p>`}
     </div>`).join("") || `<p class="bao">Chưa có vườn nào. Bác bấm Hỗ trợ để AgiViet hướng dẫn khai báo vườn.</p>`}</section>
     ${du.co_so.length > 1 ? `<div class="vu-loc" role="group" aria-label="Lọc theo vườn"><button type="button" data-loc="tat-ca" aria-pressed="${loc === "tat-ca"}">Tất cả</button>${du.co_so.map((c) => `<button type="button" data-loc="${esc(c.id)}" aria-pressed="${loc === c.id}">${esc(c.name.split(",")[0])}</button>`).join("")}</div>` : ""}
     <section class="vu-vu" aria-label="Mùa vụ năm ${nam}"><h3>Mùa vụ ${nam}</h3>
-      <div class="vu-moc">${[["flower", "Ra hoa"], ["fruit_set", "Đậu trái"], ["harvest", "Thu hoạch"], ["ban", "Bán"]].map(([a, t]) => `<div class="${a === "ban" ? "" : coViec(a) ? "xong" : ""}"><i></i>${t}</div>`).join("")}</div>
+      <div class="vu-moc">${(laAo ? [["care", "Chăm nuôi"], ["harvest", "Thu hoạch"], ["ban", "Bán"]] : [["flower", "Ra hoa"], ["fruit_set", "Đậu trái"], ["harvest", "Thu hoạch"], ["ban", "Bán"]]).map(([a, t]) => `<div class="${a === "ban" ? "" : coViec(a) ? "xong" : ""}"><i></i>${t}</div>`).join("")}</div>
       <p>${tongThu ? `Đã ghi thu hoạch <b>${esc(can(tongThu).join(" "))}</b> trong năm.` : "Chưa ghi lần thu hoạch nào năm nay."} Ghi đều tay thì người mua tin hàng hơn.</p></section>
     <section class="vu-khoi" aria-label="Nhật ký" style="gap:14px">
-      <h2 style="margin:0;font-size:18px">Nhật ký canh tác</h2>
+      <h2 style="margin:0;font-size:18px">${laAo ? "Nhật ký nuôi" : "Nhật ký canh tác"}</h2>
       ${window.trauTuThe ? window.trauTuThe("12-ghi-so", "Ghi đều tay, người mua tin hàng của bác hơn.", 72) : ""}
       ${[...theoNgay].map(([ngay, ds], iNgay) => `<div class="vu-ngay" ${iNgay >= 6 ? "hidden data-cu" : ""}><h4>${esc(ngayDai(ngay))}</h4>${ds.map((v) => {
         const [ten, ic, nen, mau] = VIEC[v.activity] || [v.ten_viec || v.activity, VIEC.care[1], "var(--giay-lot)", "var(--muc-phu)"];
-        const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, được hái từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";
+        const chiTiet = v.activity === "spray" ? `${esc(v.medicine_name || "")} · cách ly ${esc(v.withdrawal_days)} ngày${v.clear_on ? `, ${laAo ? "được thu" : "được hái"} từ ${esc(ngayNgan(v.clear_on))}` : ""}` : v.activity === "harvest" && v.harvested_qty_g ? `Thu ${esc(can(v.harvested_qty_g).join(" "))}` : "";
         return `<div class="vu-dong"><span class="ic" style="background:${nen};color:${mau}" aria-hidden="true">${ic}</span>
           <div style="min-width:0"><b>${esc(ten)}<span class="vu-nhan ${v.source === "agiviet_confirmed" ? "xn" : "tu"}">${esc(v.nhan || "Tự ghi")}</span></b>
             ${chiTiet ? `<p><b style="display:inline;font-size:14px">${chiTiet}</b></p>` : ""}<p>${esc(v.note)}</p>
@@ -84,7 +88,7 @@ function moGhi(cu) {
   const vuonDau = cu?.site_id || (loc !== "tat-ca" ? loc : coSo[0]?.id);
   document.body.insertAdjacentHTML("beforeend", `<div class="vu-che man-che" id="che"><div class="vu-tam" role="dialog" aria-modal="true" aria-labelledby="t-ghi">
     <div class="than"><h2 id="t-ghi">${cu ? "Sửa dòng nhật ký" : "Ghi việc"}</h2>
-      <div><span class="vu-nhan-o">Việc gì?</span><div class="vu-viec" role="group" aria-label="Chọn việc">${Object.entries(VIEC).map(([k, [t, ic, , mau]]) => `<button type="button" data-viec="${k}" aria-pressed="${k === viecDau}"><span aria-hidden="true" style="color:${mau}">${ic}</span>${t}</button>`).join("")}</div></div>
+      <div><span class="vu-nhan-o">Việc gì?</span><div class="vu-viec" role="group" aria-label="Chọn việc">${Object.entries(VIEC).filter(([k]) => !(laAo && (k === "flower" || k === "fruit_set"))).map(([k, [t, ic, , mau]]) => `<button type="button" data-viec="${k}" aria-pressed="${k === viecDau}"><span aria-hidden="true" style="color:${mau}">${ic}</span>${t}</button>`).join("")}</div></div>
       <div class="vu-hai">
         <div><label class="vu-nhan-o" for="g-ngay">Ngày</label><input class="vu-o" type="date" id="g-ngay" value="${esc(cu?.occurred_on || du.hom_nay)}" max="${esc(du.hom_nay)}"></div>
         <div><label class="vu-nhan-o" for="g-vuon">Vườn</label><select class="vu-o" id="g-vuon">${coSo.map((c) => `<option value="${esc(c.id)}" ${c.id === vuonDau ? "selected" : ""}>${esc(c.name.split(",")[0])}</option>`).join("")}</select></div>
@@ -119,7 +123,7 @@ function moGhi(cu) {
     $("g-thuoc").hidden = viec !== "spray"; $("g-thu").hidden = viec !== "harvest";
     const n = Number($("g-cach-ly").value);
     $("g-duoc-hai").hidden = !(viec === "spray" && Number.isInteger(n) && n >= 0 && $("g-cach-ly").value !== "");
-    if (!$("g-duoc-hai").hidden) $("g-duoc-hai").textContent = `Được hái bán từ ${ngayDai(congNgay($("g-ngay").value, n))}. App sẽ chặn đăng bán trước ngày này.`;
+    if (!$("g-duoc-hai").hidden) $("g-duoc-hai").textContent = `${laAo ? "Được thu bán" : "Được hái bán"} từ ${ngayDai(congNgay($("g-ngay").value, n))}. App sẽ chặn đăng bán trước ngày này.`;
   };
   che.querySelectorAll("[data-viec]").forEach((b) => (b.onclick = () => { viec = b.dataset.viec; capNhat(); }));
   $("g-cach-ly").oninput = capNhat; $("g-ngay").oninput = capNhat; capNhat();
@@ -158,7 +162,7 @@ function moGhi(cu) {
       dongTam(); await tai();
       const b = document.createElement("p"); b.className = "vu-bao xanh"; b.setAttribute("role", "status");
       const d = j.data || j;
-      const haiTu = viec === "spray" && d.ngay_het_cach_ly_gan_nhat ? ` Vườn được hái bán từ ${ngayDai(d.ngay_het_cach_ly_gan_nhat)}.` : "";
+      const haiTu = viec === "spray" && d.ngay_het_cach_ly_gan_nhat ? ` ${laAo ? "Ao được thu bán" : "Vườn được hái bán"} từ ${ngayDai(d.ngay_het_cach_ly_gan_nhat)}.` : "";
       b.textContent = cu ? `Đã sửa. Dòng cũ vẫn trong lịch sử.${haiTu}` : haiTu ? `Đã ghi.${haiTu}` : "Đã ghi vào nhật ký.";
       $("noi").prepend(b); scrollTo({ top: 0 });
     } catch (e) { bao(e.message); dang = false; $("g-luu").disabled = false; }
