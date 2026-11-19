@@ -104,8 +104,11 @@ export async function veChiTietPhieu(o: HTMLElement, id: string): Promise<void> 
   const l0 = (n.lines || [])[0] || {};
   o.innerHTML = `<section class="the"><p class="nhan">Phiếu ${esc(n.code)}</p><h2>${esc(n.product_name || tenSp(n.product_code))} ${esc(tenLoai(l0.grade_code))}</h2>
       <p class="phu">${l0.qty_g ? `${vnd(kg(l0.qty_g))} kg` : ""}${l0.max_price_vnd ? ` · giá tối đa (kín) ${vnd(l0.max_price_vnd)} đ/kg` : ""} · ${esc(TT[n.status] || n.status)}</p></section>
+    ${(n.bao_gia || []).length ? `<div class="hang"><h2>Báo giá người bán gửi</h2><span class="phu">${n.bao_gia.length}</span></div>${n.bao_gia.map((b: any) => `<a class="the bam" href="${b.order_id ? `#don/${b.order_id}` : `#tin/offer/${b.offer_id}`}">
+      <div class="hang"><b>${esc(b.lot_code)} · ${esc(b.seller_name)}</b><span class="chip ${b.toi_luot_toi ? "do" : b.status === "accepted" || b.order_id ? "la" : ""}">${b.order_id ? "Đã có hợp đồng" : b.status === "accepted" ? "Đã chốt giá" : b.toi_luot_toi ? "Tới lượt bạn trả lời" : b.status === "sent" ? "Chờ người bán" : "Đã đóng"}</span></div>
+      <p class="phu">${vnd(b.price_vnd)} đ/kg × ${vnd(kg(b.qty_g))} kg · ${b.order_id ? "xem hợp đồng" : "mở để đồng ý, trả giá hoặc nhắn"}</p></a>`).join("")}` : ""}
     <h2>Gợi ý nguồn</h2>
-    ${lo.length ? lo.join("") : trong("Chưa có lô nào khớp. Phiếu vẫn mở: người bán có món này sẽ báo giá cho bạn, có tin mới app sẽ báo.")}
+    ${lo.length ? lo.join("") : trong((n.bao_gia || []).length ? "Chưa có lô đang bán khớp thêm. Các báo giá đã nhận ở trên." : "Chưa có lô nào khớp. Phiếu vẫn mở: người bán có món này sẽ báo giá cho bạn, có tin mới app sẽ báo.")}
     <a class="nut vien rong" href="#nguon">Về Nguồn hàng</a>`;
   o.querySelectorAll<HTMLButtonElement>("[data-tra]").forEach((b) => (b.onclick = () => { const l = DL.lo.find((x) => x.id === b.dataset.tra); if (l) moTraGia(l, () => veChiTietPhieu(o, id)); }));
 }

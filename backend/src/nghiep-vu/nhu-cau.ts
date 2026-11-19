@@ -74,6 +74,15 @@ export async function xemNhuCau(t: GiaoDich, nd: NguoiDung, id: string) {
     id: d.id, code: d.code, buyer_name: await tenHien(t, nd.thanhVien.orgId, d.buyer_org_id, d.buyer_name, 'mua'), product_code: d.product_code, segment_code: d.segment_code, status: d.status, revision: d.version,
     needed_from: d.needed_from, needed_to: d.needed_to, delivery_mode: d.delivery_mode, required_docs: d.required_docs,
     lines: lines.map((l) => ({ id: l.id, grade_code: l.grade_code, qty_g: l.qty_g, min_source_qty_g: l.min_source_qty_g, ...(laChu ? { max_price_vnd: l.max_price } : {}) })),
+    // Báo giá người bán gửi cho phiếu này (chỉ chủ phiếu thấy) — QA F06: theo dõi trọn việc tìm nguồn ngay trong phiếu
+    bao_gia: laChu ? await Promise.all((await t.q<any>(`SELECT o.id, o.code, o.status, o.seller_org_id, g.display_name, l.code lot_code, h.order_id,
+        r.price_vnd::text price_vnd, r.qty::text qty_g, r.from_side
+      FROM core.offers o JOIN core.lots l ON l.id=o.lot_id JOIN core.organizations g ON g.id=o.seller_org_id
+      JOIN LATERAL (SELECT price_vnd, qty, from_side FROM core.offer_rounds WHERE offer_id=o.id ORDER BY round_no DESC LIMIT 1) r ON true
+      LEFT JOIN LATERAL (SELECT order_id FROM core.holds WHERE offer_id=o.id ORDER BY created_at DESC LIMIT 1) h ON true
+      WHERE o.demand_line_id = ANY($1::uuid[]) ORDER BY o.created_at DESC`, [lines.map((l) => l.id)])).map(async (o) => ({
+        offer_id: o.id, code: o.code, status: o.status, lot_code: o.lot_code, order_id: o.order_id, price_vnd: o.price_vnd, qty_g: o.qty_g,
+        toi_luot_toi: o.status === 'sent' && o.from_side === 'seller', seller_name: await tenHien(t, nd.thanhVien.orgId, o.seller_org_id, o.display_name, 'ban') }))) : [],
   };
 }
 
