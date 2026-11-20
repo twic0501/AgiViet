@@ -164,9 +164,15 @@ function chatBan(nhan, ten, the = "", than = "") {
 
 // ---------- Bộ máy cảnh ----------
 const cho = (ms, my) => new Promise((ok, loi) => setTimeout(() => (my === luot ? ok() : loi(HUY)), ms));
-function them(ben, sel, html) { const c = q(ben, sel); c.insertAdjacentHTML("beforeend", html); const el = c.lastElementChild; el.scrollIntoView({ block: "end", behavior: "smooth" }); return el; }
+// Chỉ cuộn khung bên trong điện thoại; không dùng scrollIntoView (nó kéo cả trang ngoài chạy theo)
+function cuonToi(el, giua = false) {
+  let c = el.parentElement; while (c && !(c.scrollHeight > c.clientHeight + 2 && /auto|scroll/.test(getComputedStyle(c).overflowY))) c = c.parentElement;
+  if (!c) return; const r = el.getBoundingClientRect(), rc = c.getBoundingClientRect();
+  c.scrollTop += giua ? (r.top - rc.top) - (rc.height - r.height) / 2 : Math.max(0, r.bottom - rc.bottom + 12);
+}
+function them(ben, sel, html) { const c = q(ben, sel); c.insertAdjacentHTML("beforeend", html); const el = c.lastElementChild; cuonToi(el); return el; }
 async function bam(el, my) { // nút nhấp nháy rồi tự bấm (màn đã khóa, người xem không bấm được)
-  el.scrollIntoView({ block: "center", behavior: "smooth" }); el.classList.add("cham"); await cho(1300, my);
+  cuonToi(el, true); el.classList.add("cham"); await cho(1300, my);
   el.classList.remove("cham"); el.classList.add("da-bam"); await cho(160, my); el.classList.remove("da-bam");
 }
 async function thongBao(ben, chu, nho, my, ms = 2300) { const el = DOC[ben].createElement("div"); el.className = "thong-bao"; el.innerHTML = `<small>${nho}</small>${chu}`; MAN[ben].append(el); await cho(ms, my); el.remove(); }
