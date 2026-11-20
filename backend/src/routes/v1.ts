@@ -674,7 +674,7 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   // Chỉ với Postgres thật (môi trường thử trên máy chủ); bộ kiểm thử dùng DB nhẹ nên không chạy.
   if (ht.cfg.tinhNangThu && ht.db.datLaiCham) ht.sauDatLai = () => { void (async () => { const { dungDemo } = await import('../demo/dung-demo.ts');
     await dungDemo(async (method, url, body, token) => { const r = await app.inject({ method, url, payload: method === 'POST' ? (body ?? {}) : undefined, headers: token ? { authorization: `Bearer ${token}` } : {} });
-      const j = r.headers['content-type']?.toString().includes('json') ? r.json() : null; return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j }; }, undefined, true);
+      let json: any = null; try { json = r.json(); } catch { json = r.body; } return { status: r.statusCode, json }; }, undefined, true); // giữ nguyên JSON như scripts/demo-10-so.ts
     app.log.info('da_dung_lai_demo'); })().catch((e) => app.log.warn({ err: String(e) }, 'dung_demo_sau_dat_lai')); };
   app.post('/v1/test/reset', async () => { thu(); await ht.datLai(); (await import('../demo/doi-tac-ao.ts')).datLaiBoNho();
     return { ok: true, gio: ht.dongHo.now().toISOString() }; });
