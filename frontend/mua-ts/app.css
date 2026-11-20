@@ -156,4 +156,6 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
   main { max-width: 1080px; padding-bottom: 32px; }
   .kq-nhom { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
   .kq-nhom > :not(.the) { grid-column: 1 / -1; }
+  body[data-man=tin-con] .tab { display: grid; } /* khung chat vẫn giữ cột menu, không để trống 224px */
+  .tab .dem { position: static; margin-left: auto; }
 }

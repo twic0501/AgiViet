@@ -670,7 +670,14 @@ export async function dangKyRoutes(app: FastifyInstance, bo: BoLenh) {
   // ---------------- Môi trường thử ----------------
   app.post('/v1/test/outbox/run', async () => { thu(); const m = await import('../nghiep-vu/outbox.ts'); const tong = { claimed: 0, sent: 0, failed: 0, dead: 0 }; for (let i = 0; i < 100; i++) { const r = await m.chayOutbox(ht, 500); tong.claimed += r.claimed; tong.sent += r.sent; tong.failed += r.failed; tong.dead += r.dead; if (r.claimed === 0) break; } return tong; });
   app.post('/v1/test/ai', async (req) => { thu(); const b = z.object({ url: z.string().nullable() }).parse(req.body); ht.cfg.aiUrl = b.url; return { ai_url: ht.cfg.aiUrl }; });
-  app.post('/v1/test/reset', async () => { thu(); await ht.datLai(); (await import('../demo/doi-tac-ao.ts')).datLaiBoNho(); return { ok: true, gio: ht.dongHo.now().toISOString() }; });
+  // Mỗi lần đặt lại dữ liệu thử (reset, nút Thử xong, bộ hẹn giờ làm mới): dựng lại 10 tình huống trình diễn ở nền.
+  // Chỉ với Postgres thật (môi trường thử trên máy chủ); bộ kiểm thử dùng DB nhẹ nên không chạy.
+  if (ht.cfg.tinhNangThu && ht.db.datLaiCham) ht.sauDatLai = () => { void (async () => { const { dungDemo } = await import('../demo/dung-demo.ts');
+    await dungDemo(async (method, url, body, token) => { const r = await app.inject({ method, url, payload: method === 'POST' ? (body ?? {}) : undefined, headers: token ? { authorization: `Bearer ${token}` } : {} });
+      const j = r.headers['content-type']?.toString().includes('json') ? r.json() : null; return { status: r.statusCode, json: j && typeof j === 'object' && 'data' in j ? j.data : j }; }, undefined, true);
+    app.log.info('da_dung_lai_demo'); })().catch((e) => app.log.warn({ err: String(e) }, 'dung_demo_sau_dat_lai')); };
+  app.post('/v1/test/reset', async () => { thu(); await ht.datLai(); (await import('../demo/doi-tac-ao.ts')).datLaiBoNho();
+    return { ok: true, gio: ht.dongHo.now().toISOString() }; });
   app.get('/v1/test/clock', async () => { thu(); return { now: ht.dongHo.now().toISOString() }; });
   app.post('/v1/test/clock', async (req) => {
     thu();

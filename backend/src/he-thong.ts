@@ -50,5 +50,8 @@ export class HeThong {
     this.saiMa6.clear();
     this.nonce = new MemoryNonceStore();
     this.dongHo.datMoc(T0_THU);
+    this.sauDatLai?.();
   }
+  /** Chạy sau mỗi lần đặt lại (routes gắn: dựng lại 10 tình huống trình diễn). */
+  sauDatLai?: () => void;
 }

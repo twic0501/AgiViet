@@ -239,5 +239,13 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     await coc(me.token, d.id, 'VUA NONG SAN BA CUONG');
     return { trang_thai: 'pre_harvest:active', giu_nguyen: false, ids: { order_id: d.id } };
   });
+  // Người mua mẫu vào tab Nguồn thấy hàng ngay, không bị bắt chọn mặt hàng chính
+  const MAT_HANG: Record<string, string[]> = {
+    '0909000210': ['XOAI_CAT_CHU', 'BUOI_DA_XANH', 'THANH_LONG'], '0908000510': ['THANH_LONG', 'XOAI_CAT_CHU', 'CHANH_KHONG_HAT'],
+    '0903000411': ['SAU_RIENG', 'XOAI_CAT_CHU', 'BUOI_DA_XANH'], '0902000810': ['TOM_THE', 'CA_TRA'], '0938000610': ['LUA_TUOI', 'SAU_RIENG', 'XOAI_CAT_CHU', 'BUOI_DA_XANH'],
+  };
+  for (const [sdt, ma] of Object.entries(MAT_HANG)) {
+    try { await ok('POST', '/v1/org/main-products', { product_codes: ma }, (await vai(sdt)).token); } catch { /* đã có hoặc chưa đủ quyền: bỏ qua */ }
+  }
   return ra;
 }
