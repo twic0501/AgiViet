@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luồng màn hình · AgiViet</title>
+<meta name="description" content="Một đơn hàng đi trọn hai app AgiViet, từ đăng hàng tới quyết toán, bằng màn hình chụp từ app thật.">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 400; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-400-latin.woff2) format("woff2"); }
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 600 700; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-600-vietnamese.woff2) format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9; }
+@font-face { font-family: "Be Vietnam Pro"; font-weight: 600 700; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-600-latin.woff2) format("woff2"); }
+:root {
+  --giay: #f6f2e7; --giay-buoc: #ece6d6; --giay-noi: #fbf8f1; --muc: #1d2a22; --muc-phu: #4d5a51;
+  --la: #1f4d3a; --la-dam: #163a2b; --tren-la: #f6f2e7; --tren-la-phu: #c9d6cc;
+  --chin: #85600c; --chin-nen: #f5ead0; --chin-sang: #e9b949; --do: #a8321e;
+  --chu: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif; --vao: cubic-bezier(.16, 1, .3, 1);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--giay); color: var(--muc); font: 400 16px/1.55 var(--chu); }
+a { color: inherit; }
+.khung { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+.dau { background: var(--la); color: var(--tren-la); }
+.dau .khung { display: flex; align-items: center; gap: 16px; min-height: 64px; }
+.dau b { font-size: 18px; } .dau nav { margin-left: auto; display: flex; gap: 16px; font-size: 15px; } .dau nav a { color: var(--tren-la-phu); text-decoration: none; }
+h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.15; margin: 32px 0 8px; letter-spacing: -.02em; }
+.mo { max-width: 680px; color: var(--muc-phu); margin: 0 0 20px; }
+/* Thanh bước */
+.buoc { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.buoc button { width: 100%; min-height: 56px; border: 0; border-radius: 10px; background: var(--giay-buoc); color: var(--muc-phu); font: 600 13px/1.25 var(--chu); padding: 6px; cursor: pointer; text-align: left; }
+.buoc button span { display: block; font-size: 12px; opacity: .8; }
+.buoc button[aria-current="step"] { background: var(--la); color: var(--tren-la); }
+.buoc button.qua { background: #dde9e0; color: var(--la); }
+.dieu { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 12px; }
+.nut { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--la); background: transparent; color: var(--la); font: 600 15px var(--chu); cursor: pointer; }
+.nut.chinh { background: var(--la); color: var(--tren-la); }
+.nut:disabled { opacity: .4; cursor: default; }
+.dieu small { color: var(--muc-phu); margin-left: auto; }
+/* Sổ tiền */
+.so-tien { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 20px; }
+.so-tien div { background: var(--giay-noi); border-radius: 12px; padding: 10px 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.so-tien span { display: block; font-size: 13px; color: var(--muc-phu); }
+.so-tien b { font-size: 20px; font-variant-numeric: tabular-nums; transition: color .3s; }
+.so-tien .doi b { color: var(--chin); }
+.so-tien .chin { background: var(--chin-nen); }
+/* Sân khấu hai điện thoại */
+.san { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.ben { display: grid; gap: 12px; justify-items: center; }
+.ben > h2 { margin: 0; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--muc-phu); }
+.dt { position: relative; width: min(100%, 340px); aspect-ratio: 390 / 844; border-radius: 34px; padding: 10px; background: #1b1f1c; box-shadow: 0 20px 40px -20px rgba(0,0,0,.45); transition: opacity .3s, transform .4s var(--vao); }
+.dt.nghi { opacity: .55; transform: scale(.97); }
+.man { position: relative; width: 100%; height: 100%; border-radius: 26px; overflow: hidden; background: var(--giay); }
+.man img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.cham { position: absolute; border: 0; padding: 0; background: transparent; cursor: pointer; border-radius: 14px; }
+.cham::before { content: ""; position: absolute; inset: -6px; border-radius: 16px; border: 3px solid var(--chin-sang); animation: nhap 1.4s var(--vao) infinite; }
+.cham::after { content: "Bấm"; position: absolute; right: -6px; top: -26px; background: var(--chin-sang); color: var(--muc); font: 700 12px var(--chu); padding: 2px 8px; border-radius: 999px; }
+@keyframes nhap { 0% { transform: scale(.96); opacity: 1; } 70% { transform: scale(1.06); opacity: .15; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cham::before { animation: none; } .dt { transition: none; } }
+.chu { width: min(100%, 340px); }
+.chu b { display: block; font-size: 18px; } .chu p { margin: 4px 0 0; color: var(--muc-phu); font-size: 15px; }
+.chu .ai { font-size: 13px; color: var(--chin); font-weight: 600; }
+/* Thư viện */
+.tv { margin: 56px 0 64px; }
+.tv h2 { font-size: 26px; margin: 0 0 6px; } .tv > p { color: var(--muc-phu); margin: 0 0 16px; }
+.luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.luoi button { border: 0; padding: 0; background: none; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.luoi img { width: 100%; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; border-radius: 14px; box-shadow: 0 0 0 1px rgba(0,0,0,.1); display: block; }
+.luoi span { display: block; font-size: 14px; font-weight: 600; margin-top: 6px; } .luoi small { color: var(--muc-phu); }
+dialog { border: 0; padding: 0; background: transparent; max-height: 92vh; }
+dialog::backdrop { background: rgba(20,26,22,.8); }
+dialog img { max-height: 88vh; max-width: 92vw; border-radius: 20px; display: block; }
+dialog button { position: fixed; top: 16px; right: 16px; min-height: 44px; min-width: 44px; border-radius: 50%; border: 0; font-size: 24px; cursor: pointer; }
+.ghi { font-size: 13px; color: var(--muc-phu); margin: 16px 0 0; }
+@media (max-width: 900px) {
+  .buoc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .so-tien { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .san { grid-template-columns: 1fr 1fr; gap: 10px; } .dt { border-radius: 22px; padding: 6px; } .man { border-radius: 17px; }
+  .cham::after { display: none; } .dau nav { display: none; } .dieu small { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<header class="dau"><div class="khung"><b>AgiViet</b><nav><a href="/">Trang chủ</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a><a href="/thiet-ke/dang-nhap.html">Vào app</a></nav></div></header>
+<main class="khung">
+  <h1>Một đơn hàng, đi trọn hai app</h1>
+  <p class="mo">Toàn bộ là màn hình chụp từ app thật trên agiviet.id.vn. Bấm vào ô đang nhấp nháy (hoặc phím →) để đi bước kế tiếp, không cần chờ tin nhắn hay mã OTP.</p>
+  <ol class="buoc" id="buoc"></ol>
+  <div class="dieu">
+    <button class="nut" id="lui" type="button">← Bước trước</button>
+    <button class="nut chinh" id="toi" type="button">Bước sau →</button>
+    <button class="nut" id="tu-chay" type="button">▶ Tự chạy</button>
+    <small>Số tiền là minh họa cho một đơn 1.000 kg × 24.000 đ/kg.</small>
+  </div>
+  <div class="so-tien" id="so-tien" aria-live="polite"></div>
+  <section class="san" aria-label="Hai app cạnh nhau">
+    <div class="ben" data-ben="ban"><h2>App bán · nhà vườn</h2><div class="dt"><div class="man"><img alt=""></div></div><div class="chu"></div></div>
+    <div class="ben" data-ben="mua"><h2>App mua · vựa, nhà máy</h2><div class="dt"><div class="man"><img alt=""></div></div><div class="chu"></div></div>
+  </section>
+  <section class="tv" aria-labelledby="tv-tieu">
+    <h2 id="tv-tieu">Các màn khác</h2>
+    <p>Nhật ký vườn, thời tiết, tin giá, phiếu tìm nguồn và đơn gom nhiều hộ, tin nhắn che liên lạc. Bấm để xem lớn.</p>
+    <div class="luoi" id="luoi"></div>
+    <p class="ghi">Người dùng trong ảnh là tài khoản mẫu của bản thử. Ngân hàng, xe và đối tác do AI mô phỏng.</p>
+  </section>
+</main>
+<dialog id="xem"><img alt=""><button type="button" aria-label="Đóng">×</button></dialog>
+<script type="module">
+// 9 bước của một đơn: mỗi bước một màn bên bán + một màn bên mua; bên "lam" đang tới lượt (có ô nhấp nháy).
+const BUOC = [
+  { ten: "Đăng hàng", ban: "01-dang-hang", mua: "02-tim-nguon", lam: "ban", tien: [0, 0, 0, 0] },
+  { ten: "Tìm nguồn, chào giá", ban: "01-dang-hang", mua: "02-tim-nguon", lam: "mua", tien: [0, 0, 0, 0] },
+  { ten: "Nhận lời chào", ban: "03-loi-chao", mua: "02-tim-nguon", lam: "ban", tien: [0, 0, 0, 0] },
+  { ten: "Chốt điều khoản", ban: "03-loi-chao", mua: "04-dieu-khoan", lam: "mua", tien: [24e6, 0, 0, 0] },
+  { ten: "Ký hợp đồng", ban: "05-ky-hop-dong", mua: "04-dieu-khoan", lam: "ban", tien: [24e6, 0, 0, 0] },
+  { ten: "Đặt cọc 30%", ban: "05-ky-hop-dong", mua: "06-dat-coc", lam: "mua", tien: [24e6, 7.2e6, 0, 0] },
+  { ten: "Mã 6 số, cân", ban: "08-so-can", mua: "07-ma-nhan-hang", lam: "mua", tien: [24e6, 7.2e6, 0, 0] },
+  { ten: "Ký số cân, nhận tiền", ban: "09-xac-nhan-tien", mua: "10-so-tien", lam: "ban", tien: [24e6, 7.2e6, 16.8e6, 16.8e6] },
+  { ten: "Quyết toán", ban: "11-tien-ban", mua: "10-so-tien", lam: null, tien: [24e6, 0, 16.8e6, 24e6] },
+];
+const NHAN = ["Giá trị đơn", "Ngân hàng giữ cọc", "Người mua trả thẳng", "Người bán đã nhận"];
+const [anh, tv] = await Promise.all(["buoc.json", "thu-vien.json"].map((f) => fetch(f).then((r) => (r.ok ? r.json() : [])).catch(() => [])));
+const theoId = Object.fromEntries(anh.map((x) => [x.id, x]));
+const BUOC_CO = BUOC.filter((b) => theoId[b.ban] && theoId[b.mua]); // bỏ bước thiếu ảnh (chụp lỗi)
+const vnd = (n) => (n ? n.toLocaleString("vi-VN") + " đ" : "—");
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+let i = 0, truoc = [0, 0, 0, 0], hen = null;
+document.getElementById("buoc").innerHTML = BUOC_CO.map((b, k) => `<li><button type="button" data-k="${k}"><span>Bước ${k + 1}</span>${esc(b.ten)}</button></li>`).join("");
+document.querySelectorAll("#buoc button").forEach((n) => (n.onclick = () => den(+n.dataset.k)));
+function ve() {
+  const b = BUOC_CO[i];
+  document.querySelectorAll("#buoc button").forEach((n, k) => { n.toggleAttribute("aria-current", k === i); if (k === i) n.setAttribute("aria-current", "step"); n.classList.toggle("qua", k < i); });
+  document.getElementById("so-tien").innerHTML = b.tien.map((v, k) => `<div class="${v !== truoc[k] ? "doi" : ""} ${k === 1 && v ? "chin" : ""}"><span>${NHAN[k]}</span><b>${vnd(v)}</b></div>`).join("");
+  truoc = b.tien;
+  for (const ben of ["ban", "mua"]) {
+    const o = document.querySelector(`[data-ben="${ben}"]`), a = theoId[b[ben]], dang = b.lam === ben;
+    const img = o.querySelector("img"); img.src = a.anh; img.alt = `${a.tieu_de} — màn hình app ${ben === "ban" ? "bán" : "mua"}`;
+    o.querySelector(".dt").classList.toggle("nghi", b.lam && !dang);
+    o.querySelector(".man").querySelectorAll(".cham").forEach((x) => x.remove());
+    if (dang && a.o) { // vị trí nút đo lúc chụp, theo khung 390×844
+      const c = document.createElement("button"); c.className = "cham"; c.type = "button"; c.setAttribute("aria-label", `Bấm “${a.nut}” để sang bước sau`);
+      Object.assign(c.style, { left: (a.o.x / 390 * 100) + "%", top: (a.o.y / 844 * 100) + "%", width: (a.o.w / 390 * 100) + "%", height: (a.o.h / 844 * 100) + "%" });
+      c.onclick = () => den(i + 1); o.querySelector(".man").append(c);
+    }
+    o.querySelector(".chu").innerHTML = dang || !b.lam ? `<span class="ai">${esc(a.ben)}</span><b>${esc(a.tieu_de)}</b><p>${esc(a.chu)}</p>` : `<span class="ai">${esc(a.ben)}</span><p>Đang chờ bên kia.</p>`;
+  }
+  document.getElementById("lui").disabled = i === 0; document.getElementById("toi").disabled = i === BUOC_CO.length - 1;
+}
+function den(k) { i = Math.max(0, Math.min(BUOC_CO.length - 1, k)); ve(); }
+document.getElementById("lui").onclick = () => den(i - 1);
+document.getElementById("toi").onclick = () => den(i + 1);
+addEventListener("keydown", (e) => { if (e.key === "ArrowRight") den(i + 1); if (e.key === "ArrowLeft") den(i - 1); });
+const tc = document.getElementById("tu-chay");
+tc.onclick = () => {
+  if (hen) { clearInterval(hen); hen = null; tc.textContent = "▶ Tự chạy"; return; }
+  if (i === BUOC_CO.length - 1) den(0);
+  tc.textContent = "⏸ Dừng"; hen = setInterval(() => { if (i >= BUOC_CO.length - 1) { tc.click(); return; } den(i + 1); }, 12000);
+};
+// Thư viện
+const dl = document.getElementById("xem");
+document.getElementById("luoi").innerHTML = tv.map((x) => `<button type="button" data-anh="${esc(x.anh)}"><img src="${esc(x.anh)}" alt="${esc(x.tieu_de)}" loading="lazy"><span>${esc(x.tieu_de)}</span><small>App ${x.app === "ban" ? "bán" : "mua"}</small></button>`).join("");
+document.querySelectorAll("#luoi button").forEach((n) => (n.onclick = () => { dl.querySelector("img").src = n.dataset.anh; dl.querySelector("img").alt = n.querySelector("img").alt; dl.showModal(); }));
+dl.querySelector("button").onclick = () => dl.close(); dl.onclick = (e) => { if (e.target === dl) dl.close(); };
+ve();
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+[
+ {
+  "id": "01-dang-hang",
+  "app": "ban",
+  "ben": "Chị Năm · nhà vườn xoài",
+  "tieu_de": "Đăng hàng bằng giọng nói",
+  "chu": "Bác nói “mười tấn xoài, tuần sau hái”. App ghi thành tin đăng, chưa cân vẫn đăng được, ghi rõ là ước tính.",
+  "nut": "Nói để đăng",
+  "o": {
+   "x": 16,
+   "y": 393,
+   "w": 358,
+   "h": 89
+  },
+  "anh": "anh/01-dang-hang.png"
+ },
+ {
+  "id": "02-tim-nguon",
+  "app": "mua",
+  "ben": "Nhà máy sấy Đồng Xanh",
+  "tieu_de": "Tìm nguồn theo mặt hàng chính",
+  "chu": "Lô đang bán hiện sẵn theo mặt hàng chính. Lô nào thiếu điều kiện thì ghi ngay dưới lô.",
+  "nut": "Chào giá",
+  "o": {
+   "x": 148,
+   "y": 400,
+   "w": 72,
+   "h": 44
+  },
+  "anh": "anh/02-tim-nguon.png"
+ },
+ {
+  "id": "03-loi-chao",
+  "app": "ban",
+  "ben": "Chị Năm",
+  "tieu_de": "Nhận lời chào giá",
+  "chu": "Người mua chào giá. Tên hiện dạng mã, số điện thoại ẩn tới khi ngân hàng nhận cọc.",
+  "nut": "Mở lời chào",
+  "o": {
+   "x": 16,
+   "y": 208,
+   "w": 358,
+   "h": 146
+  },
+  "anh": "anh/03-loi-chao.png"
+ },
+ {
+  "id": "04-dieu-khoan",
+  "app": "mua",
+  "ben": "Đồng Xanh ↔ HTX Tân Thuận",
+  "tieu_de": "Thống nhất điều khoản 3 bước",
+  "chu": "Đồng ý giá xong, thẻ điều khoản tự mở: đọc khung chung, chốt từng mục, rồi tạo hợp đồng.",
+  "nut": "Đọc khung chung",
+  "o": null,
+  "anh": "anh/04-dieu-khoan.png"
+ },
+ {
+  "id": "05-ky-hop-dong",
+  "app": "ban",
+  "ben": "Anh Tư · sầu riêng",
+  "tieu_de": "Ký hợp đồng bằng OTP",
+  "chu": "Người mua đã ký. Bác đọc cam kết rồi ký bằng mã OTP gửi về điện thoại. PDF có tem thời gian và mã QR.",
+  "nut": "Ký hợp đồng",
+  "o": {
+   "x": 32,
+   "y": 227,
+   "w": 326,
+   "h": 54
+  },
+  "anh": "anh/05-ky-hop-dong.png"
+ },
+ {
+  "id": "08-so-can",
+  "app": "ban",
+  "ben": "Chị Hồng · tôm thẻ",
+  "tieu_de": "Ký biên bản cân",
+  "chu": "Người mua nhập số cân, tách phần đạt, xuống loại, trả lại có ảnh. Bác đồng ý hoặc báo dòng không đúng.",
+  "nut": "Xem kết quả cân",
+  "o": {
+   "x": 32,
+   "y": 219,
+   "w": 326,
+   "h": 54
+  },
+  "anh": "anh/08-so-can.png"
+ },
+ {
+  "id": "09-xac-nhan-tien",
+  "app": "ban",
+  "ben": "HTX Tân Thuận",
+  "tieu_de": "Xác nhận đã nhận tiền",
+  "chu": "Người mua báo đã chuyển kèm biên lai. Bác mở app ngân hàng kiểm rồi xác nhận, không cần chép mã giao dịch.",
+  "nut": "Kiểm tiền và xác nhận",
+  "o": {
+   "x": 32,
+   "y": 253,
+   "w": 326,
+   "h": 54
+  },
+  "anh": "anh/09-xac-nhan-tien.png"
+ },
+ {
+  "id": "10-so-tien",
+  "app": "mua",
+  "ben": "Vựa Ba Cường",
+  "tieu_de": "Sổ tiền",
+  "chu": "Cọc ngân hàng giữ, đã trả thẳng cho người bán, còn phải trả: ba con số, không lẫn.",
+  "nut": "",
+  "o": null,
+  "anh": "anh/10-so-tien.png"
+ },
+ {
+  "id": "11-tien-ban",
+  "app": "ban",
+  "ben": "HTX Tân Thuận",
+  "tieu_de": "Tiền của bác",
+  "chu": "Tiền đang ở đâu: ngân hàng giữ cọc, đã nhận, còn chờ. Bấm Nghe để app đọc số tiền.",
+  "nut": "",
+  "o": null,
+  "anh": "anh/11-tien-ban.png"
+ }
+]

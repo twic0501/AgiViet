@@ -1,0 +1,62 @@
+[
+ {
+  "id": "tv-hom-nay-ban",
+  "app": "ban",
+  "tieu_de": "Hôm nay · người bán",
+  "anh": "anh/tv-hom-nay-ban.png"
+ },
+ {
+  "id": "tv-hom-nay-mua",
+  "app": "mua",
+  "tieu_de": "Hôm nay · người mua",
+  "anh": "anh/tv-hom-nay-mua.png"
+ },
+ {
+  "id": "tv-vuon",
+  "app": "ban",
+  "tieu_de": "Nhật ký vườn, cách ly thuốc",
+  "anh": "anh/tv-vuon.png"
+ },
+ {
+  "id": "tv-thoi-tiet",
+  "app": "ban",
+  "tieu_de": "Thời tiết, cảnh báo",
+  "anh": "anh/tv-thoi-tiet.png"
+ },
+ {
+  "id": "tv-tin-gia",
+  "app": "ban",
+  "tieu_de": "Tin giá, giá tham khảo",
+  "anh": "anh/tv-tin-gia.png"
+ },
+ {
+  "id": "tv-phieu-nguon",
+  "app": "mua",
+  "tieu_de": "Phiếu tìm nguồn, đơn gom nhiều hộ",
+  "anh": "anh/tv-phieu-nguon.png"
+ },
+ {
+  "id": "tv-don-mua",
+  "app": "mua",
+  "tieu_de": "Danh sách đơn",
+  "anh": "anh/tv-don-mua.png"
+ },
+ {
+  "id": "tv-hop-dong-ban",
+  "app": "ban",
+  "tieu_de": "Hợp đồng của bác",
+  "anh": "anh/tv-hop-dong-ban.png"
+ },
+ {
+  "id": "tv-hang-hoa",
+  "app": "ban",
+  "tieu_de": "Hàng đang bán",
+  "anh": "anh/tv-hang-hoa.png"
+ },
+ {
+  "id": "tv-tin-nhan",
+  "app": "mua",
+  "tieu_de": "Tin nhắn, che liên lạc trước cọc",
+  "anh": "anh/tv-tin-nhan.png"
+ }
+]
