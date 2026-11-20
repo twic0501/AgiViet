@@ -4,6 +4,7 @@ import { api, manCu } from "../api";
 import { DL, canTra, conTra } from "../du-lieu";
 import type { ChiTietDon } from "../kieu";
 import { esc, maHD, trong, vnd } from "../ui";
+import { veGiaoNhan } from "./giao";
 
 const ai = (p?: string) => (p === "buyer" ? "Bạn" : p === "seller" ? "Người bán" : "AgiViet");
 
@@ -102,13 +103,13 @@ export async function veChiTietDon(o: HTMLElement, id: string): Promise<void> {
   const tk = (k as any).seller_account as { bank_code?: string; masked?: string; holder?: string } | null | undefined;
   const nutChinh = coKy ? `<button type="button" class="nut chinh rong" data-lam="ky">Ký hợp đồng</button>`
     : coCoc ? `<button type="button" class="nut chinh rong" data-lam="coc">Đặt cọc</button>`
-    : toi ? `<a class="nut chinh rong" href="${manCu("chi-tiet-don", `don=${d.id}`)}">${esc(tl!.viec)}</a>` : "";
+    : toi ? `<button type="button" class="nut chinh rong" data-cuon>${esc(tl!.viec)}</button>` : "";
   o.innerHTML = `
     <section class="the dau-don">
       <div class="hang"><h2>${esc(maHD(d.code))}</h2><span class="chip ${toi ? "do" : "la"}">${esc(d.hien_thi?.ten || d.status)}</span></div>
       ${tl ? `<p><b>${toi ? "Tới lượt bạn" : `Chờ ${ai(tl.phia).toLowerCase()}`}:</b> ${esc(tl.viec)}</p>` : ""}
       ${nutChinh}
-      ${khoan.map((p) => `<a class="nut chinh rong" href="#tien">Trả ${vnd(conTra(p))} đ</a>`).join("")}
+      ${khoan.map((p) => `<button type="button" class="nut chinh rong" data-cuon>Trả ${vnd(conTra(p))} đ</button>`).join("")}
       <p class="phu">${d.lien_lac_ben_kia ? `Liên lạc người bán: <b>${esc(d.lien_lac_ben_kia.ten)}</b> · <a href="tel:${esc(d.lien_lac_ben_kia.so_dien_thoai)}">${esc(d.lien_lac_ben_kia.so_dien_thoai)}</a>` : "Số điện thoại người bán mở sau khi ngân hàng xác nhận cọc."}</p>
     </section>
     <section class="the"><h2>Điều khoản hợp đồng</h2>
@@ -119,9 +120,12 @@ export async function veChiTietDon(o: HTMLElement, id: string): Promise<void> {
     <section class="the hang-nut">
       <a class="nut vien" href="#tin/order/${d.id}">Nhắn người bán</a>
       ${hd ? `<a class="nut vien" href="/thiet-ke/xac-minh.html?ma=${encodeURIComponent(hd.code)}" target="_blank" rel="noopener">Xác minh hợp đồng</a>` : ""}
-      <a class="nut vien" href="${manCu("chi-tiet-don", `don=${d.id}`)}">Giao nhận, nghiệm thu</a>
     </section>`;
   const lai = () => { window.dispatchEvent(new Event("agv-lam-moi")); veChiTietDon(o, id); };
   o.querySelector<HTMLButtonElement>('[data-lam="ky"]')?.addEventListener("click", () => tamKy(d, lai));
   o.querySelector<HTMLButtonElement>('[data-lam="coc"]')?.addEventListener("click", () => tamCoc(d, lai));
+  // Giao nhận, nghiệm thu, trả tiền cho người bán: ngay trong màn đơn (trước đây mở mua.html)
+  await veGiaoNhan(o, d, lai);
+  if (!location.hash.startsWith(`#don/${id}`)) return;
+  o.querySelectorAll<HTMLButtonElement>("[data-cuon]").forEach((b) => (b.onclick = () => o.querySelector("#nt, #den, [data-khoan].toi-luot, #giao")?.scrollIntoView({ behavior: "smooth", block: "start" })));
 }

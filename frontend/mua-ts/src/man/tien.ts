@@ -1,5 +1,4 @@
 // Tiền: còn phải trả, cọc ngân hàng giữ, từng khoản. Trả tiền (biên lai) mở màn đơn của app cũ.
-import { manCu } from "../api";
 import { DL, canTra, conTra } from "../du-lieu";
 import { esc, ngay, trong, vnd } from "../ui";
 
@@ -15,5 +14,5 @@ export function veTien(o: HTMLElement): void {
       <div class="o"><span class="phu">Ngân hàng đã hoàn</span><b class="so">${DL.tien ? `${vnd(t?.ngan_hang_da_chuyen_den)} đ` : "Chưa tải được"}</b></div></div>
     </section>
     ${DL.khoan.length ? DL.khoan.map((p) => `<article class="the"><div class="hang"><div><b class="so">${vnd(p.amount_due_vnd)} đ</b><p class="phu">${esc(p.nguon)}</p></div><span class="chip ${canTra(p) ? "do" : /received|confirmed/.test(p.status) ? "la" : ""}">${esc(TT[p.status] || p.status)}</span></div>
-      ${canTra(p) && p.don_id ? `<a class="nut chinh rong" href="${manCu("chi-tiet-don", `don=${p.don_id}`)}">Trả ${vnd(conTra(p))} đ</a>` : ""}</article>`).join("") : trong("Chưa có khoản trả nào. Khoản trả tiền hàng sinh ra sau khi nhận hàng, theo số cân thật.")}`;
+      ${canTra(p) && p.don_id ? `<a class="nut chinh rong" href="${`#don/${p.don_id}`}">Trả ${vnd(conTra(p))} đ</a>` : ""}</article>`).join("") : trong("Chưa có khoản trả nào. Khoản trả tiền hàng sinh ra sau khi nhận hàng, theo số cân thật.")}`;
 }
