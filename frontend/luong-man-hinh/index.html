@@ -45,6 +45,7 @@ h1 { font-size: clamp(26px, 3.4vw, 40px); line-height: 1.15; margin: 24px 0 6px;
 .ben { display: grid; gap: 8px; justify-items: center; width: 100%; }
 .ben > h2 { margin: 0; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muc-phu); }
 .dt { width: min(100%, 330px); aspect-ratio: 9 / 18.5; border-radius: 36px; padding: 10px; background: #1b1f1c; box-shadow: 0 24px 48px -24px rgba(0,0,0,.5); }
+.man iframe { position: absolute; left: 0; top: 0; width: 390px; height: 844px; border: 0; transform-origin: 0 0; }
 .man { position: relative; height: 100%; border-radius: 28px; overflow: hidden; background: var(--giay); display: flex; flex-direction: column; font-size: 14px; }
 .ab { padding: 14px 16px 10px; background: var(--giay-noi); border-bottom: 1px solid var(--ke); }
 .ab.ban { background: var(--la); color: var(--tren-la); border: 0; }
@@ -111,7 +112,7 @@ dialog button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44
 <header class="dau"><div class="khung"><b>AgiViet</b><nav><a href="/">Trang chủ</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a><a href="/thiet-ke/dang-nhap.html">Vào app thật</a></nav></div></header>
 <main class="khung">
   <h1>Một đơn hàng, đi trọn hai app</h1>
-  <p class="mo">Mô phỏng chị Năm (nhà vườn xoài) bán cho Nhà máy sấy Đồng Xanh. Mỗi bước tự diễn, nút nhấp nháy là nút người dùng bấm (bấm vào để đi nhanh hơn). Trang tự chiếu và lặp lại; bấm Dừng để đứng ở một bước.</p>
+  <p class="mo">Mô phỏng chị Năm (nhà vườn xoài) bán cho Nhà máy sấy Đồng Xanh. Mỗi bước tự diễn, nút nhấp nháy là nút người dùng bấm (bấm vào để đi nhanh hơn). Mỗi bước tự chiếu lại liên tục; bấm Bước sau (hoặc phím →) để sang bước khác.</p>
   <ol class="buoc" id="buoc"></ol>
   <div class="dieu">
     <button class="nut" id="lui" type="button">← Bước trước</button>
@@ -123,8 +124,8 @@ dialog button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44
   <div class="so-tien" id="so-tien" aria-live="polite"></div>
   <div class="canh" id="canh" aria-live="polite"></div>
   <section class="san" aria-label="Hai app mô phỏng">
-    <div class="ben"><h2>App bán · chị Năm</h2><div class="dt"><div class="man" id="ban"></div></div></div>
-    <div class="ben"><h2>App mua · Đồng Xanh</h2><div class="dt"><div class="man" id="mua"></div></div></div>
+    <div class="ben"><h2>App bán · chị Năm</h2><div class="dt"><div class="man"><iframe id="ban" title="App bán mô phỏng" tabindex="-1"></iframe></div></div></div>
+    <div class="ben"><h2>App mua · Đồng Xanh</h2><div class="dt"><div class="man"><iframe id="mua" title="App mua mô phỏng" tabindex="-1"></iframe></div></div></div>
   </section>
   <section class="tv" aria-labelledby="tv-tieu">
     <h2 id="tv-tieu">Màn hình thật trong app</h2>
@@ -134,15 +135,53 @@ dialog button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44
 </main>
 <dialog id="xem"><img alt=""><button type="button" aria-label="Đóng">×</button></dialog>
 <script type="module">
-const $ = (s, g = document) => g.querySelector(s);
+const $ = (s, g) => (g ? g.querySelector(s) : document.querySelector(s) || MAN.ban?.ownerDocument.querySelector(s) || MAN.mua?.ownerDocument.querySelector(s)); // tìm cả trong hai iframe
 const vnd = (n) => (n ? Math.round(n).toLocaleString("vi-VN") + " đ" : "—");
-const MAN = { ban: $("#ban"), mua: $("#mua") };
+// Hai điện thoại = hai iframe nạp CSS THẬT của app (so-vuon.css / app.css), header và thanh tab chép từ màn thật.
+const KHUNG = await fetch("khung-that.json").then((r) => r.json());
+const CSS_THAT = { ban: ["/thiet-ke/so-vuon.css", "/thiet-ke/tro-chuyen.css"], mua: ["/thiet-ke/so-lam-an.css", "/mua-ts/app.css"] };
+// Phần app không có sẵn (mã OTP, dấu ký, thông báo SMS, QR...) — chỉ cho mô phỏng
+const CSS_MP = `html,body{height:100%;overflow:hidden;margin:0}body{position:relative}.trang{height:100%;min-height:0;display:flex;flex-direction:column}
+.than{flex:1;overflow-y:auto;scroll-behavior:smooth;display:flex;flex-direction:column;gap:12px}main.than{padding:12px 16px 90px}.noi.than{padding-top:16px;padding-bottom:16px}
+.than>.the,.than>.m-the,.than>.go{align-self:stretch;width:100%;box-sizing:border-box}.m-the.vang{background:#f8ecc9;box-shadow:0 0 0 1px #e3c77a}.the,.m-the{animation:hien .45s cubic-bezier(.16,1,.3,1) both}.hang{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chip{font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:#dde9e0;color:#1f4d3a;white-space:nowrap}.chip.chin{background:#f5ead0;color:#85600c}.chip.do{background:#f6ddd7;color:#a8321e}
+.so{font-variant-numeric:tabular-nums}.lon{font-size:26px;font-weight:700}.phu{color:#4d5a51}
+.ma{display:flex;gap:6px;justify-content:center}.ma i{width:38px;height:46px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.12);display:grid;place-items:center;font:700 22px var(--chu,inherit);font-style:normal}
+.ma i.co{box-shadow:inset 0 0 0 2px #1f4d3a}.ma.pin i{width:20px;height:20px;border-radius:50%}.ma.pin i.co{background:#1f4d3a}
+.dau-ky{justify-self:center;align-self:center;border:3px solid #a8321e;color:#a8321e;font-weight:700;font-size:17px;padding:4px 14px;border-radius:8px;transform:rotate(-8deg);animation:dong .5s cubic-bezier(.16,1,.3,1) both}
+.bong{max-width:82%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fbf8f1;box-shadow:0 0 0 1px rgba(0,0,0,.09);align-self:flex-start;animation:hien .35s both}
+.bong.toi{align-self:flex-end;border-radius:16px 16px 4px 16px;background:#1f4d3a;color:#f6f2e7;box-shadow:none}.bong.he{align-self:center;max-width:92%;background:#f5ead0;color:#85600c;font-size:13px;font-weight:600;text-align:center;box-shadow:none;border-radius:12px}
+.che{background:#2f3a33;color:#2f3a33;border-radius:4px;padding:0 4px}.go{min-height:44px;border-radius:22px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);padding:11px 16px;color:#4d5a51;margin:0}
+.thong-bao{position:absolute;left:12px;right:12px;top:12px;z-index:30;background:#1d2a22;color:#fff;border-radius:16px;padding:12px 14px;font-size:14px;box-shadow:0 10px 24px rgba(0,0,0,.3);animation:ha .4s cubic-bezier(.16,1,.3,1) both}.thong-bao small{display:block;opacity:.7;font-size:12px}
+.mic{width:72px;height:72px;border-radius:50%;border:0;background:#1f4d3a;justify-self:center;align-self:center;cursor:pointer;position:relative}.mic svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2}.mic.nghe{animation:song 1.2s infinite}
+.qr{width:140px;height:140px;justify-self:center;align-self:center;background:#fff;padding:8px;border-radius:10px;display:grid;grid-template-columns:repeat(11,1fr);gap:1px}.qr i{background:#1d2a22}.qr i.t{background:transparent}
+.tick{display:flex;gap:8px;align-items:flex-start;font-size:14px}.tick i{flex:none;width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.15);font-style:normal;display:grid;place-items:center;font-size:12px;color:#fff;transition:background .3s}.tick i.co{background:#1f4d3a;box-shadow:none}
+.xong-lon{justify-self:center;align-self:center;width:76px;height:76px;border-radius:50%;background:#1f4d3a;display:grid;place-items:center;animation:dong .5s both}.xong-lon svg{width:38px;stroke:#fff;fill:none;stroke-width:3}
+.cham{outline:3px solid #e9b949;outline-offset:3px;animation:nhap 1.2s ease-in-out infinite;position:relative}.cham::after{content:"Bấm";position:absolute;top:-26px;right:-4px;background:#e9b949;color:#1d2a22;font:700 12px sans-serif;padding:2px 9px;border-radius:999px}
+.xong{opacity:.55;pointer-events:none}.the p,.m-the p{margin:0}
+@keyframes nhap{50%{outline-color:rgba(233,185,73,.25)}}@keyframes hien{from{opacity:0;transform:translateY(10px)}}@keyframes dong{from{transform:rotate(-8deg) scale(2.2);opacity:0}}@keyframes ha{from{transform:translateY(-120%)}}@keyframes song{0%{box-shadow:0 0 0 0 rgba(31,77,58,.5)}70%{box-shadow:0 0 0 20px rgba(31,77,58,0)}}`;
+const MAN = {};
+await Promise.all(["ban", "mua"].map((ben) => new Promise((ok) => {
+  const f = $("#" + ben); f.onload = () => { MAN[ben] = f.contentDocument.body; ok(); };
+  f.srcdoc = `<!doctype html><html lang="vi"><head><meta charset="utf-8">${CSS_THAT[ben].map((h) => `<link rel="stylesheet" href="${h}">`).join("")}<style>${CSS_MP}</style></head><body data-man="don"></body></html>`;
+})));
+// Thu nhỏ iframe 390×844 cho vừa khung điện thoại
+const coGian = () => document.querySelectorAll(".man iframe").forEach((f) => { const w = f.parentElement.clientWidth, h = f.parentElement.clientHeight; f.style.transform = `scale(${w / 390})`; f.style.height = (h * 390 / w) + "px"; });
+addEventListener("resize", coGian); coGian();
+// Đổi class mô phỏng sang class thật của từng app
+const THAT = { ban: [[/class="bt vien"/g, 'class="nut phu-nut bt"'], [/class="bt"/g, 'class="nut chinh-nut bt"'], [/class="the vang"/g, 'class="m-the vang"'], [/class="the"/g, 'class="m-the"']],
+  mua: [[/class="bt vien"/g, 'class="nut vien rong bt"'], [/class="bt"/g, 'class="nut chinh rong bt"'], [/class="the vang"/g, 'class="the toi-luot"']] };
+const hoa = (ben, html) => THAT[ben].reduce((h, [a, b]) => h.replace(a, b), html);
 const HUY = Symbol("huy"); let luot = 0, tuChay = false, i = 0, tien = [0, 0, 0, 0];
 
 // ---- Bộ máy cảnh: mỗi lần đổi bước, lượt tăng → cảnh cũ dừng ở lần chờ kế tiếp ----
 const cho = (ms, my) => new Promise((ok, loi) => setTimeout(() => (my === luot ? ok() : loi(HUY)), ms));
-function moMan(ben, tieu, phu, than = "") { MAN[ben].innerHTML = `<div class="ab ${ben === "ban" ? "ban" : ""}"><b>${tieu}</b><small>${phu}</small></div><div class="than">${than}</div>`; }
-function them(ben, html) { const t = $(".than", MAN[ben]); t.insertAdjacentHTML("beforeend", html); t.scrollTop = t.scrollHeight; return t.lastElementChild; }
+function moMan(ben, tieu, phu, than = "") {
+  MAN[ben].innerHTML = ben === "ban"
+    ? `<div class="trang"><header class="dau dau-xanh nen-xanh"><div class="dau-trai"><span class="nut-tron" aria-hidden="true">‹</span><div><p class="chao">${phu}</p><h1>${tieu}</h1></div></div></header><main class="noi than">${hoa(ben, than)}</main>${KHUNG.tab_ban}</div>`
+    : `<div class="trang"><header class="dau"><span class="nut-tron" aria-hidden="true">‹</span><div class="dau-chu"><h1>${tieu}</h1><p class="phu">${phu}</p></div></header><main class="than">${hoa(ben, than)}</main>${KHUNG.tab_mua}</div>`;
+}
+function them(ben, html) { const t = $(".than", MAN[ben]); t.insertAdjacentHTML("beforeend", hoa(ben, html)); t.scrollTop = t.scrollHeight; return t.lastElementChild; }
 function soTien(moi) { const cu = tien; tien = moi; $("#so-tien").innerHTML = ["Giá trị đơn", "Ngân hàng giữ cọc", "Người mua trả thẳng", "Người bán đã nhận"].map((t, k) => `<div class="${moi[k] !== cu[k] ? "doi" : ""}"><span>${t}</span><b>${vnd(moi[k])}</b></div>`).join(""); }
 async function thongBao(ben, chu, nho, my) { const el = document.createElement("div"); el.className = "thong-bao"; el.innerHTML = `${nho ? `<small>${nho}</small>` : ""}${chu}`; MAN[ben].append(el); await cho(2200, my); el.remove(); }
 async function goChu(el, chu, my, ms = 45) { for (const c of chu) { el.textContent += c; await cho(ms, my); } }
@@ -270,12 +309,12 @@ async function den(k) {
   document.querySelectorAll("#buoc button").forEach((n, j) => { if (j === i) n.setAttribute("aria-current", "step"); else n.removeAttribute("aria-current"); n.classList.toggle("qua", j < i); });
   $("#canh").innerHTML = `<b>${b.ten}</b><p>${b.y}</p>`;
   soTien(i ? BUOC[i - 1].tien : [0, 0, 0, 0]);
-  try { await b.chay(my); soTien(b.tien); if (tuChay) { await cho(2200, my); den(i < BUOC.length - 1 ? i + 1 : 0); } } // chiếu hết thì lặp lại
+  try { await b.chay(my); soTien(b.tien); await cho(2200, my); den(tuChay ? (i < BUOC.length - 1 ? i + 1 : 0) : i); } // mặc định chiếu lại chính bước này; Tự chạy thì sang bước sau
   catch (e) { if (e !== HUY) console.error(e); }
 }
-const tc = $("#tu-chay"); const dungTuChay = () => { tuChay = false; tc.textContent = "▶ Tự chạy"; };
-tc.onclick = () => { if (tuChay) return dungTuChay(); tuChay = true; tc.textContent = "⏸ Dừng tự chạy"; den(i); };
-tuChay = true; tc.textContent = "⏸ Dừng tự chạy"; // mở trang là chạy luôn, lặp vòng
+const tc = $("#tu-chay"); const dungTuChay = () => { tuChay = false; tc.textContent = "▶ Tự chạy cả 8 bước"; };
+tc.onclick = () => { if (tuChay) return dungTuChay(); tuChay = true; tc.textContent = "⏸ Chỉ lặp bước này"; den(i); };
+dungTuChay();
 $("#lui").onclick = () => den(i - 1); $("#toi").onclick = () => den(i + 1); $("#lai").onclick = () => den(i);
 addEventListener("keydown", (e) => { if (e.key === "ArrowRight") den(i + 1); if (e.key === "ArrowLeft") den(i - 1); });
 den(0);
