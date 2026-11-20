@@ -111,7 +111,7 @@ dialog button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44
 <header class="dau"><div class="khung"><b>AgiViet</b><nav><a href="/">Trang chủ</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a><a href="/thiet-ke/dang-nhap.html">Vào app thật</a></nav></div></header>
 <main class="khung">
   <h1>Một đơn hàng, đi trọn hai app</h1>
-  <p class="mo">Mô phỏng chị Năm (nhà vườn xoài) bán cho Nhà máy sấy Đồng Xanh. Nút đang nhấp nháy là nút người dùng bấm: bấm để đi tiếp, hoặc bật Tự chạy.</p>
+  <p class="mo">Mô phỏng chị Năm (nhà vườn xoài) bán cho Nhà máy sấy Đồng Xanh. Mỗi bước tự diễn, nút nhấp nháy là nút người dùng bấm (bấm vào để đi nhanh hơn). Trang tự chiếu và lặp lại; bấm Dừng để đứng ở một bước.</p>
   <ol class="buoc" id="buoc"></ol>
   <div class="dieu">
     <button class="nut" id="lui" type="button">← Bước trước</button>
@@ -148,13 +148,13 @@ async function thongBao(ben, chu, nho, my) { const el = document.createElement("
 async function goChu(el, chu, my, ms = 45) { for (const c of chu) { el.textContent += c; await cho(ms, my); } }
 async function dienMa(el, so, my, ms = 220) { const o = el.querySelectorAll("i"); for (let k = 0; k < so.length; k++) { o[k].classList.add("co"); if (!el.classList.contains("pin")) o[k].textContent = so[k]; await cho(ms, my); } }
 async function demSo(el, den, my, duoi = " kg") { for (let k = 0; k <= 20; k++) { el.textContent = Math.round(den * k / 20).toLocaleString("vi-VN") + duoi; await cho(45, my); } }
-/** Nút người dùng bấm: nhấp nháy, chờ bấm (Tự chạy thì tự bấm sau 1,4 giây). */
+/** Nút người dùng bấm: nhấp nháy rồi tự bấm; bấm tay để đi nhanh hơn. */
 async function bam(el, my) {
   el.classList.add("cham");
   await new Promise((ok, loi) => {
     el.addEventListener("click", () => ok(), { once: true });
     const t = setInterval(() => { if (my !== luot) { clearInterval(t); loi(HUY); } }, 200);
-    if (tuChay) setTimeout(() => ok(), 1400);
+    setTimeout(() => ok(), 1200); // tự bấm sau 1,2 giây; bấm tay thì đi ngay
   });
   if (my !== luot) throw HUY;
   el.classList.remove("cham"); el.classList.add("xong"); await cho(250, my);
@@ -270,11 +270,12 @@ async function den(k) {
   document.querySelectorAll("#buoc button").forEach((n, j) => { if (j === i) n.setAttribute("aria-current", "step"); else n.removeAttribute("aria-current"); n.classList.toggle("qua", j < i); });
   $("#canh").innerHTML = `<b>${b.ten}</b><p>${b.y}</p>`;
   soTien(i ? BUOC[i - 1].tien : [0, 0, 0, 0]);
-  try { await b.chay(my); soTien(b.tien); if (tuChay && i < BUOC.length - 1) { await cho(2200, my); den(i + 1); } else if (tuChay) dungTuChay(); }
+  try { await b.chay(my); soTien(b.tien); if (tuChay) { await cho(2200, my); den(i < BUOC.length - 1 ? i + 1 : 0); } } // chiếu hết thì lặp lại
   catch (e) { if (e !== HUY) console.error(e); }
 }
 const tc = $("#tu-chay"); const dungTuChay = () => { tuChay = false; tc.textContent = "▶ Tự chạy"; };
-tc.onclick = () => { if (tuChay) return dungTuChay(); tuChay = true; tc.textContent = "⏸ Dừng tự chạy"; den(i === BUOC.length - 1 ? 0 : i); };
+tc.onclick = () => { if (tuChay) return dungTuChay(); tuChay = true; tc.textContent = "⏸ Dừng tự chạy"; den(i); };
+tuChay = true; tc.textContent = "⏸ Dừng tự chạy"; // mở trang là chạy luôn, lặp vòng
 $("#lui").onclick = () => den(i - 1); $("#toi").onclick = () => den(i + 1); $("#lai").onclick = () => den(i);
 addEventListener("keydown", (e) => { if (e.key === "ArrowRight") den(i + 1); if (e.key === "ArrowLeft") den(i - 1); });
 den(0);
