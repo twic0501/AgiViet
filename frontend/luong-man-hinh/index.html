@@ -12,9 +12,8 @@
 @font-face { font-family: "Be Vietnam Pro"; font-weight: 600 700; font-display: swap; src: url(/tham-khao/thiet-ke-so-lam-an/assets/fonts/bevietnampro-600-latin.woff2) format("woff2"); }
 :root {
   --giay: #f6f2e7; --giay-buoc: #ece6d6; --giay-noi: #fbf8f1; --muc: #1d2a22; --muc-phu: #4d5a51; --ke: rgba(0,0,0,.09);
-  --la: #1f4d3a; --la-nhat: #dde9e0; --tren-la: #f6f2e7; --tren-la-phu: #c9d6cc;
-  --chin: #85600c; --chin-nen: #f5ead0; --chin-sang: #e9b949; --vang-nen: #f8ecc9; --do: #a8321e;
-  --chu: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif; --vao: cubic-bezier(.16, 1, .3, 1);
+  --la: #1f4d3a; --la-nhat: #dde9e0; --tren-la: #f6f2e7; --tren-la-phu: #c9d6cc; --chin: #85600c; --chin-nen: #f5ead0;
+  --chu: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--giay); color: var(--muc); font: 400 16px/1.55 var(--chu); }
@@ -24,7 +23,7 @@ a { color: inherit; }
 .dau .khung { display: flex; align-items: center; gap: 16px; min-height: 60px; }
 .dau b { font-size: 18px; } .dau nav { margin-left: auto; display: flex; gap: 16px; font-size: 15px; } .dau nav a { color: var(--tren-la-phu); text-decoration: none; }
 h1 { font-size: clamp(26px, 3.4vw, 40px); line-height: 1.15; margin: 24px 0 6px; letter-spacing: -.02em; }
-.mo { max-width: 720px; color: var(--muc-phu); margin: 0 0 16px; }
+.mo { max-width: 760px; color: var(--muc-phu); margin: 0 0 16px; }
 .buoc { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
 .buoc button { width: 100%; min-height: 54px; border: 0; border-radius: 10px; background: var(--giay-buoc); color: var(--muc-phu); font: 600 13px/1.25 var(--chu); padding: 6px 8px; cursor: pointer; text-align: left; }
 .buoc button span { display: block; font-size: 11px; opacity: .8; }
@@ -40,85 +39,40 @@ h1 { font-size: clamp(26px, 3.4vw, 40px); line-height: 1.15; margin: 24px 0 6px;
 .so-tien b { font-size: 20px; font-variant-numeric: tabular-nums; }
 .so-tien .doi { background: var(--chin-nen); }
 .canh { text-align: center; margin: 0 0 12px; } .canh b { font-size: 20px; } .canh p { margin: 2px 0 0; color: var(--muc-phu); }
-/* ---- Hai điện thoại mô phỏng ---- */
 .san { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; justify-items: center; }
 .ben { display: grid; gap: 8px; justify-items: center; width: 100%; }
 .ben > h2 { margin: 0; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muc-phu); }
-.dt { width: min(100%, 330px); aspect-ratio: 9 / 18.5; border-radius: 36px; padding: 10px; background: #1b1f1c; box-shadow: 0 24px 48px -24px rgba(0,0,0,.5); }
-.man iframe { position: absolute; left: 0; top: 0; width: 390px; height: 844px; border: 0; transform-origin: 0 0; }
-.man { position: relative; height: 100%; border-radius: 28px; overflow: hidden; background: var(--giay); display: flex; flex-direction: column; font-size: 14px; }
-.ab { padding: 14px 16px 10px; background: var(--giay-noi); border-bottom: 1px solid var(--ke); }
-.ab.ban { background: var(--la); color: var(--tren-la); border: 0; }
-.ab b { display: block; font-size: 16px; } .ab small { opacity: .75; font-size: 12px; }
-.than { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-.the { background: var(--giay-noi); border-radius: 14px; padding: 12px; box-shadow: 0 0 0 1px var(--ke); display: grid; gap: 6px; animation: hien .45s var(--vao) both; }
-.the.vang { background: var(--vang-nen); box-shadow: 0 0 0 1px #e3c77a; }
-.the p { margin: 0; } .phu { color: var(--muc-phu); font-size: 13px; }
-.hang { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.chip { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--la-nhat); color: var(--la); white-space: nowrap; }
-.chip.chin { background: var(--chin-nen); color: var(--chin); } .chip.do { background: #f6ddd7; color: var(--do); }
-.so { font-variant-numeric: tabular-nums; }
-.lon { font-size: 26px; font-weight: 700; }
-.bt { min-height: 42px; border-radius: 12px; border: 0; background: var(--la); color: var(--tren-la); font: 600 14px var(--chu); padding: 0 14px; cursor: pointer; position: relative; }
-.bt.vien { background: transparent; color: var(--la); box-shadow: inset 0 0 0 1.5px var(--la); }
-.bt.xong { background: var(--la-nhat); color: var(--la); pointer-events: none; }
-.cham { outline: 3px solid var(--chin-sang); outline-offset: 3px; animation: nhap 1.2s ease-in-out infinite; }
-.cham::after { content: "Bấm"; position: absolute; top: -24px; right: -4px; background: var(--chin-sang); color: var(--muc); font: 700 11px var(--chu); padding: 1px 8px; border-radius: 999px; }
-@keyframes nhap { 50% { outline-color: rgba(233,185,73,.25); } }
-@keyframes hien { from { opacity: 0; transform: translateY(10px); } }
-.ma { display: flex; gap: 6px; justify-content: center; }
-.ma i { width: 32px; height: 40px; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--ke); display: grid; place-items: center; font: 700 20px var(--chu); font-style: normal; transition: box-shadow .2s; }
-.ma i.co { box-shadow: inset 0 0 0 2px var(--la); }
-.ma.pin i { width: 18px; height: 18px; border-radius: 50%; }
-.ma.pin i.co { background: var(--la); }
-.dau-ky { justify-self: center; border: 3px solid var(--do); color: var(--do); font: 700 16px var(--chu); padding: 4px 14px; border-radius: 8px; transform: rotate(-8deg); animation: dong .5s var(--vao) both; }
-@keyframes dong { from { transform: rotate(-8deg) scale(2.2); opacity: 0; } }
-.bong { max-width: 82%; padding: 8px 12px; border-radius: 16px; background: var(--giay-noi); box-shadow: 0 0 0 1px var(--ke); animation: hien .35s var(--vao) both; }
-.bong.toi { align-self: flex-end; background: var(--la); color: var(--tren-la); box-shadow: none; }
-.bong.he { align-self: center; max-width: 92%; background: var(--chin-nen); color: var(--chin); font-size: 12px; font-weight: 600; text-align: center; box-shadow: none; }
-.che { background: #2f3a33; color: #2f3a33; border-radius: 4px; padding: 0 4px; }
-.go { min-height: 40px; border-radius: 20px; background: #fff; box-shadow: inset 0 0 0 1px var(--ke); padding: 9px 14px; color: var(--muc-phu); }
-.thong-bao { position: absolute; left: 10px; right: 10px; top: 10px; z-index: 3; background: #1d2a22; color: #fff; border-radius: 14px; padding: 10px 12px; font-size: 13px; box-shadow: 0 10px 24px rgba(0,0,0,.3); animation: ha .4s var(--vao) both; }
-.thong-bao small { display: block; opacity: .7; font-size: 11px; }
-@keyframes ha { from { transform: translateY(-120%); } }
-.mic { width: 64px; height: 64px; border-radius: 50%; border: 0; background: var(--la); justify-self: center; cursor: pointer; position: relative; }
-.mic svg { width: 28px; height: 28px; stroke: #fff; fill: none; stroke-width: 2; }
-.mic.nghe { box-shadow: 0 0 0 0 rgba(31,77,58,.5); animation: song 1.2s infinite; }
-@keyframes song { 70% { box-shadow: 0 0 0 18px rgba(31,77,58,0); } }
-.qr { width: 120px; height: 120px; justify-self: center; background: #fff; padding: 8px; border-radius: 10px; display: grid; grid-template-columns: repeat(11, 1fr); gap: 1px; }
-.qr i { background: #1d2a22; } .qr i.t { background: transparent; }
-.tick { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; } .tick i { flex: none; width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ke); font-style: normal; display: grid; place-items: center; font-size: 11px; color: #fff; transition: background .3s; }
-.tick i.co { background: var(--la); box-shadow: none; }
-.xong-lon { justify-self: center; width: 72px; height: 72px; border-radius: 50%; background: var(--la); display: grid; place-items: center; animation: dong .5s var(--vao) both; }
-.xong-lon svg { width: 36px; stroke: #fff; fill: none; stroke-width: 3; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
-/* Thư viện màn thật */
+.dt { width: min(100%, 340px); aspect-ratio: 390 / 844; border-radius: 40px; padding: 10px; background: #1b1f1c; box-shadow: 0 24px 48px -24px rgba(0,0,0,.5); }
+.man { position: relative; width: 100%; height: 100%; border-radius: 31px; overflow: hidden; background: var(--giay); }
+/* Khóa màn: chỉ xem, không bấm được gì bên trong điện thoại mô phỏng */
+.man iframe { position: absolute; left: 0; top: 0; width: 390px; height: 844px; border: 0; transform-origin: 0 0; pointer-events: none; user-select: none; }
 .tv { margin: 48px 0 64px; } .tv h2 { font-size: 24px; margin: 0 0 6px; } .tv > p { color: var(--muc-phu); margin: 0 0 14px; }
 .luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
 .luoi button { border: 0; padding: 0; background: none; text-align: left; cursor: pointer; font: inherit; color: inherit; }
 .luoi img { width: 100%; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; border-radius: 14px; box-shadow: 0 0 0 1px var(--ke); display: block; }
 .luoi span { display: block; font-size: 13px; font-weight: 600; margin-top: 6px; }
-dialog { border: 0; padding: 0; background: transparent; } dialog::backdrop { background: rgba(20,26,22,.8); }
-dialog img { max-height: 88vh; max-width: 92vw; border-radius: 20px; display: block; }
-dialog button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 0; font-size: 24px; cursor: pointer; }
+dialog#xem { border: 0; padding: 0; background: transparent; } dialog#xem::backdrop { background: rgba(20,26,22,.8); }
+dialog#xem img { max-height: 88vh; max-width: 92vw; border-radius: 20px; display: block; }
+dialog#xem button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 0; font-size: 24px; cursor: pointer; }
 @media (max-width: 900px) {
   .buoc { grid-template-columns: repeat(4, minmax(0, 1fr)); } .so-tien { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .san { gap: 10px; } .dt { border-radius: 24px; padding: 6px; } .man { border-radius: 19px; font-size: 12px; }
-  .dau nav { display: none; } .dieu small { margin-left: 0; width: 100%; } .ma i { width: 24px; height: 32px; font-size: 16px; }
+  .san { gap: 10px; } .dt { border-radius: 24px; padding: 6px; } .man { border-radius: 19px; }
+  .dau nav { display: none; } .dieu small { margin-left: 0; width: 100%; }
 }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 <header class="dau"><div class="khung"><b>AgiViet</b><nav><a href="/">Trang chủ</a><a href="/mo-hinh-quy-trinh">Mô hình quy trình</a><a href="/thiet-ke/dang-nhap.html">Vào app thật</a></nav></div></header>
 <main class="khung">
   <h1>Một đơn hàng, đi trọn hai app</h1>
-  <p class="mo">Mô phỏng chị Năm (nhà vườn xoài) bán cho Nhà máy sấy Đồng Xanh. Mỗi bước tự diễn, nút nhấp nháy là nút người dùng bấm (bấm vào để đi nhanh hơn). Mỗi bước tự chiếu lại liên tục; bấm Bước sau (hoặc phím →) để sang bước khác.</p>
+  <p class="mo">Chị Năm (nhà vườn xoài) bán cho Nhà máy sấy Đồng Xanh. Hai điện thoại dùng đúng giao diện app thật; mỗi bước tự chiếu lại liên tục. Bấm Bước sau (hoặc phím →) để sang bước khác.</p>
   <ol class="buoc" id="buoc"></ol>
   <div class="dieu">
     <button class="nut" id="lui" type="button">← Bước trước</button>
     <button class="nut" id="lai" type="button">↺ Chạy lại bước</button>
     <button class="nut chinh" id="toi" type="button">Bước sau →</button>
-    <button class="nut" id="tu-chay" type="button">▶ Tự chạy</button>
+    <button class="nut" id="tu-chay" type="button">▶ Tự chạy cả 8 bước</button>
     <small>Số tiền minh họa: 1.000 kg xoài × 24.000 đ/kg.</small>
   </div>
   <div class="so-tien" id="so-tien" aria-live="polite"></div>
@@ -128,177 +82,230 @@ dialog button { position: fixed; top: 16px; right: 16px; width: 44px; height: 44
     <div class="ben"><h2>App mua · Đồng Xanh</h2><div class="dt"><div class="man"><iframe id="mua" title="App mua mô phỏng" tabindex="-1"></iframe></div></div></div>
   </section>
   <section class="tv" aria-labelledby="tv-tieu">
-    <h2 id="tv-tieu">Màn hình thật trong app</h2>
+    <h2 id="tv-tieu">Màn hình chụp từ app thật</h2>
     <p>Chụp từ agiviet.id.vn bằng tài khoản mẫu. Bấm để xem lớn.</p>
     <div class="luoi" id="luoi"></div>
   </section>
 </main>
 <dialog id="xem"><img alt=""><button type="button" aria-label="Đóng">×</button></dialog>
 <script type="module">
-const $ = (s, g) => (g ? g.querySelector(s) : document.querySelector(s) || MAN.ban?.ownerDocument.querySelector(s) || MAN.mua?.ownerDocument.querySelector(s)); // tìm cả trong hai iframe
 const vnd = (n) => (n ? Math.round(n).toLocaleString("vi-VN") + " đ" : "—");
-// Hai điện thoại = hai iframe nạp CSS THẬT của app (so-vuon.css / app.css), header và thanh tab chép từ màn thật.
-const KHUNG = await fetch("khung-that.json").then((r) => r.json());
-const CSS_THAT = { ban: ["/thiet-ke/so-vuon.css", "/thiet-ke/tro-chuyen.css"], mua: ["/thiet-ke/so-lam-an.css", "/mua-ts/app.css"] };
-// Phần app không có sẵn (mã OTP, dấu ký, thông báo SMS, QR...) — chỉ cho mô phỏng
-const CSS_MP = `html,body{height:100%;overflow:hidden;margin:0}body{position:relative}.trang{height:100%;min-height:0;display:flex;flex-direction:column}
-.than{flex:1;overflow-y:auto;scroll-behavior:smooth;display:flex;flex-direction:column;gap:12px}main.than{padding:12px 16px 90px}.noi.than{padding-top:16px;padding-bottom:16px}
-.than>.the,.than>.m-the,.than>.go{align-self:stretch;width:100%;box-sizing:border-box}.m-the.vang{background:#f8ecc9;box-shadow:0 0 0 1px #e3c77a}.the,.m-the{animation:hien .45s cubic-bezier(.16,1,.3,1) both}.hang{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.chip{font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:#dde9e0;color:#1f4d3a;white-space:nowrap}.chip.chin{background:#f5ead0;color:#85600c}.chip.do{background:#f6ddd7;color:#a8321e}
-.so{font-variant-numeric:tabular-nums}.lon{font-size:26px;font-weight:700}.phu{color:#4d5a51}
-.ma{display:flex;gap:6px;justify-content:center}.ma i{width:38px;height:46px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.12);display:grid;place-items:center;font:700 22px var(--chu,inherit);font-style:normal}
-.ma i.co{box-shadow:inset 0 0 0 2px #1f4d3a}.ma.pin i{width:20px;height:20px;border-radius:50%}.ma.pin i.co{background:#1f4d3a}
-.dau-ky{justify-self:center;align-self:center;border:3px solid #a8321e;color:#a8321e;font-weight:700;font-size:17px;padding:4px 14px;border-radius:8px;transform:rotate(-8deg);animation:dong .5s cubic-bezier(.16,1,.3,1) both}
-.bong{max-width:82%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fbf8f1;box-shadow:0 0 0 1px rgba(0,0,0,.09);align-self:flex-start;animation:hien .35s both}
-.bong.toi{align-self:flex-end;border-radius:16px 16px 4px 16px;background:#1f4d3a;color:#f6f2e7;box-shadow:none}.bong.he{align-self:center;max-width:92%;background:#f5ead0;color:#85600c;font-size:13px;font-weight:600;text-align:center;box-shadow:none;border-radius:12px}
-.che{background:#2f3a33;color:#2f3a33;border-radius:4px;padding:0 4px}.go{min-height:44px;border-radius:22px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);padding:11px 16px;color:#4d5a51;margin:0}
-.thong-bao{position:absolute;left:12px;right:12px;top:12px;z-index:30;background:#1d2a22;color:#fff;border-radius:16px;padding:12px 14px;font-size:14px;box-shadow:0 10px 24px rgba(0,0,0,.3);animation:ha .4s cubic-bezier(.16,1,.3,1) both}.thong-bao small{display:block;opacity:.7;font-size:12px}
-.mic{width:72px;height:72px;border-radius:50%;border:0;background:#1f4d3a;justify-self:center;align-self:center;cursor:pointer;position:relative}.mic svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2}.mic.nghe{animation:song 1.2s infinite}
-.qr{width:140px;height:140px;justify-self:center;align-self:center;background:#fff;padding:8px;border-radius:10px;display:grid;grid-template-columns:repeat(11,1fr);gap:1px}.qr i{background:#1d2a22}.qr i.t{background:transparent}
-.tick{display:flex;gap:8px;align-items:flex-start;font-size:14px}.tick i{flex:none;width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.15);font-style:normal;display:grid;place-items:center;font-size:12px;color:#fff;transition:background .3s}.tick i.co{background:#1f4d3a;box-shadow:none}
-.xong-lon{justify-self:center;align-self:center;width:76px;height:76px;border-radius:50%;background:#1f4d3a;display:grid;place-items:center;animation:dong .5s both}.xong-lon svg{width:38px;stroke:#fff;fill:none;stroke-width:3}
-.cham{outline:3px solid #e9b949;outline-offset:3px;animation:nhap 1.2s ease-in-out infinite;position:relative}.cham::after{content:"Bấm";position:absolute;top:-26px;right:-4px;background:#e9b949;color:#1d2a22;font:700 12px sans-serif;padding:2px 9px;border-radius:999px}
-.xong{opacity:.55;pointer-events:none}.the p,.m-the p{margin:0}
-@keyframes nhap{50%{outline-color:rgba(233,185,73,.25)}}@keyframes hien{from{opacity:0;transform:translateY(10px)}}@keyframes dong{from{transform:rotate(-8deg) scale(2.2);opacity:0}}@keyframes ha{from{transform:translateY(-120%)}}@keyframes song{0%{box-shadow:0 0 0 0 rgba(31,77,58,.5)}70%{box-shadow:0 0 0 20px rgba(31,77,58,0)}}`;
-const MAN = {};
-await Promise.all(["ban", "mua"].map((ben) => new Promise((ok) => {
-  const f = $("#" + ben); f.onload = () => { MAN[ben] = f.contentDocument.body; ok(); };
-  f.srcdoc = `<!doctype html><html lang="vi"><head><meta charset="utf-8">${CSS_THAT[ben].map((h) => `<link rel="stylesheet" href="${h}">`).join("")}<style>${CSS_MP}</style></head><body data-man="don"></body></html>`;
-})));
-// Thu nhỏ iframe 390×844 cho vừa khung điện thoại
-const coGian = () => document.querySelectorAll(".man iframe").forEach((f) => { const w = f.parentElement.clientWidth, h = f.parentElement.clientHeight; f.style.transform = `scale(${w / 390})`; f.style.height = (h * 390 / w) + "px"; });
-addEventListener("resize", coGian); coGian();
-// Đổi class mô phỏng sang class thật của từng app
-const THAT = { ban: [[/class="bt vien"/g, 'class="nut phu-nut bt"'], [/class="bt"/g, 'class="nut chinh-nut bt"'], [/class="the vang"/g, 'class="m-the vang"'], [/class="the"/g, 'class="m-the"']],
-  mua: [[/class="bt vien"/g, 'class="nut vien rong bt"'], [/class="bt"/g, 'class="nut chinh rong bt"'], [/class="the vang"/g, 'class="the toi-luot"']] };
-const hoa = (ben, html) => THAT[ben].reduce((h, [a, b]) => h.replace(a, b), html);
 const HUY = Symbol("huy"); let luot = 0, tuChay = false, i = 0, tien = [0, 0, 0, 0];
 
-// ---- Bộ máy cảnh: mỗi lần đổi bước, lượt tăng → cảnh cũ dừng ở lần chờ kế tiếp ----
-const cho = (ms, my) => new Promise((ok, loi) => setTimeout(() => (my === luot ? ok() : loi(HUY)), ms));
-function moMan(ben, tieu, phu, than = "") {
-  MAN[ben].innerHTML = ben === "ban"
-    ? `<div class="trang"><header class="dau dau-xanh nen-xanh"><div class="dau-trai"><span class="nut-tron" aria-hidden="true">‹</span><div><p class="chao">${phu}</p><h1>${tieu}</h1></div></div></header><main class="noi than">${hoa(ben, than)}</main>${KHUNG.tab_ban}</div>`
-    : `<div class="trang"><header class="dau"><span class="nut-tron" aria-hidden="true">‹</span><div class="dau-chu"><h1>${tieu}</h1><p class="phu">${phu}</p></div></header><main class="than">${hoa(ben, than)}</main>${KHUNG.tab_mua}</div>`;
+// ---------- Hai điện thoại: iframe nạp CSS thật của app ----------
+const [KHUNG, DANG_BAI] = await Promise.all([fetch("khung-that.json").then((r) => r.json()), fetch("dang-bai-that.html").then((r) => r.text())]);
+const CSS_THAT = { ban: ["/thiet-ke/so-vuon.css", "/thiet-ke/tro-chuyen.css", "dang-bai.css", "ban-don.css", "the-gd.css"], mua: ["/thiet-ke/so-lam-an.css", "/mua-ts/app.css", "the-gd.css"] };
+// Chỉ phần app không có sẵn: bàn phím, thông báo đẩy, ô mã, dấu ký, chỗ đang bấm
+const CSS_MP = `html,body{height:100%;overflow:hidden}body{position:relative}.trang{height:100%;min-height:0;display:flex;flex-direction:column}
+.cuon{flex:1;min-height:0;overflow-y:auto;scroll-behavior:smooth}main.cuon{padding-bottom:96px}#man.cuon{align-content:start}body[data-man=tin-con] main{height:100%}
+body[data-man=tin-con] .chat{height:100%;display:flex;flex-direction:column}body[data-man=tin-con] .luong{flex:1;min-height:0;overflow-y:auto}
+.cham{outline:3px solid #e9b949!important;outline-offset:3px;animation:nhap 1.1s ease-in-out infinite;position:relative}
+.cham::after{content:"";position:absolute;width:34px;height:34px;border-radius:50%;background:rgba(233,185,73,.55);left:calc(50% - 17px);top:calc(50% - 17px);animation:cham .9s ease-out infinite;pointer-events:none}
+.da-bam{transform:scale(.96);transition:transform .12s}
+@keyframes nhap{50%{outline-color:rgba(233,185,73,.2)}}@keyframes cham{from{transform:scale(.4);opacity:1}to{transform:scale(1.6);opacity:0}}
+.thong-bao{position:absolute;left:10px;right:10px;top:10px;z-index:60;background:rgba(29,42,34,.96);color:#fff;border-radius:18px;padding:12px 14px;font-size:14px;line-height:1.4;box-shadow:0 12px 28px rgba(0,0,0,.3);animation:ha .45s cubic-bezier(.16,1,.3,1) both}
+.thong-bao small{display:block;opacity:.7;font-size:12px;margin-bottom:2px}@keyframes ha{from{transform:translateY(-130%)}}
+.ban-phim{position:absolute;left:0;right:0;bottom:0;z-index:50;background:#d4d7d2;padding:8px 4px 26px;display:grid;gap:9px;animation:len .3s cubic-bezier(.16,1,.3,1) both}
+.ban-phim div{display:flex;justify-content:center;gap:5px}.ban-phim i{font-style:normal;flex:0 0 33px;height:42px;border-radius:6px;background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.25);display:grid;place-items:center;font:500 18px system-ui;color:#222;transition:background .08s}
+.ban-phim i.rong{flex:0 0 170px}.ban-phim i.sang{background:#9aa39c;color:#fff}@keyframes len{from{transform:translateY(100%)}}
+body.co-phim .tc-day,body.co-phim .o-go{transform:translateY(-238px);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+body.co-phim .chat-ghi{visibility:hidden}
+.bong.dang-go,.tc-dang-go{display:flex;gap:4px;align-items:center;min-height:36px}.bong.dang-go i,.tc-dang-go i{width:7px;height:7px;border-radius:50%;background:#8a948c;animation:cham3 1s infinite}
+.bong.dang-go i:nth-child(2),.tc-dang-go i:nth-child(2){animation-delay:.15s}.bong.dang-go i:nth-child(3),.tc-dang-go i:nth-child(3){animation-delay:.3s}@keyframes cham3{50%{transform:translateY(-4px);opacity:.5}}
+.che-so{background:#2f3a33;color:#2f3a33;border-radius:4px;padding:0 3px}
+.o-ma{display:flex;gap:6px;justify-content:center;margin:6px 0}.o-ma i{width:40px;height:48px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.14);display:grid;place-items:center;font:700 22px "Be Vietnam Pro",system-ui;font-style:normal}
+.o-ma i.co{box-shadow:inset 0 0 0 2px #1f4d3a}.o-ma.pin i{width:20px;height:20px;border-radius:50%}.o-ma.pin i.co{background:#1f4d3a}
+.dau-ky{align-self:center;justify-self:center;border:3px solid #a8321e;color:#a8321e;font:700 18px "Be Vietnam Pro",system-ui;padding:4px 16px;border-radius:8px;transform:rotate(-8deg);animation:dong .5s cubic-bezier(.16,1,.3,1) both;margin:6px auto}
+@keyframes dong{from{transform:rotate(-8deg) scale(2.2);opacity:0}}
+.qr-gia{width:150px;height:150px;margin:6px auto;background:#fff;padding:8px;border-radius:10px;display:grid;grid-template-columns:repeat(11,1fr);gap:1px}.qr-gia i{background:#1d2a22}.qr-gia i.t{background:transparent}
+.mic-lon{width:84px;height:84px;border-radius:50%;background:#1f4d3a;display:grid;place-items:center;margin:8px auto;animation:song 1.2s infinite}.mic-lon svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2}
+@keyframes song{0%{box-shadow:0 0 0 0 rgba(31,77,58,.5)}70%{box-shadow:0 0 0 22px rgba(31,77,58,0)}}
+.tick-dk{display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.4}.tick-dk i{flex:none;width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.18);font-style:normal;display:grid;place-items:center;font-size:12px;color:#fff;transition:background .3s}.tick-dk i.co{background:#1f4d3a;box-shadow:none}
+.hien{animation:hien .45s cubic-bezier(.16,1,.3,1) both}@keyframes hien{from{opacity:0;transform:translateY(10px)}}
+dialog.tam[open]{position:absolute;inset:auto 0 0 0;margin:0;max-width:none;width:100%;animation:len .35s cubic-bezier(.16,1,.3,1) both;z-index:40}
+.mo-den{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:39}`;
+const MAN = {}, DOC = {};
+await Promise.all(["ban", "mua"].map((ben) => new Promise((ok) => {
+  const f = document.getElementById(ben); f.onload = () => { DOC[ben] = f.contentDocument; MAN[ben] = f.contentDocument.body; ok(); };
+  f.srcdoc = `<!doctype html><html lang="vi"><head><meta charset="utf-8">${CSS_THAT[ben].map((h) => `<link rel="stylesheet" href="${h}">`).join("")}<style>${CSS_MP}</style></head><body></body></html>`;
+})));
+const coGian = () => document.querySelectorAll(".man iframe").forEach((f) => { const w = f.parentElement.clientWidth, h = f.parentElement.clientHeight; f.style.transform = `scale(${w / 390})`; f.style.height = (h * 390 / w) + "px"; });
+addEventListener("resize", coGian); coGian();
+const q = (ben, s) => DOC[ben].querySelector(s);
+
+// ---------- Khung màn (header, tab) chép từ app thật ----------
+const IC_LUI = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>`;
+const IC_KHIEN = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/></svg>`;
+const IC_ANH = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M9 6l1.5-2h3L15 6"/></svg>`;
+const IC_GUI = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>`;
+const IC_MIC = `<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
+const tabBan = (nhan) => KHUNG.tab_ban.replace(/ aria-current="page"/g, "").replace(`aria-label="${nhan}"`, `aria-label="${nhan}" aria-current="page"`);
+const tabMua = (href) => KHUNG.tab_mua.replace(/aria-current="page"/g, 'aria-current="false"').replace(`href="${href}" aria-current="false"`, `href="${href}" aria-current="page"`);
+function manBan(nhan, tieu, than, { day = "", tab = "" } = {}) {
+  MAN.ban.removeAttribute("data-man"); MAN.ban.className = "";
+  MAN.ban.innerHTML = `<div class="trang"><header class="dau dau-xanh nen-xanh"><button class="nut-tron" type="button">${IC_LUI}</button><div style="flex:1;min-width:0"><p class="chao">${nhan}</p><h1>${tieu}</h1></div></header><main class="noi cuon" style="gap:12px">${than}</main>${day}${tab ? tabBan(tab) : ""}</div>`;
 }
-function them(ben, html) { const t = $(".than", MAN[ben]); t.insertAdjacentHTML("beforeend", hoa(ben, html)); t.scrollTop = t.scrollHeight; return t.lastElementChild; }
-function soTien(moi) { const cu = tien; tien = moi; $("#so-tien").innerHTML = ["Giá trị đơn", "Ngân hàng giữ cọc", "Người mua trả thẳng", "Người bán đã nhận"].map((t, k) => `<div class="${moi[k] !== cu[k] ? "doi" : ""}"><span>${t}</span><b>${vnd(moi[k])}</b></div>`).join(""); }
-async function thongBao(ben, chu, nho, my) { const el = document.createElement("div"); el.className = "thong-bao"; el.innerHTML = `${nho ? `<small>${nho}</small>` : ""}${chu}`; MAN[ben].append(el); await cho(2200, my); el.remove(); }
-async function goChu(el, chu, my, ms = 45) { for (const c of chu) { el.textContent += c; await cho(ms, my); } }
+function manMua(tieu, phu, than, href) {
+  MAN.mua.setAttribute("data-man", "khac"); MAN.mua.className = "";
+  MAN.mua.innerHTML = `<header class="dau"><span class="nut-tron">‹</span><div class="dau-chu"><h1>${tieu}</h1><p class="phu">${phu}</p></div></header><main id="man" class="cuon" style="height:calc(100% - 70px)">${than}</main>${tabMua(href)}`;
+}
+function chatMua(ten, tt, phu, than = "") {
+  MAN.mua.setAttribute("data-man", "tin-con"); MAN.mua.className = "";
+  MAN.mua.innerHTML = `<main id="man"><div class="chat"><div class="chat-dau"><span class="nut-tron">‹</span><b>${ten}</b></div>
+    <button type="button" class="dai"><i aria-hidden="true"></i><span><b id="dai-tt">${tt}</b><span class="phu">${phu}</span></span><span class="dai-mo">Xem</span></button>
+    <div class="luong" id="luong">${than}</div>
+    <form class="o-go"><textarea id="tn-o" rows="1" placeholder="Nhắn người bán…"></textarea><button class="nut chinh" type="button">Gửi</button></form>
+    <p class="phu chat-ghi">Số điện thoại, Zalo, tài khoản, mã số thuế, mã vùng trồng, địa chỉ được che tự động tới khi ngân hàng nhận cọc.</p></div></main>${tabMua("#tin")}`;
+}
+function chatBan(nhan, ten, the = "", than = "") {
+  manBan(nhan, ten, `<div class="tc-chat"><div class="tc-he">${IC_KHIEN}<span>Tin nhắn lưu trong app làm bằng chứng. Số điện thoại, Zalo, số tài khoản bị che tới khi ngân hàng nhận cọc.</span></div><div id="tgd">${the}</div><div id="tin">${than}</div></div>`, {
+    day: `<div class="tc-day"><div class="tc-nhanh"><a class="tc-nut-lk">Xem lời chào</a><button type="button">Hẹn xem vườn</button><button type="button">Báo cáo</button></div><div class="tc-go"><label class="tc-chup">${IC_ANH}</label><textarea id="go" rows="1" placeholder="Nhắn cho ${ten}"></textarea><button type="button" class="tc-gui">${IC_GUI}</button></div></div>` });
+}
+
+// ---------- Bộ máy cảnh ----------
+const cho = (ms, my) => new Promise((ok, loi) => setTimeout(() => (my === luot ? ok() : loi(HUY)), ms));
+function them(ben, sel, html) { const c = q(ben, sel); c.insertAdjacentHTML("beforeend", html); const el = c.lastElementChild; el.scrollIntoView({ block: "end", behavior: "smooth" }); return el; }
+async function bam(el, my) { // nút nhấp nháy rồi tự bấm (màn đã khóa, người xem không bấm được)
+  el.scrollIntoView({ block: "center", behavior: "smooth" }); el.classList.add("cham"); await cho(1300, my);
+  el.classList.remove("cham"); el.classList.add("da-bam"); await cho(160, my); el.classList.remove("da-bam");
+}
+async function thongBao(ben, chu, nho, my, ms = 2300) { const el = DOC[ben].createElement("div"); el.className = "thong-bao"; el.innerHTML = `<small>${nho}</small>${chu}`; MAN[ben].append(el); await cho(ms, my); el.remove(); }
+const PHIM = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+const boDau = (c) => c.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").toLowerCase();
+async function goPhim(ben, oSel, chu, my, ms = 60) { // bàn phím trượt lên, phím sáng theo từng chữ, chữ hiện trong ô nhập thật
+  const o = q(ben, oSel); MAN[ben].classList.add("co-phim");
+  const bp = DOC[ben].createElement("div"); bp.className = "ban-phim";
+  bp.innerHTML = PHIM.map((h) => `<div>${[...h].map((c) => `<i data-k="${c}">${c}</i>`).join("")}</div>`).join("") + `<div><i data-k="1">123</i><i class="rong" data-k=" ">dấu cách</i><i data-k="\\n">↵</i></div>`;
+  MAN[ben].append(bp); await cho(300, my);
+  for (const c of chu) { o.value += c; const k = bp.querySelector(`[data-k="${CSS.escape(boDau(c) || " ")}"]`); k?.classList.add("sang"); await cho(ms, my); k?.classList.remove("sang"); }
+  await cho(250, my); bp.remove(); MAN[ben].classList.remove("co-phim"); return o;
+}
+async function dangGo(ben, my, ms = 1300) { const el = them(ben, ben === "ban" ? "#tin" : "#luong", ben === "ban" ? `<div class="tc-tin tc-ho tc-dang-go"><i></i><i></i><i></i></div>` : `<div class="bong dang-go"><i></i><i></i><i></i></div>`); await cho(ms, my); el.remove(); }
+const tinBan = (chu, toi) => `<div class="tc-tin ${toi ? "tc-toi" : "tc-ho"} hien">${chu}<small style="display:block;opacity:.65;font-size:12px">09:4${toi ? 2 : 1}</small></div>`;
+const tinMua = (chu, toi) => `<div class="bong ${toi ? "toi" : ""}"><p>${chu}</p><small>09:4${toi ? 1 : 2}</small></div>`;
+async function dienO(el, chu, my, ms = 200) { for (const c of chu) { el.value += c; await cho(ms, my); } }
 async function dienMa(el, so, my, ms = 220) { const o = el.querySelectorAll("i"); for (let k = 0; k < so.length; k++) { o[k].classList.add("co"); if (!el.classList.contains("pin")) o[k].textContent = so[k]; await cho(ms, my); } }
 async function demSo(el, den, my, duoi = " kg") { for (let k = 0; k <= 20; k++) { el.textContent = Math.round(den * k / 20).toLocaleString("vi-VN") + duoi; await cho(45, my); } }
-/** Nút người dùng bấm: nhấp nháy rồi tự bấm; bấm tay để đi nhanh hơn. */
-async function bam(el, my) {
-  el.classList.add("cham");
-  await new Promise((ok, loi) => {
-    el.addEventListener("click", () => ok(), { once: true });
-    const t = setInterval(() => { if (my !== luot) { clearInterval(t); loi(HUY); } }, 200);
-    setTimeout(() => ok(), 1200); // tự bấm sau 1,2 giây; bấm tay thì đi ngay
-  });
-  if (my !== luot) throw HUY;
-  el.classList.remove("cham"); el.classList.add("xong"); await cho(250, my);
-}
-const oMa = (n, pin = false) => `<div class="ma${pin ? " pin" : ""}">${"<i></i>".repeat(n)}</div>`;
-const qr = () => `<div class="qr" aria-hidden="true">${Array.from({ length: 121 }, (_, k) => `<i class="${(k * 7919 % 13) < 6 ? "" : "t"}"></i>`).join("")}</div>`;
-const IC_MIC = `<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>`;
-const IC_OK = `<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>`;
+function soTien(moi) { const cu = tien; tien = moi; document.getElementById("so-tien").innerHTML = ["Giá trị đơn", "Ngân hàng giữ cọc", "Người mua trả thẳng", "Người bán đã nhận"].map((t, k) => `<div class="${moi[k] !== cu[k] ? "doi" : ""}"><span>${t}</span><b>${vnd(moi[k])}</b></div>`).join(""); }
+const oMa = (n, pin = false) => `<div class="o-ma${pin ? " pin" : ""}">${"<i></i>".repeat(n)}</div>`;
+const qr = () => `<div class="qr-gia" aria-hidden="true">${Array.from({ length: 121 }, (_, k) => `<i class="${(k * 7919 % 13) < 6 ? "" : "t"}"></i>`).join("")}</div>`;
+const tam = (ben, tieu, than) => { MAN[ben].insertAdjacentHTML("beforeend", `<div class="mo-den"></div><dialog class="tam" open><div class="tam-dau"><h2>${tieu}</h2><span class="nut-tron">×</span></div><div class="tam-than">${than}</div></dialog>`); return q(ben, "dialog.tam[open]"); };
+const dongTam = (ben) => { q(ben, "dialog.tam[open]")?.remove(); q(ben, ".mo-den")?.remove(); };
+const theLo = (moi) => `<article class="the${moi ? " toi-luot hien" : ""}"><div class="hang"><b>Xoài cát Chu loại 1</b><span class="chip ${moi ? "do" : "la"}">${moi ? "Mới" : "Có ngay"}</span></div><p class="phu">Người bán NB-73AF · Đồng Tháp · cách 42 km</p><p class="phu">Còn 1.000 kg · hái từ T6, 28/11 · người bán ước tính · có nhật ký vườn</p><div class="hang-nut"><button class="nut vien" type="button">Xem chi tiết</button><button class="nut chinh" type="button" data-tra>Trả giá</button></div></article>`;
+const hdBan = (viec, chang, them_ = "") => `<section class="hd-viec cho hien"><h2>${viec}</h2></section><section class="hd-the" style="padding:14px 16px"><div class="hd-ben"><span class="logo">ĐX</span><div style="min-width:0"><b>Nhà máy sấy Đồng Xanh</b><small>Người mua · HĐ-3008</small></div><div class="gia">24 triệu đ<small>1.000 kg · 24.000 đ/kg</small></div></div><div class="chang">${[0, 1, 2, 3, 4].map((k) => `<i class="${k < chang ? "xong" : k === chang ? "dang" : ""}"></i>`).join("")}</div><div class="chang-ten">${["Chào giá", "Ký", "Cọc", "Giao", "Nhận tiền"].map((t, k) => `<span class="${k === chang ? "dang" : ""}">${t}</span>`).join("")}</div></section>${them_}`;
+const donMua = (chip, viec, nut, them_ = "") => `<section class="the dau-don"><div class="hang"><h2>HĐ-3008</h2><span class="chip do">${chip}</span></div><p><b>Tới lượt bạn:</b> ${viec}</p>${nut ? `<button type="button" class="nut chinh rong" data-viec>${nut}</button>` : ""}<p class="phu">Số điện thoại người bán mở sau khi ngân hàng xác nhận cọc.</p></section>${them_}`;
 
 const BUOC = [
-  { ten: "Đăng hàng bằng giọng nói", y: "Bác nói, app ghi thành tin đăng. Chưa cân vẫn đăng được, ghi rõ là ước tính.", tien: [0, 0, 0, 0], chay: async (my) => {
-    moMan("ban", "Đăng bán", "Hộ Nguyễn Thị Năm · Cao Lãnh", `<div class="the"><b>Bác bấm micro rồi nói</b><p class="phu">Mặt hàng, lượng, ngày hái, giá mong muốn.</p><button class="mic" type="button" aria-label="Nói">${IC_MIC}</button><p class="noi" id="noi" style="min-height:40px;font-weight:600"></p></div>`);
-    moMan("mua", "Nguồn hàng", "Nhà máy sấy Đồng Xanh", `<p class="phu">Mặt hàng chính: Xoài cát Chu, Bưởi da xanh</p><div class="the"><div class="hang"><b>Xoài cát Chu loại 2</b><span class="chip">Có ngay</span></div><p class="phu">Còn 1.500 kg · Đồng Tháp</p></div>`);
-    const mic = $(".mic", MAN.ban); await bam(mic, my); mic.classList.remove("xong"); mic.classList.add("nghe");
-    await goChu($("#noi"), "“Một tấn xoài cát Chu loại một, tuần sau hái, giá hai mươi bốn ngàn.”", my, 38); mic.classList.remove("nghe");
-    const t = them("ban", `<div class="the vang"><p class="phu">App hiểu là:</p><div class="hang"><b>Xoài cát Chu loại 1</b><span class="chip chin">Ước tính</span></div><p>1.000 kg · hái từ 28/11</p><p><b class="so">24.000 đ/kg</b> <span class="phu">· Hai mươi bốn ngàn đồng một ký</span></p><p class="phu">Không xịt thuốc thêm · hết cách ly từ 20/11</p><button class="bt" type="button">Đăng bán</button></div>`);
-    await bam($(".bt", t), my); thongBao("ban", "Đã đăng lô L-0412. Người mua có xoài trong mặt hàng chính sẽ thấy ngay.", "AgiViet", my);
-    await cho(600, my); them("mua", `<div class="the vang"><div class="hang"><b>Xoài cát Chu loại 1</b><span class="chip chin">Mới</span></div><p class="phu">Người bán NB-73AF · Đồng Tháp · còn 1.000 kg</p><p class="phu">Hái từ 28/11 · người bán ước tính · có nhật ký vườn</p></div>`);
+  { ten: "Đăng hàng bằng giọng nói", y: "Bác chọn \"Nói để đăng\", nói một câu. App ghi thành tin đăng; chưa cân vẫn đăng được, ghi rõ là ước tính.", tien: [0, 0, 0, 0], chay: async (my) => {
+    manBan("Đăng bài", "Hộ Nguyễn Thị Năm", DANG_BAI);
+    manMua("Nguồn hàng", "Nhà máy sấy Đồng Xanh", `<p class="phu">Mặt hàng chính: Xoài cát Chu, Bưởi da xanh</p><article class="the"><div class="hang"><b>Xoài cát Chu loại 2</b><span class="chip la">Có ngay</span></div><p class="phu">Người bán NB-90C1 · Tiền Giang · còn 1.500 kg</p></article>`, "#nguon");
+    const noi = [...DOC.ban.querySelectorAll("button, a")].find((x) => /Nói để đăng/.test(x.textContent)) || q("ban", ".db-cach button, .db-cach a");
+    if (noi) await bam(noi, my);
+    manBan("Đăng bài", "Hộ Nguyễn Thị Năm", `<section class="hien" style="display:grid;gap:12px;text-align:center"><h2 style="margin:0">Bác nói đi, app đang nghe</h2><div class="mic-lon">${IC_MIC}</div><p id="noi" style="font-size:20px;font-weight:600;min-height:90px;margin:0"></p></section>`);
+    const p = q("ban", "#noi"); for (const c of "“Một tấn xoài cát Chu loại một, tuần sau hái, giá hai mươi bốn ngàn.”") { p.textContent += c; await cho(40, my); }
+    await cho(500, my);
+    manBan("Đăng bài · Xem lại", "Hộ Nguyễn Thị Năm", `<section class="hd-the hien" style="padding:16px;display:grid;gap:8px"><p class="phu" style="margin:0">App hiểu là:</p><h2 style="margin:0">Xoài cát Chu loại 1</h2><div class="hd-dong"><span>Lượng</span><b>1.000 kg · ước tính</b></div><div class="hd-dong"><span>Ngày có hàng</span><b>Từ 28/11</b></div><div class="hd-dong"><span>Giá muốn bán</span><b>24.000 đ/kg</b><small>Hai mươi bốn ngàn đồng một ký</small></div><div class="hd-dong"><span>Thuốc</span><b>Không xịt thêm · hết cách ly 20/11</b></div></section><button class="nut chinh-nut" type="button" id="dang">Đăng bán</button>`);
+    await bam(q("ban", "#dang"), my); thongBao("ban", "Đã đăng lô L-0412. Người mua có xoài trong mặt hàng chính sẽ thấy ngay.", "AgiViet · vừa xong", my);
+    await cho(700, my); q("mua", "#man p.phu").insertAdjacentHTML("afterend", theLo(true));
+    await thongBao("mua", "<b>Có lô mới đúng mặt hàng chính</b><br>Xoài cát Chu loại 1 · 1.000 kg · Đồng Tháp", "AgiViet", my);
   } },
-  { ten: "Chào giá kín", y: "Người mua chào giá ngay trên lô. Giá kín: người mua khác không thấy.", tien: [0, 0, 0, 0], chay: async (my) => {
-    moMan("mua", "Nguồn hàng", "Nhà máy sấy Đồng Xanh", `<div class="the vang"><div class="hang"><b>Xoài cát Chu loại 1</b><span class="chip chin">Mới</span></div><p class="phu">Người bán NB-73AF · Đồng Tháp · còn 1.000 kg</p><button class="bt" type="button" id="cg">Chào giá</button></div>`);
-    moMan("ban", "Hôm nay", "Hộ Nguyễn Thị Năm", `<div class="the"><b>Lô L-0412 đang bán</b><p class="phu">Chưa có lời chào.</p></div>`);
-    await bam($("#cg"), my);
-    const t = them("mua", `<div class="the"><b>Chào giá lô L-0412</b><p class="phu">Lượng</p><p class="go so" id="cg-kg"></p><p class="phu">Giá (kín)</p><p class="go so" id="cg-gia"></p><button class="bt" type="button">Gửi lời chào</button></div>`);
-    await goChu($("#cg-kg"), "1.000 kg", my, 70); await goChu($("#cg-gia"), "24.000 đ/kg", my, 70); await bam($(".bt", t), my);
-    thongBao("mua", "Đã gửi lời chào LC-0007. Hàng được giữ 24 giờ khi người bán đồng ý.", "AgiViet", my);
-    await cho(500, my); await thongBao("ban", "<b>Có lời chào mới</b><br>Đồng Xanh chào mua 1.000 kg × 24.000 đ/kg", "AgiViet · vừa xong", my);
-    them("ban", `<div class="the vang"><div class="hang"><b>Lời chào LC-0007</b><span class="chip do">Tới lượt bác</span></div><p>1.000 kg × <b>24.000 đ/kg</b> = 24.000.000 đ</p><p class="phu">Người mua: Nhà máy sấy (tên hiện sau khi có cọc)</p></div>`);
+  { ten: "Chào giá kín", y: "Người mua bấm Trả giá ngay trên lô, gõ lượng và giá. Giá kín: người mua khác không thấy.", tien: [0, 0, 0, 0], chay: async (my) => {
+    manMua("Nguồn hàng", "Nhà máy sấy Đồng Xanh", `<p class="phu">Mặt hàng chính: Xoài cát Chu, Bưởi da xanh</p>${theLo(true)}`, "#nguon");
+    manBan("Hôm nay", "Hộ Nguyễn Thị Năm", `<section class="hd-the" style="padding:16px"><b>Lô L-0412 · Xoài cát Chu loại 1</b><p class="hd-ghi" style="margin:6px 0 0">Đang bán 1.000 kg · chưa có lời chào</p></section>`, { tab: "Trang chủ" });
+    await bam(q("mua", "[data-tra]"), my);
+    tam("mua", "Chào giá lô L-0412", `<label class="o-nhap">Lượng (kg)<input id="cg-kg" inputmode="numeric"></label><label class="o-nhap">Giá (đ/kg) · kín, người khác không thấy<input id="cg-gia" inputmode="numeric"></label><p class="phu">Người bán đồng ý thì hàng được giữ cho bạn 24 giờ.</p><button class="nut chinh rong" type="button" id="cg-gui">Gửi lời chào</button>`);
+    await dienO(q("mua", "#cg-kg"), "1.000", my, 140); await dienO(q("mua", "#cg-gia"), "24.000", my, 140);
+    await bam(q("mua", "#cg-gui"), my); dongTam("mua"); thongBao("mua", "Đã gửi lời chào LC-0007 tới người bán.", "AgiViet", my);
+    await cho(600, my); await thongBao("ban", "<b>Có lời chào mới</b><br>Người mua NM-21C chào 1.000 kg × 24.000 đ/kg", "AgiViet · vừa xong", my);
+    q("ban", "main").insertAdjacentHTML("afterbegin", `<section class="hd-viec bac hien"><h2>1 lời chào giá chờ bác</h2><p class="hd-ghi" style="margin:4px 0 0">1.000 kg × 24.000 đ/kg = 24.000.000 đ</p></section>`);
   } },
-  { ten: "Nhắn tin, che liên lạc", y: "Hai bên nhắn trong app. Số điện thoại, số tài khoản bị che cho tới khi ngân hàng nhận cọc.", tien: [0, 0, 0, 0], chay: async (my) => {
-    moMan("mua", "LC-0007 · Người bán NB-73AF", "Tin nhắn", "");
-    moMan("ban", "LC-0007 · Người mua NM-21C", "Tin nhắn", "");
+  { ten: "Nhắn tin, che số điện thoại", y: "Hai bên nhắn ngay trong app: gõ trên bàn phím, bên kia thấy đang soạn. Số điện thoại bị che tới khi ngân hàng nhận cọc.", tien: [0, 0, 0, 0], chay: async (my) => {
+    chatMua("Người bán NB-73AF · Xoài cát Chu", "Chờ bên kia trả lời", "Đang chờ bên kia · 24.000 đ/kg");
+    chatBan("1.000 kg · 24.000 đ/kg · tới lượt bạn", "Người mua NM-21C", `<section class="tgd"><p>Bên kia đưa: <b class="g">24.000 đ/kg</b> × 1.000 kg</p><div class="hang"><button class="c" type="button">Đồng ý giá này</button><button type="button">Đổi giá (còn 2 lần)</button><button type="button">Không chốt</button></div></section>`);
     const hoi = "Xoài cỡ mấy trái một ký chị?";
-    them("mua", `<div class="go" id="o-mua"></div>`); await goChu($("#o-mua"), hoi, my); $("#o-mua").remove();
-    them("mua", `<div class="bong toi">${hoi}</div>`); await cho(300, my); them("ban", `<div class="bong">${hoi}</div>`);
-    await cho(800, my);
-    them("ban", `<div class="go" id="o-ban"></div>`); await goChu($("#o-ban"), "Khoảng 3 trái một ký, em gọi chị số 0912 345 678 nha", my, 32); $("#o-ban").remove();
-    them("ban", `<div class="bong toi">Khoảng 3 trái một ký, em gọi chị số <span class="che">0912 345 678</span> nha</div>`);
-    them("ban", `<div class="bong he">AgiViet che số điện thoại tới khi ngân hàng nhận cọc</div>`);
-    await cho(400, my); them("mua", `<div class="bong">Khoảng 3 trái một ký, em gọi chị số <span class="che">0912 345 678</span> nha</div>`);
+    await goPhim("mua", "#tn-o", hoi, my); q("mua", "#tn-o").value = ""; them("mua", "#luong", tinMua(hoi, true));
+    await dangGo("ban", my, 700); them("ban", "#tin", tinBan(hoi, false));
+    await cho(500, my);
+    const tl = "Khoảng 3 trái một ký, em gọi chị 0912345678 nha";
+    them("mua", "#luong", `<div class="bong dang-go"><i></i><i></i><i></i></div>`);
+    await goPhim("ban", "#go", tl, my, 45); q("ban", "#go").value = "";
+    q("mua", "#luong .dang-go")?.remove();
+    const che = "Khoảng 3 trái một ký, em gọi chị <span class=\"che-so\">0912345678</span> nha";
+    them("ban", "#tin", tinBan(che, true)); them("ban", "#tin", `<div class="tc-he hien">${IC_KHIEN}<span>AgiViet đã che số điện thoại trong tin nhắn tới khi ngân hàng nhận cọc.</span></div>`);
+    await cho(300, my); them("mua", "#luong", tinMua(che, false));
+    await cho(900, my);
+    await bam(q("ban", ".tgd .c"), my);
+    q("ban", "#tgd").innerHTML = `<section class="tgd hien"><p>Hai bên đã đồng ý giá <b class="g">24.000 đ/kg</b> × 1.000 kg</p><p class="ghi">Đây chưa phải hợp đồng. Hàng được giữ cho người mua 24 giờ.</p></section>`;
+    q("mua", "#dai-tt").textContent = "Hai bên đã đồng ý giá"; thongBao("mua", "<b>Người bán đồng ý giá 24.000 đ/kg</b>", "AgiViet", my);
+  } },
+  { ten: "Chốt điều khoản trong chat", y: "Đồng ý giá xong, thẻ \"Giá và điều khoản\" tự mở trong chat. Từng mục hai bên đồng ý, rồi người mua tạo hợp đồng.", tien: [24e6, 0, 0, 0], chay: async (my) => {
+    const MUC = ["Đọc khung điều khoản chung", "Giao tại vườn Mỹ Xương, ngày 28/11", "Người mua lo xe", "Kiểm tại vườn rồi trả trước khi bốc", "Xuống loại: 15.600 đ/kg (65%)", "Cọc 30% ngân hàng giữ: 7.200.000 đ"];
+    const the = (ben) => `<section class="tgd"><p><b>Bước 2/3: thống nhất từng mục</b></p>${MUC.map((m) => `<div class="tick-dk"><i>✓</i><span>${m}</span></div>`).join("")}${ben === "mua" ? `<button class="c" type="button" id="tao" style="display:none">Bước 3/3: Tạo hợp đồng để ký</button>` : ""}</section>`;
+    chatMua("Người bán NB-73AF · Xoài cát Chu", "Bước 2/3: thống nhất điều khoản", "Tới lượt bạn · 24.000 đ/kg", tinMua("Khoảng 3 trái một ký, em gọi chị <span class=\"che-so\">0912345678</span> nha", false));
+    chatBan("1.000 kg · 24.000 đ/kg · đang chốt điều khoản", "Người mua NM-21C", the("ban"));
+    tam("mua", "Giá và điều khoản", the("mua"));
+    for (let k = 0; k < MUC.length; k++) { await cho(650, my); for (const b of ["ban", "mua"]) DOC[b].querySelectorAll(".tick-dk i")[k].classList.add("co"); }
+    them("ban", "#tin", `<div class="tc-he hien">${IC_KHIEN}<span>Hai bên đã đồng ý tất cả điều khoản</span></div>`);
+    const n = q("mua", "#tao"); n.style.display = ""; await bam(n, my); dongTam("mua");
+    them("mua", "#luong", `<p class="phu giua hien">Đã tạo hợp đồng HĐ-3008 · chờ hai bên ký</p>`); them("ban", "#tin", `<div class="tc-he hien">${IC_KHIEN}<span>Người mua đã tạo hợp đồng HĐ-3008. Bác mở Hợp đồng để đọc và ký.</span></div>`);
+  } },
+  { ten: "Ký hợp đồng bằng OTP", y: "Mỗi bên bấm gửi mã, nhập mã OTP 6 số từ tin nhắn rồi ký. PDF hợp đồng có tem thời gian và mã QR để kiểm.", tien: [24e6, 0, 0, 0], chay: async (my) => {
+    manMua("Chi tiết đơn", "Nhà máy sấy Đồng Xanh", donMua("Đang soạn hợp đồng", "Ký và gửi", "Ký hợp đồng"), "#don");
+    manBan("Hợp đồng", "HĐ-3008", hdBan("Chờ người mua ký và gửi", 1));
+    await bam(q("mua", "[data-viec]"), my);
+    tam("mua", "Ký HĐ-3008", `<p>Bạn đồng ý mua 1.000 kg xoài cát Chu loại 1 × 24.000 đ/kg, giá trị 24.000.000 đ. Cọc 7.200.000 đ do ngân hàng giữ.</p><button class="nut vien rong" type="button" id="ky-ma">Gửi mã OTP</button><label class="o-nhap">Mã OTP (6 số)<input id="ky-otp" inputmode="numeric"></label><button class="nut chinh rong" type="button" id="ky-gui">Ký hợp đồng</button>`);
+    await bam(q("mua", "#ky-ma"), my); thongBao("mua", "AgiViet: 123456 là mã ký HĐ-3008, 24.000.000 đ. KHÔNG đọc mã này cho ai.", "Tin nhắn SMS", my);
+    await cho(900, my); await dienO(q("mua", "#ky-otp"), "123456", my, 180); await bam(q("mua", "#ky-gui"), my); dongTam("mua");
+    q("mua", ".dau-don").insertAdjacentHTML("beforeend", `<div class="dau-ky">ĐÃ KÝ</div>`);
     await cho(600, my);
-    const t = them("ban", `<div class="the vang"><b>Lời chào 1.000 kg × 24.000 đ/kg</b><button class="bt" type="button">Đồng ý giá</button></div>`);
-    await bam($(".bt", t), my);
-    for (const b of ["ban", "mua"]) them(b, `<div class="bong he">Hai bên đã đồng ý giá 24.000 đ/kg · chưa phải hợp đồng</div>`);
+    manBan("Hợp đồng", "HĐ-3008", hdBan("Người mua đã ký, tới lượt bác", 1, `<section class="hd-viec bac hien"><h2>Bác cần ký hợp đồng</h2><p style="margin:0">Mã OTP gửi về số của bác. Không đọc mã cho ai.</p><button class="nut phu-nut" type="button" id="b-ma">Gửi mã</button>${oMa(6)}<button class="nut vang" type="button" id="b-ky">Ký hợp đồng</button></section>`));
+    await bam(q("ban", "#b-ma"), my); thongBao("ban", "AgiViet: 123456 là mã ký HĐ-3008, 24.000.000 đ. KHÔNG đọc mã này cho ai.", "Tin nhắn SMS", my);
+    await cho(900, my); await dienMa(q("ban", ".o-ma"), "123456", my); await bam(q("ban", "#b-ky"), my);
+    them("ban", "main", `<div class="dau-ky">ĐÃ KÝ</div>`); them("ban", "main", `<p class="hd-ghi hien" style="text-align:center">Hai bên đã ký · PDF có tem thời gian, quét QR để kiểm bản gốc</p>`);
   } },
-  { ten: "Chốt điều khoản trong chat", y: "Thẻ điều khoản hiện ngay trong khung chat. Từng mục hai bên cùng đồng ý, rồi mới tạo hợp đồng.", tien: [24e6, 0, 0, 0], chay: async (my) => {
-    const MUC = ["Giao tại vườn Mỹ Xương, ngày 28/11", "Người mua lo xe", "Kiểm tại vườn rồi trả trước khi bốc", "Xuống loại: 15.600 đ/kg (65%)", "Cọc 30% ngân hàng giữ: 7.200.000 đ"];
-    const the = `<div class="the vang"><div class="hang"><b>Giá và điều khoản</b><span class="chip chin">Bước 2/3</span></div>${MUC.map((m) => `<div class="tick"><i>✓</i><span>${m}</span></div>`).join("")}<button class="bt" type="button" style="display:none">Tạo hợp đồng</button></div>`;
-    moMan("mua", "LC-0007 · Người bán NB-73AF", "Tin nhắn", `<div class="bong he">Hai bên đã đồng ý giá 24.000 đ/kg</div>${the}`);
-    moMan("ban", "LC-0007 · Người mua NM-21C", "Tin nhắn", `<div class="bong he">Hai bên đã đồng ý giá 24.000 đ/kg</div>${the}`);
-    for (let k = 0; k < MUC.length; k++) { await cho(650, my); for (const b of ["ban", "mua"]) MAN[b].querySelectorAll(".tick i")[k].classList.add("co"); }
-    for (const b of ["ban", "mua"]) them(b, `<div class="bong he">Hai bên đã đồng ý tất cả điều khoản</div>`);
-    const n = $(".bt", MAN.mua); n.style.display = ""; await bam(n, my);
-    for (const b of ["ban", "mua"]) them(b, `<div class="bong he">Đã tạo hợp đồng HĐ-3008 · chờ hai bên ký</div>`);
-  } },
-  { ten: "Ký hợp đồng bằng OTP", y: "Mỗi bên ký bằng mã OTP gửi về điện thoại. PDF hợp đồng có tem thời gian và mã QR để kiểm.", tien: [24e6, 0, 0, 0], chay: async (my) => {
-    const hd = (ai) => `<div class="the"><div class="hang"><b>HĐ-3008</b><span class="chip do">Chờ ${ai} ký</span></div><p>Xoài cát Chu loại 1 · 1.000 kg × 24.000 đ</p><p class="phu">Giá trị 24.000.000 đ · cọc 30% 7.200.000 đ</p><button class="bt vien" type="button" data-gui>Gửi mã ký</button>${oMa(6)}<button class="bt" type="button" data-ky>Ký hợp đồng</button></div>`;
-    moMan("mua", "Hợp đồng HĐ-3008", "Nhà máy sấy Đồng Xanh", hd("bạn")); moMan("ban", "Hợp đồng HĐ-3008", "Hộ Nguyễn Thị Năm", hd("bác"));
-    for (const b of ["mua", "ban"]) {
-      await bam($("[data-gui]", MAN[b]), my); thongBao(b, "AgiViet: 123456 là mã ký HĐ-3008, 24.000.000 đ. Không đọc mã cho ai.", "Tin nhắn SMS", my);
-      await cho(700, my); await dienMa($(".ma", MAN[b]), "123456", my); await bam($("[data-ky]", MAN[b]), my);
-      them(b, `<div class="dau-ky">ĐÃ KÝ</div>`);
-    }
-    for (const b of ["ban", "mua"]) them(b, `<div class="the"><p><b>Hai bên đã ký</b></p><p class="phu">PDF có tem thời gian · quét QR để kiểm bản gốc · chờ cọc</p></div>`);
-  } },
-  { ten: "Cọc 30% ngân hàng giữ", y: "Người mua chuyển cọc vào tài khoản ngân hàng giữ hộ. AgiViet không cầm tiền. Có cọc mới mở liên lạc.", tien: [24e6, 7.2e6, 0, 0], chay: async (my) => {
+  { ten: "Cọc 30% ngân hàng giữ", y: "Người mua quét VietQR chuyển cọc vào tài khoản ngân hàng giữ hộ. AgiViet không cầm tiền. Ngân hàng báo nhận thì mở liên lạc.", tien: [24e6, 7.2e6, 0, 0], chay: async (my) => {
     soTien([24e6, 0, 0, 0]);
-    moMan("mua", "Đặt cọc HĐ-3008", "Nhà máy sấy Đồng Xanh", `<div class="the vang"><b>Chuyển cọc vào ngân hàng giữ hộ</b>${qr()}<p class="lon so" style="text-align:center">7.200.000 đ</p><p class="phu" style="text-align:center">Nội dung: AGV HD3008 COC</p><button class="bt" type="button">Tôi đã chuyển</button></div>`);
-    moMan("ban", "Hợp đồng HĐ-3008", "Hộ Nguyễn Thị Năm", `<div class="the"><div class="hang"><b>HĐ-3008</b><span class="chip">Chờ cọc</span></div><p>Người mua: <b>Nhà máy sấy</b> · <span class="che">0909 000 210</span></p><p class="phu">Số điện thoại mở khi ngân hàng nhận cọc.</p></div>`);
-    await bam($(".bt", MAN.mua), my);
-    const c = them("mua", `<p class="phu" style="text-align:center">Đang chờ ngân hàng báo…</p>`); await cho(1300, my); c.remove();
+    manMua("Chi tiết đơn", "Nhà máy sấy Đồng Xanh", donMua("Chờ cọc", "Chuyển cọc vào ngân hàng giữ hộ", "Đặt cọc"), "#don");
+    manBan("Hợp đồng", "HĐ-3008", hdBan("Chờ người mua chuyển cọc", 2, `<section class="hd-the" style="padding:16px"><div class="hd-dong"><span>Tiền cọc người mua</span><b>7.200.000 đ</b><small>Chưa chuyển cọc. Hợp đồng chỉ có hiệu lực khi ngân hàng nhận đủ cọc.</small></div></section>`));
+    await bam(q("mua", "[data-viec]"), my);
+    tam("mua", "Đặt cọc HĐ-3008", `${qr()}<p style="text-align:center"><b class="so" style="font-size:26px">7.200.000 đ</b></p><p class="phu" style="text-align:center">Tài khoản ngân hàng giữ hộ · nội dung AGV HD3008 COC</p><button class="nut chinh rong" type="button" id="coc">Tôi đã chuyển</button>`);
+    await bam(q("mua", "#coc"), my); q("mua", "#coc").textContent = "Đang chờ ngân hàng báo…"; await cho(1300, my); dongTam("mua");
     soTien([24e6, 7.2e6, 0, 0]);
-    thongBao("mua", "<b>Ngân hàng đã nhận cọc 7.200.000 đ</b>", "Ngân hàng giữ hộ", my);
-    await thongBao("ban", "<b>Người mua đã cọc 7.200.000 đ</b><br>Ngân hàng đang giữ. Bác chuẩn bị hàng.", "AgiViet", my);
-    moMan("ban", "Hợp đồng HĐ-3008", "Hộ Nguyễn Thị Năm", `<div class="the vang"><div class="hang"><b>HĐ-3008</b><span class="chip">Đã cọc</span></div><p>Người mua: <b>Nhà máy sấy Đồng Xanh</b> · <b>0909 000 210</b></p><p class="phu">Giao 28/11 tại vườn · người mua lo xe</p></div>`);
-    them("mua", `<div class="the"><p><b>Đã cọc · liên lạc đã mở</b></p><p>Chị Năm · 0912 345 678</p></div>`);
+    thongBao("mua", "<b>Ngân hàng đã nhận cọc 7.200.000 đ</b><br>Hợp đồng có hiệu lực. Liên lạc người bán đã mở.", "Ngân hàng giữ hộ", my);
+    await thongBao("ban", "<b>Người mua đã cọc 7.200.000 đ</b><br>Ngân hàng đang giữ. Bác chuẩn bị hàng ngày 28/11.", "AgiViet", my);
+    manBan("Hợp đồng", "HĐ-3008", hdBan("Đã cọc · chuẩn bị giao 28/11", 3, `<section class="hd-the hien" style="padding:16px"><div class="hd-dong"><span>Liên lạc người mua</span><b>Nhà máy sấy Đồng Xanh · 0909 000 210</b></div><div class="hd-dong"><span>Ngân hàng giữ cọc</span><b>7.200.000 đ</b></div></section>`));
+    manMua("Chi tiết đơn", "Nhà máy sấy Đồng Xanh", `<section class="the dau-don"><div class="hang"><h2>HĐ-3008</h2><span class="chip la">Đã cọc</span></div><p>Liên lạc người bán: <b>Hộ Nguyễn Thị Năm</b> · 0912 345 678</p></section>`, "#don");
   } },
-  { ten: "Mã 6 số, cân, ký biên bản", y: "Xe tới vườn: người bán nhập mã 6 số của người nhận rồi cân. Người mua tách phần đạt, xuống loại; người bán ký bằng PIN.", tien: [23.58e6, 7.2e6, 0, 0], chay: async (my) => {
+  { ten: "Mã 6 số, cân, ký biên bản", y: "Xe tới vườn: người nhận đọc mã 6 số, người bán nhập để bắt đầu cân. Người mua tách phần đạt, xuống loại; người bán ký bằng PIN.", tien: [23.58e6, 7.2e6, 0, 0], chay: async (my) => {
     soTien([24e6, 7.2e6, 0, 0]);
-    moMan("mua", "Giao nhận · đợt 1", "Người nhận: anh Hùng", `<div class="the vang"><b>Đọc mã này cho người bán</b><p class="lon so" style="text-align:center;letter-spacing:6px;font-size:34px">849 201</p><p class="phu" style="text-align:center">Xe 63C-128.45 đã tới vườn</p></div>`);
-    moMan("ban", "Bàn giao hàng", "HĐ-3008 · đợt 1", `<div class="the vang"><b>Nhập mã 6 số của người nhận</b>${oMa(6)}<button class="bt" type="button">Bắt đầu cân</button></div>`);
-    await cho(700, my); await dienMa($(".ma", MAN.ban), "849201", my, 180); await bam($(".bt", MAN.ban), my);
-    them("ban", `<div class="bong he">Đang cân tại vườn · người mua nhập kết quả</div>`);
-    const t = them("mua", `<div class="the"><b>Kết quả cân</b><div class="hang"><span>Đạt · 24.000 đ</span><b class="so" id="k-dat">0 kg</b></div><div class="hang"><span>Xuống loại · 15.600 đ</span><b class="so" id="k-ha">0 kg</b></div><p class="phu">Ảnh: 2 thùng trái rám vỏ</p><p class="phu">PIN ký biên bản</p>${oMa(4, true)}<button class="bt" type="button">Ký và gửi người bán</button></div>`);
-    await demSo($("#k-dat"), 950, my); await demSo($("#k-ha"), 50, my); await dienMa($(".ma.pin", t), "2468", my, 180); await bam($(".bt", t), my);
-    await thongBao("ban", "Người mua đã gửi kết quả cân. Bác xem và đồng ý hoặc báo dòng sai.", "AgiViet", my);
-    const k = them("ban", `<div class="the vang"><b>Kết quả cân đợt 1</b><div class="hang"><span>Đạt</span><b class="so">950 kg × 24.000</b></div><div class="hang"><span>Xuống loại (ảnh)</span><b class="so">50 kg × 15.600</b></div><div class="hang"><span>Tiền hàng</span><b class="so">23.580.000 đ</b></div><p class="phu">PIN của bác</p>${oMa(4, true)}<button class="bt" type="button">Đồng ý và ký</button><button class="bt vien" type="button" tabindex="-1">Có dòng không đúng</button></div>`);
+    manMua("Chi tiết đơn", "Nhà máy sấy Đồng Xanh", `<section class="the" id="giao"><h2>Giao nhận · đợt 1 (1.000 kg)</h2><p><b>Nhận tại vườn 28/11, 07:00 – 15:00</b></p><p><span class="chip la">Xong</span> Người nhận: anh Hùng</p><p><span class="chip la">Xong</span> Xe 63C-128.45</p><button type="button" class="nut chinh rong" id="g-qr">Hiện mã nhận hàng</button><div id="g-ma"></div></section>`, "#don");
+    manBan("Bàn giao hàng", "HĐ-3008 · đợt 1", `<section class="hd-viec bac"><h2>Xe người mua đã tới vườn</h2><p class="hd-ghi" style="margin:4px 0 0">Bác nhập mã 6 số trên app của người nhận để bắt đầu cân.</p></section><section class="hd-the" style="padding:16px;display:grid;gap:10px">${oMa(6)}<button class="nut vang" type="button" id="bd-can">Bắt đầu cân</button></section>`);
+    await bam(q("mua", "#g-qr"), my); q("mua", "#g-ma").innerHTML = `<section class="the hien" style="text-align:center"><p>Đọc mã này cho người bán nhập:</p><p class="so" style="font-size:34px;font-weight:700;letter-spacing:6px;margin:0">849 201</p></section>`;
+    await cho(800, my); await dienMa(q("ban", ".o-ma"), "849201", my, 200); await bam(q("ban", "#bd-can"), my);
+    them("ban", "main", `<section class="hd-viec hien"><h2>Đang cân tại vườn</h2><p class="hd-ghi" style="margin:4px 0 0">Người mua nhập kết quả, bác xem rồi ký.</p></section>`);
+    manMua("Chi tiết đơn", "Nhà máy sấy Đồng Xanh", `<section class="the toi-luot" id="nt"><h2>Nghiệm thu · đợt 1</h2><label class="o-nhap">Lượng cân thực tế (kg)<input id="nt-can" value="1000"></label><div class="hang"><span>Đạt · 24.000 đ/kg</span><b class="so" id="k-dat">0 kg</b></div><div class="hang"><span>Xuống loại · 15.600 đ/kg</span><b class="so" id="k-ha">0 kg</b></div><p class="phu">Ảnh: 2 thùng trái rám vỏ (chụp tại chỗ)</p><label class="o-nhap">Mã PIN ký biên bản (4 số)<input id="nt-pin" type="password"></label><button type="button" class="nut chinh rong" id="nt-gui">Ký và gửi kết quả cho người bán</button></section>`, "#don");
+    await demSo(q("mua", "#k-dat"), 950, my); await demSo(q("mua", "#k-ha"), 50, my); await dienO(q("mua", "#nt-pin"), "2468", my, 180); await bam(q("mua", "#nt-gui"), my);
+    thongBao("mua", "Đã gửi kết quả cân. Chờ người bán ký.", "AgiViet", my);
+    await thongBao("ban", "<b>Người mua đã gửi kết quả cân</b><br>Bác xem từng dòng rồi đồng ý hoặc báo dòng sai.", "AgiViet", my);
+    manBan("Hợp đồng", "HĐ-3008", `<section class="hd-viec bac"><h2>Bác cần xác nhận kết quả cân</h2><p style="margin:0">Đợt 1: người mua đã nhập kết quả cân, bác đồng ý hoặc báo dòng không đúng.</p></section><section class="hd-the hien" style="padding:16px;display:grid;gap:4px"><h3 style="margin:0 0 6px">Kết quả cân</h3><div class="hd-dong"><span>Đạt</span><b>950 kg × 24.000 đ</b></div><div class="hd-dong"><span>Xuống loại (có ảnh)</span><b>50 kg × 15.600 đ</b></div><div class="hd-dong"><span><b style="color:var(--muc)">Tiền hàng</b></span><b style="color:var(--la)">23.580.000 đ</b></div><p class="hd-ghi" style="margin:8px 0 0">Mã PIN của bác (bản thử: 2468)</p>${oMa(4, true)}<button class="nut vang" type="button" id="dy">Đồng ý và ký biên bản</button><button class="nut phu-nut" type="button">Có dòng không đúng</button></section>`);
     soTien([23.58e6, 7.2e6, 0, 0]);
-    await dienMa($(".ma.pin", k), "2468", my, 180); await bam($(".bt", k), my); them("ban", `<div class="dau-ky">ĐÃ KÝ BIÊN BẢN</div>`);
-    them("mua", `<div class="bong he">Người bán đã ký biên bản cân · 23.580.000 đ</div>`);
+    await dienMa(q("ban", ".o-ma.pin"), "2468", my, 200); await bam(q("ban", "#dy"), my);
+    them("ban", "main", `<div class="dau-ky">ĐÃ KÝ BIÊN BẢN</div>`); thongBao("mua", "<b>Người bán đã ký biên bản cân</b><br>Tiền hàng 23.580.000 đ", "AgiViet", my); await cho(1500, my);
   } },
   { ten: "Trả tiền, quyết toán", y: "Phần còn lại người mua chuyển thẳng cho người bán theo biên bản cân. Người bán xác nhận, ngân hàng chuyển cọc: xong đơn.", tien: [23.58e6, 0, 16.38e6, 23.58e6], chay: async (my) => {
     soTien([23.58e6, 7.2e6, 0, 0]);
-    moMan("mua", "Trả tiền hàng HĐ-3008", "Nhà máy sấy Đồng Xanh", `<div class="the vang"><div class="hang"><b>Tiền hàng trước khi bốc</b><span class="chip do">Chưa trả</span></div><p class="lon so">16.380.000 đ</p><p class="phu">= 23.580.000 đ tiền hàng − 7.200.000 đ cọc ngân hàng giữ</p>${qr()}<p>Vietcombank · NGUYEN THI NAM · ****0421</p><button class="bt" type="button">Báo đã chuyển</button></div>`);
-    moMan("ban", "Tiền HĐ-3008", "Hộ Nguyễn Thị Năm", `<div class="the"><b>Chờ người mua chuyển 16.380.000 đ</b><p class="phu">Tiền vào thẳng tài khoản của bác, AgiViet không giữ.</p></div>`);
-    await bam($(".bt", MAN.mua), my);
+    manMua("Chi tiết đơn", "Nhà máy sấy Đồng Xanh", `<section class="the toi-luot"><div class="hang"><h2>Tiền hàng trước khi bốc</h2><span class="chip do">Chưa trả</span></div><b class="so" style="font-size:28px">16.380.000 đ</b><p class="phu">= 23.580.000 đ tiền hàng − 7.200.000 đ cọc ngân hàng giữ</p>${qr()}<p>Vietcombank · NGUYEN THI NAM · ****0421</p><label class="o-nhap">Ảnh biên lai chuyển khoản<input value="bien-lai.jpg"></label><button type="button" class="nut chinh rong" id="bao-ck">Báo đã chuyển cho người bán</button></section>`, "#don");
+    manBan("Hợp đồng", "HĐ-3008", hdBan("Chờ người mua chuyển 16.380.000 đ", 4, `<section class="hd-the" style="padding:16px"><div class="hd-dong"><span><b style="color:var(--muc)">Bác đã thực nhận</b></span><b style="color:var(--la)" id="thuc-nhan">0 đ</b><small>Chỉ cộng khoản bác đã xác nhận nhận được.</small></div></section>`));
+    await bam(q("mua", "#bao-ck"), my); q("mua", ".chip.do").textContent = "Đã báo chuyển";
     await thongBao("ban", "<b>Người mua báo đã chuyển 16.380.000 đ</b><br>Bác mở app ngân hàng kiểm rồi xác nhận.", "AgiViet", my);
-    const t = them("ban", `<div class="the vang"><b>Kiểm tiền và xác nhận</b><p>Số tiền: <b class="so">16.380.000 đ</b></p><p class="phu">Không cần chép mã giao dịch</p><button class="bt" type="button">Đã nhận đủ</button></div>`);
-    await bam($(".bt", t), my);
-    soTien([23.58e6, 7.2e6, 16.38e6, 16.38e6]);
-    them("mua", `<div class="bong he">Người bán đã xác nhận nhận đủ 16.380.000 đ · xe được bốc hàng</div>`);
-    await cho(900, my);
+    q("ban", "main").insertAdjacentHTML("afterbegin", `<section class="hd-viec bac hien"><h2>Bác cần xác nhận đã nhận tiền hàng</h2><div class="hd-dong"><span>Số tiền người mua báo</span><b>16.380.000 đ</b></div><p class="hd-ghi" style="margin:0">Mã giao dịch ngân hàng: không bắt buộc</p><button class="nut vang" type="button" id="xn">Đã nhận đủ 16.380.000 đ</button></section>`);
+    await bam(q("ban", "#xn"), my); soTien([23.58e6, 7.2e6, 16.38e6, 16.38e6]); q("ban", "#thuc-nhan").textContent = "16.380.000 đ";
+    thongBao("mua", "<b>Người bán đã xác nhận nhận đủ</b><br>Xe được bốc hàng.", "AgiViet", my); await cho(1200, my);
     await thongBao("ban", "<b>Ngân hàng chuyển cọc 7.200.000 đ cho bác</b>", "Ngân hàng giữ hộ", my);
     soTien([23.58e6, 0, 16.38e6, 23.58e6]);
-    for (const b of ["ban", "mua"]) them(b, `<div class="the"><div class="xong-lon">${IC_OK}</div><p style="text-align:center"><b>HĐ-3008 hoàn tất</b></p><p class="phu" style="text-align:center">Chị Năm nhận đủ 23.580.000 đ (16,38 triệu trả thẳng + 7,2 triệu cọc). Bảng quyết toán PDF có tem thời gian.</p></div>`);
+    manBan("Tiền", "Hộ Nguyễn Thị Năm", `<section class="hd-viec hien"><h2>HĐ-3008 hoàn tất</h2><p class="hd-ghi" style="margin:4px 0 0">Bác nhận đủ 23.580.000 đ: 16,38 triệu người mua trả thẳng + 7,2 triệu cọc ngân hàng chuyển.</p></section><section class="hd-the" style="padding:16px"><div class="hd-dong"><span>Người mua trả thẳng</span><b>16.380.000 đ</b></div><div class="hd-dong"><span>Ngân hàng chuyển cọc</span><b>7.200.000 đ</b></div><div class="hd-dong"><span><b style="color:var(--muc)">Bác đã thực nhận</b></span><b style="color:var(--la)">23.580.000 đ</b></div></section>`, { tab: "Tiền" });
+    manMua("Tiền", "Nhà máy sấy Đồng Xanh", `<section class="the hien"><h2>HĐ-3008 hoàn tất</h2><p class="phu">Đã trả thẳng 16.380.000 đ · cọc 7.200.000 đ ngân hàng đã chuyển cho người bán · bảng quyết toán PDF có tem thời gian.</p></section>`, "#tien");
+    await cho(1500, my);
   } },
 ];
 
@@ -307,24 +314,24 @@ document.querySelectorAll("#buoc button").forEach((n) => (n.onclick = () => den(
 async function den(k) {
   i = Math.max(0, Math.min(BUOC.length - 1, k)); const my = ++luot, b = BUOC[i];
   document.querySelectorAll("#buoc button").forEach((n, j) => { if (j === i) n.setAttribute("aria-current", "step"); else n.removeAttribute("aria-current"); n.classList.toggle("qua", j < i); });
-  $("#canh").innerHTML = `<b>${b.ten}</b><p>${b.y}</p>`;
+  document.getElementById("canh").innerHTML = `<b>${b.ten}</b><p>${b.y}</p>`;
   soTien(i ? BUOC[i - 1].tien : [0, 0, 0, 0]);
-  try { await b.chay(my); soTien(b.tien); await cho(2200, my); den(tuChay ? (i < BUOC.length - 1 ? i + 1 : 0) : i); } // mặc định chiếu lại chính bước này; Tự chạy thì sang bước sau
+  try { await b.chay(my); soTien(b.tien); await cho(2200, my); den(tuChay ? (i < BUOC.length - 1 ? i + 1 : 0) : i); } // mặc định chiếu lại chính bước này
   catch (e) { if (e !== HUY) console.error(e); }
 }
-const tc = $("#tu-chay"); const dungTuChay = () => { tuChay = false; tc.textContent = "▶ Tự chạy cả 8 bước"; };
-tc.onclick = () => { if (tuChay) return dungTuChay(); tuChay = true; tc.textContent = "⏸ Chỉ lặp bước này"; den(i); };
-dungTuChay();
-$("#lui").onclick = () => den(i - 1); $("#toi").onclick = () => den(i + 1); $("#lai").onclick = () => den(i);
+const tc = document.getElementById("tu-chay");
+const datTuChay = (v) => { tuChay = v; tc.textContent = v ? "⏸ Chỉ lặp bước này" : "▶ Tự chạy cả 8 bước"; };
+tc.onclick = () => datTuChay(!tuChay);
+document.getElementById("lui").onclick = () => den(i - 1); document.getElementById("toi").onclick = () => den(i + 1); document.getElementById("lai").onclick = () => den(i);
 addEventListener("keydown", (e) => { if (e.key === "ArrowRight") den(i + 1); if (e.key === "ArrowLeft") den(i - 1); });
 den(0);
 
-// Thư viện màn thật (ảnh chụp từ app)
+// Thư viện màn chụp thật
 const [a1, a2] = await Promise.all(["buoc.json", "thu-vien.json"].map((f) => fetch(f).then((r) => (r.ok ? r.json() : [])).catch(() => [])));
-const dl = $("#xem");
-$("#luoi").innerHTML = [...a1, ...a2].map((x) => `<button type="button" data-anh="${x.anh}"><img src="${x.anh}" alt="${x.tieu_de}" loading="lazy"><span>${x.tieu_de}</span></button>`).join("");
-document.querySelectorAll("#luoi button").forEach((n) => (n.onclick = () => { $("img", dl).src = n.dataset.anh; $("img", dl).alt = n.querySelector("img").alt; dl.showModal(); }));
-$("button", dl).onclick = () => dl.close(); dl.onclick = (e) => { if (e.target === dl) dl.close(); };
+const dl = document.getElementById("xem");
+document.getElementById("luoi").innerHTML = [...a1, ...a2].map((x) => `<button type="button" data-anh="${x.anh}"><img src="${x.anh}" alt="${x.tieu_de}" loading="lazy"><span>${x.tieu_de}</span></button>`).join("");
+document.querySelectorAll("#luoi button").forEach((n) => (n.onclick = () => { dl.querySelector("img").src = n.dataset.anh; dl.querySelector("img").alt = n.querySelector("img").alt; dl.showModal(); }));
+dl.querySelector("button").onclick = () => dl.close(); dl.onclick = (e) => { if (e.target === dl) dl.close(); };
 </script>
 </body>
 </html>
