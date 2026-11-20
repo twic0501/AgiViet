@@ -173,6 +173,12 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
       { kind: 'accepted', qty_g: d.q - 150000 }, { kind: 'downgraded', qty_g: 50000, reason_code: 'TRAY_VO', evidence_document_id: anh }, { kind: 'rejected', qty_g: 100000, reason_code: 'DAP', evidence_document_id: anh }] }, cuong.token);
     const dy = await ok('POST', `/v1/deliveries/${did}/acceptance/agree`, { pin: PIN }, me.token);
     await traTruocBoc(cuong.token, me.token, d.orderId); // kiểm rồi trả: khoản trước bốc sinh ra sau khi người bán ký số cân
+    // Chặng "đã xong": xuất hàng → hàng tới → người mua xác nhận → chốt sổ (tab Tiền hai bên có số thật)
+    try {
+      await ok('POST', `/v1/deliveries/${did}/arrival`, { weighed_g: d.q - 150000 }, cuong.token);
+      await ok('POST', `/v1/deliveries/${did}/arrival/confirm`, {}, cuong.token);
+      const tc = await vai('0901000004'); for (let lan = 0; lan < 3; lan++) { await ok('POST', '/v1/test/outbox/run', {}); await ok('POST', '/v1/sim/bank/process-instructions', {}); await ok('POST', '/v1/sim/bank/deliver', {}); await ok('POST', '/v1/ops/reconcile', {}, tc.token); } // ngân hàng mô phỏng giải ngân, đối soát, đơn hoàn tất
+    } catch (e) { console.warn('0005 chưa chốt sổ được:', (e as Error).message.slice(0, 200)); }
     return { trang_thai: 'lot:return_on_sale', giu_nguyen: false, ids: { order_id: d.orderId, delivery_id: did, lot_id: dy.data?.lo_con?.id ?? '' } };
   });
   // 0006: nhu cầu sầu riêng có 3 báo giá
