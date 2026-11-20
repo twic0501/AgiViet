@@ -141,3 +141,19 @@ fieldset.giay legend { font-size: 14px; font-weight: 600; padding: 0 4px; }
 .chip-chon:has(input:checked) { background: var(--xanh-nhat); box-shadow: inset 0 0 0 1.5px var(--xanh); color: var(--xanh); }
 .chip-chon:has(input:disabled) { opacity: .5; } .chip-chon input { width: 18px; height: 18px; margin: 0; accent-color: var(--xanh); }
 .mhc { margin: 0; } .mhc a { color: var(--xanh); font-weight: 600; }
+
+/* Khối "Tới lượt bạn" còn việc: nền vàng lúa, nổi hơn các thẻ thông tin */
+.the.toi-luot { background: #f8ecc9; box-shadow: 0 0 0 1px #e3c77a; }
+
+/* Máy tính văn phòng: thanh tab thành cột trái, nội dung rộng, kết quả nguồn chia 2 cột */
+@media (min-width: 900px) {
+  :root { --tab-cao: 0px; }
+  body { padding-left: 224px; }
+  .tab { top: 0; right: auto; width: 224px; height: 100%; grid-template-columns: 1fr; grid-auto-rows: 52px; align-content: start; gap: 4px;
+    padding: 76px 12px 12px; border-top: 0; border-right: 1px solid var(--k); }
+  .tab a { grid-auto-flow: column; justify-content: start; gap: 12px; padding: 0 14px; border-radius: 12px; font-size: 15px; }
+  .tab a[aria-current="page"] { background: var(--xanh-nhat); }
+  main { max-width: 1080px; padding-bottom: 32px; }
+  .kq-nhom { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .kq-nhom > :not(.the) { grid-column: 1 / -1; }
+}

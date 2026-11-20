@@ -19,7 +19,7 @@ export function veHomNay(o: HTMLElement): number {
   const t = DL.tien?.tong;
   const no = DL.thieuKhoan ? "Chưa tính đủ" : `${vnd(DL.khoan.filter(canTra).reduce((a, p) => a + conTra(p), 0))} đ`;
   o.innerHTML = `
-    <section class="the"><div class="hang"><h2>Tới lượt bạn</h2><span class="chip ${viec.length ? "do" : "la"}">${viec.length} việc</span></div>
+    <section class="the${viec.length ? " toi-luot" : ""}"><div class="hang"><h2>Tới lượt bạn</h2><span class="chip ${viec.length ? "do" : "la"}">${viec.length} việc</span></div>
       ${viec.length ? viec.map((v) => `<a class="viec" href="${v.href}"><i class="${v.gap ? "do" : ""}"></i><div><b>${esc(v.ten)}</b><p class="phu">${esc(v.phu)}</p></div><span aria-hidden="true">›</span></a>`).join("") : `<p class="phu">Không có việc nào chờ bạn.</p>`}
     </section>
     <section class="the"><h2>Tiền đang ở đâu</h2>
