@@ -62,7 +62,7 @@ export async function veChat(o: HTMLElement, loai: string, id: string): Promise<
     const cau = ds.find((x) => /^(Bước|Bạn đã|Bên kia|Tới lượt|Chờ|Hai bên)/.test(x)) ?? ds[0] ?? "";
     const toi = !!t.querySelector("button.c, a.n.c"); dai.classList.toggle("toi", toi);
     // Tới lượt mình ở các bước chốt điều khoản → tự mở thẻ một lần, không để người mua bỏ sót thanh mỏng phía trên
-    if (toi && !tuMo && /^Bước/.test(cau)) { tuMo = true; if (!tam.open) tam.showModal(); }
+    if (toi && !tuMo && /^(Bước|Bên kia)/.test(cau)) { tuMo = true; if (!tam.open) tam.showModal(); }
     // QA-06: đơn đã hoàn tất/đóng/hủy không còn "đang chờ bên kia"
     const xong = !toi && /hoàn tất|đã đóng|đã hủy|đã kết thúc/i.test(t.textContent ?? "");
     // Dòng trên: việc đang ở bước nào (cái cần biết trước); dòng dưới: giá/lượng hoặc mã hợp đồng.

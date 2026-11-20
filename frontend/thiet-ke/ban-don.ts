@@ -63,7 +63,7 @@ function viecChinh() {
   const bg = don.dot.find((d) => d.hanh_dong?.includes("start_check") || d.hanh_dong?.includes("dispatch"));
   if (bg) return { chu: "Bàn giao hàng", mo: () => moBanGiao(bg), phu: bg.hanh_dong.includes("start_check") ? `Đợt ${bg.batch_no} sẵn sàng. Người nhận của người mua tới, bác nhập mã 6 số trên app của họ để bắt đầu cân tại chỗ.` : `Đợt ${bg.batch_no} sẵn sàng xuất. Nhập mã 6 số của người nhận, số ký đã bốc và biển số xe.` };
   const dot = don.dot.find((d) => d.hanh_dong?.includes("agree_acceptance"));
-  const choTien = dot && (tienDon?.__loi ? [] : tienDon?.khoan_tra_thang || []).find((k) => k.direction === "buyer_to_seller" && k.blocks_loading && Number(k.confirmed_vnd || 0) < Number(k.amount_due_vnd) && !["closed", "cancelled"].includes(k.status));
+  const choTien = dot && choTienTruocBoc();
   if (choTien) return { chu: "Xem số cân", mo: () => moCan(dot), phu: `Đợt ${dot.batch_no}: người mua đã nhập số cân. Thứ tự: chờ người mua chuyển ${vnd(choTien.amount_due_vnd)} đ theo số cân này → bác kiểm tiền và xác nhận → rồi mới ký biên bản cân, hàng mới rời vườn.` };
   if (dot) return { chu: "Xem kết quả cân", mo: () => moCan(dot), phu: `Đợt ${dot.batch_no}: người mua đã nhập kết quả cân, chờ bác đồng ý hoặc báo dòng không đúng.` };
   return null;
@@ -75,7 +75,7 @@ function nhacTheoBuoc() {
   if (v?.chu === "Ký hợp đồng") return n({ khoa: "ky-" + ID, mat: "lo", chu: "Trước khi ký, bác đọc kỹ lượng chắc giao, ngày giao và cách trả tiền. Mã OTP gửi về máy chỉ bác nhập, không đọc cho ai kể cả người xưng là AgiViet." });
   if (v?.chu === "Kiểm tiền và xác nhận") return n({ khoa: "tien-" + ID, mat: "lo", chu: "Chỉ bấm xác nhận khi bác thấy tiền đã vào tài khoản trong app ngân hàng. Ảnh chụp màn hình chuyển khoản có thể là giả." });
   if (v?.chu === "Bàn giao hàng") return n({ khoa: "giao-" + ID, mat: "vui", chu: "Chỉ bốc hàng khi người nhận đưa đúng mã 6 số trên app của họ. Cân xong hai bên cùng xem số rồi mới ký." });
-  if (v?.chu === "Xem kết quả cân") return n({ khoa: "can-" + ID, mat: "ngac-nhien", chu: "Bác xem từng dòng: đạt, hạ loại, trả lại. Dòng nào không đúng thì bấm Không đúng, có ảnh làm bằng chứng." });
+  if (v?.chu === "Xem kết quả cân" || v?.chu === "Xem số cân") return n({ khoa: "can-" + ID, mat: "ngac-nhien", chu: "Bác xem từng dòng: đạt, hạ loại, trả lại. Dòng nào không đúng thì bấm Không đúng, có ảnh làm bằng chứng." });
   if (don.status === "awaiting_deposit") return n({ khoa: "coc-" + ID, mat: "ngu", chu: "Đang chờ người mua chuyển cọc vào ngân hàng. Ngân hàng xác nhận cọc rồi mới hái và giao, bác chưa cần làm gì." });
 }
 function ve() {
@@ -632,7 +632,10 @@ document.addEventListener("click", async (e) => {
   b.disabled = false;
 });
 // Kết quả cân: xem 3 phần, đồng ý ký bằng PIN, hoặc báo dòng không đúng
+// Khoản tiền phải về đủ trước khi hàng rời vườn mà chưa xác nhận đủ (máy chủ chặn ký biên bản: CHUA_DU_TIEN_TRUOC_BOC)
+const choTienTruocBoc = () => (tienDon?.__loi ? [] : tienDon?.khoan_tra_thang || []).find((k) => k.direction === "buyer_to_seller" && k.blocks_loading && Number(k.confirmed_vnd || 0) < Number(k.amount_due_vnd) && !["closed", "cancelled"].includes(k.status));
 function moCan(d) {
+  const choTien = choTienTruocBoc();
   const kq = (d.ket_qua || []).at(-1); if (!kq) return;
   const tong = kq.lines.reduce((t, x) => t + Number(x.value_vnd), 0), thieu = Number(d.planned_qty_g) - Number(kq.weighed_g);
   moTam(`<div class="than"><h2>Kết quả cân đợt ${esc(d.batch_no)}</h2>
@@ -664,7 +667,7 @@ function moCan(d) {
         <label><input type="radio" name="cach" value="kiem_dinh"><span><b>Mời bên kiểm định</b><small>Bên sai chịu phí kiểm định.</small></span></label>
       </div></div>
     <p class="hd-bao" data-r="bao" hidden></p></div>
-    <div class="day" data-r="day"><button class="nut chinh-nut" type="button" data-r="dong-y">Đồng ý và ký biên bản</button><button class="nut lui" type="button" data-r="sai">Có dòng không đúng</button></div>`, () => {
+    ${choTien ? `<p class="nhac">Chờ người mua chuyển ${vnd(choTien.amount_due_vnd)} đ; bác kiểm tiền, xác nhận rồi mới ký biên bản. Số cân sai thì báo ngay bằng nút dưới.</p>` : ""}<div class="day" data-r="day"><button class="nut chinh-nut" type="button" data-r="dong-y"${choTien ? " disabled" : ""}>Đồng ý và ký biên bản</button><button class="nut lui" type="button" data-r="sai">Có dòng không đúng</button></div>`, () => {
     let buoc = "dong-y";
     const datDay = (chinh, phu) => { r("day").innerHTML = `<button class="nut chinh-nut" type="button" data-r="chinh">${chinh}</button><button class="nut lui" type="button" data-r="huy">${phu}</button>`; r("huy").onclick = dongTam; r("chinh").onclick = chot; };
     const chot = async () => {
