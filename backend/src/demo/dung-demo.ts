@@ -89,9 +89,10 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
   const tim = (so: string) => SO_DEMO.find((x) => x.so === so)!;
   const lam = async (so: string, fn: (me: { token: string; user: any }) => Promise<any>) => {
     if (chi && !chi.includes(so)) return;
-    const s = tim(so); const me = await vai(s.sdt);
-    const r = await fn(me);
-    ra.push({ so, ten: s.ten, tinh_huong: s.tinh_huong, ...r });
+    const s = tim(so);
+    // Một tình huống hỏng (vd quy tắc đổi) không làm mất các tình huống còn lại
+    try { const me = await vai(s.sdt); const r = await fn(me); ra.push({ so, ten: s.ten, tinh_huong: s.tinh_huong, ...r }); }
+    catch (e) { ra.push({ so, ten: s.ten, tinh_huong: s.tinh_huong, trang_thai: 'loi: ' + String((e as Error).message).slice(0, 200), giu_nguyen: false, ids: {} }); }
   };
 
   // Các bên đóng vai (quản trị)
@@ -101,6 +102,14 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
   const tu = await vai('0977000610'); const htx = await vai('0907000300'); const hong = await vai('0945000880');
 
   // 0001: lời chào mới cần trả lời
+  // Người mua mẫu vào tab Nguồn thấy hàng ngay, không bị bắt chọn mặt hàng chính
+  const MAT_HANG: Record<string, string[]> = {
+    '0909000210': ['XOAI_CAT_CHU', 'BUOI_DA_XANH', 'THANH_LONG'], '0908000510': ['THANH_LONG', 'XOAI_CAT_CHU', 'CHANH_KHONG_HAT'],
+    '0903000411': ['SAU_RIENG', 'XOAI_CAT_CHU', 'BUOI_DA_XANH'], '0902000810': ['TOM_THE', 'CA_TRA'], '0938000610': ['LUA_TUOI', 'SAU_RIENG', 'XOAI_CAT_CHU', 'BUOI_DA_XANH'],
+  };
+  for (const [sdt, ma] of Object.entries(MAT_HANG)) {
+    try { await ok('POST', '/v1/org/main-products', { product_codes: ma }, (await vai(sdt)).token); } catch { /* đã có hoặc chưa đủ quyền: bỏ qua */ }
+  }
   await lam('0001', async (me) => {
     const ds = await ok('GET', '/v1/offers', undefined, me.token).catch(() => []);
     const con = (ds as any[]).find((x) => x.status === 'sent' && x.direction === 'buyer_bid');
@@ -239,13 +248,5 @@ export async function dungDemo(goi: Goi, chi?: string[], gioThat = false): Promi
     await coc(me.token, d.id, 'VUA NONG SAN BA CUONG');
     return { trang_thai: 'pre_harvest:active', giu_nguyen: false, ids: { order_id: d.id } };
   });
-  // Người mua mẫu vào tab Nguồn thấy hàng ngay, không bị bắt chọn mặt hàng chính
-  const MAT_HANG: Record<string, string[]> = {
-    '0909000210': ['XOAI_CAT_CHU', 'BUOI_DA_XANH', 'THANH_LONG'], '0908000510': ['THANH_LONG', 'XOAI_CAT_CHU', 'CHANH_KHONG_HAT'],
-    '0903000411': ['SAU_RIENG', 'XOAI_CAT_CHU', 'BUOI_DA_XANH'], '0902000810': ['TOM_THE', 'CA_TRA'], '0938000610': ['LUA_TUOI', 'SAU_RIENG', 'XOAI_CAT_CHU', 'BUOI_DA_XANH'],
-  };
-  for (const [sdt, ma] of Object.entries(MAT_HANG)) {
-    try { await ok('POST', '/v1/org/main-products', { product_codes: ma }, (await vai(sdt)).token); } catch { /* đã có hoặc chưa đủ quyền: bỏ qua */ }
-  }
   return ra;
 }
