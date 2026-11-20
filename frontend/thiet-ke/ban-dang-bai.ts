@@ -1,4 +1,5 @@
 import { esc, phien, ANH_SP, giuThamSo, tienDu, tenLoai, can, docSo } from "./chung.ts";
+import { tienBangChu } from "./so.ts";
 import { anhThanhBase64 } from "/shared/ngoai-tuyen.js";
 const $ = (id) => document.getElementById(id);
 const nhom = (id) => [...$(id).querySelectorAll("button")];
@@ -524,3 +525,11 @@ async function dangBan() {
 
 giuThamSo();
 mo().then(() => den("dau")).catch((e) => { $("the-hang").innerHTML = `<p class="bao loi" style="grid-column:1/-1;margin:0">${esc(e.message)}</p>`; });
+
+// Đọc giá thành chữ ngay dưới ô (gõ thiếu/thừa số 0 thấy liền)
+for (const id of ["gia-muon", "gia-san"]) {
+  const o = $(id), chu = document.createElement("p"); chu.className = "db-chu"; chu.setAttribute("aria-live", "polite");
+  chu.style.cssText = "margin:6px 0 0;font-size:15px;color:var(--muc-phu)"; o.closest(".db-so").after(chu);
+  const ve = () => { const n = docSo(o.value); chu.textContent = n > 0 ? tienBangChu(n) + " một ký" : ""; };
+  o.addEventListener("input", ve); ve();
+}

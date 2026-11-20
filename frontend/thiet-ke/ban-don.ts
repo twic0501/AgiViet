@@ -63,6 +63,8 @@ function viecChinh() {
   const bg = don.dot.find((d) => d.hanh_dong?.includes("start_check") || d.hanh_dong?.includes("dispatch"));
   if (bg) return { chu: "Bàn giao hàng", mo: () => moBanGiao(bg), phu: bg.hanh_dong.includes("start_check") ? `Đợt ${bg.batch_no} sẵn sàng. Người nhận của người mua tới, bác nhập mã 6 số trên app của họ để bắt đầu cân tại chỗ.` : `Đợt ${bg.batch_no} sẵn sàng xuất. Nhập mã 6 số của người nhận, số ký đã bốc và biển số xe.` };
   const dot = don.dot.find((d) => d.hanh_dong?.includes("agree_acceptance"));
+  const choTien = dot && (tienDon?.__loi ? [] : tienDon?.khoan_tra_thang || []).find((k) => k.direction === "buyer_to_seller" && k.blocks_loading && Number(k.confirmed_vnd || 0) < Number(k.amount_due_vnd) && !["closed", "cancelled"].includes(k.status));
+  if (choTien) return { chu: "Xem số cân", mo: () => moCan(dot), phu: `Đợt ${dot.batch_no}: người mua đã nhập số cân. Thứ tự: chờ người mua chuyển ${vnd(choTien.amount_due_vnd)} đ theo số cân này → bác kiểm tiền và xác nhận → rồi mới ký biên bản cân, hàng mới rời vườn.` };
   if (dot) return { chu: "Xem kết quả cân", mo: () => moCan(dot), phu: `Đợt ${dot.batch_no}: người mua đã nhập kết quả cân, chờ bác đồng ý hoặc báo dòng không đúng.` };
   return null;
 }
@@ -354,7 +356,7 @@ function moTien(k) {
     <p class="hd-bao vang"><b>Mở app ngân hàng xem số dư.</b> Ảnh chụp màn hình chuyển khoản có thể giả. Chỉ xác nhận số tiền đã thật sự vào tài khoản.${k.blocks_loading ? " Chưa nhận đủ khoản này thì chưa cho bốc hàng." : ""}</p>
     <div class="db-doan" data-r="cach" role="group" aria-label="Người mua trả bằng" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:14px;background:var(--giay-lot)">
       <button type="button" class="nut lui" data-cach="bank_transfer" aria-pressed="true" style="min-height:48px">Chuyển khoản</button><button type="button" class="nut lui" data-cach="cash" aria-pressed="false" style="min-height:48px">Tiền mặt</button></div>
-    <div data-r="khoi-ck"><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="ma-gd">Mã giao dịch trong app ngân hàng</label>
+    <div data-r="khoi-ck"><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="ma-gd">Mã giao dịch trong app ngân hàng <span style="font-weight:400">(không bắt buộc)</span></label>
       <input class="hd-o" id="ma-gd" data-r="ma-gd" autocomplete="off" placeholder="Ví dụ: FT2631012345" maxlength="40">
       <p class="hd-ghi" style="margin-top:6px">Mở lịch sử giao dịch, chép mã của khoản tiền này. Mỗi mã chỉ dùng một lần.</p></div>
     <div data-r="khoi-tm" hidden><p class="hd-ghi">Viết giấy biên nhận số tiền, hai bên ký, rồi chụp lại. Đếm đủ tiền mới xác nhận.</p>
@@ -386,7 +388,6 @@ function moTien(k) {
     };
     const ma = () => r("ma-gd").value.trim();
     const kiemCach = () => {
-      if (cach === "bank_transfer" && ma().length < 4) { r("ma-gd").focus(); throw new Error("Bác chép mã giao dịch trong app ngân hàng vào ô Mã giao dịch."); }
       if (cach === "cash" && !bienNhan) throw new Error("Tiền mặt cần ảnh giấy biên nhận hai bên ký. Bác bấm Chụp giấy biên nhận.");
     };
     const guiMa = async (lai = false) => {
@@ -446,7 +447,7 @@ function moBanGiao(d) {
       <input class="hd-otp" id="ma6" data-r="ma6" inputmode="numeric" maxlength="6" autocomplete="off"></div>
     ${taiCho ? "" : `<div class="hd-khoi" style="gap:10px">
       <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="kg-boc">Số ký đã bốc lên xe</label><input class="hd-o" id="kg-boc" data-r="kg" inputmode="decimal" placeholder="Ví dụ: 1.020"></div>
-      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-so">Biển số xe</label><input class="hd-o" id="bien-so" data-r="bien" autocomplete="off" placeholder="Ví dụ: 66C-123.45"></div>
+      <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-so">Biển số xe</label><input class="hd-o" id="bien-so" data-r="bien" list="ds-xe" autocomplete="off" placeholder="Chọn hoặc gõ biển số"></div>
       <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="niem">Số niêm phong (nếu có)</label><input class="hd-o" id="niem" data-r="niem" autocomplete="off"></div></div>`}
     <p class="hd-bao vang">Không đưa hàng cho người không có mã. Ai nhận hàng mà không qua mã thì AgiViet không bảo vệ được bác khi có tranh chấp.</p>
     <p class="hd-bao" data-r="bao" hidden></p></div>
@@ -489,7 +490,7 @@ function moBanGiao(d) {
 function moDatXe(d) {
   moTam(`<div class="than"><h2 id="t-xe">Xe chở đợt ${esc(d.batch_no)}</h2>
     <p class="hd-ghi">Hợp đồng ghi bác lo xe. Báo biển số để người nhận đối chiếu khi giao.</p>
-    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-xe">Biển số xe</label><input class="hd-o" id="bien-xe" data-r="bien" autocomplete="off" placeholder="Ví dụ: 66C-123.45"></div>
+    <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="bien-xe">Biển số xe</label><input class="hd-o" id="bien-xe" data-r="bien" list="ds-xe" autocomplete="off" placeholder="Chọn hoặc gõ biển số"></div>
     <div><label style="display:block;font-weight:600;color:var(--muc-phu);margin-bottom:8px" for="cuoc">Cước xe (nếu có, đồng)</label><input class="hd-o" id="cuoc" data-r="cuoc" inputmode="numeric" placeholder="0"></div>
     <p class="hd-bao" data-r="bao" hidden></p></div>
     <div class="day"><button class="nut chinh-nut" type="button" data-r="gui">Báo xe</button><button class="nut lui" type="button" data-r="huy">Để sau</button></div>`, (goc) => {
@@ -696,3 +697,7 @@ function moCan(d) {
 
 giuThamSo();
 tai().catch((e) => { $("noi").innerHTML = `<p class="bao loi">${esc(e.message)}</p><a class="nut phu-nut" href="./ban-hop-dong.html${esc(location.search)}" style="text-decoration:none">Về danh sách hợp đồng</a>`; });
+
+// Gợi ý biển số xe đã khai trong hệ thống (giống app mua) — gõ biển lạ thì máy chủ từ chối
+fetch("/v1/vehicles", H()).then((r) => (r.ok ? r.json() : null)).then((j) => { const ds = j?.data ?? j; if (!Array.isArray(ds)) return;
+  const dl = document.createElement("datalist"); dl.id = "ds-xe"; dl.innerHTML = ds.map((x) => `<option value="${esc(x.plate_no)}"></option>`).join(""); document.body.append(dl); }).catch(() => {});

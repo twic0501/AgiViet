@@ -190,7 +190,8 @@ export async function xacNhanDaNhan(ht: HeThong, t: GiaoDich, nd: NguoiDung, id:
   canQuyen(nd, phia === 'seller' ? 'money.confirm.seller' : 'money.confirm.buyer');
   const so = soGam(d.amount_vnd, 'amount_vnd');
   const method = d.method ?? 'bank_transfer';
-  if (method === 'bank_transfer' && !d.bank_txn_ref) throw loi('DU_LIEU_KHONG_HOP_LE', 'Chuyển khoản bắt buộc mã giao dịch ngân hàng.');
+  // Mã giao dịch không bắt buộc với người bán; để trống thì ghi mã nội bộ (không kiểm trùng được)
+  if (method === 'bank_transfer' && !String(d.bank_txn_ref ?? '').trim()) d = { ...d, bank_txn_ref: `KHONG-GHI-MA-${crypto.randomUUID().slice(0, 8)}` };
   if (method === 'cash' && !d.receipt_document_id) throw loi('DU_LIEU_KHONG_HOP_LE', 'Tiền mặt cần ảnh biên nhận hai bên ký.');
   if (d.bank_txn_ref) {
     const trung = await t.mot(`SELECT 1 FROM core.direct_payment_confirmations c JOIN core.direct_payments x ON x.id=c.direct_payment_id WHERE (x.order_id=$1 OR (x.framework_id=$3 AND $1::uuid IS NULL) OR x.id=$4) AND c.bank_txn_ref=$2`, [p.order_id, d.bank_txn_ref, p.framework_id, id]);

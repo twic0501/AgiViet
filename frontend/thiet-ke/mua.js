@@ -1230,7 +1230,7 @@ if (THAT) {
           <label id="nt-anh-o" hidden style="display:grid;gap:4px;font-weight:600">Ảnh chụp hàng không đạt (chụp tại chỗ)<input id="nt-anh" type="file" accept="image/*" capture="environment" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
           <label style="display:grid;gap:4px;font-weight:600">Mã niêm phong mẫu lưu<input id="nt-niem" placeholder="vd M-7710" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
           <div id="nt-tong" role="status" style="font-size:17px;font-weight:600"></div>
-          <label style="display:grid;gap:4px;font-weight:600">Mã PIN ký biên bản (4 số)<input id="nt-pin" inputmode="numeric" maxlength="4" type="password" autocomplete="off" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Mã PIN ký biên bản (4 số · bản thử: 2468)<input id="nt-pin" inputmode="numeric" maxlength="4" type="password" autocomplete="off" style="min-height:44px;padding:0 12px;border-radius:10px;border:1.5px solid var(--ke-dam,#ccc);font:inherit;width:100%;box-sizing:border-box"></label>
           <button type="button" class="sl-nut sl-vang" id="nt-gui">Ký và gửi kết quả cho người bán</button>
           <p class="sl-ghi" id="nt-bao" role="status"></p></section>`);
         const o = khung.querySelector("#nt"), $n = (id) => o.querySelector(id), soKg = (id) => Number(($n(id)?.value || "0").replace(",", "."));
@@ -1285,7 +1285,7 @@ if (THAT) {
             <label data-ly-o hidden style="display:grid;gap:4px;font-weight:600;font-size:14px">Lý do không đạt<select data-ly style="${O2}"><option value="">Chọn lý do</option>${(LY[m.ma] || []).map((x) => `<option value="${esc(x.reason_code)}">${esc(x.label_vi)}</option>`).join("")}</select></label></fieldset>`).join("")}
           <label id="nt-anh-o" hidden style="display:grid;gap:4px;font-weight:600">Ảnh chụp hàng không đạt (chụp tại chỗ)<input id="nt-anh" type="file" accept="image/*" capture="environment" style="${O2};padding:8px"></label>
           <div id="nt-tong" role="status" style="font-size:17px;font-weight:600"></div>
-          <label style="display:grid;gap:4px;font-weight:600">Mã PIN ký biên bản (4 số)<input id="nt-pin" inputmode="numeric" maxlength="4" type="password" autocomplete="off" style="${O2}"></label>
+          <label style="display:grid;gap:4px;font-weight:600">Mã PIN ký biên bản (4 số · bản thử: 2468)<input id="nt-pin" inputmode="numeric" maxlength="4" type="password" autocomplete="off" style="${O2}"></label>
           <button type="button" class="sl-nut sl-vang" id="nt-gui">Ký và gửi kết quả cho người bán</button>
           <p class="sl-ghi" id="nt-bao" role="status"></p></section>`);
         const o = khung.querySelector("#nt"), so3 = (el) => Number(String(el?.value || "0").replace(",", ".")) || 0;
@@ -1732,12 +1732,12 @@ if (THAT) {
 if (THAT) {
   // Màn nào đã nối dữ liệu thật thì ghi ở đây; các màn còn lại hiện dải cảnh báo "mô phỏng" để không lẫn số mẫu với số thật.
   delete TAB[0].dem; delete MENU[0].muc[0].dem; // số việc thật nằm ở Hôm nay của app mới, viecCan chỉ là số mẫu
-  const MAN_THAT = new Set(["nguon-hang", "chi-tiet-lo", "bao-gia", "don-hang", "chi-tiet-don", "khung", "lap-khung", "chi-tiet-khung"]);
+  const MAN_THAT = new Set(["chi-tiet-lo", "bao-gia", "chi-tiet-don", /* Đơn, Nguồn hàng: về app mới, không kẹt ở giao diện cũ */ "khung", "lap-khung", "chi-tiet-khung"]);
   const dai = `<div role="note" style="background:#fdecc8;border:1.5px solid #c98a12;color:#5a3d00;border-radius:10px;padding:10px 14px;font-weight:600">Màn này còn là <b>bản mô phỏng</b>: số liệu là số mẫu, thao tác chưa lưu thật. Dữ liệu thật hiện có ở Nguồn hàng, Lời chào giá và Đơn.</div>`;
   const daiLoi = () => `<div role="alert" style="background:#fbe3df;border:1.5px solid #a8392c;color:#6b1d13;border-radius:10px;padding:10px 14px;font-weight:600">Không tải được dữ liệu thật: ${esc(window.__agvLoiNap)}. Kiểm tra mạng rồi tải lại trang. Chưa có hàng nào hiện ra để tránh nhầm với hàng mẫu.</div>`;
   // Màn chưa nối dữ liệu thật → chuyển sang tab tương ứng của app mua mới (mua-app), không hiện số mẫu trong đường thi.
   // Màn chưa nối dữ liệu thật → màn tương ứng của app mua mới (/mua-ts/); không có thì về Hôm nay.
-  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "tin", "nhu-cau": "nguon", "don-hang": "don" };
+  const SANG_APP_MOI = { "tong-quan": "hom-nay", "cong-no": "tien", "vi-dam-bao": "tien", "ghi-thanh-toan": "tien", "bang-ke": "tien", "tin-nhan": "tin", "nhu-cau": "nguon", "don-hang": "don", "nguon-hang": "nguon" };
   for (const [k, m] of Object.entries(man)) {
     const ve0 = m.ve; if (typeof ve0 !== "function") continue;
     // Chỉ chuyển khi đúng màn được mở bằng ?man= (lần vẽ màn mặc định trước đó không được đá màn thật như chi-tiet-don ra ngoài).

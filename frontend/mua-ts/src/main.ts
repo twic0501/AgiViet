@@ -60,7 +60,7 @@ async function batDau(): Promise<void> {
 }
 
 // Máy tính (màn rộng, có chuột): chạy trong khung điện thoại như app cũ (khung-dt.js). Trong iframe thì không chuyển.
-if (window.top === window && matchMedia("(min-width: 700px) and (pointer: fine)").matches) {
+if (false) { // người mua làm ở văn phòng: dùng hết màn máy tính, không ép khung điện thoại
   location.replace("/thiet-ke/khung-dt.html?u=" + encodeURIComponent(location.pathname + location.search + location.hash));
   throw new Error("chuyển sang khung điện thoại");
 }

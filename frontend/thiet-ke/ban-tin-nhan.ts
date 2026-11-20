@@ -142,7 +142,7 @@ function moHopDong(c) {
   che.innerHTML = `<div class="tam-lc" role="dialog" aria-modal="true" aria-labelledby="hd-t" tabindex="-1">
     <div><h2 id="hd-t">${esc(c.ai)}</h2><p class="phu-lc">Hợp đồng ${esc(c.ma)} · ${esc(tien(c.gia))}</p></div>
     <p class="nhac">${esc(c.viec)}</p><div data-r="tin"></div>
-    <div class="ba-nut"><button type="button" class="nut phu-nut" data-dong>Đóng</button><a class="nut chinh-nut" href="./ban-don.html#don=${esc(c.id)}">Mở hợp đồng</a></div></div>`;
+    <div class="ba-nut"><button type="button" class="nut phu-nut" data-dong>Đóng</button><a class="nut chinh-nut" href="./ban-don.html?id=${encodeURIComponent(c.id)}">Mở hợp đồng</a></div></div>`;
   document.body.appendChild(che); giuThamSo(che);
   const dong = () => { clearTimeout(hen); che.remove(); history.replaceState(null, "", location.pathname + location.search); };
   che.querySelector("[data-dong]").onclick = dong;
@@ -228,7 +228,7 @@ async function moLoiChao(id) {
     <a class="tn-sang-chat" href="#tro=o-${esc(id)}">${IC_NHAN} Nhắn tin với ${esc(ben)}</a>`;
   tam.querySelectorAll("[data-dong]").forEach((b) => (b.onclick = dong));
   const r = (k) => tam.querySelector(`[data-r="${k}"]`);
-  const xong = (chu) => { r("buoc").innerHTML = ""; tam.querySelectorAll(".nhac:not(.xanh), .lc-vong").forEach((e) => e.remove()); window.nhacTrau?.({ khoa: "dong-y-gia", mat: "vui", chu: "Đồng ý giá chưa phải hợp đồng. Người mua gửi điều kiện giao và trả tiền, bác đọc kỹ rồi mới ký." }); r("day").innerHTML = `${window.trauTuThe ? window.trauTuThe("11-mung", "", 88) : ""}<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Xong</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.reload(); }; };
+  const xong = (chu) => { r("buoc").innerHTML = ""; tam.querySelectorAll(".nhac:not(.xanh), .lc-vong").forEach((e) => e.remove()); window.nhacTrau?.({ khoa: "dong-y-gia", mat: "vui", chu: "Đồng ý giá chưa phải hợp đồng. Người mua gửi điều kiện giao và trả tiền, bác đọc kỹ rồi mới ký." }); r("day").innerHTML = `${window.trauTuThe ? window.trauTuThe("11-mung", "", 88) : ""}<p class="nhac xanh">${chu}</p><button type="button" class="nut chinh-nut" data-xong>Sang thống nhất điều khoản</button>`; r("day").querySelector("[data-xong]").onclick = () => { dong(); location.hash = `#tro=o-${id}`; }; };
   const khoa = (b) => r("day").querySelectorAll("button").forEach((x) => (x.disabled = b));
   // Đồng ý: xác nhận lại tổng tiền + nhắc "chưa phải hợp đồng"
   r("dong-y")?.addEventListener("click", () => {
